@@ -1,0 +1,32 @@
+# Query: NRRFC
+# ContextLines: 1
+
+9 results - 1 file
+
+command_center.py:
+  116  
+  117: # Interactive NRRFC Dashboard – Mineral Density & Defense Toggle
+  118: st.write("### 🛡️ NRRFC – Mineral Density & Defense Dashboard")
+  119  toggle_minerals = st.checkbox("Activate Mineral Density & Defense Toggle", value=False)
+
+  123      # Unified Carbon Gateway — Diamond-Coal Bridge: NW/NE Diamond Nodes layer
+  124:     st.write("#### NRRFC Fusion Strike: Unified Carbon Gateway")
+  125      st.caption("Diamond-Coal Bridge: NW/NE Diamond Nodes integrated with Coal (Energy) under D3 Research.")
+
+  178  
+  179:         # 3D NRRFC Heatmap — Sovereign Mineral Fortress (finalized)
+  180:         st.write("#### 3D NRRFC Heatmap — Sovereign Mineral Fortress")
+  181          st.caption("Proving Nigeria as a Sovereign Mineral Fortress: D3 Research nodes across North East (kimberlite) and North West (hydrothermal).")
+
+  185  
+  186:         nrrfc_layer = pdk.Layer(
+  187              "ColumnLayer",
+
+  197  
+  198:         nrrfc_view = pdk.ViewState(
+  199              longitude=8.5,
+
+  206          sovereign_fortress_deck = pdk.Deck(
+  207:             layers=[nrrfc_layer],
+  208:             initial_view_state=nrrfc_view,
+  209              map_style="mapbox://styles/mapbox/dark-v10",
