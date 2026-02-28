@@ -44,7 +44,7 @@ def run_diagnostic_pulse() -> None:
     print("ALL 37 NODES SECURED. ENGAGING TALON LOCK.")
     print("=" * 45)
     play_sound("talon_lock")
-    print("STATUS: 85% TALON LOCK CONFIRMED.")
+    print("STATUS: 95% TALON LOCK CONFIRMED.")
 
 
 def run_sovereign_handshake() -> None:
@@ -66,7 +66,7 @@ def run_sovereign_handshake() -> None:
 
 
 def play_talon_lock_confirmed() -> None:
-    """Play Submarine chime when 85% Talon Lock is confirmed. Runs in background."""
+    """Play Submarine chime when 95% Talon Lock is confirmed. Runs in background."""
     play_sound("talon_lock")
 
 

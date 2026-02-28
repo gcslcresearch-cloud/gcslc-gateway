@@ -38,10 +38,10 @@ DETERMINANTS = ["Refine", "Reset", "Research", "Restructure", "Resuscitate", "Re
 NWC_HEADER = "National Wealth Cloud for Nigeria: Coal & Diamond (NWC/C&D)"
 NWC_SUBTITLE = "Cloud-Level Pragmatic Reality — Powered by GCSLC Sovereign Gateway"
 
-# Sovereign Retention Protocol (D8 Logic) — 85% Value Anchor (aligned with d8_logic.WEALTH_RETENTION_LOCK)
+# Sovereign Retention Protocol (D8 Logic) — 95% National Equity (Talon Lock)
 SOVEREIGN_RETENTION_PROTOCOL = f"""
 **The Sovereign Retention Protocol (D8 Logic)**  
-This partnership is governed by a **fixed {int(WEALTH_RETENTION_LOCK * 100)}% Value Anchor**. By deploying the 8R Stealth Paradigm, GCSLC mandates that **{int(WEALTH_RETENTION_LOCK * 100)}% of all economic velocity and intellectual derivative value** remains proprietary to the Sovereign Node. This foundation is engineered at **1m × 1m Steel** structural depth, ensuring that global expansion (Alphabet/Apple) serves to **strengthen the national core** rather than deplete it.
+This partnership is governed by a **fixed {int(WEALTH_RETENTION_LOCK * 100)}% Value Anchor** (Talon Lock). By deploying the 8R Stealth Paradigm, GCSLC mandates that **{int(WEALTH_RETENTION_LOCK * 100)}% of all economic velocity and intellectual derivative value** remains proprietary to the Sovereign Node. This foundation is engineered at **1m × 1m Steel** structural depth, ensuring that global expansion (Alphabet/Apple) serves to **strengthen the national core** rather than deplete it.
 """
 
 # D7: set_page_config must be the very first Streamlit command (no st.* before this)
@@ -81,13 +81,21 @@ st.markdown("""
 h1, h2, h3, p, span, label, .stMarkdown { color: #D4AF37 !important; }
 [data-testid="stMetricValue"], [data-testid="stMetricLabel"] { color: #D4AF37 !important; }
 section[data-testid="stSidebar"] { background-color: #002147 !important; border-right: 2px solid #D4AF37; }
-/* Clickable state node buttons */
+/* Clickable state node buttons + 774 LGA grid consistency */
 .nwc-state-btn { background: linear-gradient(135deg, #002147, #003366); border: 1px solid #D4AF37; color: #D4AF37; border-radius: 6px; padding: 0.35rem 0.6rem; margin: 0.2rem; font-size: 0.85rem; }
 .nwc-state-btn:hover { background: rgba(212,175,55,0.2); }
 .glossary-term { font-weight: 700; color: #E8C547; }
 .glossary-def { color: #D4AF37; font-size: 0.9rem; margin-bottom: 0.75rem; }
+/* 774 LGA grid: Navy Blue & Metallic Gold theme */
+.nwc-lga-grid, .nwc-lga-grid .stMarkdown, .nwc-lga-grid ul { background-color: #002147 !important; color: #D4AF37 !important; }
+.nwc-lga-grid [data-testid="stExpander"] { background: rgba(0,33,71,0.98); border: 1px solid #D4AF37; border-radius: 6px; }
+.nwc-lga-grid [data-testid="stExpander"] summary { color: #D4AF37 !important; }
+.nwc-lga-grid [data-testid="stExpander"] li { color: #E8C547; }
 </style>
-
+""", unsafe_allow_html=True)
+# Keyframes and .brand-8r kept in background (no leak)
+st.markdown("""
+<style>
 /* Title shimmer: linear-gradient animation — 8R Center primary authority */
 .brand-8r {
     font-weight: 800 !important;
@@ -193,9 +201,9 @@ if st.session_state.selected_state:
     lgas = get_lgas(state)
     st.write(f"#### 📌 {state} — {region}")
     st.caption(f"{len(lgas)} Local Government Areas")
-    # Single markdown list: no st.metric with empty labels; scales to full LGA count without overload
-    lga_list = "\n".join(f"- {lga}" for lga in lgas)
-    st.markdown(lga_list)
+    # 774 LGA grid: Navy Blue & Metallic Gold themed list (no overload)
+    lga_items = "".join(f"<li>{lga}</li>" for lga in lgas)
+    st.markdown(f'<div class="nwc-lga-grid"><ul style="color: #D4AF37; background: transparent;">{lga_items}</ul></div>', unsafe_allow_html=True)
     if st.button("Clear selection", key="clear_state"):
         st.session_state.selected_state = None
         st.rerun()
@@ -234,7 +242,7 @@ cols = st.columns(4)
 for i, det in enumerate(DETERMINANTS):
     cols[i % 4].success(f"D{i+1}: {det} [ACTIVE]")
 
-# Sovereign Retention Protocol (D8 Logic) — 85% Value Anchor
+# Sovereign Retention Protocol (D8 Logic) — 95% National Equity (Talon Lock)
 with st.expander("🔒 Sovereign Retention Protocol (D8 Logic)", expanded=True):
     st.markdown(SOVEREIGN_RETENTION_PROTOCOL)
     st.metric(label="Value Anchor (D8 Talon Lock)", value=f"{int(WEALTH_RETENTION_LOCK * 100)}%")
@@ -248,7 +256,7 @@ with st.expander("🔒 Sovereign Retention Protocol (D8 Logic)", expanded=True):
 st.write("### 🛡️ NRRFC – Mineral Density & Defense Dashboard")
 toggle_minerals = st.checkbox("Activate Mineral Density & Defense Toggle", value=False)
 if toggle_minerals:
-    st.caption("NGECC – Sovereign Minerals: Coal (Energy), Diamonds (Value), Uranium (Strategic Depth) under 85% Talon Lock.")
+    st.caption("NGECC – Sovereign Minerals: Coal (Energy), Diamonds (Value), Uranium (Strategic Depth) under 95% Talon Lock.")
 
     # Unified Carbon Gateway — Diamond-Coal Bridge (anchor: Line 117)
     st.write("#### NRRFC Fusion Strike: Unified Carbon Gateway")
@@ -261,21 +269,21 @@ if toggle_minerals:
     if nw_ne_nodes:
         bridge_df = pd.DataFrame(nw_ne_nodes)[["state", "region", "proven_reserve_probability", "retained_value_usd"]].copy()
         bridge_df = bridge_df.rename(columns={"state": "State", "region": "Region", "proven_reserve_probability": "Proven Reserve Probability"})
-        bridge_df["85% Retained Sovereign Value"] = bridge_df["retained_value_usd"].apply(lambda v: f"${v:,.0f}")
-        st.dataframe(bridge_df[["State", "Region", "Proven Reserve Probability", "85% Retained Sovereign Value"]], width="stretch")
+        bridge_df["95% Retained Sovereign Value"] = bridge_df["retained_value_usd"].apply(lambda v: f"${v:,.0f}")
+        st.dataframe(bridge_df[["State", "Region", "Proven Reserve Probability", "95% Retained Sovereign Value"]], width="stretch")
     else:
         st.caption("No NW/NE diamond nodes in current dataset.")
 
-    # 85% Metric: monthly revenue (verified North West Hydrothermal Discovery default)
+    # 95% Metric: monthly revenue (verified North West Hydrothermal Discovery default)
     GROSS_MONTHLY_REVENUE_M = 415  # $415M default — verified North West Hydrothermal Discovery
     monthly_gross_usd = GROSS_MONTHLY_REVENUE_M * 1_000_000
-    monthly_retained = apply_talon_lock(monthly_gross_usd)  # 85% Talon Lock → $352.7M
-    retained_display_m = int(monthly_retained / 100_000) / 10  # display as $352.7M
+    monthly_retained = apply_talon_lock(monthly_gross_usd)  # 95% Talon Lock
+    retained_display_m = int(monthly_retained / 100_000) / 10
     c1, c2 = st.columns(2)
     with c1:
         st.metric(label="Monthly Revenue (Gross)", value=f"${GROSS_MONTHLY_REVENUE_M}M")
     with c2:
-        st.metric(label="Monthly Revenue (85% Retained — Talon Lock)", value=f"${retained_display_m:.1f}M")
+        st.metric(label="Monthly Revenue (95% Retained — Talon Lock)", value=f"${retained_display_m:.1f}M")
 
     nodes = get_nodes() or []  # D7: ensure list, never None
     rows = []
@@ -289,13 +297,13 @@ if toggle_minerals:
                 "Type": node.mineral_type,
                 "D-Index": node.d_index,
                 "Base Yield": node.base_yield,
-                "Retained Yield (85%)": round(r, 2),
+                "Retained Yield (95%)": round(r, 2),
                 "Global Impact Index": round(idx, 2),
             }
         )
     st.dataframe(rows, width="stretch")
 
-    # D3: Mineral Research Node – State-by-state table (Proven Reserve Probability | 85% Retained Sovereign Value)
+    # D3: Mineral Research Node – State-by-state table (Proven Reserve Probability | 95% Retained Sovereign Value)
     st.write("#### D3: Mineral Research Node — Sovereign Mineral Fortress")
     st.caption("Nigeria is not just an oil nation: kimberlite pipe signatures (NE) and structural hydrothermal trends (NW) under 8R D3 Research.")
     diamond_data = get_diamond_reserves()
@@ -306,11 +314,11 @@ if toggle_minerals:
             columns={
                 "state": "State",
                 "proven_reserve_probability": "Proven Reserve Probability",
-                "retained_value_usd": "85% Retained Sovereign Value",
+                "retained_value_usd": "95% Retained Sovereign Value",
             },
             inplace=True,
         )
-        table_df["85% Retained Sovereign Value"] = table_df["85% Retained Sovereign Value"].map(lambda v: f"${v:,.0f}")
+        table_df["95% Retained Sovereign Value"] = table_df["95% Retained Sovereign Value"].map(lambda v: f"${v:,.0f}")
         st.dataframe(table_df, width="stretch")
 
         # 3D NRRFC Heatmap — Sovereign Mineral Fortress (finalized pydeck at ~Line 158)
@@ -342,7 +350,7 @@ if toggle_minerals:
             layers=[nrrfc_layer],
             initial_view_state=nrrfc_view,
             map_style="mapbox://styles/mapbox/dark-v10",
-            tooltip={"text": "State: {state}\nProven Reserve Probability: {proven_reserve_probability}\n85% Retained Sovereign Value: {retained_display}"},
+            tooltip={"text": "State: {state}\nProven Reserve Probability: {proven_reserve_probability}\n95% Retained Sovereign Value: {retained_display}"},
         )
         st.pydeck_chart(sovereign_fortress_deck)
 
@@ -390,7 +398,7 @@ if st.session_state.strike:
     if st.session_state.strike_manifested and not st.session_state.certificate_shown:
         if st.button("GENERATE SOVEREIGN PROOF CERTIFICATE", type="primary", key="spc_gen_btn"):
             st.session_state.certificate_shown = True
-            play_talon_lock_confirmed()  # Submarine chime when 85% Talon Lock confirmed
+            play_talon_lock_confirmed()  # Submarine chime when 95% Talon Lock confirmed
             st.rerun()
 
     # Visual Proof: Sovereign Proof Certificate
@@ -415,8 +423,8 @@ if st.session_state.strike:
         <p class="cascade-map"><strong>D1–D8 Cascade (Hierarchical Map):</strong><br/>
         D1 Refine → D2 Reset → D3 Research → D4 Restructure → D5 Resuscitate → D6 Revitalize → D7 Re-engineer → D8 Retain
         </p>
-        <p class="talon-metric">🔒 85% Legacy Retention / Talon Lock — Primary Security Metric for this Strike</p>
-        <p class="footer-cert" style="font-size: 0.8rem; margin-top: 0.75rem;">Governed by the <strong>Sovereign Retention Protocol (D8 Logic)</strong>: 85% Value Anchor; 1m × 1m structural depth; economic velocity and intellectual derivative value retained by the Sovereign Node.</p>
+        <p class="talon-metric">🔒 95% Legacy Retention / Talon Lock — Primary Security Metric for this Strike</p>
+        <p class="footer-cert" style="font-size: 0.8rem; margin-top: 0.75rem;">Governed by the <strong>Sovereign Retention Protocol (D8 Logic)</strong>: 95% Value Anchor (Talon Lock); 1m × 1m structural depth; economic velocity and intellectual derivative value retained by the Sovereign Node.</p>
         <p class="footer-cert">This Certificate validates the Scientific Universality of the 8R Stealth Paradigm across Human, Economic, and AI Systems.</p>
         <p class="footer-cert" style="margin-top: 0.5rem; font-size: 0.75rem; opacity: 0.85;">Strategic DNA v4.0 - Proprietary Nodal Logic of GCSLC. Unauthorized Replication Subject to Sovereign Re-engineering.</p>
         </div>

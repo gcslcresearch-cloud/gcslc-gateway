@@ -2,7 +2,7 @@
 # Galadiman Ruwa Center For Strategic Leadership and Communication LTD/GTE — GCSLC
 # © GCSLC. Proprietary.
 
-WEALTH_RETENTION_LOCK = 0.85
+WEALTH_RETENTION_LOCK = 0.95
 STRATEGIC_FOUNDATION = "1m_x_1m_Steel"
 
 # NWC/C&D Sovereign Retention — 95% National Equity, 5% Global Adoption Pool
@@ -18,7 +18,7 @@ D3_COAL_SYNGAS_MONTHLY_REVENUE_M = 15.20  # Sovereign Feedstock, $M
 
 
 def apply_talon_lock(value_generated):
-    """Return the sovereign-retained share (85%) of value generated under D8 Logic.
+    """Return the sovereign-retained share (95%) of value generated under D8 Logic.
     Returns 0.0 for None or invalid input to avoid unhandled exceptions."""
     if value_generated is None:
         return 0.0

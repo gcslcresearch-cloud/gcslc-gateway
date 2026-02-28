@@ -56,7 +56,7 @@ def generate_spc_image(seal_path: Optional[str] = None, width: int = 1000, heigh
     draw.text(((width - bw) / 2, body_y), body_text, fill=gold, font=font_body)
 
     # Talon Lock metric
-    metric = "🔒 85% Legacy Retention / Talon Lock — Primary Security Metric for this Strike"
+    metric = "🔒 95% Legacy Retention / Talon Lock — Primary Security Metric for this Strike"
     mw, _ = draw.textsize(metric, font=font_body)
     draw.text(((width - mw) / 2, body_y + 60), metric, fill=(232, 197, 71), font=font_body)
 
