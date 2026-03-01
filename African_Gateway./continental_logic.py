@@ -271,6 +271,69 @@ def get_risk_defense_heatmap() -> List[Dict[str, Any]]:
     return list(RISK_DEFENSE_HEATMAP)
 
 
+# --- Universal Sovereign Impact Radar: $170.85B anchor → poverty reduction & regional stability ---
+VALUATION_ANCHOR_B = 170.85
+
+NATIONAL_SECURITY_IMPACT_HEATMAP: List[Dict[str, Any]] = [
+    {"region": "North Central (Gold)", "indicator": "Resource conflict index", "before_anchor": 72, "after_anchor": 38, "stability_delta": "+34 pts"},
+    {"region": "Niger Delta (Energy)", "indicator": "Regional stability score", "before_anchor": 45, "after_anchor": 78, "stability_delta": "+33 pts"},
+    {"region": "North West (Minerals)", "indicator": "Sovereign retention confidence", "before_anchor": 42, "after_anchor": 88, "stability_delta": "+46 pts"},
+    {"region": "West Africa corridor", "indicator": "Cross-border spillover risk", "before_anchor": 68, "after_anchor": 31, "stability_delta": "-37 pts (risk down)"},
+    {"region": "National (8R)", "indicator": "Capital flight resistance", "before_anchor": 35, "after_anchor": 92, "stability_delta": "+57 pts"},
+]
+SOCIAL_WELLBEING_INDEX_HEATMAP: List[Dict[str, Any]] = [
+    {"dimension": "Poverty headcount (asset corridors)", "baseline_pct": 58, "post_anchor_pct": 32, "reduction": "26 pp"},
+    {"dimension": "Formal employment (minerals/gems)", "baseline_pct": 22, "post_anchor_pct": 48, "reduction": "+26 pp"},
+    {"dimension": "Energy access (NGECC alignment)", "baseline_pct": 55, "post_anchor_pct": 78, "reduction": "+23 pp"},
+    {"dimension": "Sovereign wealth retention (D8)", "baseline_pct": 28, "post_anchor_pct": 95, "reduction": "+67 pp"},
+    {"dimension": "Regional inequality (Gini, corridor zones)", "baseline_pct": 72, "post_anchor_pct": 54, "reduction": "-18 pp"},
+]
+
+
+def get_national_security_impact_heatmap() -> List[Dict[str, Any]]:
+    """Universal Sovereign Impact Radar — National Security Impact: how $170.85B anchor increases regional stability."""
+    return list(NATIONAL_SECURITY_IMPACT_HEATMAP)
+
+
+def get_social_wellbeing_index_heatmap() -> List[Dict[str, Any]]:
+    """Universal Sovereign Impact Radar — Social Well-being Index: how $170.85B anchor reduces poverty."""
+    return list(SOCIAL_WELLBEING_INDEX_HEATMAP)
+
+
+# --- The Wise Men: Institutional Partner nodes (Nigeria industrial & financial giants) ---
+INSTITUTIONAL_PARTNERS: List[Dict[str, Any]] = [
+    {
+        "name": "Dangote",
+        "sector": "Industrial",
+        "assets_bid": ["Cement & limestone corridors", "Refinery & petrochemicals", "Minerals logistics"],
+        "8r_resuscitation": "D1 Refine unlocks high-purity limestone corridors; D2 Reset aligns SPV→SSMV for refinery offtake; D5 Resuscitate revives stranded refinery assets under sovereign retention.",
+    },
+    {
+        "name": "BUA",
+        "sector": "Industrial",
+        "assets_bid": ["Cement & mining", "Sugar & infrastructure", "Energy offtake"],
+        "8r_resuscitation": "D1 Refine secures mineral corridors for cement; D6 Revitalize restores demand shock resilience; D8 Retain keeps 95% sovereign value in-country for infrastructure build.",
+    },
+    {
+        "name": "Zenith Bank",
+        "sector": "Financial",
+        "assets_bid": ["SSMV financing rails", "Gold-backed fintech", "FX hedging for corridors"],
+        "8r_resuscitation": "D2 Reset structures SPV→SSMV financing; D3 Research aligns rare earth coords to trade finance; D8 Retain reduces capital flight and anchors FX stability.",
+    },
+    {
+        "name": "GTCO (Guaranty Trust)",
+        "sector": "Financial",
+        "assets_bid": ["Wealth retention products", "Mineral corridor banking", "Sovereign bond alignment"],
+        "8r_resuscitation": "D2 Reset enables SSMV-linked wealth products; D4 Restructure supports sovereign bond issuance; D8 Retain protects $170.85B anchor through domestic custody.",
+    },
+]
+
+
+def get_institutional_partners() -> List[Dict[str, Any]]:
+    """Return Wise Men (Institutional Partner) nodes — how 8R Strike resuscitates assets they bid on."""
+    return list(INSTITUTIONAL_PARTNERS)
+
+
 # --- Opportunity Sniffer & Strike: Determinant reveal per node (word pop-up when talon strikes) ---
 NODE_DETERMINANT_REVEAL: Dict[str, str] = {
     "nigeria": "D1: Refine, D2: Reset & D3: Research Applied",

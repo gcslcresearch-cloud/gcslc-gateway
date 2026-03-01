@@ -378,7 +378,7 @@ if st.session_state.selected_node:
         </svg>
       </div>
       <p class="awc-directive-label">Direct eye-contact directive — eagle locked on you</p>
-      <p class="awc-cta-line">GCSLC SECURED THE ANCHOR. GET TO WORK.</p>
+      <p class="awc-cta-line" id="awc-eagle-message">GCSLC SECURED THE ANCHOR. GET TO WORK.</p>
     </div>
     <script>
     (function() {
@@ -387,10 +387,22 @@ if st.session_state.selected_node:
       var svg = document.getElementById('awc-eagle-svg');
       var pl = document.getElementById('pupil-l');
       var pr = document.getElementById('pupil-r');
-      var centerX = 40, centerY = 28;
-      var svgRect = function() { return svg.getBoundingClientRect(); };
+      var msgEl = document.getElementById('awc-eagle-message');
+      var messages = [
+        'GCSLC SECURED THE ANCHOR. GET TO WORK.',
+        'RETAINING WEALTH. PROTECTING SOVEREIGNTY.',
+        '8R: THE DOCTOR\'S DIAGNOSTIC FOR A NEW AFRICA.'
+      ];
+      var idx = 0;
+      if (msgEl) {
+        setInterval(function() {
+          idx = (idx + 1) % messages.length;
+          msgEl.textContent = messages[idx];
+        }, 4500);
+      }
       function setGaze(x, y) {
-        var r = svgRect();
+        if (!svg) return;
+        var r = svg.getBoundingClientRect();
         var cx = r.left + r.width / 2, cy = r.top + r.height * 0.5;
         var dx = (x - cx) / r.width * 3, dy = (y - cy) / r.height * 3;
         dx = Math.max(-2, Math.min(2, dx)); dy = Math.max(-2, Math.min(2, dy));
@@ -403,9 +415,46 @@ if st.session_state.selected_node:
       }, 800);
     })();
     </script>
-    """, height=220)
+    """, height=240)
 
 st.caption("Continental nodes: Nigeria, Ghana, South Africa, Egypt. Strategic Partner: Dubai (UAE). Select a node to center map and trigger Eagle's Talon + play_swat.")
+
+# --- Universal Sovereign Impact Radar: Security & Social Well-being toggles ---
+st.markdown("---")
+st.write("### Universal Sovereign Impact Radar")
+st.caption("How the **$170.85B** valuation anchor reduces poverty and increases regional stability.")
+col_sec, col_soc = st.columns(2)
+with col_sec:
+    show_security_impact = st.checkbox("National Security Impact", value=False, key="radar_security")
+with col_soc:
+    show_social_wellbeing = st.checkbox("Social Well-being Index", value=False, key="radar_social")
+if show_security_impact:
+    st.write("**National Security Impact** — $170.85B anchor → regional stability")
+    sec_heat = continental_logic.get_national_security_impact_heatmap()
+    st.dataframe(
+        [{"Region": r["region"], "Indicator": r["indicator"], "Before anchor": r["before_anchor"], "After anchor": r["after_anchor"], "Δ Stability": r["stability_delta"]} for r in sec_heat],
+        use_container_width=True,
+        hide_index=True,
+    )
+    st.caption("Higher scores = more stability. The anchor increases sovereign retention and reduces resource conflict.")
+if show_social_wellbeing:
+    st.write("**Social Well-being Index** — $170.85B anchor → poverty reduction")
+    soc_heat = continental_logic.get_social_wellbeing_index_heatmap()
+    st.dataframe(
+        [{"Dimension": d["dimension"], "Baseline (%)": d["baseline_pct"], "Post-anchor (%)": d["post_anchor_pct"], "Change": d["reduction"]} for d in soc_heat],
+        use_container_width=True,
+        hide_index=True,
+    )
+    st.caption("Poverty headcount drops; employment and energy access rise under 8R sovereign corridors.")
+
+# --- The Wise Men: Institutional Partner nodes (Dangote / BUA / Zenith / GTCO) ---
+st.markdown("---")
+st.write("### The Wise Men — Institutional Partners")
+st.caption("Nigeria's industrial and financial giants: how the **8R Strike** resuscitates the assets they bid on.")
+for partner in continental_logic.get_institutional_partners():
+    with st.expander(f"**{partner['name']}** — {partner['sector']}"):
+        st.markdown("**Assets bid on:** " + "; ".join(f"*{a}*" for a in partner["assets_bid"]))
+        st.markdown("**8R Resuscitation:** " + partner["8r_resuscitation"])
 
 # --- Triple-D3: GCSLC Sovereign Diagnostic | 8R Scientific Analysis ---
 st.markdown("---")
