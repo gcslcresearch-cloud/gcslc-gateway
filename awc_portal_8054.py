@@ -86,9 +86,11 @@ st.markdown("""
 .pulse-ghana { animation: pulse-ghana 3s ease-in-out 1 forwards; border: 2px solid #FFD700; border-radius: 16px; position: relative; }
 .pulse-dubai { animation: pulse-dubai 3s ease-in-out 1 forwards; border: 2px solid #FFD700; border-radius: 16px; position: relative; }
 .pulse-south_africa { animation: pulse-south_africa 3s ease-in-out 1 forwards; border: 2px solid #FFD700; border-radius: 16px; position: relative; }
-/* Eagle's Talon dive */
+/* Live Eagle Engine: Sniffer hover + Talon Strike */
+@keyframes eagle-hover-float { 0%, 100% { transform: translate(-50%, -80%) scale(1) rotate(-2deg); opacity: 0.95; } 50% { transform: translate(-50%, -95%) scale(1.05) rotate(2deg); opacity: 1; } }
 @keyframes eagle-dive { 0% { transform: translate(-50%,-120%) scale(1.5); opacity: 0.9; } 100% { transform: translate(-50%,-50%) scale(0.7); opacity: 0.4; } }
-.awc-eagle-talon { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); pointer-events: none; z-index: 10; animation: eagle-dive 1s ease-out 1 forwards; }
+.awc-eagle-sniffer { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-80%); pointer-events: none; z-index: 10; animation: eagle-hover-float 2.2s ease-in-out infinite; filter: drop-shadow(0 0 12px rgba(255,215,0,0.6)); }
+.awc-eagle-talon { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); pointer-events: none; z-index: 10; animation: eagle-dive 0.7s ease-out 1 forwards; filter: drop-shadow(0 0 16px rgba(255,215,0,0.8)); }
 /* High-velocity typography */
 h1, h2, h3, p, span, label, .stMarkdown { color: #D4AF37 !important; }
 [data-testid="stMetricValue"], [data-testid="stMetricLabel"] { color: #E8C547 !important; }
@@ -123,10 +125,14 @@ section[data-testid="stSidebar"] { background: linear-gradient(180deg, #001a33 0
 .awc-vortex-dot { position: absolute; width: 4px; height: 4px; background: #FFD700; border-radius: 50%; box-shadow: 0 0 8px rgba(255,215,0,0.8); }
 /* Prism Lens: iridescent asset cards (expanders) */
 [data-testid="stExpander"] { border: 1px solid rgba(255,215,0,0.35) !important; border-radius: 12px !important; background: linear-gradient(135deg, rgba(255,215,0,0.08) 0%, rgba(180,130,70,0.06) 50%, rgba(255,230,150,0.1) 100%) !important; box-shadow: 0 4px 20px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.06) !important; }
-/* Determinant pop-up: instrumentation flash (wow factor) */
-.awc-determinant-popup { position: relative; background: linear-gradient(135deg, rgba(0,26,51,0.95) 0%, rgba(0,33,71,0.98) 100%); border: 2px solid #FFD700; border-radius: 12px; padding: 1rem 1.25rem; margin: 0.75rem 0; font-weight: 700; color: #FFD700; text-align: center; animation: popup-reveal 0.5s ease-out, instrument-flash 2s ease-in-out 2; }
+/* Determinant pop-up: Sovereign Glass + instrumentation flash */
+.awc-determinant-popup { position: relative; background: linear-gradient(135deg, rgba(0,26,51,0.95) 0%, rgba(0,33,71,0.98) 100%); border: 2px solid #FFD700; border-radius: 12px; padding: 1rem 1.25rem; margin: 0.75rem 0; font-weight: 700; color: #FFD700; text-align: center; animation: popup-reveal 0.5s ease-out, instrument-flash 2s ease-in-out 2; backdrop-filter: blur(8px); box-shadow: inset 0 0 40px rgba(255,215,0,0.08), 0 0 32px rgba(255,215,0,0.2); }
 @keyframes popup-reveal { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 @keyframes instrument-flash { 0%, 100% { box-shadow: 0 0 24px rgba(255,215,0,0.3); } 50% { box-shadow: 0 0 48px rgba(255,215,0,0.8), 0 0 72px rgba(0,255,136,0.4); } }
+@keyframes sovereign-glass-shimmer { 0%, 100% { border-color: #FFD700; box-shadow: inset 0 0 40px rgba(255,215,0,0.08), 0 0 24px rgba(255,215,0,0.25); } 50% { border-color: #E8C547; box-shadow: inset 0 0 50px rgba(255,215,0,0.12), 0 0 40px rgba(255,215,0,0.4); } }
+.awc-sovereign-glass-window { animation: sovereign-glass-shimmer 2.5s ease-in-out infinite; }
+.awc-determinant-wordpop { font-size: 1rem; letter-spacing: 2px; color: #00ff88; margin: 0.5rem 0; text-shadow: 0 0 12px rgba(0,255,136,0.7); }
+.awc-opportunity-badge { font-size: 1.1rem; font-weight: 800; color: #FFD700; margin-bottom: 4px; }
 /* Lab panel + digital counter instrumentation flash */
 .awc-lab-panel { background: rgba(0,26,51,0.9); border: 1px solid rgba(255,215,0,0.4); border-radius: 8px; padding: 1rem; font-family: monospace; animation: panel-flash 3s ease-in-out 1; }
 @keyframes panel-flash { 0% { box-shadow: 0 0 12px rgba(255,215,0,0.2); } 30% { box-shadow: 0 0 32px rgba(255,215,0,0.5), inset 0 0 20px rgba(0,255,136,0.1); } 100% { box-shadow: 0 0 16px rgba(255,215,0,0.3); } }
@@ -246,7 +252,7 @@ with st.expander("**Sovereign Rationale — Big Tech Handshake Manifesto**", exp
 
 # --- Map container: Glassmorphism + Regional Pulse + Eagle's Talon dive ---
 st.write("### The Sovereign Glass — Continental View")
-st.caption("**GCSLC Sovereign Diagnostic** | Eagle's Talon: **5km Vision** — sniffing out opportunities before the high-velocity strike. ($10B+ nodes: golden radar sweep before strike.)")
+st.caption("**GCSLC Sovereign Diagnostic** | **Live Eagle Engine:** Sniffer hovers over map → on node click, high-velocity **Talon Strike** with **play_swat** 180 Hz audio sync. ($10B+ nodes: golden radar sweep.)")
 map_container_class = "awc-map-glass"
 if st.session_state.pulse_triggered and st.session_state.selected_node:
     if st.session_state.selected_node == "nigeria":
@@ -263,21 +269,34 @@ if st.session_state.pulse_triggered and st.session_state.selected_node:
 if st.session_state.selected_node and continental_logic.is_10b_plus_opportunity(st.session_state.selected_node):
     map_container_class += " awc-radar-sweep"
 deck = africa_map.build_africa_deck(selected_node=st.session_state.selected_node, opacity=0.85)
-# Hovering Golden Eagle silhouette (5km Vision): tracks opportunity, dives on strike
-EAGLE_SVG = '''<svg class="awc-eagle-talon" width="56" height="40" viewBox="0 0 56 40" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 0 8px rgba(255,215,0,0.6));">
-  <path d="M28 4 L32 12 L28 10 L24 12 Z" fill="#FFD700" stroke="#B8860B" stroke-width="0.6"/>
-  <path d="M28 36 L24 28 L28 30 L32 28 Z" fill="#FFD700" stroke="#B8860B" stroke-width="0.6"/>
-  <path d="M8 20 L18 16 L16 20 L18 24 Z" fill="#FFD700" stroke="#B8860B" stroke-width="0.6"/>
-  <path d="M48 20 L38 24 L40 20 L38 16 Z" fill="#FFD700" stroke="#B8860B" stroke-width="0.6"/>
-  <ellipse cx="28" cy="20" rx="10" ry="8" fill="#FFD700" stroke="#B8860B" stroke-width="0.8"/>
-  <path d="M22 14 Q28 10 34 14" stroke="#B8860B" stroke-width="0.8" fill="none"/>
-  <circle cx="25" cy="18" r="2" fill="#1a1a1a"/><circle cx="31" cy="18" r="2" fill="#1a1a1a"/>
-  <path d="M26 22 L28 28 L30 22" stroke="#B8860B" stroke-width="0.5" fill="none"/>
+# Live Eagle Engine: high-fidelity Sniffer (hover) → Talon Strike (on node click, 180 Hz play_swat)
+EAGLE_SNIFFER_SVG = '''<svg class="awc-eagle-sniffer" width="72" height="52" viewBox="0 0 72 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M36 4 L40 14 L36 12 L32 14 Z" fill="#FFD700" stroke="#B8860B" stroke-width="0.8"/>
+  <path d="M36 48 L32 36 L36 38 L40 36 Z" fill="#FFD700" stroke="#B8860B" stroke-width="0.8"/>
+  <path d="M12 26 L26 20 L22 26 L26 32 Z" fill="#FFD700" stroke="#B8860B" stroke-width="0.8"/>
+  <path d="M60 26 L46 32 L50 26 L46 20 Z" fill="#FFD700" stroke="#B8860B" stroke-width="0.8"/>
+  <ellipse cx="36" cy="26" rx="14" ry="10" fill="#FFD700" stroke="#B8860B" stroke-width="1"/>
+  <path d="M28 18 Q36 12 44 18" stroke="#B8860B" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <path d="M30 22 Q36 17 42 22" stroke="#C9A227" stroke-width="0.7" fill="none" opacity="0.9"/>
+  <circle cx="32" cy="22" r="2.5" fill="#1a1a1a"/><circle cx="40" cy="22" r="2.5" fill="#1a1a1a"/>
+  <path d="M34 28 L36 36 L38 28" stroke="#B8860B" stroke-width="0.6" fill="none"/>
 </svg>'''
-show_eagle = st.session_state.pulse_triggered and st.session_state.selected_node
+EAGLE_TALON_SVG = '''<svg class="awc-eagle-talon" width="72" height="52" viewBox="0 0 72 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M36 4 L40 14 L36 12 L32 14 Z" fill="#FFD700" stroke="#B8860B" stroke-width="0.8"/>
+  <path d="M36 48 L32 36 L36 38 L40 36 Z" fill="#FFD700" stroke="#B8860B" stroke-width="0.8"/>
+  <path d="M12 26 L26 20 L22 26 L26 32 Z" fill="#FFD700" stroke="#B8860B" stroke-width="0.8"/>
+  <path d="M60 26 L46 32 L50 26 L46 20 Z" fill="#FFD700" stroke="#B8860B" stroke-width="0.8"/>
+  <ellipse cx="36" cy="26" rx="14" ry="10" fill="#FFD700" stroke="#B8860B" stroke-width="1"/>
+  <path d="M28 18 Q36 12 44 18" stroke="#B8860B" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <circle cx="32" cy="22" r="2.5" fill="#1a1a1a"/><circle cx="40" cy="22" r="2.5" fill="#1a1a1a"/>
+  <path d="M34 28 L36 36 L38 28" stroke="#B8860B" stroke-width="0.6" fill="none"/>
+</svg>'''
+show_talon_strike = st.session_state.pulse_triggered and st.session_state.selected_node
+show_sniffer_hover = deck and not show_talon_strike
+eagle_html = EAGLE_TALON_SVG if show_talon_strike else (EAGLE_SNIFFER_SVG if show_sniffer_hover else "")
 if deck:
     st.markdown(
-        f'<div class="{map_container_class}" style="padding: 8px; position: relative;">' + (EAGLE_SVG if show_eagle else ""),
+        f'<div class="{map_container_class}" style="padding: 8px; position: relative;">{eagle_html}',
         unsafe_allow_html=True,
     )
     st.pydeck_chart(deck, use_container_width=True)
@@ -287,19 +306,23 @@ else:
 if st.session_state.pulse_triggered and st.session_state.selected_node:
     st.session_state.pulse_triggered = False
 
-# --- Opportunity Sniffer: Determinant word pop-up when talon strikes a node ---
+# --- Scintillating Data Reveal: Sovereign Glass window + 8R Determinant Word-Pop ---
 if st.session_state.selected_node:
     reveal_text = continental_logic.get_determinant_reveal(st.session_state.selected_node)
     node_name = africa_map.CONTINENTAL_NODES.get(st.session_state.selected_node, {}).get("name", st.session_state.selected_node)
+    gap = continental_logic.get_market_gap_for_node(st.session_state.selected_node)
+    gap_b = gap["gap_b_usd"]
     st.markdown(
-        f'<div class="awc-determinant-popup">'
+        f'<div class="awc-determinant-popup awc-sovereign-glass-window">'
+        f'<p class="awc-opportunity-badge">Real-time market gaps: <span class="awc-digital-counter">${gap_b:.0f}B</span> Opportunity identified</p>'
+        f'<p class="awc-determinant-wordpop">D1: Refine | D2: Reset | D3: Research</p>'
         f'<span style="font-size: 0.85rem; opacity: 0.9;">{node_name} — 8R Scientific Validation (Sovereign)</span><br/>'
         f'{reveal_text}'
         f'</div>',
         unsafe_allow_html=True,
     )
-    # --- Market Gap Analysis (Sovereign Glass) + Scientific Reveal + Final Handshake ---
-    gap = continental_logic.get_market_gap_for_node(st.session_state.selected_node)
+    # --- Market Gap Analysis (Sovereign Glass) + Scientific Reveal + Final Handshake (gap already from reveal) ---
+    gap = continental_logic.get_market_gap_for_node(st.session_state.selected_node)  # reuse for lab panels
     st.write("**Market Gap Analysis** — Global Opportunity (Demand vs Supply)")
     st.markdown(
         f'<p style="color: rgba(212,175,55,0.95); font-size: 0.95rem; margin-bottom: 8px;">'
@@ -328,7 +351,7 @@ if st.session_state.selected_node:
             f'</div>',
             unsafe_allow_html=True,
         )
-    # Eagle's Final Handshake: render after Talon Strike (play_swat) — feather-flap, head-turn, eye-contact JS, CTA
+    # Eagle's Final Handshake: after Talon Strike — eagle locks gaze (direct eye-contact), CTA
     st.components.v1.html("""
     <div id="awc-eagle-gap-box" class="awc-lab-panel" style="margin-top: 12px; text-align: center; padding: 16px;">
       <style>
@@ -338,7 +361,9 @@ if st.session_state.selected_node:
         .awc-eagle-wrap svg { display: block; }
         .awc-eagle-wrap .eagle-head { transform-origin: 50% 35%; animation: head-turn 2.5s ease-in-out 1; }
         .awc-eagle-pupil { transition: transform 0.15s ease-out; }
-        .awc-cta-line { font-weight: 900; font-size: 1.15rem; color: #FFD700; margin-top: 12px; letter-spacing: 1px; text-shadow: 0 0 20px rgba(255,215,0,0.8); }
+        .awc-directive-label { font-size: 0.75rem; color: rgba(212,175,55,0.9); letter-spacing: 1.5px; margin-top: 8px; text-transform: uppercase; }
+        .awc-cta-line { font-weight: 900; font-size: 1.25rem; color: #FFD700; margin-top: 10px; letter-spacing: 2px; text-shadow: 0 0 24px rgba(255,215,0,0.9); animation: cta-pulse 2s ease-in-out infinite; }
+        @keyframes cta-pulse { 0%, 100% { opacity: 1; text-shadow: 0 0 24px rgba(255,215,0,0.9); } 50% { opacity: 0.95; text-shadow: 0 0 32px rgba(255,215,0,1); } }
       </style>
       <div class="awc-eagle-wrap">
         <svg class="eagle-head" id="awc-eagle-svg" width="80" height="56" viewBox="0 0 80 56" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -352,6 +377,7 @@ if st.session_state.selected_node:
           <path d="M40 40 L37 50 L40 47 L43 50 Z" fill="#FFD700" stroke="#B8860B" stroke-width="0.8"/>
         </svg>
       </div>
+      <p class="awc-directive-label">Direct eye-contact directive — eagle locked on you</p>
       <p class="awc-cta-line">GCSLC SECURED THE ANCHOR. GET TO WORK.</p>
     </div>
     <script>
