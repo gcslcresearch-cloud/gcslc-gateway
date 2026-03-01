@@ -341,6 +341,34 @@ SANTIAGO_COMPLIANCE = (
     "the $170.85B valuation anchor is the central metric for sovereign validation."
 )
 
+# --- Foundational Intelligence Layer (sidebar) ---
+INVESTOR_MANIFESTO = (
+    "**Investor Manifesto**  \n\n"
+    "GCSLC positions sovereign asset corridors as the anchor for long-term value. "
+    "The 8R Paradigm (D1 Refine, D2 Reset, D3 Research) transforms raw minerals, gems, and energy "
+    "into digital SSMVs with 95% sovereign retention. The $170.85B valuation anchor is the central "
+    "empirical metric. Invest in the node that secures the anchor."
+)
+DOCTOR_VS_PHARMACIST = (
+    "**Doctor vs. Pharmacist**  \n\n"
+    "The Doctor diagnoses and prescribes the *structure* (what to refine, reset, research). "
+    "The Pharmacist dispenses the *instrument* (how it is executed). GCSLC is the Doctor: "
+    "we define the 8R determinants and the sovereign corridors. Execution partners align "
+    "to the prescription. Physical asset grounding is the diagnosis; digital SSMVs are the dispensation."
+)
+STRATEGIC_DOCTRINE_CEO = (
+    "**Strategic Doctrine (CEO Brief)**  \n\n"
+    "Current AI and tech models are *moribund* without physical asset grounding. "
+    "Data and algorithms alone cannot secure supply chains, rare earths, or energy transition. "
+    "GCSLC sovereign corridors (Minerals, Gems, Energy) provide the physical anchor; "
+    "the 8R Paradigm and $170.85B valuation are the empirical bridge. "
+    "When a CEO (e.g. Nvidia, Apple) interacts with this node, the handshake is clear: "
+    "ground your stack in sovereign assets or remain structurally exposed."
+)
+
+# Scientific reveal: Nigeria Minerals, Gems, Energy — canonical Demand/Supply for display
+NIGERIA_SCIENTIFIC_REVEAL = {"demand_pct": 94, "supply_pct": 22, "asset": "Minerals, Gems, and Energy", "valuation_anchor_b": 170.85}
+
 
 # Backwards compatibility: expose asset dict under old name for any existing callers
 NIGERIA_RAW_ASSETS = AWC_NIGERIA_ASSETS

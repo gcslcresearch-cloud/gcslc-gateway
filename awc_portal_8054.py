@@ -206,6 +206,19 @@ with st.sidebar:
         st.rerun()
     st.caption("Eagle's Talon: any node → map centers on country + play_swat (180 Hz → 40 Hz) on strike.")
     st.markdown("---")
+    # Foundational Intelligence Layer: Investor Manifesto + Doctor vs. Pharmacist (hardcoded)
+    st.write("### Foundational Intelligence")
+    with st.expander("**Investor Manifesto**", expanded=False):
+        st.markdown(continental_logic.INVESTOR_MANIFESTO)
+    with st.expander("**Doctor vs. Pharmacist**", expanded=False):
+        st.markdown(continental_logic.DOCTOR_VS_PHARMACIST)
+    # Strategic Doctrine: show when CEO interacts (i.e. when $10B+ node selected — eagle has struck)
+    _ceo_interaction = bool(st.session_state.selected_node and continental_logic.is_10b_plus_opportunity(st.session_state.selected_node))
+    with st.expander("**Strategic Doctrine (CEO Brief)**", expanded=_ceo_interaction):
+        st.markdown(continental_logic.STRATEGIC_DOCTRINE_CEO)
+        if _ceo_interaction:
+            st.caption("AI models are moribund without physical asset grounding. This node secures the anchor.")
+    st.markdown("---")
     st.write("### D3-Alpha Cross-Border (8R Paradigm)")
     st.markdown(
         "**Nigeria SSMVs ↔ Ghana Gold**  \n"
@@ -250,11 +263,16 @@ if st.session_state.pulse_triggered and st.session_state.selected_node:
 if st.session_state.selected_node and continental_logic.is_10b_plus_opportunity(st.session_state.selected_node):
     map_container_class += " awc-radar-sweep"
 deck = africa_map.build_africa_deck(selected_node=st.session_state.selected_node, opacity=0.85)
-EAGLE_SVG = '''<svg class="awc-eagle-talon" width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M12 2L14 8L12 7L10 8L12 2Z" fill="#FFD700"/><path d="M12 22L10 16L12 17L14 16L12 22Z" fill="#FFD700"/>
-<path d="M2 12L8 10L7 12L8 14L2 12Z" fill="#FFD700"/><path d="M22 12L16 14L17 12L16 10L22 12Z" fill="#FFD700"/>
-<circle cx="12" cy="12" r="3" stroke="#FFD700" stroke-width="1.5" fill="none"/>
-<path d="M12 9L12 15M9 12L15 12" stroke="#FFD700" stroke-width="1"/>
+# Hovering Golden Eagle silhouette (5km Vision): tracks opportunity, dives on strike
+EAGLE_SVG = '''<svg class="awc-eagle-talon" width="56" height="40" viewBox="0 0 56 40" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 0 8px rgba(255,215,0,0.6));">
+  <path d="M28 4 L32 12 L28 10 L24 12 Z" fill="#FFD700" stroke="#B8860B" stroke-width="0.6"/>
+  <path d="M28 36 L24 28 L28 30 L32 28 Z" fill="#FFD700" stroke="#B8860B" stroke-width="0.6"/>
+  <path d="M8 20 L18 16 L16 20 L18 24 Z" fill="#FFD700" stroke="#B8860B" stroke-width="0.6"/>
+  <path d="M48 20 L38 24 L40 20 L38 16 Z" fill="#FFD700" stroke="#B8860B" stroke-width="0.6"/>
+  <ellipse cx="28" cy="20" rx="10" ry="8" fill="#FFD700" stroke="#B8860B" stroke-width="0.8"/>
+  <path d="M22 14 Q28 10 34 14" stroke="#B8860B" stroke-width="0.8" fill="none"/>
+  <circle cx="25" cy="18" r="2" fill="#1a1a1a"/><circle cx="31" cy="18" r="2" fill="#1a1a1a"/>
+  <path d="M26 22 L28 28 L30 22" stroke="#B8860B" stroke-width="0.5" fill="none"/>
 </svg>'''
 show_eagle = st.session_state.pulse_triggered and st.session_state.selected_node
 if deck:
@@ -280,9 +298,15 @@ if st.session_state.selected_node:
         f'</div>',
         unsafe_allow_html=True,
     )
-    # --- Market Gap Analysis (Sovereign Glass laboratory aesthetics) + Final Handshake ---
+    # --- Market Gap Analysis (Sovereign Glass) + Scientific Reveal + Final Handshake ---
     gap = continental_logic.get_market_gap_for_node(st.session_state.selected_node)
     st.write("**Market Gap Analysis** — Global Opportunity (Demand vs Supply)")
+    st.markdown(
+        f'<p style="color: rgba(212,175,55,0.95); font-size: 0.95rem; margin-bottom: 8px;">'
+        f'<strong>Scientific Reveal:</strong> Demand: <span class="awc-digital-counter">{gap["demand_pct"]}%</span> vs Supply: <span class="awc-digital-counter">{gap["supply_pct"]}%</span> '
+        f'— <strong>{gap["asset"]}</strong>. Anchored Valuation: <strong>$170.85B</strong> Central Empirical Metric.</p>',
+        unsafe_allow_html=True,
+    )
     lab1, lab2 = st.columns(2)
     with lab1:
         st.markdown(
