@@ -1,10 +1,11 @@
-// AWC Generative Eagle Engine (D7 Re-engineered)
-// Galadiman Ruwa Center (GCSLC) — 8R Stealth Paradigm
-// Use with: @react-three/fiber, @react-three/drei, three
+// AWC Generative Eagle Engine (D7 Re-engineered) — Apex Engine v4.0
+// Galadiman Ruwa Center (GCSLC) — 8R Stealth Paradigm | Sovereign UI Manifesto
+// Use with: @react-three/fiber, @react-three/drei, three, framer-motion
 
 import { useRef, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useGLTF, Float, Instances, Instance } from '@react-three/drei';
+import { motion } from 'framer-motion';
 
 function ApexPredator({ position = [0, 0, 0], isStriking = false, scene = null }) {
   const eagleRef = useRef(null);
@@ -60,6 +61,9 @@ function EagleSwarm({ count = 50 }) {
   );
 }
 
+// Sovereign UI: framer-motion container for strike/reveal transitions
+const SovereignCanvasWrapper = motion.div;
+
 export function AWCGenerativeEagleEngine({
   isStriking = false,
   showSwarm = false,
@@ -68,19 +72,26 @@ export function AWCGenerativeEagleEngine({
   useGltf = true,
 }) {
   return (
-    <Canvas camera={{ position: [0, 5, 10], fov: 50 }} dpr={[1, 2]}>
-      <ambientLight intensity={0.6} />
-      <directionalLight position={[10, 10, 5]} intensity={1} />
-      <pointLight position={[-5, 5, 5]} color="#FFD700" intensity={0.5} />
-      <Suspense fallback={null}>
-        {useGltf ? (
-          <EagleWithModel position={[0, 2, 0]} isStriking={isStriking} url={gltfUrl} />
-        ) : (
-          <ApexPredator position={[0, 2, 0]} isStriking={isStriking} />
-        )}
-        {showSwarm && <EagleSwarm count={swarmCount} />}
-      </Suspense>
-    </Canvas>
+    <SovereignCanvasWrapper
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.4, ease: 'easeOut' }}
+      style={{ width: '100%', height: '100%', minHeight: 320 }}
+    >
+      <Canvas camera={{ position: [0, 5, 10], fov: 50 }} dpr={[1, 2]}>
+        <ambientLight intensity={0.6} />
+        <directionalLight position={[10, 10, 5]} intensity={1} />
+        <pointLight position={[-5, 5, 5]} color="#FFD700" intensity={0.5} />
+        <Suspense fallback={null}>
+          {useGltf ? (
+            <EagleWithModel position={[0, 2, 0]} isStriking={isStriking} url={gltfUrl} />
+          ) : (
+            <ApexPredator position={[0, 2, 0]} isStriking={isStriking} />
+          )}
+          {showSwarm && <EagleSwarm count={swarmCount} />}
+        </Suspense>
+      </Canvas>
+    </SovereignCanvasWrapper>
   );
 }
 
