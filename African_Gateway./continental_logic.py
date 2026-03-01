@@ -220,5 +220,56 @@ def get_convergence_summary() -> Dict[str, Any]:
     }
 
 
+# --- Triple-D3: CEO Audit ---
+# D3-Alpha (Geopolitical): Nigeria Rare Earths → Big Tech supply chains
+GLOBAL_TECH_ALIGNMENT: List[Dict[str, Any]] = [
+    {"nigeria_asset": "Bauchi Rare Earth Belt", "elements": "Nb, Ta, REE", "big_tech": "Apple", "use_case": "iPhone / Mac power modules, sensors"},
+    {"nigeria_asset": "Plateau Lithium-REE", "elements": "Li, REE, Sn", "big_tech": "Apple", "use_case": "Battery supply chain"},
+    {"nigeria_asset": "Nasarawa Coltan-REE", "elements": "Nb, Ta, REE", "big_tech": "Alphabet", "use_case": "Data center / chip packaging"},
+    {"nigeria_asset": "Kogi Rare Earth Corridor", "elements": "REE, Y, Sc", "big_tech": "Alphabet", "use_case": "EV / clean tech minerals"},
+]
+
+# D3-Beta (Temporal): Wealth Retention Timeline 2026–2050 ($170.85B unlock cycle)
+WEALTH_UNLOCK_TOTAL_B = 170.85
+TIMELINE_START_YEAR = 2026
+TIMELINE_END_YEAR = 2050
+
+
+def get_wealth_retention_timeline(year: int) -> float:
+    """D3-Beta: Unlock value (B USD) in a given year. Equal annual unlock over 2026–2050."""
+    if year < TIMELINE_START_YEAR or year > TIMELINE_END_YEAR:
+        return 0.0
+    span = TIMELINE_END_YEAR - TIMELINE_START_YEAR + 1
+    return round(WEALTH_UNLOCK_TOTAL_B / span, 2)
+
+
+def get_timeline_cumulative(year: int) -> float:
+    """Cumulative unlock by end of given year."""
+    return sum(get_wealth_retention_timeline(y) for y in range(TIMELINE_START_YEAR, year + 1))
+
+
+# D3-Gamma (Security): 8R Paradigm vs market volatility — risk defense strength (0–100)
+RISK_DEFENSE_HEATMAP: List[Dict[str, Any]] = [
+    {"determinant": "D1: Refine", "volatility_risk": "Commodity price", "defense_score": 88},
+    {"determinant": "D2: Reset", "volatility_risk": "FX / sovereign default", "defense_score": 92},
+    {"determinant": "D3: Research", "volatility_risk": "Tech supply chain", "defense_score": 85},
+    {"determinant": "D4: Restructure", "volatility_risk": "Regulatory", "defense_score": 78},
+    {"determinant": "D5: Resuscitate", "volatility_risk": "Asset stranding", "defense_score": 90},
+    {"determinant": "D6: Revitalize", "volatility_risk": "Demand shock", "defense_score": 82},
+    {"determinant": "D7: Re-engineer", "volatility_risk": "Operational", "defense_score": 86},
+    {"determinant": "D8: Retain", "volatility_risk": "Capital flight", "defense_score": 95},
+]
+
+
+def get_global_tech_alignment() -> List[Dict[str, Any]]:
+    """D3-Alpha (Geopolitical): Nigeria Rare Earths → Apple/Alphabet supply chains."""
+    return list(GLOBAL_TECH_ALIGNMENT)
+
+
+def get_risk_defense_heatmap() -> List[Dict[str, Any]]:
+    """D3-Gamma (Security): Risk Defense Heatmap — 8R protection vs market volatility."""
+    return list(RISK_DEFENSE_HEATMAP)
+
+
 # Backwards compatibility: expose asset dict under old name for any existing callers
 NIGERIA_RAW_ASSETS = AWC_NIGERIA_ASSETS

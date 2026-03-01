@@ -80,7 +80,23 @@ st.markdown("""
 h1, h2, h3, p, span, label, .stMarkdown { color: #D4AF37 !important; }
 [data-testid="stMetricValue"], [data-testid="stMetricLabel"] { color: #E8C547 !important; }
 section[data-testid="stSidebar"] { background: linear-gradient(180deg, #001a33 0%, #002244 100%) !important; border-right: 2px solid #D4AF37; }
-/* Velocity header shimmer */
+/* Mission Handshake: Impact Header & Sub-header */
+.awc-impact-header { font-weight: 800; font-size: 1.35rem; text-align: center; line-height: 1.35; letter-spacing: 0.5px; color: #FFD700 !important; text-transform: uppercase; margin-bottom: 4px; }
+.awc-sub-header { text-align: center; color: rgba(212,175,55,0.95); font-size: 0.95rem; letter-spacing: 2px; margin-top: 2px; }
+/* 3D "8" zoom on entry */
+@keyframes eight-zoom { 0% { transform: scale(0.3) translateZ(-80px); opacity: 0; } 60% { transform: scale(1.15) translateZ(0); opacity: 1; } 100% { transform: scale(1) translateZ(0); opacity: 1; } }
+.awc-eight { font-size: 4rem; font-weight: 900; color: #FFD700; animation: eight-zoom 1.2s ease-out 1; display: inline-block; text-shadow: 0 0 30px rgba(255,215,0,0.6); }
+/* Radar Blink (0.8s) on Stealth Paradigm */
+@keyframes radar-blink { 0%, 100% { opacity: 1; text-shadow: 0 0 12px #FFD700; } 50% { opacity: 0.75; text-shadow: 0 0 24px #FFD700, 0 0 36px rgba(255,215,0,0.5); } }
+.awc-stealth-text { animation: radar-blink 0.8s ease-in-out infinite; }
+/* Prism Lens (iridescent, non-glass) for asset cards */
+.awc-prism-card { background: linear-gradient(135deg, rgba(255,215,0,0.08) 0%, rgba(180,130,70,0.06) 25%, rgba(255,230,150,0.1) 50%, rgba(212,175,55,0.07) 75%, rgba(255,215,0,0.09) 100%); border: 1px solid rgba(255,215,0,0.35); border-radius: 12px; padding: 1rem; margin: 0.5rem 0; box-shadow: 0 4px 20px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.08); }
+/* Vortex particle container (swirling golden vortex) */
+@keyframes vortex-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes vortex-pull { 0% { transform: scale(1) translate(0,0); opacity: 0.9; } 100% { transform: scale(0.3) translate(0,0); opacity: 0.4; } }
+#awc-vortex-wrap { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
+.awc-vortex-dot { position: absolute; width: 4px; height: 4px; background: #FFD700; border-radius: 50%; animation: vortex-pull 4s ease-in infinite, awc-float 3s ease-in-out infinite; }
+/* Velocity header shimmer (legacy) */
 .awc-title { font-weight: 800; font-size: 1.9rem; text-align: center; background: linear-gradient(90deg, #D4AF37, #FFE55C, #D4AF37); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent !important; animation: title-shimmer 3s linear infinite; }
 @keyframes title-shimmer { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
 .awc-sub { text-align: center; color: rgba(212,175,55,0.9); font-size: 0.95rem; letter-spacing: 2px; margin-top: -8px; }
@@ -90,17 +106,35 @@ section[data-testid="stSidebar"] { background: linear-gradient(180deg, #001a33 0
 /* Gold Shimmer particles */
 #awc-shimmer-wrap { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
 .awc-particle { position: absolute; width: 6px; height: 6px; background: radial-gradient(circle, #FFD700 0%, #D4AF37 60%, transparent 100%); border-radius: 50%; opacity: 0.9; animation: awc-float 5s ease-in-out infinite; }
+/* Convergence: vortex dots */
+.awc-vortex-dot { position: absolute; width: 4px; height: 4px; background: #FFD700; border-radius: 50%; box-shadow: 0 0 8px rgba(255,215,0,0.8); }
+/* Prism Lens: iridescent asset cards (expanders) */
+[data-testid="stExpander"] { border: 1px solid rgba(255,215,0,0.35) !important; border-radius: 12px !important; background: linear-gradient(135deg, rgba(255,215,0,0.08) 0%, rgba(180,130,70,0.06) 50%, rgba(255,230,150,0.1) 100%) !important; box-shadow: 0 4px 20px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.06) !important; }
 </style>
 <div id="awc-shimmer-wrap">""" + particles_html + """</div>
 """, unsafe_allow_html=True)
 
-# --- Header: Global Title & Branding ---
-st.markdown('<p class="awc-title">Galadiman Ruwa Center (GCSLC)</p>', unsafe_allow_html=True)
-st.markdown('<p class="awc-sub">LTD/GTE</p>', unsafe_allow_html=True)
-st.markdown('<p class="awc-sub" style="margin-top: 4px;">The Sovereign Glass — 8R Stealth Paradigm | Dr. Sa\'ad Jaafaru (Galadiman Ruwan Zazzau)</p>', unsafe_allow_html=True)
+# --- Mission Handshake: Impact Header & Sub-header ---
+st.markdown(
+    '<p class="awc-impact-header">ARCHITECTING NATIONAL ASSET REVITALIZATION: FROM NIGERIA & AFRICA TO THE GLOBAL SOUTH</p>',
+    unsafe_allow_html=True,
+)
+st.markdown(
+    '<p class="awc-sub-header">Galadiman Ruwa Center (GCSLC) LTD/GTE | Chairman & Founder: Dr. Sa\'ad Jaafaru</p>',
+    unsafe_allow_html=True,
+)
+# --- Advanced Animation: "8" zoom + Radar Blink "Stealth Paradigm" + Convergence ---
+st.markdown(
+    '<div style="text-align: center; margin: 1rem 0;">'
+    '<span class="awc-eight">8</span> '
+    '<span class="awc-stealth-text" style="font-size: 1.25rem; font-weight: 700; color: #FFD700;">R Stealth Paradigm</span> '
+    '<span style="color: rgba(212,175,55,0.9); font-size: 1rem;">Convergence</span>'
+    '</div>',
+    unsafe_allow_html=True,
+)
 st.markdown("---")
 
-# --- Sidebar: Nigeria selection triggers Sovereign Pulse ---
+# --- Sidebar: Eagle's Talon — Select Nigeria (Green→White→Green→Gold + play_swat) ---
 with st.sidebar:
     st.write("### Sovereign Nodes")
     if st.button("🇳🇬 Select Nigeria", key="btn_nigeria", type="primary"):
@@ -112,7 +146,7 @@ with st.sidebar:
         st.session_state.nigeria_selected = False
         st.session_state.pulse_triggered = False
         st.rerun()
-    st.caption("Select Nigeria to trigger Sovereign Pulse (Green-White-Green → GCSLC Gold).")
+    st.caption("Eagle's Talon: Select Nigeria → Green → White → Green → GCSLC Gold Shimmer + play_swat (180 Hz → 40 Hz) on build success.")
 
 # --- Map container: Glassmorphism + Sovereign Pulse when Nigeria selected ---
 st.write("### The Sovereign Glass — Continental View")
@@ -132,7 +166,37 @@ if st.session_state.pulse_triggered and st.session_state.nigeria_selected:
 
 st.caption("Africa map at 85% transparency with glitter layer. Nigeria highlighted under 8R Sovereign Pulse.")
 
-# --- Build success: system-level audio trigger (simulated swat sound) ---
+# --- Triple-D3 Research Reinforcement (CEO Audit) ---
+st.markdown("---")
+st.write("### Triple-D3 Research Reinforcement (The CEO Audit)")
+d3a, d3b, d3c = st.tabs(["D3-Alpha (Geopolitical)", "D3-Beta (Temporal)", "D3-Gamma (Security)"])
+with d3a:
+    st.write("**Global Tech Alignment** — Nigeria Rare Earths → Big Tech supply chains")
+    tech_align = continental_logic.get_global_tech_alignment()
+    st.dataframe(
+        [{"Nigeria Asset": t["nigeria_asset"], "Elements": t["elements"], "Big Tech": t["big_tech"], "Use Case": t["use_case"]} for t in tech_align],
+        use_container_width=True,
+        hide_index=True,
+    )
+with d3b:
+    st.write("**Wealth Retention Timeline** — $170.85B unlock cycle (2026–2050)")
+    year_beta = st.slider("Year", 2026, 2050, 2035, key="timeline_year")
+    yearly_b = continental_logic.get_wealth_retention_timeline(year_beta)
+    cumulative_b = continental_logic.get_timeline_cumulative(year_beta)
+    st.metric("Unlock in selected year ($B)", f"${yearly_b:.2f}B")
+    st.metric("Cumulative unlock by end of year ($B)", f"${cumulative_b:.2f}B")
+    st.caption(f"Total cycle: ${continental_logic.WEALTH_UNLOCK_TOTAL_B}B over 2026–2050.")
+with d3c:
+    st.write("**Risk Defense Heatmap** — 8R Paradigm protection vs market volatility")
+    heatmap = continental_logic.get_risk_defense_heatmap()
+    st.dataframe(
+        [{"Determinant": r["determinant"], "Volatility Risk": r["volatility_risk"], "Defense Score": r["defense_score"]} for r in heatmap],
+        use_container_width=True,
+        hide_index=True,
+    )
+    st.caption("Defense Score: 0–100. Higher = stronger 8R protection against this risk.")
+
+# --- Build success: Eagle's Talon audio (play_swat 180 Hz → 40 Hz) ---
 if st.session_state.get("play_swat"):
     st.session_state.play_swat = False
     st.components.v1.html("""
@@ -166,7 +230,7 @@ cols = st.columns(4)
 for i, d in enumerate(continental_logic.DETERMINANTS_8R[:4]):
     cols[i % 4].metric(d.split(": ")[0], d.split(": ")[1] if ": " in d else d)
 
-st.write("#### Digital SSMVs (Special Strategic Mission Vehicles)")
+st.write("#### Digital SSMVs (Special Strategic Mission Vehicles) — *Prism Lens asset cards; mineral/gem data converges into unified SSMV nodes*")
 for s in continental_logic.get_nigeria_ssmvs():
     with st.expander(f"**{s.code}** — {s.asset_source} ({s.asset_category})"):
         c1, c2, c3 = st.columns(3)
@@ -181,4 +245,4 @@ total = summary["total_retained_value_usd"]
 st.metric("Total retained value (all Nigeria SSMVs)", f"${total/1e9:.2f}B USD")
 
 # --- Footer: Copyright ---
-st.markdown('<p class="footer-awc">© 2026 Galadiman Ruwa Center (GCSLC) LTD/GTE.</p>', unsafe_allow_html=True)
+st.markdown('<p class="footer-awc">© 2026 GCSLC. All Rights Reserved.</p>', unsafe_allow_html=True)
