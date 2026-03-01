@@ -114,6 +114,43 @@ st.markdown("""
     100% { background-position: 300% 50%; }
 }
 
+/* D1: REFINE - Sovereign branding animation */
+@keyframes gold-shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+}
+.gcslc-header {
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 2.2rem;
+    text-align: center;
+    background: linear-gradient(90deg, #D4AF37, #FFFFFF, #D4AF37, #E8C547, #D4AF37);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gold-shimmer 5s linear infinite;
+    margin-bottom: 0px;
+}
+.proprietor-tag {
+    font-family: 'serif';
+    font-style: italic;
+    text-align: center;
+    color: #D4AF37;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    margin-top: -10px;
+}
+.universal-message {
+    background: rgba(212, 175, 55, 0.1);
+    border-left: 5px solid #D4AF37;
+    padding: 20px;
+    border-radius: 10px;
+    color: #E0E0E0;
+    font-style: italic;
+    text-align: center;
+    margin: 20px 0;
+}
+
 /* GCSLC Gold Seal: linear-gradient shimmer (gradient ring + gold glow) */
 [data-testid="stLogo"] {
     position: relative;
@@ -163,8 +200,26 @@ st.markdown("""
 # Global Branding: NWC/C&D header + seal
 if os.path.isfile(SEAL_PATH):
     st.logo(SEAL_PATH)
-st.markdown(f'<p class="brand-8r"><strong>{NWC_HEADER}</strong></p>', unsafe_allow_html=True)
-st.caption(f"**{NWC_SUBTITLE}**")
+
+# D1: REFINE - Sovereign branding animation
+st.markdown("""
+<div class="gcslc-header">
+    Galadiman Ruwa Center for Strategic Leadership and Communication
+</div>
+<div class="proprietor-tag">
+    (Proprietors of) 8R Stealth Paradigm Convergence and its Determinants
+</div>
+
+<div class="universal-message">
+    "The 8R Determinants are universal. Whether applied to national assets or personal growth, 
+    they provide the scientific blueprint to Refine, Reset, and Revitalize every facet of human endeavor. 
+    Applying 8R to everything we do is the key to scientifically improving our lives."
+</div>
+
+<h3 style='text-align: center; color: white;'>
+    We welcome you to our National Wealth Cloud for Nigeria (NWC/C&D)
+</h3>
+""", unsafe_allow_html=True)
 
 # ——— 37-Node Geopolitical Grid (36 States + FCT) ———
 st.write("### 🗺️ 37-Node Geopolitical Grid")
