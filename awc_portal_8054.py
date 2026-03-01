@@ -214,9 +214,16 @@ with st.sidebar:
     )
     st.markdown(
         "**Nigeria SSMVs ↔ Dubai logistical hubs**  \n"
-        "Research (D3): Dubai hubs align with Nigeria Rare Earth → Big Tech supply chains.  \n"
+        "Research (D3): Dubai hubs align with Nigeria Rare Earth supply chains.  \n"
         "Retain (D8): Sovereign retention flows through UAE strategic partner nodes."
     )
+    st.markdown("---")
+    # Silicon Valley Strategic Intent — auto-open when $10B+ gap revealed
+    _expanded_silicon = bool(st.session_state.selected_node and continental_logic.is_10b_plus_opportunity(st.session_state.selected_node))
+    with st.expander("**Silicon Valley Strategic Intent**", expanded=_expanded_silicon):
+        st.markdown(continental_logic.ENERGY_MINERAL_SHIELD)
+        st.markdown("---")
+        st.markdown(continental_logic.SANTIAGO_COMPLIANCE)
     st.markdown("---")
 
 # --- Sovereign Rationale: Big Tech Handshake Manifesto (linked to Natural Gas, Gold, Rare Earth) ---
@@ -268,7 +275,7 @@ if st.session_state.selected_node:
     node_name = africa_map.CONTINENTAL_NODES.get(st.session_state.selected_node, {}).get("name", st.session_state.selected_node)
     st.markdown(
         f'<div class="awc-determinant-popup">'
-        f'<span style="font-size: 0.85rem; opacity: 0.9;">{node_name} — 8R Scientific Analysis</span><br/>'
+        f'<span style="font-size: 0.85rem; opacity: 0.9;">{node_name} — 8R Scientific Validation (Sovereign)</span><br/>'
         f'{reveal_text}'
         f'</div>',
         unsafe_allow_html=True,
@@ -293,26 +300,60 @@ if st.session_state.selected_node:
             f'<div class="awc-oscilloscope"></div>'
             f'<p style="color: #D4AF37; margin-top: 8px;">Gap: <span class="awc-digital-counter">${gap["gap_b_usd"]:.1f}B</span></p>'
             f'<p style="color: #00ff88;">Valuation anchor: <span class="awc-digital-counter">$170.85B</span></p>'
-            f'<p style="color: rgba(212,175,55,0.9); font-size: 0.85rem;">8R Scientific Analysis</p>'
+            f'<p style="color: rgba(212,175,55,0.9); font-size: 0.85rem;">Central empirical metric — 8R Sovereign</p>'
             f'</div>',
             unsafe_allow_html=True,
         )
-    # Eagle's Final Handshake: golden eagle in Gap box — flap, head turn, eye contact + CTA
-    FINAL_EAGLE_SVG = '''
-    <div class="awc-lab-panel" style="margin-top: 12px; text-align: center;">
-      <div class="awc-final-eagle" style="display: inline-block;">
-        <svg class="eagle-head" width="64" height="48" viewBox="0 0 64 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <ellipse cx="32" cy="28" rx="20" ry="14" fill="#FFD700" stroke="#B8860B" stroke-width="1"/>
-          <path d="M20 20 Q32 12 44 20" stroke="#B8860B" stroke-width="1.5" fill="none"/>
-          <circle cx="30" cy="24" r="3" fill="#1a1a1a"/><circle cx="34" cy="24" r="3" fill="#1a1a1a"/>
-          <circle cx="30.5" cy="23.5" r="0.8" fill="#fff"/><circle cx="34.5" cy="23.5" r="0.8" fill="#fff"/>
-          <path d="M32 32 L30 38 L32 36 L34 38 Z" fill="#FFD700"/>
+    # Eagle's Final Handshake: render after Talon Strike (play_swat) — feather-flap, head-turn, eye-contact JS, CTA
+    st.components.v1.html("""
+    <div id="awc-eagle-gap-box" class="awc-lab-panel" style="margin-top: 12px; text-align: center; padding: 16px;">
+      <style>
+        @keyframes feather-flap { 0%, 100% { transform: scaleY(1) rotate(-3deg); } 50% { transform: scaleY(1.12) rotate(3deg); } }
+        @keyframes head-turn { 0%, 70% { transform: rotate(0deg); } 78% { transform: rotate(-10deg); } 85% { transform: rotate(8deg); } 92%, 100% { transform: rotate(0deg); } }
+        .awc-eagle-wrap { display: inline-block; animation: feather-flap 0.55s ease-in-out infinite; }
+        .awc-eagle-wrap svg { display: block; }
+        .awc-eagle-wrap .eagle-head { transform-origin: 50% 35%; animation: head-turn 2.5s ease-in-out 1; }
+        .awc-eagle-pupil { transition: transform 0.15s ease-out; }
+        .awc-cta-line { font-weight: 900; font-size: 1.15rem; color: #FFD700; margin-top: 12px; letter-spacing: 1px; text-shadow: 0 0 20px rgba(255,215,0,0.8); }
+      </style>
+      <div class="awc-eagle-wrap">
+        <svg class="eagle-head" id="awc-eagle-svg" width="80" height="56" viewBox="0 0 80 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="40" cy="34" rx="24" ry="16" fill="#FFD700" stroke="#B8860B" stroke-width="1.2"/>
+          <path class="feather" d="M18 24 Q40 14 62 24" stroke="#B8860B" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path class="feather" d="M22 28 Q40 20 58 28" stroke="#C9A227" stroke-width="1.2" fill="none" opacity="0.9"/>
+          <g id="awc-eagle-eyes">
+            <circle cx="34" cy="28" r="4" fill="#1a1a1a"/><circle cx="46" cy="28" r="4" fill="#1a1a1a"/>
+            <circle class="awc-eagle-pupil" id="pupil-l" cx="34" cy="28" r="1.2" fill="#fff"/><circle class="awc-eagle-pupil" id="pupil-r" cx="46" cy="28" r="1.2" fill="#fff"/>
+          </g>
+          <path d="M40 40 L37 50 L40 47 L43 50 Z" fill="#FFD700" stroke="#B8860B" stroke-width="0.8"/>
         </svg>
       </div>
-      <p class="awc-cta-secured">GCSLC SECURED THE ANCHOR. GET TO WORK.</p>
+      <p class="awc-cta-line">GCSLC SECURED THE ANCHOR. GET TO WORK.</p>
     </div>
-    '''
-    st.markdown(FINAL_EAGLE_SVG, unsafe_allow_html=True)
+    <script>
+    (function() {
+      var box = document.getElementById('awc-eagle-gap-box');
+      if (!box) return;
+      var svg = document.getElementById('awc-eagle-svg');
+      var pl = document.getElementById('pupil-l');
+      var pr = document.getElementById('pupil-r');
+      var centerX = 40, centerY = 28;
+      var svgRect = function() { return svg.getBoundingClientRect(); };
+      function setGaze(x, y) {
+        var r = svgRect();
+        var cx = r.left + r.width / 2, cy = r.top + r.height * 0.5;
+        var dx = (x - cx) / r.width * 3, dy = (y - cy) / r.height * 3;
+        dx = Math.max(-2, Math.min(2, dx)); dy = Math.max(-2, Math.min(2, dy));
+        if (pl) pl.setAttribute('transform', 'translate(' + dx + ',' + dy + ')');
+        if (pr) pr.setAttribute('transform', 'translate(' + dx + ',' + dy + ')');
+      }
+      setTimeout(function() {
+        document.addEventListener('mousemove', function(e) { setGaze(e.clientX, e.clientY); });
+        setGaze(window.innerWidth / 2, window.innerHeight / 2);
+      }, 800);
+    })();
+    </script>
+    """, height=220)
 
 st.caption("Continental nodes: Nigeria, Ghana, South Africa, Egypt. Strategic Partner: Dubai (UAE). Select a node to center map and trigger Eagle's Talon + play_swat.")
 
@@ -369,10 +410,10 @@ if st.session_state.get("play_swat"):
     </script>
     """, height=0)
 
-# --- 8R Logical Engine: Continental logic output ---
+# --- 8R Logical Engine: Continental logic output (purely sovereign; no corporate/SEC branding) ---
 st.markdown("---")
 st.write("### 8R Determinants — Nigeria Assets → Digital SSMVs")
-
+st.markdown("**Central empirical metric:** **$170.85B** valuation anchor (8R Scientific Validation).")
 summary = continental_logic.get_convergence_summary()
 st.caption(f"AWC Nigeria: Minerals (Gold, Bauxite, Iron Ore, Lead-Zinc), Gems (Sapphire, Tourmaline, Aquamarine, Emerald), Energy (Oil, Natural Gas, NGECC). D1: Refine (high-purity corridors), D2: Reset (SPV→SSMV), D3: Research (rare earth coords). Wealth Retention: {summary['wealth_retention_lock_pct']}%.")
 

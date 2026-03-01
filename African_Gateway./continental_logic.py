@@ -325,6 +325,22 @@ BIG_TECH_HANDSHAKE_MANIFESTO = (
 )
 SSMV_CORRIDORS_MANIFESTO = ["Natural Gas", "Gold", "Rare Earth"]
 
+# --- Silicon Valley Strategic Intent (sidebar panel) ---
+ENERGY_MINERAL_SHIELD = (
+    "**Energy & Mineral Shield**  \n\n"
+    "Sovereign control of energy and mineral corridors under the 8R Paradigm ensures that "
+    "national assets are not exposed to external volatility without a structured handshake. "
+    "The Shield protects the $170.85B valuation anchor by aligning supply with sovereign retention (D8: Retain) "
+    "and high-purity refinement (D1: Refine) before any external offtake."
+)
+SANTIAGO_COMPLIANCE = (
+    "**Santiago Compliance**  \n\n"
+    "All GCSLC sovereign corridors operate in compliance with the Santiago Principles: "
+    "transparency, accountability, and alignment with the host nation's economic objectives. "
+    "The 8R Scientific Analysis and D1–D3 determinants provide the empirical framework; "
+    "the $170.85B valuation anchor is the central metric for sovereign validation."
+)
+
 
 # Backwards compatibility: expose asset dict under old name for any existing callers
 NIGERIA_RAW_ASSETS = AWC_NIGERIA_ASSETS
