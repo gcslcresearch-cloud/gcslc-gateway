@@ -1,11 +1,12 @@
 """
 African Wealth Cloud (AWC) — The Sovereign Glass
-Africa map renderer: 85% transparency, glitter effects, Nigeria Sovereign Pulse.
+Continental nodes: Nigeria, Ghana, South Africa, Egypt; Strategic Partner: Dubai (UAE).
+Interactive map with regional sovereign pulses.
 
 Galadiman Ruwa Center (GCSLC) LTD/GTE — © 2026 GCSLC. Proprietary.
 """
 
-from typing import List, Tuple, Any, Optional
+from typing import List, Tuple, Any, Optional, Dict
 
 # GCSLC Sovereign palette
 NAVY_DEEP = [0, 33, 71]
@@ -14,7 +15,18 @@ GCSLC_GOLD_SHIMMER = [255, 215, 0]  # #FFD700
 NIGERIA_GREEN = [0, 135, 81]
 NIGERIA_WHITE = [255, 255, 255]
 SOVEREIGN_PULSE_GREEN = [0, 135, 81]
+RED = [200, 16, 46]
 GLITTER_GOLD = [255, 229, 92]
+
+# Continental nodes: id -> { name, lat, lon, polygon (optional), pulse_type }
+CONTINENTAL_NODES: Dict[str, Dict[str, Any]] = {
+    "nigeria": {"name": "Nigeria", "lat": 8.0, "lon": 9.0, "pulse_type": "nigeria"},
+    "ghana": {"name": "Ghana", "lat": 7.95, "lon": -1.02, "pulse_type": "ghana"},
+    "south_africa": {"name": "South Africa", "lat": -29.0, "lon": 24.0, "pulse_type": "south_africa"},
+    "egypt": {"name": "Egypt", "lat": 26.8, "lon": 30.8, "pulse_type": "egypt"},
+    "dubai": {"name": "Dubai (UAE)", "lat": 25.2, "lon": 55.3, "pulse_type": "dubai", "strategic_partner": True},
+}
+
 
 # Simplified Nigeria boundary (WGS84) — approximate polygon for map layer
 # Order: closed polygon [lon, lat] per GeoJSON convention
@@ -43,6 +55,21 @@ AFRICA_OUTLINE: List[Tuple[float, float]] = [
     (10.0, -18.0), (-17.5, 14.5),
 ]
 
+# Simplified Ghana boundary (approx)
+GHANA_POLYGON: List[Tuple[float, float]] = [
+    (-3.25, 5.0), (-2.0, 5.0), (1.2, 6.0), (1.1, 11.2), (0.0, 11.0), (-3.0, 10.0), (-3.25, 5.0),
+]
+
+# Simplified South Africa boundary (approx)
+SOUTH_AFRICA_POLYGON: List[Tuple[float, float]] = [
+    (16.5, -22.0), (32.8, -22.0), (32.8, -26.8), (27.0, -33.0), (18.5, -34.8), (16.5, -22.0),
+]
+
+# Simplified Egypt boundary (approx)
+EGYPT_POLYGON: List[Tuple[float, float]] = [
+    (24.7, 22.0), (36.9, 22.0), (36.0, 31.6), (32.3, 31.4), (25.0, 31.5), (24.7, 22.0),
+]
+
 
 def _polygon_to_geojson(coords: List[Tuple[float, float]]) -> dict:
     """Convert [(lon, lat), ...] to GeoJSON Polygon geometry."""
@@ -56,8 +83,35 @@ def get_nigeria_geojson() -> dict:
     """GeoJSON Feature for Nigeria boundary."""
     return {
         "type": "Feature",
-        "properties": {"name": "Nigeria", "iso": "NG"},
+        "properties": {"name": "Nigeria", "iso": "NG", "node_id": "nigeria"},
         "geometry": _polygon_to_geojson(NIGERIA_POLYGON),
+    }
+
+
+def get_ghana_geojson() -> dict:
+    """GeoJSON Feature for Ghana boundary."""
+    return {
+        "type": "Feature",
+        "properties": {"name": "Ghana", "iso": "GH", "node_id": "ghana"},
+        "geometry": _polygon_to_geojson(GHANA_POLYGON),
+    }
+
+
+def get_south_africa_geojson() -> dict:
+    """GeoJSON Feature for South Africa boundary."""
+    return {
+        "type": "Feature",
+        "properties": {"name": "South Africa", "iso": "ZA", "node_id": "south_africa"},
+        "geometry": _polygon_to_geojson(SOUTH_AFRICA_POLYGON),
+    }
+
+
+def get_egypt_geojson() -> dict:
+    """GeoJSON Feature for Egypt boundary."""
+    return {
+        "type": "Feature",
+        "properties": {"name": "Egypt", "iso": "EG", "node_id": "egypt"},
+        "geometry": _polygon_to_geojson(EGYPT_POLYGON),
     }
 
 
@@ -87,30 +141,37 @@ def get_glitter_points(count: int = 80) -> List[dict]:
     return points
 
 
+def _node_fill_color(node_id: Optional[str], selected_node: Optional[str]) -> List[int]:
+    """Return fill color [r,g,b,a] for a country layer; highlight when selected."""
+    if node_id and node_id == selected_node:
+        return GCSLC_GOLD_SHIMMER + [int(255 * 0.85)]
+    return GCSLC_GOLD + [int(255 * 0.25)]
+
+
 def build_africa_deck(
-    nigeria_selected: bool = False,
+    selected_node: Optional[str] = None,
+    nigeria_selected: Optional[bool] = None,
     opacity: float = 0.85,
     map_style: Optional[str] = None,
 ) -> Any:
     """
-    Build a pydeck Deck for the Sovereign Glass: Africa map at 85% transparency
-    with glitter layer. When nigeria_selected is True, Nigeria is drawn with
-    Sovereign Pulse colors (caller should apply Green-White-Green then GCSLC Gold via UI).
+    Build a pydeck Deck: Africa outline + Nigeria, Ghana, South Africa, Egypt (GeoJSON),
+    Dubai (UAE) Strategic Partner point, glitter. selected_node centers view and highlights that node.
     """
     try:
         import pydeck as pdk
         import pandas as pd
     except ImportError:
         return None
+    if nigeria_selected is not None:
+        selected_node = "nigeria" if nigeria_selected else None
 
-    # Africa outline layer — 85% transparency, subtle stroke
-    africa_feat = get_africa_geojson()
-
+    # Africa outline
     africa_layer = pdk.Layer(
         "GeoJsonLayer",
-        [africa_feat],
+        [get_africa_geojson()],
         id="africa-outline",
-        get_fill_color=GCSLC_GOLD + [int(255 * 0.15)],  # very transparent fill
+        get_fill_color=GCSLC_GOLD + [int(255 * 0.15)],
         get_line_color=GCSLC_GOLD + [int(255 * opacity)],
         get_line_width=40,
         line_width_min_pixels=1,
@@ -118,22 +179,68 @@ def build_africa_deck(
         pickable=False,
     )
 
-    # Nigeria fill — When selected: pulse (Green→White→Green) is container CSS; fill settles to GCSLC Gold Shimmer (#FFD700)
-    nigeria_feat = get_nigeria_geojson()
-    fill_rgb = GCSLC_GOLD_SHIMMER if nigeria_selected else GCSLC_GOLD
+    # Continental country layers (interactive)
     nigeria_layer = pdk.Layer(
         "GeoJsonLayer",
-        [nigeria_feat],
+        [get_nigeria_geojson()],
         id="nigeria-sovereign",
-        get_fill_color=fill_rgb + [int(255 * opacity)],
+        get_fill_color=_node_fill_color("nigeria", selected_node) + [int(255 * opacity)],
         get_line_color=GCSLC_GOLD_SHIMMER + [255],
         get_line_width=60,
         line_width_min_pixels=2,
         opacity=opacity,
         pickable=True,
     )
+    ghana_layer = pdk.Layer(
+        "GeoJsonLayer",
+        [get_ghana_geojson()],
+        id="ghana-node",
+        get_fill_color=_node_fill_color("ghana", selected_node) + [int(255 * opacity)],
+        get_line_color=GCSLC_GOLD_SHIMMER + [200],
+        get_line_width=50,
+        line_width_min_pixels=2,
+        opacity=opacity,
+        pickable=True,
+    )
+    south_africa_layer = pdk.Layer(
+        "GeoJsonLayer",
+        [get_south_africa_geojson()],
+        id="south_africa-node",
+        get_fill_color=_node_fill_color("south_africa", selected_node) + [int(255 * opacity)],
+        get_line_color=GCSLC_GOLD_SHIMMER + [200],
+        get_line_width=50,
+        line_width_min_pixels=2,
+        opacity=opacity,
+        pickable=True,
+    )
+    egypt_layer = pdk.Layer(
+        "GeoJsonLayer",
+        [get_egypt_geojson()],
+        id="egypt-node",
+        get_fill_color=_node_fill_color("egypt", selected_node) + [int(255 * opacity)],
+        get_line_color=GCSLC_GOLD_SHIMMER + [200],
+        get_line_width=50,
+        line_width_min_pixels=2,
+        opacity=opacity,
+        pickable=True,
+    )
 
-    # Glitter scatter layer
+    # Dubai (UAE) — Strategic Partner node (point)
+    dubai_df = pd.DataFrame([{"lon": CONTINENTAL_NODES["dubai"]["lon"], "lat": CONTINENTAL_NODES["dubai"]["lat"], "name": "Dubai (UAE) Strategic Partner"}])
+    dubai_layer = pdk.Layer(
+        "ScatterplotLayer",
+        dubai_df,
+        id="dubai-node",
+        get_position=["lon", "lat"],
+        get_radius=80000,
+        get_fill_color=GCSLC_GOLD_SHIMMER + [255] if selected_node == "dubai" else GCSLC_GOLD + [200],
+        get_line_color=GCSLC_GOLD_SHIMMER + [255],
+        radius_min_pixels=12,
+        radius_max_pixels=24,
+        pickable=True,
+    )
+
+    # Glitter
     glitter_df = pd.DataFrame(get_glitter_points())
     glitter_layer = pdk.Layer(
         "ScatterplotLayer",
@@ -148,16 +255,17 @@ def build_africa_deck(
         pickable=False,
     )
 
-    view_state = pdk.ViewState(
-        latitude=8.0,
-        longitude=9.0,
-        zoom=2.8,
-        pitch=0,
-        bearing=0,
-    )
+    # View: center on selected node for Eagle's Global Strike
+    if selected_node and selected_node in CONTINENTAL_NODES:
+        node = CONTINENTAL_NODES[selected_node]
+        lat, lon = node["lat"], node["lon"]
+        zoom = 3.5 if selected_node == "dubai" else 3.0
+    else:
+        lat, lon, zoom = 8.0, 9.0, 2.8
+    view_state = pdk.ViewState(latitude=lat, longitude=lon, zoom=zoom, pitch=0, bearing=0)
 
     deck = pdk.Deck(
-        layers=[africa_layer, nigeria_layer, glitter_layer],
+        layers=[africa_layer, nigeria_layer, ghana_layer, south_africa_layer, egypt_layer, dubai_layer, glitter_layer],
         initial_view_state=view_state,
         map_style=map_style or "light",
         tooltip={"text": "{name}"},

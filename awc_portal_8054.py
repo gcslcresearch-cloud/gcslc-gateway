@@ -34,13 +34,16 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Session state
-if "nigeria_selected" not in st.session_state:
-    st.session_state.nigeria_selected = False
+# Session state: continental node selection (Eagle's Global Strike)
+if "selected_node" not in st.session_state:
+    st.session_state.selected_node = None  # nigeria | ghana | south_africa | egypt | dubai
 if "pulse_triggered" not in st.session_state:
     st.session_state.pulse_triggered = False
 if "play_swat" not in st.session_state:
     st.session_state.play_swat = False
+# Backwards compat
+if "nigeria_selected" not in st.session_state:
+    st.session_state.nigeria_selected = False
 
 # --- The Sovereign Glass: Deep Navy + Gold Shimmer particles + styles ---
 # Build 50 particle divs with varied positions (CSS-only, no script)
@@ -76,6 +79,16 @@ st.markdown("""
 }
 .sovereign-pulse-active { animation: sovereign-pulse 3s ease-in-out 1 forwards; border: 2px solid #FFD700; border-radius: 16px; position: relative; }
 .sovereign-pulse-active::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; border-radius: inherit; background: radial-gradient(circle at 30% 30%, rgba(255,215,0,0.12) 0%, transparent 50%), radial-gradient(circle at 70% 70%, rgba(255,215,0,0.08) 0%, transparent 45%); }
+/* Regional pulses */
+@keyframes pulse-ghana { 0% { box-shadow: 0 0 24px #C8102E; border-color: #C8102E; } 25% { box-shadow: 0 0 28px #FFD700; border-color: #FFD700; } 50% { box-shadow: 0 0 24px #008751; border-color: #008751; } 100% { box-shadow: 0 0 32px #FFD700; border-color: #FFD700; } }
+@keyframes pulse-dubai { 0% { box-shadow: 0 0 24px #C8102E; border-color: #C8102E; } 33% { box-shadow: 0 0 28px #008751; border-color: #008751; } 66% { box-shadow: 0 0 28px #fff; border-color: #fff; } 100% { box-shadow: 0 0 32px #FFD700; border-color: #FFD700; } }
+@keyframes pulse-south_africa { 0% { box-shadow: 0 0 20px #008751; border-color: #008751; } 20% { box-shadow: 0 0 20px #FFD700; border-color: #FFD700; } 40% { box-shadow: 0 0 20px #000; border-color: #333; } 60% { box-shadow: 0 0 20px #007749; border-color: #007749; } 80% { box-shadow: 0 0 20px #DE3831; border-color: #DE3831; } 100% { box-shadow: 0 0 32px #FFD700; border-color: #FFD700; } }
+.pulse-ghana { animation: pulse-ghana 3s ease-in-out 1 forwards; border: 2px solid #FFD700; border-radius: 16px; position: relative; }
+.pulse-dubai { animation: pulse-dubai 3s ease-in-out 1 forwards; border: 2px solid #FFD700; border-radius: 16px; position: relative; }
+.pulse-south_africa { animation: pulse-south_africa 3s ease-in-out 1 forwards; border: 2px solid #FFD700; border-radius: 16px; position: relative; }
+/* Eagle's Talon dive */
+@keyframes eagle-dive { 0% { transform: translate(-50%,-120%) scale(1.5); opacity: 0.9; } 100% { transform: translate(-50%,-50%) scale(0.7); opacity: 0.4; } }
+.awc-eagle-talon { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); pointer-events: none; z-index: 10; animation: eagle-dive 1s ease-out 1 forwards; }
 /* High-velocity typography */
 h1, h2, h3, p, span, label, .stMarkdown { color: #D4AF37 !important; }
 [data-testid="stMetricValue"], [data-testid="stMetricLabel"] { color: #E8C547 !important; }
@@ -110,6 +123,15 @@ section[data-testid="stSidebar"] { background: linear-gradient(180deg, #001a33 0
 .awc-vortex-dot { position: absolute; width: 4px; height: 4px; background: #FFD700; border-radius: 50%; box-shadow: 0 0 8px rgba(255,215,0,0.8); }
 /* Prism Lens: iridescent asset cards (expanders) */
 [data-testid="stExpander"] { border: 1px solid rgba(255,215,0,0.35) !important; border-radius: 12px !important; background: linear-gradient(135deg, rgba(255,215,0,0.08) 0%, rgba(180,130,70,0.06) 50%, rgba(255,230,150,0.1) 100%) !important; box-shadow: 0 4px 20px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.06) !important; }
+/* Determinant pop-up (word pop-up on strike) */
+.awc-determinant-popup { position: relative; background: linear-gradient(135deg, rgba(0,26,51,0.95) 0%, rgba(0,33,71,0.98) 100%); border: 2px solid #FFD700; border-radius: 12px; padding: 1rem 1.25rem; margin: 0.75rem 0; font-weight: 700; color: #FFD700; text-align: center; box-shadow: 0 0 24px rgba(255,215,0,0.3); animation: popup-reveal 0.5s ease-out; }
+@keyframes popup-reveal { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+/* Sovereign Glass lab: oscilloscope + digital counters */
+.awc-lab-panel { background: rgba(0,26,51,0.9); border: 1px solid rgba(255,215,0,0.4); border-radius: 8px; padding: 1rem; font-family: monospace; }
+.awc-oscilloscope { height: 48px; background: linear-gradient(180deg, transparent 45%, rgba(255,215,0,0.15) 50%, transparent 55%); border-radius: 4px; position: relative; overflow: hidden; }
+.awc-oscilloscope::before { content: ''; position: absolute; left: 0; top: 50%; width: 200%; height: 2px; background: repeating-linear-gradient(90deg, transparent, transparent 8px, rgba(255,215,0,0.6) 8px, rgba(255,215,0,0.6) 10px); animation: scope-wave 2s linear infinite; }
+@keyframes scope-wave { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+.awc-digital-counter { font-size: 1.25rem; font-weight: 700; color: #00ff88; text-shadow: 0 0 8px rgba(0,255,136,0.6); letter-spacing: 2px; }
 </style>
 <div id="awc-shimmer-wrap">""" + particles_html + """</div>
 """, unsafe_allow_html=True)
@@ -134,41 +156,130 @@ st.markdown(
 )
 st.markdown("---")
 
-# --- Sidebar: Eagle's Talon — Select Nigeria (Green→White→Green→Gold + play_swat) ---
+# --- Sidebar: Continental Nodes + Eagle's Talon (play_swat on every strike) ---
 with st.sidebar:
-    st.write("### Sovereign Nodes")
-    if st.button("🇳🇬 Select Nigeria", key="btn_nigeria", type="primary"):
+    st.write("### Continental Nodes")
+    if st.button("🇳🇬 Nigeria", key="btn_nigeria"):
+        st.session_state.selected_node = "nigeria"
         st.session_state.nigeria_selected = True
         st.session_state.pulse_triggered = True
-        st.session_state.play_swat = True  # Build success → audio trigger
+        st.session_state.play_swat = True
+        st.rerun()
+    if st.button("🇬🇭 Ghana", key="btn_ghana"):
+        st.session_state.selected_node = "ghana"
+        st.session_state.pulse_triggered = True
+        st.session_state.play_swat = True
+        st.rerun()
+    if st.button("🇿🇦 South Africa", key="btn_south_africa"):
+        st.session_state.selected_node = "south_africa"
+        st.session_state.pulse_triggered = True
+        st.session_state.play_swat = True
+        st.rerun()
+    if st.button("🇪🇬 Egypt", key="btn_egypt"):
+        st.session_state.selected_node = "egypt"
+        st.session_state.pulse_triggered = True
+        st.session_state.play_swat = True
+        st.rerun()
+    if st.button("🇦🇪 Dubai (UAE)", key="btn_dubai"):
+        st.session_state.selected_node = "dubai"
+        st.session_state.pulse_triggered = True
+        st.session_state.play_swat = True
         st.rerun()
     if st.button("Clear selection", key="btn_clear"):
+        st.session_state.selected_node = None
         st.session_state.nigeria_selected = False
         st.session_state.pulse_triggered = False
         st.rerun()
-    st.caption("Eagle's Talon: Select Nigeria → Green → White → Green → GCSLC Gold Shimmer + play_swat (180 Hz → 40 Hz) on build success.")
+    st.caption("Eagle's Talon: any node → map centers on country + play_swat (180 Hz → 40 Hz) on strike.")
+    st.markdown("---")
+    st.write("### D3-Alpha Cross-Border (8R Paradigm)")
+    st.markdown(
+        "**Nigeria SSMVs ↔ Ghana Gold**  \n"
+        "Refine (D1): High-purity gold corridors in Ghana feed Nigeria SSMV mineral chains.  \n"
+        "Reset (D2): Shared SPV→SSMV structures across West African nodes."
+    )
+    st.markdown(
+        "**Nigeria SSMVs ↔ Dubai logistical hubs**  \n"
+        "Research (D3): Dubai hubs align with Nigeria Rare Earth → Big Tech supply chains.  \n"
+        "Retain (D8): Sovereign retention flows through UAE strategic partner nodes."
+    )
 
-# --- Map container: Glassmorphism + Sovereign Pulse when Nigeria selected ---
+# --- Map container: Glassmorphism + Regional Pulse + Eagle's Talon dive ---
 st.write("### The Sovereign Glass — Continental View")
+st.caption("**GCSLC Sovereign Diagnostic** | Eagle's Talon: **5km Vision** — sniffing out opportunities before the high-velocity strike.")
 map_container_class = "awc-map-glass"
-if st.session_state.nigeria_selected and st.session_state.pulse_triggered:
-    map_container_class += " sovereign-pulse-active"
-deck = africa_map.build_africa_deck(nigeria_selected=st.session_state.nigeria_selected, opacity=0.85)
+if st.session_state.pulse_triggered and st.session_state.selected_node:
+    if st.session_state.selected_node == "nigeria":
+        map_container_class += " sovereign-pulse-active"
+    elif st.session_state.selected_node == "ghana":
+        map_container_class += " pulse-ghana"
+    elif st.session_state.selected_node == "dubai":
+        map_container_class += " pulse-dubai"
+    elif st.session_state.selected_node == "south_africa":
+        map_container_class += " pulse-south_africa"
+    else:
+        map_container_class += " sovereign-pulse-active"  # Egypt / fallback
+deck = africa_map.build_africa_deck(selected_node=st.session_state.selected_node, opacity=0.85)
+EAGLE_SVG = '''<svg class="awc-eagle-talon" width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 2L14 8L12 7L10 8L12 2Z" fill="#FFD700"/><path d="M12 22L10 16L12 17L14 16L12 22Z" fill="#FFD700"/>
+<path d="M2 12L8 10L7 12L8 14L2 12Z" fill="#FFD700"/><path d="M22 12L16 14L17 12L16 10L22 12Z" fill="#FFD700"/>
+<circle cx="12" cy="12" r="3" stroke="#FFD700" stroke-width="1.5" fill="none"/>
+<path d="M12 9L12 15M9 12L15 12" stroke="#FFD700" stroke-width="1"/>
+</svg>'''
+show_eagle = st.session_state.pulse_triggered and st.session_state.selected_node
 if deck:
-    st.markdown(f'<div class="{map_container_class}" style="padding: 8px;">', unsafe_allow_html=True)
+    st.markdown(
+        f'<div class="{map_container_class}" style="padding: 8px; position: relative;">' + (EAGLE_SVG if show_eagle else ""),
+        unsafe_allow_html=True,
+    )
     st.pydeck_chart(deck, use_container_width=True)
     st.markdown("</div>", unsafe_allow_html=True)
 else:
     st.info("Map engine unavailable. Install pydeck and pandas.")
-# After first pulse, keep Nigeria highlighted but stop animating
-if st.session_state.pulse_triggered and st.session_state.nigeria_selected:
+if st.session_state.pulse_triggered and st.session_state.selected_node:
     st.session_state.pulse_triggered = False
 
-st.caption("Africa map at 85% transparency with glitter layer. Nigeria highlighted under 8R Sovereign Pulse.")
+# --- Opportunity Sniffer: Determinant word pop-up when talon strikes a node ---
+if st.session_state.selected_node:
+    reveal_text = continental_logic.get_determinant_reveal(st.session_state.selected_node)
+    node_name = africa_map.CONTINENTAL_NODES.get(st.session_state.selected_node, {}).get("name", st.session_state.selected_node)
+    st.markdown(
+        f'<div class="awc-determinant-popup">'
+        f'<span style="font-size: 0.85rem; opacity: 0.9;">{node_name} — 8R Scientific Analysis</span><br/>'
+        f'{reveal_text}'
+        f'</div>',
+        unsafe_allow_html=True,
+    )
+    # --- Market Gap Analysis (Sovereign Glass laboratory aesthetics) ---
+    gap = continental_logic.get_market_gap_for_node(st.session_state.selected_node)
+    st.write("**Market Gap Analysis** — Global Opportunity (Demand vs Supply)")
+    lab1, lab2 = st.columns(2)
+    with lab1:
+        st.markdown(
+            f'<div class="awc-lab-panel">'
+            f'<div class="awc-oscilloscope"></div>'
+            f'<p style="color: #D4AF37; margin-top: 8px;">Demand: <span class="awc-digital-counter">{gap["demand_pct"]}%</span></p>'
+            f'<p style="color: #D4AF37;">Supply: <span class="awc-digital-counter">{gap["supply_pct"]}%</span></p>'
+            f'<p style="color: #FFD700;">Asset: {gap["asset"]}</p>'
+            f'</div>',
+            unsafe_allow_html=True,
+        )
+    with lab2:
+        st.markdown(
+            f'<div class="awc-lab-panel">'
+            f'<div class="awc-oscilloscope"></div>'
+            f'<p style="color: #D4AF37; margin-top: 8px;">Gap: <span class="awc-digital-counter">${gap["gap_b_usd"]:.1f}B</span></p>'
+            f'<p style="color: #00ff88;">Valuation anchor: <span class="awc-digital-counter">$170.85B</span></p>'
+            f'<p style="color: rgba(212,175,55,0.9); font-size: 0.85rem;">8R Scientific Analysis</p>'
+            f'</div>',
+            unsafe_allow_html=True,
+        )
 
-# --- Triple-D3 Research Reinforcement (CEO Audit) ---
+st.caption("Continental nodes: Nigeria, Ghana, South Africa, Egypt. Strategic Partner: Dubai (UAE). Select a node to center map and trigger Eagle's Talon + play_swat.")
+
+# --- Triple-D3: GCSLC Sovereign Diagnostic | 8R Scientific Analysis ---
 st.markdown("---")
-st.write("### Triple-D3 Research Reinforcement (The CEO Audit)")
+st.write("### GCSLC Sovereign Diagnostic — Triple-D3 Research (8R Scientific Analysis)")
 d3a, d3b, d3c = st.tabs(["D3-Alpha (Geopolitical)", "D3-Beta (Temporal)", "D3-Gamma (Security)"])
 with d3a:
     st.write("**Global Tech Alignment** — Nigeria Rare Earths → Big Tech supply chains")

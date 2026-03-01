@@ -271,5 +271,39 @@ def get_risk_defense_heatmap() -> List[Dict[str, Any]]:
     return list(RISK_DEFENSE_HEATMAP)
 
 
+# --- Opportunity Sniffer & Strike: Determinant reveal per node (word pop-up when talon strikes) ---
+NODE_DETERMINANT_REVEAL: Dict[str, str] = {
+    "nigeria": "D1: Refine, D2: Reset & D3: Research Applied",
+    "ghana": "D1: Refine & D3: Research Applied",
+    "south_africa": "D1: Refine, D4: Restructure & D6: Revitalize Applied",
+    "egypt": "D3: Research & D8: Retain Applied",
+    "dubai": "D3: Research & D8: Retain Applied",
+}
+
+
+def get_determinant_reveal(node_id: Optional[str]) -> str:
+    """Return the determinant pop-up text for a struck node (8R Scientific Analysis)."""
+    if not node_id:
+        return ""
+    return NODE_DETERMINANT_REVEAL.get(node_id, "8R Paradigm Applied")
+
+
+# --- Market Gap Analysis: Demand vs Supply (grounds $170.85B valuation) ---
+MARKET_GAP_ANALYSIS: Dict[str, Dict[str, Any]] = {
+    "nigeria": {"demand_pct": 94, "supply_pct": 22, "gap_b_usd": 72.0, "asset": "Minerals, Gems, Energy"},
+    "ghana": {"demand_pct": 88, "supply_pct": 18, "gap_b_usd": 12.5, "asset": "Gold"},
+    "south_africa": {"demand_pct": 91, "supply_pct": 35, "gap_b_usd": 28.0, "asset": "PGM, Minerals"},
+    "egypt": {"demand_pct": 85, "supply_pct": 28, "gap_b_usd": 15.0, "asset": "Gas, Logistics"},
+    "dubai": {"demand_pct": 96, "supply_pct": 42, "gap_b_usd": 43.35, "asset": "Logistical hubs"},
+}
+
+
+def get_market_gap_for_node(node_id: Optional[str]) -> Dict[str, Any]:
+    """Market Gap (Demand vs Supply) for the struck node; supports Sovereign Glass lab display."""
+    if not node_id or node_id not in MARKET_GAP_ANALYSIS:
+        return {"demand_pct": 90, "supply_pct": 25, "gap_b_usd": WEALTH_UNLOCK_TOTAL_B / 5, "asset": "Continental"}
+    return dict(MARKET_GAP_ANALYSIS[node_id])
+
+
 # Backwards compatibility: expose asset dict under old name for any existing callers
 NIGERIA_RAW_ASSETS = AWC_NIGERIA_ASSETS

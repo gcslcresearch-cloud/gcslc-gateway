@@ -71,10 +71,10 @@ if not st.session_state.handshake_done:
     run_diagnostic_pulse()
     st.session_state.handshake_done = True
 
-# NWC/C&D Sovereign Aesthetic — Navy Blue (#002147) & Metallic Gold (#D4AF37) | Samsung S24 Ultra & MacBook Pro
+# NWC/C&D Sovereign Aesthetic — Navy Blue (#002147) & Metallic Gold (#D4AF37) | GCSLC Sovereign Diagnostic
 st.markdown("""
 <style>
-/* Viewport: optimize for Samsung S24 Ultra and MacBook Pro */
+/* Viewport: GCSLC Sovereign Diagnostic | 8R Scientific Analysis */
 .stApp { background-color: #002147 !important; min-height: 100vh; }
 [data-testid="stAppViewContainer"] { background-color: #002147 !important; }
 .main .block-container { background-color: #002147 !important; max-width: 100%; padding: 1rem 2rem; }
