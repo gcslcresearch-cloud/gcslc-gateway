@@ -9,6 +9,7 @@ Entity: Galadiman Ruwa Center (GCSLC) LTD/GTE.
 
 import os
 import sys
+import urllib.parse
 import importlib.util
 
 import streamlit as st
@@ -505,6 +506,70 @@ with st.expander("**Capital** — JPMorgan / Citibank"):
           </div>
           <p style="margin-top: 4px; font-size: 0.8rem; color: rgba(212,175,55,0.9);">↓</p>
           <span class="awc-secured-badge">SECURED ASSET</span>
+        </div>
+        ''',
+        unsafe_allow_html=True,
+    )
+
+# --- Idea Engine: Share to X / LinkedIn — Talon Lock report broadcast ---
+st.markdown("---")
+st.write("### Idea Engine — Social Connectivity")
+st.caption("Broadcast the Eagle's strike as a **GCSLC Sovereign Diagnostic** to the global elite.")
+# Build Talon Lock report text from current selection (or default)
+_node = st.session_state.selected_node
+_report_node = africa_map.CONTINENTAL_NODES.get(_node or "", {}).get("name", "Continental") if _node else "Continental"
+_reveal = continental_logic.get_determinant_reveal(_node) if _node else "8R Paradigm Applied"
+_talon_report = f"GCSLC Sovereign Diagnostic — {_report_node}. {_reveal} $170.85B Talon Lock. Galadiman Ruwa Center (GCSLC) — 8R Stealth Paradigm."
+_tweet_text = urllib.parse.quote(_talon_report)
+_linkedin_summary = urllib.parse.quote(_talon_report[:200] + ("…" if len(_talon_report) > 200 else ""))
+_share_url = "https://www.gcslc.org"  # placeholder; replace with actual portal URL if desired
+_twitter_url = f"https://twitter.com/intent/tweet?text={_tweet_text}"
+_linkedin_url = f"https://www.linkedin.com/sharing/share-offsite/?url={urllib.parse.quote(_share_url)}&summary={_linkedin_summary}"
+st.markdown(
+    f'<p style="margin-bottom: 8px;">'
+    f'<a href="{_twitter_url}" target="_blank" rel="noopener noreferrer" style="display: inline-block; margin-right: 12px; padding: 8px 16px; background: #000; color: #fff; border-radius: 8px; text-decoration: none; font-weight: 700;">Share to X</a> '
+    f'<a href="{_linkedin_url}" target="_blank" rel="noopener noreferrer" style="display: inline-block; padding: 8px 16px; background: #0A66C2; color: #fff; border-radius: 8px; text-decoration: none; font-weight: 700;">Share to LinkedIn</a>'
+    f'</p>',
+    unsafe_allow_html=True,
+)
+st.caption("Every Eagle strike attaches the Talon Lock report to your share.")
+
+# --- Gulf Anchor: Petro-to-Data (Saudi/UAE/Qatar) ---
+st.markdown("---")
+st.write("### Gulf Anchor — Petro-to-Data")
+st.caption("**Saudi / UAE / Qatar** — $30B AI Investment Gap · NGECC Green Energy → 1GW AI Data Center ambitions.")
+petro = continental_logic.get_petro_to_data_node()
+with st.expander("**Petro-to-Data** — Saudi / UAE / Qatar", expanded=True):
+    st.metric("AI Investment Gap", f"$ {petro['ai_investment_gap_b_usd']:.0f}B", help="Gulf AI infrastructure gap")
+    st.metric("AI Data Center ambition", f"{petro['ai_data_center_ambition_gw']} GW", help="1GW AI Data Center plans")
+    st.markdown("**NGECC Green Energy link:** " + petro["narrative"])
+
+# --- Aviation Hub Sync: Dubai ↔ Emirates/Etihad, 2026 F1 ---
+st.markdown("---")
+st.write("### Aviation Hub Sync")
+st.caption("Dubai Hub ↔ **Emirates / Etihad** flight corridors · Eagle sniffs paths → energy security for **2026 Formula 1** travel surge.")
+av = continental_logic.get_aviation_hub_sync()
+with st.expander("**Dubai Hub** — Emirates / Etihad", expanded=True):
+    st.write("**Flight corridors:** " + ", ".join(av["flight_corridors"]))
+    st.markdown(f"**{av['f1_surge_year']} Formula 1 travel surge:** " + av["narrative"])
+    st.markdown(
+        '''
+        <div class="awc-lab-panel" style="margin-top: 12px; text-align: center; padding: 12px;">
+          <style>
+            .awc-eagle-flight { display: inline-block; animation: sniff-float 2s ease-in-out infinite; filter: drop-shadow(0 0 8px rgba(255,215,0,0.6)); }
+            @keyframes sniff-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+            .awc-flight-badge { display: inline-block; margin-top: 8px; padding: 6px 14px; border: 2px solid #FFD700; border-radius: 8px; font-weight: 800; color: #FFD700; font-size: 0.85rem; letter-spacing: 1px; }
+          </style>
+          <p style="color: #D4AF37; font-size: 0.85rem; margin-bottom: 6px;">Eagle sniffs flight paths</p>
+          <div class="awc-eagle-flight">
+            <svg width="40" height="28" viewBox="0 0 56 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <ellipse cx="28" cy="20" rx="12" ry="8" fill="#FFD700" stroke="#B8860B" stroke-width="0.8"/>
+              <path d="M18 16 L28 12 L38 16" stroke="#B8860B" stroke-width="0.8" fill="none"/>
+              <circle cx="24" cy="18" r="1.5" fill="#1a1a1a"/><circle cx="32" cy="18" r="1.5" fill="#1a1a1a"/>
+            </svg>
+          </div>
+          <p style="margin-top: 4px; font-size: 0.8rem; color: rgba(212,175,55,0.9);">↓</p>
+          <span class="awc-flight-badge">ENERGY-SECURED · 2026 F1</span>
         </div>
         ''',
         unsafe_allow_html=True,

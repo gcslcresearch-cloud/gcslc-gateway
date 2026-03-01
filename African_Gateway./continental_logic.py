@@ -374,6 +374,36 @@ def get_capital_node() -> Dict[str, Any]:
     return dict(CAPITAL_NODE)
 
 
+# --- Gulf Anchor: Petro-to-Data (Saudi/UAE/Qatar) ---
+PETRO_TO_DATA_NODE = {
+    "label": "Petro-to-Data",
+    "markets": ["Saudi Arabia", "UAE", "Qatar"],
+    "ai_investment_gap_b_usd": 30.0,
+    "ai_data_center_ambition_gw": 1.0,
+    "narrative": "NGECC Green Energy links to Gulf 1GW AI Data Center ambitions. The $30B AI Investment Gap is bridged by sovereign gas-to-power corridors; D1 Refine and D3 Research align rare earth and energy security for Gulf sovereign cloud.",
+}
+
+
+def get_petro_to_data_node() -> Dict[str, Any]:
+    """Gulf Anchor — Petro-to-Data (Saudi/UAE/Qatar): $30B AI gap, 1GW AI DC, NGECC Green Energy link."""
+    return dict(PETRO_TO_DATA_NODE)
+
+
+# --- Aviation Hub Sync: Dubai ↔ Emirates/Etihad, 2026 F1 ---
+AVIATION_HUB_SYNC = {
+    "hub": "Dubai",
+    "carriers": ["Emirates", "Etihad"],
+    "flight_corridors": ["DXB–Lagos", "DXB–Accra", "AUH–Abuja", "Gulf–West Africa cargo"],
+    "f1_surge_year": 2026,
+    "narrative": "The Eagle sniffs Emirates and Etihad flight corridors; NGECC energy security ensures fuel and ground power resilience for the 2026 Formula 1 travel surge. Dubai Hub node = sovereign energy lock for aviation.",
+}
+
+
+def get_aviation_hub_sync() -> Dict[str, Any]:
+    """Aviation Hub Sync — Dubai Hub ↔ Emirates/Etihad, Eagle sniffs flight paths, 2026 F1 energy security."""
+    return dict(AVIATION_HUB_SYNC)
+
+
 # --- Opportunity Sniffer & Strike: Determinant reveal per node (word pop-up when talon strikes) ---
 NODE_DETERMINANT_REVEAL: Dict[str, str] = {
     "nigeria": "D1: Refine, D2: Reset & D3: Research Applied",
