@@ -123,15 +123,29 @@ section[data-testid="stSidebar"] { background: linear-gradient(180deg, #001a33 0
 .awc-vortex-dot { position: absolute; width: 4px; height: 4px; background: #FFD700; border-radius: 50%; box-shadow: 0 0 8px rgba(255,215,0,0.8); }
 /* Prism Lens: iridescent asset cards (expanders) */
 [data-testid="stExpander"] { border: 1px solid rgba(255,215,0,0.35) !important; border-radius: 12px !important; background: linear-gradient(135deg, rgba(255,215,0,0.08) 0%, rgba(180,130,70,0.06) 50%, rgba(255,230,150,0.1) 100%) !important; box-shadow: 0 4px 20px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.06) !important; }
-/* Determinant pop-up (word pop-up on strike) */
-.awc-determinant-popup { position: relative; background: linear-gradient(135deg, rgba(0,26,51,0.95) 0%, rgba(0,33,71,0.98) 100%); border: 2px solid #FFD700; border-radius: 12px; padding: 1rem 1.25rem; margin: 0.75rem 0; font-weight: 700; color: #FFD700; text-align: center; box-shadow: 0 0 24px rgba(255,215,0,0.3); animation: popup-reveal 0.5s ease-out; }
+/* Determinant pop-up: instrumentation flash (wow factor) */
+.awc-determinant-popup { position: relative; background: linear-gradient(135deg, rgba(0,26,51,0.95) 0%, rgba(0,33,71,0.98) 100%); border: 2px solid #FFD700; border-radius: 12px; padding: 1rem 1.25rem; margin: 0.75rem 0; font-weight: 700; color: #FFD700; text-align: center; animation: popup-reveal 0.5s ease-out, instrument-flash 2s ease-in-out 2; }
 @keyframes popup-reveal { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes instrument-flash { 0%, 100% { box-shadow: 0 0 24px rgba(255,215,0,0.3); } 50% { box-shadow: 0 0 48px rgba(255,215,0,0.8), 0 0 72px rgba(0,255,136,0.4); } }
+/* Lab panel + digital counter instrumentation flash */
+.awc-lab-panel { background: rgba(0,26,51,0.9); border: 1px solid rgba(255,215,0,0.4); border-radius: 8px; padding: 1rem; font-family: monospace; animation: panel-flash 3s ease-in-out 1; }
+@keyframes panel-flash { 0% { box-shadow: 0 0 12px rgba(255,215,0,0.2); } 30% { box-shadow: 0 0 32px rgba(255,215,0,0.5), inset 0 0 20px rgba(0,255,136,0.1); } 100% { box-shadow: 0 0 16px rgba(255,215,0,0.3); } }
+@keyframes counter-flash { 0%, 100% { text-shadow: 0 0 8px rgba(0,255,136,0.6); opacity: 1; } 50% { text-shadow: 0 0 20px #00ff88, 0 0 30px rgba(255,215,0,0.8); opacity: 1; } }
+/* 5km: Golden radar sweep when $10B+ opportunity (before strike) */
+@keyframes radar-sweep { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.awc-radar-sweep::before { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 5; background: conic-gradient(from 0deg, transparent 0deg 30deg, rgba(255,215,0,0.35) 35deg, transparent 60deg); animation: radar-sweep 1.5s linear 1; }
+/* Final handshake: Eagle in Gap box — flap, head turn, eye contact + CTA */
+@keyframes eagle-flap { 0%, 100% { transform: scaleY(1) rotate(-2deg); } 50% { transform: scaleY(1.08) rotate(2deg); } }
+@keyframes eagle-head-turn { 0%, 80% { transform: rotate(0deg); } 85% { transform: rotate(-8deg); } 90% { transform: rotate(5deg); } 95%, 100% { transform: rotate(0deg); } }
+.awc-final-eagle { display: inline-block; animation: eagle-flap 0.6s ease-in-out infinite; }
+.awc-final-eagle .eagle-head { transform-origin: 50% 30%; animation: eagle-head-turn 3s ease-in-out 1; }
+.awc-cta-secured { font-weight: 900; font-size: 1.1rem; color: #FFD700; text-align: center; margin-top: 8px; letter-spacing: 1px; text-shadow: 0 0 16px rgba(255,215,0,0.8); animation: instrument-flash 2.5s ease-in-out 2; }
 /* Sovereign Glass lab: oscilloscope + digital counters */
-.awc-lab-panel { background: rgba(0,26,51,0.9); border: 1px solid rgba(255,215,0,0.4); border-radius: 8px; padding: 1rem; font-family: monospace; }
+.awc-lab-panel-inner { background: rgba(0,26,51,0.9); border: 1px solid rgba(255,215,0,0.4); border-radius: 8px; padding: 1rem; font-family: monospace; }
 .awc-oscilloscope { height: 48px; background: linear-gradient(180deg, transparent 45%, rgba(255,215,0,0.15) 50%, transparent 55%); border-radius: 4px; position: relative; overflow: hidden; }
 .awc-oscilloscope::before { content: ''; position: absolute; left: 0; top: 50%; width: 200%; height: 2px; background: repeating-linear-gradient(90deg, transparent, transparent 8px, rgba(255,215,0,0.6) 8px, rgba(255,215,0,0.6) 10px); animation: scope-wave 2s linear infinite; }
 @keyframes scope-wave { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-.awc-digital-counter { font-size: 1.25rem; font-weight: 700; color: #00ff88; text-shadow: 0 0 8px rgba(0,255,136,0.6); letter-spacing: 2px; }
+.awc-digital-counter { font-size: 1.25rem; font-weight: 700; color: #00ff88; text-shadow: 0 0 8px rgba(0,255,136,0.6); letter-spacing: 2px; animation: counter-flash 2s ease-in-out 2; }
 </style>
 <div id="awc-shimmer-wrap">""" + particles_html + """</div>
 """, unsafe_allow_html=True)
@@ -203,10 +217,16 @@ with st.sidebar:
         "Research (D3): Dubai hubs align with Nigeria Rare Earth → Big Tech supply chains.  \n"
         "Retain (D8): Sovereign retention flows through UAE strategic partner nodes."
     )
+    st.markdown("---")
+
+# --- Sovereign Rationale: Big Tech Handshake Manifesto (linked to Natural Gas, Gold, Rare Earth) ---
+with st.expander("**Sovereign Rationale — Big Tech Handshake Manifesto**", expanded=False):
+    st.markdown(continental_logic.BIG_TECH_HANDSHAKE_MANIFESTO)
+    st.caption("Linked SSMV corridors: **" + "**, **".join(continental_logic.SSMV_CORRIDORS_MANIFESTO) + "**")
 
 # --- Map container: Glassmorphism + Regional Pulse + Eagle's Talon dive ---
 st.write("### The Sovereign Glass — Continental View")
-st.caption("**GCSLC Sovereign Diagnostic** | Eagle's Talon: **5km Vision** — sniffing out opportunities before the high-velocity strike.")
+st.caption("**GCSLC Sovereign Diagnostic** | Eagle's Talon: **5km Vision** — sniffing out opportunities before the high-velocity strike. ($10B+ nodes: golden radar sweep before strike.)")
 map_container_class = "awc-map-glass"
 if st.session_state.pulse_triggered and st.session_state.selected_node:
     if st.session_state.selected_node == "nigeria":
@@ -219,6 +239,9 @@ if st.session_state.pulse_triggered and st.session_state.selected_node:
         map_container_class += " pulse-south_africa"
     else:
         map_container_class += " sovereign-pulse-active"  # Egypt / fallback
+# 5km: Golden radar sweep when $10B+ opportunity (before strike)
+if st.session_state.selected_node and continental_logic.is_10b_plus_opportunity(st.session_state.selected_node):
+    map_container_class += " awc-radar-sweep"
 deck = africa_map.build_africa_deck(selected_node=st.session_state.selected_node, opacity=0.85)
 EAGLE_SVG = '''<svg class="awc-eagle-talon" width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M12 2L14 8L12 7L10 8L12 2Z" fill="#FFD700"/><path d="M12 22L10 16L12 17L14 16L12 22Z" fill="#FFD700"/>
@@ -250,7 +273,7 @@ if st.session_state.selected_node:
         f'</div>',
         unsafe_allow_html=True,
     )
-    # --- Market Gap Analysis (Sovereign Glass laboratory aesthetics) ---
+    # --- Market Gap Analysis (Sovereign Glass laboratory aesthetics) + Final Handshake ---
     gap = continental_logic.get_market_gap_for_node(st.session_state.selected_node)
     st.write("**Market Gap Analysis** — Global Opportunity (Demand vs Supply)")
     lab1, lab2 = st.columns(2)
@@ -274,6 +297,22 @@ if st.session_state.selected_node:
             f'</div>',
             unsafe_allow_html=True,
         )
+    # Eagle's Final Handshake: golden eagle in Gap box — flap, head turn, eye contact + CTA
+    FINAL_EAGLE_SVG = '''
+    <div class="awc-lab-panel" style="margin-top: 12px; text-align: center;">
+      <div class="awc-final-eagle" style="display: inline-block;">
+        <svg class="eagle-head" width="64" height="48" viewBox="0 0 64 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="32" cy="28" rx="20" ry="14" fill="#FFD700" stroke="#B8860B" stroke-width="1"/>
+          <path d="M20 20 Q32 12 44 20" stroke="#B8860B" stroke-width="1.5" fill="none"/>
+          <circle cx="30" cy="24" r="3" fill="#1a1a1a"/><circle cx="34" cy="24" r="3" fill="#1a1a1a"/>
+          <circle cx="30.5" cy="23.5" r="0.8" fill="#fff"/><circle cx="34.5" cy="23.5" r="0.8" fill="#fff"/>
+          <path d="M32 32 L30 38 L32 36 L34 38 Z" fill="#FFD700"/>
+        </svg>
+      </div>
+      <p class="awc-cta-secured">GCSLC SECURED THE ANCHOR. GET TO WORK.</p>
+    </div>
+    '''
+    st.markdown(FINAL_EAGLE_SVG, unsafe_allow_html=True)
 
 st.caption("Continental nodes: Nigeria, Ghana, South Africa, Egypt. Strategic Partner: Dubai (UAE). Select a node to center map and trigger Eagle's Talon + play_swat.")
 

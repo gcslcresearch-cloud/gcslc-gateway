@@ -305,5 +305,26 @@ def get_market_gap_for_node(node_id: Optional[str]) -> Dict[str, Any]:
     return dict(MARKET_GAP_ANALYSIS[node_id])
 
 
+def is_10b_plus_opportunity(node_id: Optional[str]) -> bool:
+    """True if this node has a $10B+ opportunity gap (5km hover → radar sweep before strike)."""
+    if not node_id:
+        return False
+    gap = get_market_gap_for_node(node_id)
+    return gap.get("gap_b_usd", 0) >= 10.0
+
+
+# --- Big Tech Handshake Manifesto (Sovereign Rationale) ---
+BIG_TECH_HANDSHAKE_MANIFESTO = (
+    "**Big Tech Handshake Manifesto**  \n\n"
+    "GCSLC sovereign corridors align national asset revitalization with global tech supply chains. "
+    "The handshake is not dependency—it is *structured convergence*: Natural Gas powers data and industry; "
+    "Gold anchors value and fintech rails; Rare Earths secure the semiconductor and battery future. "
+    "Under the 8R Paradigm, Nigeria and Africa retain the anchor. Big Tech gains stable, ethical supply; "
+    "the Sovereign Node retains 95% and deploys D1 Refine, D2 Reset, D3 Research to transform raw corridors "
+    "into digital SSMVs. **Natural Gas**, **Gold**, and **Rare Earth** SSMV corridors are the triple lock."
+)
+SSMV_CORRIDORS_MANIFESTO = ["Natural Gas", "Gold", "Rare Earth"]
+
+
 # Backwards compatibility: expose asset dict under old name for any existing callers
 NIGERIA_RAW_ASSETS = AWC_NIGERIA_ASSETS
