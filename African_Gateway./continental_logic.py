@@ -334,6 +334,46 @@ def get_institutional_partners() -> List[Dict[str, Any]]:
     return list(INSTITUTIONAL_PARTNERS)
 
 
+# --- Global Sector Intelligence: Atoms / Bits / Capital ---
+ATOMS_NODE = {
+    "label": "Atoms",
+    "players": ["Exxon", "Total", "Maersk"],
+    "supply_chain_gaps": [
+        {"commodity": "LNG", "demand_pct": 92, "supply_pct": 28, "gap_b_usd": 44.0, "corridor": "NGECC / Offshore Gas"},
+        {"commodity": "Rare Earths", "demand_pct": 88, "supply_pct": 18, "gap_b_usd": 12.0, "corridor": "Bauchi / Plateau REE"},
+    ],
+    "flash_message": "D1: Refine & D7: Re-engineer applied to Exxon 2030 Plan.",
+}
+BITS_NODE = {
+    "label": "Bits",
+    "players": ["Samsung", "MTN", "Airtel"],
+    "data_center_capacity_gap_pct": 2.0,
+    "narrative": "Africa holds ~2% of global data center capacity. The NGECC energy anchor powers MTN's AI-RAN infrastructure and sovereign edge compute; D1 Refine secures high-availability corridors for Samsung and Airtel rollout.",
+}
+CAPITAL_NODE = {
+    "label": "Capital",
+    "players": ["JPMorgan", "Citibank"],
+    "initiative_name": "Security & Resiliency Initiative",
+    "initiative_value_usd_trillion": 1.5,
+    "alignment_narrative": "The $1.5T Security & Resiliency Initiative aligns with GCSLC sovereign corridors: D8 Retain anchors capital in-country; the Eagle sniffs the bank node and marks it as a Secured Asset under 8R validation.",
+}
+
+
+def get_atoms_node() -> Dict[str, Any]:
+    """Global Sector Intelligence — Atoms (Exxon/Total/Maersk): LNG and Rare Earths supply chain gap."""
+    return dict(ATOMS_NODE)
+
+
+def get_bits_node() -> Dict[str, Any]:
+    """Global Sector Intelligence — Bits (Samsung/MTN/Airtel): 2% data center gap, NGECC↔AI-RAN."""
+    return dict(BITS_NODE)
+
+
+def get_capital_node() -> Dict[str, Any]:
+    """Global Sector Intelligence — Capital (JPMorgan/Citibank): $1.5T Initiative, Eagle → Secured Asset."""
+    return dict(CAPITAL_NODE)
+
+
 # --- Opportunity Sniffer & Strike: Determinant reveal per node (word pop-up when talon strikes) ---
 NODE_DETERMINANT_REVEAL: Dict[str, str] = {
     "nigeria": "D1: Refine, D2: Reset & D3: Research Applied",

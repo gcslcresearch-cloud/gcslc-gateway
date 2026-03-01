@@ -456,6 +456,60 @@ for partner in continental_logic.get_institutional_partners():
         st.markdown("**Assets bid on:** " + "; ".join(f"*{a}*" for a in partner["assets_bid"]))
         st.markdown("**8R Resuscitation:** " + partner["8r_resuscitation"])
 
+# --- Global Sector Intelligence: Atoms / Bits / Capital ---
+st.markdown("---")
+st.write("### Global Sector Intelligence")
+st.caption("**Atoms** (Exxon/Total/Maersk) · **Bits** (Samsung/MTN/Airtel) · **Capital** (JPMorgan/Citibank)")
+atoms = continental_logic.get_atoms_node()
+bits = continental_logic.get_bits_node()
+capital = continental_logic.get_capital_node()
+
+with st.expander("**Atoms** — Exxon / Total / Maersk", expanded=True):
+    st.write("**Supply chain gap: LNG & Rare Earths**")
+    for g in atoms["supply_chain_gaps"]:
+        st.markdown(
+            f"- **{g['commodity']}**: Demand {g['demand_pct']}% vs Supply {g['supply_pct']}% · Gap ${g['gap_b_usd']:.0f}B — *{g['corridor']}*"
+        )
+    st.markdown(
+        f'<p style="color: #00ff88; font-weight: 700; margin-top: 8px;">'
+        f'<span class="awc-digital-counter">D1: Refine & D7: Re-engineer applied to Exxon 2030 Plan.</span></p>',
+        unsafe_allow_html=True,
+    )
+
+with st.expander("**Bits** — Samsung / MTN / Airtel"):
+    st.write("**2% global data center capacity gap in Africa**")
+    st.metric("Africa share of global data center capacity", f"{bits['data_center_capacity_gap_pct']}%", help="Gap vs global share")
+    st.markdown("**NGECC ↔ MTN AI-RAN:** " + bits["narrative"])
+
+with st.expander("**Capital** — JPMorgan / Citibank"):
+    st.write(f"**{capital['initiative_name']}** — alignment with sovereign corridors")
+    st.metric("Initiative scale", f"$ {capital['initiative_value_usd_trillion']} Trillion", help="Security & Resiliency Initiative")
+    st.markdown(capital["alignment_narrative"])
+    # Visual: Eagle sniffs the bank node → Secured Asset
+    st.markdown(
+        '''
+        <div class="awc-lab-panel" style="margin-top: 12px; text-align: center; padding: 12px;">
+          <style>
+            .awc-eagle-sniff-icon { display: inline-block; animation: sniff-float 2s ease-in-out infinite; filter: drop-shadow(0 0 8px rgba(255,215,0,0.6)); }
+            @keyframes sniff-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+            .awc-secured-badge { display: inline-block; margin-top: 8px; padding: 6px 14px; border: 2px solid #00ff88; border-radius: 8px; font-weight: 800; color: #00ff88; font-size: 0.9rem; letter-spacing: 1px; text-shadow: 0 0 12px rgba(0,255,136,0.6); animation: badge-glow 2s ease-in-out infinite; }
+            @keyframes badge-glow { 0%, 100% { box-shadow: 0 0 12px rgba(0,255,136,0.3); } 50% { box-shadow: 0 0 24px rgba(0,255,136,0.6); } }
+          </style>
+          <p style="color: #D4AF37; font-size: 0.85rem; margin-bottom: 6px;">Eagle sniffs the bank node</p>
+          <div class="awc-eagle-sniff-icon">
+            <svg width="40" height="28" viewBox="0 0 56 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <ellipse cx="28" cy="20" rx="12" ry="8" fill="#FFD700" stroke="#B8860B" stroke-width="0.8"/>
+              <path d="M18 16 L28 12 L38 16" stroke="#B8860B" stroke-width="0.8" fill="none"/>
+              <circle cx="24" cy="18" r="1.5" fill="#1a1a1a"/><circle cx="32" cy="18" r="1.5" fill="#1a1a1a"/>
+            </svg>
+          </div>
+          <p style="margin-top: 4px; font-size: 0.8rem; color: rgba(212,175,55,0.9);">↓</p>
+          <span class="awc-secured-badge">SECURED ASSET</span>
+        </div>
+        ''',
+        unsafe_allow_html=True,
+    )
+
 # --- Triple-D3: GCSLC Sovereign Diagnostic | 8R Scientific Analysis ---
 st.markdown("---")
 st.write("### GCSLC Sovereign Diagnostic — Triple-D3 Research (8R Scientific Analysis)")
