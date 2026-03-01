@@ -300,6 +300,28 @@ def get_social_wellbeing_index_heatmap() -> List[Dict[str, Any]]:
     return list(SOCIAL_WELLBEING_INDEX_HEATMAP)
 
 
+# --- Generative Agentic Engine: autonomous sniff nodes ($10B+) ---
+def get_autonomous_sniff_nodes() -> List[str]:
+    """Nodes eligible for Autonomous Sniff (Eagle highlights $10B+ opportunity without user input)."""
+    return [nid for nid in list(MARKET_GAP_ANALYSIS.keys()) if is_10b_plus_opportunity(nid)]
+
+
+# --- Sovereign Well-being Index: 8R Strike on Atoms → Jobs / Security / Health ---
+SOVEREIGN_WELLBEING_INDEX: List[Dict[str, Any]] = [
+    {"atoms_domain": "Energy (NGECC)", "wellbeing_dimension": "Jobs", "metric": "Direct + indirect employment", "before_8r": 12, "after_8r": 34, "unit": "k FTE"},
+    {"atoms_domain": "Minerals (Gold/REE)", "wellbeing_dimension": "Jobs", "metric": "Corridor formalization", "before_8r": 8, "after_8r": 28, "unit": "k FTE"},
+    {"atoms_domain": "Energy", "wellbeing_dimension": "Security", "metric": "Energy security index", "before_8r": 42, "after_8r": 81, "unit": "pts"},
+    {"atoms_domain": "Minerals", "wellbeing_dimension": "Security", "metric": "Resource conflict reduction", "before_8r": 38, "after_8r": 72, "unit": "pts"},
+    {"atoms_domain": "Energy (Gas-to-power)", "wellbeing_dimension": "Health", "metric": "Household air quality (corridor zones)", "before_8r": 45, "after_8r": 78, "unit": "index"},
+    {"atoms_domain": "Minerals (formalization)", "wellbeing_dimension": "Health", "metric": "Occupational safety compliance", "before_8r": 35, "after_8r": 88, "unit": "pts"},
+]
+
+
+def get_sovereign_wellbeing_index() -> List[Dict[str, Any]]:
+    """Sovereign Well-being Index: how 8R Strike on Atoms (Energy/Minerals) generates Jobs, Security, Health."""
+    return list(SOVEREIGN_WELLBEING_INDEX)
+
+
 # --- The Wise Men: Institutional Partner nodes (Nigeria industrial & financial giants) ---
 INSTITUTIONAL_PARTNERS: List[Dict[str, Any]] = [
     {

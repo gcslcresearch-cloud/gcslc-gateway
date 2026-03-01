@@ -11,6 +11,7 @@ import os
 import sys
 import urllib.parse
 import importlib.util
+import time
 
 import streamlit as st
 
@@ -45,6 +46,31 @@ if "play_swat" not in st.session_state:
 # Backwards compat
 if "nigeria_selected" not in st.session_state:
     st.session_state.nigeria_selected = False
+# Generative Agentic Engine v4.0: Autonomous Eagle
+if "autonomous_sniff_enabled" not in st.session_state:
+    st.session_state.autonomous_sniff_enabled = True
+if "autonomous_sniff_index" not in st.session_state:
+    st.session_state.autonomous_sniff_index = 0
+
+# Autonomous Sniff: when ?autonomous=1, Eagle performs strike on next $10B+ node (no user input)
+try:
+    qp = st.query_params
+    if qp.get("autonomous") == "1":
+        nodes_10b = continental_logic.get_autonomous_sniff_nodes()
+        if nodes_10b:
+            idx = st.session_state.autonomous_sniff_index % len(nodes_10b)
+            st.session_state.selected_node = nodes_10b[idx]
+            st.session_state.pulse_triggered = True
+            st.session_state.play_swat = True
+            st.session_state.nigeria_selected = st.session_state.selected_node == "nigeria"
+            st.session_state.autonomous_sniff_index = idx + 1
+        try:
+            del qp["autonomous"]
+        except Exception:
+            qp["autonomous"] = ""
+        st.rerun()
+except Exception:
+    pass
 
 # --- The Sovereign Glass: Deep Navy + Gold Shimmer particles + styles ---
 # Build 50 particle divs with varied positions (CSS-only, no script)
@@ -212,6 +238,11 @@ with st.sidebar:
         st.session_state.pulse_triggered = False
         st.rerun()
     st.caption("Eagle's Talon: any node → map centers on country + play_swat (180 Hz → 40 Hz) on strike.")
+    st.session_state.autonomous_sniff_enabled = st.checkbox(
+        "**Agentic Eagle** (Autonomous Sniffer)", value=st.session_state.autonomous_sniff_enabled, key="agentic_eagle"
+    )
+    if st.session_state.autonomous_sniff_enabled:
+        st.caption("Every 60s the Eagle auto-highlights a $10B+ opportunity.")
     st.markdown("---")
     # Foundational Intelligence Layer: Investor Manifesto + Doctor vs. Pharmacist (hardcoded)
     st.write("### Foundational Intelligence")
@@ -307,12 +338,22 @@ else:
 if st.session_state.pulse_triggered and st.session_state.selected_node:
     st.session_state.pulse_triggered = False
 
-# --- Scintillating Data Reveal: Sovereign Glass window + 8R Determinant Word-Pop ---
+# --- Generative SSMV: Dynamic Brief on node strike ---
 if st.session_state.selected_node:
     reveal_text = continental_logic.get_determinant_reveal(st.session_state.selected_node)
     node_name = africa_map.CONTINENTAL_NODES.get(st.session_state.selected_node, {}).get("name", st.session_state.selected_node)
     gap = continental_logic.get_market_gap_for_node(st.session_state.selected_node)
     gap_b = gap["gap_b_usd"]
+    # Generated value for Dynamic Brief (node-dependent)
+    generated_value_b = round(gap_b * 0.45 + 14.2, 1)
+    st.markdown(
+        f'<div class="awc-determinant-popup awc-sovereign-glass-window" style="margin-bottom: 8px;">'
+        f'<p style="font-weight: 800; color: #FFD700; margin-bottom: 6px;">GCSLC ANALYSIS: Asset Resuscitation detected.</p>'
+        f'<p style="font-size: 0.95rem;">Applying D4 (Restructure) + D6 (Revitalize).</p>'
+        f'<p class="awc-opportunity-badge">Potential Wealth Retention: <span class="awc-digital-counter">{generated_value_b}</span>B USD.</p>'
+        f'</div>',
+        unsafe_allow_html=True,
+    )
     st.markdown(
         f'<div class="awc-determinant-popup awc-sovereign-glass-window">'
         f'<p class="awc-opportunity-badge">Real-time market gaps: <span class="awc-digital-counter">${gap_b:.0f}B</span> Opportunity identified</p>'
@@ -414,22 +455,54 @@ if st.session_state.selected_node:
         document.addEventListener('mousemove', function(e) { setGaze(e.clientX, e.clientY); });
         setGaze(window.innerWidth / 2, window.innerHeight / 2);
       }, 800);
+      // Generative audio: sync with eye-contact — "Get to work" directive (once after head-turn)
+      setTimeout(function() {
+        try {
+          var u = new SpeechSynthesisUtterance('I have identified the gap. The anchor is secured. Get to work.');
+          u.rate = 0.9;
+          u.pitch = 1;
+          u.volume = 1;
+          if (window.speechSynthesis) window.speechSynthesis.speak(u);
+        } catch (e) {}
+      }, 2600);
     })();
     </script>
     """, height=240)
 
 st.caption("Continental nodes: Nigeria, Ghana, South Africa, Egypt. Strategic Partner: Dubai (UAE). Select a node to center map and trigger Eagle's Talon + play_swat.")
 
-# --- Universal Sovereign Impact Radar: Security & Social Well-being toggles ---
+# --- Agentic Eagle: 60s autonomous sniff (redirect to ?autonomous=1 to highlight $10B+ node) ---
+if st.session_state.get("autonomous_sniff_enabled", True):
+    st.components.v1.html(
+        """
+        <div id="awc-autonomous-timer" style="font-size: 0.85rem; color: #D4AF37; margin-top: 4px;">
+          <span id="awc-timer-text">Agentic Eagle: next autonomous sniff in <span id="awc-countdown">60</span>s</span>
+        </div>
+        <script>
+        (function() {
+          var start = Date.now();
+          var el = document.getElementById('awc-countdown');
+          var interval = setInterval(function() {
+            var left = 60 - Math.floor((Date.now() - start) / 1000);
+            if (left <= 0) {
+              clearInterval(interval);
+              window.location = window.location.pathname + '?autonomous=1';
+              return;
+            }
+            if (el) el.textContent = left;
+          }, 1000);
+        })();
+        </script>
+        """,
+        height=32,
+    )
+
+# --- Universal Impact Radar: tabs (Security | Social Well-being | Sovereign Well-being Index) ---
 st.markdown("---")
-st.write("### Universal Sovereign Impact Radar")
-st.caption("How the **$170.85B** valuation anchor reduces poverty and increases regional stability.")
-col_sec, col_soc = st.columns(2)
-with col_sec:
-    show_security_impact = st.checkbox("National Security Impact", value=False, key="radar_security")
-with col_soc:
-    show_social_wellbeing = st.checkbox("Social Well-being Index", value=False, key="radar_social")
-if show_security_impact:
+st.write("### Universal Impact Radar")
+st.caption("How the **$170.85B** anchor and **8R Strike on Atoms** (Energy/Minerals) drive Jobs, Security, and Health.")
+radar_t1, radar_t2, radar_t3 = st.tabs(["National Security Impact", "Social Well-being Index", "Sovereign Well-being Index"])
+with radar_t1:
     st.write("**National Security Impact** — $170.85B anchor → regional stability")
     sec_heat = continental_logic.get_national_security_impact_heatmap()
     st.dataframe(
@@ -438,7 +511,7 @@ if show_security_impact:
         hide_index=True,
     )
     st.caption("Higher scores = more stability. The anchor increases sovereign retention and reduces resource conflict.")
-if show_social_wellbeing:
+with radar_t2:
     st.write("**Social Well-being Index** — $170.85B anchor → poverty reduction")
     soc_heat = continental_logic.get_social_wellbeing_index_heatmap()
     st.dataframe(
@@ -447,6 +520,15 @@ if show_social_wellbeing:
         hide_index=True,
     )
     st.caption("Poverty headcount drops; employment and energy access rise under 8R sovereign corridors.")
+with radar_t3:
+    st.write("**Sovereign Well-being Index** — 8R Strike on Atoms (Energy/Minerals) → Jobs, Security, Health")
+    swi = continental_logic.get_sovereign_wellbeing_index()
+    st.dataframe(
+        [{"Atoms domain": r["atoms_domain"], "Well-being": r["wellbeing_dimension"], "Metric": r["metric"], "Before 8R": r["before_8r"], "After 8R": r["after_8r"], "Unit": r["unit"]} for r in swi],
+        use_container_width=True,
+        hide_index=True,
+    )
+    st.caption("The Eagle's strike on Energy and Minerals generates Jobs (FTE), Security (index), and Health (compliance / air quality).")
 
 # --- The Wise Men: Institutional Partner nodes (Dangote / BUA / Zenith / GTCO) ---
 st.markdown("---")
