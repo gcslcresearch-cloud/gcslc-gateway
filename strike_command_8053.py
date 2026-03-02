@@ -101,18 +101,23 @@ st.markdown('<p class="strike-header">8R Strike Command — Synchronized</p>', u
 st.markdown('<p class="strike-sub">Port 8053 | $1.5 Trillion Initiative & Institutional Partners | Sovereign AI Compute</p>', unsafe_allow_html=True)
 st.markdown("---")
 
-# ——— Sovereign AI Compute — Jensen Huang / NVIDIA Portal (1,205 MW pitch) ———
+# ——— D3 Energy Strike: Sovereign AI Compute — Jensen Huang / NVIDIA Portal (1,205 MW deep-linked to Sovereign AI 2026) ———
+NVIDIA_SOVEREIGN_AI_2026_URL = "https://www.nvidia.com/en-us/lp/industries/global-public-sector/sovereign-ai-technical-overview/"
+NVIDIA_GTC_SOVEREIGN_AI_URL = "https://www.nvidia.com/gtc/sessions/sovereign-ai/"
 st.write("### 🖥️ Sovereign AI Compute — Pitch to NVIDIA (Jensen Huang)")
-with st.expander("**1,205 MW Asset — Sovereign AI Compute for the Robotic World**", expanded=True):
+with st.expander("**1,205 MW Asset — Deep-linked to NVIDIA Sovereign AI 2026 Roadmap**", expanded=True):
     st.markdown("**GCSLC GE Cloud** offers a **1,205 MW (1.2 GW)** AI-DC power asset across the **13-state coal corridor** — WPC 2026 Roadmap Ready — for **Sovereign AI Compute** deployment.")
     st.metric("Sovereign AI Compute asset", "1,205 MW (1.2 GW)", "13-state corridor — WPC 2026 Roadmap Ready")
     st.metric("Corridor", "13 states", "639.3 Mt reserves | Clean AI Energy")
     st.markdown(
-        "**Pitch:** Align NVIDIA's global AI infrastructure with sovereign-controlled power and data. "
+        "**D3 Energy Strike:** The **1,205 MW** AI-Power asset is deep-linked to **NVIDIA Sovereign AI 2026 roadmap**. "
+        "Align NVIDIA's global AI infrastructure with sovereign-controlled power and data. "
         "The 9.6× wealth multiplier (D3 Research) applies to Germanium-for-chips and Ammonia value chains; "
-        "the same corridor delivers **1,205 MW** for data centers. **CAC: 176917792057** — GCSLC unassailable status."
+        "the same corridor delivers **1,205 MW** for data centers."
     )
-    st.caption("Jensen Huang / NVIDIA: Sovereign AI Compute portal. BUA/NVIDIA Strategic Resolution via GE Cloud.")
+    st.markdown(f"**Sovereign AI 2026:** [NVIDIA Sovereign AI — Technical Overview]({NVIDIA_SOVEREIGN_AI_2026_URL}) | [GTC 2026 — Sovereign AI Sessions]({NVIDIA_GTC_SOVEREIGN_AI_URL})")
+    st.markdown("**CAC: 176917792057** — GCSLC unassailable status. CAC & shimmer: unscrambled visual proof of sovereignty.")
+    st.caption("Jensen Huang / NVIDIA: 1,205 MW asset deep-linked to NVIDIA Sovereign AI 2026 roadmap. BUA/NVIDIA Strategic Resolution via GE Cloud.")
 st.markdown("---")
 
 # ——— $1.5 Trillion Initiative (Capital node — fully loaded) ———
@@ -146,7 +151,7 @@ st.markdown(
     '<div class="gcslc-sovereign-footer">'
     '<span class="cac">CAC Name Availability Code: 176917792057</span>'
     '<p class="chairman">GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION LTD/GTE | Chairman & Founder: Dr. Sa\'ad Jaafaru</p>'
-    '<p style="font-size:0.7rem;opacity:0.9;margin-top:0.2rem;">CAC & shimmering branding — visual proof of GCSLC unassailable status.</p>'
+    '<p style="font-size:0.7rem;opacity:0.9;margin-top:0.2rem;">CAC Code & shimmering branding — unscrambled visual proof of sovereignty.</p>'
     '</div>',
     unsafe_allow_html=True,
 )

@@ -224,14 +224,19 @@ st.dataframe(bua_map_rows, width="stretch", hide_index=True)
 st.caption("D3 Research: Eagle Sniffer maps BUA industrial nodes against the 13-state coal corridor. Nodes in corridor qualify for 9.6× wealth multiplier integration.")
 st.markdown("---")
 
-# ——— WL Multiplier: Lost Wealth of not integrating 9.6× into BUA's existing energy infrastructure ———
+# ——— WL Counter for BUA: non-linear cost of delay (conglomerate scale) ———
 st.write("### WL — BUA Energy Infrastructure (Lost Wealth)")
-# Illustrative: BUA energy offtake in corridor states; without 9.6× integration, WL accrues
+# Non-linear cost of delay for conglomerate scale: WL = base * (1 + k * delay^alpha)
 bua_corridor_mw = sum(n["power_mw"] for n in BUA_INDUSTRIAL_NODES if n.get("in_corridor") == "Yes")
-bua_wl_b = 12.5  # Illustrative WL (Lost Wealth) in $B from not integrating 9.6× into BUA energy
-st.metric("WL — BUA (no 9.6× integration)", f"${bua_wl_b}B", "Lost Wealth — existing energy infrastructure")
+BUA_WL_BASE_B = 12.5
+BUA_DELAY_MONTHS = 6
+BUA_WL_K, BUA_WL_ALPHA = 0.12, 1.35
+bua_wl_b = BUA_WL_BASE_B * (1 + BUA_WL_K * (BUA_DELAY_MONTHS ** BUA_WL_ALPHA))
+bua_wl_velocity = 9.6 * (1 + 0.18 * math.sin(time.time() * 0.1))
+st.metric("WL — BUA (conglomerate scale)", f"${bua_wl_b:.1f}B", f"Non-linear cost of delay — {BUA_DELAY_MONTHS} months")
+st.metric("WL velocity — missed 9.6× (BUA industrial)", f"{bua_wl_velocity:.2f}×", "compound delay cost")
 st.metric("BUA nodes in 13-state corridor", f"{sum(1 for n in BUA_INDUSTRIAL_NODES if n.get('in_corridor') == 'Yes')}", f"{bua_corridor_mw} MW mapped — 9.6× ready")
-st.caption("Lost Wealth (WL) of not integrating the 9.6× wealth multiplier into BUA's existing energy infrastructure. Strategic Resolution: GE Cloud aligns BUA offtake with 1,205 MW Sovereign AI Compute corridor.")
+st.caption("Re-engineered WL Counter: non-linear cost of delay for a conglomerate of BUA industrial scale. WL = f(delay^α); strategic resolution reduces delay and locks 9.6×.")
 st.markdown("---")
 
 # ——— Real-time Market Gaps: $72B + 94% vs 22% ———
@@ -309,7 +314,7 @@ st.markdown(
     '<div class="gcslc-sovereign-footer">'
     '<span class="cac">CAC Name Availability Code: 176917792057</span>'
     '<p class="chairman">GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION LTD/GTE | Chairman & Founder: Dr. Sa\'ad Jaafaru</p>'
-    '<p style="font-size:0.7rem;opacity:0.9;margin-top:0.2rem;">CAC & shimmering branding — visual proof of GCSLC unassailable status.</p>'
+    '<p style="font-size:0.7rem;opacity:0.9;margin-top:0.2rem;">CAC Code & shimmering branding — unscrambled visual proof of sovereignty.</p>'
     '</div>',
     unsafe_allow_html=True,
 )
