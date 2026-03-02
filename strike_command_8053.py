@@ -6,6 +6,8 @@ Galadiman Ruwa Center (GCSLC) LTD/GTE — © 2026 GCSLC.
 import os
 import sys
 import importlib.util
+import math
+import time
 import warnings
 import streamlit as st
 import streamlit.components.v1 as components
@@ -106,14 +108,27 @@ components.html("""
   document.addEventListener('visibilitychange', function(){ setDefend(document.hidden); });
   window.addEventListener('blur', function(){ setDefend(true); });
   window.addEventListener('focus', function(){ setDefend(false); });
+  window.addEventListener('beforeprint', function(){ setDefend(true); });
   document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
-  document.addEventListener('keydown', function(e){ if((e.ctrlKey||e.metaKey)&&e.key==='s'){ e.preventDefault(); } });
+  document.addEventListener('keydown', function(e){ if((e.ctrlKey||e.metaKey)&&e.key==='s'){ e.preventDefault(); setDefend(true); } });
 })();
 </script>
 """, height=0)
 
 st.markdown('<p class="strike-header">8R Strike Command — Synchronized</p>', unsafe_allow_html=True)
-st.markdown('<p class="strike-sub">Port 8053 | $1.5 Trillion Initiative & Institutional Partners | Sovereign AI Compute</p>', unsafe_allow_html=True)
+st.markdown('<p class="strike-sub">Port 8053 | Komi vehicle for nations and global conglomerates | $1.5T Initiative | Sovereign AI Compute</p>', unsafe_allow_html=True)
+st.markdown("---")
+
+# ——— WL Counter (Komi): real-time cost of inaction — Human & Robotic ———
+st.write("### WL Counter (Lost Wealth — Komi)")
+_t = time.time() % 100
+wl_vel = 9.6 * (1 + 0.15 * math.sin(_t * 0.2))
+c1, c2 = st.columns(2)
+with c1:
+    st.metric("WL — Missed 9.6× (Human)", f"{wl_vel:.2f}×", "real-time cost of inaction")
+with c2:
+    st.metric("WL — Sovereign AI Compute Shortfall", "$100B", "Robotic world")
+st.caption("D3 Global Scan — Komi: Market Gaps $72B · Wealth Multiplier 9.6× · Sovereign AI $100B. Generative Eagle Cloud: Komi vehicle for nations and global conglomerates.")
 st.markdown("---")
 
 # ——— D3 Energy Strike: Sovereign AI Compute — Jensen Huang / NVIDIA Portal (1,205 MW deep-linked to Sovereign AI 2026) ———

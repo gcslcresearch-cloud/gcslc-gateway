@@ -4,6 +4,8 @@ Sovereign Gateway — 8R Stealth Paradigm | Galadiman Ruwa Center (GCSLC) LTD/GT
 Coal_SSMV dashboard: run from project root. Path: GCSLC_Sovereign_Gateway/nrrfc_coal_8051.py
 """
 import os
+import math
+import time
 import warnings
 from collections import defaultdict
 import streamlit as st
@@ -112,8 +114,12 @@ section[data-testid="stSidebar"] { background-color: #002147 !important; border-
 #gcslc-bubble-wrap { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 998; overflow: hidden; }
 .gcslc-bubble { position: absolute; font-size: 0.85rem; font-weight: 700; color: rgba(212,175,55,0.5); letter-spacing: 0.15em; white-space: nowrap; animation: gcslc-bubble-drift 18s ease-in-out infinite; opacity: 0.08; }
 @keyframes gcslc-bubble-drift { 0%, 100% { transform: translate(0,0) scale(1); opacity: 0.06; } 25% { transform: translate(40px,-30px) scale(1.05); opacity: 0.11; } 50% { transform: translate(-30px,20px) scale(0.95); opacity: 0.07; } 75% { transform: translate(20px,30px) scale(1.02); opacity: 0.1; } }
-/* Screenshot defense: blur on visibilitychange/blur */
+/* Screenshot defense: blur on visibilitychange/blur; only CAC + Dr. Sa'ad header remain clear */
 body.gcslc-blur-defend [data-testid="stAppViewContainer"] { filter: blur(14px); transition: filter 0.25s ease; }
+.gcslc-sovereign-strip-top, .gcslc-sovereign-strip-bottom { display: none; position: fixed; left: 0; right: 0; z-index: 1002; background: rgba(0,33,71,0.98); color: #D4AF37; text-align: center; padding: 0.5rem 1rem; font-size: 0.85rem; }
+.gcslc-sovereign-strip-top { top: 0; border-bottom: 2px solid rgba(212,175,55,0.5); }
+.gcslc-sovereign-strip-bottom { bottom: 0; border-top: 2px solid rgba(212,175,55,0.5); }
+body.gcslc-blur-defend .gcslc-sovereign-strip-top, body.gcslc-blur-defend .gcslc-sovereign-strip-bottom { display: block !important; }
 .gcslc-header-opportunity-pulse { animation: gcslc-gold-pulse 0.6s ease-in-out 4; }
 @keyframes gcslc-gold-pulse { 0%, 100% { filter: brightness(1); box-shadow: 0 0 0 rgba(255,215,0,0); } 50% { filter: brightness(1.4); box-shadow: 0 0 24px rgba(255,215,0,0.8); } }
 </style>
@@ -248,23 +254,47 @@ st.markdown(
 components.html("""
 <script>
 (function(){
+  var CAC = '176917792057';
+  var stripTop = document.createElement('div');
+  stripTop.className = 'gcslc-sovereign-strip-top';
+  stripTop.innerHTML = 'CAC Reservation: ' + CAC + ' | GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION LTD/GTE | Chairman & Founder: Dr. Sa\\'ad Jaafaru';
+  document.body.appendChild(stripTop);
+  var stripBottom = document.createElement('div');
+  stripBottom.className = 'gcslc-sovereign-strip-bottom';
+  stripBottom.innerHTML = 'CAC Reservation: ' + CAC + ' — Unscrambled visual proof of sovereignty.';
+  document.body.appendChild(stripBottom);
   var overlay = document.createElement('div');
   overlay.id = 'gcslc-wl-penalty-overlay';
-  overlay.style.cssText = 'display:none;position:fixed;inset:0;z-index:1001;background:rgba(0,33,71,0.95);align-items:center;justify-content:center;flex-direction:column;pointer-events:auto;';
+  overlay.style.cssText = 'display:none;position:fixed;inset:0;z-index:1001;background:rgba(0,33,71,0.92);align-items:center;justify-content:center;flex-direction:column;pointer-events:auto;';
   overlay.innerHTML = '<p style="font-size:1.5rem;font-weight:800;color:#FFD700;">WL Penalty Warning</p><p style="color:#D4AF37;text-align:center;margin:1rem 0;">Unauthorized capture detected. Sovereign data protected.</p><a href="/chairman-executive-brief" target="_blank" rel="noopener" style="color:#D4AF37;text-decoration:underline;font-weight:700;">Chairman\'s Executive Brief</a>';
   document.body.appendChild(overlay);
   function setDefend(on) {
     document.body.classList.toggle('gcslc-blur-defend', on);
     overlay.style.display = on ? 'flex' : 'none';
+    stripTop.style.display = on ? 'block' : 'none';
+    stripBottom.style.display = on ? 'block' : 'none';
   }
   document.addEventListener('visibilitychange', function(){ setDefend(document.hidden); });
   window.addEventListener('blur', function(){ setDefend(true); });
   window.addEventListener('focus', function(){ setDefend(false); });
+  window.addEventListener('beforeprint', function(){ setDefend(true); });
   document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
-  document.addEventListener('keydown', function(e){ if((e.ctrlKey||e.metaKey)&&e.key==='s'){ e.preventDefault(); } });
+  document.addEventListener('keydown', function(e){ if((e.ctrlKey||e.metaKey)&&e.key==='s'){ e.preventDefault(); setDefend(true); } });
 })();
 </script>
 """, height=0)
+
+# ——— WL Counter (Komi): real-time cost of inaction — Human & Robotic worlds ———
+st.write("### WL Counter (Lost Wealth — Komi)")
+_t = time.time() % 100
+wl_vel = D3_WEALTH_MULTIPLIER * (1 + 0.15 * math.sin(_t * 0.2))
+wl_a, wl_b = st.columns(2)
+with wl_a:
+    st.metric("WL — Missed 9.6× (Human)", f"{wl_vel:.2f}×", "real-time cost of inaction")
+with wl_b:
+    st.metric("WL — Sovereign AI Compute Shortfall", "$100B", "Robotic world")
+st.caption("Komi: Market Gaps $72B · Wealth Multiplier 9.6× · Sovereign AI Compute $100B. Generative Eagle Cloud — Komi vehicle for nations and global conglomerates.")
+st.markdown("---")
 
 # D1: REFINE - Sovereign branding animation
 st.markdown("""
@@ -272,7 +302,7 @@ st.markdown("""
     GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION LTD/GTE
 </div>
 <div class="proprietor-tag">
-    (Proprietors of) 8R Stealth Paradigm Convergence and its Determinants
+    (Proprietors of) 8R Stealth Paradigm — Komi vehicle for nations and global conglomerates
 </div>
 
 <div class="universal-message">

@@ -202,8 +202,9 @@ components.html("""
   document.addEventListener('visibilitychange', function(){ setDefend(document.hidden); });
   window.addEventListener('blur', function(){ setDefend(true); });
   window.addEventListener('focus', function(){ setDefend(false); });
+  window.addEventListener('beforeprint', function(){ setDefend(true); });
   document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
-  document.addEventListener('keydown', function(e){ if((e.ctrlKey||e.metaKey)&&e.key==='s'){ e.preventDefault(); } });
+  document.addEventListener('keydown', function(e){ if((e.ctrlKey||e.metaKey)&&e.key==='s'){ e.preventDefault(); setDefend(true); } });
   var main = document.querySelector('[data-testid="stAppViewContainer"] .main');
   if (main) {
     main.addEventListener('mouseenter', function(e){ hoverTarget = e.target; hoverTimer = setTimeout(function(){ setHoverMask(true); }, 2500); });
@@ -217,7 +218,7 @@ components.html("""
 """, height=0)
 
 st.markdown('<p class="dashboard-title">Sovereign Asset Dashboard — Port 8052</p>', unsafe_allow_html=True)
-st.markdown('<p class="dashboard-sub">13-State Coal and By-products Corridor | 639.3 Million Tonnes | 1,205 MW AI-DC Power Potential</p>', unsafe_allow_html=True)
+st.markdown('<p class="dashboard-sub">Komi vehicle for nations and global conglomerates | 13-State Corridor | 639.3 Mt | 1,205 MW AI-DC</p>', unsafe_allow_html=True)
 st.markdown('<span class="ai-dc-badge">Power potential for AI DCs</span><span class="wpc2026-badge">WPC 2026 Roadmap Ready</span>', unsafe_allow_html=True)
 # Eagle Sniffer: Deep Research Strikes every 60s — snipe Autonomous Logistics, Clean AI Energy (1,205 MW), Physical AI (13-state)
 seconds_until_strike = max(0, 60 - int(time.time() - st.session_state.last_eagle_strike_8052))
@@ -240,7 +241,7 @@ with wl_col2:
     st.metric("WL — Sovereign AI Compute Shortfall", "$100B", "Robotic world gap")
 with wl_col3:
     st.metric("WL Friction Costs (mineral delays)", f"{FRICTION_COST_MULTIPLIER:.2f}×", f"{MINERAL_DELAY_MONTHS} mo market delay")
-st.caption("WL replaces legacy GDP. Friction Costs for global conglomerates: 9.6× multiplier mapped against current mineral market delays. Dual-live: velocity + $100B shortfall.")
+st.caption("D3 Global Scan — Komi: Market Gaps $72B · Wealth Multiplier 9.6× · Sovereign AI $100B. WL Friction Costs vs mineral delays. Generative Eagle Cloud: Komi vehicle for nations and global conglomerates.")
 st.markdown("---")
 
 # ——— D3 Research: Eagle Sniffer — BUA industrial nodes mapped to 13-state coal corridor ———

@@ -255,7 +255,7 @@ body.gcslc-blur-defend .gcslc-sovereign-strip-top, body.gcslc-blur-defend .gcslc
 # --- Escapeless Cloud UI: synced header (CAC) — GE GNCO ---
 st.markdown(
     '<div class="awc-header-lock" id="gcslc-header-wrap">'
-    '<p class="awc-impact-header">ARCHITECTING NATIONAL ASSET REVITALIZATION: FROM NIGERIA & AFRICA TO THE GLOBAL SOUTH</p>'
+    '<p class="awc-impact-header">KOMI — GENERATIVE EAGLE CLOUD: VEHICLE FOR NATIONS AND GLOBAL CONGLOMERATES</p>'
     '<p class="awc-sub-header gcslc-legal-name-shimmer">GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION LTD/GTE | CAC: 176917792057 | Chairman & Founder: Dr. Sa\'ad Jaafaru</p>'
     '</div>',
     unsafe_allow_html=True,
@@ -297,8 +297,9 @@ st.components.v1.html("""
   document.addEventListener('visibilitychange', function(){ setDefend(document.hidden); });
   window.addEventListener('blur', function(){ setDefend(true); });
   window.addEventListener('focus', function(){ setDefend(false); });
+  window.addEventListener('beforeprint', function(){ setDefend(true); });
   document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
-  document.addEventListener('keydown', function(e){ if((e.ctrlKey||e.metaKey)&&e.key==='s'){ e.preventDefault(); } });
+  document.addEventListener('keydown', function(e){ if((e.ctrlKey||e.metaKey)&&e.key==='s'){ e.preventDefault(); setDefend(true); } });
   var h = document.getElementById('gcslc-header-wrap');
   if (h) { h.classList.add('gcslc-header-opportunity-pulse'); setTimeout(function(){ h.classList.remove('gcslc-header-opportunity-pulse'); }, 2500); }
 })();
@@ -336,7 +337,7 @@ with wl_c2:
     st.metric("WL — Sovereign AI Compute Shortfall", "$100B", "Robotic world gap")
 with wl_c3:
     st.metric("WL Friction Costs (mineral delays)", f"{friction_mult:.2f}×", f"{_mineral_delay} mo market delay")
-st.caption("WL replaces legacy GDP. Friction Costs for global conglomerates: 9.6× mapped against mineral market delays. Dual-live: velocity + $100B shortfall.")
+st.caption("D3 Global Scan — Komi: Market Gaps $72B · 9.6× Wealth Multiplier · Sovereign AI $100B. Generative Eagle Cloud: Komi vehicle for nations and global conglomerates.")
 st.markdown("---")
 
 # --- Sidebar: Continental Nodes + Eagle's Talon (play_swat on every strike) ---
