@@ -114,6 +114,8 @@ section[data-testid="stSidebar"] { background-color: #002147 !important; border-
 @keyframes gcslc-bubble-drift { 0%, 100% { transform: translate(0,0) scale(1); opacity: 0.06; } 25% { transform: translate(40px,-30px) scale(1.05); opacity: 0.11; } 50% { transform: translate(-30px,20px) scale(0.95); opacity: 0.07; } 75% { transform: translate(20px,30px) scale(1.02); opacity: 0.1; } }
 /* Screenshot defense: blur on visibilitychange/blur */
 body.gcslc-blur-defend [data-testid="stAppViewContainer"] { filter: blur(14px); transition: filter 0.25s ease; }
+.gcslc-header-opportunity-pulse { animation: gcslc-gold-pulse 0.6s ease-in-out 4; }
+@keyframes gcslc-gold-pulse { 0%, 100% { filter: brightness(1); box-shadow: 0 0 0 rgba(255,215,0,0); } 50% { filter: brightness(1.4); box-shadow: 0 0 24px rgba(255,215,0,0.8); } }
 </style>
 """, unsafe_allow_html=True)
 # Keyframes and .brand-8r kept in background (no leak)
@@ -224,10 +226,10 @@ st.markdown("""
 if os.path.isfile(SEAL_PATH):
     st.logo(SEAL_PATH)
 
-# Talon Lock: Chairman & Founder credentials locked at top (all ports) — shimmer legal name
+# Escapeless Cloud UI: synced header (CAC) — GE GNCO
 st.markdown(
-    '<div style="position: sticky; top: 0; z-index: 100; background: linear-gradient(180deg, #002147 0%, rgba(0,33,71,0.98) 100%); padding-bottom: 10px; margin-bottom: 8px; border-bottom: 1px solid rgba(212,175,55,0.25);">'
-    '<p class="gcslc-legal-name-shimmer" style="text-align: center; font-weight: 800; font-size: 0.95rem; margin: 0;">GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION LTD/GTE | Chairman & Founder: Dr. Sa\'ad Jaafaru</p>'
+    '<div id="gcslc-header-wrap" style="position: sticky; top: 0; z-index: 100; background: linear-gradient(180deg, #002147 0%, rgba(0,33,71,0.98) 100%); padding-bottom: 10px; margin-bottom: 8px; border-bottom: 1px solid rgba(212,175,55,0.25);">'
+    '<p class="gcslc-legal-name-shimmer" style="text-align: center; font-weight: 800; font-size: 0.95rem; margin: 0;">GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION LTD/GTE | CAC: 176917792057 | Chairman & Founder: Dr. Sa\'ad Jaafaru</p>'
     '</div>',
     unsafe_allow_html=True,
 )
@@ -246,9 +248,18 @@ st.markdown(
 components.html("""
 <script>
 (function(){
-  document.addEventListener('visibilitychange', function(){ document.body.classList.toggle('gcslc-blur-defend', document.hidden); });
-  window.addEventListener('blur', function(){ document.body.classList.add('gcslc-blur-defend'); });
-  window.addEventListener('focus', function(){ document.body.classList.remove('gcslc-blur-defend'); });
+  var overlay = document.createElement('div');
+  overlay.id = 'gcslc-wl-penalty-overlay';
+  overlay.style.cssText = 'display:none;position:fixed;inset:0;z-index:1001;background:rgba(0,33,71,0.95);align-items:center;justify-content:center;flex-direction:column;pointer-events:auto;';
+  overlay.innerHTML = '<p style="font-size:1.5rem;font-weight:800;color:#FFD700;">WL Penalty Warning</p><p style="color:#D4AF37;text-align:center;margin:1rem 0;">Unauthorized capture detected. Sovereign data protected.</p><a href="/chairman-executive-brief" target="_blank" rel="noopener" style="color:#D4AF37;text-decoration:underline;font-weight:700;">Chairman\'s Executive Brief</a>';
+  document.body.appendChild(overlay);
+  function setDefend(on) {
+    document.body.classList.toggle('gcslc-blur-defend', on);
+    overlay.style.display = on ? 'flex' : 'none';
+  }
+  document.addEventListener('visibilitychange', function(){ setDefend(document.hidden); });
+  window.addEventListener('blur', function(){ setDefend(true); });
+  window.addEventListener('focus', function(){ setDefend(false); });
   document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
   document.addEventListener('keydown', function(e){ if((e.ctrlKey||e.metaKey)&&e.key==='s'){ e.preventDefault(); } });
 })();

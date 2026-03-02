@@ -8,6 +8,7 @@ GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION LTD/GTE — © 
 import os
 import sys
 import importlib.util
+import math
 import time
 import warnings
 import streamlit as st
@@ -85,9 +86,16 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Eagle Sync: 120s refresh of 13-state corridor / 1,205 MW metrics (Eagle Sniffer strike)
+# Eagle Sync: 60s Deep Research Strike (Eagle Sniffer — D3 & D7 Agentic)
 if "last_eagle_strike_8052" not in st.session_state:
     st.session_state.last_eagle_strike_8052 = time.time()
+if "last_snipped_alert_8052" not in st.session_state:
+    st.session_state.last_snipped_alert_8052 = 0
+SNIPPED_ALERTS = [
+    "Autonomous Logistics",
+    "Clean AI Energy (1,205 MW)",
+    "Physical AI — 13-state corridor",
+]
 
 # GCSLC Sovereign aesthetic — Navy & Gold
 st.markdown("""
@@ -114,13 +122,29 @@ section[data-testid="stSidebar"] { background-color: #002147 !important; border-
 .gcslc-bubble { position: absolute; font-size: 0.85rem; font-weight: 700; color: rgba(212,175,55,0.5); letter-spacing: 0.15em; white-space: nowrap; animation: gcslc-bubble-drift 18s ease-in-out infinite; opacity: 0.08; }
 @keyframes gcslc-bubble-drift { 0%, 100% { transform: translate(0,0) scale(1); opacity: 0.06; } 25% { transform: translate(40px,-30px) scale(1.05); opacity: 0.11; } 50% { transform: translate(-30px,20px) scale(0.95); opacity: 0.07; } 75% { transform: translate(20px,30px) scale(1.02); opacity: 0.1; } }
 body.gcslc-blur-defend [data-testid="stAppViewContainer"] { filter: blur(14px); transition: filter 0.25s ease; }
+.gcslc-wl-penalty-overlay { display: none; position: fixed; inset: 0; z-index: 1001; background: rgba(0,33,71,0.92); align-items: center; justify-content: center; flex-direction: column; pointer-events: auto; }
+body.gcslc-blur-defend .gcslc-wl-penalty-overlay { display: flex !important; }
+.gcslc-wl-penalty-overlay .wl-title { font-size: 1.5rem; font-weight: 800; color: #FFD700; margin-bottom: 1rem; text-align: center; }
+.gcslc-wl-penalty-overlay .wl-link { color: #D4AF37; text-decoration: underline; font-weight: 700; }
+.gcslc-header-opportunity-pulse { animation: gcslc-gold-pulse 0.6s ease-in-out 4; }
+@keyframes gcslc-gold-pulse { 0%, 100% { filter: brightness(1); box-shadow: 0 0 0 rgba(255,215,0,0); } 50% { filter: brightness(1.4); box-shadow: 0 0 24px rgba(255,215,0,0.8); } }
 </style>
 """, unsafe_allow_html=True)
 
-# ——— Chairman Lock: Dr. Sa'ad Jaafaru — sticky at top; legal name shimmer ———
+# Escapeless Cloud UI: synced header (CAC) — pulse on load (script adds class when New Global Opportunity Snipped)
+st.session_state.last_snipped_alert_8052 = (st.session_state.last_snipped_alert_8052 + 1) % len(SNIPPED_ALERTS)
 st.markdown(
-    '<div style="position: sticky; top: 0; z-index: 100; background: linear-gradient(180deg, #002147 0%, rgba(0,33,71,0.98) 100%); padding-bottom: 10px; margin-bottom: 12px; border-bottom: 1px solid rgba(212,175,55,0.25);">'
-    '<p class="gcslc-legal-name-shimmer" style="text-align: center; font-weight: 800; font-size: 0.95rem; margin: 0;">GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION LTD/GTE | Chairman & Founder: Dr. Sa\'ad Jaafaru</p>'
+    '<div id="gcslc-header-wrap" style="position: sticky; top: 0; z-index: 100; background: linear-gradient(180deg, #002147 0%, rgba(0,33,71,0.98) 100%); padding-bottom: 10px; margin-bottom: 12px; border-bottom: 1px solid rgba(212,175,55,0.25);">'
+    '<p class="gcslc-legal-name-shimmer" style="text-align: center; font-weight: 800; font-size: 0.95rem; margin: 0;">GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION LTD/GTE | CAC: 176917792057 | Chairman & Founder: Dr. Sa\'ad Jaafaru</p>'
+    '</div>',
+    unsafe_allow_html=True,
+)
+# WL Penalty overlay (shown by Active Defense script when capture detected)
+st.markdown(
+    '<div class="gcslc-wl-penalty-overlay" id="gcslc-wl-penalty-8052" aria-hidden="true">'
+    '<p class="wl-title">WL Penalty Warning</p>'
+    '<p style="color: #D4AF37; text-align: center; margin-bottom: 1rem;">Unauthorized capture detected. Sovereign data protected.</p>'
+    '<a class="wl-link" href="/chairman-executive-brief" target="_blank" rel="noopener">Chairman\'s Executive Brief</a>'
     '</div>',
     unsafe_allow_html=True,
 )
@@ -138,12 +162,23 @@ st.markdown(
 components.html("""
 <script>
 (function(){
-  document.addEventListener('visibilitychange', function(){ document.body.classList.toggle('gcslc-blur-defend', document.hidden); });
-  window.addEventListener('blur', function(){ document.body.classList.add('gcslc-blur-defend'); });
-  window.addEventListener('focus', function(){ document.body.classList.remove('gcslc-blur-defend'); });
+  var overlay = document.createElement('div');
+  overlay.id = 'gcslc-wl-penalty-overlay';
+  overlay.style.cssText = 'display:none;position:fixed;inset:0;z-index:1001;background:rgba(0,33,71,0.95);align-items:center;justify-content:center;flex-direction:column;pointer-events:auto;';
+  overlay.innerHTML = '<p style="font-size:1.5rem;font-weight:800;color:#FFD700;">WL Penalty Warning</p><p style="color:#D4AF37;text-align:center;margin:1rem 0;">Unauthorized capture detected. Sovereign data protected.</p><a href="/chairman-executive-brief" target="_blank" rel="noopener" style="color:#D4AF37;text-decoration:underline;font-weight:700;">Chairman\'s Executive Brief</a>';
+  document.body.appendChild(overlay);
+  function setDefend(on) {
+    document.body.classList.toggle('gcslc-blur-defend', on);
+    overlay.style.display = on ? 'flex' : 'none';
+  }
+  document.addEventListener('visibilitychange', function(){ setDefend(document.hidden); });
+  window.addEventListener('blur', function(){ setDefend(true); });
+  window.addEventListener('focus', function(){ setDefend(false); });
   document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
   document.addEventListener('keydown', function(e){ if((e.ctrlKey||e.metaKey)&&e.key==='s'){ e.preventDefault(); } });
-  setTimeout(function(){ window.location.reload(); }, 120000);
+  setTimeout(function(){ window.location.reload(); }, 60000);
+  var h = document.getElementById('gcslc-header-wrap');
+  if (h) { h.classList.add('gcslc-header-opportunity-pulse'); setTimeout(function(){ h.classList.remove('gcslc-header-opportunity-pulse'); }, 2500); }
 })();
 </script>
 """, height=0)
@@ -151,9 +186,24 @@ components.html("""
 st.markdown('<p class="dashboard-title">Sovereign Asset Dashboard — Port 8052</p>', unsafe_allow_html=True)
 st.markdown('<p class="dashboard-sub">13-State Coal and By-products Corridor | 639.3 Million Tonnes | 1,205 MW AI-DC Power Potential</p>', unsafe_allow_html=True)
 st.markdown('<span class="ai-dc-badge">Power potential for AI DCs</span><span class="wpc2026-badge">WPC 2026 Roadmap Ready</span>', unsafe_allow_html=True)
-# Eagle Sniffer: 13-state corridor strike every 120s — next refresh countdown
-seconds_until_strike = max(0, 120 - int(time.time() - st.session_state.last_eagle_strike_8052))
-st.caption(f"**Eagle Sniffer:** 13-state corridor map refreshes every 120s. Next strike in **{seconds_until_strike}**s — 1,205 MW AI-Power metrics.")
+# Eagle Sniffer: Deep Research Strikes every 60s — snipe Autonomous Logistics, Clean AI Energy (1,205 MW), Physical AI (13-state)
+seconds_until_strike = max(0, 60 - int(time.time() - st.session_state.last_eagle_strike_8052))
+_snipped = SNIPPED_ALERTS[st.session_state.last_snipped_alert_8052 % len(SNIPPED_ALERTS)]
+st.success(f"**New Global Opportunity Snipped:** {_snipped} — GE GNCO Multi-Purpose Vehicle.")
+st.caption(f"**Eagle Sniffer (D3 & D7):** Deep Research Strike every 60s. Next in **{seconds_until_strike}**s — 1.2 GW (1,205 MW) WPC 2026 Roadmap Ready, 13-state corridor.")
+st.markdown("---")
+
+# ——— WL Counter (D2 Reset): dual-live — Lost Wealth velocity + $100B AI Compute shortfall ———
+st.write("### WL Counter (Lost Wealth — D2 Reset)")
+wl_col1, wl_col2 = st.columns(2)
+with wl_col1:
+    # Non-linear velocity of missed 9.6× wealth multipliers for Human Assets
+    _t = time.time() % 100
+    wl_velocity = 9.6 * (1 + 0.15 * math.sin(_t * 0.2))
+    st.metric("WL — Missed 9.6× (Human Assets)", f"{wl_velocity:.2f}×", "non-linear velocity")
+with wl_col2:
+    st.metric("WL — Sovereign AI Compute Shortfall", "$100B", "Robotic world gap")
+st.caption("WL replaces legacy GDP. Dual-live: missed 9.6× wealth multiplier velocity + $100B shortfall in Sovereign AI Compute.")
 st.markdown("---")
 
 # ——— Real-time Market Gaps: $72B + 94% vs 22% ———
@@ -184,7 +234,7 @@ k1, k2, k3, k4 = st.columns(4)
 with k1:
     st.metric("Total proven reserves", f"{total_mt:.1f}", "million tonnes")
 with k2:
-    st.metric("Power potential (AI-DC)", f"{total_mw}", "MW — WPC 2026 Roadmap Ready")
+    st.metric("Power potential (AI-DC)", f"{total_mw}", "MW (1.2 GW) — WPC 2026 Roadmap Ready")
 with k3:
     st.metric("States with reserves", "13", "regions")
 with k4:
@@ -218,7 +268,7 @@ st.markdown(
     "for fertilizers delivers a **9.6× wealth multiplier**. Power potential (MW) above is **AI DC ready** — sovereign control over "
     "strategic data re-mapping and 51/49 IFC/Asian Bank funding de-risks the $15B Phase 1 CAPEX."
 )
-st.metric("Total power potential (AI-DC)", f"{total_mw} MW", help="13-state coal corridor — WPC 2026 Roadmap Ready (Riyadh Energy Congress)")
+st.metric("Total power potential (AI-DC)", f"{total_mw} MW (1.2 GW)", help="13-state coal corridor — 1.2 GW WPC 2026 Roadmap Ready (Riyadh Energy Congress)")
 st.caption("1,205 MW AI-DC Power Potential tagged **WPC 2026 Roadmap Ready** — aligned with Riyadh Energy Congress. Source: 8R Stealth B_files/app.html.")
 st.markdown("---")
 
