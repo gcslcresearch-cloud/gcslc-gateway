@@ -7,6 +7,7 @@ import os
 import warnings
 from collections import defaultdict
 import streamlit as st
+import streamlit.components.v1 as components
 
 warnings.filterwarnings("ignore", category=DeprecationWarning, module="streamlit")
 warnings.filterwarnings("ignore", message=".*use_container_width.*")
@@ -104,6 +105,15 @@ section[data-testid="stSidebar"] { background-color: #002147 !important; border-
 /* IP Shield: Proprietary Methodology watermark on pydeck map (8R Stealth Paradigm) */
 [data-testid="stPydeckChart"] { position: relative !important; }
 [data-testid="stPydeckChart"]::after { content: "Proprietary Methodology"; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%) rotate(-22deg); font-size: 1.4rem; font-weight: 700; color: rgba(212,175,55,0.18); pointer-events: none; white-space: nowrap; letter-spacing: 0.2em; text-transform: uppercase; z-index: 2; }
+/* Active Defense: legal name shimmer (navy-and-gold) — uniformity across quad-port */
+.gcslc-legal-name-shimmer { background: linear-gradient(90deg, #002147, #D4AF37, #FFE55C, #D4AF37, #002147); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent !important; animation: gcslc-shimmer 4s linear infinite; }
+@keyframes gcslc-shimmer { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+/* Bubble watermark: drift + pulse (low opacity) */
+#gcslc-bubble-wrap { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 998; overflow: hidden; }
+.gcslc-bubble { position: absolute; font-size: 0.85rem; font-weight: 700; color: rgba(212,175,55,0.5); letter-spacing: 0.15em; white-space: nowrap; animation: gcslc-bubble-drift 18s ease-in-out infinite; opacity: 0.08; }
+@keyframes gcslc-bubble-drift { 0%, 100% { transform: translate(0,0) scale(1); opacity: 0.06; } 25% { transform: translate(40px,-30px) scale(1.05); opacity: 0.11; } 50% { transform: translate(-30px,20px) scale(0.95); opacity: 0.07; } 75% { transform: translate(20px,30px) scale(1.02); opacity: 0.1; } }
+/* Screenshot defense: blur on visibilitychange/blur */
+body.gcslc-blur-defend [data-testid="stAppViewContainer"] { filter: blur(14px); transition: filter 0.25s ease; }
 </style>
 """, unsafe_allow_html=True)
 # Keyframes and .brand-8r kept in background (no leak)
@@ -214,13 +224,36 @@ st.markdown("""
 if os.path.isfile(SEAL_PATH):
     st.logo(SEAL_PATH)
 
-# Talon Lock: Chairman & Founder credentials locked at top (all ports)
+# Talon Lock: Chairman & Founder credentials locked at top (all ports) — shimmer legal name
 st.markdown(
     '<div style="position: sticky; top: 0; z-index: 100; background: linear-gradient(180deg, #002147 0%, rgba(0,33,71,0.98) 100%); padding-bottom: 10px; margin-bottom: 8px; border-bottom: 1px solid rgba(212,175,55,0.25);">'
-    '<p style="text-align: center; font-weight: 800; color: #D4AF37; font-size: 0.95rem; margin: 0;">GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION LTD/GTE | Chairman & Founder: Dr. Sa\'ad Jaafaru</p>'
+    '<p class="gcslc-legal-name-shimmer" style="text-align: center; font-weight: 800; font-size: 0.95rem; margin: 0;">GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION LTD/GTE | Chairman & Founder: Dr. Sa\'ad Jaafaru</p>'
     '</div>',
     unsafe_allow_html=True,
 )
+# Active Defense: bubble watermark (PROPRIETARY 8R / CAC) + screenshot defense + disable right-click/Save As
+st.markdown(
+    '<div id="gcslc-bubble-wrap" aria-hidden="true">'
+    '<span class="gcslc-bubble" style="left:5%;top:15%;animation-delay:0s">PROPRIETARY 8R METHODOLOGY</span>'
+    '<span class="gcslc-bubble" style="left:60%;top:25%;animation-delay:3s">CAC: 176917792057</span>'
+    '<span class="gcslc-bubble" style="left:25%;top:70%;animation-delay:6s">PROPRIETARY 8R METHODOLOGY</span>'
+    '<span class="gcslc-bubble" style="left:75%;top:55%;animation-delay:9s">CAC: 176917792057</span>'
+    '<span class="gcslc-bubble" style="left:40%;top:40%;animation-delay:12s">PROPRIETARY 8R METHODOLOGY</span>'
+    '<span class="gcslc-bubble" style="left:85%;top:80%;animation-delay:2s">CAC: 176917792057</span>'
+    '</div>',
+    unsafe_allow_html=True,
+)
+components.html("""
+<script>
+(function(){
+  document.addEventListener('visibilitychange', function(){ document.body.classList.toggle('gcslc-blur-defend', document.hidden); });
+  window.addEventListener('blur', function(){ document.body.classList.add('gcslc-blur-defend'); });
+  window.addEventListener('focus', function(){ document.body.classList.remove('gcslc-blur-defend'); });
+  document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+  document.addEventListener('keydown', function(e){ if((e.ctrlKey||e.metaKey)&&e.key==='s'){ e.preventDefault(); } });
+})();
+</script>
+""", height=0)
 
 # D1: REFINE - Sovereign branding animation
 st.markdown("""

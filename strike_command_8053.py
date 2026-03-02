@@ -8,6 +8,7 @@ import sys
 import importlib.util
 import warnings
 import streamlit as st
+import streamlit.components.v1 as components
 
 warnings.filterwarnings("ignore", category=DeprecationWarning, module="streamlit")
 warnings.filterwarnings("ignore", message=".*use_container_width.*")
@@ -46,16 +47,34 @@ section[data-testid="stSidebar"] { background-color: #002147 !important; border-
 .gcslc-sovereign-footer .cac { letter-spacing: 0.1em; opacity: 0.95; }
 .gcslc-sovereign-footer .chairman { font-weight: 700; margin-top: 0.2rem; }
 .main .block-container { padding-bottom: 4rem !important; }
+.gcslc-legal-name-shimmer { background: linear-gradient(90deg, #002147, #D4AF37, #FFE55C, #D4AF37, #002147); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent !important; animation: gcslc-shimmer 4s linear infinite; }
+@keyframes gcslc-shimmer { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+#gcslc-bubble-wrap { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 998; overflow: hidden; }
+.gcslc-bubble { position: absolute; font-size: 0.85rem; font-weight: 700; color: rgba(212,175,55,0.5); letter-spacing: 0.15em; white-space: nowrap; animation: gcslc-bubble-drift 18s ease-in-out infinite; opacity: 0.08; }
+@keyframes gcslc-bubble-drift { 0%, 100% { transform: translate(0,0) scale(1); opacity: 0.06; } 25% { transform: translate(40px,-30px) scale(1.05); opacity: 0.11; } 50% { transform: translate(-30px,20px) scale(0.95); opacity: 0.07; } 75% { transform: translate(20px,30px) scale(1.02); opacity: 0.1; } }
+body.gcslc-blur-defend [data-testid="stAppViewContainer"] { filter: blur(14px); transition: filter 0.25s ease; }
 </style>
 """, unsafe_allow_html=True)
 
-# ——— Chairman Lock (Port 8053) ———
+# ——— Chairman Lock (Port 8053) — shimmer legal name ———
 st.markdown(
     '<div style="position: sticky; top: 0; z-index: 100; background: linear-gradient(180deg, #002147 0%, rgba(0,33,71,0.98) 100%); padding-bottom: 10px; margin-bottom: 12px; border-bottom: 1px solid rgba(212,175,55,0.25);">'
-    '<p style="text-align: center; font-weight: 800; color: #D4AF37; font-size: 0.95rem; margin: 0;">GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION LTD/GTE | Chairman & Founder: Dr. Sa\'ad Jaafaru</p>'
+    '<p class="gcslc-legal-name-shimmer" style="text-align: center; font-weight: 800; font-size: 0.95rem; margin: 0;">GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION LTD/GTE | Chairman & Founder: Dr. Sa\'ad Jaafaru</p>'
     '</div>',
     unsafe_allow_html=True,
 )
+st.markdown(
+    '<div id="gcslc-bubble-wrap" aria-hidden="true">'
+    '<span class="gcslc-bubble" style="left:5%;top:15%;animation-delay:0s">PROPRIETARY 8R METHODOLOGY</span>'
+    '<span class="gcslc-bubble" style="left:60%;top:25%;animation-delay:3s">CAC: 176917792057</span>'
+    '<span class="gcslc-bubble" style="left:25%;top:70%;animation-delay:6s">PROPRIETARY 8R METHODOLOGY</span>'
+    '<span class="gcslc-bubble" style="left:75%;top:55%;animation-delay:9s">CAC: 176917792057</span>'
+    '<span class="gcslc-bubble" style="left:40%;top:40%;animation-delay:12s">PROPRIETARY 8R METHODOLOGY</span>'
+    '<span class="gcslc-bubble" style="left:85%;top:80%;animation-delay:2s">CAC: 176917792057</span>'
+    '</div>',
+    unsafe_allow_html=True,
+)
+components.html("""<script>(function(){ document.addEventListener('visibilitychange', function(){ document.body.classList.toggle('gcslc-blur-defend', document.hidden); }); window.addEventListener('blur', function(){ document.body.classList.add('gcslc-blur-defend'); }); window.addEventListener('focus', function(){ document.body.classList.remove('gcslc-blur-defend'); }); document.addEventListener('contextmenu', function(e){ e.preventDefault(); }); document.addEventListener('keydown', function(e){ if((e.ctrlKey||e.metaKey)&&e.key==='s'){ e.preventDefault(); } }); })();</script>""", height=0)
 
 st.markdown('<p class="strike-header">8R Strike Command — Synchronized</p>', unsafe_allow_html=True)
 st.markdown('<p class="strike-sub">Port 8053 | $1.5 Trillion Initiative & Institutional Partners</p>', unsafe_allow_html=True)
