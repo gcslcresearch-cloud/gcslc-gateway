@@ -73,6 +73,13 @@ COAL_CORRIDOR_POWER_MW = {
 }
 TOTAL_POWER_MW = 1205  # AI-DC Power Potential — WPC 2026 Roadmap Ready
 
+# D8 IP Lockdown: only current Abuja IP sees clear data; others get 14px blur + Unauthorized WL Access
+def _is_abuja_ip():
+    allowed = [x.strip() for x in os.environ.get("GCSLC_ABUJA_IPS", "127.0.0.1,::1").split(",") if x.strip()]
+    ctx = getattr(st, "context", None)
+    client_ip = (getattr(ctx, "ip_address", None) or "").strip()
+    return client_ip in allowed
+
 # D7: Cache WL and 1,205 MW / corridor so they compute once per TTL (thermal relief)
 @st.cache_data(ttl=60)
 def _cached_wl_velocity():
@@ -152,8 +159,8 @@ section[data-testid="stSidebar"] { background-color: #002147 !important; border-
 .gcslc-sovereign-footer .chairman { font-weight: 700; margin-top: 0.2rem; }
 .gcslc-legal-name-shimmer { background: linear-gradient(90deg, #002147, #D4AF37, #FFE55C, #D4AF37, #002147); background-size: 100% auto; -webkit-background-clip: text; background-clip: text; color: #D4AF37 !important; }
 #gcslc-bubble-wrap { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 998; overflow: hidden; }
-.gcslc-bubble { position: absolute; font-size: 0.85rem; font-weight: 700; color: rgba(212,175,55,0.5); letter-spacing: 0.15em; white-space: nowrap; animation: gcslc-bubble-drift 18s ease-in-out infinite; opacity: 0.08; }
-@keyframes gcslc-bubble-drift { 0%, 100% { transform: translate(0,0) scale(1); opacity: 0.06; } 25% { transform: translate(40px,-30px) scale(1.05); opacity: 0.11; } 50% { transform: translate(-30px,20px) scale(0.95); opacity: 0.07; } 75% { transform: translate(20px,30px) scale(1.02); opacity: 0.1; } }
+/* D8 Mac: static bubble — no animation to reduce GPU load / thermal blanking */
+.gcslc-bubble { position: absolute; font-size: 0.85rem; font-weight: 700; color: rgba(212,175,55,0.5); letter-spacing: 0.15em; white-space: nowrap; opacity: 0.07; }
 body.gcslc-blur-defend [data-testid="stAppViewContainer"] { filter: blur(14px); transition: filter 0.25s ease; }
 body.gcslc-blur-defend .gcslc-sovereign-strike-visible { filter: none !important; }
 .gcslc-wl-penalty-overlay { display: none; position: fixed; inset: 0; z-index: 1001; flex-direction: column; pointer-events: auto; }
@@ -163,8 +170,8 @@ body.gcslc-blur-defend .gcslc-wl-penalty-overlay { display: flex !important; }
 .gcslc-sovereign-strip-bottom { bottom: 0; border-top: 2px solid rgba(212,175,55,0.5); }
 body.gcslc-blur-defend .gcslc-sovereign-strip-top, body.gcslc-blur-defend .gcslc-sovereign-strip-bottom { display: block !important; }
 body.gcslc-hover-mask .gcslc-bua-shimmer-overlay { display: block !important; }
-.gcslc-bua-shimmer-overlay { display: none; position: fixed; inset: 0; z-index: 1000; pointer-events: none; background: repeating-linear-gradient(105deg, transparent 0px, rgba(212,175,55,0.08) 1px, rgba(212,175,55,0.12) 2px, transparent 3px); background-size: 200% 100%; animation: gcslc-formula-mask 1.2s linear infinite; }
-@keyframes gcslc-formula-mask { 0% { background-position: 0% 0; } 100% { background-position: 200% 0; } }
+/* D8 Mac: static overlay — no shimmer animation to reduce GPU/thermal load */
+.gcslc-bua-shimmer-overlay { display: none; position: fixed; inset: 0; z-index: 1000; pointer-events: none; background: repeating-linear-gradient(105deg, transparent 0px, rgba(212,175,55,0.06) 1px, transparent 2px); background-size: 100% 100%; }
 .gcslc-wl-penalty-overlay .wl-title { font-size: 1.5rem; font-weight: 800; color: #FFD700; margin-bottom: 1rem; text-align: center; }
 .gcslc-wl-penalty-overlay .wl-link { color: #D4AF37; text-decoration: underline; font-weight: 700; }
 .gcslc-header-opportunity-pulse { animation: gcslc-gold-pulse 0.6s ease-in-out 4; }
@@ -180,11 +187,11 @@ st.markdown(
     '</div>',
     unsafe_allow_html=True,
 )
-# WL Penalty overlay (shown by Active Defense script when capture detected)
+# WL Penalty overlay (D8: shown when non-Abuja IP or capture detected)
 st.markdown(
     '<div class="gcslc-wl-penalty-overlay" id="gcslc-wl-penalty-8052" aria-hidden="true">'
-    '<p class="wl-title">WL Penalty Warning</p>'
-    '<p style="color: #D4AF37; text-align: center; margin-bottom: 1rem;">Unauthorized capture detected. Sovereign data protected.</p>'
+    '<p class="wl-title">Unauthorized WL Access</p>'
+    '<p style="color: #D4AF37; text-align: center; margin-bottom: 1rem;">Access restricted to authorized Abuja IP. Sovereign data protected.</p>'
     '<a class="wl-link" href="/chairman-executive-brief" target="_blank" rel="noopener">Chairman\'s Executive Brief</a>'
     '</div>',
     unsafe_allow_html=True,
@@ -200,9 +207,11 @@ st.markdown(
     '</div>',
     unsafe_allow_html=True,
 )
+_authorized_ip_8052 = _is_abuja_ip()
 components.html("""
 <script>
 (function(){
+  var authorizedIp = """ + ("true" if _authorized_ip_8052 else "false") + """;
   var CAC = '176917792057';
   var stripTop = document.createElement('div');
   stripTop.className = 'gcslc-sovereign-strip-top';
@@ -216,7 +225,7 @@ components.html("""
   var overlay = document.createElement('div');
   overlay.id = 'gcslc-wl-penalty-overlay';
   overlay.style.cssText = 'display:none;position:fixed;inset:0;z-index:1001;background:rgba(0,33,71,0.92);align-items:center;justify-content:center;flex-direction:column;pointer-events:auto;';
-  overlay.innerHTML = '<p style="font-size:1.5rem;font-weight:800;color:#FFD700;">WL Penalty Warning</p><p style="color:#D4AF37;text-align:center;margin:1rem 0;">Unauthorized capture detected. Sovereign data protected.</p><a href="/chairman-executive-brief" target="_blank" rel="noopener" style="color:#D4AF37;text-decoration:underline;font-weight:700;">Chairman\'s Executive Brief</a>';
+  overlay.innerHTML = '<p style="font-size:1.5rem;font-weight:800;color:#FFD700;">Unauthorized WL Access</p><p style="color:#D4AF37;text-align:center;margin:1rem 0;">Access restricted to authorized Abuja IP. Sovereign data protected.</p><a href="/chairman-executive-brief" target="_blank" rel="noopener" style="color:#D4AF37;text-decoration:underline;font-weight:700;">Chairman\'s Executive Brief</a>';
   document.body.appendChild(overlay);
   var shimmerOverlay = document.createElement('div');
   shimmerOverlay.className = 'gcslc-bua-shimmer-overlay';
@@ -232,6 +241,7 @@ components.html("""
     document.body.classList.toggle('gcslc-hover-mask', on);
     if (on) setDefend(true);
   }
+  if (!authorizedIp) { setDefend(true); overlay.style.display = 'flex'; }
   document.addEventListener('visibilitychange', function(){ setDefend(document.hidden); });
   document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
   var main = document.querySelector('[data-testid="stAppViewContainer"] .main');
@@ -373,6 +383,7 @@ st.markdown(
     '<div class="gcslc-sovereign-footer">'
     '<span class="cac">CAC Name Availability Code: 176917792057</span>'
     '<p class="chairman">GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION LTD/GTE | Chairman & Founder: Dr. Sa\'ad Jaafaru</p>'
+    '<p class="gcslc-signature-lock" style="font-size:0.7rem;opacity:0.9;margin-top:0.2rem;">CAC & Chairman Lock: local, non-transferable signature — Dr. Sa\'ad Jaafaru. D8 Retain.</p>'
     '<p style="font-size:0.7rem;opacity:0.9;margin-top:0.2rem;">CAC Code & shimmering branding — unscrambled visual proof of sovereignty.</p>'
     '</div>',
     unsafe_allow_html=True,
