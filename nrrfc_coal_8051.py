@@ -1,7 +1,7 @@
 """
-National Wealth Cloud for Nigeria: Coal & Diamond (NWC/C&D)
-Sovereign Gateway — 8R Stealth Paradigm | Galadiman Ruwa Center For Strategic Leadership and Communication LTD/GTE — GCSLC
-Launch-ready: width="stretch" (2026 standard); no use_container_width.
+NRRFC Coal SSMV — Port 8051 | National Wealth Cloud for Nigeria: Coal & Diamond (NWC/C&D)
+Sovereign Gateway — 8R Stealth Paradigm | Galadiman Ruwa Center (GCSLC) LTD/GTE
+Coal_SSMV dashboard: run from project root. Path: GCSLC_Sovereign_Gateway/nrrfc_coal_8051.py
 """
 import os
 import warnings
@@ -51,7 +51,7 @@ This partnership is governed by a **fixed {int(WEALTH_RETENTION_LOCK * 100)}% Va
 
 # D7: set_page_config must be the very first Streamlit command (no st.* before this)
 st.set_page_config(
-    page_title="NWC/C&D — GCSLC Sovereign Gateway",
+    page_title="NWC/C&D — Port 8051 — GCSLC Sovereign Gateway",
     layout="wide",
     initial_sidebar_state="expanded",
 )
