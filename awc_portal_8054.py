@@ -350,6 +350,8 @@ with st.expander("**Sovereign Rationale — Big Tech Handshake Manifesto**", exp
 # --- Map container: Glassmorphism + Regional Pulse + Eagle's Talon dive ---
 st.write("### The Sovereign Glass — Continental View")
 st.caption("**GCSLC Sovereign Diagnostic** | **Live Eagle Engine:** Sniffer hovers over map → on node click, high-velocity **Talon Strike** with **play_swat** 180 Hz audio sync. ($10B+ nodes: golden radar sweep.)")
+# Talon Lock 100%: Force Sovereign Glass fallback so nodes always appear (GPU/WebGL disabled or not)
+st.markdown(SOVEREIGN_GLASS_MAP_FALLBACK_HTML, unsafe_allow_html=True)
 map_container_class = "awc-map-glass"
 if st.session_state.pulse_triggered and st.session_state.selected_node:
     if st.session_state.selected_node == "nigeria":
@@ -395,7 +397,6 @@ EAGLE_TALON_SVG = '''<svg class="awc-eagle-talon" width="72" height="52" viewBox
 show_talon_strike = st.session_state.pulse_triggered and st.session_state.selected_node
 show_sniffer_hover = deck and not show_talon_strike
 eagle_html = EAGLE_TALON_SVG if show_talon_strike else (EAGLE_SNIFFER_SVG if show_sniffer_hover else "")
-map_use_fallback = False
 if deck:
     st.markdown(
         f'<div class="{map_container_class}" style="padding: 8px; position: relative;">{eagle_html}',
@@ -404,12 +405,8 @@ if deck:
     try:
         st.pydeck_chart(deck, use_container_width=True)  # 2026 equivalent stretch; may fail if GPU/WebGL disabled
     except Exception:
-        map_use_fallback = True
+        pass  # Fallback already shown above — nodes always visible
     st.markdown("</div>", unsafe_allow_html=True)
-else:
-    map_use_fallback = True
-if map_use_fallback:
-    st.markdown(SOVEREIGN_GLASS_MAP_FALLBACK_HTML, unsafe_allow_html=True)
 if st.session_state.pulse_triggered and st.session_state.selected_node:
     st.session_state.pulse_triggered = False
 

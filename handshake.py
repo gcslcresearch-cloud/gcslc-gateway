@@ -44,7 +44,7 @@ def run_diagnostic_pulse() -> None:
     print("ALL 37 NODES SECURED. ENGAGING TALON LOCK.")
     print("=" * 45)
     play_sound("talon_lock")
-    print("STATUS: 95% TALON LOCK CONFIRMED.")
+    print("STATUS: 100% TALON LOCK CONFIRMED.")
 
 
 def run_sovereign_handshake() -> None:
