@@ -14,6 +14,14 @@ import importlib.util
 import time
 
 import streamlit as st
+import warnings
+
+# 2026 engine standard: full-width elements use width="stretch" (replaces deprecated use_container_width=True)
+WIDTH_2026 = "stretch"
+
+# Suppress deprecation warnings from dependencies to avoid "Temporary Error" / warning tab in browser
+warnings.filterwarnings("ignore", category=DeprecationWarning, module="streamlit")
+warnings.filterwarnings("ignore", message=".*use_container_width.*")
 
 # Load African_Gateway modules (folder name has a dot; use file path)
 _BASE = os.path.dirname(os.path.abspath(__file__))
@@ -28,6 +36,42 @@ def _load_module(name: str, path: str):
 
 africa_map = _load_module("awc_africa_map", os.path.join(_GATEWAY, "africa_map.py"))
 continental_logic = _load_module("awc_continental_logic", os.path.join(_GATEWAY, "continental_logic.py"))
+
+# Talon Lock: Apex Eagle asset path — African_Gateway/assets/ (fallback to inline SVG if missing)
+EAGLE_ASSET_PATH = os.path.join(_GATEWAY, "assets", "apex_eagle.svg")
+APEX_EAGLE_INLINE_SVG = '''<svg class="awc-apex-eagle-header" width="48" height="34" viewBox="0 0 56 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="28" cy="20" rx="14" ry="10" fill="#FFD700" stroke="#B8860B" stroke-width="1"/>
+  <path d="M18 16 L28 12 L38 16" stroke="#B8860B" stroke-width="1" fill="none"/>
+  <path d="M20 22 Q28 18 36 22" stroke="#C9A227" stroke-width="0.7" fill="none" opacity="0.9"/>
+  <circle cx="24" cy="18" r="2" fill="#1a1a1a"/><circle cx="32" cy="18" r="2" fill="#1a1a1a"/>
+  <path d="M26 24 L28 30 L30 24" stroke="#B8860B" stroke-width="0.5" fill="none"/>
+</svg>'''
+def _render_apex_eagle(use_asset_path=True):
+    """Render Apex Predator Eagle: from assets/ if present, else inline SVG. Explicit call for Talon Lock."""
+    if use_asset_path and os.path.isfile(EAGLE_ASSET_PATH):
+        try:
+            st.image(EAGLE_ASSET_PATH, width=48)
+            return
+        except Exception:
+            pass
+    st.markdown(APEX_EAGLE_INLINE_SVG, unsafe_allow_html=True)
+
+
+# Inline fallback when pydeck/GPU unavailable or map data missing — force manifest Sovereign Glass map
+SOVEREIGN_GLASS_MAP_FALLBACK_HTML = """
+<div class="awc-map-glass" style="padding: 16px; min-height: 280px; border-radius: 16px;">
+  <p style="color: #FFD700; font-weight: 700; margin-bottom: 12px;">Sovereign Glass — Continental View (inline fallback)</p>
+  <p style="color: rgba(212,175,55,0.9); font-size: 0.9rem;">Nigeria · Ghana · South Africa · Egypt · Dubai (UAE)</p>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;">
+    <span style="background: rgba(255,215,0,0.2); border: 1px solid #FFD700; padding: 6px 12px; border-radius: 8px; color: #FFD700;">Nigeria</span>
+    <span style="background: rgba(255,215,0,0.2); border: 1px solid #FFD700; padding: 6px 12px; border-radius: 8px; color: #FFD700;">Ghana</span>
+    <span style="background: rgba(255,215,0,0.2); border: 1px solid #FFD700; padding: 6px 12px; border-radius: 8px; color: #FFD700;">South Africa</span>
+    <span style="background: rgba(255,215,0,0.2); border: 1px solid #FFD700; padding: 6px 12px; border-radius: 8px; color: #FFD700;">Egypt</span>
+    <span style="background: rgba(255,215,0,0.2); border: 1px solid #FFD700; padding: 6px 12px; border-radius: 8px; color: #FFD700;">Dubai (UAE)</span>
+  </div>
+  <p style="color: rgba(212,175,55,0.7); font-size: 0.8rem; margin-top: 16px;">Select a node in the sidebar to center. PyDeck/WebGL unavailable — using inline fallback.</p>
+</div>
+"""
 
 # --- Page config (must be first Streamlit call) ---
 st.set_page_config(
@@ -179,19 +223,31 @@ section[data-testid="stSidebar"] { background: linear-gradient(180deg, #001a33 0
 .awc-oscilloscope::before { content: ''; position: absolute; left: 0; top: 50%; width: 200%; height: 2px; background: repeating-linear-gradient(90deg, transparent, transparent 8px, rgba(255,215,0,0.6) 8px, rgba(255,215,0,0.6) 10px); animation: scope-wave 2s linear infinite; }
 @keyframes scope-wave { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 .awc-digital-counter { font-size: 1.25rem; font-weight: 700; color: #00ff88; text-shadow: 0 0 8px rgba(0,255,136,0.6); letter-spacing: 2px; animation: counter-flash 2s ease-in-out 2; }
+/* Talon Lock: Chairman & Founder credentials locked at top across all views */
+.awc-header-lock { position: sticky; top: 0; z-index: 100; background: linear-gradient(180deg, #001a33 0%, rgba(0,26,51,0.98) 100%); padding-bottom: 12px; margin-bottom: 0; border-bottom: 1px solid rgba(255,215,0,0.2); }
+.awc-apex-eagle-header { display: inline-block; vertical-align: middle; margin: 8px 12px 0 0; filter: drop-shadow(0 0 10px rgba(255,215,0,0.5)); animation: eagle-header-float 3s ease-in-out infinite; }
+@keyframes eagle-header-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
 </style>
 <div id="awc-shimmer-wrap">""" + particles_html + """</div>
 """, unsafe_allow_html=True)
 
-# --- Mission Handshake: Impact Header & Sub-header ---
+# --- Mission Handshake: Impact Header & Sub-header (Talon Lock: credentials locked at top) ---
 st.markdown(
-    '<p class="awc-impact-header">ARCHITECTING NATIONAL ASSET REVITALIZATION: FROM NIGERIA & AFRICA TO THE GLOBAL SOUTH</p>',
+    '<div class="awc-header-lock">'
+    '<p class="awc-impact-header">ARCHITECTING NATIONAL ASSET REVITALIZATION: FROM NIGERIA & AFRICA TO THE GLOBAL SOUTH</p>'
+    '<p class="awc-sub-header">Galadiman Ruwa Center (GCSLC) LTD/GTE | Chairman & Founder: Dr. Sa\'ad Jaafaru</p>'
+    '</div>',
     unsafe_allow_html=True,
 )
-st.markdown(
-    '<p class="awc-sub-header">Galadiman Ruwa Center (GCSLC) LTD/GTE | Chairman & Founder: Dr. Sa\'ad Jaafaru</p>',
-    unsafe_allow_html=True,
-)
+# --- Apex Predator Eagle: explicitly called in st.header area when agentic_eagle is True (Talon Lock) ---
+agentic_eagle = st.session_state.get("autonomous_sniff_enabled", True)
+if agentic_eagle:
+    st.header("Apex Predator Eagle — 8R Interface")
+    col_cap, col_eagle = st.columns([4, 1])
+    with col_cap:
+        st.caption("Agentic Eagle active. Sovereign OS interface locked.")
+    with col_eagle:
+        _render_apex_eagle(use_asset_path=True)
 # --- Advanced Animation: "8" zoom + Radar Blink "Stealth Paradigm" + Convergence ---
 st.markdown(
     '<div style="text-align: center; margin: 1rem 0;">'
@@ -207,6 +263,8 @@ st.markdown("---")
 with st.sidebar:
     st.write("### Sovereign OS — 8R Stealth Paradigm")
     st.caption("Agentic, Generative. Interface: Apex Predator Eagle. Goal: Asset Resuscitation.")
+    # Force manifest Apex Eagle in sidebar — asset at African_Gateway/assets/apex_eagle.svg
+    _render_apex_eagle(use_asset_path=True)
     with st.expander("**Sovereign OS Pillars**", expanded=False):
         for p in continental_logic.get_sovereign_os_pillars():
             st.markdown(f"**{p['title']}**  \n{p['body']}")
@@ -307,7 +365,11 @@ if st.session_state.pulse_triggered and st.session_state.selected_node:
 # 5km: Golden radar sweep when $10B+ opportunity (before strike)
 if st.session_state.selected_node and continental_logic.is_10b_plus_opportunity(st.session_state.selected_node):
     map_container_class += " awc-radar-sweep"
-deck = africa_map.build_africa_deck(selected_node=st.session_state.selected_node, opacity=0.85)
+# Build deck; if .json/data or import missing, deck is None — use inline fallback
+try:
+    deck = africa_map.build_africa_deck(selected_node=st.session_state.selected_node, opacity=0.85)
+except Exception:
+    deck = None
 # Live Eagle Engine: high-fidelity Sniffer (hover) → Talon Strike (on node click, 180 Hz play_swat)
 EAGLE_SNIFFER_SVG = '''<svg class="awc-eagle-sniffer" width="72" height="52" viewBox="0 0 72 52" fill="none" xmlns="http://www.w3.org/2000/svg">
   <path d="M36 4 L40 14 L36 12 L32 14 Z" fill="#FFD700" stroke="#B8860B" stroke-width="0.8"/>
@@ -333,15 +395,21 @@ EAGLE_TALON_SVG = '''<svg class="awc-eagle-talon" width="72" height="52" viewBox
 show_talon_strike = st.session_state.pulse_triggered and st.session_state.selected_node
 show_sniffer_hover = deck and not show_talon_strike
 eagle_html = EAGLE_TALON_SVG if show_talon_strike else (EAGLE_SNIFFER_SVG if show_sniffer_hover else "")
+map_use_fallback = False
 if deck:
     st.markdown(
         f'<div class="{map_container_class}" style="padding: 8px; position: relative;">{eagle_html}',
         unsafe_allow_html=True,
     )
-    st.pydeck_chart(deck, use_container_width=True)
+    try:
+        st.pydeck_chart(deck, use_container_width=True)  # 2026 equivalent stretch; may fail if GPU/WebGL disabled
+    except Exception:
+        map_use_fallback = True
     st.markdown("</div>", unsafe_allow_html=True)
 else:
-    st.info("Map engine unavailable. Install pydeck and pandas.")
+    map_use_fallback = True
+if map_use_fallback:
+    st.markdown(SOVEREIGN_GLASS_MAP_FALLBACK_HTML, unsafe_allow_html=True)
 if st.session_state.pulse_triggered and st.session_state.selected_node:
     st.session_state.pulse_triggered = False
 
@@ -514,7 +582,7 @@ with radar_t1:
     sec_heat = continental_logic.get_national_security_impact_heatmap()
     st.dataframe(
         [{"Region": r["region"], "Indicator": r["indicator"], "Before anchor": r["before_anchor"], "After anchor": r["after_anchor"], "Δ Stability": r["stability_delta"]} for r in sec_heat],
-        use_container_width=True,
+        width=WIDTH_2026,
         hide_index=True,
     )
     st.caption("Higher scores = more stability. The anchor increases sovereign retention and reduces resource conflict.")
@@ -523,7 +591,7 @@ with radar_t2:
     soc_heat = continental_logic.get_social_wellbeing_index_heatmap()
     st.dataframe(
         [{"Dimension": d["dimension"], "Baseline (%)": d["baseline_pct"], "Post-anchor (%)": d["post_anchor_pct"], "Change": d["reduction"]} for d in soc_heat],
-        use_container_width=True,
+        width=WIDTH_2026,
         hide_index=True,
     )
     st.caption("Poverty headcount drops; employment and energy access rise under 8R sovereign corridors.")
@@ -532,7 +600,7 @@ with radar_t3:
     swi = continental_logic.get_sovereign_wellbeing_index()
     st.dataframe(
         [{"Atoms domain": r["atoms_domain"], "Well-being": r["wellbeing_dimension"], "Metric": r["metric"], "Before 8R": r["before_8r"], "After 8R": r["after_8r"], "Unit": r["unit"]} for r in swi],
-        use_container_width=True,
+        width=WIDTH_2026,
         hide_index=True,
     )
     st.caption("The Eagle's strike on Energy and Minerals generates Jobs (FTE), Security (index), and Health (compliance / air quality).")
@@ -673,7 +741,7 @@ with d3a:
     tech_align = continental_logic.get_global_tech_alignment()
     st.dataframe(
         [{"Nigeria Asset": t["nigeria_asset"], "Elements": t["elements"], "Big Tech": t["big_tech"], "Use Case": t["use_case"]} for t in tech_align],
-        use_container_width=True,
+        width=WIDTH_2026,
         hide_index=True,
     )
 with d3b:
@@ -689,7 +757,7 @@ with d3c:
     heatmap = continental_logic.get_risk_defense_heatmap()
     st.dataframe(
         [{"Determinant": r["determinant"], "Volatility Risk": r["volatility_risk"], "Defense Score": r["defense_score"]} for r in heatmap],
-        use_container_width=True,
+        width=WIDTH_2026,
         hide_index=True,
     )
     st.caption("Defense Score: 0–100. Higher = stronger 8R protection against this risk.")

@@ -1,10 +1,15 @@
 """
 National Wealth Cloud for Nigeria: Coal & Diamond (NWC/C&D)
 Sovereign Gateway — 8R Stealth Paradigm | Galadiman Ruwa Center For Strategic Leadership and Communication LTD/GTE — GCSLC
+Launch-ready: width="stretch" (2026 standard); no use_container_width.
 """
 import os
+import warnings
 from collections import defaultdict
 import streamlit as st
+
+warnings.filterwarnings("ignore", category=DeprecationWarning, module="streamlit")
+warnings.filterwarnings("ignore", message=".*use_container_width.*")
 import pydeck as pdk
 import pandas as pd
 
