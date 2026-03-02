@@ -28,6 +28,9 @@ from d8_logic import (
     D3_AMMONIA_USD_PER_MT,
     D3_SILICON_MONTHLY_YIELD_M,
     D3_COAL_SYNGAS_MONTHLY_REVENUE_M,
+    d_within_d,
+    get_d3_synthetic_for_bua_2026,
+    DETERMINANTS_8R,
 )
 from mineral_sovereignty import (
     get_nodes,
@@ -467,10 +470,14 @@ if toggle_minerals:
         )
     st.dataframe(rows, width="stretch")
 
-    # D3: Mineral Research Node – State-by-state table (Proven Reserve Probability | 95% Retained Sovereign Value)
+    # D3: Mineral Research Node – State-by-state table (Sovereign Twins: D3 within D3 on data void)
     st.write("#### D3: Mineral Research Node — Sovereign Mineral Fortress")
     st.caption("Nigeria is not just an oil nation: kimberlite pipe signatures (NE) and structural hydrothermal trends (NW) under 8R D3 Research.")
     diamond_data = get_diamond_reserves()
+    if not diamond_data:
+        _syn = get_d3_synthetic_for_bua_2026(has_bua_data=False, has_energy_feed=False)
+        st.info("**D3 within D3 (Synthetic Intelligence):** " + _syn["message"])
+        st.caption(_syn["anchor"])
     if diamond_data:
         df = pd.DataFrame(diamond_data)
         table_df = df[["state", "proven_reserve_probability", "retained_value_usd"]].copy()

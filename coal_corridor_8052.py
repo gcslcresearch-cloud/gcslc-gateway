@@ -35,6 +35,7 @@ def _load_module(name: str, path: str):
 continental_logic = _load_module("awc_continental_logic", os.path.join(_GATEWAY, "continental_logic.py"))
 
 from nwc_geopolitical import STATE_REGION, STATE_LGA_COUNT
+from d8_logic import d_within_d, get_d3_synthetic_for_bua_2026, DETERMINANTS_8R
 
 # ——— 13-State Coal Corridor: reserves (Mt) from app.html, extended to sum to 639.3 million tonnes ———
 # app.html: Enugu 168, Kogi 142, Gombe 62 (372 Mt). Remaining 267.3 Mt across 10 states; Cross River 13th.
@@ -296,6 +297,21 @@ bua_map_rows = [
 ]
 st.dataframe(bua_map_rows, width="stretch", hide_index=True)
 st.caption("D3 Research: Eagle Sniffer maps BUA industrial nodes against the 13-state coal corridor. Nodes in corridor qualify for 9.6× wealth multiplier integration.")
+
+# ——— GEC Strike Session 2: 8R-within-8R + First within-D3 result (BUA–NVIDIA Sovereign Strike) ———
+# Sovereign Twins: each Determinant monitored by its within-twin; D3 Synthetic Intelligence fills BUA data voids
+_bua_data_ok = len(BUA_INDUSTRIAL_NODES) > 0
+_energy_feed_ok = False  # Real-time energy feed not wired; D3-within-D3 activates
+_d3_result = get_d3_synthetic_for_bua_2026(has_bua_data=_bua_data_ok, has_energy_feed=_energy_feed_ok)
+with st.expander("**D3 within D3 — First Within-Result: BUA–NVIDIA Sovereign Strike**", expanded=True):
+    st.markdown(f"**{_d3_result['title']}**")
+    st.info(_d3_result["message"])
+    st.caption(_d3_result["anchor"])
+    st.caption("Komi Universal OS · Sovereign Twins architecture · CAC: 176917792057 | Chairman: Dr. Sa'ad Jaafaru.")
+# 8R Within-Logic status (D3 void → synthetic; others data lock)
+_d3_has_data = _bua_data_ok and _energy_feed_ok
+for det in DETERMINANTS_8R:
+    st.caption(d_within_d(det, has_data=(det != "Research") or _d3_has_data, context="Align 1,205 MW NVIDIA hub to BUA 2026 expansion."))
 st.markdown("---")
 
 # ——— WL Counter for BUA: non-linear cost of delay (conglomerate scale) ———
