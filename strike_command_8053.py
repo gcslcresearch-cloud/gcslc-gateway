@@ -28,6 +28,16 @@ def _load_module(name: str, path: str):
 
 continental_logic = _load_module("awc_continental_logic", os.path.join(_GATEWAY, "continental_logic.py"))
 
+# D7: Cache WL so it computes once per 60s (thermal relief)
+@st.cache_data(ttl=60)
+def _cached_wl_vel():
+    _t = time.time() % 100
+    return 9.6 * (1 + 0.15 * math.sin(_t * 0.2))
+
+@st.cache_data
+def _cached_power_mw():
+    return 1205  # 1,205 MW — single compute
+
 st.set_page_config(
     page_title="8R Strike Command — Port 8053 — GCSLC",
     layout="wide",
@@ -49,8 +59,7 @@ section[data-testid="stSidebar"] { background-color: #002147 !important; border-
 .gcslc-sovereign-footer .cac { letter-spacing: 0.1em; opacity: 0.95; }
 .gcslc-sovereign-footer .chairman { font-weight: 700; margin-top: 0.2rem; }
 .main .block-container { padding-bottom: 4rem !important; }
-.gcslc-legal-name-shimmer { background: linear-gradient(90deg, #002147, #D4AF37, #FFE55C, #D4AF37, #002147); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent !important; animation: gcslc-shimmer 4s linear infinite; }
-@keyframes gcslc-shimmer { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+.gcslc-legal-name-shimmer { background: linear-gradient(90deg, #002147, #D4AF37, #FFE55C, #D4AF37, #002147); background-size: 100% auto; -webkit-background-clip: text; background-clip: text; color: #D4AF37 !important; }
 #gcslc-bubble-wrap { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 998; overflow: hidden; }
 .gcslc-bubble { position: absolute; font-size: 0.85rem; font-weight: 700; color: rgba(212,175,55,0.5); letter-spacing: 0.15em; white-space: nowrap; animation: gcslc-bubble-drift 18s ease-in-out infinite; opacity: 0.08; }
 @keyframes gcslc-bubble-drift { 0%, 100% { transform: translate(0,0) scale(1); opacity: 0.06; } 25% { transform: translate(40px,-30px) scale(1.05); opacity: 0.11; } 50% { transform: translate(-30px,20px) scale(0.95); opacity: 0.07; } 75% { transform: translate(20px,30px) scale(1.02); opacity: 0.1; } }
@@ -106,11 +115,7 @@ components.html("""
     stripBottom.style.display = on ? 'block' : 'none';
   }
   document.addEventListener('visibilitychange', function(){ setDefend(document.hidden); });
-  window.addEventListener('blur', function(){ setDefend(true); });
-  window.addEventListener('focus', function(){ setDefend(false); });
-  window.addEventListener('beforeprint', function(){ setDefend(true); });
   document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
-  document.addEventListener('keydown', function(e){ if((e.ctrlKey||e.metaKey)&&e.key==='s'){ e.preventDefault(); setDefend(true); } });
 })();
 </script>
 """, height=0)
@@ -119,10 +124,9 @@ st.markdown('<p class="strike-header">8R Strike Command — Synchronized</p>', u
 st.markdown('<p class="strike-sub">Port 8053 | Komi vehicle for nations and global conglomerates | $1.5T Initiative | Sovereign AI Compute</p>', unsafe_allow_html=True)
 st.markdown("---")
 
-# ——— WL Counter (Komi): real-time cost of inaction — Human & Robotic ———
+# ——— WL Counter (Komi): cached D7 thermal relief ———
 st.write("### WL Counter (Lost Wealth — Komi)")
-_t = time.time() % 100
-wl_vel = 9.6 * (1 + 0.15 * math.sin(_t * 0.2))
+wl_vel = _cached_wl_vel()
 c1, c2 = st.columns(2)
 with c1:
     st.metric("WL — Missed 9.6× (Human)", f"{wl_vel:.2f}×", "real-time cost of inaction")
@@ -137,8 +141,7 @@ NVIDIA_GTC_SOVEREIGN_AI_URL = "https://www.nvidia.com/gtc/sessions/sovereign-ai/
 st.write("### 🖥️ Sovereign AI Compute — Pitch to NVIDIA (Jensen Huang)")
 with st.expander("**1,205 MW Asset — Deep-linked to NVIDIA Sovereign AI 2026 Roadmap**", expanded=True):
     st.markdown("**GCSLC GE Cloud** offers a **1,205 MW (1.2 GW)** AI-DC power asset across the **13-state coal corridor** — WPC 2026 Roadmap Ready — for **Sovereign AI Compute** deployment.")
-    import time as _t
-    _readiness = 78 + (int(_t.time()) % 15)
+    _readiness = 78 + (int(time.time()) % 15)
     st.metric("Compute Readiness (NVIDIA Sovereign AI)", f"{_readiness}%", "real-time — GE Level 2")
     st.metric("Sovereign AI Compute asset", "1,205 MW (1.2 GW)", "13-state corridor — WPC 2026 Roadmap Ready")
     st.metric("Corridor", "13 states", "639.3 Mt reserves | Clean AI Energy")

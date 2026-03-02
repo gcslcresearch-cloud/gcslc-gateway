@@ -38,6 +38,18 @@ def _load_module(name: str, path: str):
 africa_map = _load_module("awc_africa_map", os.path.join(_GATEWAY, "africa_map.py"))
 continental_logic = _load_module("awc_continental_logic", os.path.join(_GATEWAY, "continental_logic.py"))
 
+# D7: Cache WL and friction so they compute once per 60s (thermal relief)
+@st.cache_data(ttl=60)
+def _cached_wl_velocity():
+    _t = time.time() % 100
+    return 9.6 * (1 + 0.15 * math.sin(_t * 0.2))
+
+@st.cache_data(ttl=60)
+def _cached_friction():
+    _mineral_delay = max(1, int(time.time() / 30) % 18 + 1)
+    friction_mult = 9.6 * (1 + 0.08 * (_mineral_delay ** 0.7))
+    return friction_mult, _mineral_delay
+
 # Talon Lock: Apex Eagle asset path — African_Gateway/assets/ (fallback to inline SVG if missing)
 EAGLE_ASSET_PATH = os.path.join(_GATEWAY, "assets", "apex_eagle.svg")
 APEX_EAGLE_INLINE_SVG = '''<svg class="awc-apex-eagle-header" width="48" height="34" viewBox="0 0 56 40" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -190,9 +202,9 @@ section[data-testid="stSidebar"] { background: linear-gradient(180deg, #001a33 0
 @keyframes vortex-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 @keyframes vortex-pull { 0% { transform: scale(1) translate(0,0); opacity: 0.9; } 100% { transform: scale(0.3) translate(0,0); opacity: 0.4; } }
 #awc-vortex-wrap { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
-.awc-vortex-dot { position: absolute; width: 4px; height: 4px; background: #FFD700; border-radius: 50%; animation: vortex-pull 4s ease-in infinite, awc-float 3s ease-in-out infinite; }
+.awc-vortex-dot { position: absolute; width: 4px; height: 4px; background: #FFD700; border-radius: 50%; animation: vortex-pull 8s ease-in infinite, awc-float 6s ease-in-out infinite; }
 /* Velocity header shimmer (legacy) */
-.awc-title { font-weight: 800; font-size: 1.9rem; text-align: center; background: linear-gradient(90deg, #D4AF37, #FFE55C, #D4AF37); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent !important; animation: title-shimmer 3s linear infinite; }
+.awc-title { font-weight: 800; font-size: 1.9rem; text-align: center; background: linear-gradient(90deg, #D4AF37, #FFE55C, #D4AF37); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent !important; animation: title-shimmer 8s linear infinite; }
 @keyframes title-shimmer { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
 .awc-sub { text-align: center; color: rgba(212,175,55,0.9); font-size: 0.95rem; letter-spacing: 2px; margin-top: -8px; }
 /* Mind-hooking metrics */
@@ -236,8 +248,7 @@ section[data-testid="stSidebar"] { background: linear-gradient(180deg, #001a33 0
 .awc-header-lock { position: sticky; top: 0; z-index: 100; background: linear-gradient(180deg, #001a33 0%, rgba(0,26,51,0.98) 100%); padding-bottom: 12px; margin-bottom: 0; border-bottom: 1px solid rgba(255,215,0,0.2); }
 .awc-apex-eagle-header { display: inline-block; vertical-align: middle; margin: 8px 12px 0 0; filter: drop-shadow(0 0 10px rgba(255,215,0,0.5)); animation: eagle-header-float 3s ease-in-out infinite; }
 @keyframes eagle-header-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
-.gcslc-legal-name-shimmer { background: linear-gradient(90deg, #001a33, #D4AF37, #FFE55C, #D4AF37, #001a33); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent !important; animation: gcslc-shimmer 4s linear infinite; }
-@keyframes gcslc-shimmer { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+.gcslc-legal-name-shimmer { background: linear-gradient(90deg, #001a33, #D4AF37, #FFE55C, #D4AF37, #001a33); background-size: 100% auto; -webkit-background-clip: text; background-clip: text; color: #D4AF37 !important; }
 #gcslc-bubble-wrap { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 998; overflow: hidden; }
 .gcslc-bubble { position: absolute; font-size: 0.85rem; font-weight: 700; color: rgba(212,175,55,0.5); letter-spacing: 0.15em; white-space: nowrap; animation: gcslc-bubble-drift 18s ease-in-out infinite; opacity: 0.08; }
 @keyframes gcslc-bubble-drift { 0%, 100% { transform: translate(0,0) scale(1); opacity: 0.06; } 25% { transform: translate(40px,-30px) scale(1.05); opacity: 0.11; } 50% { transform: translate(-30px,20px) scale(0.95); opacity: 0.07; } 75% { transform: translate(20px,30px) scale(1.02); opacity: 0.1; } }
@@ -295,11 +306,7 @@ st.components.v1.html("""
     stripBottom.style.display = on ? 'block' : 'none';
   }
   document.addEventListener('visibilitychange', function(){ setDefend(document.hidden); });
-  window.addEventListener('blur', function(){ setDefend(true); });
-  window.addEventListener('focus', function(){ setDefend(false); });
-  window.addEventListener('beforeprint', function(){ setDefend(true); });
   document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
-  document.addEventListener('keydown', function(e){ if((e.ctrlKey||e.metaKey)&&e.key==='s'){ e.preventDefault(); setDefend(true); } });
   var h = document.getElementById('gcslc-header-wrap');
   if (h) { h.classList.add('gcslc-header-opportunity-pulse'); setTimeout(function(){ h.classList.remove('gcslc-header-opportunity-pulse'); }, 2500); }
 })();
@@ -325,11 +332,9 @@ st.markdown(
 )
 st.markdown("---")
 
-# --- WL Counter (D2 Reset): dual-live + Friction Costs (GE Level 2) ---
-_t = time.time() % 100
-wl_velocity = 9.6 * (1 + 0.15 * math.sin(_t * 0.2))
-_mineral_delay = max(1, int(time.time() / 30) % 18 + 1)
-friction_mult = 9.6 * (1 + 0.08 * (_mineral_delay ** 0.7))
+# --- WL Counter (D2 Reset): cached D7 thermal relief ---
+wl_velocity = _cached_wl_velocity()
+friction_mult, _mineral_delay = _cached_friction()
 wl_c1, wl_c2, wl_c3 = st.columns(3)
 with wl_c1:
     st.metric("WL — Missed 9.6× (Human Assets)", f"{wl_velocity:.2f}×", "non-linear velocity")

@@ -13,6 +13,10 @@ import time
 import warnings
 import streamlit as st
 import streamlit.components.v1 as components
+try:
+    import pyarrow as pa
+except ImportError:
+    pa = None
 
 warnings.filterwarnings("ignore", category=DeprecationWarning, module="streamlit")
 warnings.filterwarnings("ignore", message=".*use_container_width.*")
@@ -68,6 +72,36 @@ COAL_CORRIDOR_POWER_MW = {
     "Cross River": 0,
 }
 TOTAL_POWER_MW = 1205  # AI-DC Power Potential — WPC 2026 Roadmap Ready
+
+# D7: Cache WL and 1,205 MW / corridor so they compute once per TTL (thermal relief)
+@st.cache_data(ttl=60)
+def _cached_wl_velocity():
+    _t = time.time() % 100
+    return 9.6 * (1 + 0.15 * math.sin(_t * 0.2))
+
+@st.cache_data(ttl=60)
+def _cached_friction_mult():
+    months = max(1, int(time.time() / 30) % 18 + 1)
+    return 9.6 * (1 + 0.08 * (months ** 0.7)), months
+
+@st.cache_data(ttl=60)
+def _cached_bua_wl_velocity():
+    return 9.6 * (1 + 0.18 * math.sin(time.time() * 0.1))
+
+@st.cache_data
+def _cached_corridor_totals():
+    total_mt = sum(COAL_CORRIDOR_RESERVES_MT.values())
+    total_mw = sum(COAL_CORRIDOR_POWER_MW.values())
+    return total_mt, total_mw
+
+@st.cache_data
+def _cached_corridor_rows():
+    return [
+        {"State": s, "Region": STATE_REGION.get(s, "—"), "Reserves (Mt)": COAL_CORRIDOR_RESERVES_MT[s],
+         "Power potential (MW)": COAL_CORRIDOR_POWER_MW[s], "Production (Mt/yr)": COAL_CORRIDOR_PRODUCTION_MTYR.get(s, 0), "Status": COAL_CORRIDOR_STATUS.get(s, "reserve")}
+        for s in COAL_CORRIDOR_RESERVES_MT
+    ]
+
 # Production (Mt/yr) and status — app.html: Enugu 0.01, Kogi 0.005, Gombe 0; active/reserve
 COAL_CORRIDOR_PRODUCTION_MTYR = {
     "Enugu": 0.01, "Kogi": 0.005, "Gombe": 0, "Benue": 0.008, "Niger": 0, "Nasarawa": 0,
@@ -116,8 +150,7 @@ section[data-testid="stSidebar"] { background-color: #002147 !important; border-
 .gcslc-sovereign-footer { position: fixed; bottom: 0; left: 0; right: 0; z-index: 999; background: linear-gradient(180deg, rgba(0,26,51,0.97) 0%, #001a33 100%); border-top: 2px solid rgba(212,175,55,0.4); padding: 0.45rem 1rem; font-size: 0.75rem; color: #D4AF37; text-align: center; }
 .gcslc-sovereign-footer .cac { letter-spacing: 0.1em; opacity: 0.95; }
 .gcslc-sovereign-footer .chairman { font-weight: 700; margin-top: 0.2rem; }
-.gcslc-legal-name-shimmer { background: linear-gradient(90deg, #002147, #D4AF37, #FFE55C, #D4AF37, #002147); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent !important; animation: gcslc-shimmer 4s linear infinite; }
-@keyframes gcslc-shimmer { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+.gcslc-legal-name-shimmer { background: linear-gradient(90deg, #002147, #D4AF37, #FFE55C, #D4AF37, #002147); background-size: 100% auto; -webkit-background-clip: text; background-clip: text; color: #D4AF37 !important; }
 #gcslc-bubble-wrap { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 998; overflow: hidden; }
 .gcslc-bubble { position: absolute; font-size: 0.85rem; font-weight: 700; color: rgba(212,175,55,0.5); letter-spacing: 0.15em; white-space: nowrap; animation: gcslc-bubble-drift 18s ease-in-out infinite; opacity: 0.08; }
 @keyframes gcslc-bubble-drift { 0%, 100% { transform: translate(0,0) scale(1); opacity: 0.06; } 25% { transform: translate(40px,-30px) scale(1.05); opacity: 0.11; } 50% { transform: translate(-30px,20px) scale(0.95); opacity: 0.07; } 75% { transform: translate(20px,30px) scale(1.02); opacity: 0.1; } }
@@ -200,11 +233,7 @@ components.html("""
     if (on) setDefend(true);
   }
   document.addEventListener('visibilitychange', function(){ setDefend(document.hidden); });
-  window.addEventListener('blur', function(){ setDefend(true); });
-  window.addEventListener('focus', function(){ setDefend(false); });
-  window.addEventListener('beforeprint', function(){ setDefend(true); });
   document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
-  document.addEventListener('keydown', function(e){ if((e.ctrlKey||e.metaKey)&&e.key==='s'){ e.preventDefault(); setDefend(true); } });
   var main = document.querySelector('[data-testid="stAppViewContainer"] .main');
   if (main) {
     main.addEventListener('mouseenter', function(e){ hoverTarget = e.target; hoverTimer = setTimeout(function(){ setHoverMask(true); }, 2500); });
@@ -227,15 +256,12 @@ st.success(f"**New Global Opportunity Snipped:** {_snipped} — GE GNCO Multi-Pu
 st.caption(f"**Eagle Sniffer (D3 & D7):** Deep Research Strike every 60s. Next in **{seconds_until_strike}**s — 1.2 GW (1,205 MW) WPC 2026 Roadmap Ready, 13-state corridor.")
 st.markdown("---")
 
-# ——— WL Counter (D2 Reset): dual-live + Friction Costs (GE Level 2) ———
+# ——— WL Counter (D2 Reset): cached (D7 thermal relief) ———
 st.write("### WL Counter (Lost Wealth — D2 Reset)")
-# Friction Costs: 9.6× mapped against current mineral market delays (global conglomerates)
-MINERAL_DELAY_MONTHS = max(1, int(time.time() / 30) % 18 + 1)  # illustrative 1–18 months
-FRICTION_COST_MULTIPLIER = 9.6 * (1 + 0.08 * (MINERAL_DELAY_MONTHS ** 0.7))
+wl_velocity = _cached_wl_velocity()
+FRICTION_COST_MULTIPLIER, MINERAL_DELAY_MONTHS = _cached_friction_mult()
 wl_col1, wl_col2, wl_col3 = st.columns(3)
 with wl_col1:
-    _t = time.time() % 100
-    wl_velocity = 9.6 * (1 + 0.15 * math.sin(_t * 0.2))
     st.metric("WL — Missed 9.6× (Human Assets)", f"{wl_velocity:.2f}×", "non-linear velocity")
 with wl_col2:
     st.metric("WL — Sovereign AI Compute Shortfall", "$100B", "Robotic world gap")
@@ -270,7 +296,7 @@ BUA_WL_BASE_B = 12.5
 BUA_DELAY_MONTHS = 6
 BUA_WL_K, BUA_WL_ALPHA = 0.12, 1.35
 bua_wl_b = BUA_WL_BASE_B * (1 + BUA_WL_K * (BUA_DELAY_MONTHS ** BUA_WL_ALPHA))
-bua_wl_velocity = 9.6 * (1 + 0.18 * math.sin(time.time() * 0.1))
+bua_wl_velocity = _cached_bua_wl_velocity()
 st.metric("WL — BUA (conglomerate scale)", f"${bua_wl_b:.1f}B", f"Non-linear cost of delay — {BUA_DELAY_MONTHS} months")
 st.metric("WL velocity — missed 9.6× (BUA industrial)", f"{bua_wl_velocity:.2f}×", "compound delay cost")
 st.metric("BUA nodes in 13-state corridor", f"{sum(1 for n in BUA_INDUSTRIAL_NODES if n.get('in_corridor') == 'Yes')}", f"{bua_corridor_mw} MW mapped — 9.6× ready")
@@ -298,9 +324,8 @@ st.markdown(
 st.caption("94% vs 22% Demand/Supply scientific reveal — central empirical metric for the Coal and By-products corridor.")
 st.markdown("---")
 
-# ——— KPIs: Total proven reserves 639.3 Mt, 1,205 MW (WPC 2026 Roadmap Ready), 13 States ———
-total_mt = sum(COAL_CORRIDOR_RESERVES_MT.values())
-total_mw = sum(COAL_CORRIDOR_POWER_MW.values())  # 1,205 MW
+# ——— KPIs: Total proven reserves 639.3 Mt, 1,205 MW (cached D7) ———
+total_mt, total_mw = _cached_corridor_totals()
 k1, k2, k3, k4 = st.columns(4)
 with k1:
     st.metric("Total proven reserves", f"{total_mt:.1f}", "million tonnes")
@@ -313,20 +338,13 @@ with k4:
     st.metric("Production capacity", f"{prod_yr:.3f}", "Mt/year")
 st.markdown("---")
 
-# ——— Reserves by state (13-state, 639.3 million tonnes total) — IP Shield watermark ———
+# ——— Reserves by state (13-state, cached; D7 pyarrow-ready) ———
 st.write("### Reserves by state")
 st.markdown('<div class="gcslc-reserves-wrap"><span class="gcslc-proprietary-watermark" aria-hidden="true">Proprietary Methodology</span>', unsafe_allow_html=True)
-corridor_rows = []
-for state in COAL_CORRIDOR_RESERVES_MT:
-    corridor_rows.append({
-        "State": state,
-        "Region": STATE_REGION.get(state, "—"),
-        "Reserves (Mt)": COAL_CORRIDOR_RESERVES_MT[state],
-        "Power potential (MW)": COAL_CORRIDOR_POWER_MW[state],
-        "Production (Mt/yr)": COAL_CORRIDOR_PRODUCTION_MTYR.get(state, 0),
-        "Status": COAL_CORRIDOR_STATUS.get(state, "reserve"),
-    })
-st.dataframe(corridor_rows, width="stretch", hide_index=True)
+corridor_rows = _cached_corridor_rows()
+# D7: pyarrow for 13-state corridor — map redraws only when GE snips (cached)
+corridor_table = pa.Table.from_pylist(corridor_rows) if pa else None
+st.dataframe(corridor_table if corridor_table is not None else corridor_rows, width="stretch", hide_index=True)
 st.markdown('</div>', unsafe_allow_html=True)
 st.caption(f"Total reserves: **{total_mt:.1f}** million tonnes (13-state corridor). 1,205 MW AI-DC Power Potential — **WPC 2026 Roadmap Ready**. Data from 8R Stealth B_files/app.html.")
 st.markdown("---")

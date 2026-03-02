@@ -157,14 +157,18 @@ def build_africa_deck(
     """
     Build a pydeck Deck: Africa outline + Nigeria, Ghana, South Africa, Egypt (GeoJSON),
     Dubai (UAE) Strategic Partner point, glitter. selected_node centers view and highlights that node.
+    D7: update_triggers so map redraws only when GE snips (selected_node / data change).
     """
     try:
+        import time
         import pydeck as pdk
         import pandas as pd
     except ImportError:
         return None
     if nigeria_selected is not None:
         selected_node = "nigeria" if nigeria_selected else None
+    # GE snip bucket: map redraws only when this or selected_node changes (D7 thermal relief)
+    snip_bucket = int(time.time() // 60)
 
     # Africa outline
     africa_layer = pdk.Layer(
@@ -177,6 +181,7 @@ def build_africa_deck(
         line_width_min_pixels=1,
         opacity=opacity,
         pickable=False,
+        update_triggers={"get_fill_color": snip_bucket},
     )
 
     # Continental country layers (interactive)
@@ -190,6 +195,7 @@ def build_africa_deck(
         line_width_min_pixels=2,
         opacity=opacity,
         pickable=True,
+        update_triggers={"get_fill_color": (selected_node or "", snip_bucket)},
     )
     ghana_layer = pdk.Layer(
         "GeoJsonLayer",
@@ -201,6 +207,7 @@ def build_africa_deck(
         line_width_min_pixels=2,
         opacity=opacity,
         pickable=True,
+        update_triggers={"get_fill_color": (selected_node or "", snip_bucket)},
     )
     south_africa_layer = pdk.Layer(
         "GeoJsonLayer",
@@ -212,6 +219,7 @@ def build_africa_deck(
         line_width_min_pixels=2,
         opacity=opacity,
         pickable=True,
+        update_triggers={"get_fill_color": (selected_node or "", snip_bucket)},
     )
     egypt_layer = pdk.Layer(
         "GeoJsonLayer",
@@ -223,9 +231,10 @@ def build_africa_deck(
         line_width_min_pixels=2,
         opacity=opacity,
         pickable=True,
+        update_triggers={"get_fill_color": (selected_node or "", snip_bucket)},
     )
 
-    # Dubai (UAE) — Strategic Partner node (point)
+    # Dubai (UAE) — Strategic Partner node (point); D7: updateTriggers so redraw only on snip/selection
     dubai_df = pd.DataFrame([{"lon": CONTINENTAL_NODES["dubai"]["lon"], "lat": CONTINENTAL_NODES["dubai"]["lat"], "name": "Dubai (UAE) Strategic Partner"}])
     dubai_layer = pdk.Layer(
         "ScatterplotLayer",
@@ -238,9 +247,10 @@ def build_africa_deck(
         radius_min_pixels=12,
         radius_max_pixels=24,
         pickable=True,
+        update_triggers={"get_fill_color": (selected_node or "", snip_bucket)},
     )
 
-    # Glitter
+    # Glitter — D7: redraw only when GE snips (snip_bucket)
     glitter_df = pd.DataFrame(get_glitter_points())
     glitter_layer = pdk.Layer(
         "ScatterplotLayer",
@@ -253,6 +263,7 @@ def build_africa_deck(
         radius_min_pixels=1,
         radius_max_pixels=4,
         pickable=False,
+        update_triggers={"get_position": snip_bucket, "get_radius": snip_bucket},
     )
 
     # View: center on selected node for Eagle's Global Strike

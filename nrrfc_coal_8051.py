@@ -39,6 +39,16 @@ from spc_generator import generate_spc_image
 from handshake import run_diagnostic_pulse, play_talon_lock_confirmed, STATES
 from nwc_geopolitical import STATE_REGION, STATE_LGA_COUNT, get_lgas
 
+# D7: Cache WL and 1,205 MW so they compute once per TTL, not every shimmer/rerun (thermal relief)
+@st.cache_data(ttl=60)
+def _cached_wl_velocity():
+    _t = time.time() % 100
+    return D3_WEALTH_MULTIPLIER * (1 + 0.15 * math.sin(_t * 0.2))
+
+@st.cache_data
+def _cached_power_mw():
+    return 1205  # 1,205 MW AI-DC — WPC 2026 Roadmap Ready (single compute)
+
 FULL_NAME = "Galadiman Ruwa Center For Strategic Leadership and Communication LTD/GTE"
 BRAND = "GCSLC"
 SEAL_PATH = os.path.join(os.path.dirname(__file__), "assets", "gcslc_seal.png")
@@ -107,9 +117,8 @@ section[data-testid="stSidebar"] { background-color: #002147 !important; border-
 /* IP Shield: Proprietary Methodology watermark on pydeck map (8R Stealth Paradigm) */
 [data-testid="stPydeckChart"] { position: relative !important; }
 [data-testid="stPydeckChart"]::after { content: "Proprietary Methodology"; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%) rotate(-22deg); font-size: 1.4rem; font-weight: 700; color: rgba(212,175,55,0.18); pointer-events: none; white-space: nowrap; letter-spacing: 0.2em; text-transform: uppercase; z-index: 2; }
-/* Active Defense: legal name shimmer (navy-and-gold) — uniformity across quad-port */
-.gcslc-legal-name-shimmer { background: linear-gradient(90deg, #002147, #D4AF37, #FFE55C, #D4AF37, #002147); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent !important; animation: gcslc-shimmer 4s linear infinite; }
-@keyframes gcslc-shimmer { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+/* D7 Komi Uniformity: CAC/Chairman static CSS (no animation) — save CPU/GPU cycles */
+.gcslc-legal-name-shimmer { background: linear-gradient(90deg, #002147, #D4AF37, #FFE55C, #D4AF37, #002147); background-size: 100% auto; -webkit-background-clip: text; background-clip: text; color: #D4AF37 !important; }
 /* Bubble watermark: drift + pulse (low opacity) */
 #gcslc-bubble-wrap { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 998; overflow: hidden; }
 .gcslc-bubble { position: absolute; font-size: 0.85rem; font-weight: 700; color: rgba(212,175,55,0.5); letter-spacing: 0.15em; white-space: nowrap; animation: gcslc-bubble-drift 18s ease-in-out infinite; opacity: 0.08; }
@@ -137,7 +146,7 @@ st.markdown("""
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent !important;
-    animation: title-shimmer 4s linear infinite;
+    animation: title-shimmer 8s linear infinite;
 }
 
 @keyframes title-shimmer {
@@ -275,19 +284,14 @@ components.html("""
     stripBottom.style.display = on ? 'block' : 'none';
   }
   document.addEventListener('visibilitychange', function(){ setDefend(document.hidden); });
-  window.addEventListener('blur', function(){ setDefend(true); });
-  window.addEventListener('focus', function(){ setDefend(false); });
-  window.addEventListener('beforeprint', function(){ setDefend(true); });
   document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
-  document.addEventListener('keydown', function(e){ if((e.ctrlKey||e.metaKey)&&e.key==='s'){ e.preventDefault(); setDefend(true); } });
 })();
 </script>
 """, height=0)
 
-# ——— WL Counter (Komi): real-time cost of inaction — Human & Robotic worlds ———
+# ——— WL Counter (Komi): cached — compute once per 60s (D7 thermal relief) ———
 st.write("### WL Counter (Lost Wealth — Komi)")
-_t = time.time() % 100
-wl_vel = D3_WEALTH_MULTIPLIER * (1 + 0.15 * math.sin(_t * 0.2))
+wl_vel = _cached_wl_velocity()
 wl_a, wl_b = st.columns(2)
 with wl_a:
     st.metric("WL — Missed 9.6× (Human)", f"{wl_vel:.2f}×", "real-time cost of inaction")
@@ -471,12 +475,13 @@ if toggle_minerals:
         table_df["95% Retained Sovereign Value"] = table_df["95% Retained Sovereign Value"].map(lambda v: f"${v:,.0f}")
         st.dataframe(table_df, width="stretch")
 
-        # 3D NRRFC Heatmap — Sovereign Mineral Fortress (finalized pydeck at ~Line 158)
+        # 3D NRRFC Heatmap — D7: cached + updateTriggers so map redraws only when GE snips (60s)
         st.write("#### 3D NRRFC Heatmap — Sovereign Mineral Fortress")
         st.caption("Proving Nigeria as a Sovereign Mineral Fortress: D3 Research nodes across North East (kimberlite) and North West (hydrothermal).")
         heat_df = df.copy()
         heat_df["elevation"] = (heat_df["retained_value_usd"] / 1_000_000_000).clip(lower=0.5)  # billions, min height for visibility
         heat_df["retained_display"] = heat_df["retained_value_usd"].apply(lambda x: f"${x:,.0f}")
+        snip_bucket = int(time.time() // 60)  # GE snips every 60s — map redraws only on new bucket
 
         nrrfc_layer = pdk.Layer(
             "ColumnLayer",
@@ -488,6 +493,7 @@ if toggle_minerals:
             get_fill_color="[212, 175, 55, 180]",
             pickable=True,
             auto_highlight=True,
+            update_triggers={"get_elevation": snip_bucket, "get_position": snip_bucket},
         )
         nrrfc_view = pdk.ViewState(
             longitude=8.5,
