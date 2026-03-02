@@ -496,6 +496,46 @@ SANTIAGO_COMPLIANCE = (
     "the $170.85B valuation anchor is the central metric for sovereign validation."
 )
 
+# --- Sovereign OS — 8R Stealth Paradigm Convergence (Agentic, Generative; interface: Apex Predator Eagle) ---
+SOVEREIGN_OS_SIGN_OFF = "GCSLC SECURED THE ANCHOR. GET TO WORK."
+
+SOVEREIGN_OS_PILLARS = [
+    {
+        "title": "1. Universal Deployment Logic (Zero-Conflict)",
+        "body": (
+            "Multi-Tenant Sovereign Sandbox: BUA, Dangote, Samsung, ExxonMobil, JPMorgan, Citibank "
+            "operate on a single platform with no data leakage. Every query delivers the **Foresight Solution**, not just data."
+        ),
+    },
+    {
+        "title": "2. Physical Security & Pre-Crime Sentinel",
+        "body": (
+            "Target: Global South + Gulf (UAE, Saudi Arabia, Qatar, Nigeria). Eagle's **5km Vision** — Preventative Analytics "
+            "to identify physical Hot Spots (90% accuracy). Output: map coordinates, intent, prescribe Determinant (e.g. D2: Reset, D7: Re-engineer)."
+        ),
+    },
+    {
+        "title": "3. Sophisticated Cyber-Foresight (Truth Layer)",
+        "body": (
+            "Detection: shape-shifting malware, Synthetic Identity fraud, Autonomous Bot Swarms bypassing MFA/firewalls. "
+            "Defense: when threat foreseen, apply **D2 (Reset)** to air-gap; protect 5GW Stargate (UAE) and Sovereign Data Moat."
+        ),
+    },
+    {
+        "title": "4. 2026 Tech Integration (Blackwell Ultra)",
+        "body": (
+            "Agentic reasoning across industrial codebases. Physical AI (Robotics/Drones) across 1,000+ sq km; "
+            "91 federal assets and global shipping corridors. **Sovereign-by-Design:** local, secure, air-gapped."
+        ),
+    },
+]
+
+
+def get_sovereign_os_pillars():
+    """Return Sovereign OS four pillars for sidebar/UI."""
+    return list(SOVEREIGN_OS_PILLARS)
+
+
 # --- Foundational Intelligence Layer (sidebar) ---
 INVESTOR_MANIFESTO = (
     "**Investor Manifesto**  \n\n"

@@ -205,6 +205,13 @@ st.markdown("---")
 
 # --- Sidebar: Continental Nodes + Eagle's Talon (play_swat on every strike) ---
 with st.sidebar:
+    st.write("### Sovereign OS — 8R Stealth Paradigm")
+    st.caption("Agentic, Generative. Interface: Apex Predator Eagle. Goal: Asset Resuscitation.")
+    with st.expander("**Sovereign OS Pillars**", expanded=False):
+        for p in continental_logic.get_sovereign_os_pillars():
+            st.markdown(f"**{p['title']}**  \n{p['body']}")
+        st.markdown(f'<p style="font-weight: 800; color: #FFD700; margin-top: 8px;">{continental_logic.SOVEREIGN_OS_SIGN_OFF}</p>', unsafe_allow_html=True)
+    st.markdown("---")
     st.write("### Continental Nodes")
     if st.button("🇳🇬 Nigeria", key="btn_nigeria"):
         st.session_state.selected_node = "nigeria"
