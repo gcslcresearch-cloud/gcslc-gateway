@@ -98,7 +98,21 @@ components.html("""
 """, height=0)
 
 st.markdown('<p class="strike-header">8R Strike Command — Synchronized</p>', unsafe_allow_html=True)
-st.markdown('<p class="strike-sub">Port 8053 | $1.5 Trillion Initiative & Institutional Partners</p>', unsafe_allow_html=True)
+st.markdown('<p class="strike-sub">Port 8053 | $1.5 Trillion Initiative & Institutional Partners | Sovereign AI Compute</p>', unsafe_allow_html=True)
+st.markdown("---")
+
+# ——— Sovereign AI Compute — Jensen Huang / NVIDIA Portal (1,205 MW pitch) ———
+st.write("### 🖥️ Sovereign AI Compute — Pitch to NVIDIA (Jensen Huang)")
+with st.expander("**1,205 MW Asset — Sovereign AI Compute for the Robotic World**", expanded=True):
+    st.markdown("**GCSLC GE Cloud** offers a **1,205 MW (1.2 GW)** AI-DC power asset across the **13-state coal corridor** — WPC 2026 Roadmap Ready — for **Sovereign AI Compute** deployment.")
+    st.metric("Sovereign AI Compute asset", "1,205 MW (1.2 GW)", "13-state corridor — WPC 2026 Roadmap Ready")
+    st.metric("Corridor", "13 states", "639.3 Mt reserves | Clean AI Energy")
+    st.markdown(
+        "**Pitch:** Align NVIDIA's global AI infrastructure with sovereign-controlled power and data. "
+        "The 9.6× wealth multiplier (D3 Research) applies to Germanium-for-chips and Ammonia value chains; "
+        "the same corridor delivers **1,205 MW** for data centers. **CAC: 176917792057** — GCSLC unassailable status."
+    )
+    st.caption("Jensen Huang / NVIDIA: Sovereign AI Compute portal. BUA/NVIDIA Strategic Resolution via GE Cloud.")
 st.markdown("---")
 
 # ——— $1.5 Trillion Initiative (Capital node — fully loaded) ———
@@ -132,6 +146,7 @@ st.markdown(
     '<div class="gcslc-sovereign-footer">'
     '<span class="cac">CAC Name Availability Code: 176917792057</span>'
     '<p class="chairman">GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION LTD/GTE | Chairman & Founder: Dr. Sa\'ad Jaafaru</p>'
+    '<p style="font-size:0.7rem;opacity:0.9;margin-top:0.2rem;">CAC & shimmering branding — visual proof of GCSLC unassailable status.</p>'
     '</div>',
     unsafe_allow_html=True,
 )

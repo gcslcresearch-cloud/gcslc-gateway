@@ -559,6 +559,7 @@ st.markdown(
     '<div class="gcslc-sovereign-footer">'
     '<span class="cac">CAC Name Availability Code: 176917792057</span>'
     '<p class="chairman">GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION LTD/GTE | Chairman & Founder: Dr. Sa\'ad Jaafaru</p>'
+    '<p style="font-size:0.7rem;opacity:0.9;margin-top:0.2rem;">CAC & shimmering branding — visual proof of GCSLC unassailable status.</p>'
     '</div>',
     unsafe_allow_html=True,
 )

@@ -206,6 +206,34 @@ with wl_col2:
 st.caption("WL replaces legacy GDP. Dual-live: missed 9.6× wealth multiplier velocity + $100B shortfall in Sovereign AI Compute.")
 st.markdown("---")
 
+# ——— D3 Research: Eagle Sniffer — BUA industrial nodes mapped to 13-state coal corridor ———
+st.write("### Eagle Sniffer — BUA Industrial Nodes vs 13-State Coal Corridor")
+BUA_INDUSTRIAL_NODES = [
+    {"node": "BUA Cement — Sokoto", "state": "Sokoto", "in_corridor": "No", "corridor_state": "—", "reserves_mt": 0, "power_mw": 0, "note": "Adjacent; offtake from corridor"},
+    {"node": "BUA Cement — Edo", "state": "Edo", "in_corridor": "No", "corridor_state": "—", "reserves_mt": 0, "power_mw": 0, "note": "Logistics link to Anambra/Ebonyi"},
+    {"node": "BUA Energy offtake — Kogi", "state": "Kogi", "in_corridor": "Yes", "corridor_state": "Kogi", "reserves_mt": 142.0, "power_mw": 300, "note": "13-state corridor — 9.6× ready"},
+    {"node": "BUA Cement & mining — Benue", "state": "Benue", "in_corridor": "Yes", "corridor_state": "Benue", "reserves_mt": 85.0, "power_mw": 120, "note": "13-state corridor — 9.6× ready"},
+    {"node": "BUA Energy offtake — Enugu", "state": "Enugu", "in_corridor": "Yes", "corridor_state": "Enugu", "reserves_mt": 168.0, "power_mw": 340, "note": "13-state corridor — 9.6× ready"},
+    {"node": "BUA Sugar & infrastructure — Nasarawa", "state": "Nasarawa", "in_corridor": "Yes", "corridor_state": "Nasarawa", "reserves_mt": 22.0, "power_mw": 45, "note": "13-state corridor — 9.6× ready"},
+]
+bua_map_rows = [
+    {"BUA Node": n["node"], "State": n["state"], "In 13-State Corridor": n["in_corridor"], "Corridor Reserves (Mt)": n["reserves_mt"] or "—", "Corridor Power (MW)": n["power_mw"] or "—", "D3 Note": n["note"]}
+    for n in BUA_INDUSTRIAL_NODES
+]
+st.dataframe(bua_map_rows, width="stretch", hide_index=True)
+st.caption("D3 Research: Eagle Sniffer maps BUA industrial nodes against the 13-state coal corridor. Nodes in corridor qualify for 9.6× wealth multiplier integration.")
+st.markdown("---")
+
+# ——— WL Multiplier: Lost Wealth of not integrating 9.6× into BUA's existing energy infrastructure ———
+st.write("### WL — BUA Energy Infrastructure (Lost Wealth)")
+# Illustrative: BUA energy offtake in corridor states; without 9.6× integration, WL accrues
+bua_corridor_mw = sum(n["power_mw"] for n in BUA_INDUSTRIAL_NODES if n.get("in_corridor") == "Yes")
+bua_wl_b = 12.5  # Illustrative WL (Lost Wealth) in $B from not integrating 9.6× into BUA energy
+st.metric("WL — BUA (no 9.6× integration)", f"${bua_wl_b}B", "Lost Wealth — existing energy infrastructure")
+st.metric("BUA nodes in 13-state corridor", f"{sum(1 for n in BUA_INDUSTRIAL_NODES if n.get('in_corridor') == 'Yes')}", f"{bua_corridor_mw} MW mapped — 9.6× ready")
+st.caption("Lost Wealth (WL) of not integrating the 9.6× wealth multiplier into BUA's existing energy infrastructure. Strategic Resolution: GE Cloud aligns BUA offtake with 1,205 MW Sovereign AI Compute corridor.")
+st.markdown("---")
+
 # ——— Real-time Market Gaps: $72B + 94% vs 22% ———
 gap = continental_logic.get_market_gap_for_node("nigeria")
 reveal = getattr(continental_logic, "NIGERIA_SCIENTIFIC_REVEAL", None) or gap
@@ -281,6 +309,7 @@ st.markdown(
     '<div class="gcslc-sovereign-footer">'
     '<span class="cac">CAC Name Availability Code: 176917792057</span>'
     '<p class="chairman">GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION LTD/GTE | Chairman & Founder: Dr. Sa\'ad Jaafaru</p>'
+    '<p style="font-size:0.7rem;opacity:0.9;margin-top:0.2rem;">CAC & shimmering branding — visual proof of GCSLC unassailable status.</p>'
     '</div>',
     unsafe_allow_html=True,
 )
