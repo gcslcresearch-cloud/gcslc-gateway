@@ -60,6 +60,7 @@ def _render_apex_eagle(use_asset_path=True):
 # Inline fallback when pydeck/GPU unavailable or map data missing — force manifest Sovereign Glass map
 SOVEREIGN_GLASS_MAP_FALLBACK_HTML = """
 <div class="awc-map-glass" style="padding: 16px; min-height: 280px; border-radius: 16px;">
+  <span class="gcslc-proprietary-watermark" aria-hidden="true">Proprietary Methodology</span>
   <p style="color: #FFD700; font-weight: 700; margin-bottom: 12px;">Sovereign Glass — Continental View (inline fallback)</p>
   <p style="color: rgba(212,175,55,0.9); font-size: 0.9rem;">Nigeria · Ghana · South Africa · Egypt · Dubai (UAE)</p>
   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;">
@@ -140,7 +141,14 @@ st.markdown("""
     75% { transform: translate(-15px, -10px) scale(1.1); opacity: 0.85; }
 }
 /* Glassmorphism: 85% transparent map container */
-.awc-map-glass { background: rgba(0, 26, 51, 0.15); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-radius: 16px; border: 1px solid rgba(255, 215, 0, 0.25); box-shadow: inset 0 1px 0 rgba(255,255,255,0.08); }
+.awc-map-glass { background: rgba(0, 26, 51, 0.15); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-radius: 16px; border: 1px solid rgba(255, 215, 0, 0.25); box-shadow: inset 0 1px 0 rgba(255,255,255,0.08); position: relative; }
+/* IP Shield: Proprietary Methodology watermark (8R Stealth Paradigm — screen-grab protection) */
+.gcslc-proprietary-watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%) rotate(-22deg); font-size: 1.4rem; font-weight: 700; color: rgba(212,175,55,0.18); pointer-events: none; white-space: nowrap; letter-spacing: 0.2em; text-transform: uppercase; z-index: 2; }
+/* Sovereign Stamp: persistent non-scrollable footer (CAC + Chairman Lock) */
+.gcslc-sovereign-footer { position: fixed; bottom: 0; left: 0; right: 0; z-index: 999; background: linear-gradient(180deg, rgba(0,26,51,0.97) 0%, #001a33 100%); border-top: 2px solid rgba(212,175,55,0.4); padding: 0.45rem 1rem; font-size: 0.75rem; color: #D4AF37; text-align: center; }
+.gcslc-sovereign-footer .cac { letter-spacing: 0.1em; opacity: 0.95; }
+.gcslc-sovereign-footer .chairman { font-weight: 700; margin-top: 0.2rem; }
+.main .block-container { padding-bottom: 4rem !important; }
 /* Sovereign Pulse: 3s Green -> White -> Green -> GCSLC Gold Shimmer #FFD700 + glitter overlay */
 @keyframes sovereign-pulse {
     0%   { box-shadow: 0 0 24px #008751, 0 0 48px rgba(0,135,81,0.7); border-color: #008751; }
@@ -231,11 +239,11 @@ section[data-testid="stSidebar"] { background: linear-gradient(180deg, #001a33 0
 <div id="awc-shimmer-wrap">""" + particles_html + """</div>
 """, unsafe_allow_html=True)
 
-# --- Mission Handshake: Impact Header & Sub-header (Talon Lock: credentials locked at top) ---
+# --- Mission Handshake: Impact Header (Legal Identity — D8 Retain) ---
 st.markdown(
     '<div class="awc-header-lock">'
     '<p class="awc-impact-header">ARCHITECTING NATIONAL ASSET REVITALIZATION: FROM NIGERIA & AFRICA TO THE GLOBAL SOUTH</p>'
-    '<p class="awc-sub-header">Galadiman Ruwa Center (GCSLC) LTD/GTE | Chairman & Founder: Dr. Sa\'ad Jaafaru</p>'
+    '<p class="awc-sub-header">GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION LTD/GTE | Chairman & Founder: Dr. Sa\'ad Jaafaru</p>'
     '</div>',
     unsafe_allow_html=True,
 )
@@ -399,7 +407,8 @@ show_sniffer_hover = deck and not show_talon_strike
 eagle_html = EAGLE_TALON_SVG if show_talon_strike else (EAGLE_SNIFFER_SVG if show_sniffer_hover else "")
 if deck:
     st.markdown(
-        f'<div class="{map_container_class}" style="padding: 8px; position: relative;">{eagle_html}',
+        f'<div class="{map_container_class}" style="padding: 8px; position: relative;">'
+        f'<span class="gcslc-proprietary-watermark" aria-hidden="true">Proprietary Methodology</span>{eagle_html}',
         unsafe_allow_html=True,
     )
     try:
@@ -809,3 +818,11 @@ st.metric("Total retained value (all Nigeria SSMVs)", f"${total/1e9:.2f}B USD")
 
 # --- Footer: Copyright ---
 st.markdown('<p class="footer-awc">© 2026 GCSLC. All Rights Reserved.</p>', unsafe_allow_html=True)
+# Sovereign Stamp: CAC + Chairman Lock — persistent non-scrollable footer (D8 Retain)
+st.markdown(
+    '<div class="gcslc-sovereign-footer">'
+    '<span class="cac">CAC Name Availability Code: 176917792057</span>'
+    '<p class="chairman">GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION LTD/GTE | Chairman & Founder: Dr. Sa\'ad Jaafaru</p>'
+    '</div>',
+    unsafe_allow_html=True,
+)

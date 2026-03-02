@@ -96,6 +96,14 @@ section[data-testid="stSidebar"] { background-color: #002147 !important; border-
 .nwc-lga-grid [data-testid="stExpander"] { background: rgba(0,33,71,0.98); border: 1px solid #D4AF37; border-radius: 6px; }
 .nwc-lga-grid [data-testid="stExpander"] summary { color: #D4AF37 !important; }
 .nwc-lga-grid [data-testid="stExpander"] li { color: #E8C547; }
+/* Sovereign Stamp: persistent non-scrollable footer (D8 Retain) */
+.gcslc-sovereign-footer { position: fixed; bottom: 0; left: 0; right: 0; z-index: 999; background: linear-gradient(180deg, rgba(0,26,51,0.97) 0%, #001a33 100%); border-top: 2px solid rgba(212,175,55,0.4); padding: 0.45rem 1rem; font-size: 0.75rem; color: #D4AF37; text-align: center; }
+.gcslc-sovereign-footer .cac { letter-spacing: 0.1em; opacity: 0.95; }
+.gcslc-sovereign-footer .chairman { font-weight: 700; margin-top: 0.2rem; }
+.main .block-container { padding-bottom: 4rem !important; }
+/* IP Shield: Proprietary Methodology watermark on pydeck map (8R Stealth Paradigm) */
+[data-testid="stPydeckChart"] { position: relative !important; }
+[data-testid="stPydeckChart"]::after { content: "Proprietary Methodology"; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%) rotate(-22deg); font-size: 1.4rem; font-weight: 700; color: rgba(212,175,55,0.18); pointer-events: none; white-space: nowrap; letter-spacing: 0.2em; text-transform: uppercase; z-index: 2; }
 </style>
 """, unsafe_allow_html=True)
 # Keyframes and .brand-8r kept in background (no leak)
@@ -209,7 +217,7 @@ if os.path.isfile(SEAL_PATH):
 # Talon Lock: Chairman & Founder credentials locked at top (all ports)
 st.markdown(
     '<div style="position: sticky; top: 0; z-index: 100; background: linear-gradient(180deg, #002147 0%, rgba(0,33,71,0.98) 100%); padding-bottom: 10px; margin-bottom: 8px; border-bottom: 1px solid rgba(212,175,55,0.25);">'
-    '<p style="text-align: center; font-weight: 800; color: #D4AF37; font-size: 0.95rem; margin: 0;">Galadiman Ruwa Center (GCSLC) LTD/GTE | Chairman & Founder: Dr. Sa\'ad Jaafaru</p>'
+    '<p style="text-align: center; font-weight: 800; color: #D4AF37; font-size: 0.95rem; margin: 0;">GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION LTD/GTE | Chairman & Founder: Dr. Sa\'ad Jaafaru</p>'
     '</div>',
     unsafe_allow_html=True,
 )
@@ -217,7 +225,7 @@ st.markdown(
 # D1: REFINE - Sovereign branding animation
 st.markdown("""
 <div class="gcslc-header">
-    Galadiman Ruwa Center for Strategic Leadership and Communication
+    GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION LTD/GTE
 </div>
 <div class="proprietor-tag">
     (Proprietors of) 8R Stealth Paradigm Convergence and its Determinants
@@ -502,3 +510,11 @@ if st.session_state.strike:
 # Footer (always)
 st.markdown("---")
 st.caption(f"Strategic Infrastructure Manifested by: {FULL_NAME} - {BRAND}  |  © 2026  |  Proprietary Nodal Logic — Protected Asset")
+# Sovereign Stamp: CAC + Chairman Lock — persistent non-scrollable footer (D8 Retain)
+st.markdown(
+    '<div class="gcslc-sovereign-footer">'
+    '<span class="cac">CAC Name Availability Code: 176917792057</span>'
+    '<p class="chairman">GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION LTD/GTE | Chairman & Founder: Dr. Sa\'ad Jaafaru</p>'
+    '</div>',
+    unsafe_allow_html=True,
+)

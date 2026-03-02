@@ -42,13 +42,17 @@ h1, h2, h3, p, span, label, .stMarkdown { color: #D4AF37 !important; }
 section[data-testid="stSidebar"] { background-color: #002147 !important; border-right: 2px solid #D4AF37; }
 .strike-header { font-weight: 800; font-size: 1.5rem; text-align: center; color: #FFD700 !important; margin-bottom: 0.5rem; }
 .strike-sub { text-align: center; color: rgba(212,175,55,0.95); font-size: 0.95rem; }
+.gcslc-sovereign-footer { position: fixed; bottom: 0; left: 0; right: 0; z-index: 999; background: linear-gradient(180deg, rgba(0,26,51,0.97) 0%, #001a33 100%); border-top: 2px solid rgba(212,175,55,0.4); padding: 0.45rem 1rem; font-size: 0.75rem; color: #D4AF37; text-align: center; }
+.gcslc-sovereign-footer .cac { letter-spacing: 0.1em; opacity: 0.95; }
+.gcslc-sovereign-footer .chairman { font-weight: 700; margin-top: 0.2rem; }
+.main .block-container { padding-bottom: 4rem !important; }
 </style>
 """, unsafe_allow_html=True)
 
 # ——— Chairman Lock (Port 8053) ———
 st.markdown(
     '<div style="position: sticky; top: 0; z-index: 100; background: linear-gradient(180deg, #002147 0%, rgba(0,33,71,0.98) 100%); padding-bottom: 10px; margin-bottom: 12px; border-bottom: 1px solid rgba(212,175,55,0.25);">'
-    '<p style="text-align: center; font-weight: 800; color: #D4AF37; font-size: 0.95rem; margin: 0;">Galadiman Ruwa Center (GCSLC) LTD/GTE | Chairman & Founder: Dr. Sa\'ad Jaafaru</p>'
+    '<p style="text-align: center; font-weight: 800; color: #D4AF37; font-size: 0.95rem; margin: 0;">GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION LTD/GTE | Chairman & Founder: Dr. Sa\'ad Jaafaru</p>'
     '</div>',
     unsafe_allow_html=True,
 )
@@ -82,4 +86,12 @@ cols = st.columns(4)
 for i, det in enumerate(continental_logic.DETERMINANTS_8R):
     cols[i % 4].success(det)
 st.markdown("---")
-st.caption("Strategic Infrastructure: Galadiman Ruwa Center (GCSLC) LTD/GTE | © 2026 | Port 8053 — 8R Strike Command.")
+st.caption("Strategic Infrastructure: GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION LTD/GTE | © 2026 | Port 8053 — 8R Strike Command.")
+# Sovereign Stamp: CAC + Chairman Lock — persistent non-scrollable footer (D8 Retain)
+st.markdown(
+    '<div class="gcslc-sovereign-footer">'
+    '<span class="cac">CAC Name Availability Code: 176917792057</span>'
+    '<p class="chairman">GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION LTD/GTE | Chairman & Founder: Dr. Sa\'ad Jaafaru</p>'
+    '</div>',
+    unsafe_allow_html=True,
+)
