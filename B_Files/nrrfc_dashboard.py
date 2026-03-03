@@ -1,9 +1,8 @@
 """
-GEC-COAL-BASE-13 Nodal Release (D2 and D7) — Port 8051.
-Path: nrrfc_dashboard.py lives in 8R Stealth B_files (path syntax fix resolves "File does not exist: 8R").
-D2 (Operational Anchoring): RealTimeEngine with st.empty() and 60s rerun so Vercel serves live WebSocket, not static snapshot.
-D7 (Sovereign Verification): Header and sidebar include CAC: 176917792057 and Chairman Lock (Dr. Sa'ad Jaafaru).
-1,203 MW + 9.6× from 13 states update in real time. © GCSLC. Proprietary.
+GEC-COAL-BASE-13 Port 8051 — Coal Dashboard (S24 Ultra real-time).
+Path fix: project not in folder with spaces; GEC-COAL-BASE-13 logic on Desktop. "File does not exist: 8R" resolved.
+Logic from GEC-COAL-BASE-13: 1,203 MW (AI DC ready) + 9.6× wealth multiplier. RealTimeEngine 60s rerun + st.empty() for S24 push.
+Header/sidebar: CAC: 176917792057, Chairman Lock: Dr. Sa'ad Jaafaru. © GCSLC. Proprietary.
 """
 import os
 import sys
