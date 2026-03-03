@@ -14,6 +14,7 @@ import importlib.util
 import os
 import sys
 import time
+from datetime import datetime
 from enum import Enum
 
 # Ensure primary 8R Stealth folder (project root) is on path
@@ -306,6 +307,38 @@ def run_stability_test_and_render():
         st.caption(f"8R-within-8R stability test: depth={result['depth']}, ok={result['ok']}")
     render_2026_data_with_stability_placeholders()
 
+# --- S24 Ultra WebSocket fix: RealTimeEngine with st.empty() and 60s rerun ---
+REALTIME_ENGINE_INTERVAL_SEC = 60
+
+class RealTimeEngine:
+    """
+    S24 Ultra real-time fix: 60-second rerun loop + st.empty() containers to force the mobile
+    browser to refresh the $50.1M monthly revenue data container rather than showing a stale snapshot.
+    """
+    INTERVAL_SEC = REALTIME_ENGINE_INTERVAL_SEC
+
+    @staticmethod
+    def run():
+        if st is None:
+            return
+        try:
+            fragment = getattr(st, "fragment", None)
+            if fragment is None:
+                return
+        except Exception:
+            return
+        interval = REALTIME_ENGINE_INTERVAL_SEC
+
+        @fragment(run_every=interval)
+        def _rerun_data_container():
+            ph = st.empty()
+            with ph.container():
+                st.caption(f"Live • Last refresh: {datetime.now().strftime('%H:%M:%S')} UTC — S24 push active")
+                st.metric("Monthly revenue (8R-anchored)", f"${MONTHLY_REVENUE_M}M", "S24 Ultra view")
+                st.metric("Total cycle (valuation anchor)", f"${VALUATION_ANCHOR_B}B", "Central empirical metric")
+                st.metric("Wealth multiplier", f"{WEALTH_MULTIPLIER_9_6}×", "Germanium & Ammonia NGECC")
+        _rerun_data_container()
+
 class GEC_COAL_BASE_13:
     """
     ID: GEC-8051-NGECC-001. GEC-COAL-BASE-13 — Sovereign Anchor for the 13-state coal nodal.
@@ -402,6 +435,11 @@ class GEC_COAL_BASE_13:
     def render_sovereign_wealth_ticker(cls) -> None:
         render_sovereign_wealth_ticker()
 
+    @classmethod
+    def run_realtime_engine(cls) -> None:
+        """S24 Ultra: 60s rerun + st.empty() to refresh $50.1M data container on mobile."""
+        RealTimeEngine.run()
+
 __all__ = [
     "GEC_COAL_BASE_13",
     "GEC_COAL_BASE_13_ID",
@@ -440,4 +478,6 @@ __all__ = [
     "WEALTH_MULTIPLIER_9_6",
     "GERMANIUM_USD_PER_KG",
     "AMMONIA_USD_PER_MT",
+    "RealTimeEngine",
+    "REALTIME_ENGINE_INTERVAL_SEC",
 ]

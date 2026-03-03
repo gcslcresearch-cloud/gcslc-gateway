@@ -1,8 +1,9 @@
 """
-GEC-COAL-BASE-13 Port 8051 — NRRFC Dashboard (S24 Ultra real-time).
-Path fix: no folders with spaces; file can sit on Desktop. Logic activated from GEC_COAL_BASE_13.
-1,203 MW (AI DC ready) + 9.6× wealth multiplier. RealTimeEngine 60s rerun for S24 Ultra live push.
-CAC: 176917792057 | Chairman Lock: Dr. Sa'ad Jaafaru. © GCSLC. Proprietary.
+GEC-COAL-BASE-13 Nodal Release (D2 and D7) — Port 8051.
+Path: nrrfc_dashboard.py lives in 8R Stealth B_files (path syntax fix resolves "File does not exist: 8R").
+D2 (Operational Anchoring): RealTimeEngine with st.empty() and 60s rerun so Vercel serves live WebSocket, not static snapshot.
+D7 (Sovereign Verification): Header and sidebar include CAC: 176917792057 and Chairman Lock (Dr. Sa'ad Jaafaru).
+1,203 MW + 9.6× from 13 states update in real time. © GCSLC. Proprietary.
 """
 import os
 import sys
@@ -70,18 +71,18 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="auto",
 )
-# Sidebar: CAC + Chairman Lock (sovereign status)
+# Sidebar: D7 Sovereign Verification — CAC and Chairman signature
 with st.sidebar:
     st.markdown("**CAC:** 176917792057")
     st.markdown("**Chairman Lock:** Dr. Sa'ad Jaafaru")
-    st.caption("GEC-COAL-BASE-13 · Port 8051")
+    st.caption("GEC-COAL-BASE-13 · Port 8051 · D2/D7 nodal")
 # S24 Ultra: viewport and persistent header for mobile
 st.markdown(
     '<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>',
     unsafe_allow_html=True,
 )
 
-# --- Header: CAC + Chairman Lock (S24 Ultra navy & gold, persistent on mobile) ---
+# --- Header: D7 Sovereign Verification — CAC + Chairman Lock (Dr. Sa'ad Jaafaru) ---
 st.markdown(
     f'<div class="gcslc-mobile-header" style="background: linear-gradient(90deg, #0a1628 0%, #1a2744 100%); '
     f'border-bottom: 2px solid #D4AF37; padding: 0.75rem 1rem; margin: -1rem -1rem 1rem -1rem; position: sticky; top: 0; z-index: 999;">'
@@ -109,8 +110,8 @@ def _clear_stale_caches():
 
 class RealTimeEngine:
     """
-    S24 Ultra WebSocket fix: 60-second rerun loop to force the mobile browser to refresh
-    the $50.1M monthly revenue data container rather than showing a stale snapshot.
+    D2 Operational Anchoring: 60s rerun + st.empty() so Vercel serves live Python WebSocket
+    instead of a static snapshot. Forces mobile browser to refresh $50.1M revenue container.
     """
     INTERVAL_SEC = REALTIME_ENGINE_INTERVAL_SEC
 
@@ -130,7 +131,14 @@ class RealTimeEngine:
             with c3:
                 st.metric("Wealth multiplier", f"{WEALTH_MULTIPLIER_9_6}×", "Germanium & Ammonia NGECC")
             st.metric("AI-DC power potential (13-state corridor)", f"{TOTAL_POWER_MW_S24:,} MW", "AI DC ready — WPC 2026 Roadmap Ready")
-RealTimeEngine.run()
+# Use RealTimeEngine from GEC-COAL-BASE-13 when available (nodal); else local
+if GEC_COAL_BASE_13 is not None:
+    try:
+        GEC_COAL_BASE_13.run_realtime_engine()
+    except Exception:
+        RealTimeEngine.run()
+else:
+    RealTimeEngine.run()
 st.caption("9.6× wealth multiplier and 1,203 MW from GEC-COAL-BASE-13. Data refreshes every 60s on S24 Ultra.")
 
 # Chemical strip
