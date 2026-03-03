@@ -13,6 +13,7 @@ from __future__ import annotations
 import importlib.util
 import os
 import sys
+import time
 from enum import Enum
 
 # Ensure primary 8R Stealth folder (project root) is on path
@@ -161,6 +162,74 @@ def get_8r_blur_defend_css():
         ".gcslc-8r-blur-defend { filter: blur(14px); pointer-events: none; user-select: none; } "
         ".gcslc-8r-blur-defend * { filter: inherit; }"
     )
+
+# --- Sovereign Wealth Ticker: base of UI, 60s thermal reset, CAC + Chairman Lock ---
+CAC_AV_CODE = "176917792057"
+TICKER_THERMAL_RESET_SEC = 60
+TICKER_SESSION_KEY_LAST_CLEAR = "gcslc_ticker_last_clear"
+
+def get_sovereign_wealth_ticker_items():
+    """Live data stream: 13-state yields (reserves Mt, power MW) and $170.85B total cycle."""
+    states = list(COAL_CORRIDOR_RESERVES_MT.keys())
+    yield_items = [f"{s} {COAL_CORRIDOR_RESERVES_MT[s]} Mt" for s in states]
+    return {"state_yields": yield_items, "total_cycle_b": VALUATION_ANCHOR_B}
+
+def get_chemical_strike_reel():
+    """Chemical Strike reel: Germanium and Ammonia market value via NGECC Transition Logic."""
+    return {
+        "germanium_usd_per_kg": GERMANIUM_USD_PER_KG,
+        "ammonia_usd_per_mt": AMMONIA_USD_PER_MT,
+    }
+
+def get_ticker_css():
+    """Ticker styling with CAC AV Code and Chairman Lock branding."""
+    return (
+        ".gcslc-ticker-bar { "
+        "background: linear-gradient(90deg, #0a1628 0%, #1a2744 50%, #0a1628 100%); "
+        "border-top: 1px solid #D4AF37; color: #D4AF37; font-size: 0.75rem; "
+        "padding: 0.5rem 0.75rem; margin-top: 0.5rem; "
+        "font-family: system-ui, sans-serif; "
+        "}"
+        ".gcslc-ticker-bar .ticker-cycle { margin-bottom: 0.25rem; } "
+        ".gcslc-ticker-bar .ticker-chemical { margin-bottom: 0.25rem; opacity: 0.95; } "
+        ".gcslc-ticker-bar .ticker-legal { font-size: 0.65rem; opacity: 0.9; color: #c9a227; } "
+    )
+
+def render_sovereign_wealth_ticker():
+    """
+    Sovereign Wealth Ticker at base of UI.
+    Live Data Stream: 13-state yields + $170.85B cycle.
+    Chemical Strike reel: Germanium & Ammonia (NGECC Transition Logic).
+    Thermal Reset: st.empty() container cleared every 60s to prevent cache-lock during 20Mt BUA ingestion.
+    Legal Branding: CAC AV Code 176917792057 and Dr. Sa'ad Jaafaru Chairman Lock in styling.
+    """
+    if st is None:
+        return
+    now = time.time()
+    last_clear = st.session_state.get(TICKER_SESSION_KEY_LAST_CLEAR, 0.0)
+    ticker_ph = st.empty()
+    if (now - last_clear) >= TICKER_THERMAL_RESET_SEC:
+        ticker_ph.empty()
+        st.session_state[TICKER_SESSION_KEY_LAST_CLEAR] = now
+    data = get_sovereign_wealth_ticker_items()
+    chem = get_chemical_strike_reel()
+    state_line = " · ".join(data["state_yields"])
+    cycle_line = f"TOTAL CYCLE ${data['total_cycle_b']}B"
+    chemical_line = (
+        f"Chemical Strike — Germanium ${chem['germanium_usd_per_kg']:,.0f}/kg | "
+        f"Ammonia ${chem['ammonia_usd_per_mt']:,.0f}/mt (NGECC Transition Logic)"
+    )
+    legal_line = f"CAC AV Code: {CAC_AV_CODE} | Chairman Lock: {CHAIRMAN_ANCHOR}"
+    html = (
+        f'<style>{get_ticker_css()}</style>'
+        f'<div class="gcslc-ticker-bar">'
+        f'<div class="ticker-cycle">{state_line} · {cycle_line}</div>'
+        f'<div class="ticker-chemical">{chemical_line}</div>'
+        f'<div class="ticker-legal">{legal_line}</div>'
+        f'</div>'
+    )
+    with ticker_ph.container():
+        st.markdown(html, unsafe_allow_html=True)
 
 # --- Sovereign Copyright: GCSLC Proprietary Footer (RC: 1871418) + Chairman Lock ---
 GCSLC_RC_NUMBER = "1871418"
@@ -321,6 +390,18 @@ class GEC_COAL_BASE_13:
     def render_sovereign_footer(cls) -> None:
         render_sovereign_footer()
 
+    @classmethod
+    def get_sovereign_wealth_ticker_items(cls) -> dict:
+        return get_sovereign_wealth_ticker_items()
+
+    @classmethod
+    def get_chemical_strike_reel(cls) -> dict:
+        return get_chemical_strike_reel()
+
+    @classmethod
+    def render_sovereign_wealth_ticker(cls) -> None:
+        render_sovereign_wealth_ticker()
+
 __all__ = [
     "GEC_COAL_BASE_13",
     "GEC_COAL_BASE_13_ID",
@@ -340,6 +421,12 @@ __all__ = [
     "PROPRIETARY_FOOTER",
     "GCSLC_RC_NUMBER",
     "render_sovereign_footer",
+    "CAC_AV_CODE",
+    "TICKER_THERMAL_RESET_SEC",
+    "get_sovereign_wealth_ticker_items",
+    "get_chemical_strike_reel",
+    "get_ticker_css",
+    "render_sovereign_wealth_ticker",
     "COAL_CORRIDOR_RESERVES_MT",
     "COAL_CORRIDOR_POWER_MW",
     "TOTAL_RESERVES_MT",
