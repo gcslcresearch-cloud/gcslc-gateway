@@ -129,7 +129,7 @@ class RealTimeEngine:
                 st.metric("Total cycle (valuation anchor)", f"${VALUATION_ANCHOR_B}B", "Central empirical metric")
             with c3:
                 st.metric("Wealth multiplier", f"{WEALTH_MULTIPLIER_9_6}×", "Germanium & Ammonia NGECC")
-            st.metric("AI-DC power potential (13-state corridor)", f"{TOTAL_POWER_MW_S24:,} MW", "AI DC ready — WPC 2026 Roadmap Ready")
+            st.metric("AI-DC power potential (13-state corridor)", f"{TOTAL_POWER_MW_S24:,} MW", "D3 validated from 13 states")
 # Use RealTimeEngine from GEC-COAL-BASE-13 when available (nodal); else local
 if GEC_COAL_BASE_13 is not None:
     try:

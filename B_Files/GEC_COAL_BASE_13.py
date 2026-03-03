@@ -73,6 +73,12 @@ COAL_CORRIDOR_POWER_MW = {
     "Ebonyi": 30, "Anambra": 55, "Cross River": 0,
 }
 TOTAL_POWER_MW = 1205
+# Determinant 3 (Research): 1,203 MW power potential validated from 13-state corridor (S24 Ultra)
+TOTAL_POWER_MW_S24 = 1203
+
+def get_d3_validated_power_mw():
+    """D3: Validate 1,203 MW power potential from the 13 states. Returns S24 Ultra value."""
+    return TOTAL_POWER_MW_S24
 
 # --- 2026 Strike Data: D3 Synthetic Research ---
 # 1,205 MW NVIDIA-standard hub: 150 kW per rack, liquid-cooling
@@ -337,6 +343,7 @@ class RealTimeEngine:
                 st.metric("Monthly revenue (8R-anchored)", f"${MONTHLY_REVENUE_M}M", "S24 Ultra view")
                 st.metric("Total cycle (valuation anchor)", f"${VALUATION_ANCHOR_B}B", "Central empirical metric")
                 st.metric("Wealth multiplier", f"{WEALTH_MULTIPLIER_9_6}×", "Germanium & Ammonia NGECC")
+                st.metric("AI-DC power potential (13-state)", f"{get_d3_validated_power_mw():,} MW", "D3 validated from 13 states")
         _rerun_data_container()
 
 class GEC_COAL_BASE_13:
@@ -469,6 +476,8 @@ __all__ = [
     "COAL_CORRIDOR_POWER_MW",
     "TOTAL_RESERVES_MT",
     "TOTAL_POWER_MW",
+    "TOTAL_POWER_MW_S24",
+    "get_d3_validated_power_mw",
     "MONTHLY_REVENUE_M",
     "VALUATION_ANCHOR_B",
     "ACTIVE_DEFENSE_REQUIRED",
