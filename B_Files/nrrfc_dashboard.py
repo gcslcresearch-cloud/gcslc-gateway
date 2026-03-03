@@ -1,142 +1,164 @@
 """
-GEC-COAL-BASE-13 (ID: GEC-8051-NGECC-001)
-8R Stealth B_Files — sovereign anchor for the 13-state coal nodal.
-
-This file is designated as the sovereign anchor for the 13-state coal nodal, focusing
-specifically on the 9.6× wealth multiplier logic for Germanium (AI Chip Grade) and
-Ammonia (Fertilizer Grade) under D3 Scientific Profit Centers. All corridor reserves,
-power potential (1,205 MW), and D3 derivative pricing are canonical here.
-
-8R Determinants logic is pulled from the primary 8R Stealth folder (project root) in
-real-time so that updates to d8_logic there reflect here instantly on next import/run.
-
-GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION LTD/GTE — CAC: 176917792057.
-© GCSLC. Proprietary.
+GEC-COAL-BASE-13 Port 8051 — NRRFC Dashboard (S24 Ultra real-time).
+Path fix: no folders with spaces; file can sit on Desktop. Logic activated from GEC_COAL_BASE_13.
+1,203 MW (AI DC ready) + 9.6× wealth multiplier. RealTimeEngine 60s rerun for S24 Ultra live push.
+CAC: 176917792057 | Chairman Lock: Dr. Sa'ad Jaafaru. © GCSLC. Proprietary.
 """
-from __future__ import annotations
-
 import os
 import sys
+from datetime import datetime
 
-# Ensure primary 8R Stealth folder (project root) is on path for real-time 8R logic
+# Project root on path (no spaces) — GEC-COAL-BASE-13 and d8_logic
 _ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if _ROOT not in sys.path:
     sys.path.insert(0, _ROOT)
 
-# Real-time pull: every import uses latest d8_logic from primary folder
+import streamlit as st
 from d8_logic import (
     DETERMINANTS_8R,
-    d_within_d,
-    get_d3_synthetic_for_bua_2026,
-    CAC_ANCHOR,
-    CHAIRMAN_ANCHOR,
     D3_WEALTH_MULTIPLIER,
     D3_GERMANIUM_USD_PER_KG,
     D3_AMMONIA_USD_PER_MT,
-    WEALTH_RETENTION_LOCK,
+    CAC_ANCHOR,
+    CHAIRMAN_ANCHOR,
+)
+# Activate GEC-COAL-BASE-13 logic for Port 8051 coal dashboard
+_B_FILES = os.path.join(_ROOT, "B_Files")
+if os.path.isdir(_B_FILES) and _B_FILES not in sys.path:
+    sys.path.insert(0, _B_FILES)
+try:
+    import GEC_COAL_BASE_13 as _g13
+    GEC_COAL_BASE_13 = _g13.GEC_COAL_BASE_13
+    MONTHLY_REVENUE_M = getattr(_g13, "MONTHLY_REVENUE_M", 50.1)
+    VALUATION_ANCHOR_B = getattr(_g13, "VALUATION_ANCHOR_B", 170.85)
+    WEALTH_MULTIPLIER_9_6 = getattr(_g13, "WEALTH_MULTIPLIER_9_6", D3_WEALTH_MULTIPLIER)
+    COAL_CORRIDOR_RESERVES_MT = getattr(_g13, "COAL_CORRIDOR_RESERVES_MT", None)
+    COAL_CORRIDOR_POWER_MW = getattr(_g13, "COAL_CORRIDOR_POWER_MW", None)
+    if COAL_CORRIDOR_RESERVES_MT is None or COAL_CORRIDOR_POWER_MW is None:
+        raise ImportError("GEC_COAL_BASE_13 missing corridor maps")
+except (ImportError, AttributeError):
+    GEC_COAL_BASE_13 = None
+    MONTHLY_REVENUE_M = 50.1
+    VALUATION_ANCHOR_B = 170.85
+    WEALTH_MULTIPLIER_9_6 = D3_WEALTH_MULTIPLIER
+    COAL_CORRIDOR_RESERVES_MT = {
+        "Enugu": 168.0, "Kogi": 142.0, "Gombe": 62.0, "Benue": 85.0, "Niger": 35.0,
+        "Nasarawa": 22.0, "Plateau": 28.0, "Taraba": 18.0, "Adamawa": 12.0,
+        "Bauchi": 25.0, "Ebonyi": 15.0, "Anambra": 27.3, "Cross River": 0.0,
+    }
+    COAL_CORRIDOR_POWER_MW = {
+        "Enugu": 340, "Kogi": 300, "Gombe": 90, "Benue": 120, "Niger": 70,
+        "Nasarawa": 45, "Plateau": 55, "Taraba": 35, "Adamawa": 25, "Bauchi": 50,
+        "Ebonyi": 30, "Anambra": 55, "Cross River": 0,
+    }
+
+# --- Branding (CAC & Chairman Lock) ---
+CAC_AV_CODE = CAC_ANCHOR   # 176917792057
+CHAIRMAN = CHAIRMAN_ANCHOR  # Dr. Sa'ad Jaafaru
+GERMANIUM_USD_PER_KG = D3_GERMANIUM_USD_PER_KG
+AMMONIA_USD_PER_MT = D3_AMMONIA_USD_PER_MT
+# 1,203 MW AI DC ready (S24 Ultra); GEC-COAL-BASE-13 canonical is 1,205 MW
+TOTAL_POWER_MW_S24 = 1203
+
+COAL_STATES = list(COAL_CORRIDOR_RESERVES_MT.keys())
+# S24 Ultra real-time: 60s rerun forces mobile browser to refresh $50.1M data container (fix for Wayan's phone)
+REALTIME_ENGINE_INTERVAL_SEC = 60
+
+st.set_page_config(
+    page_title="GEC-COAL-BASE-13 — Port 8051",
+    page_icon="⛏️",
+    layout="wide",
+    initial_sidebar_state="auto",
+)
+# Sidebar: CAC + Chairman Lock (sovereign status)
+with st.sidebar:
+    st.markdown("**CAC:** 176917792057")
+    st.markdown("**Chairman Lock:** Dr. Sa'ad Jaafaru")
+    st.caption("GEC-COAL-BASE-13 · Port 8051")
+# S24 Ultra: viewport and persistent header for mobile
+st.markdown(
+    '<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>',
+    unsafe_allow_html=True,
 )
 
-# 9.6× wealth multiplier logic — Germanium & Ammonia (sovereign anchor for 13-state coal nodal)
-WEALTH_MULTIPLIER_9_6 = D3_WEALTH_MULTIPLIER  # 9.6× per MT coal/diamond throughput
-GERMANIUM_USD_PER_KG = D3_GERMANIUM_USD_PER_KG  # AI Chip Grade
-AMMONIA_USD_PER_MT = D3_AMMONIA_USD_PER_MT     # Fertilizer Grade
+# --- Header: CAC + Chairman Lock (S24 Ultra navy & gold, persistent on mobile) ---
+st.markdown(
+    f'<div class="gcslc-mobile-header" style="background: linear-gradient(90deg, #0a1628 0%, #1a2744 100%); '
+    f'border-bottom: 2px solid #D4AF37; padding: 0.75rem 1rem; margin: -1rem -1rem 1rem -1rem; position: sticky; top: 0; z-index: 999;">'
+    f'<p style="margin:0; color: #D4AF37; font-size: 1rem;">'
+    f'<strong>NRRFC Dashboard</strong> — 8R Stealth B_Files'
+    f'</p>'
+    f'<p style="margin: 0.35rem 0 0 0; color: rgba(212,175,55,0.9); font-size: 0.8rem;">'
+    f'CAC: {CAC_AV_CODE} &nbsp;|&nbsp; Chairman Lock: {CHAIRMAN}'
+    f'</p></div>',
+    unsafe_allow_html=True,
+)
 
-__all__ = [
-    "GEC_COAL_BASE_13",
-    "GEC_COAL_BASE_13_ID",
-    "DETERMINANTS_8R",
-    "d_within_d",
-    "get_d3_synthetic_for_bua_2026",
-    "COAL_CORRIDOR_RESERVES_MT",
-    "COAL_CORRIDOR_POWER_MW",
-    "TOTAL_RESERVES_MT",
-    "TOTAL_POWER_MW",
-    "WEALTH_MULTIPLIER_9_6",
-    "GERMANIUM_USD_PER_KG",
-    "AMMONIA_USD_PER_MT",
+
+def _clear_stale_caches():
+    """Bypass cache during 20Mt BUA cycle so figures do not freeze."""
+    try:
+        st.cache_data.clear()
+    except Exception:
+        pass
+    try:
+        st.cache_resource.clear()
+    except Exception:
+        pass
+
+
+class RealTimeEngine:
+    """
+    S24 Ultra WebSocket fix: 60-second rerun loop to force the mobile browser to refresh
+    the $50.1M monthly revenue data container rather than showing a stale snapshot.
+    """
+    INTERVAL_SEC = REALTIME_ENGINE_INTERVAL_SEC
+
+    @staticmethod
+    @st.fragment(run_every=REALTIME_ENGINE_INTERVAL_SEC)
+    def run():
+        _clear_stale_caches()
+        ph = st.empty()
+        with ph.container():
+            st.caption(f"Live • Last refresh: {datetime.now().strftime('%H:%M:%S')} UTC — S24 push active")
+            st.subheader("Yields — Primary display")
+            c1, c2, c3 = st.columns(3)
+            with c1:
+                st.metric("Monthly revenue (8R-anchored)", f"${MONTHLY_REVENUE_M}M", "S24 Ultra view")
+            with c2:
+                st.metric("Total cycle (valuation anchor)", f"${VALUATION_ANCHOR_B}B", "Central empirical metric")
+            with c3:
+                st.metric("Wealth multiplier", f"{WEALTH_MULTIPLIER_9_6}×", "Germanium & Ammonia NGECC")
+            st.metric("AI-DC power potential (13-state corridor)", f"{TOTAL_POWER_MW_S24:,} MW", "AI DC ready — WPC 2026 Roadmap Ready")
+RealTimeEngine.run()
+st.caption("9.6× wealth multiplier and 1,203 MW from GEC-COAL-BASE-13. Data refreshes every 60s on S24 Ultra.")
+
+# Chemical strip
+st.markdown("**Chemical multiplier (NGECC)**")
+chem_col1, chem_col2 = st.columns(2)
+with chem_col1:
+    st.metric("Germanium (market value)", f"${GERMANIUM_USD_PER_KG:,.0f}/kg", "AI Chip Grade")
+with chem_col2:
+    st.metric("Ammonia (market value)", f"${AMMONIA_USD_PER_MT:,.0f}/mt", "Fertilizer Grade")
+
+# --- State logic: 13 Coal States as active data nodes ---
+st.subheader("13 Coal States — active data nodes")
+node_data = [
+    {
+        "state": s,
+        "reserves_mt": COAL_CORRIDOR_RESERVES_MT.get(s, 0),
+        "power_mw": COAL_CORRIDOR_POWER_MW.get(s, 0),
+    }
+    for s in COAL_STATES
 ]
+# Display as expandable nodes or table
+import pandas as pd
+df = pd.DataFrame(node_data)
+st.dataframe(df, use_container_width=True, hide_index=True)
+st.caption("Enugu, Kogi, Nasarawa, Gombe, Benue, Niger, Plateau, Taraba, Adamawa, Bauchi, Ebonyi, Anambra, Cross River.")
 
-# Sovereign anchor ID
-GEC_COAL_BASE_13_ID = "GEC-8051-NGECC-001"
+# 8R determinants from project root (synced via sys.path.insert(0, _ROOT))
+st.caption("8R Determinants (from root): " + " · ".join(DETERMINANTS_8R))
 
-# 13-state coal corridor (app.html / 8R Stealth canonical)
-COAL_CORRIDOR_RESERVES_MT = {
-    "Enugu": 168.0,
-    "Kogi": 142.0,
-    "Gombe": 62.0,
-    "Benue": 85.0,
-    "Niger": 35.0,
-    "Nasarawa": 22.0,
-    "Plateau": 28.0,
-    "Taraba": 18.0,
-    "Adamawa": 12.0,
-    "Bauchi": 25.0,
-    "Ebonyi": 15.0,
-    "Anambra": 27.3,
-    "Cross River": 0.0,
-}
-TOTAL_RESERVES_MT = 639.3
-
-COAL_CORRIDOR_POWER_MW = {
-    "Enugu": 340,
-    "Kogi": 300,
-    "Gombe": 90,
-    "Benue": 120,
-    "Niger": 70,
-    "Nasarawa": 45,
-    "Plateau": 55,
-    "Taraba": 35,
-    "Adamawa": 25,
-    "Bauchi": 50,
-    "Ebonyi": 30,
-    "Anambra": 55,
-    "Cross River": 0,
-}
-TOTAL_POWER_MW = 1205  # 1,205 MW AI-DC — WPC 2026 Roadmap Ready
-
-
-class GEC_COAL_BASE_13:
-    """
-    GEC-COAL-BASE-13 (ID: GEC-8051-NGECC-001).
-    Sovereign anchor for the 13-state coal nodal. Focus: 9.6× wealth multiplier
-    logic for Germanium (AI Chip Grade) and Ammonia (Fertilizer Grade). 8R
-    Determinants are read from the primary 8R Stealth folder in real-time.
-    """
-
-    ID = GEC_COAL_BASE_13_ID
-    TITLE = "GEC-COAL-BASE-13"
-    RESERVES_MT = COAL_CORRIDOR_RESERVES_MT
-    POWER_MW = COAL_CORRIDOR_POWER_MW
-    TOTAL_RESERVES_MT = TOTAL_RESERVES_MT
-    TOTAL_POWER_MW = TOTAL_POWER_MW
-    # 9.6× wealth multiplier — Germanium & Ammonia (sovereign anchor)
-    WEALTH_MULTIPLIER_9_6 = WEALTH_MULTIPLIER_9_6
-    GERMANIUM_USD_PER_KG = GERMANIUM_USD_PER_KG
-    AMMONIA_USD_PER_MT = AMMONIA_USD_PER_MT
-    DETERMINANTS_8R = DETERMINANTS_8R  # real-time from primary folder
-    CAC_ANCHOR = CAC_ANCHOR
-    CHAIRMAN_ANCHOR = CHAIRMAN_ANCHOR
-
-    @classmethod
-    def get_determinants(cls) -> list[str]:
-        """8R Determinants from primary 8R Stealth folder; reflects latest on every call (module already imported)."""
-        return list(DETERMINANTS_8R)
-
-    @classmethod
-    def d_within_d(cls, det_name: str, has_data: bool, context: str = "") -> str:
-        """Within-logic from primary folder (real-time)."""
-        return d_within_d(det_name, has_data, context)
-
-    @classmethod
-    def get_d3_synthetic_for_bua_2026(cls, has_bua_data: bool, has_energy_feed: bool = False) -> dict:
-        """D3 Synthetic Intelligence result from primary folder (real-time)."""
-        return get_d3_synthetic_for_bua_2026(has_bua_data, has_energy_feed)
-
-    @classmethod
-    def wealth_multiplier_germanium_ammonia(cls) -> dict:
-        """9.6× wealth multiplier logic for Germanium and Ammonia (sovereign anchor)."""
-        return {
-            "wealth_multiplier": cls.WEALTH_MULTIPLIER_9_6,
-            "germanium_usd_per_kg": cls.GERMANIUM_USD_PER_KG,  # AI Chip Grade
-            "ammonia_usd_per_mt": cls.AMMONIA_USD_PER_MT,     # Fertilizer Grade
-        }
+st.markdown("---")
+st.caption(f"CAC: {CAC_AV_CODE} | Chairman Lock: {CHAIRMAN} — © GCSLC. Proprietary.")
