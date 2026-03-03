@@ -9,4 +9,4 @@ cd "$ROOT"
 if [ -d ".venv" ] && [ -f ".venv/bin/activate" ]; then
   source .venv/bin/activate
 fi
-exec python -m streamlit run awc_portal_8054.py --server.port 8054 --server.headless true
+exec python -m streamlit run "awc_portal_8054.py" --server.port 8054 --server.headless true
