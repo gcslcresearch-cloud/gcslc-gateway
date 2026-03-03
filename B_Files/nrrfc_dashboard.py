@@ -1,8 +1,15 @@
 """
 GEC-COAL-BASE-13 (ID: GEC-8051-NGECC-001)
-Sovereign anchor for the 13-state coal nodal. 8R Stealth B_Files.
-8R Determinants logic is pulled from the primary 8R Stealth folder (project root) in real-time
-so that updates to d8_logic there reflect here instantly on next import/run.
+8R Stealth B_Files — sovereign anchor for the 13-state coal nodal.
+
+This file is designated as the sovereign anchor for the 13-state coal nodal, focusing
+specifically on the 9.6× wealth multiplier logic for Germanium (AI Chip Grade) and
+Ammonia (Fertilizer Grade) under D3 Scientific Profit Centers. All corridor reserves,
+power potential (1,205 MW), and D3 derivative pricing are canonical here.
+
+8R Determinants logic is pulled from the primary 8R Stealth folder (project root) in
+real-time so that updates to d8_logic there reflect here instantly on next import/run.
+
 GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION LTD/GTE — CAC: 176917792057.
 © GCSLC. Proprietary.
 """
@@ -24,8 +31,15 @@ from d8_logic import (
     CAC_ANCHOR,
     CHAIRMAN_ANCHOR,
     D3_WEALTH_MULTIPLIER,
+    D3_GERMANIUM_USD_PER_KG,
+    D3_AMMONIA_USD_PER_MT,
     WEALTH_RETENTION_LOCK,
 )
+
+# 9.6× wealth multiplier logic — Germanium & Ammonia (sovereign anchor for 13-state coal nodal)
+WEALTH_MULTIPLIER_9_6 = D3_WEALTH_MULTIPLIER  # 9.6× per MT coal/diamond throughput
+GERMANIUM_USD_PER_KG = D3_GERMANIUM_USD_PER_KG  # AI Chip Grade
+AMMONIA_USD_PER_MT = D3_AMMONIA_USD_PER_MT     # Fertilizer Grade
 
 __all__ = [
     "GEC_COAL_BASE_13",
@@ -37,6 +51,9 @@ __all__ = [
     "COAL_CORRIDOR_POWER_MW",
     "TOTAL_RESERVES_MT",
     "TOTAL_POWER_MW",
+    "WEALTH_MULTIPLIER_9_6",
+    "GERMANIUM_USD_PER_KG",
+    "AMMONIA_USD_PER_MT",
 ]
 
 # Sovereign anchor ID
@@ -81,8 +98,9 @@ TOTAL_POWER_MW = 1205  # 1,205 MW AI-DC — WPC 2026 Roadmap Ready
 class GEC_COAL_BASE_13:
     """
     GEC-COAL-BASE-13 (ID: GEC-8051-NGECC-001).
-    Sovereign anchor for the 13-state coal nodal. 8R Determinants are read from the
-    primary 8R Stealth folder in real-time via d8_logic import above.
+    Sovereign anchor for the 13-state coal nodal. Focus: 9.6× wealth multiplier
+    logic for Germanium (AI Chip Grade) and Ammonia (Fertilizer Grade). 8R
+    Determinants are read from the primary 8R Stealth folder in real-time.
     """
 
     ID = GEC_COAL_BASE_13_ID
@@ -91,6 +109,10 @@ class GEC_COAL_BASE_13:
     POWER_MW = COAL_CORRIDOR_POWER_MW
     TOTAL_RESERVES_MT = TOTAL_RESERVES_MT
     TOTAL_POWER_MW = TOTAL_POWER_MW
+    # 9.6× wealth multiplier — Germanium & Ammonia (sovereign anchor)
+    WEALTH_MULTIPLIER_9_6 = WEALTH_MULTIPLIER_9_6
+    GERMANIUM_USD_PER_KG = GERMANIUM_USD_PER_KG
+    AMMONIA_USD_PER_MT = AMMONIA_USD_PER_MT
     DETERMINANTS_8R = DETERMINANTS_8R  # real-time from primary folder
     CAC_ANCHOR = CAC_ANCHOR
     CHAIRMAN_ANCHOR = CHAIRMAN_ANCHOR
@@ -109,3 +131,12 @@ class GEC_COAL_BASE_13:
     def get_d3_synthetic_for_bua_2026(cls, has_bua_data: bool, has_energy_feed: bool = False) -> dict:
         """D3 Synthetic Intelligence result from primary folder (real-time)."""
         return get_d3_synthetic_for_bua_2026(has_bua_data, has_energy_feed)
+
+    @classmethod
+    def wealth_multiplier_germanium_ammonia(cls) -> dict:
+        """9.6× wealth multiplier logic for Germanium and Ammonia (sovereign anchor)."""
+        return {
+            "wealth_multiplier": cls.WEALTH_MULTIPLIER_9_6,
+            "germanium_usd_per_kg": cls.GERMANIUM_USD_PER_KG,  # AI Chip Grade
+            "ammonia_usd_per_mt": cls.AMMONIA_USD_PER_MT,     # Fertilizer Grade
+        }
