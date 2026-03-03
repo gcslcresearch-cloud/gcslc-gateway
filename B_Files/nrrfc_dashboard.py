@@ -34,6 +34,8 @@ try:
     WEALTH_MULTIPLIER_9_6 = getattr(_g13, "WEALTH_MULTIPLIER_9_6", D3_WEALTH_MULTIPLIER)
     COAL_CORRIDOR_RESERVES_MT = getattr(_g13, "COAL_CORRIDOR_RESERVES_MT", None)
     COAL_CORRIDOR_POWER_MW = getattr(_g13, "COAL_CORRIDOR_POWER_MW", None)
+    TOTAL_RESERVES_M_MT = getattr(_g13, "TOTAL_RESERVES_MT", 639.3)
+    ABUJA_ZARIA_KANO_CORRIDOR = getattr(_g13, "ABUJA_ZARIA_KANO_CORRIDOR", "Abuja-Zaria-Kano")
     if COAL_CORRIDOR_RESERVES_MT is None or COAL_CORRIDOR_POWER_MW is None:
         raise ImportError("GEC_COAL_BASE_13 missing corridor maps")
 except (ImportError, AttributeError):
@@ -41,6 +43,8 @@ except (ImportError, AttributeError):
     MONTHLY_REVENUE_M = 50.1
     VALUATION_ANCHOR_B = 170.85
     WEALTH_MULTIPLIER_9_6 = D3_WEALTH_MULTIPLIER
+    TOTAL_RESERVES_M_MT = 639.3
+    ABUJA_ZARIA_KANO_CORRIDOR = "Abuja-Zaria-Kano"
     COAL_CORRIDOR_RESERVES_MT = {
         "Enugu": 168.0, "Kogi": 142.0, "Gombe": 62.0, "Benue": 85.0, "Niger": 35.0,
         "Nasarawa": 22.0, "Plateau": 28.0, "Taraba": 18.0, "Adamawa": 12.0,
@@ -163,6 +167,12 @@ import pandas as pd
 df = pd.DataFrame(node_data)
 st.dataframe(df, use_container_width=True, hide_index=True)
 st.caption("Enugu, Kogi, Nasarawa, Gombe, Benue, Niger, Plateau, Taraba, Adamawa, Bauchi, Ebonyi, Anambra, Cross River.")
+# GEC Sovereign Master: 600M MT Coal-to-Compute Strike — Abuja-Zaria-Kano as primary feedstock for Sovereign AI Factories
+azk1, azk2 = st.columns(2)
+with azk1:
+    st.metric("Coal reserves (total)", f"{TOTAL_RESERVES_M_MT} M MT", "600M MT Coal-to-Compute Strike")
+with azk2:
+    st.metric("Primary corridor (Sovereign AI feedstock)", ABUJA_ZARIA_KANO_CORRIDOR, "Abuja-Zaria-Kano")
 
 # 8R determinants from project root (synced via sys.path.insert(0, _ROOT))
 st.caption("8R Determinants (from root): " + " · ".join(DETERMINANTS_8R))

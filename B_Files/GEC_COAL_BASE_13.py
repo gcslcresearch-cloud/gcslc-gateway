@@ -66,7 +66,9 @@ COAL_CORRIDOR_RESERVES_MT = {
     "Nasarawa": 22.0, "Plateau": 28.0, "Taraba": 18.0, "Adamawa": 12.0,
     "Bauchi": 25.0, "Ebonyi": 15.0, "Anambra": 27.3, "Cross River": 0.0,
 }
-TOTAL_RESERVES_MT = 639.3
+# 639.3 million MT — GEC Sovereign Master: 600M MT Coal-to-Compute Strike; primary feedstock for Sovereign AI Factories
+TOTAL_RESERVES_MT = 639.3  # 639.3 M MT total coal reserves
+ABUJA_ZARIA_KANO_CORRIDOR = "Abuja-Zaria-Kano"  # Primary energy corridor (AZK) for Sovereign AI feedstock
 COAL_CORRIDOR_POWER_MW = {
     "Enugu": 340, "Kogi": 300, "Gombe": 90, "Benue": 120, "Niger": 70,
     "Nasarawa": 45, "Plateau": 55, "Taraba": 35, "Adamawa": 25, "Bauchi": 50,

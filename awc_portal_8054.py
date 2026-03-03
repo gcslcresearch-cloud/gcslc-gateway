@@ -18,6 +18,12 @@ from datetime import datetime
 import streamlit as st
 import warnings
 
+try:
+    from d8_logic import get_d3_liquid_wl_west_africa, get_d3_cassava_2026_nigerian_infra
+except ImportError:
+    get_d3_liquid_wl_west_africa = None
+    get_d3_cassava_2026_nigerian_infra = None
+
 # 2026 engine standard: full-width elements use width="stretch" (replaces deprecated use_container_width=True)
 WIDTH_2026 = "stretch"
 
@@ -28,6 +34,8 @@ warnings.filterwarnings("ignore", message=".*use_container_width.*")
 # Load African_Gateway modules (folder name has a dot; use file path)
 _BASE = os.path.dirname(os.path.abspath(__file__))
 _GATEWAY = os.path.join(_BASE, "African_Gateway.")
+if _BASE not in sys.path:
+    sys.path.insert(0, _BASE)
 
 def _load_module(name: str, path: str):
     spec = importlib.util.spec_from_file_location(name, path)
@@ -35,9 +43,6 @@ def _load_module(name: str, path: str):
     sys.modules[name] = mod
     spec.loader.exec_module(mod)
     return mod
-
-africa_map = _load_module("awc_africa_map", os.path.join(_GATEWAY, "africa_map.py"))
-continental_logic = _load_module("awc_continental_logic", os.path.join(_GATEWAY, "continental_logic.py"))
 
 # D8 IP Lockdown: only current Abuja IP sees clear data; others get 14px blur + Unauthorized WL Access
 def _is_abuja_ip():
@@ -62,7 +67,7 @@ def _cached_friction():
 MONTHLY_REVENUE_M = 50.1
 WEALTH_MULTIPLIER_9_6 = 9.6
 TOTAL_POWER_MW_S24 = 1203
-REALTIME_ENGINE_INTERVAL_SEC = 60
+REALTIME_ENGINE_INTERVAL_SEC = int(os.environ.get("GCSLC_AWC_REALTIME_INTERVAL_SEC", "60"))
 CAC_AV_CODE = "176917792057"
 CHAIRMAN_LOCK = "Dr. Sa'ad Jaafaru"
 
@@ -109,6 +114,17 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
+
+# Hardware & Defense: @st.cache_resource so Mac remains thermally stable during 24/7/365 (single load per session)
+@st.cache_resource
+def _cached_awc_gateway():
+    """Load African_Gateway modules once per session — thermal relief for 24/7/365 motion."""
+    return (
+        _load_module("awc_africa_map", os.path.join(_GATEWAY, "africa_map.py")),
+        _load_module("awc_continental_logic", os.path.join(_GATEWAY, "continental_logic.py")),
+    )
+
+africa_map, continental_logic = _cached_awc_gateway()
 
 # Session state: continental node selection (Eagle's Global Strike)
 if "selected_node" not in st.session_state:
@@ -398,6 +414,21 @@ with st.sidebar:
         for p in continental_logic.get_sovereign_os_pillars():
             st.markdown(f"**{p['title']}**  \n{p['body']}")
         st.markdown(f'<p style="font-weight: 800; color: #FFD700; margin-top: 8px;">{continental_logic.SOVEREIGN_OS_SIGN_OFF}</p>', unsafe_allow_html=True)
+    # Recursive 8R within 8R: D3 within D3 strike — Liquid Intelligent Technologies WL (West African grid-interaction)
+    if get_d3_liquid_wl_west_africa is not None:
+        with st.expander("**D3 within D3 — Liquid WL (West Africa)**", expanded=False):
+            liquid = get_d3_liquid_wl_west_africa(has_liquid_grid_data=False)
+            st.metric("WL (Wealth Lost) — grid-interaction", f"${liquid.get('wl_usd_m', 0):.0f}M", "D3 modelled")
+            st.metric("Power shortfall vs. 1,205 MW anchor", f"{liquid.get('wl_power_shortfall_mw', 0):.0f} MW", "West African grid")
+            _msg = liquid.get("message", "")
+            st.caption((_msg[:280] + "…") if len(_msg) > 280 else _msg)
+    # D3 within D3 — Cassava 2026 Nigerian infrastructure (1.2 GW anchor); 639.3 M MT → Abuja-Zaria-Kano
+    if get_d3_cassava_2026_nigerian_infra is not None:
+        with st.expander("**D3 within D3 — Cassava 2026 (1.2 GW anchor)**", expanded=False):
+            cassava = get_d3_cassava_2026_nigerian_infra(has_cassava_feed=False)
+            st.metric("Power potential (2026 anchor)", f"{cassava.get('power_gw', 1.2)} GW", "Cassava Nigerian AI Factory")
+            st.metric("Coal reserves (primary feedstock)", f"{cassava.get('coal_reserves_m_mt', 639.3)} M MT", "600M MT Coal-to-Compute Strike")
+            st.caption(f"Primary corridor: **{cassava.get('corridor', 'Abuja-Zaria-Kano')}** — Sovereign AI Factories.")
     st.markdown("---")
     st.write("### Continental Nodes")
     if st.button("🇳🇬 Nigeria", key="btn_nigeria"):
