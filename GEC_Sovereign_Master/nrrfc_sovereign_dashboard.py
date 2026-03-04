@@ -1,82 +1,95 @@
 import streamlit as st
+import pandas as pd
 
-# SOVEREIGN CONFIGURATION (Optimized for S24 Ultra & Desktop)
+# SOVEREIGN CONFIGURATION
 st.set_page_config(page_title="GCSLC Sovereign Gateway", layout="wide")
 
-# METALLIC GOLD & NAVY BLUE PALETTE WITH UNIVERSAL SHIMMER
+# NAVY BLUE BASE / WHITE SHIMMER / GOLD ACCENTS
 st.markdown("""
     <style>
-    @keyframes shimmer {
-        0% { background-position: -1000px 0; }
-        100% { background-position: 1000px 0; }
+    @keyframes shimmer-white {
+        0% { color: #FFFFFF; text-shadow: 0 0 5px #FFFFFF; }
+        50% { color: #FFD700; text-shadow: 0 0 20px #FFD700; }
+        100% { color: #FFFFFF; text-shadow: 0 0 5px #FFFFFF; }
     }
     .main {
-        background: linear-gradient(90deg, #001f3f 25%, #002d5b 50%, #001f3f 75%);
-        background-size: 1000px 100%;
-        animation: shimmer 10s infinite linear;
-        color: #FFD700;
+        background-color: #000814; /* Ultra Deep Navy */
+        color: #FFFFFF;
         font-family: 'Inter', sans-serif;
     }
-    .sovereign-card {
-        background: rgba(0, 31, 63, 0.85);
-        border: 2px solid #FFD700;
-        border-radius: 12px;
-        padding: 25px;
+    .header-container {
+        text-align: center;
+        padding: 40px;
+        border-bottom: 2px solid #FFD700;
+        background: radial-gradient(circle, #001d3d 0%, #000814 100%);
+    }
+    .medallion {
+        width: 150px;
+        border-radius: 50%;
+        border: 4px solid #FFD700;
+        box-shadow: 0 0 30px #FFD700;
         margin-bottom: 20px;
-        box-shadow: 0 4px 20px rgba(255, 215, 0, 0.15);
-        transition: transform 0.3s ease;
     }
-    .sovereign-card:hover {
-        transform: scale(1.02);
-        border-color: #FFFFFF;
-    }
-    .metallic-title {
-        color: #FFD700;
+    .shimmer-text {
+        animation: shimmer-white 3s infinite;
         font-weight: 800;
-        letter-spacing: 2px;
         text-transform: uppercase;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
     }
-    .data-text {
-        color: #FFFFFF;
-        font-size: 1.1rem;
+    .eightr-card {
+        background: rgba(0, 29, 61, 0.7);
+        border-left: 5px solid #FFD700;
+        padding: 20px;
+        border-radius: 5px;
+        margin: 10px 0;
+    }
+    .eightr-visible {
+        color: #FFD700;
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 10px;
     }
     </style>
     """, unsafe_allow_html=True)
 
-# PERSISTENT ANCHOR HEADER
-st.markdown('<h1 class="metallic-title">🔱 GCSLC SOVEREIGN GATEWAY</h1>', unsafe_allow_html=True)
-st.markdown("### National Resources Revitalization Fusion Center (NRRFC)")
-st.info(f"🛡️ **SIGNATURE SECURED:** Chairman Dr. Sa'ad Jaafaru | **CAC:** 176917792057")
+# HEADER SECTION: MEDALLION & TITLE
+st.markdown("""
+    <div class="header-container">
+        <h1 class="shimmer-text">Galadiman Ruwa Center for Strategic Leadership and Communication</h1>
+        <h2 style="color: #FFD700;">GCSLC LTD/GTE</h2>
+        <p style="font-style: italic; color: #a3a3a3;">Proponent of the 8R Stealth Paradigm Convergence and its Determinants</p>
+    </div>
+    """, unsafe_allow_html=True)
 
+st.success("⚡ HIGH-VELOCITY SOVEREIGN WELCOME INITIALIZED. EAGLE IS ON THE NEST.")
+
+# THE 8R STEALTH MATRIX (HIGH VISIBILITY)
+st.write("### 🛡️ 8R STEALTH PARADIGM NODAL")
+cols = st.columns(4)
+determinants = [
+    ("D1", "REFINE", "Subsoil Density"), ("D2", "RESET", "639.3M MT Coal"),
+    ("D3", "RESEARCH", "13-State Mapping"), ("D4", "RESTRUCTURE", "NGECC-SSMV"),
+    ("D5", "RESUSCITATE", "1,200 MW Power"), ("D6", "REVITALIZE", "12% WL Cassava"),
+    ("D7", "RE-ENGINEER", "$100B AI Gap"), ("D8", "RETAIN", "85% Talon Lock")
+]
+
+for i, (d_code, d_name, d_desc) in enumerate(determinants):
+    with cols[i % 4]:
+        st.markdown(f"""
+            <div class="eightr-card">
+                <div class="eightr-visible">{d_code}: {d_name}</div>
+                <p style="color: white;">{d_desc}</p>
+            </div>
+            """, unsafe_allow_html=True)
+
+# THE NIGERIAN MAP FEEDSTOCK HUB
 st.divider()
+st.write("### 🦅 GEC NESTING: COAL-TO-COMPUTE FEEDSTOCK MAP")
+st.info("The Eagle is hovering over 13 key nests. Identifying high-yield opportunities in Germanium, Ammonia, and Silicon.")
 
-# THE 8-CARD NRRFC REGISTRY (The 8R Stealth Paradigm)
-col1, col2, col3, col4 = st.columns(4)
-
-with col1:
-    st.markdown("""<div class="sovereign-card"><h4 class="metallic-title">D1: REFINE</h4>
-    <p class="data-text">Status: <b>ACTIVE</b><br>Asset: Subsoil Density Logic</p></div>""", unsafe_allow_html=True)
-    st.markdown("""<div class="sovereign-card"><h4 class="metallic-title">D5: RESUSCITATE</h4>
-    <p class="data-text">Status: <b>PENDING</b><br>Target: 1,200 MW Power Strike</p></div>""", unsafe_allow_html=True)
-
-with col2:
-    st.markdown("""<div class="sovereign-card"><h4 class="metallic-title">D2: RESET</h4>
-    <p class="data-text">Status: <b>LOADED</b><br>Reserve: 639.3M MT Coal</p></div>""", unsafe_allow_html=True)
-    st.markdown("""<div class="sovereign-card"><h4 class="metallic-title">D6: REVITALIZE</h4>
-    <p class="data-text">Status: <b>RECOVERING</b><br>Strike: 12% WL Cassava</p></div>""", unsafe_allow_html=True)
-
-with col3:
-    st.markdown("""<div class="sovereign-card"><h4 class="metallic-title">D3: RESEARCH</h4>
-    <p class="data-text">Status: <b>MAPPING</b><br>Scope: 13 Coal-Potential States</p></div>""", unsafe_allow_html=True)
-    st.markdown("""<div class="sovereign-card"><h4 class="metallic-title">D7: RE-ENGINEER</h4>
-    <p class="data-text">Status: <b>MODELING</b><br>Goal: $100B AI Compute Gap</p></div>""", unsafe_allow_html=True)
-
-with col4:
-    st.markdown("""<div class="sovereign-card"><h4 class="metallic-title">D4: RESTRUCTURE</h4>
-    <p class="data-text">Status: <b>LEGAL LOCK</b><br>Entity: NGECC-SSMV</p></div>""", unsafe_allow_html=True)
-    st.markdown("""<div class="sovereign-card"><h4 class="metallic-title">D8: RETAIN</h4>
-    <p class="data-text">Status: <b>TALON LOCK</b><br>Retention: 85% Registry</p></div>""", unsafe_allow_html=True)
-
-st.divider()
-st.success("By the Minute Diagnostic: Identifying the Global $700B Capex Opportunity...")
+# PROPRIETARY MARKET DATA
+data = {
+    "Derivative": ["Germanium (Fly Ash)", "Ammonia", "Silicon", "Syngas"],
+    "Market Price": ["$8,597 / kg", "$430 / MT", "$6.50 / M", "$15.20 / M"],
+    "Sovereign Yield": ["9.6x", "High", "Strategic", "Sovereign Feedstock"]
+}
+st.table(pd.DataFrame(data))
