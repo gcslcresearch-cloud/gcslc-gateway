@@ -1,98 +1,90 @@
 import streamlit as st
-import pandas as pd
+import base64
+from pathlib import Path
 
-# 1. SOVEREIGN CONFIGURATION & LAYOUT
-st.set_page_config(page_title="GCSLC Sovereign Gateway", layout="wide", initial_sidebar_state="collapsed")
+# SOVEREIGN CONFIGURATION
+st.set_page_config(page_title="GCSLC Sovereign Gateway", layout="wide")
 
-# 2. THE NAVY-GOLD-SHIMMER ARCHITECTURE (CSS INJECTION)
+# Asset folder: same directory as this script
+_ASSETS = Path(__file__).resolve().parent
+
+# BASE64 ENCODER FOR LOCAL ASSETS
+def get_base64(file_path):
+    with open(file_path, "rb") as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
+
+# CUSTOM CSS: THE NAVY VOID & SHIMMER (class names must not start with a digit)
 st.markdown("""
     <style>
-    @keyframes shimmer-gold {
-        0% { border-color: #FFD700; box-shadow: 0 0 5px #FFD700; }
-        50% { border-color: #FFFFFF; box-shadow: 0 0 20px #FFFFFF; }
-        100% { border-color: #FFD700; box-shadow: 0 0 5px #FFD700; }
+    @keyframes shimmer-white {
+        0% { color: #FFFFFF; text-shadow: 0 0 5px #FFFFFF; }
+        50% { color: #FFD700; text-shadow: 0 0 20px #FFD700; }
+        100% { color: #FFFFFF; text-shadow: 0 0 5px #FFFFFF; }
     }
     .stApp {
-        background-color: #000814; /* Deep Navy Void */
+        background-color: #000814; /* Deep Navy Base */
         color: #FFFFFF;
     }
-    .header-box {
-        background: linear-gradient(180deg, #001d3d 0%, #000814 100%);
-        padding: 30px;
+    .medallion-header {
+        text-align: center;
+        padding: 40px;
         border-bottom: 2px solid #FFD700;
-        text-align: center;
+        background: radial-gradient(circle, #001d3d 0%, #000814 100%);
     }
-    .medallion {
-        border: 3px solid #FFD700;
-        border-radius: 50%;
-        width: 120px;
-        height: 120px;
-        margin: 0 auto 15px;
-        animation: shimmer-gold 4s infinite;
+    .shimmer-text {
+        animation: shimmer-white 3s infinite;
+        font-weight: 800;
+        text-transform: uppercase;
     }
-    .determinant-card {
-        background: rgba(0, 29, 61, 0.8);
+    .eightr-card {
+        background: rgba(0, 29, 61, 0.7);
         border: 1px solid #FFD700;
-        padding: 15px;
-        border-radius: 8px;
+        padding: 20px;
+        border-radius: 10px;
         text-align: center;
-        transition: 0.3s;
-    }
-    .determinant-card:hover {
-        background: rgba(0, 53, 102, 1);
-        transform: translateY(-5px);
-    }
-    .eagle-box {
-        background: linear-gradient(135deg, #001d3d 0%, #000814 50%, rgba(255, 215, 0, 0.08) 100%);
-        border: 2px solid #FFD700;
-        border-radius: 12px;
-        padding: 24px;
-        margin: 20px 0;
-        text-align: center;
-        box-shadow: 0 0 30px rgba(255, 215, 0, 0.15);
     }
     </style>
     """, unsafe_allow_html=True)
 
-# HEADER
+# THE HEADER: MEDALLION & SIGNATURE
+_logo_path = _ASSETS / "gcslc_logo.png"
+try:
+    logo_b64 = get_base64(_logo_path)
+    st.markdown(f"""
+        <div class="medallion-header">
+            <img src="data:image/png;base64,{logo_b64}" width="150" style="border-radius:50%; border:3px solid #FFD700; box-shadow: 0 0 20px #FFD700;">
+            <h1 class="shimmer-text">Galadiman Ruwa Center for Strategic Leadership and Communication</h1>
+            <h2 style="color: #FFD700;">GCSLC LTD/GTE</h2>
+            <p style="font-style: italic; color: #a3a3a3;">Proponent of the 8R Stealth Paradigm Convergence and its Determinants</p>
+        </div>
+        """, unsafe_allow_html=True)
+except FileNotFoundError:
+    st.warning("GCSLC Medallion Offline: Ensure 'gcslc_logo.png' is in the GEC_Sovereign_Master folder.")
+
+st.success("⚡ HIGH-VELOCITY SOVEREIGN WELCOME. EAGLE IS ON THE NEST.")
+
+# THE EAGLE NEST (ANIMATED VIDEO SECTION)
+st.write("### 🦅 GEC SOVEREIGN OS: THE EAGLE NEST")
+col_map, col_stats = st.columns([2, 1])
+
+_eagle_video_path = _ASSETS / "eagle_anim.mp4"
+with col_map:
+    if _eagle_video_path.is_file():
+        st.video(str(_eagle_video_path), autoplay=True, muted=True, loop=True)
+    else:
+        st.info("Eagle Nesting: Ensure 'eagle_anim.mp4' is in the GEC_Sovereign_Master folder for the animated Nigeria Map strike.")
+
+with col_stats:
+    st.write("### 💎 SFF ANALYTICS")
+    st.metric("Monthly Revenue", "$50.1M", delta="Target")
+    st.metric("Debt-Swap Coverage", "18.9x", delta="Sovereign Surplus")
+
+# FOOTER: CAC, SIGNATURE, & COPYRIGHT
+st.divider()
 st.markdown("""
-    <div class="header-box">
-        <div class="medallion"></div>
-        <h1 style="color: #FFD700; font-weight: 800; text-transform: uppercase;">Galadiman Ruwa Center for Strategic Leadership and Communication</h1>
-        <h2 style="color: #FFFFFF;">GCSLC LTD/GTE</h2>
-        <p style="font-style: italic; color: #a3a3a3;">Proponent of the 8R Stealth Paradigm Convergence and its Determinants</p>
+    <div style="text-align: center; color: #a3a3a3; font-size: 0.8rem;">
+        <p><b>SIGNATURE SECURED:</b> Dr. Sa'ad Jaafaru, Chairman | <b>CAC:</b> 176917792057</p>
+        <p>© 2026 GCSLC LTD/GTE. Proprietary 8R Stealth Paradigm Convergence. All Rights Reserved.</p>
     </div>
     """, unsafe_allow_html=True)
-
-st.success("⚡ HIGH-VELOCITY SOVEREIGN WELCOME INITIALIZED. EAGLE IS ON THE NEST.")
-
-# 8R STEALTH MATRIX (determinant cards)
-st.write("### 🛡️ 8R STEALTH PARADIGM NODAL")
-cols = st.columns(4)
-determinants = [
-    ("D1", "REFINE", "Subsoil Density"), ("D2", "RESET", "639.3M MT Coal"),
-    ("D3", "RESEARCH", "13-State Mapping"), ("D4", "RESTRUCTURE", "NGECC-SSMV"),
-    ("D5", "RESUSCITATE", "1,200 MW Power"), ("D6", "REVITALIZE", "12% WL Cassava"),
-    ("D7", "RE-ENGINEER", "$100B AI Gap"), ("D8", "RETAIN", "85% Talon Lock")
-]
-
-for i, (d_code, d_name, d_desc) in enumerate(determinants):
-    with cols[i % 4]:
-        st.markdown(f"""
-            <div class="determinant-card">
-                <div style="color: #FFD700; font-size: 1.25rem; font-weight: bold;">{d_code}: {d_name}</div>
-                <p style="color: #FFFFFF; margin: 8px 0 0 0;">{d_desc}</p>
-            </div>
-            """, unsafe_allow_html=True)
-
-# EAGLE BOX (GEC Nesting)
-st.divider()
-st.markdown('<div class="eagle-box"><h3 style="color: #FFD700;">🦅 GEC NESTING: COAL-TO-COMPUTE FEEDSTOCK MAP</h3><p style="color: #e0e0e0;">The Eagle is hovering over 13 key nests. Identifying high-yield opportunities in Germanium, Ammonia, and Silicon.</p></div>', unsafe_allow_html=True)
-
-# PROPRIETARY MARKET DATA
-data = {
-    "Derivative": ["Germanium (Fly Ash)", "Ammonia", "Silicon", "Syngas"],
-    "Market Price": ["$8,597 / kg", "$430 / MT", "$6.50 / M", "$15.20 / M"],
-    "Sovereign Yield": ["9.6x", "High", "Strategic", "Sovereign Feedstock"]
-}
-st.table(pd.DataFrame(data))
