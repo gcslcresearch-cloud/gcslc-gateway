@@ -133,6 +133,19 @@ st.markdown("""
     }
     .stTable th { color: #FFD700 !important; background-color: #001d3d !important; }
     .stTable td { color: #ffffff !important; }
+    /* Gold & Navy lock — clinical table + gold-shimmer headline */
+    @keyframes shimmer-opacity {
+        0% { opacity: 0.7; } 50% { opacity: 1; } 100% { opacity: 0.7; }
+    }
+    .gold-shimmer {
+        color: #FFD700 !important;
+        font-weight: bold;
+        text-shadow: 0 0 10px #FFD700;
+        animation: shimmer-opacity 2s infinite;
+    }
+    table { background-color: #001F3F !important; border: 1px solid #FFD700 !important; width: 100%; color: white; }
+    th { color: #FFD700 !important; text-align: left; border-bottom: 2px solid #FFD700; }
+    td { border-bottom: 1px solid #334b63; padding: 8px; }
     .footer-sovereign {
         text-align: center;
         color: #a3a3a3;
@@ -198,27 +211,30 @@ for i, (code, name, desc) in enumerate(determinants):
             </div>
             """, unsafe_allow_html=True)
 
-# 1. THE 13-STATE SOVEREIGN REGISTRY (high-velocity pulse on reserves)
-def get_13_state_nodal():
+# 1. THE 13-STATE ASSET REGISTRY (THE BRAINBOX — nodal pulse on reserves)
+def get_sovereign_registry():
     data = {
         "STATE": ["Enugu", "Kogi", "Nasarawa", "Benue", "Gombe", "Adamawa", "Bauchi", "Delta", "Edo", "Anambra", "Imo", "Abia", "Ondo"],
-        "RESERVES (MT)": [168.2, 142.1, 47.9, 98.2, 62.1, 38.5, 12.1, 32.1, 18.0, 27.9, 32.1, 8.4, 4.2],
-        "POWER (MW)": [401, 319, 85, 180, 110, 65, 22, 55, 30, 48, 55, 12, 10],
-        "PRODUCTION": ["0.01", "0.01", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"],
+        "RESERVES (MT)": [168.3, 142.0, 47.7, 97.8, 62.5, 38.4, 12.5, 32.0, 18.0, 27.9, 32.1, 8.4, 4.6],
+        "POWER (MW)": [402, 321, 85, 180, 110, 65, 22, 55, 30, 48, 55, 12, 10],
+        "PRODUCTION": [0.01, 0.01, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00],
         "STATUS": ["ACTIVE", "ACTIVE", "RESERVE", "RESERVE", "RESERVE", "RESERVE", "RESERVE", "RESERVE", "RESERVE", "RESERVE", "RESERVE", "RESERVE", "RESERVE"]
     }
     df = pd.DataFrame(data)
-    df["RESERVES (MT)"] = df["RESERVES (MT)"].apply(lambda x: x + random.uniform(-0.5, 0.5))
+    df["RESERVES (MT)"] += [random.uniform(-0.1, 0.1) for _ in range(13)]
     return df
 
-# 2. THE SHIMMERING NODAL HEADLINE
+# 2. RENDER HEADLINE & TABLE
 st.divider()
-st.markdown('<h2 class="shimmer-nodal">D3: RESEARCH - 13-STATE ASSET MAPPING</h2>', unsafe_allow_html=True)
+st.markdown('<h2 class="gold-shimmer">D3: RESEARCH - 13-STATE ASSET MAPPING</h2>', unsafe_allow_html=True)
 
-# 3. THE 13-STATE TABLE STRIKE
-st.table(get_13_state_nodal())
+registry_df = get_sovereign_registry()
+st.table(registry_df)
 
-st.info("DATA INSIGHT: Enugu & Kogi ACTIVE (0.01 production). Nasarawa+ reserve. Aligns with $8,597/kg Germanium strike targets.")
+# 3. SIGNATURE ANCHOR
+st.markdown("<div style='color: #FFD700; text-align: center; margin-top: 24px;'>SIGNATURE SECURED: Dr. Sa'ad Jaafaru | CAC: 176917792057</div>", unsafe_allow_html=True)
+
+st.info("DATA INSIGHT: Enugu & Kogi ACTIVE (0.01). Nasarawa+ reserve. Aligns with $8,597/kg Germanium strike targets.")
 
 # EAGLE NEST: LOCAL VIDEO (eagle_anim.mp4) OR CLEAN PLACEHOLDER
 st.divider()
