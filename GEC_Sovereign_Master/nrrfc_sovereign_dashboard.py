@@ -157,6 +157,58 @@ st.markdown("""
     table { background-color: #001F3F !important; border: 1px solid #FFD700 !important; width: 100%; color: white; }
     th { color: #FFD700 !important; text-align: left; border-bottom: 2px solid #FFD700; }
     td { border-bottom: 1px solid #334b63; padding: 8px; }
+    /* GEC Sovereign Shimmer Engine (white & gold) */
+    @keyframes gec-diamond-shimmer {
+        0% { color: #FFD700; text-shadow: 0 0 10px #FFD700; }
+        50% { color: #FFFFFF; text-shadow: 0 0 25px #FFFFFF; }
+        100% { color: #FFD700; text-shadow: 0 0 10px #FFD700; }
+    }
+    .gec-shimmer {
+        animation: gec-diamond-shimmer 2.5s infinite;
+        font-weight: bold;
+    }
+    .brief-box {
+        background-color: #001F3F;
+        border: 2px solid #FFD700;
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 25px;
+    }
+    /* Lean strategic styling (brainbox aesthetic) */
+    h2, h3 {
+        text-transform: none !important;
+        font-size: 1.2rem !important;
+        letter-spacing: 0.05rem;
+    }
+    .lean-brief {
+        font-size: 0.95rem;
+        line-height: 1.4;
+        color: #e0e0e0;
+    }
+    .debt-card {
+        background: rgba(0, 31, 63, 0.8);
+        border: 1px solid #FFD700;
+        border-radius: 8px;
+        padding: 15px;
+        text-align: center;
+    }
+    /* Lean SFP Analytics */
+    .sfp-header {
+        color: #FFD700;
+        font-size: 1.1rem !important;
+        text-transform: none;
+        margin-bottom: 5px;
+    }
+    .sfp-subtext {
+        color: #e0e0e0;
+        font-size: 0.85rem;
+        margin-bottom: 20px;
+    }
+    .revenue-shimmer {
+        color: #FFD700;
+        font-weight: bold;
+        animation: gec-diamond-shimmer 2s infinite;
+    }
     .footer-sovereign {
         text-align: center;
         color: #a3a3a3;
@@ -235,7 +287,7 @@ def get_shimmering_nodal_data():
     df["RESERVES (MT)"] += [random.uniform(-0.15, 0.15) for _ in range(13)]
     return df
 
-# 2. RENDER THE SHIMMERING HEADLINE & TABLE
+# 2. RENDER THE SHIMMERING HEADLINE & TABLE (navy/gold styling via .stTable; gec-shimmer used in Strategic Brief below)
 st.divider()
 st.markdown('<h1 class="shimmer-node">D3: RESEARCH - 13-STATE ASSET MAPPING</h1>', unsafe_allow_html=True)
 
@@ -246,6 +298,65 @@ st.table(registry_df)
 st.markdown("<div style='color: #FFD700; text-align: center; margin-top: 24px;'>SIGNATURE SECURED: Dr. Sa'ad Jaafaru | CAC: 176917792057</div>", unsafe_allow_html=True)
 
 st.info("DATA INSIGHT: Enugu & Kogi ACTIVE (0.01). Nasarawa+ reserve. Aligns with $8,597/kg Germanium strike targets.")
+
+# STRATEGIC BRIEF WIDGET (GEC shimmer on key terms)
+st.markdown("""
+    <div class="brief-box">
+        <h3 style="color: #FFD700;">STRATEGIC BRIEF</h3>
+        <p style="color: white; line-height: 1.6;">
+            Nigeria's sub-bituminous coal is not a "dirty fuel"—it is a <span class="gec-shimmer">Sovereign Feedstock</span>.
+            The NGECC, operating as an SSMV, utilizes the <span class="gec-shimmer">8R Stealth Paradigm</span>
+            to extract Germanium ($8,597/kg) for AI chips and Ammonia ($430/MT) for fertilizers,
+            delivering a <span class="gec-shimmer">9.6x wealth multiplier</span>.
+            Funding at 51/49 from IFCs and Asian Banks de-risks the $15B Phase 1 CAPEX while preserving
+            100% sovereign control over strategic data re-mapping.
+        </p>
+        <p style="color: #FFD700; font-weight: bold;">
+            That sovereign asset clears the ₦50 Trillion national debt while powering the global AI revolution.
+        </p>
+    </div>
+""", unsafe_allow_html=True)
+
+# NATIONAL DEBT-SWAP WIDGET (10% Big Tech CAPEX vs domestic debt)
+st.markdown("<h3 class='gec-shimmer'>national debt-swap: 10% big tech capex vs domestic debt</h3>", unsafe_allow_html=True)
+col_debt1, col_debt2, col_debt3 = st.columns(3)
+with col_debt1:
+    st.markdown("""<div class='debt-card'>
+        <p style='color:#FFD700; font-size:0.8rem;'>10% BIG TECH CAPEX (A)</p>
+        <h2 style='color:white;'>$700.00 B</h2>
+        <p style='color:gray; font-size:0.7rem;'>₦945.0 T</p>
+    </div>""", unsafe_allow_html=True)
+with col_debt2:
+    st.markdown("""<div class='debt-card'>
+        <p style='color:#FFD700; font-size:0.8rem;'>NIGERIA DOMESTIC DEBT</p>
+        <h2 style='color:white;'>₦50.0 T</h2>
+        <p style='color:gray; font-size:0.7rem;'>$37.04 B</p>
+    </div>""", unsafe_allow_html=True)
+with col_debt3:
+    st.markdown("""<div class='debt-card'>
+        <p style='color:#FFD700; font-size:0.8rem;'>COVERAGE (10% CAPEX ÷ DEBT)</p>
+        <h2 class='gec-shimmer'>18.9x</h2>
+        <p style='color:gray; font-size:0.7rem;'>Sovereign Surplus</p>
+    </div>""", unsafe_allow_html=True)
+
+# SFP ANALYTICS WIDGET (lean, dark-themed profit centers)
+st.markdown('<div class="sfp-header gec-shimmer">sfp analytics — $50.1m monthly revenue</div>', unsafe_allow_html=True)
+st.markdown('<div class="sfp-subtext">50,000 MT coal input · 4 Profit Centers · Sovereign Feedstock</div>', unsafe_allow_html=True)
+st.markdown("""
+    <table style="width:100%; border-collapse: collapse; border: 1px solid #FFD700; background-color: #001F3F;">
+        <tr style="background-color: #001d3d; color: #FFD700; font-size: 0.8rem;">
+            <th style="padding: 8px; text-align: left;">PROFIT CENTER</th><th style="padding: 8px; text-align: left;">OUTPUT</th><th style="padding: 8px; text-align: left;">MONTHLY REVENUE (USD)</th>
+        </tr>
+        <tr style="color: #e0e0e0;"><td style="padding: 8px; border-bottom: 1px solid #334b63;">Syngas</td><td style="padding: 8px; border-bottom: 1px solid #334b63;">Sovereign Feedstock</td><td class="revenue-shimmer" style="padding: 8px; border-bottom: 1px solid #334b63;">$15.20 M</td></tr>
+        <tr style="color: #e0e0e0;"><td style="padding: 8px; border-bottom: 1px solid #334b63;">Germanium</td><td style="padding: 8px; border-bottom: 1px solid #334b63;">Fly ash extraction</td><td class="revenue-shimmer" style="padding: 8px; border-bottom: 1px solid #334b63;">$18.50 M</td></tr>
+        <tr style="color: #e0e0e0;"><td style="padding: 8px; border-bottom: 1px solid #334b63;">Ammonia</td><td style="padding: 8px; border-bottom: 1px solid #334b63;">Fertilizer grade</td><td class="revenue-shimmer" style="padding: 8px; border-bottom: 1px solid #334b63;">$9.81 M</td></tr>
+        <tr style="color: #e0e0e0;"><td style="padding: 8px; border-bottom: 1px solid #334b63;">Silicon</td><td style="padding: 8px; border-bottom: 1px solid #334b63;">Semiconductor grade</td><td class="revenue-shimmer" style="padding: 8px; border-bottom: 1px solid #334b63;">$6.50 M</td></tr>
+        <tr style="background-color: #001d3d; font-weight: bold;">
+            <td colspan="2" style="color: #FFD700; padding: 8px;">Total Monthly Revenue</td>
+            <td class="revenue-shimmer" style="font-size: 1.1rem; padding: 8px;">$50.1 M</td>
+        </tr>
+    </table>
+""", unsafe_allow_html=True)
 
 # EAGLE NEST: LOCAL VIDEO (eagle_anim.mp4) OR CLEAN PLACEHOLDER
 st.divider()
