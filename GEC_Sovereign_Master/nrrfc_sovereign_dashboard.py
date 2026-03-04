@@ -30,22 +30,45 @@ _EAGLE_VIDEO_PATH = Path(__file__).resolve().parent / "eagle_anim.mp4"
 # CUSTOM CSS: DEEP NAVY BASE, GOLD/WHITE SHIMMER, HIGHLY VISIBLE 8R CARDS
 st.markdown("""
     <style>
-    /* NRRFC Sovereign Gateway — Deep Navy #000080, Gold #D4AF37, sans-serif */
+    /* Sovereign Branding Standards - GCSLC */
+    :root {
+        --deep-navy: #000814;
+        --gold-shimmer: #FFD700;
+        --gold-grey: #b5a48b;
+    }
+    .sovereign-header {
+        font-size: 1.1rem !important;
+        letter-spacing: 0.1rem;
+        text-transform: uppercase;
+    }
+    .glossary-sidebar {
+        width: 220px;
+        font-size: 0.75rem;
+        color: var(--gold-grey);
+        border-left: 1px solid rgba(255, 215, 0, 0.3);
+        padding: 10px;
+    }
+    [data-testid="stSidebar"] {
+        border-left: 1px solid rgba(255, 215, 0, 0.3);
+        padding: 10px;
+    }
+    [data-testid="stSidebar"] .stMarkdown { font-size: 0.75rem; color: var(--gold-grey); }
+    [data-testid="stSidebar"] .stMarkdown h3 { font-size: 0.9rem; color: var(--gold-shimmer); }
+    .shimmer-text {
+        background: linear-gradient(90deg, #FFD700, #FFF, #FFD700);
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: shimmer 3s linear infinite;
+    }
+    @keyframes shimmer {
+        to { background-position: 200% center; }
+    }
+    /* NRRFC Sovereign Gateway — Deep Navy, Gold, sans-serif */
     .stApp, .main, [data-testid="stAppViewContainer"] {
-        background-color: #000080 !important;
+        background-color: var(--deep-navy) !important;
         color: #FFFFFF;
         font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
-    }
-    @keyframes shimmer-gold-white {
-        0% { color: #FFFFFF; text-shadow: 0 0 8px #FFFFFF, 0 0 12px rgba(255,215,0,0.3); }
-        50% { color: #FFD700; text-shadow: 0 0 12px #FFD700, 0 0 24px rgba(255,215,0,0.6); }
-        100% { color: #FFFFFF; text-shadow: 0 0 8px #FFFFFF, 0 0 12px rgba(255,215,0,0.3); }
-    }
-    .shimmer-text {
-        animation: shimmer-gold-white 2.5s ease-in-out infinite;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
     }
     .medallion-header {
         text-align: center;
@@ -94,11 +117,6 @@ st.markdown("""
         border: 1px solid rgba(255, 215, 0, 0.35);
     }
     div[data-testid="stVideo"] video { width: 100% !important; }
-    /* Gold shimmer gradient on text (D3 headline) */
-    @keyframes shimmer {
-        0% { background-position: -200% 0; }
-        100% { background-position: 200% 0; }
-    }
     .shimmer-headline {
         font-family: 'Inter', sans-serif;
         font-weight: bold;
@@ -439,7 +457,7 @@ st.markdown("<div class='watermark'>GCSLC PROPRIETARY | SOVEREIGN</div>", unsafe
 st.markdown(f"""
     <div class="medallion-header">
         <img src="{MEDALLION_DATA_URI}" width="150" height="150" style="border-radius:50%; border:3px solid #D4AF37; box-shadow: 0 0 24px rgba(212,175,55,0.5); display:block; margin:0 auto 16px;">
-        <h1 class="shimmer-text">Galadiman Ruwa Center for Strategic Leadership and Communication</h1>
+        <h1 class="shimmer-text sovereign-header">Galadiman Ruwa Center for Strategic Leadership and Communication</h1>
         <h2 style="color: #D4AF37; font-weight: 700;">GCSLC LTD/GTE</h2>
         <p style="font-style: italic; color: #c0c0c0;">Proponent of the 8R Stealth Paradigm Convergence and its Determinants</p>
     </div>
