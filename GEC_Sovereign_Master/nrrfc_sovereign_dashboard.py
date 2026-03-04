@@ -7,6 +7,8 @@ Deep Navy background, Gold/White shimmer, 8R Determinant cards. CAC & Chairman L
 import streamlit as st
 import base64
 import pandas as pd
+import random
+import time
 from pathlib import Path
 
 # SOVEREIGN CONFIGURATION
@@ -115,6 +117,25 @@ st.markdown(f"""
 
 st.success("⚡ HIGH-VELOCITY SOVEREIGN WELCOME. EAGLE IS ON THE NEST.")
 
+# SOVEREIGN TIMESTAMP (THE INCORRUPTIBLE HEARTBEAT)
+current_time = time.strftime("%Y-%m-%d %H:%M:%S UTC")
+st.markdown(f"""
+    <div style="color: #FFD700; font-family: 'Inter', sans-serif; font-size: 0.9rem; margin-bottom: 20px;">
+        ● Last updated: {current_time}
+    </div>
+""", unsafe_allow_html=True)
+
+# DYNAMIC ASSET METRICS (THE PULSE) — simulates live monitoring of ~640.2 million tonnes
+col1, col2, col3 = st.columns(3)
+with col1:
+    reserves = 640.2 + random.uniform(-1.5, 1.5)
+    st.metric("TOTAL PROVEN RESERVES", f"{reserves:.1f}", "million tonnes")
+with col2:
+    power = 1200 + random.randint(-2, 2)
+    st.metric("POWER POTENTIAL", f"{power}", "MW (AI DC ready)")
+with col3:
+    st.metric("STATES WITH RESERVES", "13", "regions")
+
 # 8R STEALTH PARADIGM — HIGHLY VISIBLE DETERMINANT CARDS
 st.write("### 🛡️ 8R STEALTH PARADIGM NODAL")
 cols = st.columns(4)
@@ -174,3 +195,7 @@ st.markdown("""
         <p>© 2026 GCSLC LTD/GTE. Proprietary 8R Stealth Paradigm Convergence. All Rights Reserved.</p>
     </div>
     """, unsafe_allow_html=True)
+
+# AUTO-REFRESH TRIGGER (Sovereign OS movie effect — full page rerun every 1s for live pulse)
+time.sleep(1)
+st.rerun()
