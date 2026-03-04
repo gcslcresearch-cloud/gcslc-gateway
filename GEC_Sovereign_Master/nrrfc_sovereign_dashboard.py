@@ -1,68 +1,72 @@
 import streamlit as st
 import pandas as pd
 
-# SOVEREIGN CONFIGURATION
-st.set_page_config(page_title="GCSLC Sovereign Gateway", layout="wide")
+# 1. SOVEREIGN CONFIGURATION & LAYOUT
+st.set_page_config(page_title="GCSLC Sovereign Gateway", layout="wide", initial_sidebar_state="collapsed")
 
-# NAVY BLUE BASE / WHITE SHIMMER / GOLD ACCENTS
+# 2. THE NAVY-GOLD-SHIMMER ARCHITECTURE (CSS INJECTION)
 st.markdown("""
     <style>
-    @keyframes shimmer-white {
-        0% { color: #FFFFFF; text-shadow: 0 0 5px #FFFFFF; }
-        50% { color: #FFD700; text-shadow: 0 0 20px #FFD700; }
-        100% { color: #FFFFFF; text-shadow: 0 0 5px #FFFFFF; }
+    @keyframes shimmer-gold {
+        0% { border-color: #FFD700; box-shadow: 0 0 5px #FFD700; }
+        50% { border-color: #FFFFFF; box-shadow: 0 0 20px #FFFFFF; }
+        100% { border-color: #FFD700; box-shadow: 0 0 5px #FFD700; }
     }
-    .main {
-        background-color: #000814; /* Ultra Deep Navy */
+    .stApp {
+        background-color: #000814; /* Deep Navy Void */
         color: #FFFFFF;
-        font-family: 'Inter', sans-serif;
     }
-    .header-container {
-        text-align: center;
-        padding: 40px;
+    .header-box {
+        background: linear-gradient(180deg, #001d3d 0%, #000814 100%);
+        padding: 30px;
         border-bottom: 2px solid #FFD700;
-        background: radial-gradient(circle, #001d3d 0%, #000814 100%);
+        text-align: center;
     }
     .medallion {
-        width: 150px;
+        border: 3px solid #FFD700;
         border-radius: 50%;
-        border: 4px solid #FFD700;
-        box-shadow: 0 0 30px #FFD700;
-        margin-bottom: 20px;
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 15px;
+        animation: shimmer-gold 4s infinite;
     }
-    .shimmer-text {
-        animation: shimmer-white 3s infinite;
-        font-weight: 800;
-        text-transform: uppercase;
+    .determinant-card {
+        background: rgba(0, 29, 61, 0.8);
+        border: 1px solid #FFD700;
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+        transition: 0.3s;
     }
-    .eightr-card {
-        background: rgba(0, 29, 61, 0.7);
-        border-left: 5px solid #FFD700;
-        padding: 20px;
-        border-radius: 5px;
-        margin: 10px 0;
+    .determinant-card:hover {
+        background: rgba(0, 53, 102, 1);
+        transform: translateY(-5px);
     }
-    .eightr-visible {
-        color: #FFD700;
-        font-size: 1.5rem;
-        font-weight: bold;
-        margin-bottom: 10px;
+    .eagle-box {
+        background: linear-gradient(135deg, #001d3d 0%, #000814 50%, rgba(255, 215, 0, 0.08) 100%);
+        border: 2px solid #FFD700;
+        border-radius: 12px;
+        padding: 24px;
+        margin: 20px 0;
+        text-align: center;
+        box-shadow: 0 0 30px rgba(255, 215, 0, 0.15);
     }
     </style>
     """, unsafe_allow_html=True)
 
-# HEADER SECTION: MEDALLION & TITLE
+# HEADER
 st.markdown("""
-    <div class="header-container">
-        <h1 class="shimmer-text">Galadiman Ruwa Center for Strategic Leadership and Communication</h1>
-        <h2 style="color: #FFD700;">GCSLC LTD/GTE</h2>
+    <div class="header-box">
+        <div class="medallion"></div>
+        <h1 style="color: #FFD700; font-weight: 800; text-transform: uppercase;">Galadiman Ruwa Center for Strategic Leadership and Communication</h1>
+        <h2 style="color: #FFFFFF;">GCSLC LTD/GTE</h2>
         <p style="font-style: italic; color: #a3a3a3;">Proponent of the 8R Stealth Paradigm Convergence and its Determinants</p>
     </div>
     """, unsafe_allow_html=True)
 
 st.success("⚡ HIGH-VELOCITY SOVEREIGN WELCOME INITIALIZED. EAGLE IS ON THE NEST.")
 
-# THE 8R STEALTH MATRIX (HIGH VISIBILITY)
+# 8R STEALTH MATRIX (determinant cards)
 st.write("### 🛡️ 8R STEALTH PARADIGM NODAL")
 cols = st.columns(4)
 determinants = [
@@ -75,16 +79,15 @@ determinants = [
 for i, (d_code, d_name, d_desc) in enumerate(determinants):
     with cols[i % 4]:
         st.markdown(f"""
-            <div class="eightr-card">
-                <div class="eightr-visible">{d_code}: {d_name}</div>
-                <p style="color: white;">{d_desc}</p>
+            <div class="determinant-card">
+                <div style="color: #FFD700; font-size: 1.25rem; font-weight: bold;">{d_code}: {d_name}</div>
+                <p style="color: #FFFFFF; margin: 8px 0 0 0;">{d_desc}</p>
             </div>
             """, unsafe_allow_html=True)
 
-# THE NIGERIAN MAP FEEDSTOCK HUB
+# EAGLE BOX (GEC Nesting)
 st.divider()
-st.write("### 🦅 GEC NESTING: COAL-TO-COMPUTE FEEDSTOCK MAP")
-st.info("The Eagle is hovering over 13 key nests. Identifying high-yield opportunities in Germanium, Ammonia, and Silicon.")
+st.markdown('<div class="eagle-box"><h3 style="color: #FFD700;">🦅 GEC NESTING: COAL-TO-COMPUTE FEEDSTOCK MAP</h3><p style="color: #e0e0e0;">The Eagle is hovering over 13 key nests. Identifying high-yield opportunities in Germanium, Ammonia, and Silicon.</p></div>', unsafe_allow_html=True)
 
 # PROPRIETARY MARKET DATA
 data = {
