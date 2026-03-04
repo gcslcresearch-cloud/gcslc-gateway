@@ -117,21 +117,21 @@ st.markdown(f"""
 
 st.success("⚡ HIGH-VELOCITY SOVEREIGN WELCOME. EAGLE IS ON THE NEST.")
 
-# SOVEREIGN TIMESTAMP (THE INCORRUPTIBLE HEARTBEAT)
+# 1. SOVEREIGN TIMESTAMP (THE HEARTBEAT) — Format: YYYY-MM-DD HH:MM:SS UTC
 current_time = time.strftime("%Y-%m-%d %H:%M:%S UTC")
 st.markdown(f"""
-    <div style="color: #FFD700; font-family: 'Inter', sans-serif; font-size: 0.9rem; margin-bottom: 20px;">
+    <div style="color: #FFD700; font-family: 'Inter', sans-serif; font-size: 1rem; margin-bottom: 20px;">
         ● Last updated: {current_time}
     </div>
 """, unsafe_allow_html=True)
 
-# DYNAMIC ASSET METRICS (THE PULSE) — simulates live monitoring of ~640.2 million tonnes
+# 2. DYNAMIC NODAL PULSE — metrics fluctuate slightly to simulate real-time monitoring of proven reserves
 col1, col2, col3 = st.columns(3)
 with col1:
-    reserves = 640.2 + random.uniform(-1.5, 1.5)
+    reserves = 640.2 + random.uniform(-1.8, 1.8)
     st.metric("TOTAL PROVEN RESERVES", f"{reserves:.1f}", "million tonnes")
 with col2:
-    power = 1200 + random.randint(-2, 2)
+    power = 1200 + random.randint(-5, 5)
     st.metric("POWER POTENTIAL", f"{power}", "MW (AI DC ready)")
 with col3:
     st.metric("STATES WITH RESERVES", "13", "regions")
@@ -158,20 +158,30 @@ for i, (code, name, desc) in enumerate(determinants):
             </div>
             """, unsafe_allow_html=True)
 
-# 13-STATE COAL DATA REGISTRY
-coal_registry = {
-    "State": ["Enugu", "Kogi", "Nasarawa", "Benue", "Gombe", "Adamawa", "Bauchi", "Delta", "Edo", "Anambra", "Imo", "Abia", "Ondo"],
-    "Proven Reserves (MT)": [150.5, 120.2, 85.1, 75.4, 45.2, 38.9, 32.1, 28.5, 22.4, 15.6, 12.8, 8.4, 4.2],
-    "Germanium Density": ["High", "High", "Ultra", "Medium", "High", "Medium", "Medium", "Low", "Medium", "High", "Low", "Low", "Low"],
-    "Ammonia Yield Est.": ["9.2x", "8.8x", "9.6x", "7.2x", "8.5x", "7.1x", "6.8x", "5.2x", "6.4x", "8.2x", "5.1x", "4.8x", "4.2x"]
-}
+# 1. THE STATE-BY-STATE PULSE LOGIC (mimics "Nervous System" with +/- drift per state)
+def get_pulsing_data():
+    base_data = {
+        "State": ["Enugu", "Kogi", "Nasarawa", "Benue", "Gombe", "Adamawa", "Bauchi", "Delta", "Edo", "Anambra", "Imo", "Abia", "Ondo"],
+        "Reserves (MT)": [168.1, 142.1, 48.1, 97.9, 62.0, 38.0, 12.0, 32.1, 18.0, 27.9, 32.1, 8.4, 4.2],
+        "Power Potential (MW)": [399, 319, 85, 179, 109, 65, 20, 55, 30, 48, 55, 12, 10]
+    }
+    pulsed_reserves = [r + random.uniform(-0.5, 0.5) for r in base_data["Reserves (MT)"]]
+    pulsed_power = [p + random.randint(-2, 2) for p in base_data["Power Potential (MW)"]]
+    return pd.DataFrame({
+        "STATE": base_data["State"],
+        "RESERVES (MT)": pulsed_reserves,
+        "POWER POTENTIAL (MW)": pulsed_power
+    })
 
-# D3: RESEARCH — 13-STATE ASSET MAPPING
+# 2. RENDER THE LIVING TABLE
 st.divider()
 st.write("### 🔍 D3: RESEARCH - 13-STATE ASSET MAPPING")
-df_nodal = pd.DataFrame(coal_registry)
-st.dataframe(df_nodal.style.background_gradient(cmap="Blues"), use_container_width=True)
-st.info("DATA INSIGHT: Nasarawa shows 'Ultra' Germanium density, matching the $8,597/kg market strike targets.")
+df_living = get_pulsing_data()
+st.dataframe(
+    df_living.style.format({"RESERVES (MT)": "{:.1f}", "POWER POTENTIAL (MW)": "{:.0f}"}).background_gradient(cmap="Blues"),
+    use_container_width=True
+)
+st.info("DATA INSIGHT: Nasarawa shows high strategic value; D3 research aligns with $8,597/kg Germanium market strike targets.")
 
 # EAGLE NEST: LOCAL VIDEO (eagle_anim.mp4) OR CLEAN PLACEHOLDER
 st.divider()
@@ -196,6 +206,6 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
-# AUTO-REFRESH TRIGGER (Sovereign OS movie effect — full page rerun every 1s for live pulse)
-time.sleep(1)
+# 3. GLOBAL HEARTBEAT — refreshes the entire dashboard every 2 seconds
+time.sleep(2)
 st.rerun()
