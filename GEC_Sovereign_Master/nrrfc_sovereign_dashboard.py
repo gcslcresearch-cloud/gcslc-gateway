@@ -209,6 +209,36 @@ st.markdown("""
         font-weight: bold;
         animation: gec-diamond-shimmer 2s infinite;
     }
+    /* Lean clinical styling (CC & Roadmap) */
+    .cc-header {
+        color: #FFD700;
+        font-size: 1.05rem !important;
+        text-transform: none;
+        letter-spacing: 0.04rem;
+        margin-top: 30px;
+    }
+    .road-step {
+        border-left: 2px solid #FFD700;
+        padding-left: 15px;
+        margin-bottom: 15px;
+    }
+    .step-title {
+        color: #FFD700;
+        font-size: 0.9rem;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    .step-detail {
+        color: #e0e0e0;
+        font-size: 0.8rem;
+    }
+    .sovereign-tax {
+        background: rgba(255, 215, 0, 0.1);
+        border: 1px dashed #FFD700;
+        padding: 10px;
+        text-align: center;
+        border-radius: 5px;
+    }
     .footer-sovereign {
         text-align: center;
         color: #a3a3a3;
@@ -356,6 +386,51 @@ st.markdown("""
             <td class="revenue-shimmer" style="font-size: 1.1rem; padding: 8px;">$50.1 M</td>
         </tr>
     </table>
+""", unsafe_allow_html=True)
+
+# COST CENTERS (CC) — OPERATIONAL OUTLAYS
+st.markdown('<div class="cc-header gec-shimmer">cost centers (cc) — operational outlays</div>', unsafe_allow_html=True)
+cc_col1, cc_col2, cc_col3 = st.columns(3)
+with cc_col1:
+    st.markdown("""<div class='debt-card'>
+        <p style='color:#FFD700; font-size:0.75rem;'>LOGISTICS</p>
+        <p style='color:white; font-size:0.8rem;'>fleet, rail & port ops</p>
+        <p style='color:gray; font-size:0.65rem;'>Coal-to-plant strike</p>
+    </div>""", unsafe_allow_html=True)
+with cc_col2:
+    st.markdown("""<div class='debt-card'>
+        <p style='color:#FFD700; font-size:0.75rem;'>LEAN REMUNERATION</p>
+        <p style='color:white; font-size:0.8rem;'>minimal headcount</p>
+        <p style='color:gray; font-size:0.65rem;'>Performance-linked pay</p>
+    </div>""", unsafe_allow_html=True)
+with cc_col3:
+    st.markdown("""<div class='debt-card'>
+        <p style='color:#FFD700; font-size:0.75rem;'>AI TECHNOLOGY</p>
+        <p style='color:white; font-size:0.8rem;'>python / llm stack</p>
+        <p style='color:gray; font-size:0.65rem;'>GEC Native Engine</p>
+    </div>""", unsafe_allow_html=True)
+
+# 100-DAY SSMV ROADMAP
+st.markdown('<div class="cc-header gec-shimmer">100-day ssmv roadmap</div>', unsafe_allow_html=True)
+roadmap_steps = [
+    ("reset", "Sovereign Data Audit & Baseline: establish 8R Stealth baseline."),
+    ("research", "IFC / Asian Bank Term Sheets: 51/49 funding structure modeled."),
+    ("restructure", "NGECC Plant Commissioning: gasifier online, syngas flow."),
+    ("revitalize", "Full Throughput & IPO Track: 24-month readiness achieved.")
+]
+for step, detail in roadmap_steps:
+    st.markdown(f"""
+        <div class="road-step">
+            <span class="step-title">{step}</span><br>
+            <span class="step-detail">{detail}</span>
+        </div>
+    """, unsafe_allow_html=True)
+
+# FINAL SOVEREIGN TAX LOCK
+st.markdown("""
+    <div style="background: rgba(255, 215, 0, 0.1); border: 1px dashed #FFD700; padding: 10px; text-align: center;">
+        <span class="gec-shimmer" style="font-size:0.9rem;">● 10% Sovereign Tax Applied: $5.01M/Month Revenue Lock Enabled</span>
+    </div>
 """, unsafe_allow_html=True)
 
 # EAGLE NEST: LOCAL VIDEO (eagle_anim.mp4) OR CLEAN PLACEHOLDER
