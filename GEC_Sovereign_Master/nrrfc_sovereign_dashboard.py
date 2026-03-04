@@ -239,6 +239,20 @@ st.markdown("""
         text-align: center;
         border-radius: 5px;
     }
+    /* S24 Ultra mobile engine (responsive strike) */
+    @media (max-width: 480px) {
+        .gec-card { padding: 10px; margin-bottom: 8px; border-radius: 6px; }
+        .stMetric { font-size: 0.75rem !important; }
+        .gec-shimmer { font-size: 0.85rem !important; }
+        [data-testid="column"] { width: 100% !important; flex: 1 1 100% !important; }
+    }
+    .lean-header {
+        color: #FFD700;
+        font-size: 0.9rem;
+        text-transform: none;
+        letter-spacing: 0.03rem;
+        margin-top: 25px;
+    }
     .footer-sovereign {
         text-align: center;
         color: #a3a3a3;
@@ -248,8 +262,30 @@ st.markdown("""
         background: rgba(0, 29, 61, 0.5);
     }
     .footer-sovereign strong { color: #FFD700; }
+    /* Security & watermark engine (IP protection) */
+    .watermark {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-30deg);
+        font-size: 5rem;
+        color: rgba(255, 215, 0, 0.08);
+        z-index: 9999;
+        pointer-events: none;
+        user-select: none;
+        white-space: nowrap;
+        font-weight: bold;
+    }
+    .sovereign-signature {
+        border-top: 1px solid #FFD700;
+        margin-top: 50px;
+        padding: 20px;
+        text-align: center;
+        background: linear-gradient(to right, transparent, rgba(255, 215, 0, 0.05), transparent);
+    }
     </style>
     """, unsafe_allow_html=True)
+st.markdown("<div class='watermark'>GCSLC PROPRIETARY / SOVEREIGN IP</div>", unsafe_allow_html=True)
 
 # HEADER: MEDALLION (embedded SVG) & SHIMMER TITLE
 st.markdown(f"""
@@ -322,7 +358,10 @@ st.divider()
 st.markdown('<h1 class="shimmer-node">D3: RESEARCH - 13-STATE ASSET MAPPING</h1>', unsafe_allow_html=True)
 
 registry_df = get_shimmering_nodal_data()
-st.table(registry_df)
+# IP masking: Nodal identifiers for public view (mask Power/Production)
+registry_df["NODE_ID"] = [f"GEC-NODE-{i:03d}" for i in range(1, 14)]
+display_df = registry_df[["STATE", "NODE_ID", "RESERVES (MT)", "STATUS"]]
+st.table(display_df)
 
 # 3. SIGNATURE ANCHOR
 st.markdown("<div style='color: #FFD700; text-align: center; margin-top: 24px;'>SIGNATURE SECURED: Dr. Sa'ad Jaafaru | CAC: 176917792057</div>", unsafe_allow_html=True)
@@ -388,50 +427,38 @@ st.markdown("""
     </table>
 """, unsafe_allow_html=True)
 
-# COST CENTERS (CC) — OPERATIONAL OUTLAYS
-st.markdown('<div class="cc-header gec-shimmer">cost centers (cc) — operational outlays</div>', unsafe_allow_html=True)
-cc_col1, cc_col2, cc_col3 = st.columns(3)
-with cc_col1:
-    st.markdown("""<div class='debt-card'>
-        <p style='color:#FFD700; font-size:0.75rem;'>LOGISTICS</p>
-        <p style='color:white; font-size:0.8rem;'>fleet, rail & port ops</p>
-        <p style='color:gray; font-size:0.65rem;'>Coal-to-plant strike</p>
-    </div>""", unsafe_allow_html=True)
-with cc_col2:
-    st.markdown("""<div class='debt-card'>
-        <p style='color:#FFD700; font-size:0.75rem;'>LEAN REMUNERATION</p>
-        <p style='color:white; font-size:0.8rem;'>minimal headcount</p>
-        <p style='color:gray; font-size:0.65rem;'>Performance-linked pay</p>
-    </div>""", unsafe_allow_html=True)
-with cc_col3:
-    st.markdown("""<div class='debt-card'>
-        <p style='color:#FFD700; font-size:0.75rem;'>AI TECHNOLOGY</p>
-        <p style='color:white; font-size:0.8rem;'>python / llm stack</p>
-        <p style='color:gray; font-size:0.65rem;'>GEC Native Engine</p>
-    </div>""", unsafe_allow_html=True)
+# COST CENTERS (CC) — LEFT TO RIGHT STRIKE (S24-friendly)
+st.markdown('<div class="lean-header gec-shimmer">cost centers (cc) — operational outlays</div>', unsafe_allow_html=True)
+cc_cols = st.columns(3)
+with cc_cols[0]:
+    st.markdown("<div class='debt-card'><p style='color:#FFD700; font-size:0.7rem;'>LOGISTICS</p><p style='color:white; font-size:0.75rem;'>fleet, rail & port ops</p></div>", unsafe_allow_html=True)
+with cc_cols[1]:
+    st.markdown("<div class='debt-card'><p style='color:#FFD700; font-size:0.7rem;'>LEAN REMUNERATION</p><p style='color:white; font-size:0.75rem;'>minimal headcount</p></div>", unsafe_allow_html=True)
+with cc_cols[2]:
+    st.markdown("<div class='debt-card'><p style='color:#FFD700; font-size:0.7rem;'>AI TECHNOLOGY</p><p style='color:white; font-size:0.75rem;'>python / llm stack</p></div>", unsafe_allow_html=True)
 
-# 100-DAY SSMV ROADMAP
-st.markdown('<div class="cc-header gec-shimmer">100-day ssmv roadmap</div>', unsafe_allow_html=True)
-roadmap_steps = [
-    ("reset", "Sovereign Data Audit & Baseline: establish 8R Stealth baseline."),
-    ("research", "IFC / Asian Bank Term Sheets: 51/49 funding structure modeled."),
-    ("restructure", "NGECC Plant Commissioning: gasifier online, syngas flow."),
-    ("revitalize", "Full Throughput & IPO Track: 24-month readiness achieved.")
+# 100-DAY SSMV ROADMAP — THE EXECUTION SPINE
+st.markdown('<div class="lean-header gec-shimmer">100-day ssmv roadmap</div>', unsafe_allow_html=True)
+roadmap_logic = [
+    ("reset", "sovereign data audit & baseline"),
+    ("research", "ifc / asian bank term sheets (51/49)"),
+    ("restructure", "ngecc plant commissioning (gasifier online)"),
+    ("revitalize", "full throughput & ipo track (24-month)")
 ]
-for step, detail in roadmap_steps:
-    st.markdown(f"""
-        <div class="road-step">
-            <span class="step-title">{step}</span><br>
-            <span class="step-detail">{detail}</span>
-        </div>
-    """, unsafe_allow_html=True)
+for stage, detail in roadmap_logic:
+    st.markdown(
+        f"<div style='border-left: 1px solid #FFD700; padding-left: 10px; margin-bottom: 10px;'>"
+        f"<span style='color:#FFD700; font-size:0.8rem; font-weight:bold;'>{stage}</span><br>"
+        f"<span style='color:white; font-size:0.75rem;'>{detail}</span></div>",
+        unsafe_allow_html=True
+    )
 
-# FINAL SOVEREIGN TAX LOCK
-st.markdown("""
-    <div style="background: rgba(255, 215, 0, 0.1); border: 1px dashed #FFD700; padding: 10px; text-align: center;">
-        <span class="gec-shimmer" style="font-size:0.9rem;">● 10% Sovereign Tax Applied: $5.01M/Month Revenue Lock Enabled</span>
-    </div>
-""", unsafe_allow_html=True)
+# FINAL 10% TAX LOCK (MOBILE ANCHOR)
+st.markdown(
+    "<div style='background: rgba(255, 215, 0, 0.05); border: 1px dashed #FFD700; padding: 8px; text-align: center;'>"
+    "<span class='gec-shimmer' style='font-size:0.8rem;'>● 10% sovereign tax: $5.01M monthly lock</span></div>",
+    unsafe_allow_html=True
+)
 
 # EAGLE NEST: LOCAL VIDEO (eagle_anim.mp4) OR CLEAN PLACEHOLDER
 st.divider()
@@ -446,6 +473,15 @@ with col_stats:
     st.write("### 💎 SFF ANALYTICS")
     st.metric("Monthly Revenue", "$50.1M", delta="Target")
     st.metric("Debt-Swap Coverage", "18.9x", delta="Sovereign Surplus")
+
+# GCSLC SIGNATURE (TIED & WATERMARKED)
+st.markdown("""
+    <div class="sovereign-signature">
+        <p class="gec-shimmer" style="font-size: 0.8rem; margin:0;">Incontrovertible Nodal Authority</p>
+        <p style="color: white; font-size: 1.1rem; font-weight: bold; margin: 5px 0;">DR. JAAFARU SA'AD (GALADIMAN RUWA)</p>
+        <p style="color: #FFD700; font-size: 0.8rem; margin:0;">Chairman & Founder, GCSLC | CAC: 176917792057</p>
+    </div>
+""", unsafe_allow_html=True)
 
 # FOOTER: CAC, SIGNATURE, COPYRIGHT
 st.divider()
