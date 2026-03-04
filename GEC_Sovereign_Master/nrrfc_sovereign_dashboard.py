@@ -11,8 +11,8 @@ import random
 import time
 from pathlib import Path
 
-# SOVEREIGN CONFIGURATION
-st.set_page_config(page_title="GCSLC Sovereign Gateway", layout="wide", initial_sidebar_state="collapsed")
+# SOVEREIGN CONFIGURATION — S24 Ultra optimized, sidebar for Technical Glossary
+st.set_page_config(page_title="GCSLC Sovereign Gateway", layout="wide", initial_sidebar_state="expanded")
 
 # WEB-HOSTED / EMBEDDED ASSETS (no local files)
 # Medallion: inline SVG (gold circle, GCSLC) — zero file dependency
@@ -30,10 +30,11 @@ _EAGLE_VIDEO_PATH = Path(__file__).resolve().parent / "eagle_anim.mp4"
 # CUSTOM CSS: DEEP NAVY BASE, GOLD/WHITE SHIMMER, HIGHLY VISIBLE 8R CARDS
 st.markdown("""
     <style>
-    /* Strict Deep Navy background */
+    /* NRRFC Sovereign Gateway — Deep Navy #000080, Gold #D4AF37, sans-serif */
     .stApp, .main, [data-testid="stAppViewContainer"] {
-        background-color: #000814 !important;
+        background-color: #000080 !important;
         color: #FFFFFF;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
     }
     @keyframes shimmer-gold-white {
         0% { color: #FFFFFF; text-shadow: 0 0 8px #FFFFFF, 0 0 12px rgba(255,215,0,0.3); }
@@ -262,19 +263,108 @@ st.markdown("""
         background: rgba(0, 29, 61, 0.5);
     }
     .footer-sovereign strong { color: #FFD700; }
-    /* Security & watermark engine (IP protection) */
+    /* Security & watermark — diagonal 12% opacity (KWAS-KWAS) */
     .watermark {
         position: fixed;
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -50%) rotate(-30deg);
-        font-size: 5rem;
-        color: rgba(255, 215, 0, 0.08);
+        transform: translate(-50%, -50%) rotate(-25deg);
+        font-size: clamp(3rem, 8vw, 5rem);
+        color: rgba(212, 175, 55, 0.12);
         z-index: 9999;
         pointer-events: none;
         user-select: none;
         white-space: nowrap;
         font-weight: bold;
+        font-family: 'Inter', sans-serif;
+    }
+    /* Welcome message — shimmering CSS text */
+    @keyframes welcome-shimmer {
+        0%, 100% { color: #FFF; text-shadow: 0 0 10px #FFF, 0 0 20px rgba(212, 175, 55, 0.4); }
+        50% { color: #D4AF37; text-shadow: 0 0 16px #D4AF37, 0 0 32px rgba(212, 175, 55, 0.7); }
+    }
+    .welcome-shimmer {
+        animation: welcome-shimmer 2.5s ease-in-out infinite;
+        font-weight: 700;
+        font-size: clamp(0.95rem, 2.2vw, 1.15rem);
+        text-align: center;
+        margin-bottom: 16px;
+    }
+    /* Sovereign Activation Alert — headline 25% smaller */
+    .activation-alert {
+        background: linear-gradient(145deg, #000050 0%, #000080 100%);
+        border: 2px solid #D4AF37;
+        border-radius: 12px;
+        padding: 20px;
+        margin: 16px 0;
+        text-align: center;
+    }
+    .activation-alert .alert-heading {
+        font-size: 0.75em; /* 25% reduction from 1em */
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #D4AF37;
+        font-weight: 800;
+        margin-bottom: 12px;
+    }
+    .activation-alert { font-size: 1.1rem; }
+    /* All widget headings UPPERCASE */
+    .widget-heading {
+        text-transform: uppercase !important;
+        letter-spacing: 0.04em;
+        color: #D4AF37;
+        font-weight: 700;
+    }
+    /* NGECC flow: Raw Coal = Blue Oval, Gasifier = Gold Box, Syngas = Pulsing Gold Box */
+    .flow-raw-coal {
+        background: linear-gradient(145deg, #1e3a5f 0%, #0d2137 100%);
+        border: 2px solid #4a90d9;
+        border-radius: 50%;
+        padding: 16px 24px;
+        text-align: center;
+        color: #fff;
+        min-width: 100px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .flow-raw-coal .label { color: #a8d0ff; font-weight: bold; font-size: 0.85rem; }
+    .flow-gasifier {
+        background: rgba(0, 0, 80, 0.95);
+        border: 2px solid #D4AF37;
+        border-radius: 10px;
+        padding: 16px 24px;
+        text-align: center;
+        color: #D4AF37;
+        font-weight: bold;
+        min-width: 100px;
+    }
+    .flow-syngas {
+        background: rgba(0, 0, 80, 0.95);
+        border: 2px solid #D4AF37;
+        border-radius: 10px;
+        padding: 16px 24px;
+        text-align: center;
+        color: #fff;
+        min-width: 100px;
+        animation: diamond-pulse 2s ease-in-out infinite;
+    }
+    .flow-syngas .label { color: #D4AF37; font-weight: bold; }
+    /* Global Silicon Scarcity ticker (KWAS-KWAS D3 RESEARCH) */
+    @keyframes ticker-pulse {
+        0%, 100% { opacity: 0.85; border-color: rgba(212, 175, 55, 0.6); }
+        50% { opacity: 1; border-color: #D4AF37; box-shadow: 0 0 20px rgba(212, 175, 55, 0.3); }
+    }
+    .silicon-ticker {
+        background: linear-gradient(90deg, rgba(0,0,80,0.9) 0%, rgba(212,175,55,0.08) 50%, rgba(0,0,80,0.9) 100%);
+        border: 1px solid #D4AF37;
+        border-radius: 8px;
+        padding: 10px 16px;
+        text-align: center;
+        color: #D4AF37;
+        font-weight: 700;
+        font-size: 0.9rem;
+        animation: ticker-pulse 2s ease-in-out infinite;
     }
     .sovereign-signature {
         border-top: 1px solid #FFD700;
@@ -343,19 +433,47 @@ st.markdown("""
     }
     </style>
     """, unsafe_allow_html=True)
-st.markdown("<div class='watermark'>GCSLC PROPRIETARY / SOVEREIGN IP</div>", unsafe_allow_html=True)
+st.markdown("<div class='watermark'>GCSLC PROPRIETARY | SOVEREIGN</div>", unsafe_allow_html=True)
 
 # HEADER: MEDALLION (embedded SVG) & SHIMMER TITLE
 st.markdown(f"""
     <div class="medallion-header">
-        <img src="{MEDALLION_DATA_URI}" width="150" height="150" style="border-radius:50%; border:3px solid #FFD700; box-shadow: 0 0 24px rgba(255,215,0,0.5); display:block; margin:0 auto 16px;">
+        <img src="{MEDALLION_DATA_URI}" width="150" height="150" style="border-radius:50%; border:3px solid #D4AF37; box-shadow: 0 0 24px rgba(212,175,55,0.5); display:block; margin:0 auto 16px;">
         <h1 class="shimmer-text">Galadiman Ruwa Center for Strategic Leadership and Communication</h1>
-        <h2 style="color: #FFD700; font-weight: 700;">GCSLC LTD/GTE</h2>
+        <h2 style="color: #D4AF37; font-weight: 700;">GCSLC LTD/GTE</h2>
         <p style="font-style: italic; color: #c0c0c0;">Proponent of the 8R Stealth Paradigm Convergence and its Determinants</p>
     </div>
     """, unsafe_allow_html=True)
 
-st.success("⚡ HIGH-VELOCITY SOVEREIGN WELCOME. EAGLE IS ON THE NEST.")
+# WELCOME MESSAGE — shimmering CSS
+st.markdown("""
+    <p class="welcome-shimmer">Welcome, Chairman. The Eagle is Scanning. Nigeria's 638.3 MT Reserves are Live.</p>
+""", unsafe_allow_html=True)
+
+# KWAS-KWAS: Global Silicon Scarcity ticker (D3 RESEARCH)
+st.markdown("""
+    <div class="silicon-ticker">+12.2% Price Spike Detected. Revaluing Strategic Reserves...</div>
+""", unsafe_allow_html=True)
+
+# SOVEREIGN ACTIVATION ALERT — top-tier box, headline 25% reduced, INITIATE RESET gold button
+st.markdown("""
+    <div class="activation-alert">
+        <div class="alert-heading">Sovereign Activation Alert</div>
+    </div>
+""", unsafe_allow_html=True)
+if st.button("INITIATE RESET", type="primary", use_container_width=True):
+    st.session_state.get("reset_clicked", True)
+st.markdown("<br>", unsafe_allow_html=True)
+
+# TECHNICAL GLOSSARY — Sidebar
+with st.sidebar:
+    st.markdown("### **TECHNICAL GLOSSARY**")
+    st.markdown("---")
+    st.markdown("**LLMs** — Large Language Models; AI systems used for sovereign data analysis and decision support.")
+    st.markdown("**KPIs** — Key Performance Indicators. Primary revenue KPI: **$50.1M** monthly (SFP analytics).")
+    st.markdown("**Python-to-Sovereign Feedstock** — End-to-end pipeline from Python/LLM stack to Syngas (Sovereign Feedstock) conversion and value extraction.")
+    st.markdown("---")
+    st.caption("2026 FX: ₦1,350 = $1")
 
 # 1. SOVEREIGN TIMESTAMP (THE HEARTBEAT) — Format: YYYY-MM-DD HH:MM:SS UTC
 current_time = time.strftime("%Y-%m-%d %H:%M:%S UTC")
@@ -365,19 +483,18 @@ st.markdown(f"""
     </div>
 """, unsafe_allow_html=True)
 
-# 2. DYNAMIC NODAL PULSE — metrics fluctuate slightly to simulate real-time monitoring of proven reserves
+# RESOURCE DASHBOARD — 638.3 MT, 1,195 MW, 13 States (2026 FX: ₦1,350 = $1 for conversions)
+st.markdown('<p class="widget-heading">RESOURCE DASHBOARD</p>', unsafe_allow_html=True)
 col1, col2, col3 = st.columns(3)
 with col1:
-    reserves = 640.2 + random.uniform(-1.8, 1.8)
-    st.metric("TOTAL PROVEN RESERVES", f"{reserves:.1f}", "million tonnes")
+    st.metric("RESERVES", "638.3", "MT")
 with col2:
-    power = 1200 + random.randint(-5, 5)
-    st.metric("POWER POTENTIAL", f"{power}", "MW (AI DC ready)")
+    st.metric("POWER POTENTIAL", "1,195", "MW")
 with col3:
-    st.metric("STATES WITH RESERVES", "13", "regions")
+    st.metric("STATES", "13", "regions")
 
-# 8R STEALTH PARADIGM — HIGHLY VISIBLE DETERMINANT CARDS
-st.write("### 🛡️ 8R STEALTH PARADIGM NODAL")
+# 8R STEALTH PARADIGM
+st.markdown('<p class="widget-heading">8R STEALTH PARADIGM NODAL</p>', unsafe_allow_html=True)
 cols = st.columns(4)
 determinants = [
     ("D1", "REFINE", "Subsoil Density Logic"),
@@ -411,9 +528,9 @@ def get_shimmering_nodal_data():
     df["RESERVES (MT)"] += [random.uniform(-0.15, 0.15) for _ in range(13)]
     return df
 
-# 2. RENDER THE SHIMMERING HEADLINE & TABLE (navy/gold styling via .stTable; gec-shimmer used in Strategic Brief below)
+# D3: RESEARCH — 13-STATE ASSET MAPPING
 st.divider()
-st.markdown('<h1 class="shimmer-node">D3: RESEARCH - 13-STATE ASSET MAPPING</h1>', unsafe_allow_html=True)
+st.markdown('<p class="widget-heading shimmer-node">D3: RESEARCH — 13-STATE ASSET MAPPING</p>', unsafe_allow_html=True)
 
 registry_df = get_shimmering_nodal_data()
 # IP masking: Nodal identifiers for public view (mask Power/Production)
@@ -426,10 +543,10 @@ st.markdown("<div style='color: #FFD700; text-align: center; margin-top: 24px;'>
 
 st.info("DATA INSIGHT: Enugu & Kogi ACTIVE (0.01). Nasarawa+ reserve. Aligns with $8,597/kg Germanium strike targets.")
 
-# STRATEGIC BRIEF WIDGET (GEC shimmer on key terms)
+# STRATEGIC BRIEF WIDGET
 st.markdown("""
     <div class="brief-box">
-        <h3 style="color: #FFD700;">STRATEGIC BRIEF</h3>
+        <h3 class="widget-heading" style="color: #D4AF37;">STRATEGIC BRIEF</h3>
         <p style="color: white; line-height: 1.6;">
             Nigeria's sub-bituminous coal is not a "dirty fuel"—it is a <span class="gec-shimmer">Sovereign Feedstock</span>.
             The NGECC, operating as an SSMV, utilizes the <span class="gec-shimmer">8R Stealth Paradigm</span>
@@ -448,26 +565,27 @@ st.markdown("""
 # NRRFC VALUE-EXTRACTION ENGINE (PHASE 1) — Deep Navy #000080, Metallic Gold #D4AF37
 # ═══════════════════════════════════════════════════════════════════════════════
 st.divider()
-st.markdown('<h2 class="nrrfc-title">NRRFC Value-Extraction Engine (Phase 1)</h2>', unsafe_allow_html=True)
+st.markdown('<h2 class="nrrfc-title widget-heading">NRRFC VALUE-EXTRACTION ENGINE (PHASE 1)</h2>', unsafe_allow_html=True)
 
-# 1. NGECC MODULAR PLANT PROTOTYPE — Conversion Flow (Raw Coal → Gasifier → Syngas)
+# 1. NGECC PROTOTYPE — Raw Coal (Blue Oval) → Gasifier (Gold Box) → Syngas (Pulsing Gold Box)
 st.markdown("""
     <div class="nrrfc-module">
-        <p style="color: #D4AF37; font-weight: bold; margin-bottom: 12px;">NGECC Modular Plant Prototype — The Conversion Flow</p>
-        <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px;">
-            <div class="flow-step"><span class="label">Raw Coal</span></div>
+        <p class="widget-heading" style="margin-bottom: 12px;">NGECC MODULAR PLANT PROTOTYPE</p>
+        <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px;">
+            <div class="flow-raw-coal"><span class="label">Raw Coal</span></div>
             <span class="flow-arrow">→</span>
             <div class="diamond-bridge"><span class="diamond-node"></span><span class="diamond-node"></span><span class="diamond-node"></span></div>
-            <div class="flow-step"><span class="label">Gasifier</span></div>
+            <div class="flow-gasifier"><span class="label">Gasifier</span></div>
             <span class="flow-arrow">→</span>
             <div class="diamond-bridge"><span class="diamond-node"></span><span class="diamond-node"></span><span class="diamond-node"></span></div>
-            <div class="flow-step"><span class="label">Syngas</span><br><span class="sovereign-feedstock">Sovereign Feedstock</span></div>
+            <div class="flow-syngas"><span class="label">Syngas</span><br><span class="sovereign-feedstock">Sovereign Feedstock</span></div>
         </div>
     </div>
 """, unsafe_allow_html=True)
 
-# 2. ARBITRAGE WIDGET — Coal vs. Diesel (2026 FX: $1 = ₦1,350)
-st.markdown("**Arbitrage: Coal-to-Syngas vs. Diesel** (2026 FX: $1 = ₦1,350)")
+# 2. ARBITRAGE WIDGET — Coal vs. Diesel (2026 FX: ₦1,350 = $1)
+st.markdown('<p class="widget-heading">ARBITRAGE: COAL-TO-SYNGAS VS. DIESEL</p>', unsafe_allow_html=True)
+st.caption("2026 FX: ₦1,350 = $1")
 FX_RATE = 1350
 DIESEL_USD_PER_L = 1.00
 SYNGAS_USD_PER_L = 0.58
@@ -485,8 +603,9 @@ with col_c:
     st.metric("Strike result", f"${savings_usd:,.0f} saved", f"{SAVINGS_PCT}% cost savings")
 st.caption("Toggle volume to see USD savings at scale.")
 
-# 3. VALUE-ADDED DERIVATIVE STRIKE & MINERAL YIELD (10,000 MT Coal base)
-st.markdown("**Value-Added Derivative Strike & Mineral Yield** (base: 10,000 MT Coal)")
+# 3. DERIVATIVE STRIKE — Dynamic table: 9.6x multiplier (Germanium $6.9M, Ammonia $2.6M, Raw Coal $1.1M)
+st.markdown('<p class="widget-heading">VALUE-ADDED DERIVATIVE STRIKE & MINERAL YIELD</p>', unsafe_allow_html=True)
+st.caption("Base: 10,000 MT Coal")
 BASE_MT = 10_000
 value_df = pd.DataFrame({
     "Profit Center (SFP)": ["Germanium (Fly Ash)", "Ammonia", "Raw Coal"],
@@ -501,17 +620,17 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# 4. SOVEREIGN DEBT-SWAP FOOTER (NRRFC module)
+# 4. DEBT-SWAP FOOTER — 18.9x coverage of ₦50.0 T debt using 10% Big Tech CAPEX ($700B)
 st.markdown("""
     <div class="nrrfc-footer">
-        <p style="color: #D4AF37; font-weight: bold;">Sovereign Debt-Swap</p>
-        <p>By capturing 10% of Global Big Tech CAPEX, we achieve 189% coverage of Nigeria's domestic debt.</p>
-        <p style="font-size: 0.8rem; color: #a0a0a0;">GCSLC PROPRIETARY — Full-dashboard watermark active.</p>
+        <p class="widget-heading">DEBT-SWAP FOOTER</p>
+        <p>By capturing 10% of Global Big Tech CAPEX ($700B), we achieve <strong style="color:#D4AF37;">18.9×</strong> coverage of Nigeria's domestic debt (₦50.0 T).</p>
+        <p style="font-size: 0.8rem; color: #a0a0a0;">GCSLC PROPRIETARY | SOVEREIGN — Watermark active.</p>
     </div>
 """, unsafe_allow_html=True)
 
-# NATIONAL DEBT-SWAP WIDGET (10% Big Tech CAPEX vs domestic debt)
-st.markdown("<h3 class='gec-shimmer'>national debt-swap: 10% big tech capex vs domestic debt</h3>", unsafe_allow_html=True)
+# NATIONAL DEBT-SWAP WIDGET
+st.markdown("<p class='widget-heading gec-shimmer'>NATIONAL DEBT-SWAP: 10% BIG TECH CAPEX VS DOMESTIC DEBT</p>", unsafe_allow_html=True)
 col_debt1, col_debt2, col_debt3 = st.columns(3)
 with col_debt1:
     st.markdown("""<div class='debt-card'>
@@ -532,8 +651,8 @@ with col_debt3:
         <p style='color:gray; font-size:0.7rem;'>Sovereign Surplus</p>
     </div>""", unsafe_allow_html=True)
 
-# SFP ANALYTICS WIDGET (lean, dark-themed profit centers)
-st.markdown('<div class="sfp-header gec-shimmer">sfp analytics — $50.1m monthly revenue</div>', unsafe_allow_html=True)
+# SFP ANALYTICS WIDGET
+st.markdown('<p class="widget-heading sfp-header gec-shimmer">SFP ANALYTICS — $50.1M MONTHLY REVENUE</p>', unsafe_allow_html=True)
 st.markdown('<div class="sfp-subtext">50,000 MT coal input · 4 Profit Centers · Sovereign Feedstock</div>', unsafe_allow_html=True)
 st.markdown("""
     <table style="width:100%; border-collapse: collapse; border: 1px solid #FFD700; background-color: #001F3F;">
@@ -551,8 +670,8 @@ st.markdown("""
     </table>
 """, unsafe_allow_html=True)
 
-# COST CENTERS (CC) — LEFT TO RIGHT STRIKE (S24-friendly)
-st.markdown('<div class="lean-header gec-shimmer">cost centers (cc) — operational outlays</div>', unsafe_allow_html=True)
+# COST CENTERS (CC)
+st.markdown('<p class="widget-heading lean-header gec-shimmer">COST CENTERS (CC) — OPERATIONAL OUTLAYS</p>', unsafe_allow_html=True)
 cc_cols = st.columns(3)
 with cc_cols[0]:
     st.markdown("<div class='debt-card'><p style='color:#FFD700; font-size:0.7rem;'>LOGISTICS</p><p style='color:white; font-size:0.75rem;'>fleet, rail & port ops</p></div>", unsafe_allow_html=True)
@@ -561,8 +680,8 @@ with cc_cols[1]:
 with cc_cols[2]:
     st.markdown("<div class='debt-card'><p style='color:#FFD700; font-size:0.7rem;'>AI TECHNOLOGY</p><p style='color:white; font-size:0.75rem;'>python / llm stack</p></div>", unsafe_allow_html=True)
 
-# 100-DAY SSMV ROADMAP — THE EXECUTION SPINE
-st.markdown('<div class="lean-header gec-shimmer">100-day ssmv roadmap</div>', unsafe_allow_html=True)
+# 100-DAY SSMV ROADMAP
+st.markdown('<p class="widget-heading lean-header gec-shimmer">100-DAY SSMV ROADMAP</p>', unsafe_allow_html=True)
 roadmap_logic = [
     ("reset", "sovereign data audit & baseline"),
     ("research", "ifc / asian bank term sheets (51/49)"),
@@ -586,7 +705,7 @@ st.markdown(
 
 # EAGLE NEST: LOCAL VIDEO (eagle_anim.mp4) OR CLEAN PLACEHOLDER
 st.divider()
-st.write("### 🦅 GEC SOVEREIGN OS: THE EAGLE NEST")
+st.markdown('<p class="widget-heading">GEC SOVEREIGN OS: THE EAGLE NEST</p>', unsafe_allow_html=True)
 col_video, col_stats = st.columns([3, 1])
 with col_video:
     if _EAGLE_VIDEO_PATH.exists():
@@ -594,24 +713,24 @@ with col_video:
     else:
         st.info("🦅 **Eagle Scanning...** — Place *eagle_anim.mp4* in the GEC_Sovereign_Master folder to load the animated strike.")
 with col_stats:
-    st.write("### 💎 SFF ANALYTICS")
+    st.markdown('<p class="widget-heading">SFF ANALYTICS</p>', unsafe_allow_html=True)
     st.metric("Monthly Revenue", "$50.1M", delta="Target")
     st.metric("Debt-Swap Coverage", "18.9x", delta="Sovereign Surplus")
 
-# GCSLC SIGNATURE (TIED & WATERMARKED)
+# FOOTER — INCONTROVERTIBLE NODAL AUTHORITY + CAC
 st.markdown("""
     <div class="sovereign-signature">
-        <p class="gec-shimmer" style="font-size: 0.8rem; margin:0;">Incontrovertible Nodal Authority</p>
+        <p class="gec-shimmer widget-heading" style="font-size: 0.8rem; margin:0;">INCONTROVERTIBLE NODAL AUTHORITY</p>
         <p style="color: white; font-size: 1.1rem; font-weight: bold; margin: 5px 0;">DR. JAAFARU SA'AD (GALADIMAN RUWA)</p>
-        <p style="color: #FFD700; font-size: 0.8rem; margin:0;">Chairman & Founder, GCSLC | CAC: 176917792057</p>
+        <p style="color: #D4AF37; font-size: 0.8rem; margin:0;">Chairman & Founder, GCSLC | CAC: 176917792057</p>
     </div>
 """, unsafe_allow_html=True)
 
-# FOOTER: CAC, SIGNATURE, COPYRIGHT
+# FOOTER: CAC, COPYRIGHT
 st.divider()
 st.markdown("""
     <div class="footer-sovereign">
-        <p><strong>SIGNATURE SECURED:</strong> Dr. Sa'ad Jaafaru, Chairman & Founder &nbsp;|&nbsp; <strong>CAC:</strong> 176917792057</p>
+        <p><strong>INCONTROVERTIBLE NODAL AUTHORITY:</strong> DR. JAAFARU SA'AD (GALADIMAN RUWA) &nbsp;|&nbsp; <strong>CAC:</strong> 176917792057</p>
         <p>© 2026 GCSLC LTD/GTE. Proprietary 8R Stealth Paradigm Convergence. All Rights Reserved.</p>
     </div>
     """, unsafe_allow_html=True)
