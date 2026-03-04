@@ -113,6 +113,26 @@ st.markdown("""
         background-color: #001F3F !important;
         border: 1px solid #FFD700;
     }
+    /* Shimmer strike cycles — gold-pulse for D3 nodal headline */
+    @keyframes gold-pulse {
+        0% { text-shadow: 0 0 5px #FFD700; opacity: 0.8; }
+        50% { text-shadow: 0 0 20px #FFFACD; opacity: 1; }
+        100% { text-shadow: 0 0 5px #FFD700; opacity: 0.8; }
+    }
+    .shimmer-nodal {
+        color: #FFD700 !important;
+        font-weight: bold;
+        animation: gold-pulse 2s infinite;
+        text-align: center;
+    }
+    /* Force navy table visibility (13-state strike) */
+    .stTable {
+        background-color: #001F3F !important;
+        border: 2px solid #FFD700 !important;
+        border-radius: 10px;
+    }
+    .stTable th { color: #FFD700 !important; background-color: #001d3d !important; }
+    .stTable td { color: #ffffff !important; }
     .footer-sovereign {
         text-align: center;
         color: #a3a3a3;
@@ -178,34 +198,27 @@ for i, (code, name, desc) in enumerate(determinants):
             </div>
             """, unsafe_allow_html=True)
 
-# 1. SOVEREIGN DATA WITH PULSE (PRODUCTION & STATUS columns; reserves/power drift)
-def get_sovereign_data():
+# 1. THE 13-STATE SOVEREIGN REGISTRY (high-velocity pulse on reserves)
+def get_13_state_nodal():
     data = {
-        "STATE": ["Enugu", "Kogi", "Nasarawa", "Benue", "Adamawa", "Bauchi", "Delta"],
-        "RESERVES (MT)": [188.2, 142.2, 97.8, 78.8, 38.9, 11.7, 28.8],
-        "POWER (MW)": [87.8, 48.8, 76.7, 36.6, 22.6, 16.8, 20.8],
-        "PRODUCTION": ["ACTIVE", "ACTIVE", "ACTIVE", "RESERVE", "ACTIVE", "RESERVE", "RESERVE"],
-        "STATUS": ["SOVEREIGN", "SOVEREIGN", "ULTRA", "STEALTH", "SOVEREIGN", "STEALTH", "STEALTH"]
+        "STATE": ["Enugu", "Kogi", "Nasarawa", "Benue", "Gombe", "Adamawa", "Bauchi", "Delta", "Edo", "Anambra", "Imo", "Abia", "Ondo"],
+        "RESERVES (MT)": [168.2, 142.1, 47.9, 98.2, 62.1, 38.5, 12.1, 32.1, 18.0, 27.9, 32.1, 8.4, 4.2],
+        "POWER (MW)": [401, 319, 85, 180, 110, 65, 22, 55, 30, 48, 55, 12, 10],
+        "PRODUCTION": ["0.01", "0.01", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"],
+        "STATUS": ["ACTIVE", "ACTIVE", "RESERVE", "RESERVE", "RESERVE", "RESERVE", "RESERVE", "RESERVE", "RESERVE", "RESERVE", "RESERVE", "RESERVE", "RESERVE"]
     }
-    pulsed_reserves = [r + random.uniform(-0.5, 0.5) for r in data["RESERVES (MT)"]]
-    pulsed_power = [p + random.uniform(-1.5, 1.5) for p in data["POWER (MW)"]]
-    return pd.DataFrame({
-        "STATE": data["STATE"],
-        "RESERVES (MT)": pulsed_reserves,
-        "POWER (MW)": pulsed_power,
-        "PRODUCTION": data["PRODUCTION"],
-        "STATUS": data["STATUS"]
-    })
+    df = pd.DataFrame(data)
+    df["RESERVES (MT)"] = df["RESERVES (MT)"].apply(lambda x: x + random.uniform(-0.5, 0.5))
+    return df
 
-# 2. THE SHIMMERING HEADLINE
+# 2. THE SHIMMERING NODAL HEADLINE
 st.divider()
-st.markdown('<h1 class="shimmer-headline">D3: RESEARCH - 13-STATE ASSET MAPPING</h1>', unsafe_allow_html=True)
+st.markdown('<h2 class="shimmer-nodal">D3: RESEARCH - 13-STATE ASSET MAPPING</h2>', unsafe_allow_html=True)
 
-# 3. RENDER THE SOVEREIGN TABLE (clean, non-white; navy + gold border via CSS)
-df = get_sovereign_data()
-st.table(df)
+# 3. THE 13-STATE TABLE STRIKE
+st.table(get_13_state_nodal())
 
-st.info("DATA INSIGHT: Nasarawa (ULTRA) aligns with $8,597/kg Germanium market strike targets. Production & Status pulse with sovereign logic.")
+st.info("DATA INSIGHT: Enugu & Kogi ACTIVE (0.01 production). Nasarawa+ reserve. Aligns with $8,597/kg Germanium strike targets.")
 
 # EAGLE NEST: LOCAL VIDEO (eagle_anim.mp4) OR CLEAN PLACEHOLDER
 st.divider()
