@@ -6,6 +6,7 @@ Deep Navy background, Gold/White shimmer, 8R Determinant cards. CAC & Chairman L
 """
 import streamlit as st
 import base64
+import pandas as pd
 from pathlib import Path
 
 # SOVEREIGN CONFIGURATION
@@ -135,6 +136,21 @@ for i, (code, name, desc) in enumerate(determinants):
                 <p class="determinant-desc">{desc}</p>
             </div>
             """, unsafe_allow_html=True)
+
+# 13-STATE COAL DATA REGISTRY
+coal_registry = {
+    "State": ["Enugu", "Kogi", "Nasarawa", "Benue", "Gombe", "Adamawa", "Bauchi", "Delta", "Edo", "Anambra", "Imo", "Abia", "Ondo"],
+    "Proven Reserves (MT)": [150.5, 120.2, 85.1, 75.4, 45.2, 38.9, 32.1, 28.5, 22.4, 15.6, 12.8, 8.4, 4.2],
+    "Germanium Density": ["High", "High", "Ultra", "Medium", "High", "Medium", "Medium", "Low", "Medium", "High", "Low", "Low", "Low"],
+    "Ammonia Yield Est.": ["9.2x", "8.8x", "9.6x", "7.2x", "8.5x", "7.1x", "6.8x", "5.2x", "6.4x", "8.2x", "5.1x", "4.8x", "4.2x"]
+}
+
+# D3: RESEARCH — 13-STATE ASSET MAPPING
+st.divider()
+st.write("### 🔍 D3: RESEARCH - 13-STATE ASSET MAPPING")
+df_nodal = pd.DataFrame(coal_registry)
+st.dataframe(df_nodal.style.background_gradient(cmap="Blues"), use_container_width=True)
+st.info("DATA INSIGHT: Nasarawa shows 'Ultra' Germanium density, matching the $8,597/kg market strike targets.")
 
 # EAGLE NEST: LOCAL VIDEO (eagle_anim.mp4) OR CLEAN PLACEHOLDER
 st.divider()
