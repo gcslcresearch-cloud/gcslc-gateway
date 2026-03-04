@@ -93,6 +93,26 @@ st.markdown("""
         border: 1px solid rgba(255, 215, 0, 0.35);
     }
     div[data-testid="stVideo"] video { width: 100% !important; }
+    /* Gold shimmer gradient on text (D3 headline) */
+    @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+    }
+    .shimmer-headline {
+        font-family: 'Inter', sans-serif;
+        font-weight: bold;
+        color: #FFD700;
+        background: linear-gradient(90deg, #FFD700 25%, #FFFACD 50%, #FFD700 75%);
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: shimmer 3s linear infinite;
+    }
+    /* Tables: navy background, gold border (no white) */
+    .stDataFrame, div[data-testid="stDataFrame"], div[data-testid="stTable"] {
+        background-color: #001F3F !important;
+        border: 1px solid #FFD700;
+    }
     .footer-sovereign {
         text-align: center;
         color: #a3a3a3;
@@ -158,30 +178,34 @@ for i, (code, name, desc) in enumerate(determinants):
             </div>
             """, unsafe_allow_html=True)
 
-# 1. THE STATE-BY-STATE PULSE LOGIC (mimics "Nervous System" with +/- drift per state)
-def get_pulsing_data():
-    base_data = {
-        "State": ["Enugu", "Kogi", "Nasarawa", "Benue", "Gombe", "Adamawa", "Bauchi", "Delta", "Edo", "Anambra", "Imo", "Abia", "Ondo"],
-        "Reserves (MT)": [168.1, 142.1, 48.1, 97.9, 62.0, 38.0, 12.0, 32.1, 18.0, 27.9, 32.1, 8.4, 4.2],
-        "Power Potential (MW)": [399, 319, 85, 179, 109, 65, 20, 55, 30, 48, 55, 12, 10]
+# 1. SOVEREIGN DATA WITH PULSE (PRODUCTION & STATUS columns; reserves/power drift)
+def get_sovereign_data():
+    data = {
+        "STATE": ["Enugu", "Kogi", "Nasarawa", "Benue", "Adamawa", "Bauchi", "Delta"],
+        "RESERVES (MT)": [188.2, 142.2, 97.8, 78.8, 38.9, 11.7, 28.8],
+        "POWER (MW)": [87.8, 48.8, 76.7, 36.6, 22.6, 16.8, 20.8],
+        "PRODUCTION": ["ACTIVE", "ACTIVE", "ACTIVE", "RESERVE", "ACTIVE", "RESERVE", "RESERVE"],
+        "STATUS": ["SOVEREIGN", "SOVEREIGN", "ULTRA", "STEALTH", "SOVEREIGN", "STEALTH", "STEALTH"]
     }
-    pulsed_reserves = [r + random.uniform(-0.5, 0.5) for r in base_data["Reserves (MT)"]]
-    pulsed_power = [p + random.randint(-2, 2) for p in base_data["Power Potential (MW)"]]
+    pulsed_reserves = [r + random.uniform(-0.5, 0.5) for r in data["RESERVES (MT)"]]
+    pulsed_power = [p + random.uniform(-1.5, 1.5) for p in data["POWER (MW)"]]
     return pd.DataFrame({
-        "STATE": base_data["State"],
+        "STATE": data["STATE"],
         "RESERVES (MT)": pulsed_reserves,
-        "POWER POTENTIAL (MW)": pulsed_power
+        "POWER (MW)": pulsed_power,
+        "PRODUCTION": data["PRODUCTION"],
+        "STATUS": data["STATUS"]
     })
 
-# 2. RENDER THE LIVING TABLE
+# 2. THE SHIMMERING HEADLINE
 st.divider()
-st.write("### 🔍 D3: RESEARCH - 13-STATE ASSET MAPPING")
-df_living = get_pulsing_data()
-st.dataframe(
-    df_living.style.format({"RESERVES (MT)": "{:.1f}", "POWER POTENTIAL (MW)": "{:.0f}"}).background_gradient(cmap="Blues"),
-    use_container_width=True
-)
-st.info("DATA INSIGHT: Nasarawa shows high strategic value; D3 research aligns with $8,597/kg Germanium market strike targets.")
+st.markdown('<h1 class="shimmer-headline">D3: RESEARCH - 13-STATE ASSET MAPPING</h1>', unsafe_allow_html=True)
+
+# 3. RENDER THE SOVEREIGN TABLE (clean, non-white; navy + gold border via CSS)
+df = get_sovereign_data()
+st.table(df)
+
+st.info("DATA INSIGHT: Nasarawa (ULTRA) aligns with $8,597/kg Germanium market strike targets. Production & Status pulse with sovereign logic.")
 
 # EAGLE NEST: LOCAL VIDEO (eagle_anim.mp4) OR CLEAN PLACEHOLDER
 st.divider()
