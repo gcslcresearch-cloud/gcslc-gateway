@@ -283,6 +283,64 @@ st.markdown("""
         text-align: center;
         background: linear-gradient(to right, transparent, rgba(255, 215, 0, 0.05), transparent);
     }
+    /* NRRFC Value-Extraction Engine — Deep Navy #000080, Metallic Gold #D4AF37, S24-friendly */
+    .nrrfc-module {
+        background: linear-gradient(180deg, #000080 0%, #000050 100%);
+        border: 2px solid #D4AF37;
+        border-radius: 12px;
+        padding: 24px;
+        margin: 20px 0;
+        max-width: 100%;
+    }
+    .nrrfc-title {
+        color: #D4AF37;
+        font-weight: 800;
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: clamp(1rem, 2.5vw, 1.4rem);
+    }
+    @keyframes diamond-pulse {
+        0%, 100% { opacity: 0.9; transform: scale(1); box-shadow: 0 0 12px #D4AF37; }
+        50% { opacity: 1; transform: scale(1.05); box-shadow: 0 0 24px #FFF, 0 0 36px rgba(212, 175, 55, 0.6); }
+    }
+    .diamond-bridge {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 12px 0;
+    }
+    .diamond-node {
+        width: 14px;
+        height: 14px;
+        background: linear-gradient(135deg, #FFF 0%, #D4AF37 100%);
+        transform: rotate(45deg);
+        animation: diamond-pulse 2s ease-in-out infinite;
+    }
+    .diamond-node:nth-child(2) { animation-delay: 0.2s; }
+    .diamond-node:nth-child(3) { animation-delay: 0.4s; }
+    .diamond-node:nth-child(4) { animation-delay: 0.6s; }
+    .flow-step {
+        background: rgba(0, 0, 80, 0.9);
+        border: 1px solid #D4AF37;
+        border-radius: 10px;
+        padding: 16px;
+        text-align: center;
+        color: #fff;
+        min-width: 100px;
+    }
+    .flow-step .label { color: #D4AF37; font-weight: bold; font-size: 0.85rem; }
+    .flow-arrow { color: #D4AF37; font-size: 1.5rem; margin: 0 4px; }
+    .sovereign-feedstock { color: #D4AF37 !important; font-weight: bold; animation: diamond-pulse 2.5s infinite; }
+    .nrrfc-footer {
+        border-top: 1px solid #D4AF37;
+        margin-top: 24px;
+        padding-top: 16px;
+        text-align: center;
+        color: #e0e0e0;
+        font-size: 0.95rem;
+    }
     </style>
     """, unsafe_allow_html=True)
 st.markdown("<div class='watermark'>GCSLC PROPRIETARY / SOVEREIGN IP</div>", unsafe_allow_html=True)
@@ -383,6 +441,72 @@ st.markdown("""
         <p style="color: #FFD700; font-weight: bold;">
             That sovereign asset clears the ₦50 Trillion national debt while powering the global AI revolution.
         </p>
+    </div>
+""", unsafe_allow_html=True)
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# NRRFC VALUE-EXTRACTION ENGINE (PHASE 1) — Deep Navy #000080, Metallic Gold #D4AF37
+# ═══════════════════════════════════════════════════════════════════════════════
+st.divider()
+st.markdown('<h2 class="nrrfc-title">NRRFC Value-Extraction Engine (Phase 1)</h2>', unsafe_allow_html=True)
+
+# 1. NGECC MODULAR PLANT PROTOTYPE — Conversion Flow (Raw Coal → Gasifier → Syngas)
+st.markdown("""
+    <div class="nrrfc-module">
+        <p style="color: #D4AF37; font-weight: bold; margin-bottom: 12px;">NGECC Modular Plant Prototype — The Conversion Flow</p>
+        <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px;">
+            <div class="flow-step"><span class="label">Raw Coal</span></div>
+            <span class="flow-arrow">→</span>
+            <div class="diamond-bridge"><span class="diamond-node"></span><span class="diamond-node"></span><span class="diamond-node"></span></div>
+            <div class="flow-step"><span class="label">Gasifier</span></div>
+            <span class="flow-arrow">→</span>
+            <div class="diamond-bridge"><span class="diamond-node"></span><span class="diamond-node"></span><span class="diamond-node"></span></div>
+            <div class="flow-step"><span class="label">Syngas</span><br><span class="sovereign-feedstock">Sovereign Feedstock</span></div>
+        </div>
+    </div>
+""", unsafe_allow_html=True)
+
+# 2. ARBITRAGE WIDGET — Coal vs. Diesel (2026 FX: $1 = ₦1,350)
+st.markdown("**Arbitrage: Coal-to-Syngas vs. Diesel** (2026 FX: $1 = ₦1,350)")
+FX_RATE = 1350
+DIESEL_USD_PER_L = 1.00
+SYNGAS_USD_PER_L = 0.58
+SAVINGS_PCT = round((1 - SYNGAS_USD_PER_L / DIESEL_USD_PER_L) * 100)
+volume_liters = st.slider("Volume (Liters)", min_value=1000, max_value=500_000, value=10_000, step=1000, key="nrrfc_vol")
+diesel_usd = volume_liters * DIESEL_USD_PER_L
+syngas_usd = volume_liters * SYNGAS_USD_PER_L
+savings_usd = diesel_usd - syngas_usd
+col_a, col_b, col_c = st.columns(3)
+with col_a:
+    st.metric("Diesel cost", f"${diesel_usd:,.0f}", f"@ $1.00/L")
+with col_b:
+    st.metric("Coal-to-Syngas equivalent", f"${syngas_usd:,.0f}", f"@ $0.58/L")
+with col_c:
+    st.metric("Strike result", f"${savings_usd:,.0f} saved", f"{SAVINGS_PCT}% cost savings")
+st.caption("Toggle volume to see USD savings at scale.")
+
+# 3. VALUE-ADDED DERIVATIVE STRIKE & MINERAL YIELD (10,000 MT Coal base)
+st.markdown("**Value-Added Derivative Strike & Mineral Yield** (base: 10,000 MT Coal)")
+BASE_MT = 10_000
+value_df = pd.DataFrame({
+    "Profit Center (SFP)": ["Germanium (Fly Ash)", "Ammonia", "Raw Coal"],
+    "Output": ["800 KG", "6,000 MT", "10,000 MT"],
+    "Price": ["$8,597/KG", "$430/MT", "$110/MT"],
+    "Revenue (USD)": ["$6.9 M", "$2.6 M", "$1.1 M"],
+})
+st.dataframe(value_df, use_container_width=True, hide_index=True)
+st.markdown("""
+    <div class="nrrfc-module" style="margin-top: 12px;">
+        <p style="color: #fff; margin: 0;"><strong>Bottom line:</strong> <span style="color: #D4AF37; font-weight: bold;">9.6× Value Multiplier</span> — from $1.1M raw to $10.6M processed.</p>
+    </div>
+""", unsafe_allow_html=True)
+
+# 4. SOVEREIGN DEBT-SWAP FOOTER (NRRFC module)
+st.markdown("""
+    <div class="nrrfc-footer">
+        <p style="color: #D4AF37; font-weight: bold;">Sovereign Debt-Swap</p>
+        <p>By capturing 10% of Global Big Tech CAPEX, we achieve 189% coverage of Nigeria's domestic debt.</p>
+        <p style="font-size: 0.8rem; color: #a0a0a0;">GCSLC PROPRIETARY — Full-dashboard watermark active.</p>
     </div>
 """, unsafe_allow_html=True)
 
