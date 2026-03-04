@@ -6,6 +6,7 @@ Deep Navy background, Gold/White shimmer, 8R Determinant cards. CAC & Chairman L
 """
 import streamlit as st
 import base64
+from pathlib import Path
 
 # SOVEREIGN CONFIGURATION
 st.set_page_config(page_title="GCSLC Sovereign Gateway", layout="wide", initial_sidebar_state="collapsed")
@@ -20,8 +21,8 @@ MEDALLION_SVG = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 150"
 </svg>"""
 MEDALLION_DATA_URI = "data:image/svg+xml;base64," + base64.b64encode(MEDALLION_SVG.encode()).decode()
 
-# Eagle / Sovereign loop: stable public sample (replace with your URL for custom eagle video)
-EAGLE_VIDEO_URL = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+# Eagle video: local file (same folder as this script); Path.exists() avoids FileNotFoundError
+_EAGLE_VIDEO_PATH = Path(__file__).resolve().parent / "eagle_anim.mp4"
 
 # CUSTOM CSS: DEEP NAVY BASE, GOLD/WHITE SHIMMER, HIGHLY VISIBLE 8R CARDS
 st.markdown("""
@@ -135,12 +136,15 @@ for i, (code, name, desc) in enumerate(determinants):
             </div>
             """, unsafe_allow_html=True)
 
-# EAGLE NEST: WEB-HOSTED VIDEO (no local file)
+# EAGLE NEST: LOCAL VIDEO (eagle_anim.mp4) OR CLEAN PLACEHOLDER
 st.divider()
 st.write("### 🦅 GEC SOVEREIGN OS: THE EAGLE NEST")
 col_video, col_stats = st.columns([3, 1])
 with col_video:
-    st.video(EAGLE_VIDEO_URL, autoplay=True, muted=True, loop=True, width="stretch")
+    if _EAGLE_VIDEO_PATH.exists():
+        st.video(str(_EAGLE_VIDEO_PATH), autoplay=True, muted=True, loop=True, width="stretch")
+    else:
+        st.info("🦅 **Eagle Scanning...** — Place *eagle_anim.mp4* in the GEC_Sovereign_Master folder to load the animated strike.")
 with col_stats:
     st.write("### 💎 SFF ANALYTICS")
     st.metric("Monthly Revenue", "$50.1M", delta="Target")
