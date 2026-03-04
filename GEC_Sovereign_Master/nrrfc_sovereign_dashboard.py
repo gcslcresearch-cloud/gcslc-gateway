@@ -125,14 +125,25 @@ st.markdown("""
         animation: gold-pulse 2s infinite;
         text-align: center;
     }
-    /* Force navy table visibility (13-state strike) */
+    /* Meticulous table styling (Golden-Navy) — transparent bg, gold border */
     .stTable {
-        background-color: #001F3F !important;
+        background-color: transparent !important;
         border: 2px solid #FFD700 !important;
-        border-radius: 10px;
+        border-radius: 15px;
     }
-    .stTable th { color: #FFD700 !important; background-color: #001d3d !important; }
-    .stTable td { color: #ffffff !important; }
+    .stTable th { color: #FFD700 !important; font-family: 'Inter', sans-serif; border-bottom: 2px solid #FFD700; }
+    .stTable td { color: #ffffff !important; font-family: monospace; }
+    /* Diamond shimmer — strike cycles for D3 nodal headline */
+    @keyframes diamond-shimmer {
+        0% { color: #FFD700; text-shadow: 0 0 5px #FFD700; }
+        50% { color: #FFFFFF; text-shadow: 0 0 20px #FFFFFF; }
+        100% { color: #FFD700; text-shadow: 0 0 5px #FFD700; }
+    }
+    .shimmer-node {
+        animation: diamond-shimmer 2s infinite;
+        font-weight: bold;
+        text-align: center;
+    }
     /* Gold & Navy lock — clinical table + gold-shimmer headline */
     @keyframes shimmer-opacity {
         0% { opacity: 0.7; } 50% { opacity: 1; } 100% { opacity: 0.7; }
@@ -211,24 +222,24 @@ for i, (code, name, desc) in enumerate(determinants):
             </div>
             """, unsafe_allow_html=True)
 
-# 1. THE 13-STATE ASSET REGISTRY (THE BRAINBOX — nodal pulse on reserves)
-def get_sovereign_registry():
+# 1. THE 13-STATE ASSET MAPPING (THE DIAMONDS — high-velocity pulse)
+def get_shimmering_nodal_data():
     data = {
         "STATE": ["Enugu", "Kogi", "Nasarawa", "Benue", "Gombe", "Adamawa", "Bauchi", "Delta", "Edo", "Anambra", "Imo", "Abia", "Ondo"],
-        "RESERVES (MT)": [168.3, 142.0, 47.7, 97.8, 62.5, 38.4, 12.5, 32.0, 18.0, 27.9, 32.1, 8.4, 4.6],
+        "RESERVES (MT)": [168.3, 142.1, 47.7, 97.8, 62.5, 38.4, 12.5, 32.0, 18.0, 27.9, 32.1, 8.4, 4.6],
         "POWER (MW)": [402, 321, 85, 180, 110, 65, 22, 55, 30, 48, 55, 12, 10],
         "PRODUCTION": [0.01, 0.01, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00],
         "STATUS": ["ACTIVE", "ACTIVE", "RESERVE", "RESERVE", "RESERVE", "RESERVE", "RESERVE", "RESERVE", "RESERVE", "RESERVE", "RESERVE", "RESERVE", "RESERVE"]
     }
     df = pd.DataFrame(data)
-    df["RESERVES (MT)"] += [random.uniform(-0.1, 0.1) for _ in range(13)]
+    df["RESERVES (MT)"] += [random.uniform(-0.15, 0.15) for _ in range(13)]
     return df
 
-# 2. RENDER HEADLINE & TABLE
+# 2. RENDER THE SHIMMERING HEADLINE & TABLE
 st.divider()
-st.markdown('<h2 class="gold-shimmer">D3: RESEARCH - 13-STATE ASSET MAPPING</h2>', unsafe_allow_html=True)
+st.markdown('<h1 class="shimmer-node">D3: RESEARCH - 13-STATE ASSET MAPPING</h1>', unsafe_allow_html=True)
 
-registry_df = get_sovereign_registry()
+registry_df = get_shimmering_nodal_data()
 st.table(registry_df)
 
 # 3. SIGNATURE ANCHOR
@@ -259,6 +270,6 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
-# 3. GLOBAL HEARTBEAT — refreshes the entire dashboard every 2 seconds
-time.sleep(2)
+# SOVEREIGN PULSE HEARTBEAT — full rerun every 1 second
+time.sleep(1)
 st.rerun()
