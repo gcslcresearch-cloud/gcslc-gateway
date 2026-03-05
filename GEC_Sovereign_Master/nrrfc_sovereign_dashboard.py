@@ -27,6 +27,28 @@ MEDALLION_DATA_URI = "data:image/svg+xml;base64," + base64.b64encode(MEDALLION_S
 # Eagle video: local file (same folder as this script); Path.exists() avoids FileNotFoundError
 _EAGLE_VIDEO_PATH = Path(__file__).resolve().parent / "eagle_anim.mp4"
 
+# 8R Nodal Python Logic — D-Determinant mapping (call render_8r_cycle() in layout)
+def render_8r_cycle():
+    """Render the 8R Stealth Paradigm cycle with interactive nodal buttons."""
+    nodes = {
+        "D1: RESET": "Activation of SSMV & NGECC Legal Framework",
+        "D2: REGENERATE": "Energy-to-Chemical Pathway Implementation",
+        "D3: RESEARCH": "Nodal Subsoil Density & 13-State Mapping",
+        "D4: RESTRUCTURE": "Debt-to-Equity Conversion & 18.9x Logic",
+        "D5: REVITALIZE": "Modular Plant Prototype Commissioning",
+        "D6: REPLICATE": "Scale-out across 13 regions",
+        "D7: REVENUE": "Targeting $50.1M Monthly Strike",
+        "D8: RETAIN": "Sovereign Asset Protection & Debt Clearance",
+    }
+    cols = st.columns(4)
+    for i, (name, detail) in enumerate(nodes.items()):
+        with cols[i % 4]:
+            if st.button(name, key=f"8r_{i}"):
+                st.session_state["8r_selected"] = (name, detail)
+    if "8r_selected" in st.session_state:
+        name, detail = st.session_state["8r_selected"]
+        st.info(f"**{name} STRATEGY:** {detail}")
+
 # CUSTOM CSS: DEEP NAVY BASE, GOLD/WHITE SHIMMER, HIGHLY VISIBLE 8R CARDS
 st.markdown("""
     <style>
@@ -130,6 +152,31 @@ st.markdown("""
     .r8-node .r8-node-desc {
         color: #e0e0e0;
         font-size: 0.8rem;
+    }
+    /* 8R Nodal Logic — node-card & shimmer-gold (interactive buttons) */
+    .node-card {
+        background-color: #000814;
+        border: 1px solid #D4AF37;
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+        transition: 0.3s;
+    }
+    .node-card:hover {
+        background: linear-gradient(45deg, #000814, #1a2a44);
+        border: 1px solid #FFF;
+        cursor: pointer;
+    }
+    .shimmer-gold {
+        color: #D4AF37;
+        font-weight: bold;
+        text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        animation: node-pulse 2s infinite;
+    }
+    @keyframes node-pulse {
+        0% { opacity: 0.8; }
+        50% { opacity: 1; text-shadow: 0 0 20px #D4AF37; }
+        100% { opacity: 0.8; }
     }
     .determinant-card {
         background: linear-gradient(145deg, rgba(0, 45, 90, 0.95) 0%, rgba(0, 29, 61, 0.98) 100%);
@@ -593,33 +640,14 @@ with col2:
 with col3:
     st.metric("STATES", "13", "regions")
 
-# 8R STEALTH PARADIGM CONVERGENCE CYCLE — Nodal Grid (clockwise generative energy)
+# 8R STEALTH PARADIGM CONVERGENCE CYCLE — Nodal Python Logic (interactive D-determinants)
 st.markdown('<p class="widget-heading">8R STEALTH PARADIGM NODAL</p>', unsafe_allow_html=True)
 st.markdown("""
     <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; font-size: 0.7rem; color: #FFD700; letter-spacing: 0.08em;">
         <span>MEASURABLE</span><span>|</span><span>ACCEPTABLE</span><span>|</span><span>PROFESSIONAL SIZE STANDARDS</span>
     </div>
 """, unsafe_allow_html=True)
-cols = st.columns(4)
-determinants = [
-    ("D1", "REFINE", "Subsoil Density Logic"),
-    ("D2", "RESET", "639.3M MT Coal Reserve"),
-    ("D3", "RESEARCH", "13-State Mapping"),
-    ("D4", "RESTRUCTURE", "NGECC-SSMV Legal Lock"),
-    ("D5", "RESUSCITATE", "1,200 MW Power Strike"),
-    ("D6", "REVITALIZE", "12% WL Cassava Recovery"),
-    ("D7", "RE-ENGINEER", "$100B AI Compute Gap"),
-    ("D8", "RETAIN", "85% Talon Lock Registry"),
-]
-for i, (code, name, desc) in enumerate(determinants):
-    with cols[i % 4]:
-        node_class = f"r8-node r8-node-{i + 1}"
-        st.markdown(f"""
-            <div class="{node_class}">
-                <div class="r8-node-title">{code}: {name}</div>
-                <p class="r8-node-desc">{desc}</p>
-            </div>
-            """, unsafe_allow_html=True)
+render_8r_cycle()
 
 # 1. THE 13-STATE ASSET MAPPING (THE DIAMONDS — high-velocity pulse)
 def get_shimmering_nodal_data():
