@@ -76,7 +76,61 @@ st.markdown("""
         border-bottom: 3px solid #FFD700;
         background: linear-gradient(180deg, #001d3d 0%, #000814 100%);
     }
-    /* 8R Determinant cards — high visibility */
+    /* 8R Stealth Paradigm Convergence Cycle — clockwise generative energy pulse */
+    .r8-nodal-grid {
+        display: grid;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+    .r8-node {
+        background: linear-gradient(145deg, rgba(0, 45, 90, 0.95) 0%, rgba(0, 29, 61, 0.98) 100%);
+        border: 2px solid rgba(255, 215, 0, 0.5);
+        padding: 16px 12px;
+        border-radius: 12px;
+        text-align: center;
+        transition: transform 0.2s ease;
+        animation: r8-pulse 3.2s linear infinite;
+    }
+    .r8-node:hover { transform: translateY(-2px); }
+    .r8-node-1 { animation-delay: 0s; }
+    .r8-node-2 { animation-delay: -0.4s; }
+    .r8-node-3 { animation-delay: -0.8s; }
+    .r8-node-4 { animation-delay: -1.2s; }
+    .r8-node-5 { animation-delay: -1.6s; }
+    .r8-node-6 { animation-delay: -2s; }
+    .r8-node-7 { animation-delay: -2.4s; }
+    .r8-node-8 { animation-delay: -2.8s; }
+    @keyframes r8-pulse {
+        0% {
+            border-color: #cb9b51;
+            box-shadow: 0 0 24px rgba(203, 155, 81, 0.6), inset 0 0 16px rgba(246, 226, 122, 0.2);
+            background: linear-gradient(90deg, #462523 0%, #cb9b51 22%, #f6e27a 45%, #f6f2c0 50%, #f6e27a 55%) !important;
+        }
+        12.5%, 100% {
+            border-color: rgba(255, 215, 0, 0.5);
+            box-shadow: 0 4px 20px rgba(255, 215, 0, 0.2);
+            background: linear-gradient(145deg, rgba(0, 45, 90, 0.95) 0%, rgba(0, 29, 61, 0.98) 100%) !important;
+        }
+    }
+    .r8-node-active {
+        background: linear-gradient(90deg, #462523 0%, #cb9b51 22%, #f6e27a 45%, #f6f2c0 50%, #f6e27a 55%) !important;
+        color: #f6f2c0;
+        border-color: #cb9b51 !important;
+        box-shadow: 0 0 24px rgba(203, 155, 81, 0.5);
+    }
+    .r8-node-active .r8-node-title { color: #f6e27a; }
+    .r8-node .r8-node-title {
+        color: #FFD700;
+        font-size: 0.95rem;
+        font-weight: 800;
+        margin-bottom: 6px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+    .r8-node .r8-node-desc {
+        color: #e0e0e0;
+        font-size: 0.8rem;
+    }
     .determinant-card {
         background: linear-gradient(145deg, rgba(0, 45, 90, 0.95) 0%, rgba(0, 29, 61, 0.98) 100%);
         border: 2px solid #FFD700;
@@ -281,7 +335,7 @@ st.markdown("""
         background: rgba(0, 29, 61, 0.5);
     }
     .footer-sovereign strong { color: #FFD700; }
-    /* Security & watermark — diagonal 12% opacity (KWAS-KWAS) */
+    /* Security & watermark — GCSLC PROPRIETARY | SOVEREIGN persistent 12% opacity */
     .watermark {
         position: fixed;
         top: 50%;
@@ -296,6 +350,34 @@ st.markdown("""
         font-weight: bold;
         font-family: 'Inter', sans-serif;
     }
+    /* D3 Research Strike — Active Scan overlay (shimmering) */
+    .d3-active-scan {
+        position: relative;
+    }
+    .d3-active-scan::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: linear-gradient(105deg, transparent 0%, rgba(255, 215, 0, 0.06) 45%, rgba(255, 215, 0, 0.12) 50%, rgba(255, 215, 0, 0.06) 55%, transparent 100%);
+        background-size: 200% 100%;
+        animation: active-scan-shimmer 2.5s ease-in-out infinite;
+        pointer-events: none;
+        border-radius: 8px;
+    }
+    @keyframes active-scan-shimmer {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+    .active-scan-label {
+        position: absolute;
+        top: 8px;
+        right: 12px;
+        font-size: 0.7rem;
+        color: #FFD700;
+        letter-spacing: 0.1em;
+        animation: gec-diamond-shimmer 2s infinite;
+        z-index: 2;
+    }
     /* Welcome message — shimmering CSS text */
     @keyframes welcome-shimmer {
         0%, 100% { color: #FFF; text-shadow: 0 0 10px #FFF, 0 0 20px rgba(212, 175, 55, 0.4); }
@@ -308,24 +390,24 @@ st.markdown("""
         text-align: center;
         margin-bottom: 16px;
     }
-    /* Sovereign Activation Alert — headline 25% smaller */
+    /* Sovereign Activation Alert — status-bar feel, reduced font */
     .activation-alert {
-        background: linear-gradient(145deg, #000050 0%, #000080 100%);
-        border: 2px solid #D4AF37;
-        border-radius: 12px;
-        padding: 20px;
-        margin: 16px 0;
+        background: linear-gradient(90deg, rgba(0, 8, 20, 0.98) 0%, rgba(0, 29, 61, 0.6) 100%);
+        border: 1px solid rgba(255, 215, 0, 0.4);
+        border-radius: 6px;
+        padding: 8px 16px;
+        margin: 8px 0;
         text-align: center;
+        font-size: 0.8rem;
     }
     .activation-alert .alert-heading {
-        font-size: 0.75em; /* 25% reduction from 1em */
+        font-size: 0.7rem;
         text-transform: uppercase;
-        letter-spacing: 0.08em;
+        letter-spacing: 0.1em;
         color: #D4AF37;
-        font-weight: 800;
-        margin-bottom: 12px;
+        font-weight: 700;
+        margin: 0;
     }
-    .activation-alert { font-size: 1.1rem; }
     /* All widget headings UPPERCASE */
     .widget-heading {
         text-transform: uppercase !important;
@@ -511,8 +593,13 @@ with col2:
 with col3:
     st.metric("STATES", "13", "regions")
 
-# 8R STEALTH PARADIGM
+# 8R STEALTH PARADIGM CONVERGENCE CYCLE — Nodal Grid (clockwise generative energy)
 st.markdown('<p class="widget-heading">8R STEALTH PARADIGM NODAL</p>', unsafe_allow_html=True)
+st.markdown("""
+    <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; font-size: 0.7rem; color: #FFD700; letter-spacing: 0.08em;">
+        <span>MEASURABLE</span><span>|</span><span>ACCEPTABLE</span><span>|</span><span>PROFESSIONAL SIZE STANDARDS</span>
+    </div>
+""", unsafe_allow_html=True)
 cols = st.columns(4)
 determinants = [
     ("D1", "REFINE", "Subsoil Density Logic"),
@@ -526,10 +613,11 @@ determinants = [
 ]
 for i, (code, name, desc) in enumerate(determinants):
     with cols[i % 4]:
+        node_class = f"r8-node r8-node-{i + 1}"
         st.markdown(f"""
-            <div class="determinant-card">
-                <div class="determinant-title">{code}: {name}</div>
-                <p class="determinant-desc">{desc}</p>
+            <div class="{node_class}">
+                <div class="r8-node-title">{code}: {name}</div>
+                <p class="r8-node-desc">{desc}</p>
             </div>
             """, unsafe_allow_html=True)
 
@@ -546,10 +634,15 @@ def get_shimmering_nodal_data():
     df["RESERVES (MT)"] += [random.uniform(-0.15, 0.15) for _ in range(13)]
     return df
 
-# D3: RESEARCH — 13-STATE ASSET MAPPING
+# D3: RESEARCH STRIKE — 13-State Asset Mapping with Active Scan overlay
 st.divider()
 st.markdown('<p class="widget-heading shimmer-node">D3: RESEARCH — 13-STATE ASSET MAPPING</p>', unsafe_allow_html=True)
-
+st.markdown("""
+    <div class="d3-active-scan" style="position: relative; padding: 10px 12px; margin-bottom: 8px; border: 1px solid rgba(255,215,0,0.4); border-radius: 8px; background: rgba(0, 31, 63, 0.5);">
+        <span class="active-scan-label">● ACTIVE SCAN</span>
+        <span style="color: #e0e0e0; font-size: 0.75rem;">13-State asset mapping live</span>
+    </div>
+""", unsafe_allow_html=True)
 registry_df = get_shimmering_nodal_data()
 # IP masking: Nodal identifiers for public view (mask Power/Production)
 registry_df["NODE_ID"] = [f"GEC-NODE-{i:03d}" for i in range(1, 14)]
