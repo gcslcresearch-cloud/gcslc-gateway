@@ -40,17 +40,19 @@ R8_NODES = [
 ]
 
 def render_8r_circular_cycle():
-    """Render 8R as a CSS circular cycle: gold shimmer on navy, no white boxes."""
+    """NRRFC Circular 8R Cycle: gold on navy, D3 RESEARCH shimmer pulse, System Online glow on all nodes when active."""
+    system_online = st.session_state.get("reset_phase_active", False)
+    container_class = "circle-container system-online" if system_online else "circle-container"
     nodes_html = ""
     for i, (code, name) in enumerate(R8_NODES):
         deg = i * 45
+        node_class = "node node-d3-active" if i == 2 else "node"  # D3: RESEARCH = active shimmer
         nodes_html += f'''
-        <div class="r8-circle-node" style="transform: rotate({deg}deg) translateY(-120px);">
+        <div class="{node_class}" style="transform: rotate({deg}deg) translateY(-160px);">
             <span style="transform: rotate(-{deg}deg); display: inline-block;"><strong>{code}</strong><br>{name}</span>
         </div>'''
     st.markdown(f"""
-    <div class="r8-circle-wrap">
-        <div class="r8-circle-ring"></div>
+    <div class="{container_class}">
         {nodes_html}
     </div>
     """, unsafe_allow_html=True)
@@ -76,23 +78,22 @@ st.markdown("""
         border-left: 1px solid rgba(255, 215, 0, 0.3);
         padding: 10px;
     }
-    /* Technical Glossary — FIXED RIGHT SIDEBAR: translucent navy, gold left-border, gold-grey text */
+    /* Technical Glossary — SLIM RIGHT SIDEBAR: transparent bg, gold-grey #b5a48b (Kwas-Kwas) */
     [data-testid="stSidebar"] {
         position: fixed !important;
         right: 0 !important;
         left: auto !important;
-        width: 260px !important;
-        min-width: 260px !important;
-        background: rgba(0, 8, 20, 0.97) !important;
+        width: 200px !important;
+        min-width: 200px !important;
+        background: transparent !important;
         border-left: 2px solid #D4AF37 !important;
-        padding: 12px !important;
-        color: var(--gold-grey) !important;
+        padding: 10px !important;
+        color: #b5a48b !important;
     }
-    [data-testid="stSidebar"] .stMarkdown { font-size: 0.75rem; color: var(--gold-grey) !important; }
-    [data-testid="stSidebar"] .stMarkdown h3 { font-size: 0.9rem; color: #D4AF37 !important; }
-    [data-testid="stSidebar"] p, [data-testid="stSidebar"] span { color: var(--gold-grey) !important; }
-    /* Main content margin so fixed right sidebar doesn't overlap */
-    [data-testid="stAppViewContainer"] > section:first-child { margin-right: 280px !important; }
+    [data-testid="stSidebar"] .stMarkdown { font-size: 0.7rem; color: #b5a48b !important; }
+    [data-testid="stSidebar"] .stMarkdown h3 { font-size: 0.8rem; color: #D4AF37 !important; text-transform: uppercase; }
+    [data-testid="stSidebar"] p, [data-testid="stSidebar"] span { color: #b5a48b !important; }
+    [data-testid="stAppViewContainer"] > section:first-child { margin-right: 220px !important; }
     .shimmer-text {
         background: linear-gradient(90deg, #FFD700, #FFF, #FFD700);
         background-size: 200% auto;
@@ -110,6 +111,7 @@ st.markdown("""
         background-color: var(--deep-navy) !important;
         color: #D4AF37;
         font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+        padding-bottom: 56px !important;
     }
     p, span, label, div[data-testid="stMarkdown"] { color: #e0e0e0 !important; }
     div[data-testid="stMarkdown"] p { color: #e0e0e0 !important; }
@@ -404,14 +406,37 @@ st.markdown("""
         background: rgba(0, 29, 61, 0.5);
     }
     .footer-sovereign strong { color: #FFD700; }
-    /* Security & watermark — GCSLC PROPRIETARY diagonal 10% opacity */
+    /* THE $50.1M STRIKE — Sovereign Status Bar (fixed bottom, high-fidelity) */
+    .sovereign-status-bar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 10px 20px;
+        background: rgba(0, 8, 20, 0.95);
+        border-top: 2px solid #D4AF37;
+        color: #D4AF37;
+        font-weight: 700;
+        z-index: 1000;
+    }
+    .sovereign-status-bar .status-bar-label { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; }
+    .sovereign-status-bar .status-bar-value { font-size: 1.4rem; text-shadow: 0 0 12px rgba(212, 175, 55, 0.6); }
+    .sovereign-status-bar .status-bar-sublabel { font-size: 0.7rem; color: #b5a48b; text-transform: uppercase; }
+    /* PURGE WHITE BOXES — translucent navy for all widget surfaces */
+    [data-testid="stExpander"], .stExpander { background: rgba(0, 8, 20, 0.9) !important; border: 1px solid #D4AF37 !important; }
+    .stSuccess, [data-testid="stAlert"] div { background: rgba(0, 8, 20, 0.95) !important; border-color: #D4AF37 !important; color: #b5a48b !important; }
+    /* Security & watermark — GCSLC PROPRIETARY | SOVEREIGN diagonal 8% opacity (Kwas-Kwas) */
     .watermark {
         position: fixed;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%) rotate(-25deg);
         font-size: clamp(3rem, 8vw, 5rem);
-        color: rgba(212, 175, 55, 0.10);
+        color: rgba(212, 175, 55, 0.08);
         z-index: 9999;
         pointer-events: none;
         user-select: none;
@@ -517,13 +542,15 @@ st.markdown("""
         font-weight: 700;
         margin: 0;
     }
-    /* All widget headings UPPERCASE */
+    /* All widget headings UPPERCASE, 25% reduced font (Kwas-Kwas) */
     .widget-heading {
         text-transform: uppercase !important;
         letter-spacing: 0.04em;
         color: #D4AF37;
         font-weight: 700;
+        font-size: 0.75em !important;
     }
+    .sovereign-header { font-size: 0.825rem !important; }
     /* NGECC flow: Raw Coal = Blue Oval, Gasifier = Gold Box, Syngas = Pulsing Gold Box */
     .flow-raw-coal {
         background: linear-gradient(145deg, #1e3a5f 0%, #0d2137 100%);
@@ -640,40 +667,68 @@ st.markdown("""
         color: #e0e0e0;
         font-size: 0.95rem;
     }
-    /* 8R SOVEREIGN CYCLE — CSS Circular layout, gold on navy, no white */
-    .r8-circle-wrap {
+    /* NRRFC CIRCULAR 8R CYCLE — circle-container + nodal pitch (gold on navy, shimmer on hover) */
+    .circle-container {
         position: relative;
-        width: 320px;
-        height: 320px;
+        width: 400px;
+        height: 400px;
         margin: 24px auto;
-    }
-    .r8-circle-ring {
-        position: absolute;
-        inset: 20px;
-        border: 1px solid rgba(212, 175, 55, 0.4);
+        border: 2px solid #D4AF37;
         border-radius: 50%;
+        background: transparent;
     }
-    .r8-circle-node {
+    .circle-container .node {
         position: absolute;
         left: 50%;
         top: 50%;
-        width: 70px;
-        margin-left: -35px;
-        margin-top: -35px;
-        text-align: center;
+        width: 80px;
+        height: 80px;
+        margin-left: -40px;
+        margin-top: -40px;
         background: #000814 !important;
-        border: 1px solid #D4AF37 !important;
-        border-radius: 8px;
-        padding: 6px 4px;
+        border: 2px solid #D4AF37 !important;
         color: #D4AF37 !important;
-        font-weight: 700;
-        font-size: 0.65rem;
-        animation: r8-node-shimmer 2.5s ease-in-out infinite;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: bold;
+        text-align: center;
+        box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        line-height: 1.2;
     }
-    .r8-circle-node span { display: block; color: #D4AF37 !important; line-height: 1.2; }
+    .circle-container .node span { display: block; color: #D4AF37 !important; }
+    .circle-container .node:hover {
+        border-color: #FFF !important;
+        box-shadow: 0 0 25px #D4AF37 !important;
+    }
+    /* D3: RESEARCH node — permanent shimmer pulse (active node) */
+    .circle-container .node-d3-active {
+        animation: d3-node-shimmer 2s ease-in-out infinite !important;
+    }
+    @keyframes d3-node-shimmer {
+        0%, 100% { box-shadow: 0 0 15px rgba(212, 175, 55, 0.4); border-color: #D4AF37; }
+        50% { box-shadow: 0 0 28px #D4AF37, 0 0 40px rgba(212, 175, 55, 0.6); border-color: #f6e27a; }
+    }
+    /* System Online — gold glow on ALL 8R nodes when INITIATE RESET triggered */
+    .circle-container.system-online .node {
+        animation: system-online-glow 1.5s ease-in-out infinite !important;
+    }
+    @keyframes system-online-glow {
+        0%, 100% { box-shadow: 0 0 18px rgba(212, 175, 55, 0.5); border-color: #D4AF37; }
+        50% { box-shadow: 0 0 32px #D4AF37, 0 0 48px rgba(212, 175, 55, 0.7); border-color: #f6e27a; }
+    }
+    .r8-circle-wrap { position: relative; width: 400px; height: 400px; margin: 24px auto; }
+    .r8-circle-ring { position: absolute; inset: 20px; border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 50%; }
+    .r8-circle-node {
+        position: absolute; left: 50%; top: 50%; width: 70px; margin-left: -35px; margin-top: -35px;
+        text-align: center; background: #000814 !important; border: 1px solid #D4AF37 !important;
+        border-radius: 8px; padding: 6px 4px; color: #D4AF37 !important; font-weight: 700; font-size: 0.65rem;
+    }
     @keyframes r8-node-shimmer {
         0%, 100% { opacity: 0.9; box-shadow: 0 0 8px rgba(212, 175, 55, 0.3); }
-        50% { opacity: 1; box-shadow: 0 0 16px rgba(212, 175, 55, 0.6); color: #f6e27a; }
+        50% { opacity: 1; box-shadow: 0 0 16px rgba(212, 175, 55, 0.6); }
     }
     </style>
     """, unsafe_allow_html=True)
@@ -699,18 +754,20 @@ st.markdown("""
     <div class="silicon-ticker">+12.2% Price Spike Detected. Revaluing Strategic Reserves...</div>
 """, unsafe_allow_html=True)
 
-# SOVEREIGN ACTIVATION — clickable button; on click triggers 'System Online' pulse
+# INITIATE RESET — Sovereign Activation (D1 RESET phase + visual confirmation)
 st.markdown("""
     <div class="activation-alert">
         <div class="alert-heading">Sovereign Activation Alert</div>
     </div>
 """, unsafe_allow_html=True)
-if st.button("Sovereign Activation", key="sovereign_activation", use_container_width=True):
-    st.session_state["system_online"] = True
-if st.session_state.get("system_online"):
-    st.markdown("""
-        <div class="system-online-pulse">● SYSTEM ONLINE</div>
-    """, unsafe_allow_html=True)
+if st.button("🔴 INITIATE RESET - SOVEREIGN ACTIVATION", key="sovereign_activation", use_container_width=True):
+    st.session_state["reset_phase_active"] = True
+    st.session_state["balloons_shown"] = False
+if st.session_state.get("reset_phase_active"):
+    st.success("D1: RESET PHASE ACTIVE. SSMV INITIALIZED.")
+    if not st.session_state.get("balloons_shown"):
+        st.balloons()
+        st.session_state["balloons_shown"] = True
 st.markdown("<br>", unsafe_allow_html=True)
 
 # TECHNICAL GLOSSARY — Sidebar
@@ -750,18 +807,24 @@ st.markdown("""
 """, unsafe_allow_html=True)
 render_8r_circular_cycle()
 
-# 1. THE 13-STATE ASSET MAPPING (THE DIAMONDS — high-velocity pulse)
-def get_shimmering_nodal_data():
-    data = {
-        "STATE": ["Enugu", "Kogi", "Nasarawa", "Benue", "Gombe", "Adamawa", "Bauchi", "Delta", "Edo", "Anambra", "Imo", "Abia", "Ondo"],
-        "RESERVES (MT)": [168.3, 142.1, 47.7, 97.8, 62.5, 38.4, 12.5, 32.0, 18.0, 27.9, 32.1, 8.4, 4.6],
-        "POWER (MW)": [402, 321, 85, 180, 110, 65, 22, 55, 30, 48, 55, 12, 10],
-        "PRODUCTION": [0.01, 0.01, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00],
-        "STATUS": ["ACTIVE", "ACTIVE", "RESERVE", "RESERVE", "RESERVE", "RESERVE", "RESERVE", "RESERVE", "RESERVE", "RESERVE", "RESERVE", "RESERVE", "RESERVE"]
-    }
-    df = pd.DataFrame(data)
-    df["RESERVES (MT)"] += [random.uniform(-0.15, 0.15) for _ in range(13)]
-    return df
+# SOVEREIGN DATA NODES — 13-state strike zone (MEASURABLE SUBSOIL NODAL MAPPING)
+SOVEREIGN_DATA_NODES = {
+    "State": ["Enugu", "Kogi", "Gombe", "Benue", "Delta", "Nasarawa", "Anambra", "Plateau", "Adamawa", "Edo", "Bauchi", "Kwara", "Zamfara"],
+    "Coal Reserves (MT)": [150.0, 120.0, 80.0, 70.0, 55.0, 45.0, 35.0, 25.0, 20.0, 15.0, 10.0, 10.0, 5.2],
+    "Nodal Status": "PROTECTED",
+}
+_subsoil_df = pd.DataFrame(SOVEREIGN_DATA_NODES)
+
+def show_subsoil_map():
+    """Display MEASURABLE SUBSOIL NODAL MAPPING with styled 13-state strike zone."""
+    st.markdown("### 🗺️ MEASURABLE SUBSOIL NODAL MAPPING")
+    st.dataframe(
+        _subsoil_df.style.format({"Coal Reserves (MT)": "{:.1f}"}).background_gradient(
+            cmap="YlOrBr", subset=["Coal Reserves (MT)"]
+        ),
+        use_container_width=True,
+    )
+    st.info("Strike Revenue Target: $50.1M Monthly per Node.")
 
 # D3: RESEARCH STRIKE — 13-State Asset Mapping with Active Scan overlay
 st.divider()
@@ -769,14 +832,10 @@ st.markdown('<p class="widget-heading shimmer-node">D3: RESEARCH — 13-STATE AS
 st.markdown("""
     <div class="d3-active-scan" style="position: relative; padding: 10px 12px; margin-bottom: 8px; border: 1px solid rgba(255,215,0,0.4); border-radius: 8px; background: rgba(0, 31, 63, 0.5);">
         <span class="active-scan-label">● ACTIVE SCAN</span>
-        <span style="color: #e0e0e0; font-size: 0.75rem;">13-State asset mapping live</span>
+        <span style="color: #e0e0e0; font-size: 0.75rem;">13-State strike zone</span>
     </div>
 """, unsafe_allow_html=True)
-registry_df = get_shimmering_nodal_data()
-# IP masking: Nodal identifiers for public view (mask Power/Production)
-registry_df["NODE_ID"] = [f"GEC-NODE-{i:03d}" for i in range(1, 14)]
-display_df = registry_df[["STATE", "NODE_ID", "RESERVES (MT)", "STATUS"]]
-st.table(display_df)
+show_subsoil_map()
 
 # 3. SIGNATURE ANCHOR
 st.markdown("<div style='color: #FFD700; text-align: center; margin-top: 24px;'>SIGNATURE SECURED: Dr. Sa'ad Jaafaru | CAC: 176917792057</div>", unsafe_allow_html=True)
@@ -963,6 +1022,15 @@ st.markdown("""
         <p class="gec-shimmer widget-heading" style="font-size: 0.8rem; margin:0;">INCONTROVERTIBLE NODAL AUTHORITY</p>
         <p style="color: white; font-size: 1.1rem; font-weight: bold; margin: 5px 0;">DR. JAAFARU SA'AD (GALADIMAN RUWA)</p>
         <p style="color: #D4AF37; font-size: 0.8rem; margin:0;">Chairman & Founder, GCSLC | CAC: 176917792057</p>
+    </div>
+""", unsafe_allow_html=True)
+
+# THE $50.1M STRIKE — Sovereign Status Bar (fixed bottom, high-fidelity)
+st.markdown("""
+    <div class="sovereign-status-bar">
+        <span class="status-bar-label">SOVEREIGN STRIKE</span>
+        <span class="status-bar-value">$50.1M</span>
+        <span class="status-bar-sublabel">MONTHLY REVENUE</span>
     </div>
 """, unsafe_allow_html=True)
 
