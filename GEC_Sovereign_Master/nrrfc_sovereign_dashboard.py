@@ -50,8 +50,8 @@ SOVEREIGN_DATA_NODES = {
 
 
 def build_sovereign_dashboard_html(current_time, reset_phase_active):
-    """Build ENTIRE dashboard as single HTML for st.components.v1.html. Solid #000814, no Streamlit container. Glossary fixed right; 8R as SVG; Coal table navy + gold."""
-    # 8R SVG: circle path + 8 hollow gold circles (no fill) + labels. Center 175,175 radius 100.
+    """Build ENTIRE dashboard as single HTML for st.components.v1.html. Sovereign standards: #000814, #D4AF37, no white. Sections: Derivative Strike, Mineral Yield, 8R Circle, Glossary."""
+    # 8R SVG: perfect circle — each node is <g> with hollow gold circle + text (click-to-shimmer)
     cx, cy, r_node = 175, 175, 100
     r_circle = 28
     svg_nodes = ""
@@ -60,11 +60,9 @@ def build_sovereign_dashboard_html(current_time, reset_phase_active):
         x = cx + r_node * math.cos(rad)
         y = cy - r_node * math.sin(rad)
         pulse_class = " r8-svg-pulse" if i == 2 else (" r8-svg-pulse-all" if reset_phase_active else "")
-        svg_nodes += f'<circle class="r8-svg-node{pulse_class}" cx="{x:.1f}" cy="{y:.1f}" r="{r_circle}" fill="none" stroke="#D4AF37" stroke-width="2"/>'
-        # Text: two lines (code + name), rotated for readability
-        angle = -i * 45
+        svg_nodes += f'<g class="r8-node-g" style="cursor:pointer"><circle class="r8-svg-node{pulse_class}" cx="{x:.1f}" cy="{y:.1f}" r="{r_circle}" fill="none" stroke="#D4AF37" stroke-width="2"/>'
         svg_nodes += f'<text x="{x:.1f}" y="{y - 4:.1f}" text-anchor="middle" fill="#D4AF37" font-size="9" font-weight="bold">{code}</text>'
-        svg_nodes += f'<text x="{x:.1f}" y="{y + 8:.1f}" text-anchor="middle" fill="#D4AF37" font-size="8">{name}</text>'
+        svg_nodes += f'<text x="{x:.1f}" y="{y + 8:.1f}" text-anchor="middle" fill="#D4AF37" font-size="8">{name}</text></g>'
     # Coal table rows
     states = SOVEREIGN_DATA_NODES["State"]
     reserves = SOVEREIGN_DATA_NODES["Coal Reserves (MT)"]
@@ -83,38 +81,49 @@ def build_sovereign_dashboard_html(current_time, reset_phase_active):
 <meta charset="utf-8">
 <style>
     * {{ box-sizing: border-box; }}
-    body, html {{ margin:0; padding:0; background:#000814; color:#D4AF37; font-family: system-ui, sans-serif; }}
+    body, html {{ margin:0; padding:0; background:#000814; color:#D4AF37; font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif; }}
     .wrap {{ background:#000814; min-height:100vh; padding-bottom: 60px; }}
-    .watermark {{ position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) rotate(-25deg); font-size:clamp(2rem,6vw,4rem); color:rgba(212,175,55,0.08); z-index:1; pointer-events:none; white-space:nowrap; font-weight:bold; }}
-    /* Glossary fixed right — z-index 9999 so data cannot slide under */
-    .glossary {{ position:fixed; right:0; top:0; height:100vh; width:20%; min-width:200px; background:rgba(0,8,20,0.98); border-left:2px solid #D4AF37; padding:16px; z-index:9999; overflow-y:auto; }}
+    .watermark {{ position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) rotate(-25deg); font-size:clamp(2rem,6vw,4rem); color:rgba(212,175,55,0.10); z-index:1; pointer-events:none; white-space:nowrap; font-weight:bold; text-transform:uppercase; }}
+    .glossary {{ position:fixed; right:0; top:0; height:100vh; width:20%; min-width:200px; background:rgba(0,8,20,0.98); border-left:1px solid #D4AF37; padding:16px; z-index:9999; overflow-y:auto; }}
     .glossary h3 {{ color:#D4AF37; font-size:0.9rem; text-transform:uppercase; margin-top:0; }}
     .glossary p {{ color:#b5a48b; font-size:0.75rem; line-height:1.5; }}
     .main {{ margin-right:22%; padding:16px; position:relative; z-index:2; }}
-    .medallion-header {{ text-align:center; padding:24px 16px; border-bottom:2px solid #D4AF37; background:#000814; }}
-    .medallion-header h1 {{ font-size:1rem; color:#D4AF37; text-transform:uppercase; }}
-    .medallion-header h2 {{ font-size:1rem; color:#D4AF37; }}
-    .welcome {{ text-align:center; color:#D4AF37; font-weight:700; margin:12px 0; }}
-    .ticker {{ background:#000814; border:1px solid #D4AF37; padding:8px 16px; text-align:center; color:#D4AF37; font-size:0.85rem; margin:12px 0; border-radius:6px; }}
-    .activation-alert {{ background:#000814; border:1px solid #D4AF37; padding:8px; text-align:center; margin:12px 0; font-size:0.75rem; color:#D4AF37; text-transform:uppercase; }}
-    .active-scan-banner {{ background:rgba(0,8,20,0.98); border-bottom:2px solid #D4AF37; padding:8px; text-align:center; color:#D4AF37; font-weight:700; margin-bottom:12px; }}
-    .section-title {{ color:#D4AF37; font-size:0.85rem; text-transform:uppercase; margin:16px 0 8px 0; }}
+    .medallion-header {{ text-align:center; padding:24px 16px; border-bottom:1px solid #D4AF37; background:rgba(0,8,20,0.6); }}
+    .medallion-header h1, .medallion-header h2 {{ font-size:1rem; color:#D4AF37; text-transform:uppercase; }}
+    .medallion-header p {{ color:#b5a48b; font-size:0.8rem; }}
+    .welcome {{ text-align:center; color:#D4AF37; font-weight:700; margin:12px 0; text-transform:uppercase; font-size:0.9rem; }}
+    .ticker {{ background:rgba(0,8,20,0.6); border:1px solid #D4AF37; padding:8px 16px; text-align:center; color:#D4AF37; font-size:0.85rem; margin:12px 0; }}
+    .activation-alert {{ background:rgba(0,8,20,0.6); border:1px solid #D4AF37; padding:8px; text-align:center; margin:12px 0; font-size:0.75rem; color:#D4AF37; text-transform:uppercase; }}
+    .active-scan-banner {{ background:rgba(0,8,20,0.98); border-bottom:1px solid #D4AF37; padding:8px; text-align:center; color:#D4AF37; font-weight:700; margin-bottom:12px; text-transform:uppercase; }}
+    .section-title {{ color:#D4AF37; font-size:0.85rem; text-transform:uppercase; margin:16px 0 8px 0; letter-spacing:0.05em; }}
+    .sovereign-box {{ background:rgba(0,8,20,0.6); border:1px solid #D4AF37; padding:12px 16px; color:#D4AF37; }}
+    .metric-grid {{ display:flex; flex-wrap:wrap; gap:12px; align-items:stretch; margin:12px 0; }}
+    .metric-grid .metric-cell {{ flex:1; min-width:140px; background:rgba(0,8,20,0.6); border:1px solid #D4AF37; padding:14px; color:#D4AF37; font-size:0.8rem; }}
+    .metric-grid .metric-cell .label {{ text-transform:uppercase; font-size:0.7rem; margin-bottom:4px; color:#D4AF37; }}
+    .metric-grid .metric-cell .value {{ font-weight:700; color:#D4AF37; }}
+    .multiplier-box {{ background:rgba(0,8,20,0.6); border:1px solid #D4AF37; padding:14px 20px; text-align:center; color:#D4AF37; }}
+    .multiplier-box .value {{ font-size:1.5rem; font-weight:700; color:#D4AF37; }}
+    .mineral-table {{ width:100%; border-collapse:collapse; background:#000814; border:1px solid #D4AF37; margin:12px 0; }}
+    .mineral-table th {{ color:#D4AF37; padding:10px; text-align:left; border-bottom:1px solid #D4AF37; background:#000814; font-size:0.8rem; text-transform:uppercase; }}
+    .mineral-table td {{ color:#D4AF37; padding:8px; border-bottom:1px solid rgba(212,175,55,0.4); background:#000814; }}
+    .mineral-table tfoot td {{ border-top:2px solid #D4AF37; font-weight:700; color:#D4AF37; padding:10px; background:#000814; }}
+    .total-underscore {{ border-bottom:2px solid #D4AF37; padding:10px 0; margin-top:8px; font-weight:700; color:#D4AF37; }}
     .r8-wrap {{ margin:24px auto; width:350px; }}
     .r8-wrap svg {{ display:block; margin:0 auto; }}
     .r8-svg-path {{ fill:none; stroke:#D4AF37; stroke-width:1; stroke-dasharray:6 4; }}
     .r8-svg-node {{ fill:none; stroke:#D4AF37; }}
+    .r8-node-g {{ cursor:pointer; }}
+    .r8-svg-node.r8-node-clicked {{ animation: node-shimmer 1s ease; }}
+    @keyframes node-shimmer {{ 0% {{ stroke:#fff; }} 100% {{ stroke:#D4AF37; }} }}
     .r8-svg-pulse {{ animation: pulse 2s ease-in-out infinite; }}
     .r8-svg-pulse-all {{ animation: pulse 1.5s ease-in-out infinite; }}
     @keyframes pulse {{ 0%,100% {{ stroke-opacity:0.9; }} 50% {{ stroke-opacity:1; filter:drop-shadow(0 0 8px #D4AF37); }} }}
-    /* Coal Reserves table — SOLID navy, SHARP gold, no white */
-    .coal-table {{ width:100%; border-collapse:collapse; background:#000814 !important; border:2px solid #D4AF37; margin:12px 0; }}
-    .coal-table th {{ color:#D4AF37; padding:10px; text-align:left; border-bottom:2px solid #D4AF37; background:#000814; font-size:0.8rem; text-transform:uppercase; }}
-    .coal-table td {{ color:#D4AF37; padding:8px; border-bottom:1px solid rgba(212,175,55,0.4); background:#000814 !important; }}
-    .coal-table tr:hover td {{ background:rgba(0,20,40,0.99) !important; }}
-    .brief-box {{ background:#000814; border:2px solid #D4AF37; padding:16px; margin:16px 0; }}
-    .brief-box p {{ color:#D4AF37; line-height:1.6; font-size:0.9rem; }}
-    .status-bar {{ position:fixed; bottom:0; left:0; right:0; padding:10px 20px; background:#000814; border-top:2px solid #D4AF37; text-align:center; color:#D4AF37; font-weight:700; z-index:9998; }}
+    .coal-table {{ width:100%; border-collapse:collapse; background:#000814; border:1px solid #D4AF37; margin:12px 0; }}
+    .coal-table th {{ color:#D4AF37; padding:10px; text-align:left; border-bottom:1px solid #D4AF37; background:#000814; font-size:0.8rem; text-transform:uppercase; }}
+    .coal-table td {{ color:#D4AF37; padding:8px; border-bottom:1px solid rgba(212,175,55,0.4); background:#000814; }}
+    .status-bar {{ position:fixed; bottom:0; left:0; right:0; padding:10px 20px; background:#000814; border-top:1px solid #D4AF37; text-align:center; color:#D4AF37; font-weight:700; z-index:9998; text-transform:uppercase; }}
     .footer {{ text-align:center; padding:16px; color:#b5a48b; font-size:0.8rem; border-top:1px solid #D4AF37; margin-top:24px; }}
+    .debt-swap-statement {{ text-align:center; color:#D4AF37; font-size:0.9rem; margin:20px 0; padding:12px; }}
 </style>
 </head>
 <body>
@@ -122,31 +131,63 @@ def build_sovereign_dashboard_html(current_time, reset_phase_active):
   <div class="watermark">GCSLC PROPRIETARY | SOVEREIGN</div>
 
   <div class="glossary">
-    <h3>📜 TECHNICAL GLOSSARY</h3>
+    <h3>TECHNICAL GLOSSARY</h3>
     <p><strong>LLMS</strong> — AI systems for yield prediction.</p>
     <p><strong>KPIS</strong> — Revenue ($50.1M), Multiplier (9.6x).</p>
     <p>Python-to-Sovereign Feedstock — Pipeline from stack to Syngas conversion.</p>
     <hr style="border-color:rgba(212,175,55,0.3);">
-    <p style="font-size:0.7rem;">2026 FX: ₦1,350 = $1</p>
+    <p style="font-size:0.7rem; color:#b5a48b;">2026 FX: ₦1,350 = $1</p>
   </div>
 
   <div class="main">
     <div class="medallion-header">
       <h1>Galadiman Ruwa Center for Strategic Leadership and Communication</h1>
       <h2>GCSLC LTD/GTE</h2>
-      <p style="color:#b5a48b;font-style:italic;">Proponent of the 8R Stealth Paradigm Convergence</p>
+      <p>Proponent of the 8R Stealth Paradigm Convergence</p>
     </div>
     <p class="welcome">Welcome, Chairman. The Eagle is Scanning. Nigeria's 638.3 MT Reserves are Live.</p>
     <div class="ticker">+12.2% Price Spike Detected. Revaluing Strategic Reserves...</div>
     <div class="activation-alert">Sovereign Activation Alert</div>
     {active_banner}
+    <p class="section-title">Last updated: {current_time}</p>
 
-    <p class="section-title">● Last updated: {current_time}</p>
-    <p class="section-title">RESOURCE DASHBOARD</p>
-    <p style="color:#D4AF37;">638.3 MT &nbsp;|&nbsp; 1,195 MW &nbsp;|&nbsp; 13 States</p>
+    <h2 class="section-title">NRRFC VALUE-ADDED DERIVATIVE STRIKE — GCSLC SOVEREIGN</h2>
+    <div class="metric-grid">
+      <div class="metric-cell">
+        <div class="label">RAW COAL VALUE (USD)</div>
+        <div class="value">$1.1 M</div>
+        <div class="label" style="font-size:0.65rem;">₦1.49 B</div>
+      </div>
+      <div class="metric-cell">
+        <div class="label">DERIVATIVE UPSIDE (USD)</div>
+        <div class="value">$9.5 M</div>
+        <div class="label" style="font-size:0.65rem;">₦12.77 B</div>
+      </div>
+      <div class="metric-cell">
+        <div class="label">TOTAL SOVEREIGN EQUITY (USD)</div>
+        <div class="value">$10.6 M</div>
+        <div class="label" style="font-size:0.65rem;">₦14.25 B</div>
+      </div>
+      <div class="multiplier-box">
+        <div class="label" style="text-transform:uppercase; font-size:0.7rem;">VALUE MULTIPLIER</div>
+        <div class="value">9.6x</div>
+      </div>
+    </div>
 
-    <p class="section-title">8R STEALTH PARADIGM CONVERGENCE</p>
-    <p style="font-size:0.7rem;color:#D4AF37;">MEASURABLE | ACCEPTABLE | PROFESSIONAL SIZE STANDARDS</p>
+    <h2 class="section-title">CRITICAL MINERAL YIELD (THE MATHEMATICAL STRIKE)</h2>
+    <table class="mineral-table">
+      <thead><tr><th>Product</th><th>Volume</th><th>Price</th><th>Revenue (USD)</th><th>Revenue (₦)</th></tr></thead>
+      <tbody>
+        <tr><td>Raw Coal</td><td>10,000 MT</td><td>$110</td><td>$1.1 M</td><td>₦1.49 B</td></tr>
+        <tr><td>Germanium (fly ash)</td><td>800 KG</td><td>$8,597</td><td>$6.9 M</td><td>₦9.28 B</td></tr>
+        <tr><td>Ammonia</td><td>6,000 MT</td><td>$430</td><td>$2.6 M</td><td>₦3.48 B</td></tr>
+      </tbody>
+      <tfoot><tr><td colspan="3">Total Revenue</td><td>$10.6 M</td><td>₦14.25 B</td></tr></tfoot>
+    </table>
+    <p class="total-underscore" style="border-bottom:2px solid #D4AF37;">Total Revenue: $10.6 M (₦14.25 B)</p>
+
+    <h2 class="section-title">THE 8R STEALTH PARADIGM CIRCLE</h2>
+    <p style="font-size:0.75rem; color:#D4AF37;">D1–D8 Determinants — click a node for shimmer</p>
     <div class="r8-wrap{system_class}">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 350" width="350" height="350">
         <circle class="r8-svg-path" cx="175" cy="175" r="130"/>
@@ -155,21 +196,15 @@ def build_sovereign_dashboard_html(current_time, reset_phase_active):
     </div>
 
     <p class="section-title">D3: RESEARCH — 13-STATE ASSET MAPPING</p>
-    <p style="font-size:0.75rem;color:#D4AF37;">● ACTIVE SCAN — 13-State strike zone</p>
-    <p class="section-title">🗺️ MEASURABLE SUBSOIL NODAL MAPPING</p>
+    <p style="font-size:0.75rem; color:#D4AF37;">ACTIVE SCAN — 13-State strike zone</p>
+    <p class="section-title">MEASURABLE SUBSOIL NODAL MAPPING</p>
     <table class="coal-table">
       <thead><tr><th>State</th><th>Coal Reserves (MT)</th><th>Nodal Status</th></tr></thead>
       <tbody>{table_rows}</tbody>
     </table>
-    <p style="color:#b5a48b;font-size:0.8rem;">Strike Revenue Target: $50.1M Monthly per Node.</p>
+    <p style="color:#b5a48b; font-size:0.8rem;">Strike Revenue Target: $50.1M Monthly per Node.</p>
 
-    <div class="brief-box">
-      <h3 style="color:#D4AF37;font-size:0.9rem;">STRATEGIC BRIEF</h3>
-      <p>Nigeria's sub-bituminous coal is a <strong>Sovereign Feedstock</strong>. The NGECC utilizes the <strong>8R Stealth Paradigm</strong> to extract Germanium ($8,597/kg) and Ammonia ($430/MT), delivering a <strong>9.6× wealth multiplier</strong>. That sovereign asset clears the ₦50 Trillion national debt while powering the global AI revolution.</p>
-    </div>
-
-    <p class="section-title">DEBT-SWAP FOOTER</p>
-    <p style="color:#D4AF37;font-size:0.9rem;">By capturing 10% of Global Big Tech CAPEX ($700B), we achieve <strong>18.9×</strong> coverage of Nigeria's domestic debt (₦50.0 T).</p>
+    <p class="debt-swap-statement">By capturing 10% of Global Big Tech CAPEX, we achieve 189% coverage of Nigeria's domestic debt.</p>
 
     <div class="footer">
       <p style="color:#D4AF37;"><strong>INCONTROVERTIBLE NODAL AUTHORITY:</strong> DR. JAAFARU SA'AD (GALADIMAN RUWA) | CAC: 176917792057</p>
@@ -179,6 +214,15 @@ def build_sovereign_dashboard_html(current_time, reset_phase_active):
 
   <div class="status-bar">SOVEREIGN STRIKE &nbsp; $50.1M &nbsp; MONTHLY REVENUE</div>
 </div>
+<script>
+document.querySelectorAll('.r8-node-g').forEach(function(g) {{
+  g.addEventListener('click', function() {{
+    var circle = this.querySelector('circle');
+    circle.classList.add('r8-node-clicked');
+    setTimeout(function() {{ circle.classList.remove('r8-node-clicked'); }}, 1000);
+  }});
+}});
+</script>
 </body>
 </html>
 """
