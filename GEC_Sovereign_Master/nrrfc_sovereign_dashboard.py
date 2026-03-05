@@ -5,14 +5,16 @@ Deep Navy background, Gold/White shimmer, 8R Determinant cards. CAC & Chairman L
 © 2026 GCSLC LTD/GTE.
 """
 import streamlit as st
+import streamlit.components.v1 as components
 import base64
+import math
 import pandas as pd
 import random
 import time
 from pathlib import Path
 
-# SOVEREIGN CONFIGURATION — S24 Ultra optimized, sidebar for Technical Glossary
-st.set_page_config(page_title="GCSLC Sovereign Gateway", layout="wide", initial_sidebar_state="expanded")
+# SOVEREIGN CONFIGURATION — Isolated UI via html(); no Streamlit sidebar
+st.set_page_config(page_title="GCSLC Sovereign Gateway", layout="wide", initial_sidebar_state="collapsed")
 
 # WEB-HOSTED / EMBEDDED ASSETS (no local files)
 # Medallion: inline SVG (gold circle, GCSLC) — zero file dependency
@@ -39,36 +41,172 @@ R8_NODES = [
     ("D8", "RETAIN"),
 ]
 
-def render_8r_circular_cycle():
-    """NRRFC Circular 8R Cycle: gold on navy, D3 RESEARCH shimmer pulse, System Online glow on all nodes when active."""
-    system_online = st.session_state.get("reset_phase_active", False)
-    container_class = "circle-container system-online" if system_online else "circle-container"
-    nodes_html = ""
-    for i, (code, name) in enumerate(R8_NODES):
-        deg = i * 45
-        node_class = "node node-d3-active" if i == 2 else "node"  # D3: RESEARCH = active shimmer
-        nodes_html += f'''
-        <div class="{node_class}" style="transform: rotate({deg}deg) translateY(-160px);">
-            <span style="transform: rotate(-{deg}deg); display: inline-block;"><strong>{code}</strong><br>{name}</span>
-        </div>'''
-    st.markdown(f"""
-    <div class="{container_class}">
-        {nodes_html}
-    </div>
-    """, unsafe_allow_html=True)
+# Sovereign Data Nodes — 13-state coal reserves (for Coal Reserves table in HTML)
+SOVEREIGN_DATA_NODES = {
+    "State": ["Enugu", "Kogi", "Gombe", "Benue", "Delta", "Nasarawa", "Anambra", "Plateau", "Adamawa", "Edo", "Bauchi", "Kwara", "Zamfara"],
+    "Coal Reserves (MT)": [150.0, 120.0, 80.0, 70.0, 55.0, 45.0, 35.0, 25.0, 20.0, 15.0, 10.0, 10.0, 5.2],
+    "Nodal Status": "PROTECTED",
+}
 
+
+def build_sovereign_dashboard_html(current_time, reset_phase_active):
+    """Build ENTIRE dashboard as single HTML for st.components.v1.html. Solid #000814, no Streamlit container. Glossary fixed right; 8R as SVG; Coal table navy + gold."""
+    # 8R SVG: circle path + 8 hollow gold circles (no fill) + labels. Center 175,175 radius 100.
+    cx, cy, r_node = 175, 175, 100
+    r_circle = 28
+    svg_nodes = ""
+    for i, (code, name) in enumerate(R8_NODES):
+        rad = math.radians(i * 45)
+        x = cx + r_node * math.cos(rad)
+        y = cy - r_node * math.sin(rad)
+        pulse_class = " r8-svg-pulse" if i == 2 else (" r8-svg-pulse-all" if reset_phase_active else "")
+        svg_nodes += f'<circle class="r8-svg-node{pulse_class}" cx="{x:.1f}" cy="{y:.1f}" r="{r_circle}" fill="none" stroke="#D4AF37" stroke-width="2"/>'
+        # Text: two lines (code + name), rotated for readability
+        angle = -i * 45
+        svg_nodes += f'<text x="{x:.1f}" y="{y - 4:.1f}" text-anchor="middle" fill="#D4AF37" font-size="9" font-weight="bold">{code}</text>'
+        svg_nodes += f'<text x="{x:.1f}" y="{y + 8:.1f}" text-anchor="middle" fill="#D4AF37" font-size="8">{name}</text>'
+    # Coal table rows
+    states = SOVEREIGN_DATA_NODES["State"]
+    reserves = SOVEREIGN_DATA_NODES["Coal Reserves (MT)"]
+    table_rows = "".join(
+        f'<tr><td style="color:#D4AF37;padding:8px;border-bottom:1px solid #D4AF37">{s}</td>'
+        f'<td style="color:#D4AF37;padding:8px;border-bottom:1px solid #D4AF37">{m:.1f}</td>'
+        f'<td style="color:#D4AF37;padding:8px;border-bottom:1px solid #D4AF37">PROTECTED</td></tr>'
+        for s, m in zip(states, reserves)
+    )
+    active_banner = '<div class="active-scan-banner">● ACTIVE SCAN MODE — DASHBOARD LOCKED</div>' if reset_phase_active else ""
+    system_class = " system-online" if reset_phase_active else ""
+    html = f"""
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+    * {{ box-sizing: border-box; }}
+    body, html {{ margin:0; padding:0; background:#000814; color:#D4AF37; font-family: system-ui, sans-serif; }}
+    .wrap {{ background:#000814; min-height:100vh; padding-bottom: 60px; }}
+    .watermark {{ position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) rotate(-25deg); font-size:clamp(2rem,6vw,4rem); color:rgba(212,175,55,0.08); z-index:1; pointer-events:none; white-space:nowrap; font-weight:bold; }}
+    /* Glossary fixed right — z-index 9999 so data cannot slide under */
+    .glossary {{ position:fixed; right:0; top:0; height:100vh; width:20%; min-width:200px; background:rgba(0,8,20,0.98); border-left:2px solid #D4AF37; padding:16px; z-index:9999; overflow-y:auto; }}
+    .glossary h3 {{ color:#D4AF37; font-size:0.9rem; text-transform:uppercase; margin-top:0; }}
+    .glossary p {{ color:#b5a48b; font-size:0.75rem; line-height:1.5; }}
+    .main {{ margin-right:22%; padding:16px; position:relative; z-index:2; }}
+    .medallion-header {{ text-align:center; padding:24px 16px; border-bottom:2px solid #D4AF37; background:#000814; }}
+    .medallion-header h1 {{ font-size:1rem; color:#D4AF37; text-transform:uppercase; }}
+    .medallion-header h2 {{ font-size:1rem; color:#D4AF37; }}
+    .welcome {{ text-align:center; color:#D4AF37; font-weight:700; margin:12px 0; }}
+    .ticker {{ background:#000814; border:1px solid #D4AF37; padding:8px 16px; text-align:center; color:#D4AF37; font-size:0.85rem; margin:12px 0; border-radius:6px; }}
+    .activation-alert {{ background:#000814; border:1px solid #D4AF37; padding:8px; text-align:center; margin:12px 0; font-size:0.75rem; color:#D4AF37; text-transform:uppercase; }}
+    .active-scan-banner {{ background:rgba(0,8,20,0.98); border-bottom:2px solid #D4AF37; padding:8px; text-align:center; color:#D4AF37; font-weight:700; margin-bottom:12px; }}
+    .section-title {{ color:#D4AF37; font-size:0.85rem; text-transform:uppercase; margin:16px 0 8px 0; }}
+    .r8-wrap {{ margin:24px auto; width:350px; }}
+    .r8-wrap svg {{ display:block; margin:0 auto; }}
+    .r8-svg-path {{ fill:none; stroke:#D4AF37; stroke-width:1; stroke-dasharray:6 4; }}
+    .r8-svg-node {{ fill:none; stroke:#D4AF37; }}
+    .r8-svg-pulse {{ animation: pulse 2s ease-in-out infinite; }}
+    .r8-svg-pulse-all {{ animation: pulse 1.5s ease-in-out infinite; }}
+    @keyframes pulse {{ 0%,100% {{ stroke-opacity:0.9; }} 50% {{ stroke-opacity:1; filter:drop-shadow(0 0 8px #D4AF37); }} }}
+    /* Coal Reserves table — SOLID navy, SHARP gold, no white */
+    .coal-table {{ width:100%; border-collapse:collapse; background:#000814 !important; border:2px solid #D4AF37; margin:12px 0; }}
+    .coal-table th {{ color:#D4AF37; padding:10px; text-align:left; border-bottom:2px solid #D4AF37; background:#000814; font-size:0.8rem; text-transform:uppercase; }}
+    .coal-table td {{ color:#D4AF37; padding:8px; border-bottom:1px solid rgba(212,175,55,0.4); background:#000814 !important; }}
+    .coal-table tr:hover td {{ background:rgba(0,20,40,0.99) !important; }}
+    .brief-box {{ background:#000814; border:2px solid #D4AF37; padding:16px; margin:16px 0; }}
+    .brief-box p {{ color:#D4AF37; line-height:1.6; font-size:0.9rem; }}
+    .status-bar {{ position:fixed; bottom:0; left:0; right:0; padding:10px 20px; background:#000814; border-top:2px solid #D4AF37; text-align:center; color:#D4AF37; font-weight:700; z-index:9998; }}
+    .footer {{ text-align:center; padding:16px; color:#b5a48b; font-size:0.8rem; border-top:1px solid #D4AF37; margin-top:24px; }}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="watermark">GCSLC PROPRIETARY | SOVEREIGN</div>
+
+  <div class="glossary">
+    <h3>📜 TECHNICAL GLOSSARY</h3>
+    <p><strong>LLMS</strong> — AI systems for yield prediction.</p>
+    <p><strong>KPIS</strong> — Revenue ($50.1M), Multiplier (9.6x).</p>
+    <p>Python-to-Sovereign Feedstock — Pipeline from stack to Syngas conversion.</p>
+    <hr style="border-color:rgba(212,175,55,0.3);">
+    <p style="font-size:0.7rem;">2026 FX: ₦1,350 = $1</p>
+  </div>
+
+  <div class="main">
+    <div class="medallion-header">
+      <h1>Galadiman Ruwa Center for Strategic Leadership and Communication</h1>
+      <h2>GCSLC LTD/GTE</h2>
+      <p style="color:#b5a48b;font-style:italic;">Proponent of the 8R Stealth Paradigm Convergence</p>
+    </div>
+    <p class="welcome">Welcome, Chairman. The Eagle is Scanning. Nigeria's 638.3 MT Reserves are Live.</p>
+    <div class="ticker">+12.2% Price Spike Detected. Revaluing Strategic Reserves...</div>
+    <div class="activation-alert">Sovereign Activation Alert</div>
+    {active_banner}
+
+    <p class="section-title">● Last updated: {current_time}</p>
+    <p class="section-title">RESOURCE DASHBOARD</p>
+    <p style="color:#D4AF37;">638.3 MT &nbsp;|&nbsp; 1,195 MW &nbsp;|&nbsp; 13 States</p>
+
+    <p class="section-title">8R STEALTH PARADIGM CONVERGENCE</p>
+    <p style="font-size:0.7rem;color:#D4AF37;">MEASURABLE | ACCEPTABLE | PROFESSIONAL SIZE STANDARDS</p>
+    <div class="r8-wrap{system_class}">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 350" width="350" height="350">
+        <circle class="r8-svg-path" cx="175" cy="175" r="130"/>
+        {svg_nodes}
+      </svg>
+    </div>
+
+    <p class="section-title">D3: RESEARCH — 13-STATE ASSET MAPPING</p>
+    <p style="font-size:0.75rem;color:#D4AF37;">● ACTIVE SCAN — 13-State strike zone</p>
+    <p class="section-title">🗺️ MEASURABLE SUBSOIL NODAL MAPPING</p>
+    <table class="coal-table">
+      <thead><tr><th>State</th><th>Coal Reserves (MT)</th><th>Nodal Status</th></tr></thead>
+      <tbody>{table_rows}</tbody>
+    </table>
+    <p style="color:#b5a48b;font-size:0.8rem;">Strike Revenue Target: $50.1M Monthly per Node.</p>
+
+    <div class="brief-box">
+      <h3 style="color:#D4AF37;font-size:0.9rem;">STRATEGIC BRIEF</h3>
+      <p>Nigeria's sub-bituminous coal is a <strong>Sovereign Feedstock</strong>. The NGECC utilizes the <strong>8R Stealth Paradigm</strong> to extract Germanium ($8,597/kg) and Ammonia ($430/MT), delivering a <strong>9.6× wealth multiplier</strong>. That sovereign asset clears the ₦50 Trillion national debt while powering the global AI revolution.</p>
+    </div>
+
+    <p class="section-title">DEBT-SWAP FOOTER</p>
+    <p style="color:#D4AF37;font-size:0.9rem;">By capturing 10% of Global Big Tech CAPEX ($700B), we achieve <strong>18.9×</strong> coverage of Nigeria's domestic debt (₦50.0 T).</p>
+
+    <div class="footer">
+      <p style="color:#D4AF37;"><strong>INCONTROVERTIBLE NODAL AUTHORITY:</strong> DR. JAAFARU SA'AD (GALADIMAN RUWA) | CAC: 176917792057</p>
+      <p>© 2026 GCSLC LTD/GTE. Proprietary 8R Stealth Paradigm Convergence.</p>
+    </div>
+  </div>
+
+  <div class="status-bar">SOVEREIGN STRIKE &nbsp; $50.1M &nbsp; MONTHLY REVENUE</div>
+</div>
+</body>
+</html>
+"""
+    return html
+
+
+# ---- ISOLATED UI: dashboard rendered via st.components.v1.html (replaces Streamlit container) ----
 # CUSTOM CSS: DEEP NAVY BASE, GOLD/WHITE SHIMMER, HIGHLY VISIBLE 8R CARDS
 st.markdown("""
     <style>
-    /* CRITICAL: GLOBAL CSS OVERRIDE — no white, deep navy + gold text */
-    .stApp, .main, [data-testid="stAppViewContainer"], .block-container,
-    [data-testid="stAppViewContainer"] > section { background-color: #000814 !important; }
-    .stApp label, .stApp [data-testid="stMetricValue"], .stApp .widget-heading,
-    .stApp h1, .stApp h2, .stApp h3 { color: #D4AF37 !important; }
-    /* REMOVE ALL WHITE from node and glossary — never use #FFFFFF */
+    /* PERMANENT NAVY & GOLD — purge white (reference override) */
+    .stApp { background-color: #000814 !important; color: #D4AF37 !important; }
+    div[data-testid="stMetricValue"], .stMarkdown, div[role="button"] {
+        background-color: transparent !important;
+        color: #D4AF37 !important;
+    }
+    /* REMOVE ALL WHITE from node and glossary */
     .node, .circle-container .node { background: transparent !important; background-color: transparent !important; color: #D4AF37 !important; }
     .node *, .circle-container .node span { color: #D4AF37 !important; }
     .glossary-sidebar { background: #000814 !important; background-color: #000814 !important; }
+    /* Nodal text — gold on navy */
+    .node-text {
+        color: #D4AF37 !important;
+        font-weight: bold;
+        text-shadow: 0 0 5px #000;
+        text-transform: uppercase;
+        font-size: 10px;
+    }
     /* Sovereign Branding Standards - GCSLC */
     :root {
         --deep-navy: #000814;
@@ -87,24 +225,23 @@ st.markdown("""
         border-left: 1px solid rgba(255, 215, 0, 0.3);
         padding: 10px;
     }
-    /* Technical Glossary — FIXED RIGHT SIDEBAR 20% width, gold-grey text (right-side lock) */
+    /* Technical Glossary — FIXED RIGHT SIDEBAR (250px), gold-grey text */
     [data-testid="stSidebar"] {
         position: fixed !important;
         right: 0 !important;
         left: auto !important;
-        width: 20% !important;
-        min-width: 180px !important;
-        max-width: 280px !important;
-        background: rgba(0, 8, 20, 0.9) !important;
-        background-color: rgba(0, 8, 20, 0.9) !important;
-        border-left: 1px solid #D4AF37 !important;
+        width: 250px !important;
+        min-width: 250px !important;
+        background: rgba(0, 8, 20, 0.95) !important;
+        background-color: rgba(0, 8, 20, 0.95) !important;
+        border-left: 2px solid #D4AF37 !important;
         padding: 12px !important;
         color: #b5a48b !important;
     }
     [data-testid="stSidebar"] .stMarkdown { font-size: 0.7rem; color: #b5a48b !important; }
     [data-testid="stSidebar"] .stMarkdown h3 { font-size: 0.8rem; color: #D4AF37 !important; text-transform: uppercase; }
     [data-testid="stSidebar"] p, [data-testid="stSidebar"] span, [data-testid="stSidebar"] label { color: #b5a48b !important; }
-    [data-testid="stAppViewContainer"] > section:first-child { margin-right: 22% !important; }
+    [data-testid="stAppViewContainer"] > section:first-child { margin-right: 268px !important; }
     .shimmer-text {
         background: linear-gradient(90deg, #FFD700, #FFF, #FFD700);
         background-size: 200% auto;
@@ -709,16 +846,16 @@ st.markdown("""
         color: #e0e0e0;
         font-size: 0.95rem;
     }
-    /* NRRFC CIRCULAR 8R CYCLE — visible path on deep navy, HOLLOW gold circles, NO white fills */
+    /* 8R CIRCULAR CYCLE — 350px, dashed gold path, hollow nodes (purge white) */
     .circle-container {
         position: relative;
-        width: 400px;
-        height: 400px;
+        width: 350px;
+        height: 350px;
         margin: 24px auto;
-        border: 2px solid #D4AF37;
+        border: 1px dashed #D4AF37;
         border-radius: 50%;
         background: transparent !important;
-        box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.25);
     }
     .circle-container .node {
         position: absolute;
@@ -776,319 +913,19 @@ st.markdown("""
     }
     </style>
     """, unsafe_allow_html=True)
-st.markdown("<div class='watermark'>GCSLC PROPRIETARY | SOVEREIGN</div>", unsafe_allow_html=True)
-
-# HEADER: MEDALLION (embedded SVG) & SHIMMER TITLE
-st.markdown(f"""
-    <div class="medallion-header">
-        <img src="{MEDALLION_DATA_URI}" width="150" height="150" style="border-radius:50%; border:3px solid #D4AF37; box-shadow: 0 0 24px rgba(212,175,55,0.5); display:block; margin:0 auto 16px;">
-        <h1 class="shimmer-text sovereign-header">Galadiman Ruwa Center for Strategic Leadership and Communication</h1>
-        <h2 style="color: #D4AF37; font-weight: 700;">GCSLC LTD/GTE</h2>
-        <p style="font-style: italic; color: #c0c0c0;">Proponent of the 8R Stealth Paradigm Convergence and its Determinants</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-# WELCOME MESSAGE — shimmering CSS
-st.markdown("""
-    <p class="welcome-shimmer">Welcome, Chairman. The Eagle is Scanning. Nigeria's 638.3 MT Reserves are Live.</p>
-""", unsafe_allow_html=True)
-
-# KWAS-KWAS: Global Silicon Scarcity ticker (D3 RESEARCH)
-st.markdown("""
-    <div class="silicon-ticker">+12.2% Price Spike Detected. Revaluing Strategic Reserves...</div>
-""", unsafe_allow_html=True)
-
-# INITIATE RESET — Sovereign Activation (D1 RESET phase + visual confirmation)
-st.markdown("""
-    <div class="activation-alert">
-        <div class="alert-heading">Sovereign Activation Alert</div>
-    </div>
-""", unsafe_allow_html=True)
+# ISOLATED UI: entire dashboard in one HTML iframe (no Streamlit sidebar; glossary + 8R SVG + coal table inside)
+current_time = time.strftime("%Y-%m-%d %H:%M:%S UTC")
 if st.button("🔴 INITIATE RESET - SOVEREIGN ACTIVATION", key="sovereign_activation", use_container_width=True):
     st.session_state["reset_phase_active"] = True
     st.session_state["balloons_shown"] = False
 if st.session_state.get("reset_phase_active"):
-    st.success("D1: RESET PHASE ACTIVE. SSMV INITIALIZED.")
+    st.success("SYSTEM ONLINE: 8R STEALTH CYCLE ACTIVE.")
     if not st.session_state.get("balloons_shown"):
         st.balloons()
         st.session_state["balloons_shown"] = True
-    st.markdown("""
-        <div class="active-scan-mode-banner">● ACTIVE SCAN MODE — DASHBOARD LOCKED</div>
-    """, unsafe_allow_html=True)
-st.markdown("<br>", unsafe_allow_html=True)
 
-# TECHNICAL GLOSSARY — Sidebar
-with st.sidebar:
-    st.markdown("### **TECHNICAL GLOSSARY**")
-    st.markdown("---")
-    st.markdown("**LLMs** — Large Language Models; AI systems used for sovereign data analysis and decision support.")
-    st.markdown("**KPIs** — Key Performance Indicators. Primary revenue KPI: **$50.1M** monthly (SFP analytics).")
-    st.markdown("**Python-to-Sovereign Feedstock** — End-to-end pipeline from Python/LLM stack to Syngas (Sovereign Feedstock) conversion and value extraction.")
-    st.markdown("---")
-    st.caption("2026 FX: ₦1,350 = $1")
-
-# 1. SOVEREIGN TIMESTAMP (THE HEARTBEAT) — Format: YYYY-MM-DD HH:MM:SS UTC
-current_time = time.strftime("%Y-%m-%d %H:%M:%S UTC")
-st.markdown(f"""
-    <div style="color: #FFD700; font-family: 'Inter', sans-serif; font-size: 1rem; margin-bottom: 20px;">
-        ● Last updated: {current_time}
-    </div>
-""", unsafe_allow_html=True)
-
-# RESOURCE DASHBOARD — 638.3 MT, 1,195 MW, 13 States (2026 FX: ₦1,350 = $1 for conversions)
-st.markdown('<p class="widget-heading">RESOURCE DASHBOARD</p>', unsafe_allow_html=True)
-col1, col2, col3 = st.columns(3)
-with col1:
-    st.metric("RESERVES", "638.3", "MT")
-with col2:
-    st.metric("POWER POTENTIAL", "1,195", "MW")
-with col3:
-    st.metric("STATES", "13", "regions")
-
-# 8R SOVEREIGN CYCLE — CSS Circular layout (gold shimmer on navy, no white boxes)
-st.markdown('<p class="widget-heading">8R STEALTH PARADIGM NODAL</p>', unsafe_allow_html=True)
-st.markdown("""
-    <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; font-size: 0.7rem; color: #D4AF37; letter-spacing: 0.08em; text-transform: uppercase;">
-        <span>MEASURABLE</span><span>|</span><span>ACCEPTABLE</span><span>|</span><span>PROFESSIONAL SIZE STANDARDS</span>
-    </div>
-""", unsafe_allow_html=True)
-render_8r_circular_cycle()
-
-# SOVEREIGN DATA NODES — 13-state strike zone (MEASURABLE SUBSOIL NODAL MAPPING)
-SOVEREIGN_DATA_NODES = {
-    "State": ["Enugu", "Kogi", "Gombe", "Benue", "Delta", "Nasarawa", "Anambra", "Plateau", "Adamawa", "Edo", "Bauchi", "Kwara", "Zamfara"],
-    "Coal Reserves (MT)": [150.0, 120.0, 80.0, 70.0, 55.0, 45.0, 35.0, 25.0, 20.0, 15.0, 10.0, 10.0, 5.2],
-    "Nodal Status": "PROTECTED",
-}
-_subsoil_df = pd.DataFrame(SOVEREIGN_DATA_NODES)
-
-def show_subsoil_map():
-    """Display MEASURABLE SUBSOIL NODAL MAPPING with styled 13-state strike zone."""
-    st.markdown("### 🗺️ MEASURABLE SUBSOIL NODAL MAPPING")
-    st.dataframe(
-        _subsoil_df.style.format({"Coal Reserves (MT)": "{:.1f}"}).background_gradient(
-            cmap="YlOrBr", subset=["Coal Reserves (MT)"]
-        ),
-        use_container_width=True,
-    )
-    st.info("Strike Revenue Target: $50.1M Monthly per Node.")
-
-# D3: RESEARCH STRIKE — 13-State Asset Mapping with Active Scan overlay
-st.divider()
-st.markdown('<p class="widget-heading shimmer-node">D3: RESEARCH — 13-STATE ASSET MAPPING</p>', unsafe_allow_html=True)
-st.markdown("""
-    <div class="d3-active-scan" style="position: relative; padding: 10px 12px; margin-bottom: 8px; border: 1px solid rgba(255,215,0,0.4); border-radius: 8px; background: rgba(0, 31, 63, 0.5);">
-        <span class="active-scan-label">● ACTIVE SCAN</span>
-        <span style="color: #e0e0e0; font-size: 0.75rem;">13-State strike zone</span>
-    </div>
-""", unsafe_allow_html=True)
-show_subsoil_map()
-
-# 3. SIGNATURE ANCHOR
-st.markdown("<div style='color: #FFD700; text-align: center; margin-top: 24px;'>SIGNATURE SECURED: Dr. Sa'ad Jaafaru | CAC: 176917792057</div>", unsafe_allow_html=True)
-
-st.info("DATA INSIGHT: Enugu & Kogi ACTIVE (0.01). Nasarawa+ reserve. Aligns with $8,597/kg Germanium strike targets.")
-
-# STRATEGIC BRIEF WIDGET
-st.markdown("""
-    <div class="brief-box">
-        <h3 class="widget-heading" style="color: #D4AF37;">STRATEGIC BRIEF</h3>
-        <p style="color: white; line-height: 1.6;">
-            Nigeria's sub-bituminous coal is not a "dirty fuel"—it is a <span class="gec-shimmer">Sovereign Feedstock</span>.
-            The NGECC, operating as an SSMV, utilizes the <span class="gec-shimmer">8R Stealth Paradigm</span>
-            to extract Germanium ($8,597/kg) for AI chips and Ammonia ($430/MT) for fertilizers,
-            delivering a <span class="gec-shimmer">9.6x wealth multiplier</span>.
-            Funding at 51/49 from IFCs and Asian Banks de-risks the $15B Phase 1 CAPEX while preserving
-            100% sovereign control over strategic data re-mapping.
-        </p>
-        <p style="color: #FFD700; font-weight: bold;">
-            That sovereign asset clears the ₦50 Trillion national debt while powering the global AI revolution.
-        </p>
-    </div>
-""", unsafe_allow_html=True)
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# NRRFC VALUE-EXTRACTION ENGINE (PHASE 1) — Deep Navy #000080, Metallic Gold #D4AF37
-# ═══════════════════════════════════════════════════════════════════════════════
-st.divider()
-st.markdown('<h2 class="nrrfc-title widget-heading">NRRFC VALUE-EXTRACTION ENGINE (PHASE 1)</h2>', unsafe_allow_html=True)
-
-# 1. NGECC PROTOTYPE — Raw Coal (Blue Oval) → Gasifier (Gold Box) → Syngas (Pulsing Gold Box)
-st.markdown("""
-    <div class="nrrfc-module">
-        <p class="widget-heading" style="margin-bottom: 12px;">NGECC MODULAR PLANT PROTOTYPE</p>
-        <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px;">
-            <div class="flow-raw-coal"><span class="label">Raw Coal</span></div>
-            <span class="flow-arrow">→</span>
-            <div class="diamond-bridge"><span class="diamond-node"></span><span class="diamond-node"></span><span class="diamond-node"></span></div>
-            <div class="flow-gasifier"><span class="label">Gasifier</span></div>
-            <span class="flow-arrow">→</span>
-            <div class="diamond-bridge"><span class="diamond-node"></span><span class="diamond-node"></span><span class="diamond-node"></span></div>
-            <div class="flow-syngas"><span class="label">Syngas</span><br><span class="sovereign-feedstock">Sovereign Feedstock</span></div>
-        </div>
-    </div>
-""", unsafe_allow_html=True)
-
-# 2. ARBITRAGE WIDGET — Coal vs. Diesel (2026 FX: ₦1,350 = $1)
-st.markdown('<p class="widget-heading">ARBITRAGE: COAL-TO-SYNGAS VS. DIESEL</p>', unsafe_allow_html=True)
-st.caption("2026 FX: ₦1,350 = $1")
-FX_RATE = 1350
-DIESEL_USD_PER_L = 1.00
-SYNGAS_USD_PER_L = 0.58
-SAVINGS_PCT = round((1 - SYNGAS_USD_PER_L / DIESEL_USD_PER_L) * 100)
-volume_liters = st.slider("Volume (Liters)", min_value=1000, max_value=500_000, value=10_000, step=1000, key="nrrfc_vol")
-diesel_usd = volume_liters * DIESEL_USD_PER_L
-syngas_usd = volume_liters * SYNGAS_USD_PER_L
-savings_usd = diesel_usd - syngas_usd
-col_a, col_b, col_c = st.columns(3)
-with col_a:
-    st.metric("Diesel cost", f"${diesel_usd:,.0f}", f"@ $1.00/L")
-with col_b:
-    st.metric("Coal-to-Syngas equivalent", f"${syngas_usd:,.0f}", f"@ $0.58/L")
-with col_c:
-    st.metric("Strike result", f"${savings_usd:,.0f} saved", f"{SAVINGS_PCT}% cost savings")
-st.caption("Toggle volume to see USD savings at scale.")
-
-# 3. DERIVATIVE STRIKE — Dynamic table: 9.6x multiplier (Germanium $6.9M, Ammonia $2.6M, Raw Coal $1.1M)
-st.markdown('<p class="widget-heading">VALUE-ADDED DERIVATIVE STRIKE & MINERAL YIELD</p>', unsafe_allow_html=True)
-st.caption("Base: 10,000 MT Coal")
-BASE_MT = 10_000
-value_df = pd.DataFrame({
-    "Profit Center (SFP)": ["Germanium (Fly Ash)", "Ammonia", "Raw Coal"],
-    "Output": ["800 KG", "6,000 MT", "10,000 MT"],
-    "Price": ["$8,597/KG", "$430/MT", "$110/MT"],
-    "Revenue (USD)": ["$6.9 M", "$2.6 M", "$1.1 M"],
-})
-st.dataframe(value_df, use_container_width=True, hide_index=True)
-st.markdown("""
-    <div class="nrrfc-module" style="margin-top: 12px;">
-        <p style="color: #fff; margin: 0;"><strong>Bottom line:</strong> <span style="color: #D4AF37; font-weight: bold;">9.6× Value Multiplier</span> — from $1.1M raw to $10.6M processed.</p>
-    </div>
-""", unsafe_allow_html=True)
-
-# 4. DEBT-SWAP FOOTER — 18.9x coverage of ₦50.0 T debt using 10% Big Tech CAPEX ($700B)
-st.markdown("""
-    <div class="nrrfc-footer">
-        <p class="widget-heading">DEBT-SWAP FOOTER</p>
-        <p>By capturing 10% of Global Big Tech CAPEX ($700B), we achieve <strong style="color:#D4AF37;">18.9×</strong> coverage of Nigeria's domestic debt (₦50.0 T).</p>
-        <p style="font-size: 0.8rem; color: #a0a0a0;">GCSLC PROPRIETARY | SOVEREIGN — Watermark active.</p>
-    </div>
-""", unsafe_allow_html=True)
-
-# NATIONAL DEBT-SWAP WIDGET
-st.markdown("<p class='widget-heading gec-shimmer'>NATIONAL DEBT-SWAP: 10% BIG TECH CAPEX VS DOMESTIC DEBT</p>", unsafe_allow_html=True)
-col_debt1, col_debt2, col_debt3 = st.columns(3)
-with col_debt1:
-    st.markdown("""<div class='debt-card'>
-        <p style='color:#FFD700; font-size:0.8rem;'>10% BIG TECH CAPEX (A)</p>
-        <h2 style='color:white;'>$700.00 B</h2>
-        <p style='color:gray; font-size:0.7rem;'>₦945.0 T</p>
-    </div>""", unsafe_allow_html=True)
-with col_debt2:
-    st.markdown("""<div class='debt-card'>
-        <p style='color:#FFD700; font-size:0.8rem;'>NIGERIA DOMESTIC DEBT</p>
-        <h2 style='color:white;'>₦50.0 T</h2>
-        <p style='color:gray; font-size:0.7rem;'>$37.04 B</p>
-    </div>""", unsafe_allow_html=True)
-with col_debt3:
-    st.markdown("""<div class='debt-card'>
-        <p style='color:#FFD700; font-size:0.8rem;'>COVERAGE (10% CAPEX ÷ DEBT)</p>
-        <h2 class='gec-shimmer'>18.9x</h2>
-        <p style='color:gray; font-size:0.7rem;'>Sovereign Surplus</p>
-    </div>""", unsafe_allow_html=True)
-
-# SFP ANALYTICS WIDGET
-st.markdown('<p class="widget-heading sfp-header gec-shimmer">SFP ANALYTICS — $50.1M MONTHLY REVENUE</p>', unsafe_allow_html=True)
-st.markdown('<div class="sfp-subtext">50,000 MT coal input · 4 Profit Centers · Sovereign Feedstock</div>', unsafe_allow_html=True)
-st.markdown("""
-    <table style="width:100%; border-collapse: collapse; border: 1px solid #FFD700; background-color: #001F3F;">
-        <tr style="background-color: #001d3d; color: #FFD700; font-size: 0.8rem;">
-            <th style="padding: 8px; text-align: left;">PROFIT CENTER</th><th style="padding: 8px; text-align: left;">OUTPUT</th><th style="padding: 8px; text-align: left;">MONTHLY REVENUE (USD)</th>
-        </tr>
-        <tr style="color: #e0e0e0;"><td style="padding: 8px; border-bottom: 1px solid #334b63;">Syngas</td><td style="padding: 8px; border-bottom: 1px solid #334b63;">Sovereign Feedstock</td><td class="revenue-shimmer" style="padding: 8px; border-bottom: 1px solid #334b63;">$15.20 M</td></tr>
-        <tr style="color: #e0e0e0;"><td style="padding: 8px; border-bottom: 1px solid #334b63;">Germanium</td><td style="padding: 8px; border-bottom: 1px solid #334b63;">Fly ash extraction</td><td class="revenue-shimmer" style="padding: 8px; border-bottom: 1px solid #334b63;">$18.50 M</td></tr>
-        <tr style="color: #e0e0e0;"><td style="padding: 8px; border-bottom: 1px solid #334b63;">Ammonia</td><td style="padding: 8px; border-bottom: 1px solid #334b63;">Fertilizer grade</td><td class="revenue-shimmer" style="padding: 8px; border-bottom: 1px solid #334b63;">$9.81 M</td></tr>
-        <tr style="color: #e0e0e0;"><td style="padding: 8px; border-bottom: 1px solid #334b63;">Silicon</td><td style="padding: 8px; border-bottom: 1px solid #334b63;">Semiconductor grade</td><td class="revenue-shimmer" style="padding: 8px; border-bottom: 1px solid #334b63;">$6.50 M</td></tr>
-        <tr style="background-color: #001d3d; font-weight: bold;">
-            <td colspan="2" style="color: #FFD700; padding: 8px;">Total Monthly Revenue</td>
-            <td class="revenue-shimmer" style="font-size: 1.1rem; padding: 8px;">$50.1 M</td>
-        </tr>
-    </table>
-""", unsafe_allow_html=True)
-
-# COST CENTERS (CC)
-st.markdown('<p class="widget-heading lean-header gec-shimmer">COST CENTERS (CC) — OPERATIONAL OUTLAYS</p>', unsafe_allow_html=True)
-cc_cols = st.columns(3)
-with cc_cols[0]:
-    st.markdown("<div class='debt-card'><p style='color:#FFD700; font-size:0.7rem;'>LOGISTICS</p><p style='color:white; font-size:0.75rem;'>fleet, rail & port ops</p></div>", unsafe_allow_html=True)
-with cc_cols[1]:
-    st.markdown("<div class='debt-card'><p style='color:#FFD700; font-size:0.7rem;'>LEAN REMUNERATION</p><p style='color:white; font-size:0.75rem;'>minimal headcount</p></div>", unsafe_allow_html=True)
-with cc_cols[2]:
-    st.markdown("<div class='debt-card'><p style='color:#FFD700; font-size:0.7rem;'>AI TECHNOLOGY</p><p style='color:white; font-size:0.75rem;'>python / llm stack</p></div>", unsafe_allow_html=True)
-
-# 100-DAY SSMV ROADMAP
-st.markdown('<p class="widget-heading lean-header gec-shimmer">100-DAY SSMV ROADMAP</p>', unsafe_allow_html=True)
-roadmap_logic = [
-    ("reset", "sovereign data audit & baseline"),
-    ("research", "ifc / asian bank term sheets (51/49)"),
-    ("restructure", "ngecc plant commissioning (gasifier online)"),
-    ("revitalize", "full throughput & ipo track (24-month)")
-]
-for stage, detail in roadmap_logic:
-    st.markdown(
-        f"<div style='border-left: 1px solid #FFD700; padding-left: 10px; margin-bottom: 10px;'>"
-        f"<span style='color:#FFD700; font-size:0.8rem; font-weight:bold;'>{stage}</span><br>"
-        f"<span style='color:white; font-size:0.75rem;'>{detail}</span></div>",
-        unsafe_allow_html=True
-    )
-
-# FINAL 10% TAX LOCK (MOBILE ANCHOR)
-st.markdown(
-    "<div style='background: rgba(255, 215, 0, 0.05); border: 1px dashed #FFD700; padding: 8px; text-align: center;'>"
-    "<span class='gec-shimmer' style='font-size:0.8rem;'>● 10% sovereign tax: $5.01M monthly lock</span></div>",
-    unsafe_allow_html=True
-)
-
-# EAGLE NEST: LOCAL VIDEO (eagle_anim.mp4) OR CLEAN PLACEHOLDER
-st.divider()
-st.markdown('<p class="widget-heading">GEC SOVEREIGN OS: THE EAGLE NEST</p>', unsafe_allow_html=True)
-col_video, col_stats = st.columns([3, 1])
-with col_video:
-    if _EAGLE_VIDEO_PATH.exists():
-        st.video(str(_EAGLE_VIDEO_PATH), autoplay=True, muted=True, loop=True, width="stretch")
-    else:
-        st.info("🦅 **Eagle Scanning...** — Place *eagle_anim.mp4* in the GEC_Sovereign_Master folder to load the animated strike.")
-with col_stats:
-    st.markdown('<p class="widget-heading">SFF ANALYTICS</p>', unsafe_allow_html=True)
-    st.metric("Monthly Revenue", "$50.1M", delta="Target")
-    st.metric("Debt-Swap Coverage", "18.9x", delta="Sovereign Surplus")
-
-# FOOTER — INCONTROVERTIBLE NODAL AUTHORITY + CAC
-st.markdown("""
-    <div class="sovereign-signature">
-        <p class="gec-shimmer widget-heading" style="font-size: 0.8rem; margin:0;">INCONTROVERTIBLE NODAL AUTHORITY</p>
-        <p style="color: white; font-size: 1.1rem; font-weight: bold; margin: 5px 0;">DR. JAAFARU SA'AD (GALADIMAN RUWA)</p>
-        <p style="color: #D4AF37; font-size: 0.8rem; margin:0;">Chairman & Founder, GCSLC | CAC: 176917792057</p>
-    </div>
-""", unsafe_allow_html=True)
-
-# THE $50.1M STRIKE — Sovereign Status Bar (fixed bottom, high-fidelity)
-st.markdown("""
-    <div class="sovereign-status-bar">
-        <span class="status-bar-label">SOVEREIGN STRIKE</span>
-        <span class="status-bar-value">$50.1M</span>
-        <span class="status-bar-sublabel">MONTHLY REVENUE</span>
-    </div>
-""", unsafe_allow_html=True)
-
-# FOOTER: CAC, COPYRIGHT
-st.divider()
-st.markdown("""
-    <div class="footer-sovereign">
-        <p><strong>INCONTROVERTIBLE NODAL AUTHORITY:</strong> DR. JAAFARU SA'AD (GALADIMAN RUWA) &nbsp;|&nbsp; <strong>CAC:</strong> 176917792057</p>
-        <p>© 2026 GCSLC LTD/GTE. Proprietary 8R Stealth Paradigm Convergence. All Rights Reserved.</p>
-    </div>
-    """, unsafe_allow_html=True)
+dashboard_html = build_sovereign_dashboard_html(current_time, st.session_state.get("reset_phase_active", False))
+components.html(dashboard_html, height=1600, scrolling=True)
 
 # SOVEREIGN PULSE HEARTBEAT — full rerun every 1 second
 time.sleep(1)
