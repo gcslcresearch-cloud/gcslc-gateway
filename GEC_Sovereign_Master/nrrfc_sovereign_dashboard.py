@@ -27,27 +27,33 @@ MEDALLION_DATA_URI = "data:image/svg+xml;base64," + base64.b64encode(MEDALLION_S
 # Eagle video: local file (same folder as this script); Path.exists() avoids FileNotFoundError
 _EAGLE_VIDEO_PATH = Path(__file__).resolve().parent / "eagle_anim.mp4"
 
-# 8R Nodal Python Logic — D-Determinant mapping (call render_8r_cycle() in layout)
-def render_8r_cycle():
-    """Render the 8R Stealth Paradigm cycle with interactive nodal buttons."""
-    nodes = {
-        "D1: RESET": "Activation of SSMV & NGECC Legal Framework",
-        "D2: REGENERATE": "Energy-to-Chemical Pathway Implementation",
-        "D3: RESEARCH": "Nodal Subsoil Density & 13-State Mapping",
-        "D4: RESTRUCTURE": "Debt-to-Equity Conversion & 18.9x Logic",
-        "D5: REVITALIZE": "Modular Plant Prototype Commissioning",
-        "D6: REPLICATE": "Scale-out across 13 regions",
-        "D7: REVENUE": "Targeting $50.1M Monthly Strike",
-        "D8: RETAIN": "Sovereign Asset Protection & Debt Clearance",
-    }
-    cols = st.columns(4)
-    for i, (name, detail) in enumerate(nodes.items()):
-        with cols[i % 4]:
-            if st.button(name, key=f"8r_{i}"):
-                st.session_state["8r_selected"] = (name, detail)
-    if "8r_selected" in st.session_state:
-        name, detail = st.session_state["8r_selected"]
-        st.info(f"**{name} STRATEGY:** {detail}")
+# 8R Sovereign Cycle — D-Determinant labels for circular layout (high-contrast gold on navy)
+R8_NODES = [
+    ("D1", "RESET"),
+    ("D2", "REGENERATE"),
+    ("D3", "RESEARCH"),
+    ("D4", "RESTRUCTURE"),
+    ("D5", "REVITALIZE"),
+    ("D6", "REPLICATE"),
+    ("D7", "REVENUE"),
+    ("D8", "RETAIN"),
+]
+
+def render_8r_circular_cycle():
+    """Render 8R as a CSS circular cycle: gold shimmer on navy, no white boxes."""
+    nodes_html = ""
+    for i, (code, name) in enumerate(R8_NODES):
+        deg = i * 45
+        nodes_html += f'''
+        <div class="r8-circle-node" style="transform: rotate({deg}deg) translateY(-120px);">
+            <span style="transform: rotate(-{deg}deg); display: inline-block;"><strong>{code}</strong><br>{name}</span>
+        </div>'''
+    st.markdown(f"""
+    <div class="r8-circle-wrap">
+        <div class="r8-circle-ring"></div>
+        {nodes_html}
+    </div>
+    """, unsafe_allow_html=True)
 
 # CUSTOM CSS: DEEP NAVY BASE, GOLD/WHITE SHIMMER, HIGHLY VISIBLE 8R CARDS
 st.markdown("""
@@ -70,12 +76,23 @@ st.markdown("""
         border-left: 1px solid rgba(255, 215, 0, 0.3);
         padding: 10px;
     }
+    /* Technical Glossary — FIXED RIGHT SIDEBAR: translucent navy, gold left-border, gold-grey text */
     [data-testid="stSidebar"] {
-        border-left: 1px solid rgba(255, 215, 0, 0.3);
-        padding: 10px;
+        position: fixed !important;
+        right: 0 !important;
+        left: auto !important;
+        width: 260px !important;
+        min-width: 260px !important;
+        background: rgba(0, 8, 20, 0.97) !important;
+        border-left: 2px solid #D4AF37 !important;
+        padding: 12px !important;
+        color: var(--gold-grey) !important;
     }
-    [data-testid="stSidebar"] .stMarkdown { font-size: 0.75rem; color: var(--gold-grey); }
-    [data-testid="stSidebar"] .stMarkdown h3 { font-size: 0.9rem; color: var(--gold-shimmer); }
+    [data-testid="stSidebar"] .stMarkdown { font-size: 0.75rem; color: var(--gold-grey) !important; }
+    [data-testid="stSidebar"] .stMarkdown h3 { font-size: 0.9rem; color: #D4AF37 !important; }
+    [data-testid="stSidebar"] p, [data-testid="stSidebar"] span { color: var(--gold-grey) !important; }
+    /* Main content margin so fixed right sidebar doesn't overlap */
+    [data-testid="stAppViewContainer"] > section:first-child { margin-right: 280px !important; }
     .shimmer-text {
         background: linear-gradient(90deg, #FFD700, #FFF, #FFD700);
         background-size: 200% auto;
@@ -86,12 +103,17 @@ st.markdown("""
     @keyframes shimmer {
         to { background-position: 200% center; }
     }
-    /* NRRFC Sovereign Gateway — Deep Navy, Gold, sans-serif */
-    .stApp, .main, [data-testid="stAppViewContainer"] {
+    /* NRRFC Sovereign Gateway — Deep Navy, Gold, PURGE WHITE */
+    .stApp, .main, [data-testid="stAppViewContainer"],
+    [data-testid="stAppViewContainer"] > section,
+    .block-container, [data-testid="block-container"] {
         background-color: var(--deep-navy) !important;
-        color: #FFFFFF;
+        color: #D4AF37;
         font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
     }
+    p, span, label, div[data-testid="stMarkdown"] { color: #e0e0e0 !important; }
+    div[data-testid="stMarkdown"] p { color: #e0e0e0 !important; }
+    .stCaption { color: var(--gold-grey) !important; }
     .medallion-header {
         text-align: center;
         padding: 36px 24px;
@@ -382,20 +404,60 @@ st.markdown("""
         background: rgba(0, 29, 61, 0.5);
     }
     .footer-sovereign strong { color: #FFD700; }
-    /* Security & watermark — GCSLC PROPRIETARY | SOVEREIGN persistent 12% opacity */
+    /* Security & watermark — GCSLC PROPRIETARY diagonal 10% opacity */
     .watermark {
         position: fixed;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%) rotate(-25deg);
         font-size: clamp(3rem, 8vw, 5rem);
-        color: rgba(212, 175, 55, 0.12);
+        color: rgba(212, 175, 55, 0.10);
         z-index: 9999;
         pointer-events: none;
         user-select: none;
         white-space: nowrap;
         font-weight: bold;
         font-family: 'Inter', sans-serif;
+    }
+    /* PURGE ALL WHITE BACKGROUNDS — Sovereign data visibility */
+    [data-testid="stMetric"], .stMetric, [data-testid="metric-container"] {
+        background-color: #000814 !important;
+        border: 1px solid #D4AF37 !important;
+        color: #D4AF37 !important;
+        padding: 10px !important;
+        border-radius: 8px !important;
+    }
+    [data-testid="stMetric"] label, .stMetric label { color: var(--gold-grey) !important; }
+    [data-testid="stMetric"] [data-testid="stMetricValue"] { color: #D4AF37 !important; }
+    .stAlert, [data-testid="stAlert"] {
+        background-color: rgba(0, 8, 20, 0.98) !important;
+        border: 1px solid #D4AF37 !important;
+        color: var(--gold-grey) !important;
+    }
+    .stButton > button {
+        background-color: rgba(0, 29, 61, 0.9) !important;
+        color: #D4AF37 !important;
+        border: 1px solid #D4AF37 !important;
+    }
+    .stButton > button:hover {
+        background-color: rgba(212, 175, 55, 0.2) !important;
+        border-color: #D4AF37 !important;
+        color: #fff !important;
+    }
+    /* System Online pulse (Sovereign Activation) */
+    @keyframes system-online-pulse {
+        0%, 100% { opacity: 0.9; box-shadow: 0 0 12px #D4AF37; }
+        50% { opacity: 1; box-shadow: 0 0 28px #D4AF37, 0 0 40px rgba(212, 175, 55, 0.4); }
+    }
+    .system-online-pulse {
+        display: inline-block;
+        padding: 8px 20px;
+        background: rgba(0, 8, 20, 0.95);
+        border: 1px solid #D4AF37;
+        border-radius: 8px;
+        color: #D4AF37;
+        font-weight: 700;
+        animation: system-online-pulse 1.5s ease-in-out infinite;
     }
     /* D3 Research Strike — Active Scan overlay (shimmering) */
     .d3-active-scan {
@@ -578,6 +640,41 @@ st.markdown("""
         color: #e0e0e0;
         font-size: 0.95rem;
     }
+    /* 8R SOVEREIGN CYCLE — CSS Circular layout, gold on navy, no white */
+    .r8-circle-wrap {
+        position: relative;
+        width: 320px;
+        height: 320px;
+        margin: 24px auto;
+    }
+    .r8-circle-ring {
+        position: absolute;
+        inset: 20px;
+        border: 1px solid rgba(212, 175, 55, 0.4);
+        border-radius: 50%;
+    }
+    .r8-circle-node {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 70px;
+        margin-left: -35px;
+        margin-top: -35px;
+        text-align: center;
+        background: #000814 !important;
+        border: 1px solid #D4AF37 !important;
+        border-radius: 8px;
+        padding: 6px 4px;
+        color: #D4AF37 !important;
+        font-weight: 700;
+        font-size: 0.65rem;
+        animation: r8-node-shimmer 2.5s ease-in-out infinite;
+    }
+    .r8-circle-node span { display: block; color: #D4AF37 !important; line-height: 1.2; }
+    @keyframes r8-node-shimmer {
+        0%, 100% { opacity: 0.9; box-shadow: 0 0 8px rgba(212, 175, 55, 0.3); }
+        50% { opacity: 1; box-shadow: 0 0 16px rgba(212, 175, 55, 0.6); color: #f6e27a; }
+    }
     </style>
     """, unsafe_allow_html=True)
 st.markdown("<div class='watermark'>GCSLC PROPRIETARY | SOVEREIGN</div>", unsafe_allow_html=True)
@@ -602,14 +699,18 @@ st.markdown("""
     <div class="silicon-ticker">+12.2% Price Spike Detected. Revaluing Strategic Reserves...</div>
 """, unsafe_allow_html=True)
 
-# SOVEREIGN ACTIVATION ALERT — top-tier box, headline 25% reduced, INITIATE RESET gold button
+# SOVEREIGN ACTIVATION — clickable button; on click triggers 'System Online' pulse
 st.markdown("""
     <div class="activation-alert">
         <div class="alert-heading">Sovereign Activation Alert</div>
     </div>
 """, unsafe_allow_html=True)
-if st.button("INITIATE RESET", type="primary", use_container_width=True):
-    st.session_state.get("reset_clicked", True)
+if st.button("Sovereign Activation", key="sovereign_activation", use_container_width=True):
+    st.session_state["system_online"] = True
+if st.session_state.get("system_online"):
+    st.markdown("""
+        <div class="system-online-pulse">● SYSTEM ONLINE</div>
+    """, unsafe_allow_html=True)
 st.markdown("<br>", unsafe_allow_html=True)
 
 # TECHNICAL GLOSSARY — Sidebar
@@ -640,14 +741,14 @@ with col2:
 with col3:
     st.metric("STATES", "13", "regions")
 
-# 8R STEALTH PARADIGM CONVERGENCE CYCLE — Nodal Python Logic (interactive D-determinants)
+# 8R SOVEREIGN CYCLE — CSS Circular layout (gold shimmer on navy, no white boxes)
 st.markdown('<p class="widget-heading">8R STEALTH PARADIGM NODAL</p>', unsafe_allow_html=True)
 st.markdown("""
-    <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; font-size: 0.7rem; color: #FFD700; letter-spacing: 0.08em;">
+    <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; font-size: 0.7rem; color: #D4AF37; letter-spacing: 0.08em; text-transform: uppercase;">
         <span>MEASURABLE</span><span>|</span><span>ACCEPTABLE</span><span>|</span><span>PROFESSIONAL SIZE STANDARDS</span>
     </div>
 """, unsafe_allow_html=True)
-render_8r_cycle()
+render_8r_circular_cycle()
 
 # 1. THE 13-STATE ASSET MAPPING (THE DIAMONDS — high-velocity pulse)
 def get_shimmering_nodal_data():
