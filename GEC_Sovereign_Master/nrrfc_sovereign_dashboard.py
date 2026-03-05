@@ -60,6 +60,15 @@ def render_8r_circular_cycle():
 # CUSTOM CSS: DEEP NAVY BASE, GOLD/WHITE SHIMMER, HIGHLY VISIBLE 8R CARDS
 st.markdown("""
     <style>
+    /* CRITICAL: GLOBAL CSS OVERRIDE — no white, deep navy + gold text */
+    .stApp, .main, [data-testid="stAppViewContainer"], .block-container,
+    [data-testid="stAppViewContainer"] > section { background-color: #000814 !important; }
+    .stApp label, .stApp [data-testid="stMetricValue"], .stApp .widget-heading,
+    .stApp h1, .stApp h2, .stApp h3 { color: #D4AF37 !important; }
+    /* REMOVE ALL WHITE from node and glossary — never use #FFFFFF */
+    .node, .circle-container .node { background: transparent !important; background-color: transparent !important; color: #D4AF37 !important; }
+    .node *, .circle-container .node span { color: #D4AF37 !important; }
+    .glossary-sidebar { background: #000814 !important; background-color: #000814 !important; }
     /* Sovereign Branding Standards - GCSLC */
     :root {
         --deep-navy: #000814;
@@ -78,22 +87,24 @@ st.markdown("""
         border-left: 1px solid rgba(255, 215, 0, 0.3);
         padding: 10px;
     }
-    /* Technical Glossary — SLIM RIGHT SIDEBAR: transparent bg, gold-grey #b5a48b (Kwas-Kwas) */
+    /* Technical Glossary — FIXED RIGHT SIDEBAR 20% width, gold-grey text (right-side lock) */
     [data-testid="stSidebar"] {
         position: fixed !important;
         right: 0 !important;
         left: auto !important;
-        width: 200px !important;
-        min-width: 200px !important;
-        background: transparent !important;
-        border-left: 2px solid #D4AF37 !important;
-        padding: 10px !important;
+        width: 20% !important;
+        min-width: 180px !important;
+        max-width: 280px !important;
+        background: rgba(0, 8, 20, 0.9) !important;
+        background-color: rgba(0, 8, 20, 0.9) !important;
+        border-left: 1px solid #D4AF37 !important;
+        padding: 12px !important;
         color: #b5a48b !important;
     }
     [data-testid="stSidebar"] .stMarkdown { font-size: 0.7rem; color: #b5a48b !important; }
     [data-testid="stSidebar"] .stMarkdown h3 { font-size: 0.8rem; color: #D4AF37 !important; text-transform: uppercase; }
-    [data-testid="stSidebar"] p, [data-testid="stSidebar"] span { color: #b5a48b !important; }
-    [data-testid="stAppViewContainer"] > section:first-child { margin-right: 220px !important; }
+    [data-testid="stSidebar"] p, [data-testid="stSidebar"] span, [data-testid="stSidebar"] label { color: #b5a48b !important; }
+    [data-testid="stAppViewContainer"] > section:first-child { margin-right: 22% !important; }
     .shimmer-text {
         background: linear-gradient(90deg, #FFD700, #FFF, #FFD700);
         background-size: 200% auto;
@@ -524,7 +535,7 @@ st.markdown("""
         text-align: center;
         margin-bottom: 16px;
     }
-    /* Sovereign Activation Alert — status-bar feel, reduced font */
+    /* Sovereign Activation Alert — status-bar feel */
     .activation-alert {
         background: linear-gradient(90deg, rgba(0, 8, 20, 0.98) 0%, rgba(0, 29, 61, 0.6) 100%);
         border: 1px solid rgba(255, 215, 0, 0.4);
@@ -541,6 +552,37 @@ st.markdown("""
         color: #D4AF37;
         font-weight: 700;
         margin: 0;
+    }
+    /* INITIATE RESET button — Red background + Gold Shimmer border */
+    .stButton > button {
+        background-color: #c0392b !important;
+        background: #c0392b !important;
+        color: #fff !important;
+        border: 2px solid #D4AF37 !important;
+        box-shadow: 0 0 12px rgba(212, 175, 55, 0.5) !important;
+    }
+    .stButton > button:hover {
+        border-color: #f6e27a !important;
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.7) !important;
+    }
+    /* ACTIVE SCAN mode — when INITIATE RESET clicked, dashboard transitions */
+    .active-scan-mode-banner {
+        position: sticky;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 8px 16px;
+        background: rgba(0, 8, 20, 0.98);
+        border-bottom: 2px solid #D4AF37;
+        color: #D4AF37;
+        font-weight: 700;
+        text-align: center;
+        z-index: 100;
+        animation: active-scan-pulse 2s ease-in-out infinite;
+    }
+    @keyframes active-scan-pulse {
+        0%, 100% { box-shadow: 0 4px 20px rgba(212, 175, 55, 0.2); }
+        50% { box-shadow: 0 4px 28px rgba(212, 175, 55, 0.5); }
     }
     /* All widget headings UPPERCASE, 25% reduced font (Kwas-Kwas) */
     .widget-heading {
@@ -667,7 +709,7 @@ st.markdown("""
         color: #e0e0e0;
         font-size: 0.95rem;
     }
-    /* NRRFC CIRCULAR 8R CYCLE — circle-container + nodal pitch (gold on navy, shimmer on hover) */
+    /* NRRFC CIRCULAR 8R CYCLE — visible path on deep navy, HOLLOW gold circles, NO white fills */
     .circle-container {
         position: relative;
         width: 400px;
@@ -675,7 +717,8 @@ st.markdown("""
         margin: 24px auto;
         border: 2px solid #D4AF37;
         border-radius: 50%;
-        background: transparent;
+        background: transparent !important;
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
     }
     .circle-container .node {
         position: absolute;
@@ -685,7 +728,8 @@ st.markdown("""
         height: 80px;
         margin-left: -40px;
         margin-top: -40px;
-        background: #000814 !important;
+        background: transparent !important;
+        background-color: transparent !important;
         border: 2px solid #D4AF37 !important;
         color: #D4AF37 !important;
         border-radius: 50%;
@@ -695,12 +739,12 @@ st.markdown("""
         font-size: 10px;
         font-weight: bold;
         text-align: center;
-        box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        box-shadow: 0 0 12px rgba(212, 175, 55, 0.35);
         line-height: 1.2;
     }
     .circle-container .node span { display: block; color: #D4AF37 !important; }
     .circle-container .node:hover {
-        border-color: #FFF !important;
+        border-color: #D4AF37 !important;
         box-shadow: 0 0 25px #D4AF37 !important;
     }
     /* D3: RESEARCH node — permanent shimmer pulse (active node) */
@@ -768,6 +812,9 @@ if st.session_state.get("reset_phase_active"):
     if not st.session_state.get("balloons_shown"):
         st.balloons()
         st.session_state["balloons_shown"] = True
+    st.markdown("""
+        <div class="active-scan-mode-banner">● ACTIVE SCAN MODE — DASHBOARD LOCKED</div>
+    """, unsafe_allow_html=True)
 st.markdown("<br>", unsafe_allow_html=True)
 
 # TECHNICAL GLOSSARY — Sidebar
