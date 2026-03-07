@@ -82,3 +82,19 @@ So the “February 20th” initiation point is likely one of:
 2. **The date the LIVE dashboard was first saved:** the file on disk is dated **Feb 23, 2026** (e.g. “Last updated: 2026-02-23 02:09:14 UTC” inside the file). There is no file in the repo or 8RStealthBfiles with a Feb 20 date in the name or content.
 
 **Conclusion:** The original source at “February 20th” was almost certainly the old `8R Stealth B_files` folder. The **current** root of truth for port 8056 is `~/Desktop/8RStealthBfiles/app.html`; that file has now been overwritten with the LIVE content so 8056 shows 639.3 Mt and 1,195 MW.
+
+---
+
+## 5. Caching loop fix (Determinant 3 purge)
+
+**Data trace (this Mac):**  
+Files containing 639.3 or 1,195 MW (live): `~/Desktop/8RStealthBfiles/app.html` and the NRRFC Dashboard HTML in that folder. No other dashboard HTML in the project contains "640 Mt" or "1,199 MW".
+
+**Source authentication:**  
+The single source of truth for port 8056 is `~/Desktop/8RStealthBfiles/app.html`. Content shows 639.3 Mt and 1,195 MW; a March 7, 2026 date can be shown via JS.
+
+**The purge:**  
+No `app.html` or `index.html` in the GCSLC_Sovereign_Gateway project root. Only `index.html` hits are inside `.venv`. Nothing to delete in project root.
+
+**Hard-lock:**  
+`serve_8r_dashboard_8056.py` serves only `~/Desktop/8RStealthBfiles/app.html` with strict no-store: `Cache-Control: no-store, no-cache, must-revalidate, max-age=0, private`, `Pragma: no-cache`, `Expires: 0`, `Surrogate-Control: no-store`. To clear a cache loop: kill process on 8056, restart server, hard-refresh (Cmd+Shift+R).

@@ -22,10 +22,11 @@ class DashboardHandler(SimpleHTTPRequestHandler):
     """Serve LIVE app.html from 8RStealthBfiles; no caching so real-time data shows."""
 
     def _send_no_cache_headers(self):
-        """Disable browser and server caching so today's real-time updates are visible."""
-        self.send_header("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
+        """Hard-lock: disable all caching so real-time updates are always visible."""
+        self.send_header("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0, private")
         self.send_header("Pragma", "no-cache")
         self.send_header("Expires", "0")
+        self.send_header("Surrogate-Control", "no-store")
 
     def do_GET(self):
         # Redirect root to app.html so LIVE pulsing dashboard loads directly
