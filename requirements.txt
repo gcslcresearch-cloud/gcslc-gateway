@@ -1,1 +1,2 @@
-streamlit
+# Streamlit Cloud — minimal deps for components.html launch
+streamlit>=1.28.0
