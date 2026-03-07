@@ -10,11 +10,10 @@ import webbrowser
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 
-# Target the HTML folder inside the project (pulsing NRRFC dashboard)
-_PROJECT_ROOT = Path(__file__).resolve().parent
-ROOT = _PROJECT_ROOT / "8RStealthBfiles"
-PORT = 8056
+# ROOT: ~/Desktop/8RStealthBfiles/ — serves app.html on port 8056
+ROOT = Path.home() / "Desktop" / "8RStealthBfiles"
 APP_HTML = "app.html"
+PORT = 8056
 
 
 class DashboardHandler(SimpleHTTPRequestHandler):
