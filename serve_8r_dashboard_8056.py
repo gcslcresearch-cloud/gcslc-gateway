@@ -11,7 +11,7 @@ from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 
 # Target the HTML folder on Desktop (pulsing NRRFC dashboard)
-ROOT = Path("/Users/user/Desktop/8RStealthFiles")
+ROOT = Path.home() / "Desktop" / "8RStealthBfiles"
 PORT = 8056
 APP_HTML = "app.html"
 
