@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Serve the NRRFC pulsing dashboard from 8RStealthFiles on localhost:8056.
+Serve the NRRFC pulsing dashboard from 8RStealthBfiles on localhost:8056.
 Opens app.html by default so the real-time pulsing effect is active.
-GCSLC Sovereign Gateway — © 2026 GCSLC LTD/GTE.
+Strategy: 37-Node Grid Status. GCSLC Sovereign Gateway — © 2026 GCSLC LTD/GTE.
 """
 import os
 import sys
@@ -10,14 +10,15 @@ import webbrowser
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 
-# Target the HTML folder on Desktop (pulsing NRRFC dashboard)
-ROOT = Path.home() / "Desktop" / "8RStealthBfiles"
+# Target the HTML folder inside the project (pulsing NRRFC dashboard)
+_PROJECT_ROOT = Path(__file__).resolve().parent
+ROOT = _PROJECT_ROOT / "8RStealthBfiles"
 PORT = 8056
 APP_HTML = "app.html"
 
 
 class DashboardHandler(SimpleHTTPRequestHandler):
-    """Serve from 8RStealthFiles and redirect / to app.html."""
+    """Serve from 8RStealthBfiles and redirect / to app.html."""
 
     def do_GET(self):
         # Redirect root to app.html so pulsing dashboard loads directly
