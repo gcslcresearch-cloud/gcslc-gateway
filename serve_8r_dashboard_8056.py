@@ -10,23 +10,33 @@ import webbrowser
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 
-# ROOT: ~/Desktop/8RStealthBfiles/ — serves app.html on port 8056
+# ROOT: ~/Desktop/8RStealthBfiles/ — targets app.html (LIVE, real-time) on port 8056
 ROOT = Path.home() / "Desktop" / "8RStealthBfiles"
 APP_HTML = "app.html"
 PORT = 8056
 
 
 class DashboardHandler(SimpleHTTPRequestHandler):
-    """Serve from 8RStealthBfiles and redirect / to app.html."""
+    """Serve LIVE app.html from 8RStealthBfiles; no caching so real-time data shows."""
+
+    def _send_no_cache_headers(self):
+        """Disable browser and server caching so today's real-time updates are visible."""
+        self.send_header("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
+        self.send_header("Pragma", "no-cache")
+        self.send_header("Expires", "0")
 
     def do_GET(self):
-        # Redirect root to app.html so pulsing dashboard loads directly
+        # Redirect root to app.html so LIVE pulsing dashboard loads directly
         if self.path in ("/", ""):
             self.send_response(302)
             self.send_header("Location", f"/{APP_HTML}")
             self.end_headers()
             return
         return SimpleHTTPRequestHandler.do_GET(self)
+
+    def end_headers(self):
+        self._send_no_cache_headers()
+        SimpleHTTPRequestHandler.end_headers(self)
 
     def log_message(self, format, *args):
         print(f"[{self.log_date_time_string()}] {format % args}")
