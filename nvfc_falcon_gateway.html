@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NVFC | Falcon Gateway</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold-shimmer: linear-gradient(90deg, #d4af37, #f9f295, #d4af37);
+            --stealth-black: #0a0a0a;
+            --gold: #d4af37;
+        }
+        body { margin: 0; background: var(--stealth-black); color: white; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+
+        /* Global Shimmer for Shimmering Elements */
+        .shimmer-gold {
+            background: linear-gradient(90deg, #d4af37, #f9f295, #d4af37, #f9f295, #d4af37);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer_flow 3s linear infinite;
+            font-weight: bold;
+        }
+        @keyframes shimmer_flow { to { background-position: 200% center; } }
+
+        /* Slimmed Down States Widget */
+        .status-widget {
+            width: 200px;
+            background: rgba(10, 10, 10, 0.8);
+            border-right: 1px solid #d4af37;
+            padding: 15px;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.5);
+            flex-shrink: 0;
+        }
+        .widget-header {
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        .widget-header-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+            margin-bottom: 8px;
+            font-size: 0.7rem;
+        }
+        @media (max-width: 600px) {
+            .main-layout { flex-direction: column; }
+            .status-widget { width: 100%; border-right: none; border-bottom: 1px solid #d4af37; }
+        }
+        .status-list { display: flex; flex-direction: column; gap: 6px; }
+        .status-item {
+            font-size: 0.75rem;
+            padding: 6px 8px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+        }
+        .status-item.active { background: rgba(0, 102, 71, 0.3); border-left: 3px solid #00a86b; }
+        .status-item.reserve { background: rgba(212, 175, 55, 0.1); border-left: 3px solid #d4af37; }
+        .status-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+            align-items: center;
+            font-size: 0.75rem;
+        }
+        .status-row .prod { color: rgba(255,255,255,0.7); }
+        .status-row .stat { text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* Header Section */
+        .header-container { text-align: center; padding: 40px 20px; }
+        .gold-medallion {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.5));
+            border-radius: 50%;
+            background: linear-gradient(145deg, #f0c14b, #d4af37, #b8962e);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.25rem;
+            letter-spacing: 0.15em;
+            color: var(--stealth-black);
+        }
+        .shimmer-text {
+            background: var(--gold-shimmer);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 3s linear infinite;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        /* The Brain Box Anchor */
+        .brain-box {
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 15px;
+            margin: 20px auto;
+            width: fit-content;
+            max-width: 90%;
+            border-radius: 8px;
+        }
+
+        /* Falcon Map & Sidebar Layout */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 20px;
+            padding: 20px;
+            min-height: 60vh;
+        }
+        @media (max-width: 700px) {
+            .main-grid { grid-template-columns: 1fr; }
+        }
+        .sidebar {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        .sidebar h3 {
+            margin: 0 0 1rem;
+            font-size: 0.9rem;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+        .determinant {
+            padding: 0.5rem 0;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.8);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .determinant:last-child { border-bottom: none; }
+        .determinant .det-badge { color: var(--gold); font-weight: 700; margin-right: 0.5rem; }
+
+        .falcon-map {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+            border: 1px solid rgba(212, 175, 55, 0.15);
+        }
+        #map-container {
+            width: 100%;
+            height: 100%;
+            min-height: 320px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #map-container svg {
+            max-width: 200px;
+            opacity: 0.5;
+        }
+
+        /* The Falcon Ultimatum */
+        .falcon-hero {
+            text-align: center;
+            margin-top: 50px;
+            padding: 40px 20px;
+        }
+        .falcon-img {
+            width: 280px;
+            max-width: 90%;
+            transform: scaleX(1);
+        }
+        .falcon-hero h2 {
+            margin-top: 1.5rem;
+            font-size: 1.1rem;
+            max-width: 520px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.5;
+        }
+
+        /* Footer & Signature */
+        footer {
+            border-top: 1px solid #333;
+            padding: 40px 20px;
+            margin-top: 100px;
+            text-align: center;
+        }
+        .cac-ribbon {
+            background: #006747;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 16px;
+            font-size: 0.9rem;
+        }
+        .signature {
+            margin-top: 1rem;
+        }
+        .signature p { margin: 0.25rem 0; }
+
+        @keyframes shimmer { to { background-position: 200% center; } }
+    </style>
+</head>
+<body>
+
+    <header class="header-container" style="text-align: center; padding: 30px;">
+        <!-- Use gcslc_gold_medallion.png when available -->
+        <div class="gold-medallion" aria-hidden="true">GCSLC</div>
+        <h1 class="shimmer-gold">Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC) LTD/GTE</h1>
+
+        <div class="brain-box">
+            <h2 class="shimmer-gold" style="font-size: 1.2rem;">NGECC — Special Strategic Mission Vehicle (SSMV) | Powered by the 8R Stealth Paradigm Convergence</h2>
+        </div>
+    </header>
+
+    <div class="main-layout" style="display: flex;">
+        <aside class="status-widget">
+            <div class="widget-header shimmer-gold">PRODUCTION (MT/YR)</div>
+            <div class="widget-header shimmer-gold">STATUS</div>
+            <div class="status-list">
+                <div class="status-row"><span class="prod">Enugu 0.01</span><span class="stat status-item active">ACTIVE</span></div>
+                <div class="status-row"><span class="prod">Kogi 0.01</span><span class="stat status-item active">ACTIVE</span></div>
+                <div class="status-row"><span class="prod">Benue 0</span><span class="stat status-item reserve shimmer-gold">RESERVE</span></div>
+                <div class="status-row"><span class="prod">Gombe 0</span><span class="stat status-item reserve">RESERVE</span></div>
+                <div class="status-row"><span class="prod">Nasarawa 0</span><span class="stat status-item reserve">RESERVE</span></div>
+                <div class="status-row"><span class="prod">Delta 0</span><span class="stat status-item reserve">RESERVE</span></div>
+                <div class="status-row"><span class="prod">Imo 0</span><span class="stat status-item reserve">RESERVE</span></div>
+                <div class="status-row"><span class="prod">Anambra 0.0</span><span class="stat status-item active">ACTIVE</span></div>
+                <div class="status-row"><span class="prod">Edo 0</span><span class="stat status-item reserve">RESERVE</span></div>
+                <div class="status-row"><span class="prod">Kebbi 0</span><span class="stat status-item reserve">RESERVE</span></div>
+                <div class="status-row"><span class="prod">Bauchi 0</span><span class="stat status-item reserve">RESERVE</span></div>
+                <div class="status-row"><span class="prod">Kwara 0</span><span class="stat status-item reserve">RESERVE</span></div>
+                <div class="status-row"><span class="prod">Plateau 0</span><span class="stat status-item reserve">RESERVE</span></div>
+            </div>
+        </aside>
+        <section class="map-container" style="flex-grow: 1; padding: 20px;">
+            <div id="map-container" style="min-height: 320px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.03); border-radius: 10px; border: 1px solid rgba(212,175,55,0.15);">
+                <svg viewBox="0 0 200 240" style="max-width: 200px; opacity: 0.5;" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="none" stroke="rgba(212,175,55,0.4)" stroke-width="1.5" d="M100 20 L160 50 L180 100 L165 160 L120 220 L80 200 L40 150 L35 90 L60 40 Z"/>
+                </svg>
+            </div>
+        </section>
+    </div>
+
+    <div class="falcon-hero">
+        <!-- Use falcon_high_fidelity.png when available; optional inline SVG fallback -->
+        <svg class="falcon-img" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path fill="#b8962e" stroke="#d4af37" stroke-width="2" d="M200 100 L120 120 L100 100 L120 80 L200 60 L280 80 L300 100 L280 120 Z"/>
+            <path fill="#d4af37" d="M190 98 L80 70 L60 90 L110 108 Z"/>
+            <path fill="#d4af37" d="M210 98 L320 70 L340 90 L290 108 Z"/>
+            <path fill="#f0c14b" d="M200 55 L220 35 L240 55 L220 75 Z"/>
+        </svg>
+        <h2 class="shimmer-gold">"Nigeria can power the energy needs of the big techs. Do something about it now."</h2>
+    </div>
+
+    <footer>
+        <div class="cac-ribbon">CAC Name Reservation Approved: Nigerian Green Energy and Chemicals Corporation</div>
+        <div class="signature-block">
+            <p class="shimmer-gold" style="font-size: 2.2rem; font-family: 'Playfair Display', serif;">Dr. Sa'ad Jaafaru (Galadiman Ruwan Zazzau)</p>
+            <p class="shimmer-gold" style="font-size: 0.8rem; letter-spacing: 3px;">NVFC STRATEGIC COMMAND</p>
+        </div>
+    </footer>
+
+</body>
+</html>
