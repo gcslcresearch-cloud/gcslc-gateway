@@ -1,22 +1,24 @@
 """
-NVFC Sovereign Pulse — Sovereign Command Console (zero errors).
+NVFC Sovereign Pulse — High-velocity lightweight (zero errors).
 Run: streamlit run nvfc_sovereign_pulse.py
-Audio: 40hz_pulse_hum.mp3 or deep_pulse_hum.mp3 (loop); falcon_cry.mp3 (trigger on state hover).
+Audio disabled by default so visual map loads first; set AUDIO_ENABLED=True to re-enable.
 """
 import streamlit as st
 import streamlit.components.v1 as components
 
-# Zero-error guard: single source of truth for spelling
+# Zero-error guard: single source of truth (spelling verified: Sovereign, Galadiman Ruwan Zazzau)
 SOVEREIGN = "Sovereign"
 PARADIGM = "Paradigm"
 SIGNATURE_TITLE = "Dr. Sa'ad Jaafaru (Galadiman Ruwan Zazzau)"
-# 8R determinants (exact copy for Brainbox + sidebar)
 DETERMINANTS = ("Refinement", "Reset", "Research", "Restructure", "Resuscitate", "Revitalize", "Re-engineer", "Retain")
 
-# Watchdog: lightweight heartbeat
-if "watchdog_tick" not in st.session_state:
-    st.session_state.watchdog_tick = 0
-st.session_state.watchdog_tick = (st.session_state.watchdog_tick + 1) % (2 ** 20)
+# Tactical audio off until visual map is stable
+AUDIO_ENABLED = False
+
+# Lazy-load: show Falcon + Humanoid only after background is stable (set at end of run)
+if "nvfc_stable" not in st.session_state:
+    st.session_state.nvfc_stable = False
+LAZY_READY = st.session_state.nvfc_stable
 
 # Nigeria map: optimized SVG — minimal path data, single orbit ref, 13 coal states, hovering falcon
 # Paths shortened for instant load; falcon uses same path via reference
@@ -63,19 +65,18 @@ st.markdown(f"""
     
     .stApp {{ background-color: #000033; position: relative; }}
     
-    /* 8R Brainbox: lightweight shimmering gold background pulse — determinants as full-page pulse */
+    /* 8R Stealth Paradigm Convergence: simple CSS watermark (no image) */
     .stApp::before {{
-        content: '8R  •  {SOVEREIGN}  •  {PARADIGM}';
+        content: '8R Stealth {PARADIGM} Convergence  •  {SOVEREIGN}';
         position: fixed;
         left: 50%;
         top: 50%;
         transform: translate(-50%, -50%) rotate(-12deg);
-        font-size: 1.6rem;
+        font-size: 1.4rem;
         font-weight: 700;
-        letter-spacing: 0.25em;
-        color: rgba(212,175,55,0.07);
+        letter-spacing: 0.2em;
+        color: rgba(212,175,55,0.06);
         white-space: nowrap;
-        animation: brainbox-pulse 4s ease-in-out infinite;
         pointer-events: none;
         z-index: 0;
     }}
@@ -83,14 +84,9 @@ st.markdown(f"""
         content: '';
         position: fixed;
         inset: 0;
-        background: repeating-linear-gradient(-12deg, transparent 0, transparent 100px, rgba(212,175,55,0.03) 100px, rgba(212,175,55,0.03) 101px);
-        animation: brainbox-pulse 5s ease-in-out infinite;
+        background: repeating-linear-gradient(-12deg, transparent 0, transparent 100px, rgba(212,175,55,0.025) 100px, rgba(212,175,55,0.025) 101px);
         pointer-events: none;
         z-index: 0;
-    }}
-    @keyframes brainbox-pulse {{
-        0%, 100% {{ opacity: 0.5; }}
-        50% {{ opacity: 1; }}
     }}
     .brainbox-watermark {{
         position: fixed;
@@ -172,17 +168,18 @@ st.markdown(f"""
 </style>
 """, unsafe_allow_html=True)
 
-# 8R Brainbox: determinants as lightweight shimmering gold background pulse (single div, CSS-only)
+# 8R Brainbox: determinants as lightweight CSS watermark (single div)
 brainbox_text = " · ".join(f"D{i+1} {d}" for i, d in enumerate(DETERMINANTS))
 st.markdown(f'<div class="brainbox-watermark">{brainbox_text}</div>', unsafe_allow_html=True)
 
-# Tactical audio: subtle low-frequency Pulse Hum (loop); Falcon Cry trigger in map on state hover
-st.markdown("""
-<audio id="pulseHumMain" loop preload="auto" style="position:absolute;width:0;height:0;opacity:0;">
-<source src="40hz_pulse_hum.mp3" type="audio/mpeg">
-<source src="deep_pulse_hum.mp3" type="audio/mpeg">
-</audio>
-""", unsafe_allow_html=True)
+# Tactical audio disabled so visual map loads first (set AUDIO_ENABLED=True to re-enable)
+if AUDIO_ENABLED:
+    st.markdown("""
+    <audio id="pulseHumMain" loop preload="auto" style="position:absolute;width:0;height:0;opacity:0;">
+    <source src="40hz_pulse_hum.mp3" type="audio/mpeg">
+    <source src="deep_pulse_hum.mp3" type="audio/mpeg">
+    </audio>
+    """, unsafe_allow_html=True)
 
 # Header Section
 st.markdown(
@@ -195,6 +192,19 @@ col_side, col_map = st.columns([1, 4])
 
 with col_side:
     det_rows = "".join(f'<div class="determinant-row shimmer-gold">D{i+1} {d}</div>' for i, d in enumerate(DETERMINANTS))
+    humanoid_block = (
+        """<svg width="64" height="80" viewBox="0 0 64 80" xmlns="http://www.w3.org/2000/svg" style="margin: 0 auto;">
+            <ellipse cx="32" cy="14" rx="10" ry="12" fill="none" stroke="#d4af37" stroke-width="1.5"/>
+            <line x1="32" y1="26" x2="32" y2="44" stroke="#d4af37" stroke-width="1.5"/>
+            <line x1="32" y1="44" x2="18" y2="68" stroke="#d4af37" stroke-width="1.5"/>
+            <line x1="32" y1="44" x2="46" y2="68" stroke="#d4af37" stroke-width="1.5"/>
+            <line x1="32" y1="34" x2="16" y2="38" stroke="#d4af37" stroke-width="1.5"/>
+            <line x1="32" y1="34" x2="48" y2="38" stroke="#d4af37" stroke-width="1.5"/>
+        </svg>
+        <div class="humanoid-bubble shimmer-gold">I need energy to thrive.</div>"""
+        if LAZY_READY
+        else """<p class="shimmer-gold" style="font-size:0.8rem;">Loading…</p>"""
+    )
     st.markdown(f"""
     <p class="shimmer-gold" style="font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 8px;">8R BRAINBOX DETERMINANTS</p>
     {det_rows}
@@ -205,15 +215,7 @@ with col_side:
         <p class="shimmer-gold" style="margin: 5px 0;">● RESERVE</p>
     </div>
     <div style="margin-top: 20px; text-align: center;">
-        <svg width="64" height="80" viewBox="0 0 64 80" xmlns="http://www.w3.org/2000/svg" style="margin: 0 auto;">
-            <ellipse cx="32" cy="14" rx="10" ry="12" fill="none" stroke="#d4af37" stroke-width="1.5"/>
-            <line x1="32" y1="26" x2="32" y2="44" stroke="#d4af37" stroke-width="1.5"/>
-            <line x1="32" y1="44" x2="18" y2="68" stroke="#d4af37" stroke-width="1.5"/>
-            <line x1="32" y1="44" x2="46" y2="68" stroke="#d4af37" stroke-width="1.5"/>
-            <line x1="32" y1="34" x2="16" y2="38" stroke="#d4af37" stroke-width="1.5"/>
-            <line x1="32" y1="34" x2="48" y2="38" stroke="#d4af37" stroke-width="1.5"/>
-        </svg>
-        <div class="humanoid-bubble shimmer-gold">I need energy to thrive.</div>
+        {humanoid_block}
     </div>
     """, unsafe_allow_html=True)
 
@@ -222,24 +224,30 @@ with col_map:
         '<h2 class="shimmer-gold">NATIONAL VELOCITY FALCON CLOUD (NVFC)</h2>',
         unsafe_allow_html=True,
     )
-    # Map iframe: Falcon Cry on hover over 13 coal states. Place falcon_cry.mp3 in run folder.
-    map_html = f"""
-    <div style="background:#000033; padding:0; margin:0;">
-    <audio id="falconCry" preload="auto"><source src="falcon_cry.mp3" type="audio/mpeg"></audio>
+    # Lazy-load: full map (with Falcon) only when background stable; else static map
+    if LAZY_READY:
+        map_body = map_svg
+        if AUDIO_ENABLED:
+            map_body = """<audio id="falconCry" preload="auto"><source src="falcon_cry.mp3" type="audio/mpeg"></audio>
     <script>
-    (function() {{
-        document.querySelectorAll('.state-dot').forEach(function(el) {{
-            el.style.cursor = 'pointer';
-            el.addEventListener('mouseenter', function() {{
-                var c = document.getElementById('falconCry');
-                if (c) {{ c.currentTime = 0; c.volume = 0.3; c.play().catch(function() {{}}); }}
-            }});
-        }});
-    }})();
+    (function(){ document.querySelectorAll('.state-dot').forEach(function(el){ el.style.cursor='pointer'; el.addEventListener('mouseenter',function(){ var c=document.getElementById('falconCry'); if(c){ c.currentTime=0; c.volume=0.3; c.play().catch(function(){}); } }); }); })();
     </script>
-    {map_svg}
-    </div>
-    """
+    """ + map_svg
+        map_html = f'<div style="background:#000033; padding:0; margin:0;">{map_body}</div>'
+    else:
+        # Static map: Nigeria + 13 state dots only (no Falcon, no script) for fast first paint
+        static_svg = """
+<svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+<defs><filter id="g"><feGaussianBlur stdDeviation="1" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+<path d="M150,400 Q400,50 650,400" fill="none" stroke="#f9f295" stroke-width="1.5" opacity="0.9" filter="url(#g)"/>
+<path d="M250,150 L380,80 L550,110 L680,250 L620,480 L420,550 L180,520 L120,320 Z" fill="rgba(249,242,149,0.06)" stroke="#f9f295" stroke-width="2" filter="url(#g)"/>
+<g id="states">
+<circle class="state-dot" cx="320" cy="380" r="5" fill="#f9f295"/><circle class="state-dot" cx="380" cy="300" r="5" fill="#f9f295"/><circle class="state-dot" cx="420" cy="320" r="5" fill="#f9f295"/><circle class="state-dot" cx="450" cy="250" r="5" fill="#f9f295"/><circle class="state-dot" cx="520" cy="280" r="5" fill="#f9f295"/><circle class="state-dot" cx="560" cy="220" r="5" fill="#f9f295"/><circle class="state-dot" cx="280" cy="450" r="5" fill="#f9f295"/><circle class="state-dot" cx="320" cy="420" r="5" fill="#f9f295"/><circle class="state-dot" cx="260" cy="400" r="5" fill="#f9f295"/><circle class="state-dot" cx="480" cy="300" r="5" fill="#f9f295"/><circle class="state-dot" cx="340" cy="400" r="5" fill="#f9f295"/><circle class="state-dot" cx="380" cy="360" r="5" fill="#f9f295"/><circle class="state-dot" cx="360" cy="420" r="5" fill="#f9f295"/>
+</g>
+<text x="400" y="250" fill="#f9f295" font-size="14" text-anchor="middle">NVFC</text>
+</svg>
+"""
+        map_html = f'<div style="background:#000033; padding:0; margin:0;">{static_svg}</div>'
     components.html(map_html, height=500)
 
 # Industrial Gallery: NGECC cards
@@ -279,3 +287,6 @@ st.markdown(f"""
     </p>
 </div>
 """, unsafe_allow_html=True)
+
+# After first paint, allow Falcon + Humanoid on next run (lazy-load)
+st.session_state.nvfc_stable = True
