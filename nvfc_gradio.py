@@ -1,28 +1,44 @@
 import gradio as gr
 
-# GCSLC Strategic Branding
+# Updated GCSLC Branding Constants
 NAVY_BLUE = "#001B3A"
 SHIMMERING_GOLD = "#D4AF37"
-TEXT_WHITE = "#FFFFFF"
 
 custom_css = f"""
-.gradio-container {{
+/* Force Navy Blue Background */
+.gradio-container, .main, .container {{
     background-color: {NAVY_BLUE} !important;
-    border: 3px solid {SHIMMERING_GOLD};
-    background-image: linear-gradient(rgba(0, 27, 58, 0.95), rgba(0, 27, 58, 0.95)), url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+    color: white !important;
 }}
-h1, h2, h3, p, span, label {{ color: {SHIMMERING_GOLD} !important; text-align: center; font-family: 'Garamond', serif; }}
-.stat-box {{ border: 1px solid {SHIMMERING_GOLD}; padding: 15px; border-radius: 10px; background: rgba(212, 175, 55, 0.1); }}
-footer {{ visibility: hidden; }}
+
+/* Shimmering Gold Animation for Headings */
+@keyframes shimmer {{
+    0% {{ color: {SHIMMERING_GOLD}; text-shadow: 0 0 5px #fff; }}
+    50% {{ color: #FFDF00; text-shadow: 0 0 20px {SHIMMERING_GOLD}; }}
+    100% {{ color: {SHIMMERING_GOLD}; text-shadow: 0 0 5px #fff; }}
+}}
+
+h1, h2, h3 {{
+    animation: shimmer 3s infinite;
+    font-weight: bold !important;
+    text-align: center;
+}}
+
+/* Ensure all labels and text are Gold */
+label, p, span {{
+    color: {SHIMMERING_GOLD} !important;
+}}
+
+/* Clear Visibility for Inputs */
 input, textarea, select {{
     background-color: #002b5c !important;
     color: white !important;
-    border: 1px solid {SHIMMERING_GOLD} !important;
+    border: 2px solid {SHIMMERING_GOLD} !important;
 }}
-/* Watermark Style */
-.watermark {{
-    position: fixed; bottom: 10px; right: 10px; opacity: 0.3; color: {SHIMMERING_GOLD}; font-size: 10px;
-}}
+
+.stat-box {{ border: 1px solid {SHIMMERING_GOLD}; padding: 15px; border-radius: 10px; background: rgba(212, 175, 55, 0.1); }}
+footer {{ visibility: hidden; }}
+.watermark {{ position: fixed; bottom: 10px; right: 10px; opacity: 0.3; color: {SHIMMERING_GOLD}; font-size: 10px; }}
 """
 
 
