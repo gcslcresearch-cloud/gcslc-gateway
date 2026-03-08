@@ -1,17 +1,32 @@
 import gradio as gr
 
 # GCSLC Strategic Branding Constants
-NAVY_BLUE = "#001F3F"
+NAVY_BLUE = "#001B3A"  # Deeper, more prestigious Navy
 SHIMMERING_GOLD = "#D4AF37"
 TEXT_WHITE = "#FFFFFF"
 
-# Custom CSS for the "Prestige" look
 custom_css = f"""
-body {{ background-color: {NAVY_BLUE}; color: {TEXT_WHITE}; }}
-.gradio-container {{ border: 2px solid {SHIMMERING_GOLD}; border-radius: 15px; padding: 20px; }}
+/* Targets the entire background of the page */
+.gradio-container {{
+    background-color: {NAVY_BLUE} !important;
+    color: {TEXT_WHITE} !important;
+}}
+
+/* Ensures all markdown and headings are Gold */
+h1, h2, h3, p, span {{
+    color: {SHIMMERING_GOLD} !important;
+    text-align: center;
+}}
+
+/* Styles the input dropdown and textboxes to fit the theme */
+.gradio-container input, .gradio-container textarea, .gradio-container select {{
+    background-color: #002b5c !important; /* Slightly lighter navy for contrast */
+    color: {TEXT_WHITE} !important;
+    border: 1px solid {SHIMMERING_GOLD} !important;
+}}
+
+/* Removes the default Gradio footer for a cleaner 'Sovereign' look */
 footer {{ visibility: hidden; }}
-h1, h3 {{ color: {SHIMMERING_GOLD} !important; text-align: center; font-family: 'Garamond', serif; }}
-.stat-box {{ border: 1px solid {SHIMMERING_GOLD}; padding: 10px; border-radius: 8px; text-align: center; }}
 """
 
 
