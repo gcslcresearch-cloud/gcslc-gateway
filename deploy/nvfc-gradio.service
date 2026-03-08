@@ -1,0 +1,23 @@
+# systemd unit for NVFC Gradio Dashboard (Linux)
+# Install: sudo cp deploy/nvfc-gradio.service /etc/systemd/system/
+#         sudo systemctl daemon-reload
+#         sudo systemctl enable nvfc-gradio
+#         sudo systemctl start nvfc-gradio
+# Status:  sudo systemctl status nvfc-gradio
+# Logs:    journalctl -u nvfc-gradio -f
+
+[Unit]
+Description=NVFC Sovereign Dashboard (Gradio)
+After=network.target
+
+[Service]
+Type=simple
+User=YOUR_USER
+WorkingDirectory=/path/to/GCSLC_Sovereign_Gateway
+Environment=PATH=/path/to/GCSLC_Sovereign_Gateway/.venv/bin:/usr/bin
+ExecStart=/path/to/GCSLC_Sovereign_Gateway/.venv/bin/python nvfc_gradio.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
