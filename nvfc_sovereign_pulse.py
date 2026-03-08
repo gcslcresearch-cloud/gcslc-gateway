@@ -4,7 +4,6 @@ Run: streamlit run nvfc_sovereign_pulse.py
 Audio disabled by default. Session-safe: main() uses try-except so one failing visual does not crash the app.
 """
 import streamlit as st
-import streamlit.components.v1 as components
 import sys
 
 # Zero-error guard: single source of truth (spelling verified: Sovereign, Galadiman Ruwan Zazzau)
@@ -57,7 +56,9 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# Sovereign Comparison Widget (sidebar)
+# First thing rendered: sidebar — static watermark then Comparison Widget (no CSS background)
+st.sidebar.markdown("**8R Stealth Paradigm Convergence**")
+st.sidebar.markdown("---")
 st.sidebar.markdown("### 🌍 GLOBAL STRATEGIC CONTEXT")
 st.sidebar.info("""
 **UAE (G42/Microsoft):** $15.2B Investment in AI Cloud.
@@ -67,37 +68,36 @@ st.sidebar.info("""
 
 
 def _inject_css():
-    """Simple CSS only: no external @import to avoid CORS/blocking. Safe ::before/::after watermark."""
-    st.markdown(f"""
+    """Minimal CSS only: no ::before/::after (watermark is in sidebar). No external fonts."""
+    st.markdown("""
 <style>
-.stApp {{ background-color: #000033; position: relative; }}
-.stApp::before {{ content: '8R Stealth {PARADIGM} Convergence'; position: fixed; left: 50%; top: 50%; transform: translate(-50%,-50%) rotate(-12deg); font-size: 1.2rem; font-weight: 700; letter-spacing: 0.15em; color: rgba(212,175,55,0.06); white-space: nowrap; pointer-events: none; z-index: 0; }}
-.stApp::after {{ content: ''; position: fixed; inset: 0; background: repeating-linear-gradient(-12deg, transparent 0, transparent 100px, rgba(212,175,55,0.02) 100px, rgba(212,175,55,0.02) 101px); pointer-events: none; z-index: 0; }}
-.brainbox-watermark {{ position: fixed; left: 0; top: 50%; transform: translateY(-50%); width: 100%; text-align: center; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.15em; color: rgba(212,175,55,0.08); pointer-events: none; z-index: 0; }}
-.stMarkdown p, .stMarkdown li, .stMarkdown span {{ color: #e8eef4 !important; }}
-[data-testid="stVerticalBlock"] > div {{ background: transparent; position: relative; z-index: 1; }}
-.status-widget {{ width: 180px; border: 2px solid #d4af37; padding: 15px; background: rgba(0,0,51,0.9); border-radius: 4px; }}
-.humanoid-bubble {{ border: 1px solid #d4af37; background: rgba(0,0,51,0.95); border-radius: 8px; padding: 10px 12px; margin-top: 12px; font-size: 0.85rem; text-align: center; }}
-.determinant-row {{ font-size: 0.72rem; margin: 4px 0; padding: 3px 0; border-bottom: 1px solid rgba(212,175,55,0.2); }}
-.shimmer-gold {{ color: #f9f295; font-weight: bold; }}
-.signature-block {{ padding: 2rem 0 3.5rem; text-align: center; width: 100%; }}
-.final-watermark {{ position: relative; z-index: 2; margin: 0 auto; }}
-.gallery-card {{ border: 1px solid rgba(212,175,55,0.5); background: rgba(0,0,51,0.8); border-radius: 8px; padding: 12px 16px; text-align: center; font-size: 0.9rem; }}
-.gallery-card .label {{ color: #f9f295; font-weight: 700; }}
+.stApp { background-color: #000033; position: relative; }
+.stMarkdown p, .stMarkdown li, .stMarkdown span { color: #e8eef4 !important; }
+[data-testid="stVerticalBlock"] > div { background: transparent; position: relative; z-index: 1; }
+.status-widget { width: 180px; border: 2px solid #d4af37; padding: 15px; background: rgba(0,0,51,0.9); border-radius: 4px; }
+.humanoid-bubble { border: 1px solid #d4af37; background: rgba(0,0,51,0.95); border-radius: 8px; padding: 10px 12px; margin-top: 12px; font-size: 0.85rem; text-align: center; }
+.determinant-row { font-size: 0.72rem; margin: 4px 0; padding: 3px 0; border-bottom: 1px solid rgba(212,175,55,0.2); }
+.shimmer-gold { color: #f9f295; font-weight: bold; }
+.signature-block { padding: 2rem 0 3.5rem; text-align: center; width: 100%; }
+.final-watermark { position: relative; z-index: 2; margin: 0 auto; }
+.gallery-card { border: 1px solid rgba(212,175,55,0.5); background: rgba(0,0,51,0.8); border-radius: 8px; padding: 12px 16px; text-align: center; font-size: 0.9rem; }
+.gallery-card .label { color: #f9f295; font-weight: 700; }
 </style>
 """, unsafe_allow_html=True)
 
 
-def _render_map_placeholder():
-    """Fallback when components.html fails: inline static SVG (no iframe)."""
-    static = """
-<svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+def _static_map_svg():
+    """Inline SVG only: Nigeria outline + 13 state dots (no Falcon animation, no iframe)."""
+    return """<svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
 <path d="M250,150 L380,80 L550,110 L680,250 L620,480 L420,550 L180,520 L120,320 Z" fill="rgba(249,242,149,0.06)" stroke="#f9f295" stroke-width="2"/>
-<circle cx="320" cy="380" r="5" fill="#f9f295"/><circle cx="380" cy="300" r="5" fill="#f9f295"/><circle cx="450" cy="250" r="5" fill="#f9f295"/>
-<text x="400" y="250" fill="#f9f295" font-size="14" text-anchor="middle">NVFC Map</text>
-</svg>
-"""
-    st.markdown(f'<div style="background:#000033;">{static}</div>', unsafe_allow_html=True)
+<circle cx="320" cy="380" r="5" fill="#f9f295"/><circle cx="380" cy="300" r="5" fill="#f9f295"/><circle cx="420" cy="320" r="5" fill="#f9f295"/><circle cx="450" cy="250" r="5" fill="#f9f295"/><circle cx="520" cy="280" r="5" fill="#f9f295"/><circle cx="560" cy="220" r="5" fill="#f9f295"/><circle cx="280" cy="450" r="5" fill="#f9f295"/><circle cx="320" cy="420" r="5" fill="#f9f295"/><circle cx="260" cy="400" r="5" fill="#f9f295"/><circle cx="480" cy="300" r="5" fill="#f9f295"/><circle cx="340" cy="400" r="5" fill="#f9f295"/><circle cx="380" cy="360" r="5" fill="#f9f295"/><circle cx="360" cy="420" r="5" fill="#f9f295"/>
+<text x="400" y="250" fill="#f9f295" font-size="14" text-anchor="middle">NVFC</text>
+</svg>"""
+
+
+def _render_map_inline(svg_body):
+    """Render map as inline SVG in markdown (zero iframe, instant load)."""
+    st.markdown(f'<div style="background:#000033; min-height:400px;">{svg_body}</div>', unsafe_allow_html=True)
 
 
 def main():
@@ -110,7 +110,7 @@ def main():
 
     try:
         brainbox_text = " · ".join(f"D{i+1} {d}" for i, d in enumerate(DETERMINANTS))
-        st.markdown(f'<div class="brainbox-watermark">{brainbox_text}</div>', unsafe_allow_html=True)
+        st.caption(f"*{brainbox_text}*")
     except Exception as e:
         print(f"[NVFC] Brainbox failed: {e}", file=sys.stderr)
 
@@ -152,20 +152,16 @@ def main():
     try:
         with col_map:
             st.markdown('<h2 class="shimmer-gold">NATIONAL VELOCITY FALCON CLOUD (NVFC)</h2>', unsafe_allow_html=True)
+            # Zero-image mode: always inline SVG (no iframe, no components.html) for instant load
             if LAZY_READY:
-                map_body = map_svg
-                if AUDIO_ENABLED:
-                    map_body = """<audio id="falconCry" preload="auto"><source src="falcon_cry.mp3" type="audio/mpeg"></audio><script>(function(){ document.querySelectorAll('.state-dot').forEach(function(el){ el.addEventListener('mouseenter',function(){ var c=document.getElementById('falconCry'); if(c) c.play().catch(function(){}); }); }); })();</script>""" + map_svg
-                map_html = f'<div style="background:#000033; padding:0; margin:0;">{map_body}</div>'
+                _render_map_inline(map_svg)
             else:
-                static_svg = """<svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg"><path d="M250,150 L380,80 L550,110 L680,250 L620,480 L420,550 L180,520 L120,320 Z" fill="rgba(249,242,149,0.06)" stroke="#f9f295" stroke-width="2"/><g id="states"><circle class="state-dot" cx="320" cy="380" r="5" fill="#f9f295"/><circle class="state-dot" cx="380" cy="300" r="5" fill="#f9f295"/><circle class="state-dot" cx="450" cy="250" r="5" fill="#f9f295"/><circle class="state-dot" cx="520" cy="280" r="5" fill="#f9f295"/></g><text x="400" y="250" fill="#f9f295" font-size="14" text-anchor="middle">NVFC</text></svg>"""
-                map_html = f'<div style="background:#000033;">{static_svg}</div>'
-            components.html(map_html, height=500)
+                _render_map_inline(_static_map_svg())
     except Exception as e:
-        print(f"[NVFC] Map iframe failed: {e}", file=sys.stderr)
+        print(f"[NVFC] Map failed: {e}", file=sys.stderr)
         with col_map:
             st.markdown('<h2 class="shimmer-gold">NATIONAL VELOCITY FALCON CLOUD (NVFC)</h2>', unsafe_allow_html=True)
-            _render_map_placeholder()
+            _render_map_inline(_static_map_svg())
 
     try:
         st.markdown('<p class="shimmer-gold" style="font-size:1rem; margin:1rem 0 0.5rem;">Industrial Gallery</p>', unsafe_allow_html=True)
@@ -181,8 +177,9 @@ def main():
 
     try:
         st.markdown("<br><br><hr style='border-color: rgba(212,175,55,0.4);'>", unsafe_allow_html=True)
+        # Signature: system font Georgia only (no external font load)
         st.markdown(f"""
-<div class="signature-block final-watermark"><h1 class="shimmer-gold" style="font-family: Georgia, serif; font-size: 2rem;">{SIGNATURE_TITLE}</h1><p class="shimmer-gold" style="letter-spacing: 5px; font-size: 0.9rem;">NVFC STRATEGIC COMMAND | GCSLC LTD/GTE</p></div>
+<div class="signature-block final-watermark"><h1 class="shimmer-gold" style="font-family: Georgia, serif; font-size: 2rem;">{SIGNATURE_TITLE}</h1><p class="shimmer-gold" style="font-family: Georgia, serif; letter-spacing: 5px; font-size: 0.9rem;">NVFC STRATEGIC COMMAND | GCSLC LTD/GTE</p></div>
 """, unsafe_allow_html=True)
     except Exception as e:
         print(f"[NVFC] Signature failed: {e}", file=sys.stderr)
