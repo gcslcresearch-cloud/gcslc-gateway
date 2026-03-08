@@ -14,62 +14,40 @@
         }
         body { margin: 0; background: var(--stealth-black); color: white; font-family: 'Inter', sans-serif; overflow-x: hidden; }
 
-        /* Global Shimmer for Shimmering Elements */
+        /* Global Shimmer for Signature and Headers */
         .shimmer-gold {
-            background: linear-gradient(90deg, #d4af37, #f9f295, #d4af37, #f9f295, #d4af37);
+            background: linear-gradient(90deg, #d4af37, #f9f295, #ffffff, #f9f295, #d4af37);
             background-size: 200% auto;
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: shimmer_flow 3s linear infinite;
+            animation: shimmer_flow 3s infinite linear;
             font-weight: bold;
         }
         @keyframes shimmer_flow { to { background-position: 200% center; } }
 
-        /* Slimmed Down States Widget */
-        .status-widget {
-            width: 200px;
-            background: rgba(10, 10, 10, 0.8);
-            border-right: 1px solid #d4af37;
-            padding: 15px;
-            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.5);
+        /* Narrowed States Widget for Focus */
+        .states-widget {
+            width: 170px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            background: rgba(10, 10, 10, 0.9);
+            padding: 10px;
+            margin-right: 20px;
+            border-radius: 5px;
             flex-shrink: 0;
         }
-        .widget-header {
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-        }
-        .widget-header-row {
-            display: grid;
-            grid-template-columns: 1fr auto;
-            gap: 12px;
-            margin-bottom: 8px;
+        .state-header {
             font-size: 0.7rem;
+            margin-bottom: 8px;
+            letter-spacing: 2px;
         }
+        .state-line { font-size: 0.8rem; margin-bottom: 4px; }
+        .state-line.active { color: #00ff88; }
+        .state-line.reserve { color: rgba(212, 175, 55, 0.9); }
         @media (max-width: 600px) {
             .main-layout { flex-direction: column; }
-            .status-widget { width: 100%; border-right: none; border-bottom: 1px solid #d4af37; }
+            .states-widget { width: 100%; margin-right: 0; margin-bottom: 20px; }
         }
-        .status-list { display: flex; flex-direction: column; gap: 6px; }
-        .status-item {
-            font-size: 0.75rem;
-            padding: 6px 8px;
-            border-radius: 4px;
-            letter-spacing: 0.5px;
-        }
-        .status-item.active { background: rgba(0, 102, 71, 0.3); border-left: 3px solid #00a86b; }
-        .status-item.reserve { background: rgba(212, 175, 55, 0.1); border-left: 3px solid #d4af37; }
-        .status-row {
-            display: grid;
-            grid-template-columns: 1fr auto;
-            gap: 12px;
-            align-items: center;
-            font-size: 0.75rem;
-        }
-        .status-row .prod { color: rgba(255,255,255,0.7); }
-        .status-row .stat { text-transform: uppercase; letter-spacing: 0.5px; }
 
         /* Header Section */
         .header-container { text-align: center; padding: 40px 20px; }
@@ -220,33 +198,28 @@
         </div>
     </header>
 
-    <div class="main-layout" style="display: flex;">
-        <aside class="status-widget">
-            <div class="widget-header shimmer-gold">PRODUCTION (MT/YR)</div>
-            <div class="widget-header shimmer-gold">STATUS</div>
-            <div class="status-list">
-                <div class="status-row"><span class="prod">Enugu 0.01</span><span class="stat status-item active">ACTIVE</span></div>
-                <div class="status-row"><span class="prod">Kogi 0.01</span><span class="stat status-item active">ACTIVE</span></div>
-                <div class="status-row"><span class="prod">Benue 0</span><span class="stat status-item reserve shimmer-gold">RESERVE</span></div>
-                <div class="status-row"><span class="prod">Gombe 0</span><span class="stat status-item reserve">RESERVE</span></div>
-                <div class="status-row"><span class="prod">Nasarawa 0</span><span class="stat status-item reserve">RESERVE</span></div>
-                <div class="status-row"><span class="prod">Delta 0</span><span class="stat status-item reserve">RESERVE</span></div>
-                <div class="status-row"><span class="prod">Imo 0</span><span class="stat status-item reserve">RESERVE</span></div>
-                <div class="status-row"><span class="prod">Anambra 0.0</span><span class="stat status-item active">ACTIVE</span></div>
-                <div class="status-row"><span class="prod">Edo 0</span><span class="stat status-item reserve">RESERVE</span></div>
-                <div class="status-row"><span class="prod">Kebbi 0</span><span class="stat status-item reserve">RESERVE</span></div>
-                <div class="status-row"><span class="prod">Bauchi 0</span><span class="stat status-item reserve">RESERVE</span></div>
-                <div class="status-row"><span class="prod">Kwara 0</span><span class="stat status-item reserve">RESERVE</span></div>
-                <div class="status-row"><span class="prod">Plateau 0</span><span class="stat status-item reserve">RESERVE</span></div>
-            </div>
-        </aside>
-        <section class="map-container" style="flex-grow: 1; padding: 20px;">
-            <div id="map-container" style="min-height: 320px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.03); border-radius: 10px; border: 1px solid rgba(212,175,55,0.15);">
-                <svg viewBox="0 0 200 240" style="max-width: 200px; opacity: 0.5;" xmlns="http://www.w3.org/2000/svg">
-                    <path fill="none" stroke="rgba(212,175,55,0.4)" stroke-width="1.5" d="M100 20 L160 50 L180 100 L165 160 L120 220 L80 200 L40 150 L35 90 L60 40 Z"/>
-                </svg>
-            </div>
-        </section>
+    <div class="main-layout" style="display: flex; align-items: flex-start; padding: 20px;">
+        <div class="states-widget">
+            <div class="state-header shimmer-gold">STATUS ARCHIVE</div>
+            <div class="state-line active">● ACTIVE</div>
+            <div class="state-line active">● ACTIVE</div>
+            <div class="shimmer-gold state-line">● RESERVE</div>
+            <div class="state-line active">● ACTIVE</div>
+            <div class="state-line reserve">● RESERVE</div>
+            <div class="state-line reserve">● RESERVE</div>
+            <div class="state-line reserve">● RESERVE</div>
+            <div class="state-line reserve">● RESERVE</div>
+            <div class="state-line reserve">● RESERVE</div>
+            <div class="state-line reserve">● RESERVE</div>
+            <div class="state-line reserve">● RESERVE</div>
+            <div class="state-line reserve">● RESERVE</div>
+            <div class="state-line reserve">● RESERVE</div>
+        </div>
+        <div id="velocity-map" style="flex: 1; min-height: 320px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.03); border-radius: 10px; border: 1px solid rgba(212,175,55,0.15);">
+            <svg viewBox="0 0 200 240" style="max-width: 200px; opacity: 0.5;" xmlns="http://www.w3.org/2000/svg">
+                <path fill="none" stroke="rgba(212,175,55,0.4)" stroke-width="1.5" d="M100 20 L160 50 L180 100 L165 160 L120 220 L80 200 L40 150 L35 90 L60 40 Z"/>
+            </svg>
+        </div>
     </div>
 
     <div class="falcon-hero">
@@ -260,12 +233,10 @@
         <h2 class="shimmer-gold">"Nigeria can power the energy needs of the big techs. Do something about it now."</h2>
     </div>
 
-    <footer>
+    <footer style="text-align: center; margin-top: 50px; border-top: 1px solid #333; padding: 40px 20px;">
         <div class="cac-ribbon">CAC Name Reservation Approved: Nigerian Green Energy and Chemicals Corporation</div>
-        <div class="signature-block">
-            <p class="shimmer-gold" style="font-size: 2.2rem; font-family: 'Playfair Display', serif;">Dr. Sa'ad Jaafaru (Galadiman Ruwan Zazzau)</p>
-            <p class="shimmer-gold" style="font-size: 0.8rem; letter-spacing: 3px;">NVFC STRATEGIC COMMAND</p>
-        </div>
+        <h2 class="shimmer-gold" style="font-family: 'Playfair Display', serif; font-size: 2.2rem; margin-bottom: 0;">Dr. Sa'ad Jaafaru (Galadiman Ruwan Zazzau)</h2>
+        <p class="shimmer-gold" style="font-size: 0.75rem; letter-spacing: 4px; opacity: 0.8;">NATIONAL VELOCITY FALCON CLOUD (NVFC) COMMAND</p>
     </footer>
 
 </body>
