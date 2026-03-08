@@ -1,21 +1,20 @@
 """
 NVFC Sovereign Pulse — High-velocity lightweight (zero errors).
 Run: streamlit run nvfc_sovereign_pulse.py
-Audio disabled by default so visual map loads first; set AUDIO_ENABLED=True to re-enable.
+Audio disabled by default. Session-safe: main() uses try-except so one failing visual does not crash the app.
 """
 import streamlit as st
 import streamlit.components.v1 as components
+import sys
 
 # Zero-error guard: single source of truth (spelling verified: Sovereign, Galadiman Ruwan Zazzau)
 SOVEREIGN = "Sovereign"
 PARADIGM = "Paradigm"
 SIGNATURE_TITLE = "Dr. Sa'ad Jaafaru (Galadiman Ruwan Zazzau)"
 DETERMINANTS = ("Refinement", "Reset", "Research", "Restructure", "Resuscitate", "Revitalize", "Re-engineer", "Retain")
-
-# Tactical audio off until visual map is stable
 AUDIO_ENABLED = False
 
-# Lazy-load: show Falcon + Humanoid only after background is stable (set at end of run)
+# Lazy-load state
 if "nvfc_stable" not in st.session_state:
     st.session_state.nvfc_stable = False
 LAZY_READY = st.session_state.nvfc_stable
@@ -58,7 +57,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# Sovereign Comparison Widget: global strategic context (sidebar)
+# Sovereign Comparison Widget (sidebar)
 st.sidebar.markdown("### 🌍 GLOBAL STRATEGIC CONTEXT")
 st.sidebar.info("""
 **UAE (G42/Microsoft):** $15.2B Investment in AI Cloud.
@@ -66,235 +65,133 @@ st.sidebar.info("""
 *Strategic Gap:* The NVFC provides the energy feedstock (D1–D8) that global clouds need to thrive.
 """)
 
-# Sovereign Command Console: Deep Navy + 8R Brainbox background pulse + gold + signature
-st.markdown(f"""
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&display=swap');
-    
-    .stApp {{ background-color: #000033; position: relative; }}
-    
-    /* 8R Stealth Paradigm Convergence: simple CSS watermark (no image) */
-    .stApp::before {{
-        content: '8R Stealth {PARADIGM} Convergence  •  {SOVEREIGN}';
-        position: fixed;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%) rotate(-12deg);
-        font-size: 1.4rem;
-        font-weight: 700;
-        letter-spacing: 0.2em;
-        color: rgba(212,175,55,0.06);
-        white-space: nowrap;
-        pointer-events: none;
-        z-index: 0;
-    }}
-    .stApp::after {{
-        content: '';
-        position: fixed;
-        inset: 0;
-        background: repeating-linear-gradient(-12deg, transparent 0, transparent 100px, rgba(212,175,55,0.025) 100px, rgba(212,175,55,0.025) 101px);
-        pointer-events: none;
-        z-index: 0;
-    }}
-    .brainbox-watermark {{
-        position: fixed;
-        left: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 100%;
-        text-align: center;
-        font-size: 0.9rem;
-        font-weight: 700;
-        letter-spacing: 0.2em;
-        background: linear-gradient(90deg, rgba(212,175,55,0.05), rgba(249,242,149,0.14), rgba(212,175,55,0.05));
-        background-size: 200% auto;
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-        animation: brainbox-shimmer 3.5s linear infinite;
-        pointer-events: none;
-        z-index: 0;
-    }}
-    @keyframes brainbox-shimmer {{ to {{ background-position: 200% center; }} }}
-    
-    .stMarkdown p, .stMarkdown li, .stMarkdown span {{ color: #e8eef4 !important; }}
-    .stMarkdown h1, .stMarkdown h2, .stMarkdown h3 {{ color: inherit; }}
-    [data-testid="stVerticalBlock"] > div {{ background: transparent; position: relative; z-index: 1; }}
-    
-    .status-widget {{
-        width: 180px;
-        border: 2px solid #d4af37;
-        padding: 15px;
-        background: rgba(0, 0, 51, 0.9);
-        border-radius: 4px;
-        box-shadow: 0 0 12px rgba(212, 175, 55, 0.2);
-    }}
-    
-    .humanoid-bubble {{
-        border: 1px solid #d4af37;
-        background: rgba(0,0,51,0.95);
-        border-radius: 8px;
-        padding: 10px 12px;
-        margin-top: 12px;
-        font-size: 0.85rem;
-        text-align: center;
-        box-shadow: 0 0 10px rgba(212,175,55,0.2);
-        animation: humanoid-pulse 4s ease-in-out infinite;
-    }}
-    @keyframes humanoid-pulse {{
-        0%, 100% {{ opacity: 0.9; box-shadow: 0 0 10px rgba(212,175,55,0.2); }}
-        50% {{ opacity: 1; box-shadow: 0 0 18px rgba(212,175,55,0.45); }}
-    }}
-    
-    .determinant-row {{ font-size: 0.72rem; margin: 4px 0; padding: 3px 0; border-bottom: 1px solid rgba(212,175,55,0.2); }}
-    .determinant-row .det-num {{ font-weight: 800; color: #d4af37; margin-right: 6px; }}
 
-    .shimmer-gold {{
-        background: linear-gradient(90deg, #d4af37, #f9f295, #d4af37);
-        background-size: 200% auto;
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-        animation: shimmer_flow 2.5s linear infinite;
-        font-weight: bold;
-    }}
-    @keyframes shimmer_flow {{ to {{ background-position: 200% center; }} }}
-    
-    .signature-block {{ padding: 2rem 0 3.5rem; text-align: center; width: 100%; }}
-    .signature-block .shimmer-gold {{ opacity: 1; text-shadow: 0 0 20px rgba(212,175,55,0.5), 0 0 40px rgba(249,242,149,0.25); }}
-    .final-watermark {{ position: relative; z-index: 2; margin: 0 auto; display: block; }}
-    
-    .gallery-card {{
-        border: 1px solid rgba(212,175,55,0.5);
-        background: rgba(0,0,51,0.8);
-        border-radius: 8px;
-        padding: 12px 16px;
-        text-align: center;
-        font-size: 0.9rem;
-    }}
-    .gallery-card .label {{ color: #f9f295; font-weight: 700; }}
+def _inject_css():
+    """Simple CSS only: no external @import to avoid CORS/blocking. Safe ::before/::after watermark."""
+    st.markdown(f"""
+<style>
+.stApp {{ background-color: #000033; position: relative; }}
+.stApp::before {{ content: '8R Stealth {PARADIGM} Convergence'; position: fixed; left: 50%; top: 50%; transform: translate(-50%,-50%) rotate(-12deg); font-size: 1.2rem; font-weight: 700; letter-spacing: 0.15em; color: rgba(212,175,55,0.06); white-space: nowrap; pointer-events: none; z-index: 0; }}
+.stApp::after {{ content: ''; position: fixed; inset: 0; background: repeating-linear-gradient(-12deg, transparent 0, transparent 100px, rgba(212,175,55,0.02) 100px, rgba(212,175,55,0.02) 101px); pointer-events: none; z-index: 0; }}
+.brainbox-watermark {{ position: fixed; left: 0; top: 50%; transform: translateY(-50%); width: 100%; text-align: center; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.15em; color: rgba(212,175,55,0.08); pointer-events: none; z-index: 0; }}
+.stMarkdown p, .stMarkdown li, .stMarkdown span {{ color: #e8eef4 !important; }}
+[data-testid="stVerticalBlock"] > div {{ background: transparent; position: relative; z-index: 1; }}
+.status-widget {{ width: 180px; border: 2px solid #d4af37; padding: 15px; background: rgba(0,0,51,0.9); border-radius: 4px; }}
+.humanoid-bubble {{ border: 1px solid #d4af37; background: rgba(0,0,51,0.95); border-radius: 8px; padding: 10px 12px; margin-top: 12px; font-size: 0.85rem; text-align: center; }}
+.determinant-row {{ font-size: 0.72rem; margin: 4px 0; padding: 3px 0; border-bottom: 1px solid rgba(212,175,55,0.2); }}
+.shimmer-gold {{ color: #f9f295; font-weight: bold; }}
+.signature-block {{ padding: 2rem 0 3.5rem; text-align: center; width: 100%; }}
+.final-watermark {{ position: relative; z-index: 2; margin: 0 auto; }}
+.gallery-card {{ border: 1px solid rgba(212,175,55,0.5); background: rgba(0,0,51,0.8); border-radius: 8px; padding: 12px 16px; text-align: center; font-size: 0.9rem; }}
+.gallery-card .label {{ color: #f9f295; font-weight: 700; }}
 </style>
 """, unsafe_allow_html=True)
 
-# 8R Brainbox: determinants as lightweight CSS watermark (single div)
-brainbox_text = " · ".join(f"D{i+1} {d}" for i, d in enumerate(DETERMINANTS))
-st.markdown(f'<div class="brainbox-watermark">{brainbox_text}</div>', unsafe_allow_html=True)
 
-# Tactical audio disabled so visual map loads first (set AUDIO_ENABLED=True to re-enable)
-if AUDIO_ENABLED:
-    st.markdown("""
-    <audio id="pulseHumMain" loop preload="auto" style="position:absolute;width:0;height:0;opacity:0;">
-    <source src="40hz_pulse_hum.mp3" type="audio/mpeg">
-    <source src="deep_pulse_hum.mp3" type="audio/mpeg">
-    </audio>
-    """, unsafe_allow_html=True)
-
-# Header Section
-st.markdown(
-    '<h1 class="shimmer-gold" style="text-align: center;">GCSLC STRATEGIC COMMAND</h1>',
-    unsafe_allow_html=True,
-)
-
-# Layout Architecture
-col_side, col_map = st.columns([1, 4])
-
-with col_side:
-    det_rows = "".join(f'<div class="determinant-row shimmer-gold">D{i+1} {d}</div>' for i, d in enumerate(DETERMINANTS))
-    humanoid_block = (
-        """<svg width="64" height="80" viewBox="0 0 64 80" xmlns="http://www.w3.org/2000/svg" style="margin: 0 auto;">
-            <ellipse cx="32" cy="14" rx="10" ry="12" fill="none" stroke="#d4af37" stroke-width="1.5"/>
-            <line x1="32" y1="26" x2="32" y2="44" stroke="#d4af37" stroke-width="1.5"/>
-            <line x1="32" y1="44" x2="18" y2="68" stroke="#d4af37" stroke-width="1.5"/>
-            <line x1="32" y1="44" x2="46" y2="68" stroke="#d4af37" stroke-width="1.5"/>
-            <line x1="32" y1="34" x2="16" y2="38" stroke="#d4af37" stroke-width="1.5"/>
-            <line x1="32" y1="34" x2="48" y2="38" stroke="#d4af37" stroke-width="1.5"/>
-        </svg>
-        <div class="humanoid-bubble shimmer-gold">I need energy to thrive.</div>"""
-        if LAZY_READY
-        else """<p class="shimmer-gold" style="font-size:0.8rem;">Loading…</p>"""
-    )
-    st.markdown(f"""
-    <p class="shimmer-gold" style="font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 8px;">8R BRAINBOX DETERMINANTS</p>
-    {det_rows}
-    <div class="status-widget" style="margin-top: 14px;">
-        <p class="shimmer-gold" style="font-size: 0.8rem; letter-spacing: 2px;">STATUS ARCHIVE</p>
-        <p style="color: #00ff88; margin: 5px 0;">● ACTIVE</p>
-        <p style="color: #00ff88; margin: 5px 0;">● ACTIVE</p>
-        <p class="shimmer-gold" style="margin: 5px 0;">● RESERVE</p>
-    </div>
-    <div style="margin-top: 20px; text-align: center;">
-        {humanoid_block}
-    </div>
-    """, unsafe_allow_html=True)
-
-with col_map:
-    st.markdown(
-        '<h2 class="shimmer-gold">NATIONAL VELOCITY FALCON CLOUD (NVFC)</h2>',
-        unsafe_allow_html=True,
-    )
-    # Lazy-load: full map (with Falcon) only when background stable; else static map
-    if LAZY_READY:
-        map_body = map_svg
-        if AUDIO_ENABLED:
-            map_body = """<audio id="falconCry" preload="auto"><source src="falcon_cry.mp3" type="audio/mpeg"></audio>
-    <script>
-    (function(){ document.querySelectorAll('.state-dot').forEach(function(el){ el.style.cursor='pointer'; el.addEventListener('mouseenter',function(){ var c=document.getElementById('falconCry'); if(c){ c.currentTime=0; c.volume=0.3; c.play().catch(function(){}); } }); }); })();
-    </script>
-    """ + map_svg
-        map_html = f'<div style="background:#000033; padding:0; margin:0;">{map_body}</div>'
-    else:
-        # Static map: Nigeria + 13 state dots only (no Falcon, no script) for fast first paint
-        static_svg = """
+def _render_map_placeholder():
+    """Fallback when components.html fails: inline static SVG (no iframe)."""
+    static = """
 <svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="g"><feGaussianBlur stdDeviation="1" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-<path d="M150,400 Q400,50 650,400" fill="none" stroke="#f9f295" stroke-width="1.5" opacity="0.9" filter="url(#g)"/>
-<path d="M250,150 L380,80 L550,110 L680,250 L620,480 L420,550 L180,520 L120,320 Z" fill="rgba(249,242,149,0.06)" stroke="#f9f295" stroke-width="2" filter="url(#g)"/>
-<g id="states">
-<circle class="state-dot" cx="320" cy="380" r="5" fill="#f9f295"/><circle class="state-dot" cx="380" cy="300" r="5" fill="#f9f295"/><circle class="state-dot" cx="420" cy="320" r="5" fill="#f9f295"/><circle class="state-dot" cx="450" cy="250" r="5" fill="#f9f295"/><circle class="state-dot" cx="520" cy="280" r="5" fill="#f9f295"/><circle class="state-dot" cx="560" cy="220" r="5" fill="#f9f295"/><circle class="state-dot" cx="280" cy="450" r="5" fill="#f9f295"/><circle class="state-dot" cx="320" cy="420" r="5" fill="#f9f295"/><circle class="state-dot" cx="260" cy="400" r="5" fill="#f9f295"/><circle class="state-dot" cx="480" cy="300" r="5" fill="#f9f295"/><circle class="state-dot" cx="340" cy="400" r="5" fill="#f9f295"/><circle class="state-dot" cx="380" cy="360" r="5" fill="#f9f295"/><circle class="state-dot" cx="360" cy="420" r="5" fill="#f9f295"/>
-</g>
-<text x="400" y="250" fill="#f9f295" font-size="14" text-anchor="middle">NVFC</text>
+<path d="M250,150 L380,80 L550,110 L680,250 L620,480 L420,550 L180,520 L120,320 Z" fill="rgba(249,242,149,0.06)" stroke="#f9f295" stroke-width="2"/>
+<circle cx="320" cy="380" r="5" fill="#f9f295"/><circle cx="380" cy="300" r="5" fill="#f9f295"/><circle cx="450" cy="250" r="5" fill="#f9f295"/>
+<text x="400" y="250" fill="#f9f295" font-size="14" text-anchor="middle">NVFC Map</text>
 </svg>
 """
-        map_html = f'<div style="background:#000033; padding:0; margin:0;">{static_svg}</div>'
-    components.html(map_html, height=500)
+    st.markdown(f'<div style="background:#000033;">{static}</div>', unsafe_allow_html=True)
 
-# Industrial Gallery: NGECC cards
-st.markdown('<p class="shimmer-gold" style="font-size: 1rem; margin: 1rem 0 0.5rem;">Industrial Gallery</p>', unsafe_allow_html=True)
-gal1, gal2, gal3 = st.columns(3)
-with gal1:
-    st.markdown(f"""
-    <div class="gallery-card">
-        <div class="label">NGECC Urea Fertilizer</div>
-        <div style="color: #b8c4ce; font-size: 0.8rem;">{SOVEREIGN} feedstock</div>
-    </div>
-    """, unsafe_allow_html=True)
-with gal2:
-    st.markdown(f"""
-    <div class="gallery-card">
-        <div class="label">Activated Carbon</div>
-        <div style="color: #b8c4ce; font-size: 0.8rem;">8R Stealth {PARADIGM}</div>
-    </div>
-    """, unsafe_allow_html=True)
-with gal3:
-    st.markdown("""
-    <div class="gallery-card">
-        <div class="label">AI Hardware Feedstock</div>
-        <div style="color: #b8c4ce; font-size: 0.8rem;">Germanium · high-value</div>
-    </div>
-    """, unsafe_allow_html=True)
 
-# Signature anchor: shimmering gold, final high-contrast element at bottom center
-st.markdown("<br><br><hr style='border-color: rgba(212,175,55,0.4);'>", unsafe_allow_html=True)
-st.markdown(f"""
-<div class="signature-block final-watermark">
-    <h1 class="shimmer-gold" style="font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 0.5rem;">
-        {SIGNATURE_TITLE}
-    </h1>
-    <p class="shimmer-gold" style="letter-spacing: 5px; font-size: 0.9rem;">
-        NVFC STRATEGIC COMMAND | GCSLC LTD/GTE
-    </p>
-</div>
+def main():
+    """Run dashboard with try-except per section so one failing visual does not crash the session."""
+    try:
+        _inject_css()
+    except Exception as e:
+        print(f"[NVFC] CSS inject failed: {e}", file=sys.stderr)
+        st.markdown("<style>.stApp { background-color: #000033; }</style>", unsafe_allow_html=True)
+
+    try:
+        brainbox_text = " · ".join(f"D{i+1} {d}" for i, d in enumerate(DETERMINANTS))
+        st.markdown(f'<div class="brainbox-watermark">{brainbox_text}</div>', unsafe_allow_html=True)
+    except Exception as e:
+        print(f"[NVFC] Brainbox failed: {e}", file=sys.stderr)
+
+    if AUDIO_ENABLED:
+        try:
+            st.markdown("""<audio id="pulseHumMain" loop preload="auto" style="position:absolute;width:0;height:0;opacity:0;"><source src="40hz_pulse_hum.mp3" type="audio/mpeg"></audio>""", unsafe_allow_html=True)
+        except Exception:
+            pass
+
+    try:
+        st.markdown('<h1 class="shimmer-gold" style="text-align: center;">GCSLC STRATEGIC COMMAND</h1>', unsafe_allow_html=True)
+    except Exception as e:
+        print(f"[NVFC] Header failed: {e}", file=sys.stderr)
+        st.title("GCSLC STRATEGIC COMMAND")
+
+    col_side, col_map = st.columns([1, 4])
+
+    try:
+        with col_side:
+            det_rows = "".join(f'<div class="determinant-row shimmer-gold">D{i+1} {d}</div>' for i, d in enumerate(DETERMINANTS))
+            humanoid_block = (
+                """<svg width="64" height="80" viewBox="0 0 64 80" xmlns="http://www.w3.org/2000/svg" style="margin:0 auto;"><ellipse cx="32" cy="14" rx="10" ry="12" fill="none" stroke="#d4af37" stroke-width="1.5"/><line x1="32" y1="26" x2="32" y2="44" stroke="#d4af37" stroke-width="1.5"/><line x1="32" y1="44" x2="18" y2="68" stroke="#d4af37" stroke-width="1.5"/><line x1="32" y1="44" x2="46" y2="68" stroke="#d4af37" stroke-width="1.5"/><line x1="32" y1="34" x2="16" y2="38" stroke="#d4af37" stroke-width="1.5"/><line x1="32" y1="34" x2="48" y2="38" stroke="#d4af37" stroke-width="1.5"/></svg><div class="humanoid-bubble shimmer-gold">I need energy to thrive.</div>"""
+                if LAZY_READY
+                else """<p class="shimmer-gold" style="font-size:0.8rem;">Loading…</p>"""
+            )
+            st.markdown(f"""
+<p class="shimmer-gold" style="font-size:0.75rem; letter-spacing:2px;">8R BRAINBOX DETERMINANTS</p>
+{det_rows}
+<div class="status-widget" style="margin-top:14px;"><p class="shimmer-gold" style="font-size:0.8rem;">STATUS ARCHIVE</p><p style="color:#00ff88;">● ACTIVE</p><p class="shimmer-gold">● RESERVE</p></div>
+<div style="margin-top:20px; text-align:center;">{humanoid_block}</div>
 """, unsafe_allow_html=True)
+    except Exception as e:
+        print(f"[NVFC] Sidebar column failed: {e}", file=sys.stderr)
+        with col_side:
+            st.caption("8R BRAINBOX DETERMINANTS")
+            for i, d in enumerate(DETERMINANTS):
+                st.caption(f"D{i+1} {d}")
 
-# After first paint, allow Falcon + Humanoid on next run (lazy-load)
-st.session_state.nvfc_stable = True
+    try:
+        with col_map:
+            st.markdown('<h2 class="shimmer-gold">NATIONAL VELOCITY FALCON CLOUD (NVFC)</h2>', unsafe_allow_html=True)
+            if LAZY_READY:
+                map_body = map_svg
+                if AUDIO_ENABLED:
+                    map_body = """<audio id="falconCry" preload="auto"><source src="falcon_cry.mp3" type="audio/mpeg"></audio><script>(function(){ document.querySelectorAll('.state-dot').forEach(function(el){ el.addEventListener('mouseenter',function(){ var c=document.getElementById('falconCry'); if(c) c.play().catch(function(){}); }); }); })();</script>""" + map_svg
+                map_html = f'<div style="background:#000033; padding:0; margin:0;">{map_body}</div>'
+            else:
+                static_svg = """<svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg"><path d="M250,150 L380,80 L550,110 L680,250 L620,480 L420,550 L180,520 L120,320 Z" fill="rgba(249,242,149,0.06)" stroke="#f9f295" stroke-width="2"/><g id="states"><circle class="state-dot" cx="320" cy="380" r="5" fill="#f9f295"/><circle class="state-dot" cx="380" cy="300" r="5" fill="#f9f295"/><circle class="state-dot" cx="450" cy="250" r="5" fill="#f9f295"/><circle class="state-dot" cx="520" cy="280" r="5" fill="#f9f295"/></g><text x="400" y="250" fill="#f9f295" font-size="14" text-anchor="middle">NVFC</text></svg>"""
+                map_html = f'<div style="background:#000033;">{static_svg}</div>'
+            components.html(map_html, height=500)
+    except Exception as e:
+        print(f"[NVFC] Map iframe failed: {e}", file=sys.stderr)
+        with col_map:
+            st.markdown('<h2 class="shimmer-gold">NATIONAL VELOCITY FALCON CLOUD (NVFC)</h2>', unsafe_allow_html=True)
+            _render_map_placeholder()
+
+    try:
+        st.markdown('<p class="shimmer-gold" style="font-size:1rem; margin:1rem 0 0.5rem;">Industrial Gallery</p>', unsafe_allow_html=True)
+        gal1, gal2, gal3 = st.columns(3)
+        with gal1:
+            st.markdown(f'<div class="gallery-card"><div class="label">NGECC Urea Fertilizer</div><div style="color:#b8c4ce; font-size:0.8rem;">{SOVEREIGN} feedstock</div></div>', unsafe_allow_html=True)
+        with gal2:
+            st.markdown(f'<div class="gallery-card"><div class="label">Activated Carbon</div><div style="color:#b8c4ce; font-size:0.8rem;">8R Stealth {PARADIGM}</div></div>', unsafe_allow_html=True)
+        with gal3:
+            st.markdown('<div class="gallery-card"><div class="label">AI Hardware Feedstock</div><div style="color:#b8c4ce; font-size:0.8rem;">Germanium · high-value</div></div>', unsafe_allow_html=True)
+    except Exception as e:
+        print(f"[NVFC] Gallery failed: {e}", file=sys.stderr)
+
+    try:
+        st.markdown("<br><br><hr style='border-color: rgba(212,175,55,0.4);'>", unsafe_allow_html=True)
+        st.markdown(f"""
+<div class="signature-block final-watermark"><h1 class="shimmer-gold" style="font-family: Georgia, serif; font-size: 2rem;">{SIGNATURE_TITLE}</h1><p class="shimmer-gold" style="letter-spacing: 5px; font-size: 0.9rem;">NVFC STRATEGIC COMMAND | GCSLC LTD/GTE</p></div>
+""", unsafe_allow_html=True)
+    except Exception as e:
+        print(f"[NVFC] Signature failed: {e}", file=sys.stderr)
+        st.caption(SIGNATURE_TITLE)
+
+    try:
+        st.session_state.nvfc_stable = True
+    except Exception:
+        pass
+
+
+main()
