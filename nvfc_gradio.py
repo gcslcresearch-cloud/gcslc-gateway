@@ -1,71 +1,58 @@
 import gradio as gr
 
-# GCSLC Strategic Branding Constants
-NAVY_BLUE = "#001B3A"  # Deeper, more prestigious Navy
+# GCSLC Strategic Branding
+NAVY_BLUE = "#001B3A"
 SHIMMERING_GOLD = "#D4AF37"
 TEXT_WHITE = "#FFFFFF"
 
 custom_css = f"""
-/* Targets the entire background of the page */
-.gradio-container {{
-    background-color: {NAVY_BLUE} !important;
-    color: {TEXT_WHITE} !important;
-}}
-
-/* Ensures all markdown and headings are Gold */
-h1, h2, h3, p, span {{
-    color: {SHIMMERING_GOLD} !important;
-    text-align: center;
-}}
-
-/* Styles the input dropdown and textboxes to fit the theme */
-.gradio-container input, .gradio-container textarea, .gradio-container select {{
-    background-color: #002b5c !important; /* Slightly lighter navy for contrast */
-    color: {TEXT_WHITE} !important;
+.gradio-container {{ background-color: {NAVY_BLUE} !important; border: 2px solid {SHIMMERING_GOLD}; }}
+h1, h2, h3, p, span, label {{ color: {SHIMMERING_GOLD} !important; text-align: center; }}
+.stat-box {{ border: 1px solid {SHIMMERING_GOLD}; padding: 15px; border-radius: 10px; margin: 10px; }}
+footer {{ visibility: hidden; }}
+/* Professional input styling */
+input, textarea, select {{
+    background-color: #002b5c !important;
+    color: white !important;
     border: 1px solid {SHIMMERING_GOLD} !important;
 }}
-
-/* Removes the default Gradio footer for a cleaner 'Sovereign' look */
-footer {{ visibility: hidden; }}
 """
 
 
-def nvfc_briefing(sector):
-    # Strategic Intelligence mapping
-    data = {
-        "Global Context": "UAE (G42/Microsoft) $15.2 Billion AI Cloud vs. Nigeria's 2 Billion Metric Tonnes Coal Base.",
-        "8R Framework": "1. Refine 2. Reset 3. Research 4. Restructure 5. Resuscitate 6. Revitalize 7. Re-engineer 8. Retain.",
-        "Ground-Base": "13 States in Nigeria hold the catalyst for the National Velocity Falcon Cloud.",
-        "Command": "Strategist: Dr. Sa'ad Jaafaru (Galadiman Ruwan Zazzau)"
+def investor_briefing(pillar):
+    briefs = {
+        "Executive Summary": "GCSLC LTD/GTE is spearheading the NVFC to pivot Nigeria's 2B Metric Tonnes of coal into a Green Energy/AI infrastructure.",
+        "Market Opportunity": "Benchmark: UAE G42/Microsoft $15.2B Investment. Target: African Sovereign Wealth Cloud 2050.",
+        "8R Framework": "Proprietary 8R Stealth Paradigm: Refine, Reset, Research, Restructure, Resuscitate, Revitalize, Re-engineer, Retain.",
+        "Legal & Compliance": "Entity: GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION LTD/GTE. CAC Code: 176917792057."
     }
-    return data.get(sector, "Select a Strategic Pillar to view the Brief.")
+    return briefs.get(pillar)
 
 
-with gr.Blocks(css=custom_css, title="GCSLC: NVFC Sovereign Dashboard") as demo:
-    gr.Markdown("# 🦅 National Velocity Falcon Cloud (NVFC)")
-    gr.Markdown("### GCSLC Strategic Command & Leadership Center")
-
-    with gr.Row():
-        with gr.Column(scale=1):
-            gr.Image("https://img.icons8.com/ios-filled/100/D4AF37/falcon.png", show_label=False, container=False)
-        with gr.Column(scale=4):
-            gr.Markdown("**The Nigeria Ground-Base:** 2 Billion Metric Tonnes of Coal.")
-            gr.Markdown("**The Engine:** 8R Stealth Paradigm Convergence.")
+with gr.Blocks(css=custom_css, title="GCSLC Sovereign Gateway") as demo:
+    gr.Markdown("# 🦅 NATIONAL VELOCITY FALCON CLOUD (NVFC)")
+    gr.Markdown("### GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION (GCSLC) LTD/GTE")
 
     with gr.Row():
-        pillar = gr.Dropdown(
-            choices=["Global Context", "8R Framework", "Ground-Base", "Command"],
-            label="Select Strategic Intelligence Pillar",
-            value="Global Context"
-        )
+        with gr.Column(elem_classes="stat-box"):
+            gr.Markdown("#### STRATEGIC ASSET")
+            gr.Markdown("2 Billion Metric Tonnes Coal Base")
+        with gr.Column(elem_classes="stat-box"):
+            gr.Markdown("#### CAC STATUS")
+            gr.Markdown("Name Reserved: 176917792057")
 
-    output = gr.Textbox(label="Strategic Intelligence Output", lines=4)
+    pillar_input = gr.Dropdown(
+        choices=["Executive Summary", "Market Opportunity", "8R Framework", "Legal & Compliance"],
+        label="Select Investor Intelligence Module",
+        value="Executive Summary"
+    )
 
-    pillar.change(fn=nvfc_briefing, inputs=pillar, outputs=output)
+    output_text = gr.Textbox(label="Strategic Briefing Output", lines=3)
+    pillar_input.change(fn=investor_briefing, inputs=pillar_input, outputs=output_text)
 
     gr.Markdown("---")
-    gr.Markdown("**Anchor:** Dr. Sa'ad Jaafaru (Galadiman Ruwan Zazzau) | © 2026 GCSLC")
+    gr.Markdown("**CHAIRMAN & FOUNDER:** Dr. Sa'ad Jaafaru (Galadiman Ruwan Zazzau)")
+    gr.Markdown("**CONTACT:** info@gcslc.center | **ENQUIRIES:** Strategic Leadership Command")
 
-# CRITICAL: This generates your 72-hour public link
 if __name__ == "__main__":
     demo.launch(share=True)
