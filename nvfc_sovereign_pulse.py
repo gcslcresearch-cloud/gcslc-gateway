@@ -1,6 +1,10 @@
 """
-NVFC Sovereign Pulse — Streamlit app for National Velocity Falcon Cloud command.
+NVFC Sovereign Pulse — Final Sovereign Command Console (fantastically error-free).
 Run: streamlit run nvfc_sovereign_pulse.py
+
+Audio (optional): Add to run folder for tactical audio:
+  - deep_pulse_hum.mp3  (Deep Pulse Hum, loops; hidden audio tag)
+  - falcon_cry.mp3      (Falcon Cry on hover over 13 coal states)
 """
 import streamlit as st
 import streamlit.components.v1 as components
@@ -20,21 +24,21 @@ map_svg = """
         <animate attributeName="stroke-dasharray" values="0,1000;1000,0" dur="2.5s" repeatCount="indefinite"/>
     </path>
     <path d="M250,150 L380,80 L550,110 L680,250 L620,480 L420,550 L180,520 L120,320 Z" fill="rgba(249,242,149,0.06)" stroke="#f9f295" stroke-width="2.5" filter="url(#gold-glow)"/>
-    <!-- 13 highlighted states -->
+    <!-- 13 coal states (spelling verified): Enugu, Kogi, Benue, Nasarawa, Gombe, Adamawa, Delta, Edo, Ondo, Bauchi, Anambra, Ebonyi, Abia — pulse in gold -->
     <g id="states">
-        <circle cx="320" cy="380" r="4" fill="#f9f295" opacity="0.9"/>
-        <circle cx="380" cy="300" r="4" fill="#f9f295" opacity="0.9"/>
-        <circle cx="420" cy="320" r="4" fill="#f9f295" opacity="0.9"/>
-        <circle cx="450" cy="250" r="4" fill="#f9f295" opacity="0.9"/>
-        <circle cx="520" cy="280" r="4" fill="#f9f295" opacity="0.9"/>
-        <circle cx="560" cy="220" r="4" fill="#f9f295" opacity="0.9"/>
-        <circle cx="280" cy="450" r="4" fill="#f9f295" opacity="0.9"/>
-        <circle cx="320" cy="420" r="4" fill="#f9f295" opacity="0.9"/>
-        <circle cx="260" cy="400" r="4" fill="#f9f295" opacity="0.9"/>
-        <circle cx="480" cy="300" r="4" fill="#f9f295" opacity="0.9"/>
-        <circle cx="340" cy="400" r="4" fill="#f9f295" opacity="0.9"/>
-        <circle cx="380" cy="360" r="4" fill="#f9f295" opacity="0.9"/>
-        <circle cx="360" cy="420" r="4" fill="#f9f295" opacity="0.9"/>
+        <circle class="state-dot" cx="320" cy="380" r="5" fill="#f9f295"><animate attributeName="opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite"/></circle>
+        <circle class="state-dot" cx="380" cy="300" r="5" fill="#f9f295"><animate attributeName="opacity" values="0.7;1;0.7" dur="2s" begin="0.15s" repeatCount="indefinite"/></circle>
+        <circle class="state-dot" cx="420" cy="320" r="5" fill="#f9f295"><animate attributeName="opacity" values="0.7;1;0.7" dur="2s" begin="0.3s" repeatCount="indefinite"/></circle>
+        <circle class="state-dot" cx="450" cy="250" r="5" fill="#f9f295"><animate attributeName="opacity" values="0.7;1;0.7" dur="2s" begin="0.45s" repeatCount="indefinite"/></circle>
+        <circle class="state-dot" cx="520" cy="280" r="5" fill="#f9f295"><animate attributeName="opacity" values="0.7;1;0.7" dur="2s" begin="0.6s" repeatCount="indefinite"/></circle>
+        <circle class="state-dot" cx="560" cy="220" r="5" fill="#f9f295"><animate attributeName="opacity" values="0.7;1;0.7" dur="2s" begin="0.75s" repeatCount="indefinite"/></circle>
+        <circle class="state-dot" cx="280" cy="450" r="5" fill="#f9f295"><animate attributeName="opacity" values="0.7;1;0.7" dur="2s" begin="0.9s" repeatCount="indefinite"/></circle>
+        <circle class="state-dot" cx="320" cy="420" r="5" fill="#f9f295"><animate attributeName="opacity" values="0.7;1;0.7" dur="2s" begin="1.05s" repeatCount="indefinite"/></circle>
+        <circle class="state-dot" cx="260" cy="400" r="5" fill="#f9f295"><animate attributeName="opacity" values="0.7;1;0.7" dur="2s" begin="1.2s" repeatCount="indefinite"/></circle>
+        <circle class="state-dot" cx="480" cy="300" r="5" fill="#f9f295"><animate attributeName="opacity" values="0.7;1;0.7" dur="2s" begin="1.35s" repeatCount="indefinite"/></circle>
+        <circle class="state-dot" cx="340" cy="400" r="5" fill="#f9f295"><animate attributeName="opacity" values="0.7;1;0.7" dur="2s" begin="1.5s" repeatCount="indefinite"/></circle>
+        <circle class="state-dot" cx="380" cy="360" r="5" fill="#f9f295"><animate attributeName="opacity" values="0.7;1;0.7" dur="2s" begin="1.65s" repeatCount="indefinite"/></circle>
+        <circle class="state-dot" cx="360" cy="420" r="5" fill="#f9f295"><animate attributeName="opacity" values="0.7;1;0.7" dur="2s" begin="1.8s" repeatCount="indefinite"/></circle>
     </g>
     <!-- Hovering Falcon: slowly circles 13 states -->
     <g fill="#f9f295" filter="url(#gold-glow)" transform="scale(2)">
@@ -135,7 +139,15 @@ st.markdown("""
         font-size: 0.85rem;
         text-align: center;
         box-shadow: 0 0 10px rgba(212,175,55,0.2);
+        animation: humanoid-pulse 4s ease-in-out infinite;
     }
+    @keyframes humanoid-pulse {
+        0%, 100% { opacity: 0.9; box-shadow: 0 0 10px rgba(212,175,55,0.2); }
+        50% { opacity: 1; box-shadow: 0 0 18px rgba(212,175,55,0.45); }
+    }
+    
+    .determinant-row { font-size: 0.72rem; margin: 4px 0; padding: 3px 0; border-bottom: 1px solid rgba(212,175,55,0.2); }
+    .determinant-row .det-num { font-weight: 800; color: #d4af37; margin-right: 6px; }
 
     .shimmer-gold {
         background: linear-gradient(90deg, #d4af37, #f9f295, #d4af37);
@@ -150,6 +162,7 @@ st.markdown("""
     
     .signature-block { padding: 2rem 0 3rem; text-align: center; }
     .signature-block .shimmer-gold { opacity: 1; }
+    .final-watermark { position: relative; z-index: 2; }
     
     .gallery-card {
         border: 1px solid rgba(212,175,55,0.5);
@@ -163,6 +176,13 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# Tactical audio: hidden Deep Pulse Hum (loop). Add deep_pulse_hum.mp3 to run folder. Falcon Cry is in the map iframe on state hover.
+st.markdown("""
+<audio id="pulseHumMain" loop preload="auto" style="position:absolute;width:0;height:0;opacity:0;">
+<source src="deep_pulse_hum.mp3" type="audio/mpeg">
+</audio>
+""", unsafe_allow_html=True)
+
 # Header Section
 st.markdown(
     '<h1 class="shimmer-gold" style="text-align: center;">GCSLC STRATEGIC COMMAND</h1>',
@@ -174,7 +194,16 @@ col_side, col_map = st.columns([1, 4])
 
 with col_side:
     st.markdown("""
-    <div class="status-widget">
+    <p class="shimmer-gold" style="font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 8px;">8R BRAINBOX DETERMINANTS</p>
+    <div class="determinant-row shimmer-gold">D1 Refinement</div>
+    <div class="determinant-row shimmer-gold">D2 Reset</div>
+    <div class="determinant-row shimmer-gold">D3 Research</div>
+    <div class="determinant-row shimmer-gold">D4 Restructure</div>
+    <div class="determinant-row shimmer-gold">D5 Resuscitate</div>
+    <div class="determinant-row shimmer-gold">D6 Revitalize</div>
+    <div class="determinant-row shimmer-gold">D7 Re-engineer</div>
+    <div class="determinant-row shimmer-gold">D8 Retain</div>
+    <div class="status-widget" style="margin-top: 14px;">
         <p class="shimmer-gold" style="font-size: 0.8rem; letter-spacing: 2px;">STATUS ARCHIVE</p>
         <p style="color: #00ff88; margin: 5px 0;">● ACTIVE</p>
         <p style="color: #00ff88; margin: 5px 0;">● ACTIVE</p>
@@ -198,10 +227,25 @@ with col_map:
         '<h2 class="shimmer-gold">NATIONAL VELOCITY FALCON CLOUD (NVFC)</h2>',
         unsafe_allow_html=True,
     )
-    components.html(
-        f'<div style="background:#000033; padding:0; margin:0;">{map_svg}</div>',
-        height=500,
-    )
+    # Map iframe: Falcon Cry on hover over 13 coal states. Place falcon_cry.mp3 in run folder.
+    map_html = f"""
+    <div style="background:#000033; padding:0; margin:0;">
+    <audio id="falconCry" preload="auto"><source src="falcon_cry.mp3" type="audio/mpeg"></audio>
+    <script>
+    (function() {{
+        document.querySelectorAll('.state-dot').forEach(function(el) {{
+            el.style.cursor = 'pointer';
+            el.addEventListener('mouseenter', function() {{
+                var c = document.getElementById('falconCry');
+                if (c) {{ c.currentTime = 0; c.volume = 0.4; c.play().catch(function() {{}}); }}
+            }});
+        }});
+    }})();
+    </script>
+    {map_svg}
+    </div>
+    """
+    components.html(map_html, height=500)
 
 # Industrial Gallery: NGECC cards
 st.markdown('<p class="shimmer-gold" style="font-size: 1rem; margin: 1rem 0 0.5rem;">Industrial Gallery</p>', unsafe_allow_html=True)
@@ -228,10 +272,10 @@ with gal3:
     </div>
     """, unsafe_allow_html=True)
 
-# The Signature: shimmering gold, centered at base (Sovereign, Paradigm, Galadiman Ruwan Zazzau — spellings verified)
+# Final watermark: Shimmering gold signature — Dr. Sa'ad Jaafaru (Galadiman Ruwan Zazzau) anchored at base
 st.markdown("<br><br><hr style='border-color: rgba(212,175,55,0.4);'>", unsafe_allow_html=True)
 st.markdown("""
-<div class="signature-block" style="text-align: center; margin: 0 auto;">
+<div class="signature-block final-watermark" style="text-align: center; margin: 0 auto;">
     <h1 class="shimmer-gold" style="font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 0.5rem;">
         Dr. Sa'ad Jaafaru (Galadiman Ruwan Zazzau)
     </h1>
