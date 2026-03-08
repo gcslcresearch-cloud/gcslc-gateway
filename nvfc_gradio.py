@@ -1,44 +1,44 @@
 import gradio as gr
 
-# Updated GCSLC Branding Constants
-NAVY_BLUE = "#001B3A"
-SHIMMERING_GOLD = "#D4AF37"
+# GCSLC Strategic Branding Constants
+NAVY_BG = "#000B1E"  # Deepest Navy for maximum contrast
+GOLD_SHIMMER = "#D4AF37"
 
-custom_css = f"""
-/* Force Navy Blue Background */
-.gradio-container, .main, .container {{
-    background-color: {NAVY_BLUE} !important;
-    color: white !important;
-}}
+custom_css = """
+/* Force Navy Background on all layers */
+.gradio-container, .main, .container {
+    background-color: #000B1E !important;
+}
 
-/* Shimmering Gold Animation for Headings */
-@keyframes shimmer {{
-    0% {{ color: {SHIMMERING_GOLD}; text-shadow: 0 0 5px #fff; }}
-    50% {{ color: #FFDF00; text-shadow: 0 0 20px {SHIMMERING_GOLD}; }}
-    100% {{ color: {SHIMMERING_GOLD}; text-shadow: 0 0 5px #fff; }}
-}}
+/* Shimmering Gold Animation */
+@keyframes gold-glow {
+    0% { color: #B8860B; text-shadow: 0 0 5px #D4AF37; }
+    50% { color: #FFDF00; text-shadow: 0 0 20px #FFD700; }
+    100% { color: #B8860B; text-shadow: 0 0 5px #D4AF37; }
+}
 
-h1, h2, h3 {{
-    animation: shimmer 3s infinite;
+h1, h2, h3 {
+    animation: gold-glow 3s infinite;
     font-weight: bold !important;
     text-align: center;
-}}
+}
 
-/* Ensure all labels and text are Gold */
-label, p, span {{
-    color: {SHIMMERING_GOLD} !important;
-}}
+/* Visibility Fix for Mac/S24 - Forced Gold Text */
+p, span, label, .markdown-text {
+    color: #D4AF37 !important;
+    font-size: 1.1rem;
+}
 
-/* Clear Visibility for Inputs */
-input, textarea, select {{
-    background-color: #002b5c !important;
+/* Investor-Grade Input Boxes */
+input, textarea, select {
+    background-color: #001B3A !important;
     color: white !important;
-    border: 2px solid {SHIMMERING_GOLD} !important;
-}}
+    border: 2px solid #D4AF37 !important;
+}
 
-.stat-box {{ border: 1px solid {SHIMMERING_GOLD}; padding: 15px; border-radius: 10px; background: rgba(212, 175, 55, 0.1); }}
-footer {{ visibility: hidden; }}
-.watermark {{ position: fixed; bottom: 10px; right: 10px; opacity: 0.3; color: {SHIMMERING_GOLD}; font-size: 10px; }}
+.stat-box { border: 1px solid #D4AF37; padding: 15px; border-radius: 10px; background: rgba(212, 175, 55, 0.1); }
+footer { visibility: hidden; }
+.watermark { position: fixed; bottom: 10px; right: 10px; opacity: 0.3; color: #D4AF37; font-size: 10px; }
 """
 
 
