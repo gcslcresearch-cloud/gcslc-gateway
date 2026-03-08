@@ -1,16 +1,17 @@
 // PM2 config for NVFC Gradio Dashboard (Mac/Linux)
-// Usage: from repo root run:
-//   pm2 start deploy/ecosystem.config.cjs
-//   pm2 save && pm2 startup   # persist across reboot
-//   pm2 logs nvfc-gradio
+// Script path is resolved relative to this file so it works from any install path.
+const path = require("path");
+
+const repoRoot = path.resolve(__dirname, "..");
+const scriptPath = path.join(repoRoot, "nvfc_gradio.py");
 
 module.exports = {
   apps: [
     {
       name: "nvfc-gradio",
-      script: "nvfc_gradio.py",
+      script: scriptPath,
       interpreter: "python3",
-      cwd: "/Users/user/Desktop/GCSLC_Sovereign_Gateway",
+      cwd: repoRoot,
       autorestart: true,
       watch: false,
       max_restarts: 10,

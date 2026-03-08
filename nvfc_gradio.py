@@ -1,9 +1,35 @@
 """
 NVFC Dashboard (Gradio) — Deploy-ready with 8R Engine, Sovereign Widget, Prestige UI.
-Run: python nvfc_gradio.py
-Persistent: use systemd (Linux) or pm2 (Mac/Linux) — see deploy configs in repo.
+Run: python nvfc_gradio.py  OR  ./deploy/run_nvfc_clean_restart.sh
 """
 import gradio as gr
+import subprocess
+import sys
+
+SERVER_PORT = 7860
+LOCAL_URL = f"http://127.0.0.1:{SERVER_PORT}"
+PUBLIC_URL_MSG = "Public URL will appear in the lines below (Gradio prints it when share=True)."
+
+
+def _kill_port_7860():
+    """Free port 7860 so launch does not get OSError 48 (Address already in use)."""
+    try:
+        if sys.platform == "darwin":
+            subprocess.run(
+                "lsof -ti:7860 | xargs kill -9",
+                shell=True,
+                capture_output=True,
+                timeout=5,
+            )
+        else:
+            subprocess.run(
+                "fuser -k 7860/tcp 2>/dev/null || true",
+                shell=True,
+                capture_output=True,
+                timeout=5,
+            )
+    except Exception:
+        pass
 
 # GCSLC Sovereign Branding
 NAVY_BG = "#000B1E"
@@ -78,4 +104,13 @@ with gr.Blocks(css=custom_css, title="NVFC Sovereign Dashboard") as demo:
 
 
 if __name__ == "__main__":
-    demo.launch(share=True, server_port=7860, show_error=True)
+    _kill_port_7860()
+    print("\n" + "=" * 60)
+    print("NVFC SOVEREIGN DASHBOARD")
+    print("=" * 60)
+    print(f"  Local URL:  {LOCAL_URL}")
+    print(f"  {PUBLIC_URL_MSG}")
+    print("=" * 60 + "\n")
+    sys.stdout.flush()
+    sys.stderr.flush()
+    demo.launch(share=True, server_port=SERVER_PORT, show_error=True)
