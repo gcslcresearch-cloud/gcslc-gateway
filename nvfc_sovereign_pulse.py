@@ -58,6 +58,14 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
+# Sovereign Comparison Widget: global strategic context (sidebar)
+st.sidebar.markdown("### 🌍 GLOBAL STRATEGIC CONTEXT")
+st.sidebar.info("""
+**UAE (G42/Microsoft):** $15.2B Investment in AI Cloud.
+**NIGERIA (NGECC):** 2 Billion MT Coal Ground-Base.
+*Strategic Gap:* The NVFC provides the energy feedstock (D1–D8) that global clouds need to thrive.
+""")
+
 # Sovereign Command Console: Deep Navy + 8R Brainbox background pulse + gold + signature
 st.markdown(f"""
 <style>
