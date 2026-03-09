@@ -5,7 +5,7 @@ import sys
 
 SERVER_PORT = 7860
 
-# GCSLC Sovereign CSS - Shimmering Gold & Navy
+# GCSLC Sovereign Prestige CSS
 css = """
 .shimmer { color: #D4AF37; text-shadow: 0 0 15px #D4AF37; animation: pulse 2s infinite; }
 @keyframes pulse { 0% { opacity: 0.7; } 50% { opacity: 1; } 100% { opacity: 0.7; } }
@@ -20,16 +20,18 @@ def _kill_port():
         pass
 
 
-with gr.Blocks(css=css, title="NVFC Sovereign Gateway") as demo:
+with gr.Blocks(css=css, title="GCSLC - National Velocity Falcon Cloud") as demo:
     gr.HTML("<h1 class='shimmer' style='text-align:center;'>🦅 National Velocity Falcon Cloud</h1>")
 
     with gr.Row():
         with gr.Column(scale=2):
+            # THE SHIMMERING MAP OF NIGERIA
             gr.HTML("""
-                <div style='border: 2px solid #D4AF37; padding: 20px; border-radius: 15px; background: #001A35;'>
+                <div style='border: 2px solid #D4AF37; padding: 20px; border-radius: 15px; background: #001A35; text-align: center;'>
                     <h3 style='color: #D4AF37;'>🇳🇬 Sovereign Resource Map</h3>
                     <p style='color: white;'>Visualizing the 13 Coal-Rich Sovereign States...</p>
-                    <div style='font-size: 60px; text-align:center;'>🦅</div>
+                    <img src='https://upload.wikimedia.org/wikipedia/commons/7/79/Flag_of_Nigeria.svg' style='width: 50px; opacity: 0.8;'>
+                    <div style='font-size: 80px;'>🦅</div>
                 </div>
             """)
         with gr.Column(scale=1):
@@ -37,7 +39,7 @@ with gr.Blocks(css=css, title="NVFC Sovereign Gateway") as demo:
             gr.Button("Ignite Determinant 5: Resuscitate", variant="primary")
 
 
-# S24 24/7/365 fix: server_name="0.0.0.0" allows phone access on same Wi-Fi
+# FIX: server_name="0.0.0.0" allows your S24 to connect via the local network immediately.
 if __name__ == "__main__":
     _kill_port()
     demo.launch(share=True, server_name="0.0.0.0", server_port=SERVER_PORT, show_error=True)
