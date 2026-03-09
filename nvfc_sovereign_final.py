@@ -51,11 +51,12 @@ footer { visibility: hidden !important; }
 """
 
 
-with gr.Blocks(
+demo = gr.Blocks(
     title="NVFC Sovereign Gateway",
     theme=gr.themes.Soft(primary_hue="blue"),
     css=NAVY_CSS,
-) as demo:
+)
+with demo:
     gr.Markdown("# 🦅 National Velocity Falcon Cloud (NVFC)")
     gr.Markdown("---")
 
@@ -82,4 +83,4 @@ with gr.Blocks(
 
 
 if __name__ == "__main__":
-    demo.launch(server_port=7860, share=True)
+    demo.launch(server_name="0.0.0.0", server_port=7860, share=True)

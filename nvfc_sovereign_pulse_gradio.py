@@ -23,13 +23,14 @@ COMPARISON_WIDGET_MD = """
 
 
 def build_blocks():
-    with gr.Blocks(
+    demo = gr.Blocks(
         title="NVFC Sovereign Pulse",
         css="""
         .gradio-container { background-color: #000033 !important; }
         .markdown { color: #e8eef4 !important; }
         """,
-    ) as app:
+    )
+    with demo:
         gr.Markdown("# GCSLC STRATEGIC COMMAND")
 
         with gr.Row():
@@ -66,9 +67,9 @@ def build_blocks():
         gr.Markdown(f"## {SIGNATURE_TITLE}")
         gr.Markdown("*NVFC STRATEGIC COMMAND | GCSLC LTD/GTE*")
 
-    return app
+    return demo
 
 
 if __name__ == "__main__":
-    app = build_blocks()
-    app.launch(server_name="0.0.0.0", server_port=7860)
+    demo = build_blocks()
+    demo.launch(server_name="0.0.0.0", server_port=7860)

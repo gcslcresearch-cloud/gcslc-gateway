@@ -1116,7 +1116,8 @@ def _kill_port():
 
 
 # ---- Build UI: Sovereign Command Prestige Layer (order fixed, no incognito) ----
-with gr.Blocks(css=CSS, title="GCSLC Sovereign Command") as demo:
+demo = gr.Blocks(css=CSS, title="GCSLC Sovereign Command")
+with demo:
     # Security: watermark + blur + right-click disabled
     gr.HTML("""
     <div class="gcslc-watermark" aria-hidden="true"></div>
