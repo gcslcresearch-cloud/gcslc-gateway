@@ -9,7 +9,7 @@ const venvPython = path.join(repoRoot, ".venv", "bin", "python");
 module.exports = {
   apps: [
     {
-      name: "nvfc-gradio",
+      name: "NVFC-COMMAND",
       script: scriptPath,
       interpreter: venvPython,
       cwd: repoRoot,
