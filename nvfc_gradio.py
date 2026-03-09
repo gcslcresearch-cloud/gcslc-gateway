@@ -6,6 +6,7 @@ Falcon: Python updates (x,y) to state coordinates on map (tactical dive).
 Agentic Reasoning: gr.HTML scrolling Thinking logs at bottom.
 """
 import base64
+import html
 import io
 import json
 import math
@@ -68,17 +69,46 @@ BY_PRODUCT_SILICON_M = 6.50
 BENZENE_USD_PER_MT = 950
 RARE_EARTH_USD_PER_KG = 120000
 
-# 5-Minute Heartbeat: server-side commodity state (Germanium, Silicon, Benzene)
+# 5-Minute Heartbeat: server-side commodity state (Germanium, Silicon, Benzene, Rare Earths)
 _COMMODITY_PRICES: Dict[str, float] = {
     "Germanium": float(BY_PRODUCT_GERMANIUM_USD_PER_KG),
     "Silicon": float(BY_PRODUCT_SILICON_M * 1000),
     "Benzene": float(BENZENE_USD_PER_MT),
+    "Rare Earths": float(RARE_EARTH_USD_PER_KG),
 }
+
+# March 2026 prices for Cumulative National Opportunity Cost (5th box)
+MARCH_2026_GERMANIUM_USD_KG = 8597
+MARCH_2026_SILICON_USD_MT = 6500
+MARCH_2026_BENZENE_USD_MT = 950
+MARCH_2026_RAREEARTH_USD_KG = 120000
+# Notional unrealized annual production (for opportunity cost in USD)
+NOTIONAL_ANNUAL_KG_GERMANIUM = 50000
+NOTIONAL_ANNUAL_MT_SILICON = 100000
+NOTIONAL_ANNUAL_MT_BENZENE = 200000
+NOTIONAL_ANNUAL_KG_RAREEARTH = 5000
+
+# 1MW facility: job engine (Vision 2050)
+JOBS_PER_1MW_10YR = 1654
+ECONOMIC_OUTPUT_1MW_10YR_MUSD = 39
 
 DETERMINANTS_R = [
     "R1 Refine", "R2 Reset", "R3 Research", "R4 Restructure",
     "R5 Resuscitate", "R6 Revitalize", "R7 Re-engineer", "R8 Retain",
 ]
+DETERMINANT_STRATEGIC = {
+    "R1 Refine": "Refine raw anthracite into high-value chemical feedstocks. Foundation for Federation of AIs supply chain.",
+    "R2 Reset": "Reset legacy energy dependencies. Enables sovereign data-center and AI infrastructure.",
+    "R3 Research": "Research drives Germanium arbitrage and 47.88% YTD opportunity. Core to Diamond Opportunity 2026.",
+    "R4 Restructure": "Restructure asset deployment for Tier-III/IV hyperscale. Aligns with Desert Dragon and NGECC.",
+    "R5 Resuscitate": "Resuscitate idle reserves into productive chemical nodes. Unlocks national opportunity cost recovery.",
+    "R6 Revitalize": "Revitalize jobs and economic output. 1 MW → 1,654 jobs and $39 M over 10 years.",
+    "R7 Re-engineer": "Re-engineer logistics for Dubai Port and global arbitrage. Sovereign Blue Wave.",
+    "R8 Retain": "Retain sovereign control of strategic minerals. Ensures Vision 2050 and uncorrupted real-time data.",
+}
+
+# Global Arbitrage Pulse (Determinant 3 — Research)
+GERMANIUM_YTD_PCT = 47.88
 
 CAC_REGISTRATION = "176917792057"
 CHAIRMAN_SIGNATURE = "Dr. Sa'ad Jaafaru (Galadiman Ruwan Zazzau), Chairman, GCSLC Strategic Command"
@@ -394,17 +424,18 @@ def _market_values_html_from_server(
 ) -> str:
     """Commodity cards from server state. Glittering Pulse = data is Hot. Optionally trigger Victory Dive + screech."""
     screech_url = _falcon_screech_data_url()
-    units = {"Germanium": "/kg", "Silicon": "/MT", "Benzene": "/MT"}
+    units = {"Germanium": "/kg", "Silicon": "/MT", "Benzene": "/MT", "Rare Earths": "/kg"}
+    captions = {"Germanium": "Optics, chips, sensors", "Silicon": "Solar, wafers, compute", "Benzene": "Petrochem feedstock", "Rare Earths": "Magnets, EV, defense"}
     cards_html = []
     for name, val in prices.items():
         unit = units.get(name, "/MT")
         fmt = f"${val:,.0f}{unit}"
-        hot_class = " mv-hot"  # Glittering Pulse (data is Hot)
+        hot_class = " mv-hot"
         cards_html.append(f"""
         <div class="mv-card{hot_class}" data-symbol="{name}" data-price="{val:.2f}">
           <p class="mv-label">{name}</p>
           <p class="mv-price">{fmt}</p>
-          <p class="mv-caption">{"Optics, chips, sensors" if name == "Germanium" else "Solar, wafers, compute" if name == "Silicon" else "Petrochem feedstock"}</p>
+          <p class="mv-caption">{captions.get(name, "")}</p>
         </div>""")
     victory_block = ""
     if play_victory_cry:
@@ -414,14 +445,38 @@ def _market_values_html_from_server(
           <p class="victory-dive-label">Victory Dive — Price +&gt;1%</p>
           <audio autoplay><source src="{screech_url}" type="audio/wav"></audio>
         </div>"""
+    annual_b = (
+        MARCH_2026_GERMANIUM_USD_KG * NOTIONAL_ANNUAL_KG_GERMANIUM / 1e9
+        + MARCH_2026_SILICON_USD_MT * NOTIONAL_ANNUAL_MT_SILICON / 1e9
+        + MARCH_2026_BENZENE_USD_MT * NOTIONAL_ANNUAL_MT_BENZENE / 1e9
+        + MARCH_2026_RAREEARTH_USD_KG * NOTIONAL_ANNUAL_KG_RAREEARTH / 1e9
+    )
+    monthly_b = annual_b / 12
+    fifth_box = _opportunity_cost_fifth_box(annual_b, monthly_b)
     return f"""
     <div id="market-values" class="market-values heartbeat-wrap">
       <h3 class="shimmer market-title">Real-Time Market Values — 5-Minute Heartbeat</h3>
-      <p class="market-sub">Germanium, Silicon, Benzene. Data refreshes every 300s. Glittering Pulse = Hot.</p>
+      <p class="market-sub">Germanium, Silicon, Benzene, Rare Earths. March 2026 prices. Glittering Pulse = Hot.</p>
       <div class="market-grid">
         {"".join(cards_html)}
       </div>
+      {fifth_box}
       {victory_block}
+    </div>
+    """
+
+
+def _opportunity_cost_fifth_box(annual_b: float, monthly_b: float) -> str:
+    """5th widget: Cumulative National Opportunity Cost. Falcon flaps over total; pulsing red Sovereign Warning."""
+    return f"""
+    <div class="opportunity-cost-box">
+      <div class="opportunity-cost-inner">
+        <span class="falcon-flap" aria-hidden="true">🦅</span>
+        <p class="opportunity-cost-label">Cumulative National Opportunity Cost</p>
+        <p class="opportunity-cost-monthly">Monthly unrealized: ${monthly_b:.2f} B</p>
+        <p class="opportunity-cost-annual">Annual unrealized: ${annual_b:.2f} B</p>
+        <p class="sovereign-warning">Sovereign Warning: Nigeria is losing ${annual_b:.1f} Billion annually in unrealized chemical wealth. ACT NOW.</p>
+      </div>
     </div>
     """
 
@@ -442,14 +497,14 @@ def refresh_commodity_heartbeat() -> str:
 
 
 def _national_impact_html(tonnage_m_t: float) -> str:
-    """National Impact: AI Processing Power (PB), Sovereign Jobs (tons × 0.28), Revenue Potential. Navy & Gold visuals."""
+    """National Economic Impact (Kill-Shot): all revenue in $B. 1MW job engine: 1,654 jobs / $39 M over 10 yr."""
     try:
         t = max(0.0, float(tonnage_m_t))
     except Exception:
         t = 0.0
-    ai_pb = t * 0.8  # Total Petabytes of AI processing possible (coal → data centers)
-    jobs = t * 0.28  # Estimated Sovereign Jobs — Formula: tons × 0.28
-    revenue_b = t * 1.25  # Revenue potential (USD B)
+    ai_pb = t * 0.8
+    jobs = t * 0.28
+    revenue_b = t * 1.25  # Billions USD
     return f"""
     <div class="impact-wrap">
       <div class="impact-cards">
@@ -459,23 +514,27 @@ def _national_impact_html(tonnage_m_t: float) -> str:
           <p class="impact-caption">Anthracite → Data Centers &amp; AI Clouds</p>
         </div>
         <div class="impact-card">
-          <p class="impact-label">Estimated Sovereign Jobs Created</p>
+          <p class="impact-label">Revenue Potential (Billions USD)</p>
+          <p class="impact-value">${revenue_b:,.1f} B</p>
+          <p class="impact-caption">All tonnage revenue in $B</p>
+        </div>
+        <div class="impact-card">
+          <p class="impact-label">Estimated Sovereign Jobs</p>
           <p class="impact-value">{jobs:,.2f}</p>
           <p class="impact-caption">Formula: tons × 0.28</p>
         </div>
-        <div class="impact-card">
-          <p class="impact-label">Revenue Potential</p>
-          <p class="impact-value">${revenue_b:,.1f}B</p>
-          <p class="impact-caption">Blended downstream value chain (8R-aligned)</p>
-        </div>
       </div>
-      <p class="impact-note">Inputs are illustrative for strategic visualization only — not financial advice.</p>
+      <div class="job-engine-box">
+        <p class="job-engine-label">Job Engine (Vision 2050)</p>
+        <p class="job-engine-value">1 MW facility → {JOBS_PER_1MW_10YR:,} cumulative jobs over 10 years | ${ECONOMIC_OUTPUT_1MW_10YR_MUSD} Million total economic output</p>
+      </div>
+      <p class="impact-note">Illustrative for strategic visualization. Not financial advice.</p>
     </div>
     """
 
 
-def _map_html(selected_state: Optional[str]) -> str:
-    ng = _nigeria_svg()
+def _africa_map_html(selected_state: Optional[str]) -> str:
+    """Map of Authority: Africa-centric. Nigeria as glowing golden center on deep navy. Clean, prestigious."""
     f_svg = _falcon_svg()
     if selected_state and selected_state in STATE_MAP_POS:
         x, y = STATE_MAP_POS[selected_state]
@@ -483,11 +542,21 @@ def _map_html(selected_state: Optional[str]) -> str:
     else:
         falcon = f'<div id="musical-falcon" class="falcon falcon-on-map musical-falcon" style="left:50%; top:50%;" aria-label="SVG Dynamic Actor">{f_svg}</div>'
     return f"""
-    <div id="falcon-map" class="map-wrap gold-border true-map-wrap map-of-authority">
-      <h3 class="shimmer">Map of Authority — Federal Republic of Nigeria</h3>
-      <p class="map-sub">13 coal-rich states: Gold (#FFD700). Others: Navy (#000080). Click a state: Falcon tactical dive to coordinates; Sovereign Pulse plays.</p>
-      <div class="nigeria-container">
-        {ng}
+    <div id="africa-map" class="map-wrap map-of-authority africa-centric">
+      <h3 class="shimmer">Map of Authority — Africa</h3>
+      <p class="map-sub">Nigeria: sovereign golden center. Click a state: Falcon tactical dive; Sovereign Pulse.</p>
+      <div class="africa-container">
+        <svg class="africa-svg" viewBox="0 0 400 420" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="seaNavy" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:rgb(0,0,80)"/><stop offset="100%" style="stop-color:rgb(0,0,40)"/></linearGradient>
+            <linearGradient id="ngGold" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:rgb(255,215,0)"/><stop offset="100%" style="stop-color:rgb(184,134,11)"/></linearGradient>
+            <filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          <rect width="400" height="420" fill="url(#seaNavy)"/>
+          <path class="africa-outline" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1" d="M200 60 L280 80 L350 140 L380 220 L360 320 L280 380 L180 400 L100 360 L60 280 L80 180 L140 100 Z"/>
+          <path class="nigeria-gold" fill="url(#ngGold)" filter="url(#glow)" stroke="rgb(184,134,11)" stroke-width="2" d="M195 165 L235 158 L265 185 L270 230 L250 270 L210 285 L175 265 L168 215 Z"/>
+          <text x="200" y="228" text-anchor="middle" class="nigeria-label">NIGERIA</text>
+        </svg>
         {falcon}
       </div>
     </div>
@@ -495,10 +564,13 @@ def _map_html(selected_state: Optional[str]) -> str:
 
 
 def _humanoid_block() -> str:
-    orbs = "".join(f'<span class="r-orb">{d}</span>' for d in DETERMINANTS_R)
+    orbs = "".join(
+        f'<span class="r-orb" data-strategic="{html.escape(DETERMINANT_STRATEGIC.get(d, ""))}" title="Click for strategic importance">{d}</span>'
+        for d in DETERMINANTS_R
+    )
     return f"""
     <div class="humanoid-block humanoid-frame gold-border">
-      <p class="exhibit-label">8R Aura — Humanoid with pulsing cyan core</p>
+      <p class="exhibit-label">8R Guardian — Humanoid with pulsing cyan core. Click a determinant.</p>
       <div class="aura-wrap">
         <div class="orbit-ring">{orbs}</div>
         <div class="humanoid-core humanoid-3d">{_humanoid_svg()}</div>
@@ -506,47 +578,61 @@ def _humanoid_block() -> str:
           <p class="speech-bubble">"I need energy to thrive; process the coal and its by-products—they're my power."</p>
         </div>
       </div>
+      <div id="determinant-message" aria-live="polite">Click an 8R determinant to see its strategic importance to the Federation of AIs.</div>
+      <script>
+        (function(){{
+          var ring = document.querySelector('.orbit-ring');
+          var msg = document.getElementById('determinant-message');
+          if (ring && msg) {{
+            ring.addEventListener('click', function(e) {{
+              var orb = e.target.closest('.r-orb');
+              if (orb && orb.dataset.strategic) {{ msg.textContent = orb.dataset.strategic; }}
+            }});
+          }}
+        }})();
+      </script>
     </div>
     """
 
 
 def _data_fortress_html(burst: bool = False) -> str:
-    """The GCSLC Data Fortress: server rack SVG, glitter lights, GEN-GEMINI-AI pulsing core. burst=True triggers Data Burst (gold particles) on Falcon dive."""
+    """Desert Dragon: Tier-III/IV Hyperscale. Glittering server racks, GCSLC cyan liquid cooling, Barco-style video wall. State reserves in burnished gold (reserve visibility)."""
     burst_class = " data-burst-trigger" if burst else ""
+    reserves_list = "".join(f'<span class="reserve-chip">{s} {STATE_RESERVES_MT[s]:.0f}M</span>' for s in COAL_STATES[:8])
+    reserves_list += "".join(f'<span class="reserve-chip">{s} {STATE_RESERVES_MT[s]:.0f}M</span>' for s in COAL_STATES[8:])
     return f"""
-    <div class="data-fortress-wrap prism-data-center">
-      <h3 class="shimmer data-fortress-title">The GCSLC Data Fortress</h3>
-      <p class="data-fortress-sub">Prism Data Center — CapCut Prism Border. Glittering server racks.</p>
+    <div class="data-fortress-wrap desert-dragon prism-data-center">
+      <h3 class="shimmer data-fortress-title">Desert Dragon — Tier-III/IV Hyperscale</h3>
+      <p class="data-fortress-sub">Riyadh/Dubai immersion-cooled prototype. GCSLC cyan liquid cooling. Barco-style video wall.</p>
       <div class="server-rack-wrap{burst_class}">
-        <svg class="server-rack-svg" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+        <svg class="server-rack-svg" viewBox="0 0 260 140" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <linearGradient id="rackGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" style="stop-color:#0a1628"/>
-              <stop offset="50%" style="stop-color:#0d2137"/>
-              <stop offset="100%" style="stop-color:#001a33"/>
-            </linearGradient>
+            <linearGradient id="rackGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:rgb(10,22,40)"/><stop offset="100%" style="stop-color:rgb(0,26,53)"/></linearGradient>
           </defs>
-          <rect x="10" y="8" width="180" height="104" rx="4" fill="url(#rackGrad)" stroke="#00d4ff" stroke-width="1"/>
-          <line x1="10" y1="28" x2="190" y2="28" stroke="#00d4ff" stroke-width="0.8" opacity="0.7"/>
-          <line x1="10" y1="48" x2="190" y2="48" stroke="#00d4ff" stroke-width="0.8" opacity="0.7"/>
-          <line x1="10" y1="68" x2="190" y2="68" stroke="#00d4ff" stroke-width="0.8" opacity="0.7"/>
-          <line x1="10" y1="88" x2="190" y2="88" stroke="#00d4ff" stroke-width="0.8" opacity="0.7"/>
-          <circle class="glitter-dot g-1" cx="40" cy="18" r="2" fill="#00d4ff"/>
-          <circle class="glitter-dot g-2" cx="90" cy="38" r="2" fill="#FFD700"/>
-          <circle class="glitter-dot g-3" cx="150" cy="58" r="2" fill="#00d4ff"/>
-          <circle class="glitter-dot g-4" cx="60" cy="78" r="2" fill="#FFD700"/>
-          <circle class="glitter-dot g-5" cx="120" cy="98" r="2" fill="#00d4ff"/>
-          <circle class="glitter-dot g-6" cx="170" cy="18" r="2" fill="#FFD700"/>
-          <circle class="glitter-dot g-7" cx="30" cy="58" r="2" fill="#00d4ff"/>
-          <circle class="glitter-dot g-8" cx="140" cy="38" r="2" fill="#FFD700"/>
+          <rect x="10" y="8" width="240" height="124" rx="4" fill="url(#rackGrad)" class="rack-stroke"/>
+          <line x1="10" y1="36" x2="250" y2="36" class="pipe-cyan"/><line x1="10" y1="64" x2="250" y2="64" class="pipe-cyan"/><line x1="10" y1="92" x2="250" y2="92" class="pipe-cyan"/>
+          <path d="M0 70 L20 70 L20 50 L260 50 L260 70" fill="none" class="pipe-cyan" stroke-width="2"/>
+          <circle class="glitter-dot g-1" cx="50" cy="22" r="2"/><circle class="glitter-dot g-2" cx="120" cy="50" r="2"/><circle class="glitter-dot g-3" cx="190" cy="78" r="2"/><circle class="glitter-dot g-4" cx="80" cy="106" r="2"/><circle class="glitter-dot g-5" cx="200" cy="22" r="2"/>
+          <rect x="14" y="40" width="70" height="20" rx="2" fill="rgba(0,0,0,0.4)" class="video-wall"/>
+          <text x="49" y="53" text-anchor="middle" class="video-wall-text">BARCO</text>
         </svg>
-        <div class="gen-gemini-core" id="gen-gemini-core">
-          <span class="gen-gemini-label">GEN-GEMINI-AI</span>
-          <div class="data-burst-particles" aria-hidden="true">
-            <span class="particle p1"></span><span class="particle p2"></span><span class="particle p3"></span>
-            <span class="particle p4"></span><span class="particle p5"></span><span class="particle p6"></span>
-          </div>
+        <div class="gen-gemini-core" id="gen-gemini-core"><span class="gen-gemini-label">GEN-GEMINI-AI</span>
+          <div class="data-burst-particles" aria-hidden="true"><span class="particle p1"></span><span class="particle p2"></span><span class="particle p3"></span><span class="particle p4"></span><span class="particle p5"></span><span class="particle p6"></span></div>
         </div>
+      </div>
+      <div class="state-reserves-bar">State reserves (M tonnes): {reserves_list}</div>
+    </div>
+    """
+
+
+def _arbitrage_pulse_block() -> str:
+    """Global Arbitrage Pulse — scrolling ticker: Germanium YTD +47.88%%, 2026 Diamond Opportunity."""
+    t = f"Germanium YTD +{GERMANIUM_YTD_PCT}% — 2026 Diamond Opportunity Real-Time | Uncorrupted."
+    segment = f'<span class="arbitrage-pulse-text">{t}</span> <span class="arbitrage-pulse-sep">◆</span> '
+    return f"""
+    <div class="arbitrage-pulse-wrap" aria-label="Global Arbitrage Pulse">
+      <div class="arbitrage-pulse-inner">
+        {segment * 4}
       </div>
     </div>
     """
@@ -957,6 +1043,59 @@ CSS = """
 .impact-value { font-size: 1rem; font-weight: 700; color: #00d4ff; margin: 0 0 4px 0; }
 .impact-caption { font-size: 0.72rem; color: #b8c4ce; margin: 0; }
 .impact-note { font-size: 0.7rem; color: rgba(184,196,206,0.7); margin-top: 8px; text-align: center; }
+/* Job Engine kill-shot */
+.job-engine-box { margin-top: 14px; padding: 12px 16px; border-radius: 10px; background: rgba(0,26,53,0.8); border: 1px solid rgba(0,212,255,0.5); }
+.job-engine-label { font-size: 0.8rem; color: #D4AF37; margin: 0 0 6px 0; font-weight: 600; }
+.job-engine-value { font-size: 0.85rem; color: #00d4ff; margin: 0; }
+
+/* 5th box: Cumulative National Opportunity Cost + Falcon flap + Sovereign Warning */
+.opportunity-cost-box { margin-top: 16px; padding: 18px; border-radius: 12px; border: 2px solid rgba(212,175,55,0.8); background: linear-gradient(135deg, rgba(0,26,53,0.95) 0%, rgba(0,11,30,0.98) 100%); text-align: center; position: relative; }
+.opportunity-cost-inner { position: relative; }
+.opportunity-cost-label { font-size: 0.9rem; color: #D4AF37; margin: 0 0 8px 0; font-weight: 600; }
+.opportunity-cost-monthly, .opportunity-cost-annual { font-size: 1rem; color: #00d4ff; margin: 4px 0; }
+.falcon-flap { display: inline-block; font-size: 2.2rem; margin: 8px 0; animation: falcon-flap 1.2s ease-in-out infinite; }
+@keyframes falcon-flap {
+  0%, 100% { transform: scaleY(1) rotate(-3deg); }
+  50% { transform: scaleY(1.08) rotate(3deg); }
+}
+.sovereign-warning { font-size: 0.88rem; font-weight: 700; margin: 12px 0 0 0; animation: sovereign-pulse 1.5s ease-in-out infinite; }
+@keyframes sovereign-pulse {
+  0%, 100% { color: rgba(220,50,50,0.95); text-shadow: 0 0 8px rgba(220,50,50,0.6); }
+  50% { color: rgba(255,80,80,1); text-shadow: 0 0 14px rgba(255,80,80,0.8); }
+}
+
+/* Map of Authority — Africa (Nigeria golden center, deep navy sea) */
+.map-of-authority.africa-centric .map-wrap { }
+.africa-container { position: relative; display: inline-block; max-width: 400px; margin: 0 auto; }
+.africa-svg { width: 100%; height: auto; display: block; border-radius: 12px; }
+.africa-outline { }
+.nigeria-gold { }
+.nigeria-label { fill: rgba(255,255,255,0.95); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; }
+
+/* Desert Dragon: liquid cooling cyan, state reserves burnished gold */
+.desert-dragon .rack-stroke { stroke: rgba(0,212,255,0.7); stroke-width: 1; }
+.desert-dragon .pipe-cyan { stroke: rgba(0,212,255,0.85); stroke-width: 1.5; }
+.desert-dragon .glitter-dot { fill: #00d4ff; }
+.desert-dragon .glitter-dot.g-2, .desert-dragon .glitter-dot.g-4, .desert-dragon .glitter-dot.g-6, .desert-dragon .glitter-dot.g-8 { fill: #D4AF37; }
+.video-wall { stroke: rgba(0,212,255,0.5); }
+.video-wall-text { fill: rgba(0,212,255,0.9); font-size: 10px; font-weight: 700; }
+.state-reserves-bar { margin-top: 14px; padding: 10px 12px; border-radius: 8px; background: rgba(0,10,25,0.9); display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; }
+.reserve-chip { font-size: 0.75rem; font-weight: 600; color: rgb(184,134,11); background: rgba(184,134,11,0.15); border: 1px solid rgba(184,134,11,0.7); padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
+
+/* 8R Determinant click: show strategic importance (Federation of AIs) */
+.r-orb { cursor: pointer; }
+.r-orb:hover { background: rgba(212,175,55,0.3) !important; }
+#determinant-message { min-height: 28px; margin-top: 10px; padding: 8px 12px; border-radius: 8px; background: rgba(0,26,53,0.9); border: 1px solid #D4AF37; font-size: 0.78rem; color: #e8eef4; line-height: 1.35; }
+
+/* Global Arbitrage Pulse — scrolling ticker (Germanium YTD 47.88%%) */
+.arbitrage-pulse-wrap { width: 100%; overflow: hidden; padding: 10px 0; background: rgba(0,26,53,0.9); border-top: 1px solid rgba(212,175,55,0.4); border-bottom: 1px solid rgba(212,175,55,0.4); margin: 16px 0 0 0; }
+.arbitrage-pulse-inner { display: inline-block; white-space: nowrap; animation: arbitrage-scroll 30s linear infinite; padding-left: 100%; }
+@keyframes arbitrage-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.arbitrage-pulse-text { color: #D4AF37; font-size: 0.9rem; font-weight: 600; }
+.arbitrage-pulse-sep { color: rgba(212,175,55,0.6); margin: 0 12px; }
 """
 
 
@@ -1008,17 +1147,10 @@ with gr.Blocks(css=CSS, title="GCSLC Sovereign Command") as demo:
     refresh_btn.click(fn=refresh_commodity_heartbeat, inputs=None, outputs=market_values_out)
     demo.load(fn=refresh_commodity_heartbeat, inputs=None, outputs=market_values_out, every=300)
 
-    # 2. Map of Authority: Real Nigeria state borders (gr.Plot choropleth) or fallback SVG. Falcon position updated by Python on state click.
-    _initial_fig = _nigeria_choropleth_figure("Kogi")
-    use_plotly_map = _initial_fig is not None
-    if use_plotly_map:
-        map_out = gr.Plot(value=_initial_fig, label="Map of Authority — Nigeria (real state borders)")
-        def update_map(state: str):
-            return _nigeria_choropleth_figure(state)
-    else:
-        map_out = gr.HTML(value=_map_html("Kogi"), label="Map of Authority — Nigeria")
-        def update_map(state: str):
-            return _map_html(state)
+    # 2. Map of Authority — Africa: Nigeria as glowing golden center on deep navy. State click updates selection.
+    map_out = gr.HTML(value=_africa_map_html("Kogi"), label="Map of Authority — Africa")
+    def update_map(state: str):
+        return _africa_map_html(state)
     with gr.Row():
         btns = []
         for s in COAL_STATES:
@@ -1067,7 +1199,9 @@ with gr.Blocks(css=CSS, title="GCSLC Sovereign Command") as demo:
     # 5. General's Hook: Agentic Reasoning terminal (real-time Thinking logs)
     gr.HTML(_agentic_terminal_html())
 
-    # 6. Signature & Footer (CAC)
+    # 6. Global Arbitrage Pulse (Determinant 3 — Research): Germanium YTD +47.88%%
+    gr.HTML(_arbitrage_pulse_block())
+    # 7. Signature & Footer (CAC)
     gr.HTML(_footer_block())
 
 
