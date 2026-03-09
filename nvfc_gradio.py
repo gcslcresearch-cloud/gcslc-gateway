@@ -1,8 +1,8 @@
 """
-GCSLC Sovereign Gateway — Prestige Lock (High-Velocity Final).
-Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC - LTD/GTE).
-Detailed Nigeria SVG map, Gold+White pulsing corridors, Diamond expand, Musical Falcon (Talon Lock),
-3D Navy Humanoid with orbiting R1–R8, branding, signature, watermark, anti-screenshot. server_name='0.0.0.0'.
+GCSLC Strategic Command Center — Final (High-Velocity).
+Prestige: GCSLC Medallion (top-left, 3s gold glint), shimmering title, Nigeria map with state borders (Territory Lock),
+13 coal states Gold+White pulse, Diamond Opportunity (Germanium/Ammonia/Silicon), Musical Falcon (fly top-right to node, cry on reveal),
+3D Navy Humanoid + rotating 8R Determinant Aura, Hook message, signature, GCSLC PROPRIETARY watermark, right-click disabled. server_name='0.0.0.0'.
 """
 import base64
 import math
@@ -87,18 +87,17 @@ def _diamond_popup_html(state: str, with_audio: bool = True) -> str:
         {audio_tag}
         <h4 class="shimmer">Diamond Opportunity — {state}</h4>
         <p class="reserves-line"><strong>Proven Reserves:</strong> {state} District: <strong>{reserves:.0f}M Tonnes</strong></p>
-        <p class="byproduct-title">By-Products (Market Values)</p>
+        <p class="byproduct-title">Hidden Wealth — By-Products</p>
         <div class="byproduct-grid">
             <span class="byproduct-item">Germanium: <strong>${BY_PRODUCT_GERMANIUM_USD_PER_KG:,.0f}/kg</strong></span>
             <span class="byproduct-item">Ammonia: <strong>${BY_PRODUCT_AMMONIA_USD_PER_MT:,.0f}/MT</strong></span>
             <span class="byproduct-item">Silicon: <strong>${BY_PRODUCT_SILICON_M}M</strong> (monthly yield)</span>
-            <span class="byproduct-item">Ammonium Sulfate: <strong>${BY_PRODUCT_AMMONIUM_SULFATE_USD_PER_MT}/MT</strong></span>
         </div>
     </div>
     """
 
 
-# Detailed high-resolution Nigeria SVG (multi-segment path, no simple polygon)
+# High-resolution SVG: Federal Republic of Nigeria with state borders (Territory Lock)
 def _nigeria_detailed_svg():
     return """
     <svg class="nigeria-hv-map" viewBox="0 0 280 360" xmlns="http://www.w3.org/2000/svg">
@@ -113,11 +112,36 @@ def _nigeria_detailed_svg():
           <stop offset="100%" style="stop-color:rgba(0,11,30,0.6)"/>
         </linearGradient>
       </defs>
+      <!-- National outline -->
       <path class="nigeria-path" fill="url(#fillNg)" stroke="url(#goldStroke)" stroke-width="2"
         d="M140 22 L175 38 L198 68 L202 105 L210 145 L218 185 L212 235 L188 278 L148 338 L118 338 L85 300 L62 255 L48 205 L42 155 L52 105 L72 65 L95 38 L120 22 Z"/>
-      <path class="nigeria-path" fill="none" stroke="url(#goldStroke)" stroke-width="1.2" opacity="0.7"
-        d="M140 22 L175 38 L198 68 L202 105 L210 145 L218 185 L212 235 L188 278 L148 338 L118 338 L85 300 L62 255 L48 205 L42 155 L52 105 L72 65 L95 38 L120 22 Z"/>
-      <text x="140" y="185" text-anchor="middle" fill="rgba(212,175,55,0.25)" font-size="18" font-weight="700">NIGERIA</text>
+      <!-- State borders (simplified internal boundaries) -->
+      <path fill="none" stroke="url(#goldStroke)" stroke-width="0.8" opacity="0.6" d="M140 100 L140 200 L100 250 L62 255"/>
+      <path fill="none" stroke="url(#goldStroke)" stroke-width="0.8" opacity="0.6" d="M140 100 L180 120 L198 68"/>
+      <path fill="none" stroke="url(#goldStroke)" stroke-width="0.8" opacity="0.6" d="M140 200 L188 235 L212 235"/>
+      <path fill="none" stroke="url(#goldStroke)" stroke-width="0.8" opacity="0.6" d="M85 300 L118 338 L148 338"/>
+      <path fill="none" stroke="url(#goldStroke)" stroke-width="0.8" opacity="0.6" d="M48 205 L42 155 L52 105"/>
+      <path fill="none" stroke="url(#goldStroke)" stroke-width="0.8" opacity="0.6" d="M72 65 L95 38 L120 22 L140 22"/>
+      <path fill="none" stroke="url(#goldStroke)" stroke-width="0.8" opacity="0.6" d="M175 38 L198 68 L202 105"/>
+      <path fill="none" stroke="url(#goldStroke)" stroke-width="0.8" opacity="0.6" d="M210 145 L218 185 L212 235 L188 278"/>
+      <text x="140" y="185" text-anchor="middle" fill="rgba(212,175,55,0.25)" font-size="16" font-weight="700">FEDERAL REPUBLIC OF NIGERIA</text>
+    </svg>
+    """
+
+
+def _gcslc_medallion_svg():
+    """GCSLC Seal / Medallion for top-left (shimmering gold glint every 3s)."""
+    return """
+    <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="medGold" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#5c4a00"/>
+          <stop offset="50%" style="stop-color:#D4AF37"/>
+          <stop offset="100%" style="stop-color:#FFD700"/>
+        </linearGradient>
+      </defs>
+      <circle cx="24" cy="24" r="22" fill="url(#medGold)" stroke="#B8860B" stroke-width="2" opacity="0.9"/>
+      <text x="24" y="28" text-anchor="middle" fill="#0a1628" font-size="10" font-weight="700">GCSLC</text>
     </svg>
     """
 
@@ -161,8 +185,8 @@ def _map_with_falcon_html(selected_state: str | None) -> str:
         falcon_div = f'<div class="falcon-landed" style="left:50%; top:50%;">{falcon_svg}</div>'
     return f"""
     <div class="map-falcon-wrap gold-border">
-        <h3 class="shimmer">Sovereign Resource Map — Nigeria</h3>
-        <p class="map-sub">13 Coal-Rich States — Live Pulsing Corridors (click a node)</p>
+        <h3 class="shimmer">High-Velocity Map — Federal Republic of Nigeria (Territory Lock)</h3>
+        <p class="map-sub">13 Coal-Rich States — Live Pulsing (Gold &amp; White). Click a node for Diamond Opportunity.</p>
         <div class="nigeria-map-container">
             {svg}
             {falcon_div}
@@ -176,7 +200,7 @@ def _humanoid_html():
     r_orbs = "".join(f'<span class="r-orb">{d}</span>' for d in DETERMINANTS_R)
     return f"""
     <div class="gold-border humanoid-exhibit">
-        <p class="shimmer-sub exhibit-label">The Navy Humanoid — Determinant Exhibit</p>
+        <p class="shimmer-sub exhibit-label">The Navy Humanoid — 3D Model with Rotating 8R Determinant Aura (R1–R8)</p>
         <div class="determinant-aura-orbit">
             <div class="orbit-ring">
                 {r_orbs}
@@ -231,11 +255,28 @@ css = """
   from { max-height: 0; opacity: 0; transform: scale(0.95); }
   to { max-height: 420px; opacity: 1; transform: scale(1); }
 }
+/* Falcon flies from top-right down to state node */
 @keyframes falcon-fly-in {
-  0% { transform: translate(-50%, -50%) translateY(-200px) scale(0.5); opacity: 0; }
-  70% { transform: translate(-50%, -50%) translateY(5px) scale(1.05); opacity: 1; }
-  100% { transform: translate(-50%, -50%) translateY(0) scale(1); opacity: 1; }
+  0% { transform: translate(-50%, -50%) translate(120px, -220px) scale(0.5); opacity: 0; }
+  70% { transform: translate(-50%, -50%) translate(5px, 5px) scale(1.05); opacity: 1; }
+  100% { transform: translate(-50%, -50%) translate(0, 0) scale(1); opacity: 1; }
 }
+/* GCSLC Medallion: gold glint every 3s */
+@keyframes medallion-glint {
+  0%, 90%, 100% { filter: drop-shadow(0 0 6px rgba(212,175,55,0.5)); opacity: 0.95; }
+  95% { filter: drop-shadow(0 0 18px #FFD700) drop-shadow(0 0 28px rgba(255,215,0,0.7)); opacity: 1; }
+}
+.gcslc-medallion {
+  position: fixed !important; top: 12px !important; left: 12px !important;
+  width: 56px; height: 56px; z-index: 10000;
+  background: linear-gradient(135deg, #1a1a0a 0%, #2a2410 50%, #1a1508 100%);
+  border-radius: 50%; border: 3px solid #D4AF37; padding: 4px;
+  animation: medallion-glint 3s ease-in-out infinite;
+  box-shadow: inset 0 0 20px rgba(212,175,55,0.2);
+}
+.gcslc-medallion svg { width: 100%; height: 100%; display: block; }
+.title-shimmer-gold { color: #D4AF37; animation: gold-shimmer 2.2s ease-in-out infinite; }
+.header-with-medallion { position: relative; padding-left: 76px; padding-top: 8px; padding-bottom: 12px; }
 @keyframes orbit {
   from { transform: translate(-50%, -50%) rotate(0deg); }
   to { transform: translate(-50%, -50%) rotate(360deg); }
@@ -374,19 +415,19 @@ with gr.Blocks(css=css, title="GCSLC Sovereign Gateway — Prestige Lock") as de
     </script>
     """)
 
-    # Sovereign Command header: title (GCSLC - LTD/GTE) + Falcon in header
+    # GCSLC Medallion (Seal) at absolute top-left — gold glint every 3s
+    gr.HTML('<div class="gcslc-medallion" aria-label="GCSLC Seal">' + _gcslc_medallion_svg() + "</div>")
+    # Title: shimmering gold (GCSLC - LTD/GTE)
     gr.HTML(
-        "<div class='header-sovereign'>"
-        "<h1 class='shimmer' style='text-align: center; font-size: 1.2rem; margin-bottom: 4px;'>"
-        "Sovereign Command</h1>"
-        "<p class='title-full shimmer-sub' style='text-align: center; font-size: 1rem; margin: 0 0 8px 0;'>"
+        "<div class='header-with-medallion'>"
+        "<h1 class='title-shimmer-gold' style='text-align: center; font-size: 1.15rem; margin: 0 0 6px 0; line-height: 1.3;'>"
         + TITLE_FULL +
-        "</p>"
-        "<div class='falcon-header-icon'>" + _falcon_prestige_svg() + "</div>"
+        "</h1>"
         "</div>"
     )
+    # Hook: 8R Stealth Paradigm Convergence (human to AI/Robotics)
     gr.HTML(
-        f"<p style='text-align: center; font-size: 0.95rem; max-width: 720px; margin: 0 auto 20px auto; line-height: 1.45; color: #e8eef4;'>"
+        f"<p class='hook-message' style='text-align: center; font-size: 0.95rem; max-width: 720px; margin: 0 auto 20px auto; line-height: 1.45; color: #e8eef4;'>"
         f"{HOOK_TEXT}</p>"
     )
 
