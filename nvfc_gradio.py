@@ -64,6 +64,8 @@ STATE_CENTROIDS_LNGLAT: Dict[str, Tuple[float, float]] = {
 BY_PRODUCT_GERMANIUM_USD_PER_KG = 8597
 BY_PRODUCT_AMMONIA_USD_PER_MT = 430
 BY_PRODUCT_SILICON_M = 6.50
+BENZENE_USD_PER_MT = 950
+RARE_EARTH_USD_PER_KG = 120000
 
 DETERMINANTS_R = [
     "R1 Refine", "R2 Reset", "R3 Research", "R4 Restructure",
@@ -373,6 +375,108 @@ def _diamond_popup(state: str, with_audio: bool) -> str:
     """
 
 
+def _market_values_html() -> str:
+    """Real-Time Market Values: 5-minute refresh cycle (simulated), glittering pulse cards + Falcon tactical cry on >1% uptick."""
+    falcon_cry = _falcon_cry_data_url()
+    return f"""
+    <div id="market-values" class="market-values" data-falcon-cry="{falcon_cry}">
+      <h3 class="shimmer market-title">Real-Time Market Values (Strategic Commodities)</h3>
+      <div class="market-grid">
+        <div class="mv-card" data-symbol="Germanium" data-price="{BY_PRODUCT_GERMANIUM_USD_PER_KG:.0f}">
+          <p class="mv-label">Germanium</p>
+          <p class="mv-price">${BY_PRODUCT_GERMANIUM_USD_PER_KG:,.0f}/kg</p>
+          <p class="mv-caption">Optics, chips, sensors</p>
+        </div>
+        <div class="mv-card" data-symbol="Silicon" data-price="{BY_PRODUCT_SILICON_M * 1000:.0f}">
+          <p class="mv-label">Silicon</p>
+          <p class="mv-price">${BY_PRODUCT_SILICON_M * 1000:,.0f}/MT</p>
+          <p class="mv-caption">Solar, wafers, compute</p>
+        </div>
+        <div class="mv-card" data-symbol="Benzene" data-price="{BENZENE_USD_PER_MT:.0f}">
+          <p class="mv-label">Benzene</p>
+          <p class="mv-price">${BENZENE_USD_PER_MT:,.0f}/MT</p>
+          <p class="mv-caption">Petrochem feedstock</p>
+        </div>
+        <div class="mv-card" data-symbol="RareEarth" data-price="{RARE_EARTH_USD_PER_KG:.0f}">
+          <p class="mv-label">Rare Earth Elements</p>
+          <p class="mv-price">${RARE_EARTH_USD_PER_KG:,.0f}/kg</p>
+          <p class="mv-caption">Magnets, EV, defense</p>
+        </div>
+      </div>
+      <script>
+      (function(){{
+        var root = document.getElementById("market-values");
+        if (!root) return;
+        var cry = root.getAttribute("data-falcon-cry");
+        function step() {{
+          var cards = root.querySelectorAll(".mv-card");
+          cards.forEach(function(card) {{
+            var prev = parseFloat(card.getAttribute("data-price") || "0");
+            if (!prev || !isFinite(prev)) prev = 1000;
+            // Simulated +/-1% drift
+            var delta = (Math.random() * 0.02) - 0.01;
+            var next = prev * (1 + delta);
+            var pct = ((next - prev) / prev) * 100;
+            card.setAttribute("data-price", String(next.toFixed(2)));
+            var priceEl = card.querySelector(".mv-price");
+            if (priceEl) {{
+              var unit = priceEl.textContent.replace(/^[^/]+/, "");
+              priceEl.textContent = "$" + next.toFixed(0).replace(/\\B(?=(\\d{{3}})+(?!\\d))/g, ",") + unit.replace(/^[^/]+/, "");
+            }}
+            card.classList.remove("mv-up");
+            if (pct > 1.0) {{
+              card.classList.add("mv-up");
+              // Falcon tactical cry on >1% uptick
+              if (cry) {{
+                var a = new Audio(cry);
+                a.volume = 0.55;
+                a.play().catch(function(){{}});
+              }}
+            }}
+          }});
+        }}
+        // 5-minute refresh (300000 ms)
+        step();
+        setInterval(step, 300000);
+      }})();
+      </script>
+    </div>
+    """
+
+
+def _national_impact_html(tonnage_m_t: float) -> str:
+    """National Impact: AI Processing Power (PB), Sovereign Jobs, Revenue Potential (USD B)."""
+    try:
+        t = max(0.0, float(tonnage_m_t))
+    except Exception:
+        t = 0.0
+    ai_pb = t * 0.8  # Petabytes of AI processing implied by coal -> data centers
+    jobs = int(t * 120)  # Sovereign jobs
+    revenue_b = t * 1.25  # Very rough strategic revenue potential (USD B)
+    return f"""
+    <div class="impact-wrap">
+      <div class="impact-cards">
+        <div class="impact-card">
+          <p class="impact-label">AI Processing Power</p>
+          <p class="impact-value">{ai_pb:,.1f} PB</p>
+          <p class="impact-caption">Anthracite → Data Centers &amp; AI Clouds</p>
+        </div>
+        <div class="impact-card">
+          <p class="impact-label">Sovereign Jobs Created</p>
+          <p class="impact-value">{jobs:,}</p>
+          <p class="impact-caption">Operations, engineering, logistics, security</p>
+        </div>
+        <div class="impact-card">
+          <p class="impact-label">Revenue Potential</p>
+          <p class="impact-value">${revenue_b:,.1f}B</p>
+          <p class="impact-caption">Blended downstream value chain (8R-aligned)</p>
+        </div>
+      </div>
+      <p class="impact-note">Inputs are illustrative for strategic visualization only — not financial advice.</p>
+    </div>
+    """
+
+
 def _map_html(selected_state: Optional[str]) -> str:
     ng = _nigeria_svg()
     f_svg = _falcon_svg()
@@ -507,6 +611,11 @@ CSS = """
     border: 2px solid rgba(0, 212, 255, 0.5);
     box-shadow: 0 0 20px rgba(0, 212, 255, 0.8), inset 0 0 60px rgba(0, 212, 255, 0.03);
     position: relative;
+    transition: box-shadow 0.4s ease, border-color 0.4s ease;
+}
+.gradio-container:hover {
+    border-color: rgba(0, 212, 255, 0.9);
+    box-shadow: 0 0 28px rgba(0, 212, 255, 0.95), inset 0 0 80px rgba(0, 212, 255, 0.06);
 }
 .main, .container {
     background-color: transparent !important;
@@ -639,6 +748,36 @@ CSS = """
 .byproduct-title { color: #D4AF37; font-weight: 600; }
 .byproduct-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
 .byproduct-item { color: #b8c4ce; font-size: 0.9rem; }
+
+/* --- Real-Time Market Values: glittering pulse price cards --- */
+.market-values { margin: 18px 0 8px 0; text-align: center; }
+.market-title { font-size: 0.95rem; margin-bottom: 10px; }
+.market-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+.mv-card {
+  border: 1px solid rgba(0, 212, 255, 0.5);
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: radial-gradient(circle at top, rgba(0,212,255,0.12) 0%, #02030a 55%, #010107 100%);
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.25);
+  animation: mv-glitter-pulse 3.2s ease-in-out infinite;
+}
+.mv-card .mv-label { font-size: 0.8rem; color: #D4AF37; margin: 0 0 4px 0; }
+.mv-card .mv-price { font-size: 0.95rem; font-weight: 700; color: #00d4ff; margin: 0 0 4px 0; }
+.mv-card .mv-caption { font-size: 0.72rem; color: #b8c4ce; margin: 0; }
+@keyframes mv-glitter-pulse {
+  0%, 100% { box-shadow: 0 0 6px rgba(0,212,255,0.35); border-color: rgba(0, 212, 255, 0.5); }
+  50% { box-shadow: 0 0 16px rgba(0,212,255,0.85); border-color: rgba(255,215,0,0.85); }
+}
+.mv-card.mv-up {
+  box-shadow: 0 0 18px rgba(255,215,0,0.95);
+  border-color: rgba(255,215,0,0.95);
+}
 
 .map-wrap { padding: 20px; text-align: center; }
 .map-sub { color: #b8c4ce; font-size: 0.9rem; margin: 8px 0 12px 0; }
@@ -785,6 +924,25 @@ CSS = """
 .agentic-terminal { background: #0a0a0f; border: 2px solid #00d4ff; border-radius: 8px; padding: 10px 12px; max-height: 180px; overflow: hidden; }
 .agentic-terminal-header { color: #00d4ff; font-size: 0.75rem; margin-bottom: 6px; font-weight: 700; }
 .agentic-terminal-log { color: #00ff88; font-size: 0.7rem; margin: 0; white-space: pre-wrap; word-break: break-word; max-height: 140px; overflow-y: auto; display: block; }
+
+/* National Impact cards (Navy & Gold visuals) */
+.impact-wrap { margin-top: 16px; }
+.impact-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+}
+.impact-card {
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: radial-gradient(circle at top, rgba(0,26,53,0.9) 0%, #000612 60%, #00030a 100%);
+  border: 1px solid rgba(212,175,55,0.7);
+  box-shadow: 0 0 14px rgba(212,175,55,0.35);
+}
+.impact-label { font-size: 0.78rem; color: #D4AF37; margin: 0 0 4px 0; }
+.impact-value { font-size: 1rem; font-weight: 700; color: #00d4ff; margin: 0 0 4px 0; }
+.impact-caption { font-size: 0.72rem; color: #b8c4ce; margin: 0; }
+.impact-note { font-size: 0.7rem; color: rgba(184,196,206,0.7); margin-top: 8px; text-align: center; }
 """
 
 
@@ -830,6 +988,9 @@ with gr.Blocks(css=CSS, title="GCSLC Sovereign Command") as demo:
     )
     gr.HTML(f"<p class='hook' style='text-align: center; font-size: 0.92rem; max-width: 700px; margin: 0 auto 20px auto; line-height: 1.45; color: #e8eef4;'>{HOOK_TEXT}</p>")
 
+    # Real-Time Market Values — glittering pulse + 5-minute refresh (simulated)
+    gr.HTML(_market_values_html())
+
     # 2. Map of Authority: Real Nigeria state borders (gr.Plot choropleth) or fallback SVG. Falcon position updated by Python on state click.
     _initial_fig = _nigeria_choropleth_figure("Kogi")
     use_plotly_map = _initial_fig is not None
@@ -863,15 +1024,33 @@ with gr.Blocks(css=CSS, title="GCSLC Sovereign Command") as demo:
 
     gr.Markdown("---")
 
-    # 3. 8R AURA — Humanoid with pulsing cyan glow around central core
+    # 3. National Impact tab — tonnage → AI PB, Jobs, Revenue (Navy & Gold visuals)
+    with gr.Tab("National Impact"):
+        ti = gr.Slider(
+            minimum=0,
+            maximum=500,
+            value=100,
+            step=5,
+            label="Coal Tonnage (Million Tonnes)",
+        )
+        impact_html = gr.HTML(value=_national_impact_html(100.0))
+
+        def _on_impact(t):
+            return _national_impact_html(t)
+
+        ti.change(fn=_on_impact, inputs=ti, outputs=impact_html)
+
+    gr.Markdown("---")
+
+    # 4. 8R AURA — Humanoid with pulsing cyan glow around central core
     gr.HTML(_humanoid_block())
 
     gr.Markdown("---")
 
-    # 4. General's Hook: Agentic Reasoning terminal (real-time Thinking logs)
+    # 5. General's Hook: Agentic Reasoning terminal (real-time Thinking logs)
     gr.HTML(_agentic_terminal_html())
 
-    # 5. Signature & Footer (CAC)
+    # 6. Signature & Footer (CAC)
     gr.HTML(_footer_block())
 
 
