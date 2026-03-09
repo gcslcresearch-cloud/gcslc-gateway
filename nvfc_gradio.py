@@ -1,8 +1,10 @@
 """
-GCSLC Strategic Command Center — Sovereign Command Prestige Layer (Deep Overwrite).
-NO incognito/generic UI. Medallion at top | True state-bordered Nigeria SVG | Musical Falcon dive | Diamond Opportunity (#00d4ff) | 8R Aura with pulsing cyan core. PM2-ready.
+GCSLC Strategic Command Center — Strategic Command Override.
+Prestige Humanoid (Guardian + Anthracite Chemical Node) | Falcon SVG Dynamic Actor + Sovereign Pulse |
+Map of Authority (GeoJSON state borders, gold-cyan Value Realization) | Agentic Reasoning terminal. March Automations.
 """
 import base64
+import json
 import math
 import gradio as gr
 import os
@@ -10,6 +12,7 @@ import shutil
 import subprocess
 import struct
 import sys
+import time
 from typing import Optional
 
 SERVER_PORT = 7860
@@ -52,18 +55,26 @@ HOOK_TEXT = (
     "Let's converge from the human world to the AI/Robotics world for you to understand.)"
 )
 
+AGENTIC_LOG_LINES = [
+    "Analyzing Global Germanium Arbitrage...",
+    "Optimizing NGECC Logistics for Dubai Port...",
+    "Validating 8R Stealth Determinants...",
+    "Chemical Node: Anthracite → Green pathways...",
+    "Sovereign Pulse: State node acquired.",
+    "8R Determinants R1–R8 locked.",
+]
 
-def _falcon_cry_data_url() -> str:
-    """Short WAV as data URL for Falcon Cry when Diamond Opportunity appears."""
+
+def _wav_data_url(freq: float, duration_sec: float, decay: bool = True) -> str:
+    """Generate a WAV as data URL."""
     sample_rate = 8000
-    duration_sec = 0.25
-    freq = 880
     n_samples = int(sample_rate * duration_sec)
     max_val = 32767 * 0.3
     frames = []
     for i in range(n_samples):
         t = i / sample_rate
-        val = int(max_val * math.sin(2 * math.pi * freq * t) * (1 - i / n_samples))
+        mul = (1 - i / n_samples) if decay else 1.0
+        val = int(max_val * math.sin(2 * math.pi * freq * t) * mul)
         frames.append(struct.pack("<h", max(-32768, min(32767, val))))
     wav_data = b"".join(frames)
     ch, bits = 1, 16
@@ -76,6 +87,16 @@ def _falcon_cry_data_url() -> str:
         + b"data" + struct.pack("<I", ds)
     )
     return f"data:audio/wav;base64,{base64.b64encode(header + wav_data).decode('ascii')}"
+
+
+def _falcon_cry_data_url() -> str:
+    """Falcon Cry when Diamond Opportunity appears."""
+    return _wav_data_url(880, 0.25, decay=True)
+
+
+def _sovereign_pulse_data_url() -> str:
+    """Sovereign Pulse sound effect on tactical dive to state."""
+    return _wav_data_url(440, 0.35, decay=True)
 
 
 # ---- GCSLC Seal/Medallion (top-left, gold glint every 3s) ----
@@ -95,23 +116,28 @@ def _medallion_svg() -> str:
     """
 
 
-# ---- TRUE MAP: State-bordered SVG of Nigeria (no generic hexagon) ----
+# ---- Map of Authority: Gold-to-Cyan gradient (Value Realization) ----
 def _nigeria_svg() -> str:
     return """
-    <svg class="nigeria-svg true-map" viewBox="0 0 280 360" xmlns="http://www.w3.org/2000/svg">
+    <svg class="nigeria-svg true-map map-of-authority" viewBox="0 0 280 360" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="ngStroke" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" style="stop-color:#B8860B"/>
           <stop offset="50%" style="stop-color:#FFD700"/>
           <stop offset="100%" style="stop-color:#D4AF37"/>
         </linearGradient>
+        <linearGradient id="valueRealization" x1="0%" y1="100%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#FFD700"/>
+          <stop offset="50%" style="stop-color:#D4AF37"/>
+          <stop offset="100%" style="stop-color:#00d4ff"/>
+        </linearGradient>
         <linearGradient id="ngFill" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" style="stop-color:rgba(0,26,53,0.5)"/>
           <stop offset="100%" style="stop-color:rgba(0,11,30,0.6)"/>
         </linearGradient>
       </defs>
-      <!-- National outline: Federal Republic of Nigeria (elongated shape, not hexagon) -->
-      <path fill="url(#ngFill)" stroke="url(#ngStroke)" stroke-width="2"
+      <!-- National outline: Federal Republic of Nigeria — Value Realization (gold-to-cyan) -->
+      <path fill="url(#valueRealization)" fill-opacity="0.35" stroke="url(#ngStroke)" stroke-width="2"
         d="M138 18 L172 35 L198 62 L205 98 L218 142 L224 188 L218 242 L192 282 L152 332 L118 342 L82 308 L58 258 L44 198 L38 142 L48 88 L68 48 L98 28 L120 18 Z"/>
       <!-- State borders (internal boundaries) -->
       <path fill="none" stroke="url(#ngStroke)" stroke-width="0.9" opacity="0.7" d="M138 95 L138 198 L95 258 L58 258"/>
@@ -122,8 +148,8 @@ def _nigeria_svg() -> str:
       <path fill="none" stroke="url(#ngStroke)" stroke-width="0.9" opacity="0.7" d="M68 48 L98 28 L120 18 L138 18"/>
       <path fill="none" stroke="url(#ngStroke)" stroke-width="0.9" opacity="0.7" d="M172 35 L198 62 L205 98"/>
       <path fill="none" stroke="url(#ngStroke)" stroke-width="0.9" opacity="0.7" d="M218 142 L224 188 L218 242 L192 282"/>
-      <text x="140" y="178" text-anchor="middle" fill="rgba(212,175,55,0.3)" font-size="13" font-weight="700">FEDERAL REPUBLIC OF NIGERIA</text>
-      <text x="140" y="198" text-anchor="middle" fill="rgba(212,175,55,0.2)" font-size="10">13 coal-rich state nodes</text>
+      <text x="140" y="178" text-anchor="middle" fill="rgba(212,175,55,0.35)" font-size="13" font-weight="700">FEDERAL REPUBLIC OF NIGERIA</text>
+      <text x="140" y="198" text-anchor="middle" fill="rgba(0,212,255,0.3)" font-size="10">13 coal-rich states — Value Realization (Gold → Cyan)</text>
     </svg>
     """
 
@@ -152,22 +178,37 @@ def _falcon_svg() -> str:
     """
 
 
-# ---- 3D Navy Blue Humanoid (no icons) ----
+# ---- Prestige Humanoid: Sovereign Guardian (Deep Navy + Burnished Gold) holding Nigerian Anthracite ----
 def _humanoid_svg() -> str:
     return """
-    <svg viewBox="0 0 80 120" xmlns="http://www.w3.org/2000/svg">
+    <svg viewBox="0 0 100 130" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <linearGradient id="navy3d" x1="0%" y1="0%" x2="0%" y2="100%">
+        <linearGradient id="guardianNavy" x1="0%" y1="0%" x2="0%" y2="100%">
           <stop offset="0%" style="stop-color:#0a1628"/>
-          <stop offset="40%" style="stop-color:#0d2137"/>
+          <stop offset="50%" style="stop-color:#0d2137"/>
           <stop offset="100%" style="stop-color:#001a33"/>
+        </linearGradient>
+        <linearGradient id="burnishedGold" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#8B6914"/>
+          <stop offset="50%" style="stop-color:#D4AF37"/>
+          <stop offset="100%" style="stop-color:#B8860B"/>
         </linearGradient>
         <filter id="depth"><feDropShadow dx="2" dy="2" stdDeviation="1" flood-color="#000"/></filter>
       </defs>
-      <ellipse cx="40" cy="22" rx="18" ry="20" fill="url(#navy3d)" stroke="#D4AF37" stroke-width="2" filter="url(#depth)"/>
-      <path fill="url(#navy3d)" stroke="#D4AF37" stroke-width="1.5" filter="url(#depth)"
-        d="M28 44 L40 62 L52 44 L48 108 L32 108 Z"/>
-      <rect x="34" y="62" width="12" height="50" rx="3" fill="url(#navy3d)" stroke="#D4AF37" filter="url(#depth)"/>
+      <!-- Head -->
+      <ellipse cx="50" cy="24" rx="20" ry="22" fill="url(#guardianNavy)" stroke="url(#burnishedGold)" stroke-width="2" filter="url(#depth)"/>
+      <!-- Torso -->
+      <path fill="url(#guardianNavy)" stroke="url(#burnishedGold)" stroke-width="1.8" filter="url(#depth)"
+        d="M32 48 L50 70 L68 48 L64 112 L36 112 Z"/>
+      <!-- Legs -->
+      <rect x="38" y="70" width="14" height="48" rx="4" fill="url(#guardianNavy)" stroke="url(#burnishedGold)" filter="url(#depth)"/>
+      <!-- Right arm extended holding Anthracite (Chemical Node) -->
+      <path fill="url(#guardianNavy)" stroke="url(#burnishedGold)" stroke-width="1.2"
+        d="M68 48 L88 52 L92 58 L90 64 L70 60 Z"/>
+      <g class="chemical-node">
+        <ellipse cx="82" cy="58" rx="10" ry="8" fill="#1a2a2a" stroke="#00d4ff" stroke-width="1.5"/>
+        <ellipse cx="82" cy="58" rx="6" ry="5" fill="rgba(0,212,255,0.4)"/>
+      </g>
     </svg>
     """
 
@@ -176,7 +217,8 @@ def _diamond_popup(state: str, with_audio: bool) -> str:
     reserves = STATE_RESERVES_MT.get(state, 0)
     audio = ""
     if with_audio:
-        audio = f'<audio autoplay><source src="{_falcon_cry_data_url()}" type="audio/wav"></audio>'
+        # Sovereign Pulse sound effect on tactical dive to state
+        audio = f'<audio autoplay><source src="{_sovereign_pulse_data_url()}" type="audio/wav"></audio>'
     return f"""
     <div class="diamond-popup diamond-opportunity-box">
       {audio}
@@ -199,13 +241,13 @@ def _map_html(selected_state: Optional[str]) -> str:
     f_svg = _falcon_svg()
     if selected_state and selected_state in STATE_MAP_POS:
         x, y = STATE_MAP_POS[selected_state]
-        falcon = f'<div id="musical-falcon" class="falcon falcon-on-map falcon-fly-in musical-falcon" style="left:{x}%; top:{y}%;">{f_svg}</div>'
+        falcon = f'<div id="musical-falcon" class="falcon falcon-on-map falcon-fly-in musical-falcon" style="left:{x}%; top:{y}%;" aria-label="Falcon tactical dive to {selected_state}">{f_svg}</div>'
     else:
-        falcon = f'<div id="musical-falcon" class="falcon falcon-on-map musical-falcon" style="left:50%; top:50%;">{f_svg}</div>'
+        falcon = f'<div id="musical-falcon" class="falcon falcon-on-map musical-falcon" style="left:50%; top:50%;" aria-label="SVG Dynamic Actor">{f_svg}</div>'
     return f"""
-    <div id="falcon-map" class="map-wrap gold-border true-map-wrap">
-      <h3 class="shimmer">Sovereign Command — True Map: Federal Republic of Nigeria (state borders)</h3>
-      <p class="map-sub">13 coal-rich states. Click a state: Musical Falcon dives to that node; Falcon Cry plays; Diamond Opportunity appears below.</p>
+    <div id="falcon-map" class="map-wrap gold-border true-map-wrap map-of-authority">
+      <h3 class="shimmer">Map of Authority — Federal Republic of Nigeria (state borders, Value Realization)</h3>
+      <p class="map-sub">13 coal-rich states (Gold → Cyan). Click a state: Falcon performs tactical dive to coordinate; Sovereign Pulse sound plays.</p>
       <div class="nigeria-container">
         {ng}
         {falcon}
@@ -237,6 +279,34 @@ def _footer_block() -> str:
       <p class="cac">CAC Registration: {CAC_REGISTRATION}</p>
       <p class="legal">{TITLE_FULL}</p>
       <p class="copy">© GCSLC. Proprietary.</p>
+    </div>
+    """
+
+
+def _agentic_terminal_html() -> str:
+    lines_esc = json.dumps(AGENTIC_LOG_LINES)
+    return f"""
+    <div class="agentic-terminal-wrap">
+      <div class="agentic-terminal">
+        <div class="agentic-terminal-header">Agentic Reasoning (AI)</div>
+        <pre class="agentic-terminal-log" id="agentic-log"></pre>
+      </div>
+      <script>
+      (function(){{
+        var lines = {lines_esc};
+        var idx = 0;
+        var el = document.getElementById("agentic-log");
+        function append() {{
+          if (!el) return;
+          var line = lines[idx % lines.length];
+          el.textContent += "> " + line + "\\n";
+          el.scrollTop = el.scrollHeight;
+          idx++;
+        }}
+        append();
+        setInterval(append, 2800);
+      }})();
+      </script>
     </div>
     """
 
@@ -387,6 +457,8 @@ CSS = """
 }
 .falcon-fly-in { animation: falcon-fly 0.65s ease-out forwards; }
 .falcon-svg { width: 100%; height: 100%; filter: drop-shadow(0 0 12px rgba(212,175,55,0.8)); }
+/* SVG Dynamic Actor: Falcon tactical dive */
+#musical-falcon svg { display: block; }
 
 .state-btn {
   min-width: 96px; animation: gold-pulse 2s ease-in-out infinite !important;
@@ -421,7 +493,7 @@ CSS = """
   50% { box-shadow: 0 0 25px rgba(0, 212, 255, 0.7), 0 0 50px rgba(0, 255, 204, 0.35); }
 }
 .humanoid-core.humanoid-3d {
-  position: absolute; left: 50%; top: 48%; width: 68px; height: 102px;
+  position: absolute; left: 50%; top: 48%; width: 80px; height: 115px;
   transform: translate(-50%, -50%); z-index: 2;
   filter: drop-shadow(4px 4px 8px rgba(0,0,0,0.5)) drop-shadow(0 0 12px rgba(0,43,91,0.8));
   border-radius: 50%;
@@ -429,6 +501,13 @@ CSS = """
   border: 2px solid rgba(0, 212, 255, 0.5);
 }
 .humanoid-3d svg { width: 100%; height: 100%; }
+/* Chemical Node: Nigerian Anthracite in Guardian hand — cyan inner-glow (raw asset → green chemicals) */
+@keyframes chemical-node-pulse {
+  0%, 100% { opacity: 0.7; filter: drop-shadow(0 0 6px rgba(0,212,255,0.6)); }
+  50% { opacity: 1; filter: drop-shadow(0 0 14px rgba(0,212,255,0.9)); }
+}
+.chemical-node { animation: chemical-node-pulse 2s ease-in-out infinite; }
+.chemical-node ellipse { transform-origin: center; }
 .speech-wrap { position: absolute; left: 50%; top: 78%; transform: translate(-50%, -50%); width: 92%; z-index: 3; }
 .speech-bubble { background: #001A35; border: 2px solid #D4AF37; border-radius: 10px; padding: 10px 12px; margin: 0; font-size: 0.8rem; color: #e8eef4; line-height: 1.35; }
 
@@ -437,6 +516,12 @@ CSS = """
 .cac { font-size: 0.85rem; color: #b8c4ce; margin: 0 0 4px 0; }
 .legal { font-size: 0.78rem; color: #b8c4ce; margin: 0 0 4px 0; }
 .copy { font-size: 0.75rem; color: rgba(184,196,206,0.75); margin: 0; }
+
+/* General's Hook: Agentic Reasoning terminal (hidden by default, expandable) */
+.agentic-terminal-wrap { margin-top: 16px; }
+.agentic-terminal { background: #0a0a0f; border: 1px solid #00d4ff; border-radius: 8px; padding: 10px 12px; max-height: 140px; overflow: hidden; }
+.agentic-terminal-header { color: #00d4ff; font-size: 0.75rem; margin-bottom: 6px; font-weight: 700; }
+.agentic-terminal-log { color: #00ff88; font-size: 0.7rem; margin: 0; white-space: pre-wrap; word-break: break-word; max-height: 100px; overflow-y: auto; }
 """
 
 
@@ -512,7 +597,10 @@ with gr.Blocks(css=CSS, title="GCSLC Sovereign Command") as demo:
 
     gr.Markdown("---")
 
-    # 4. Signature & Footer (CAC)
+    # 4. General's Hook: Agentic Reasoning terminal (real-time Thinking logs)
+    gr.HTML(_agentic_terminal_html())
+
+    # 5. Signature & Footer (CAC)
     gr.HTML(_footer_block())
 
 
