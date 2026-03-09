@@ -1,7 +1,3 @@
-"""
-NVFC Dashboard (Gradio) — GCSLC Shimmering Gold UI. S24 access: server_name="0.0.0.0".
-Run: python nvfc_gradio.py  OR  ./deploy/run_nvfc_clean_restart.sh
-"""
 import gradio as gr
 import pandas as pd
 import subprocess
@@ -9,57 +5,39 @@ import sys
 
 SERVER_PORT = 7860
 
-# Custom CSS for the "GCSLC Shimmering Gold" effect
+# GCSLC Sovereign CSS - Shimmering Gold & Navy
 css = """
-.shimmer-text {
-    color: #D4AF37;
-    font-weight: bold;
-    text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
-    animation: shimmer 2s infinite linear;
-}
-@keyframes shimmer { 0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.8; } }
-.gradio-container { background-color: #000B1E !important; color: white !important; }
+.shimmer { color: #D4AF37; text-shadow: 0 0 15px #D4AF37; animation: pulse 2s infinite; }
+@keyframes pulse { 0% { opacity: 0.7; } 50% { opacity: 1; } 100% { opacity: 0.7; } }
+.gradio-container { background: #000B1E !important; }
 """
 
 
-def _kill_port_7860():
-    """Free port 7860 to avoid OSError 48 (Address already in use)."""
+def _kill_port():
     try:
-        if sys.platform == "darwin":
-            subprocess.run("lsof -ti:7860 | xargs kill -9", shell=True, capture_output=True, timeout=5)
-        else:
-            subprocess.run("fuser -k 7860/tcp 2>/dev/null || true", shell=True, capture_output=True, timeout=5)
+        subprocess.run("lsof -ti:7860 | xargs kill -9", shell=True, capture_output=True, timeout=5)
     except Exception:
         pass
 
 
-with gr.Blocks(css=css, title="GCSLC - National Velocity Falcon Cloud") as demo:
-    gr.Markdown("# 🦅 GCSLC: National Velocity Falcon Cloud (NVFC)")
-    gr.Markdown("### *Strategizing 2 Billion Metric Tonnes of Coal into High-Velocity Digital Wealth*")
+with gr.Blocks(css=css, title="NVFC Sovereign Gateway") as demo:
+    gr.HTML("<h1 class='shimmer' style='text-align:center;'>🦅 National Velocity Falcon Cloud</h1>")
 
     with gr.Row():
         with gr.Column(scale=2):
             gr.HTML("""
-                <div style='background: #001529; padding: 20px; border: 2px solid #D4AF37; border-radius: 15px; text-align: center;'>
-                    <h2 class='shimmer-text'>🇳🇬 Sovereign Map of Nigeria</h2>
-                    <p>Highlighting the 13 Coal-Rich Sovereign States</p>
-                    <div style='font-size: 50px;'>🦅</div>
+                <div style='border: 2px solid #D4AF37; padding: 20px; border-radius: 15px; background: #001A35;'>
+                    <h3 style='color: #D4AF37;'>🇳🇬 Sovereign Resource Map</h3>
+                    <p style='color: white;'>Visualizing the 13 Coal-Rich Sovereign States...</p>
+                    <div style='font-size: 60px; text-align:center;'>🦅</div>
                 </div>
             """)
         with gr.Column(scale=1):
-            gr.Label(label="Sovereign Benchmark", value="UAE AI Cloud ($15.2B) vs. Nigeria Coal (2B Tonnes)")
-            gr.Button("Execute 8R Paradigm", variant="primary")
-
-    gr.Markdown("---")
-    gr.Markdown("#### Status: Determinant 4 (Reset) Complete. Ready for D5 (Resuscitate).")
+            gr.Label("Strategic Benchmark", value="UAE ($15.2B) vs. Nigeria (2B Tonnes Coal)")
+            gr.Button("Ignite Determinant 5: Resuscitate", variant="primary")
 
 
+# S24 24/7/365 fix: server_name="0.0.0.0" allows phone access on same Wi-Fi
 if __name__ == "__main__":
-    _kill_port_7860()
-    print("\n" + "=" * 60)
-    print("  Local:  http://127.0.0.1:7860")
-    print("  Public: (see below after Gradio starts)")
-    print("=" * 60 + "\n")
-    sys.stdout.flush()
-    # CRITICAL: server_name="0.0.0.0" allows S24 / LAN devices to reach the app
+    _kill_port()
     demo.launch(share=True, server_name="0.0.0.0", server_port=SERVER_PORT, show_error=True)
