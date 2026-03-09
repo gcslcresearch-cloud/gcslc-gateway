@@ -9,6 +9,7 @@ import base64
 import io
 import json
 import math
+import random
 import gradio as gr
 import os
 import shutil
@@ -66,6 +67,13 @@ BY_PRODUCT_AMMONIA_USD_PER_MT = 430
 BY_PRODUCT_SILICON_M = 6.50
 BENZENE_USD_PER_MT = 950
 RARE_EARTH_USD_PER_KG = 120000
+
+# 5-Minute Heartbeat: server-side commodity state (Germanium, Silicon, Benzene)
+_COMMODITY_PRICES: Dict[str, float] = {
+    "Germanium": float(BY_PRODUCT_GERMANIUM_USD_PER_KG),
+    "Silicon": float(BY_PRODUCT_SILICON_M * 1000),
+    "Benzene": float(BENZENE_USD_PER_MT),
+}
 
 DETERMINANTS_R = [
     "R1 Refine", "R2 Reset", "R3 Research", "R4 Restructure",
@@ -252,6 +260,11 @@ def _falcon_cry_data_url() -> str:
     return _wav_data_url(880, 0.25, decay=True)
 
 
+def _falcon_screech_data_url() -> str:
+    """High-pitched metallic screech for Falcon Victory Dive when commodity price increases >1%."""
+    return _wav_data_url(1450, 0.4, decay=True)
+
+
 def _sovereign_pulse_data_url() -> str:
     """Sovereign Pulse sound effect on tactical dive to state."""
     return _wav_data_url(440, 0.35, decay=True)
@@ -375,96 +388,80 @@ def _diamond_popup(state: str, with_audio: bool) -> str:
     """
 
 
-def _market_values_html() -> str:
-    """Real-Time Market Values: 5-minute refresh cycle (simulated), glittering pulse cards + Falcon tactical cry on >1% uptick."""
-    falcon_cry = _falcon_cry_data_url()
+def _market_values_html_from_server(
+    prices: Dict[str, float],
+    play_victory_cry: bool = False,
+) -> str:
+    """Commodity cards from server state. Glittering Pulse = data is Hot. Optionally trigger Victory Dive + screech."""
+    screech_url = _falcon_screech_data_url()
+    units = {"Germanium": "/kg", "Silicon": "/MT", "Benzene": "/MT"}
+    cards_html = []
+    for name, val in prices.items():
+        unit = units.get(name, "/MT")
+        fmt = f"${val:,.0f}{unit}"
+        hot_class = " mv-hot"  # Glittering Pulse (data is Hot)
+        cards_html.append(f"""
+        <div class="mv-card{hot_class}" data-symbol="{name}" data-price="{val:.2f}">
+          <p class="mv-label">{name}</p>
+          <p class="mv-price">{fmt}</p>
+          <p class="mv-caption">{"Optics, chips, sensors" if name == "Germanium" else "Solar, wafers, compute" if name == "Silicon" else "Petrochem feedstock"}</p>
+        </div>""")
+    victory_block = ""
+    if play_victory_cry:
+        victory_block = f"""
+        <div class="victory-dive-wrap" aria-label="Falcon Victory Dive">
+          <span class="victory-dive-falcon">🦅</span>
+          <p class="victory-dive-label">Victory Dive — Price +&gt;1%</p>
+          <audio autoplay><source src="{screech_url}" type="audio/wav"></audio>
+        </div>"""
     return f"""
-    <div id="market-values" class="market-values" data-falcon-cry="{falcon_cry}">
-      <h3 class="shimmer market-title">Real-Time Market Values (Strategic Commodities)</h3>
+    <div id="market-values" class="market-values heartbeat-wrap">
+      <h3 class="shimmer market-title">Real-Time Market Values — 5-Minute Heartbeat</h3>
+      <p class="market-sub">Germanium, Silicon, Benzene. Data refreshes every 300s. Glittering Pulse = Hot.</p>
       <div class="market-grid">
-        <div class="mv-card" data-symbol="Germanium" data-price="{BY_PRODUCT_GERMANIUM_USD_PER_KG:.0f}">
-          <p class="mv-label">Germanium</p>
-          <p class="mv-price">${BY_PRODUCT_GERMANIUM_USD_PER_KG:,.0f}/kg</p>
-          <p class="mv-caption">Optics, chips, sensors</p>
-        </div>
-        <div class="mv-card" data-symbol="Silicon" data-price="{BY_PRODUCT_SILICON_M * 1000:.0f}">
-          <p class="mv-label">Silicon</p>
-          <p class="mv-price">${BY_PRODUCT_SILICON_M * 1000:,.0f}/MT</p>
-          <p class="mv-caption">Solar, wafers, compute</p>
-        </div>
-        <div class="mv-card" data-symbol="Benzene" data-price="{BENZENE_USD_PER_MT:.0f}">
-          <p class="mv-label">Benzene</p>
-          <p class="mv-price">${BENZENE_USD_PER_MT:,.0f}/MT</p>
-          <p class="mv-caption">Petrochem feedstock</p>
-        </div>
-        <div class="mv-card" data-symbol="RareEarth" data-price="{RARE_EARTH_USD_PER_KG:.0f}">
-          <p class="mv-label">Rare Earth Elements</p>
-          <p class="mv-price">${RARE_EARTH_USD_PER_KG:,.0f}/kg</p>
-          <p class="mv-caption">Magnets, EV, defense</p>
-        </div>
+        {"".join(cards_html)}
       </div>
-      <script>
-      (function(){{
-        var root = document.getElementById("market-values");
-        if (!root) return;
-        var cry = root.getAttribute("data-falcon-cry");
-        function step() {{
-          var cards = root.querySelectorAll(".mv-card");
-          cards.forEach(function(card) {{
-            var prev = parseFloat(card.getAttribute("data-price") || "0");
-            if (!prev || !isFinite(prev)) prev = 1000;
-            // Simulated +/-1% drift
-            var delta = (Math.random() * 0.02) - 0.01;
-            var next = prev * (1 + delta);
-            var pct = ((next - prev) / prev) * 100;
-            card.setAttribute("data-price", String(next.toFixed(2)));
-            var priceEl = card.querySelector(".mv-price");
-            if (priceEl) {{
-              var unit = priceEl.textContent.replace(/^[^/]+/, "");
-              priceEl.textContent = "$" + next.toFixed(0).replace(/\\B(?=(\\d{{3}})+(?!\\d))/g, ",") + unit.replace(/^[^/]+/, "");
-            }}
-            card.classList.remove("mv-up");
-            if (pct > 1.0) {{
-              card.classList.add("mv-up");
-              // Falcon tactical cry on >1% uptick
-              if (cry) {{
-                var a = new Audio(cry);
-                a.volume = 0.55;
-                a.play().catch(function(){{}});
-              }}
-            }}
-          }});
-        }}
-        // 5-minute refresh (300000 ms)
-        step();
-        setInterval(step, 300000);
-      }})();
-      </script>
+      {victory_block}
     </div>
     """
 
 
+def refresh_commodity_heartbeat() -> str:
+    """5-Minute Heartbeat: refresh commodity data every 300s. Returns updated HTML; triggers Victory Dive + screech if any price +>1%."""
+    global _COMMODITY_PRICES
+    prev = dict(_COMMODITY_PRICES)
+    play_victory_cry = False
+    for k in _COMMODITY_PRICES:
+        p = prev[k]
+        delta = (random.random() * 0.02) - 0.01
+        n = p * (1 + delta)
+        _COMMODITY_PRICES[k] = n
+        if p > 0 and ((n - p) / p) * 100 > 1.0:
+            play_victory_cry = True
+    return _market_values_html_from_server(dict(_COMMODITY_PRICES), play_victory_cry=play_victory_cry)
+
+
 def _national_impact_html(tonnage_m_t: float) -> str:
-    """National Impact: AI Processing Power (PB), Sovereign Jobs, Revenue Potential (USD B)."""
+    """National Impact: AI Processing Power (PB), Sovereign Jobs (tons × 0.28), Revenue Potential. Navy & Gold visuals."""
     try:
         t = max(0.0, float(tonnage_m_t))
     except Exception:
         t = 0.0
-    ai_pb = t * 0.8  # Petabytes of AI processing implied by coal -> data centers
-    jobs = int(t * 120)  # Sovereign jobs
-    revenue_b = t * 1.25  # Very rough strategic revenue potential (USD B)
+    ai_pb = t * 0.8  # Total Petabytes of AI processing possible (coal → data centers)
+    jobs = t * 0.28  # Estimated Sovereign Jobs — Formula: tons × 0.28
+    revenue_b = t * 1.25  # Revenue potential (USD B)
     return f"""
     <div class="impact-wrap">
       <div class="impact-cards">
         <div class="impact-card">
-          <p class="impact-label">AI Processing Power</p>
+          <p class="impact-label">Total Petabytes of AI Processing Power</p>
           <p class="impact-value">{ai_pb:,.1f} PB</p>
           <p class="impact-caption">Anthracite → Data Centers &amp; AI Clouds</p>
         </div>
         <div class="impact-card">
-          <p class="impact-label">Sovereign Jobs Created</p>
-          <p class="impact-value">{jobs:,}</p>
-          <p class="impact-caption">Operations, engineering, logistics, security</p>
+          <p class="impact-label">Estimated Sovereign Jobs Created</p>
+          <p class="impact-value">{jobs:,.2f}</p>
+          <p class="impact-caption">Formula: tons × 0.28</p>
         </div>
         <div class="impact-card">
           <p class="impact-label">Revenue Potential</p>
@@ -517,8 +514,9 @@ def _data_fortress_html(burst: bool = False) -> str:
     """The GCSLC Data Fortress: server rack SVG, glitter lights, GEN-GEMINI-AI pulsing core. burst=True triggers Data Burst (gold particles) on Falcon dive."""
     burst_class = " data-burst-trigger" if burst else ""
     return f"""
-    <div class="data-fortress-wrap">
+    <div class="data-fortress-wrap prism-data-center">
       <h3 class="shimmer data-fortress-title">The GCSLC Data Fortress</h3>
+      <p class="data-fortress-sub">Prism Data Center — CapCut Prism Border. Glittering server racks.</p>
       <div class="server-rack-wrap{burst_class}">
         <svg class="server-rack-svg" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
           <defs>
@@ -749,9 +747,10 @@ CSS = """
 .byproduct-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
 .byproduct-item { color: #b8c4ce; font-size: 0.9rem; }
 
-/* --- Real-Time Market Values: glittering pulse price cards --- */
-.market-values { margin: 18px 0 8px 0; text-align: center; }
-.market-title { font-size: 0.95rem; margin-bottom: 10px; }
+/* --- Real-Time Market Values: 5-Minute Heartbeat + Glittering Pulse (data is Hot) --- */
+.market-values, .heartbeat-wrap { margin: 18px 0 8px 0; text-align: center; }
+.market-title { font-size: 0.95rem; margin-bottom: 6px; }
+.market-sub { font-size: 0.78rem; color: #b8c4ce; margin: 0 0 10px 0; }
 .market-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -765,8 +764,8 @@ CSS = """
   padding: 10px 12px;
   background: radial-gradient(circle at top, rgba(0,212,255,0.12) 0%, #02030a 55%, #010107 100%);
   box-shadow: 0 0 10px rgba(0, 212, 255, 0.25);
-  animation: mv-glitter-pulse 3.2s ease-in-out infinite;
 }
+.mv-card.mv-hot { animation: mv-glitter-pulse 3.2s ease-in-out infinite; }
 .mv-card .mv-label { font-size: 0.8rem; color: #D4AF37; margin: 0 0 4px 0; }
 .mv-card .mv-price { font-size: 0.95rem; font-weight: 700; color: #00d4ff; margin: 0 0 4px 0; }
 .mv-card .mv-caption { font-size: 0.72rem; color: #b8c4ce; margin: 0; }
@@ -777,6 +776,19 @@ CSS = """
 .mv-card.mv-up {
   box-shadow: 0 0 18px rgba(255,215,0,0.95);
   border-color: rgba(255,215,0,0.95);
+}
+.victory-dive-wrap {
+  margin-top: 12px; padding: 10px;
+  border: 1px solid rgba(255,215,0,0.7);
+  border-radius: 10px;
+  background: rgba(0,26,53,0.6);
+}
+.victory-dive-falcon { font-size: 2rem; display: inline-block; animation: victory-dive 0.8s ease-out; }
+.victory-dive-label { font-size: 0.8rem; color: #FFD700; margin: 4px 0 0 0; }
+@keyframes victory-dive {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  40% { transform: translateY(-20px) scale(1.2); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
 }
 
 .map-wrap { padding: 20px; text-align: center; }
@@ -845,7 +857,9 @@ CSS = """
 
 /* --- The GCSLC Data Fortress: server rack + glitter + GEN-GEMINI-AI core --- */
 .data-fortress-wrap { margin: 20px 0; text-align: center; }
-.data-fortress-title { margin-bottom: 12px; font-size: 1rem; }
+.data-fortress-title { margin-bottom: 6px; font-size: 1rem; }
+.data-fortress-sub { font-size: 0.78rem; color: rgba(0,212,255,0.9); margin: 0 0 12px 0; }
+.prism-data-center { border: 1px solid rgba(0,212,255,0.4); border-radius: 12px; padding: 16px; box-shadow: 0 0 16px rgba(0,212,255,0.25); }
 .server-rack-wrap { position: relative; display: inline-block; padding: 20px; }
 .server-rack-svg { width: 100%; max-width: 320px; height: auto; display: block; }
 @keyframes glitter {
@@ -988,8 +1002,11 @@ with gr.Blocks(css=CSS, title="GCSLC Sovereign Command") as demo:
     )
     gr.HTML(f"<p class='hook' style='text-align: center; font-size: 0.92rem; max-width: 700px; margin: 0 auto 20px auto; line-height: 1.45; color: #e8eef4;'>{HOOK_TEXT}</p>")
 
-    # Real-Time Market Values — glittering pulse + 5-minute refresh (simulated)
-    gr.HTML(_market_values_html())
+    # 5-Minute Heartbeat: commodity data refresh every 300s (gradio.Blocks timer). Glittering Pulse = Hot.
+    market_values_out = gr.HTML(value=refresh_commodity_heartbeat(), label="Real-Time Commodity Data")
+    refresh_btn = gr.Button("Refresh now (5-min heartbeat)", variant="secondary")
+    refresh_btn.click(fn=refresh_commodity_heartbeat, inputs=None, outputs=market_values_out)
+    demo.load(fn=refresh_commodity_heartbeat, inputs=None, outputs=market_values_out, every=300)
 
     # 2. Map of Authority: Real Nigeria state borders (gr.Plot choropleth) or fallback SVG. Falcon position updated by Python on state click.
     _initial_fig = _nigeria_choropleth_figure("Kogi")
