@@ -176,13 +176,15 @@ def _diamond_popup(state: str, with_audio: bool) -> str:
     return f"""
     <div class="diamond-popup gold-border">
       {audio}
-      <h4 class="shimmer">Diamond Opportunity — {state}</h4>
-      <p class="reserves-line"><strong>Proven Reserves:</strong> {state} District: <strong>{reserves:.0f}M Tonnes</strong></p>
-      <p class="byproduct-title">Market values</p>
-      <div class="byproduct-grid">
-        <span class="byproduct-item">Germanium: <strong>${BY_PRODUCT_GERMANIUM_USD_PER_KG:,.0f}/kg</strong></span>
-        <span class="byproduct-item">Ammonia: <strong>${BY_PRODUCT_AMMONIA_USD_PER_MT:,.0f}/MT</strong></span>
-        <span class="byproduct-item">Silicon: <strong>${BY_PRODUCT_SILICON_M}M</strong> (monthly yield)</span>
+      <div class="opportunity-card">
+        <h4 class="shimmer">Diamond Opportunity — {state}</h4>
+        <p class="reserves-line"><strong>Proven Reserves:</strong> {state} District: <strong>{reserves:.0f}M Tonnes</strong></p>
+        <p class="byproduct-title">Market values</p>
+        <div class="byproduct-grid">
+          <span class="byproduct-item">Germanium: <strong>${BY_PRODUCT_GERMANIUM_USD_PER_KG:,.0f}/kg</strong></span>
+          <span class="byproduct-item">Ammonia: <strong>${BY_PRODUCT_AMMONIA_USD_PER_MT:,.0f}/MT</strong></span>
+          <span class="byproduct-item">Silicon: <strong>${BY_PRODUCT_SILICON_M}M</strong> (monthly yield)</span>
+        </div>
       </div>
     </div>
     """
@@ -193,11 +195,11 @@ def _map_html(selected_state: str | None) -> str:
     f_svg = _falcon_svg()
     if selected_state and selected_state in STATE_MAP_POS:
         x, y = STATE_MAP_POS[selected_state]
-        falcon = f'<div class="falcon-on-map falcon-fly-in" style="left:{x}%; top:{y}%;">{f_svg}</div>'
+        falcon = f'<div id="falcon-map-falcon" class="falcon falcon-on-map falcon-fly-in" style="left:{x}%; top:{y}%;">{f_svg}</div>'
     else:
-        falcon = f'<div class="falcon-on-map" style="left:50%; top:50%;">{f_svg}</div>'
+        falcon = f'<div id="falcon-map-falcon" class="falcon falcon-on-map" style="left:50%; top:50%;">{f_svg}</div>'
     return f"""
-    <div class="map-wrap gold-border">
+    <div id="falcon-map" class="map-wrap gold-border">
       <h3 class="shimmer">Federal Republic of Nigeria — 13 Coal-Rich State Nodes</h3>
       <p class="map-sub">Click a state: Falcon flies to node and Falcon Cry plays. Diamond Opportunity appears below.</p>
       <div class="nigeria-container">
@@ -211,7 +213,7 @@ def _map_html(selected_state: str | None) -> str:
 def _humanoid_block() -> str:
     orbs = "".join(f'<span class="r-orb">{d}</span>' for d in DETERMINANTS_R)
     return f"""
-    <div class="humanoid-block gold-border">
+    <div class="humanoid-block humanoid-frame gold-border">
       <p class="exhibit-label">Interactive 8R Humanoid — Navy Blue &amp; Gold</p>
       <div class="aura-wrap">
         <div class="orbit-ring">{orbs}</div>
@@ -235,9 +237,72 @@ def _footer_block() -> str:
     """
 
 
-# ---- CSS: Medallion glint 3s, shimmer, watermark, blur, aura, falcon fly-in ----
+# ---- CSS: GCSLC Prestige (custom + medallion, shimmer, watermark, falcon, aura) ----
 CSS = """
-.gradio-container, .main, .container { background: #000B1E !important; }
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+.gradio-container, .main, .container {
+    background-color: #050505 !important;
+    color: #e0e0e0 !important;
+    font-family: 'Orbitron', sans-serif;
+}
+
+/* --- Custom GCSLC Prestige: Shimmering Medallion (pulse 3s) --- */
+#medallion, .gcslc-medallion {
+    text-align: center;
+    background: radial-gradient(circle, #d4af37 0%, #1a1a0a 50%, #000 70%) !important;
+    box-shadow: 0 0 25px #d4af37;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: black;
+    font-weight: bold;
+    animation: pulse 3s infinite;
+}
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.8; }
+}
+
+/* --- 8R Humanoid Aura frame --- */
+.humanoid-frame {
+    border: 2px solid #00ffcc;
+    border-radius: 15px;
+    padding: 15px;
+    background: rgba(0, 255, 204, 0.05);
+    box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
+    text-align: center;
+}
+
+/* --- Falcon Dive + Nigeria map territory --- */
+#falcon-map {
+    width: 100%;
+    min-height: 350px;
+    background: url('https://upload.wikimedia.org/wikipedia/commons/e/ec/Nigeria_location_map.svg') no-repeat center;
+    background-size: contain;
+    position: relative;
+    border: 1px solid #333;
+    border-radius: 12px;
+}
+.falcon {
+    position: absolute;
+    font-size: 40px;
+    pointer-events: none;
+}
+@keyframes dive {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    30% { transform: translate(30px, 120px) rotate(15deg); }
+    100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+/* --- Diamond Opportunity card --- */
+.opportunity-card {
+    background: #111;
+    border-left: 4px solid #00d4ff;
+    padding: 10px;
+    margin: 5px 0;
+}
 
 @keyframes medallion-glint {
   0%, 88%, 100% { filter: drop-shadow(0 0 6px rgba(212,175,55,0.5)); opacity: 0.95; }
@@ -391,7 +456,7 @@ with gr.Blocks(css=CSS, title="GCSLC Strategic Command Center") as demo:
     """)
 
     # 1. Shimmering Medallion (top-left) + Header + Hook
-    gr.HTML('<div class="gcslc-medallion" aria-label="GCSLC Seal">' + _medallion_svg() + "</div>")
+    gr.HTML('<div id="medallion" class="gcslc-medallion" aria-label="GCSLC Seal">' + _medallion_svg() + "</div>")
     gr.HTML(
         "<div class='header-area'>"
         "<h1 class='title-shimmer' style='text-align: center; font-size: 1.1rem; margin: 0 0 6px 0; line-height: 1.3;'>"
