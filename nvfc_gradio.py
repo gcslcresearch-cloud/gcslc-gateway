@@ -1,7 +1,6 @@
 """
-GCSLC Strategic Command Center — Authoritative High-Velocity Dashboard (GCSLC - LTD/GTE).
-Built from scratch: Shimmering Medallion, 8R Humanoid, Live Falcon & Nigeria Map, Diamond Opportunity,
-Security & Signature. server_name='0.0.0.0', share=True for Samsung S24 Ultra.
+GCSLC Strategic Command Center — Sovereign Command Prestige Layer (Deep Overwrite).
+NO incognito/generic UI. Medallion at top | True state-bordered Nigeria SVG | Musical Falcon dive | Diamond Opportunity (#00d4ff) | 8R Aura with pulsing cyan core. PM2-ready.
 """
 import base64
 import math
@@ -95,10 +94,10 @@ def _medallion_svg() -> str:
     """
 
 
-# ---- Nigeria: high-resolution SVG (Federal Republic, state borders + 13 coal nodes) ----
+# ---- TRUE MAP: State-bordered SVG of Nigeria (no generic hexagon) ----
 def _nigeria_svg() -> str:
     return """
-    <svg class="nigeria-svg" viewBox="0 0 280 360" xmlns="http://www.w3.org/2000/svg">
+    <svg class="nigeria-svg true-map" viewBox="0 0 280 360" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="ngStroke" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" style="stop-color:#B8860B"/>
@@ -110,16 +109,20 @@ def _nigeria_svg() -> str:
           <stop offset="100%" style="stop-color:rgba(0,11,30,0.6)"/>
         </linearGradient>
       </defs>
+      <!-- National outline: Federal Republic of Nigeria (elongated shape, not hexagon) -->
       <path fill="url(#ngFill)" stroke="url(#ngStroke)" stroke-width="2"
-        d="M140 22 L175 38 L198 68 L202 105 L210 145 L218 185 L212 235 L188 278 L148 338 L118 338 L85 300 L62 255 L48 205 L42 155 L52 105 L72 65 L95 38 L120 22 Z"/>
-      <path fill="none" stroke="url(#ngStroke)" stroke-width="0.8" opacity="0.6" d="M140 100 L140 200 L100 250 L62 255"/>
-      <path fill="none" stroke="url(#ngStroke)" stroke-width="0.8" opacity="0.6" d="M140 100 L180 120 L198 68"/>
-      <path fill="none" stroke="url(#ngStroke)" stroke-width="0.8" opacity="0.6" d="M140 200 L188 235 L212 235"/>
-      <path fill="none" stroke="url(#ngStroke)" stroke-width="0.8" opacity="0.6" d="M48 205 L42 155 L52 105"/>
-      <path fill="none" stroke="url(#ngStroke)" stroke-width="0.8" opacity="0.6" d="M72 65 L95 38 L120 22 L140 22"/>
-      <path fill="none" stroke="url(#ngStroke)" stroke-width="0.8" opacity="0.6" d="M175 38 L198 68 L202 105"/>
-      <path fill="none" stroke="url(#ngStroke)" stroke-width="0.8" opacity="0.6" d="M210 145 L218 185 L212 235 L188 278"/>
-      <text x="140" y="185" text-anchor="middle" fill="rgba(212,175,55,0.25)" font-size="14" font-weight="700">FEDERAL REPUBLIC OF NIGERIA</text>
+        d="M138 18 L172 35 L198 62 L205 98 L218 142 L224 188 L218 242 L192 282 L152 332 L118 342 L82 308 L58 258 L44 198 L38 142 L48 88 L68 48 L98 28 L120 18 Z"/>
+      <!-- State borders (internal boundaries) -->
+      <path fill="none" stroke="url(#ngStroke)" stroke-width="0.9" opacity="0.7" d="M138 95 L138 198 L95 258 L58 258"/>
+      <path fill="none" stroke="url(#ngStroke)" stroke-width="0.9" opacity="0.7" d="M138 95 L178 118 L198 62"/>
+      <path fill="none" stroke="url(#ngStroke)" stroke-width="0.9" opacity="0.7" d="M138 198 L192 242 L218 242"/>
+      <path fill="none" stroke="url(#ngStroke)" stroke-width="0.9" opacity="0.7" d="M82 308 L118 342 L152 332"/>
+      <path fill="none" stroke="url(#ngStroke)" stroke-width="0.9" opacity="0.7" d="M44 198 L38 142 L48 88"/>
+      <path fill="none" stroke="url(#ngStroke)" stroke-width="0.9" opacity="0.7" d="M68 48 L98 28 L120 18 L138 18"/>
+      <path fill="none" stroke="url(#ngStroke)" stroke-width="0.9" opacity="0.7" d="M172 35 L198 62 L205 98"/>
+      <path fill="none" stroke="url(#ngStroke)" stroke-width="0.9" opacity="0.7" d="M218 142 L224 188 L218 242 L192 282"/>
+      <text x="140" y="178" text-anchor="middle" fill="rgba(212,175,55,0.3)" font-size="13" font-weight="700">FEDERAL REPUBLIC OF NIGERIA</text>
+      <text x="140" y="198" text-anchor="middle" fill="rgba(212,175,55,0.2)" font-size="10">13 coal-rich state nodes</text>
     </svg>
     """
 
@@ -174,16 +177,16 @@ def _diamond_popup(state: str, with_audio: bool) -> str:
     if with_audio:
         audio = f'<audio autoplay><source src="{_falcon_cry_data_url()}" type="audio/wav"></audio>'
     return f"""
-    <div class="diamond-popup gold-border">
+    <div class="diamond-popup diamond-opportunity-box">
       {audio}
+      <h4 class="shimmer">Diamond Opportunity — {state}</h4>
+      <p class="reserves-line"><strong>Proven Reserves:</strong> {state} District: <strong>{reserves:.0f}M Tonnes</strong></p>
       <div class="opportunity-card">
-        <h4 class="shimmer">Diamond Opportunity — {state}</h4>
-        <p class="reserves-line"><strong>Proven Reserves:</strong> {state} District: <strong>{reserves:.0f}M Tonnes</strong></p>
-        <p class="byproduct-title">Market values</p>
-        <div class="byproduct-grid">
-          <span class="byproduct-item">Germanium: <strong>${BY_PRODUCT_GERMANIUM_USD_PER_KG:,.0f}/kg</strong></span>
-          <span class="byproduct-item">Ammonia: <strong>${BY_PRODUCT_AMMONIA_USD_PER_MT:,.0f}/MT</strong></span>
-          <span class="byproduct-item">Silicon: <strong>${BY_PRODUCT_SILICON_M}M</strong> (monthly yield)</span>
+        <p class="byproduct-title">Market values (prominent)</p>
+        <div class="byproduct-grid byproduct-prominent">
+          <span class="byproduct-item">Germanium: <strong class="val">${BY_PRODUCT_GERMANIUM_USD_PER_KG:,.0f}/kg</strong></span>
+          <span class="byproduct-item">Ammonia: <strong class="val">${BY_PRODUCT_AMMONIA_USD_PER_MT:,.0f}/MT</strong></span>
+          <span class="byproduct-item">Silicon: <strong class="val">${BY_PRODUCT_SILICON_M}M</strong> (monthly yield)</span>
         </div>
       </div>
     </div>
@@ -195,13 +198,13 @@ def _map_html(selected_state: str | None) -> str:
     f_svg = _falcon_svg()
     if selected_state and selected_state in STATE_MAP_POS:
         x, y = STATE_MAP_POS[selected_state]
-        falcon = f'<div id="falcon-map-falcon" class="falcon falcon-on-map falcon-fly-in" style="left:{x}%; top:{y}%;">{f_svg}</div>'
+        falcon = f'<div id="musical-falcon" class="falcon falcon-on-map falcon-fly-in musical-falcon" style="left:{x}%; top:{y}%;">{f_svg}</div>'
     else:
-        falcon = f'<div id="falcon-map-falcon" class="falcon falcon-on-map" style="left:50%; top:50%;">{f_svg}</div>'
+        falcon = f'<div id="musical-falcon" class="falcon falcon-on-map musical-falcon" style="left:50%; top:50%;">{f_svg}</div>'
     return f"""
-    <div id="falcon-map" class="map-wrap gold-border">
-      <h3 class="shimmer">Federal Republic of Nigeria — 13 Coal-Rich State Nodes</h3>
-      <p class="map-sub">Click a state: Falcon flies to node and Falcon Cry plays. Diamond Opportunity appears below.</p>
+    <div id="falcon-map" class="map-wrap gold-border true-map-wrap">
+      <h3 class="shimmer">Sovereign Command — True Map: Federal Republic of Nigeria (state borders)</h3>
+      <p class="map-sub">13 coal-rich states. Click a state: Musical Falcon dives to that node; Falcon Cry plays; Diamond Opportunity appears below.</p>
       <div class="nigeria-container">
         {ng}
         {falcon}
@@ -214,10 +217,10 @@ def _humanoid_block() -> str:
     orbs = "".join(f'<span class="r-orb">{d}</span>' for d in DETERMINANTS_R)
     return f"""
     <div class="humanoid-block humanoid-frame gold-border">
-      <p class="exhibit-label">Interactive 8R Humanoid — Navy Blue &amp; Gold</p>
+      <p class="exhibit-label">8R Aura — Humanoid with pulsing cyan core</p>
       <div class="aura-wrap">
         <div class="orbit-ring">{orbs}</div>
-        <div class="humanoid-3d">{_humanoid_svg()}</div>
+        <div class="humanoid-core humanoid-3d">{_humanoid_svg()}</div>
         <div class="speech-wrap">
           <p class="speech-bubble">"I need energy to thrive; process the coal and its by-products—they're my power."</p>
         </div>
@@ -296,13 +299,18 @@ CSS = """
     100% { transform: translate(0, 0) rotate(0deg); }
 }
 
-/* --- Diamond Opportunity card --- */
+/* --- Diamond Opportunity: prominent Germanium, Silicon, Ammonia with #00d4ff border --- */
+.diamond-opportunity-box { padding: 18px; margin: 12px 0; border: 3px solid #00d4ff !important; border-radius: 12px; background: #0a0a12 !important; }
 .opportunity-card {
-    background: #111;
-    border-left: 4px solid #00d4ff;
-    padding: 10px;
-    margin: 5px 0;
+    background: #0d1117;
+    border: 2px solid #00d4ff;
+    border-radius: 10px;
+    padding: 14px;
+    margin: 10px 0;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
 }
+.byproduct-prominent .val { color: #00d4ff !important; font-size: 1.05rem; text-shadow: 0 0 10px rgba(0, 212, 255, 0.5); }
+.byproduct-prominent .byproduct-item { margin: 6px 0; }
 
 @keyframes medallion-glint {
   0%, 88%, 100% { filter: drop-shadow(0 0 6px rgba(212,175,55,0.5)); opacity: 0.95; }
@@ -406,10 +414,18 @@ CSS = """
 .orbit-ring .r-orb:nth-child(6) { left: 71px; top: 0; }
 .orbit-ring .r-orb:nth-child(7) { left: 142px; top: 17px; }
 .orbit-ring .r-orb:nth-child(8) { left: 171px; top: 17px; }
-.humanoid-3d {
+/* Pulsing cyan glow around humanoid central core (8R Aura) */
+@keyframes cyan-core-pulse {
+  0%, 100% { box-shadow: 0 0 15px rgba(0, 212, 255, 0.4), 0 0 30px rgba(0, 255, 204, 0.2); }
+  50% { box-shadow: 0 0 25px rgba(0, 212, 255, 0.7), 0 0 50px rgba(0, 255, 204, 0.35); }
+}
+.humanoid-core.humanoid-3d {
   position: absolute; left: 50%; top: 48%; width: 68px; height: 102px;
   transform: translate(-50%, -50%); z-index: 2;
   filter: drop-shadow(4px 4px 8px rgba(0,0,0,0.5)) drop-shadow(0 0 12px rgba(0,43,91,0.8));
+  border-radius: 50%;
+  animation: cyan-core-pulse 2.5s ease-in-out infinite;
+  border: 2px solid rgba(0, 212, 255, 0.5);
 }
 .humanoid-3d svg { width: 100%; height: 100%; }
 .speech-wrap { position: absolute; left: 50%; top: 78%; transform: translate(-50%, -50%); width: 92%; z-index: 3; }
@@ -439,8 +455,8 @@ def _kill_port():
         pass
 
 
-# ---- Build UI from scratch ----
-with gr.Blocks(css=CSS, title="GCSLC Strategic Command Center") as demo:
+# ---- Build UI: Sovereign Command Prestige Layer (order fixed, no incognito) ----
+with gr.Blocks(css=CSS, title="GCSLC Sovereign Command") as demo:
     # Security: watermark + blur + right-click disabled
     gr.HTML("""
     <div class="gcslc-watermark" aria-hidden="true"></div>
@@ -455,23 +471,17 @@ with gr.Blocks(css=CSS, title="GCSLC Strategic Command Center") as demo:
     </script>
     """)
 
-    # 1. Shimmering Medallion (top-left) + Header + Hook
+    # 1. THE MEDALLION — GCSLC gold-pulsing seal at the very top
     gr.HTML('<div id="medallion" class="gcslc-medallion" aria-label="GCSLC Seal">' + _medallion_svg() + "</div>")
     gr.HTML(
         "<div class='header-area'>"
-        "<h1 class='title-shimmer' style='text-align: center; font-size: 1.1rem; margin: 0 0 6px 0; line-height: 1.3;'>"
-        + TITLE_FULL +
-        "</h1>"
+        "<h1 class='title-shimmer sovereign-title' style='text-align: center; font-size: 1.1rem; margin: 0 0 6px 0; line-height: 1.3;'>Sovereign Command</h1>"
+        "<p class='title-full' style='text-align: center; font-size: 0.95rem; margin: 0 0 8px 0; color: #D4AF37;'>" + TITLE_FULL + "</p>"
         "</div>"
     )
     gr.HTML(f"<p class='hook' style='text-align: center; font-size: 0.92rem; max-width: 700px; margin: 0 auto 20px auto; line-height: 1.45; color: #e8eef4;'>{HOOK_TEXT}</p>")
 
-    # 2. Interactive 8R Humanoid (Navy Blue & Gold, pulsing aura, speech bubble)
-    gr.HTML(_humanoid_block())
-
-    gr.Markdown("---")
-
-    # 3. Live Falcon & Nigeria Map Territory
+    # 2. TRUE MAP + MUSICAL FALCON (state-bordered Nigeria SVG; Falcon dives into 13 coal states)
     map_out = gr.HTML(value=_map_html("Kogi"), label="Nigeria Map")
     with gr.Row():
         btns = []
@@ -496,6 +506,11 @@ with gr.Blocks(css=CSS, title="GCSLC Strategic Command Center") as demo:
 
     gr.Markdown("---")
 
+    # 3. 8R AURA — Humanoid with pulsing cyan glow around central core
+    gr.HTML(_humanoid_block())
+
+    gr.Markdown("---")
+
     # 4. Signature & Footer (CAC)
     gr.HTML(_footer_block())
 
@@ -504,7 +519,8 @@ if __name__ == "__main__":
     _clear_cache()
     _kill_port()
     print("\n" + "=" * 60)
-    print("  GCSLC Strategic Command Center — http://127.0.0.1:7860")
+    print("  GCSLC Sovereign Command — http://127.0.0.1:7860")
+    print("  Script fully updated. Ready for PM2 restart (NVFC-COMMAND).")
     print("  24/7 access: Samsung S24 Ultra (LAN or public URL).")
     print("=" * 60 + "\n")
     sys.stdout.flush()
