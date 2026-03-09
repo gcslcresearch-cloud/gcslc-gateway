@@ -10,6 +10,7 @@ import shutil
 import subprocess
 import struct
 import sys
+from typing import Optional
 
 SERVER_PORT = 7860
 
@@ -193,7 +194,7 @@ def _diamond_popup(state: str, with_audio: bool) -> str:
     """
 
 
-def _map_html(selected_state: str | None) -> str:
+def _map_html(selected_state: Optional[str]) -> str:
     ng = _nigeria_svg()
     f_svg = _falcon_svg()
     if selected_state and selected_state in STATE_MAP_POS:
