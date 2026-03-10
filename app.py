@@ -58,7 +58,7 @@ def _hover_text(state: str) -> str:
             f"Ammonia ${BYPRODUCT_AMMONIA_USD_MT:,.0f}/MT | "
             f"Silicon ${BYPRODUCT_SILICON_USD_MT:,.0f}/MT"
         )
-        return f"<b>{state}</b><br>Proven reserves: <b>{reserves:.1f} M tonnes</b><br>Byproduct market: {byproduct_val}"
+        return f"<b>{state}</b><br>Real-time proven reserves: <b>{reserves:.1f} M tonnes</b><br>Byproduct market: {byproduct_val}"
     return f"<b>{state}</b><br>Sovereign Navy"
 
 
@@ -153,9 +153,8 @@ def create_sovereign_map():
 
 
 def get_market_velocity_nodes():
-    """High-velocity nodes: real-time volume and monthly projections (Coal, Germanium, Silicon, Ammonia, Semiconductors)."""
+    """Market Intel: current unit prices + monthly projections (Coal, Germanium $8,597/kg, Silicon, Ammonia, Semiconductors)."""
     t = time.time()
-    # Deterministic but time-varying for "live" feel
     seed = int(t) % 86400
     def _v(lo, hi, seed_off=0):
         x = abs(hash(str(seed + seed_off))) % 100
@@ -164,30 +163,35 @@ def get_market_velocity_nodes():
     return [
         {
             "commodity": "Coal",
+            "unit_price": "$98/t",
             "volume_kt": round(1200 * _v(0.9, 1.1, 0)),
             "monthly_proj_usd_m": round(18.5 * _v(0.95, 1.05, 1), 1),
             "unit": "kt",
         },
         {
             "commodity": "Germanium",
+            "unit_price": "$8,597/kg",
             "volume_kt": round(2.4 * _v(0.9, 1.1, 2), 2),
             "monthly_proj_usd_m": round(22.0 * _v(0.95, 1.05, 3), 1),
             "unit": "t",
         },
         {
             "commodity": "Silicon",
+            "unit_price": "$6,500/MT",
             "volume_kt": round(85 * _v(0.9, 1.1, 4)),
             "monthly_proj_usd_m": round(6.5 * _v(0.95, 1.05, 5), 1),
             "unit": "kt",
         },
         {
             "commodity": "Ammonia",
+            "unit_price": "$430/MT",
             "volume_kt": round(45 * _v(0.9, 1.1, 6)),
             "monthly_proj_usd_m": round(19.4 * _v(0.95, 1.05, 7), 1),
             "unit": "kt",
         },
         {
             "commodity": "Semiconductors",
+            "unit_price": "Index 1.24",
             "volume_kt": "—",
             "monthly_proj_usd_m": round(12.0 * _v(0.95, 1.05, 8), 1),
             "unit": "index",
@@ -195,17 +199,47 @@ def get_market_velocity_nodes():
     ]
 
 
+# --- 8R Determinants: label + high-velocity projection per R ---
+DETERMINANTS_8R = [
+    ("Refine", "Feedstock yield", "$18.2M/mo"),
+    ("Reset", "Legacy MW freed", "1,205 MW"),
+    ("Research", "Germanium arb", "47.9% YTD"),
+    ("Restructure", "Tier-III/IV", "12 nodes"),
+    ("Resuscitate", "Idle → active", "639.3 Mt"),
+    ("Revitalize", "Jobs 10yr", "1,654/MW"),
+    ("Re-engineer", "Dubai port", "Blue Wave"),
+    ("Retain", "Sovereign control", "Vision 2050"),
+]
+
 # --- UI: Sovereign Command Center ---
 PRISM_CSS = """
+/* Force deep navy everywhere — no white */
+body, .gradio-container, .contain, #root, [class*="block"], [class*="panel"] {
+  background: #001f3f !important;
+  background-color: #001f3f !important;
+}
+.gr-form, .block, .wrap, section { background: #001f3f !important; }
+/* Blue-Ray prism frame around entire dashboard */
+.gradio-container {
+  background: #001f3f !important;
+  border: 4px solid #D4AF37 !important;
+  border-radius: 16px !important;
+  padding: 20px !important;
+  animation: prism-shimmer 4s ease-in-out infinite !important;
+  box-shadow: 0 0 40px rgba(212,175,55,0.2), inset 0 0 60px rgba(0,80,160,0.06) !important;
+}
 @keyframes prism-shimmer {
-  0%, 100% { border-color: #D4AF37; box-shadow: 0 0 20px rgba(212,175,55,0.3), inset 0 0 30px rgba(0,100,255,0.05); }
-  25% { border-color: #5c9ead; box-shadow: 0 0 25px rgba(92,158,173,0.4), inset 0 0 35px rgba(0,100,255,0.08); }
-  50% { border-color: #D4AF37; box-shadow: 0 0 30px rgba(212,175,55,0.5), inset 0 0 40px rgba(0,150,255,0.1); }
-  75% { border-color: #7eb8da; box-shadow: 0 0 25px rgba(126,184,218,0.4), inset 0 0 35px rgba(0,100,255,0.08); }
+  0%, 100% { border-color: #D4AF37; box-shadow: 0 0 25px rgba(212,175,55,0.35), inset 0 0 40px rgba(0,100,255,0.06); }
+  33% { border-color: #5c9ead; box-shadow: 0 0 30px rgba(92,158,173,0.45), inset 0 0 50px rgba(0,120,200,0.08); }
+  66% { border-color: #7eb8da; box-shadow: 0 0 30px rgba(126,184,218,0.4), inset 0 0 50px rgba(0,100,255,0.08); }
 }
 @keyframes falcon-pulse {
-  0%, 100% { transform: scale(1) rotate(-5deg); opacity: 1; }
-  50% { transform: scale(1.08) rotate(2deg); opacity: 0.95; }
+  0%, 100% { transform: scale(1) rotate(-5deg); opacity: 1; filter: drop-shadow(0 0 8px rgba(212,175,55,0.6)); }
+  50% { transform: scale(1.12) rotate(2deg); opacity: 0.98; filter: drop-shadow(0 0 14px rgba(212,175,55,0.8)); }
+}
+@keyframes guardian-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.05); opacity: 1; }
 }
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
 @keyframes ticker-scroll {
@@ -213,30 +247,35 @@ PRISM_CSS = """
   100% { transform: translateX(-50%); }
 }
 @keyframes gold-glow {
-  0%, 100% { box-shadow: 0 0 12px rgba(212,175,55,0.4); }
-  50% { box-shadow: 0 0 20px rgba(212,175,55,0.6); }
+  0%, 100% { box-shadow: 0 0 14px rgba(212,175,55,0.45), inset 0 0 8px rgba(212,175,55,0.08); }
+  50% { box-shadow: 0 0 22px rgba(212,175,55,0.6), inset 0 0 12px rgba(212,175,55,0.1); }
 }
-.sovereign-wrap { background: #001f3f; min-height: 100vh; padding: 20px; font-family: 'Segoe UI', system-ui, sans-serif; }
-.prism-frame { border: 3px solid #D4AF37; border-radius: 12px; padding: 24px; animation: prism-shimmer 4s ease-in-out infinite; background: linear-gradient(145deg, #001f3f 0%, #002244 50%, #001a35 100%); }
-.prism-frame .header { text-align: center; color: #D4AF37; font-size: 1.6rem; letter-spacing: 0.2em; margin-bottom: 20px; font-weight: 600; text-shadow: 0 0 20px rgba(212,175,55,0.4); }
-.main-wrap { background: #001f3f; }
-.gradio-container { background: #001f3f !important; border: 3px solid #D4AF37; border-radius: 12px; animation: prism-shimmer 4s ease-in-out infinite; padding: 16px !important; }
-.velocity-falcon { display: flex; align-items: center; gap: 12px; padding: 12px; background: rgba(0,40,80,0.8); border: 2px solid #D4AF37; border-radius: 10px; margin-bottom: 12px; }
-.velocity-falcon .falcon-icon { font-size: 48px; animation: falcon-pulse 2s ease-in-out infinite; }
-.ticker-wrap { overflow: hidden; white-space: nowrap; width: 100%; border: 1px solid rgba(212,175,55,0.4); border-radius: 6px; padding: 8px; background: rgba(0,0,0,0.3); }
-.ticker { display: inline-block; padding-left: 100%; animation: ticker-scroll 25s linear infinite; color: #D4AF37; font-size: 0.9rem; }
-.dubai-hub { background: linear-gradient(180deg, rgba(0,40,80,0.9) 0%, rgba(0,20,50,0.95) 100%); border: 2px solid #5c9ead; border-radius: 12px; padding: 20px; margin: 16px 0; }
+.main-wrap { background: #001f3f !important; }
+.prism-frame .header { text-align: center; color: #D4AF37; font-size: 1.65rem; letter-spacing: 0.22em; margin-bottom: 20px; font-weight: 600; text-shadow: 0 0 24px rgba(212,175,55,0.5); }
+/* Humanoid Guardian */
+.humanoid-guardian { border: 2px solid #D4AF37; border-radius: 16px; padding: 16px; background: linear-gradient(180deg, #002244 0%, #001a35 100%); text-align: center; margin-bottom: 14px; animation: gold-glow 3s ease-in-out infinite; }
+.humanoid-guardian .icon { font-size: 52px; animation: guardian-pulse 2s ease-in-out infinite; display: block; margin-bottom: 8px; }
+.humanoid-guardian h3 { color: #D4AF37; margin: 0 0 6px 0; font-size: 1rem; }
+.humanoid-guardian p { color: #b8c4ce; font-size: 0.8rem; margin: 0; }
+.velocity-falcon { display: flex; align-items: center; gap: 12px; padding: 14px; background: rgba(0,40,80,0.85); border: 2px solid #D4AF37; border-radius: 12px; margin-bottom: 12px; animation: gold-glow 3s ease-in-out infinite; }
+.velocity-falcon .falcon-icon { font-size: 52px; animation: falcon-pulse 2s ease-in-out infinite; }
+.ticker-wrap { overflow: hidden; white-space: nowrap; width: 100%; border: 1px solid rgba(212,175,55,0.5); border-radius: 8px; padding: 10px; background: rgba(0,0,0,0.4); }
+.ticker { display: inline-block; padding-left: 100%; animation: ticker-scroll 28s linear infinite; color: #D4AF37; font-size: 0.9rem; }
+.dubai-hub { background: linear-gradient(180deg, rgba(0,40,80,0.95) 0%, rgba(0,20,50,0.98) 100%); border: 2px solid #5c9ead; border-radius: 12px; padding: 20px; margin: 16px 0; box-shadow: 0 0 20px rgba(92,158,173,0.2); }
 .dubai-hub h3 { color: #7eb8da; text-align: center; letter-spacing: 0.15em; margin-bottom: 16px; font-size: 1.1rem; }
 .dubai-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
 .dubai-node { background: rgba(0,60,120,0.5); border: 1px solid rgba(126,184,218,0.5); border-radius: 8px; padding: 12px; text-align: center; color: #b8d4e8; font-size: 0.8rem; }
-.velocity-box { background: rgba(0,30,60,0.9); border: 2px solid #D4AF37; border-radius: 10px; padding: 14px; color: #e8eef4; animation: gold-glow 3s ease-in-out infinite; }
-.velocity-box .commodity { color: #D4AF37; font-weight: 700; font-size: 1rem; margin-bottom: 6px; }
-.velocity-box .volume { font-size: 0.85rem; color: #b8c4ce; }
-.velocity-box .projection { font-size: 1rem; color: #7eb8da; font-weight: 600; }
-.contact-footer { text-align: center; padding: 16px; color: #D4AF37; font-size: 0.95rem; letter-spacing: 0.1em; border-top: 1px solid rgba(212,175,55,0.3); margin-top: 20px; }
-.signature-block { margin-top: 20px; padding-top: 16px; border-top: 2px solid #D4AF37; text-align: center; }
-.signature-block .entity { color: #e8eef4; font-weight: 600; font-size: 1rem; margin-bottom: 6px; }
-.signature-block .officer { color: #D4AF37; font-size: 1.1rem; font-weight: 600; }
+.velocity-box { background: rgba(0,30,60,0.95); border: 2px solid #D4AF37; border-radius: 10px; padding: 14px; color: #e8eef4; animation: gold-glow 3s ease-in-out infinite; }
+.velocity-box .commodity { color: #D4AF37; font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
+.velocity-box .unit-price { font-size: 0.8rem; color: #7eb8da; margin-bottom: 4px; }
+.velocity-box .projection { font-size: 1rem; color: #b8d4e8; font-weight: 600; }
+.det-box { background: rgba(0,30,60,0.95); border: 2px solid #D4AF37; border-radius: 10px; padding: 12px; text-align: center; color: #e8eef4; animation: gold-glow 3s ease-in-out infinite; }
+.det-box .r-label { color: #D4AF37; font-weight: 700; font-size: 0.9rem; margin-bottom: 4px; }
+.det-box .r-proj { font-size: 0.8rem; color: #7eb8da; }
+.contact-footer { text-align: center; padding: 14px; color: #D4AF37; font-size: 0.95rem; letter-spacing: 0.08em; border-top: 1px solid rgba(212,175,55,0.4); margin-top: 20px; }
+.signature-block { margin-top: 12px; padding-top: 14px; border-top: 2px solid #D4AF37; text-align: center; }
+.signature-block .full-sig { color: #e8eef4; font-size: 0.95rem; line-height: 1.5; }
+.signature-block .full-sig .gold { color: #D4AF37; font-weight: 600; }
 """
 
 # Scrolling alerts: market opportunities in 13 coal states
@@ -276,11 +315,26 @@ def build_velocity_html():
         boxes.append(f"""
         <div class="velocity-box">
             <div class="commodity">{n['commodity']}</div>
+            <div class="unit-price">Unit: {n['unit_price']}</div>
             <div class="volume">Volume: {vol}</div>
             <div class="projection">Monthly proj: ${n['monthly_proj_usd_m']}M</div>
         </div>
         """)
     return "<div style='display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;'>" + "".join(boxes) + "</div>"
+
+
+def build_8r_determinants_html():
+    """8 shimmering gold-bordered boxes: Refine, Reset, ... Retain with high-velocity projections."""
+    parts = []
+    for i, (label, sub, proj) in enumerate(DETERMINANTS_8R, 1):
+        parts.append(f"""
+        <div class="det-box">
+            <div class="r-label">R{i} {label}</div>
+            <div class="r-proj">{sub}</div>
+            <div class="r-proj"><strong>{proj}</strong></div>
+        </div>
+        """)
+    return "<div style='display: grid; grid-template-columns: repeat(8, 1fr); gap: 10px;'>" + "".join(parts) + "</div>"
 
 
 with gr.Blocks(
@@ -305,16 +359,23 @@ with gr.Blocks(
 
     with gr.Row():
         with gr.Column(scale=3):
-            gr.HTML("<p style='color:#D4AF37; margin:0 0 8px 0; font-weight:600;'>Map of Authority — Hover 13 coal states for reserves & byproduct value</p>")
+            gr.HTML("<p style='color:#D4AF37; margin:0 0 8px 0; font-weight:600;'>Map of Authority — Hover 13 coal states for real-time proven reserves &amp; byproduct value</p>")
             gr.Plot(create_sovereign_map(), label="")
 
         with gr.Column(scale=1):
+            gr.HTML("""
+            <div class="humanoid-guardian">
+                <span class="icon">🛡️</span>
+                <h3>8R Humanoid Guardian</h3>
+                <p>Navy &amp; Gold Protocol Active</p>
+            </div>
+            """)
             gr.HTML(f"""
             <div class="velocity-falcon">
                 <span class="falcon-icon">🦅</span>
                 <div>
-                    <strong style="color:#D4AF37;">Velocity Falcon (NVFC)</strong>
-                    <p style="color:#b8c4ce; font-size:0.8rem; margin:4px 0 0 0;">Market signals: 13 coal-bearing states</p>
+                    <strong style="color:#D4AF37;">National Velocity Falcon (NVFC)</strong>
+                    <p style="color:#b8c4ce; font-size:0.8rem; margin:4px 0 0 0;">Pulsing 13 coal-bearing states — market signals</p>
                 </div>
             </div>
             <div class="ticker-wrap">
@@ -324,16 +385,15 @@ with gr.Blocks(
 
     gr.HTML(build_dubai_html())
 
-    gr.HTML("<p style='color:#D4AF37; margin:16px 0 8px 0; font-weight:600;'>Market Velocity Logic — Real-time volume & monthly projections</p>")
+    gr.HTML("<p style='color:#D4AF37; margin:12px 0 8px 0; font-weight:600;'>8R Determinants — High-velocity market projections</p>")
+    gr.HTML(build_8r_determinants_html())
+
+    gr.HTML("<p style='color:#D4AF37; margin:20px 0 8px 0; font-weight:600;'>Market Intel — Unit prices &amp; monthly projections</p>")
     gr.HTML(build_velocity_html())
 
     gr.HTML("""
         <div style="background: rgba(0,31,63,0.95); border: 4px solid #D4AF37; padding: 24px; border-radius: 12px; margin: 20px 0; text-align: center;">
             <h2 style="color: #D4AF37; margin-top: 0; letter-spacing: 2px;">COMMAND PROTOCOL: 8R STEALTH PARADIGM CONVERGENCE</h2>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; text-align: center; gap: 10px; margin: 15px 0; font-size: 14px; color: #b8c4ce;">
-                <div>1. REFINE | 2. RESET | 3. RESEARCH | 4. RESTRUCTURE</div>
-                <div>5. RESUSCITATE | 6. REVITALIZE | 7. RE-ENGINEER | 8. RETAIN</div>
-            </div>
             <h1 style="color: #ff0000; font-size: 42px; animation: blink 1s infinite; margin: 14px 0;">$1.87 Billion/Year LOSS</h1>
             <p style="color: #e8eef4; font-size: 0.95rem; margin: 8px 0;">Cumulative national opportunity cost — institutional urgency</p>
         </div>
@@ -344,8 +404,7 @@ with gr.Blocks(
             For Strategic Inquiries: <a href="mailto:info@galadimanruwacenter.org" style="color:#D4AF37;">info@galadimanruwacenter.org</a>
         </div>
         <div class="signature-block">
-            <p class="entity">Galadiman Ruwa Center for Strategic Leadership and Communication - GCSLC LTD/GTE</p>
-            <p class="officer">AUTHORIZING OFFICER: Dr. Sa\u2019ad Jaafaru, Chairman &amp; Founder</p>
+            <p class="full-sig">Galadiman Ruwa Center for Strategic Leadership and Communication - GCSLC LTD/GTE <span class="gold">|</span> <span class="gold">AUTHORIZING OFFICER: Dr. Sa\u2019ad Jaafaru, Chairman &amp; Founder</span></p>
         </div>
     """)
 
