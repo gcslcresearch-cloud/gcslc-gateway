@@ -135,14 +135,21 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="yellow", secondary_hue="blue
                 gr.Markdown("1. Resource Sovereignty\n2. Regulatory Realignment\n3. Revenue Revitalization...")
 
     # THE 5TH BOX: FINANCIAL KILL-SHOT
-    gr.HTML(f"""
-    <div style='background: #721c24; border: 4px solid #b8860b; padding: 20px; border-radius: 15px; text-align: center;'>
-        <h2 style='color: white; margin: 0;'>CUMULATIVE NATIONAL OPPORTUNITY COST</h2>
-        <h1 style='color: #ff0000; font-size: 45px; animation: blink 1s infinite;'>{LOSS_VAL} LOSS</h1>
-        <p style='color: white; font-size: 18px;'>Sovereign Warning: Nigeria is losing $1.9 Billion annually in unrealized wealth.</p>
+    gr.HTML("""
+    <div style="background-color: #001f3f; border: 6px solid #D4AF37; padding: 25px; border-radius: 15px; color: white; font-family: sans-serif; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+        <h2 style="color: #D4AF37; margin-top: 0; letter-spacing: 2px;">COMMAND PROTOCOL: 8R STEALTH PARADIGM CONVERGENCE</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; text-align: left; gap: 10px; margin: 15px 0; font-size: 14px;">
+            <div>1. REFINE | 2. RESET | 3. RESEARCH | 4. RESTRUCTURE</div>
+            <div>5. RESUSCITATE | 6. REVITALIZE | 7. RE-ENGINEER | 8. RETAIN</div>
+        </div>
+        <h1 style="color: #ff0000; font-size: 40px; animation: blink 1s infinite; margin: 10px 0;">$1.87 Billion/Year LOSS</h1>
+        <p style="font-weight: bold; font-size: 1.1em; margin-bottom: 5px;">Galadiman Ruwa Center for Strategic Leadership and Communication - GCSLC LTD/GTE</p>
+        <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #D4AF37;">
+            <p style="color: #D4AF37; font-size: 1.2em; font-weight: 600; margin: 0;">Dr. Sa’ad Jaafaru, Chairman &amp; Founder</p>
+        </div>
     </div>
     <style>
-        @keyframes blink {{ 0% {{ opacity: 1; }} 50% {{ opacity: 0.3; }} 100% {{ opacity: 1; }} }}
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
     </style>
     """)
 
