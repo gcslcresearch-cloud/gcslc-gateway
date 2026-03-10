@@ -2,6 +2,7 @@ import gradio as gr
 import plotly.express as px
 import pandas as pd
 import json
+import os
 import plotly.graph_objects as go
 
 # --- SOVEREIGN DATA CONFIGURATION ---
@@ -18,33 +19,49 @@ STATES_36_FCT = [
 ]
 
 
+def _geojson_path():
+    """Resolve ng_state.geojson: HF Spaces often have it in repo root; else data/ next to app."""
+    root = os.path.dirname(os.path.abspath(__file__))
+    for path in [
+        os.path.join(root, "ng_state.geojson"),   # repo root (where HF uploads often go)
+        os.path.join(root, "data", "ng_state.geojson"),
+    ]:
+        if os.path.isfile(path):
+            return path
+    return None
+
+
 def create_sovereign_map():
     """True Map of Nigeria: Plotly choropleth. Coal-Rich = Burnished Gold, others = Sovereign Navy. Optimized for S24 Ultra."""
-    try:
-        with open('data/ng_state.geojson') as f:
-            geojson_data = json.load(f)
-    except Exception:
-        geojson_data = None
+    path = _geojson_path()
+    geojson_data = None
+    if path:
+        try:
+            with open(path, encoding="utf-8") as f:
+                geojson_data = json.load(f)
+        except Exception:
+            geojson_data = None
 
     df = pd.DataFrame({"State": STATES_36_FCT})
     df['Status'] = df['State'].apply(lambda x: 'Coal-Rich' if x in COAL_STATES else 'Sovereign Navy')
 
     if geojson_data is None:
-        # Fallback: minimal figure so app does not crash (add data/ng_state.geojson for full map)
+        # Fallback: minimal figure so app does not crash (add ng_state.geojson to repo root or data/ for full map)
         fig = go.Figure()
         fig.update_layout(
-            title="True Map of Nigeria — Add data/ng_state.geojson for 36 state borders",
+            title="True Map of Nigeria — Add ng_state.geojson to this Space (root or data/)",
             paper_bgcolor='rgba(0,0,0,0)',
             margin={"r": 0, "t": 40, "l": 0, "b": 0},
             height=400,
-            annotations=[dict(text="Upload data/ng_state.geojson to this Space", x=0.5, y=0.5, showarrow=False, font=dict(size=14))]
+            annotations=[dict(text="Upload ng_state.geojson to repo root or data/ folder", x=0.5, y=0.5, showarrow=False, font=dict(size=14))]
         )
         return fig
 
-    # Try common GeoJSON property keys for state name
+    # Detect property key used for state name in GeoJSON
     featureidkey = "properties.name"
-    if geojson_data.get("features") and geojson_data["features"][0].get("properties"):
-        props = geojson_data["features"][0]["properties"]
+    name_to_status = {}
+    if geojson_data.get("features"):
+        props = geojson_data["features"][0].get("properties") or {}
         if "name" in props:
             featureidkey = "properties.name"
         elif "adm1_name" in props:
@@ -53,6 +70,25 @@ def create_sovereign_map():
             featureidkey = "properties.shapeName"
         elif "NAME_1" in props:
             featureidkey = "properties.NAME_1"
+        # Build locations from actual GeoJSON names so choropleth matches (avoids blank grid)
+        for f in geojson_data["features"]:
+            p = f.get("properties") or {}
+            name = p.get("name") or p.get("adm1_name") or p.get("shapeName") or p.get("NAME_1") or p.get("name_1") or ""
+            if isinstance(name, str):
+                name = name.strip()
+            if name:
+                name_to_status[name] = "Coal-Rich" if name in COAL_STATES else "Sovereign Navy"
+        # Normalize common variants for coal coloring
+        _norm = {"Federal Capital Territory": "FCT", "Abuja": "FCT", "Nassarawa": "Nasarawa"}
+        for geo_name, status in list(name_to_status.items()):
+            canonical = _norm.get(geo_name, geo_name)
+            if canonical in COAL_STATES:
+                name_to_status[geo_name] = "Coal-Rich"
+            else:
+                name_to_status[geo_name] = "Sovereign Navy"
+    if not name_to_status:
+        name_to_status = {s: ("Coal-Rich" if s in COAL_STATES else "Sovereign Navy") for s in STATES_36_FCT}
+    df = pd.DataFrame({"State": list(name_to_status.keys()), "Status": list(name_to_status.values())})
 
     fig = px.choropleth(
         df,
