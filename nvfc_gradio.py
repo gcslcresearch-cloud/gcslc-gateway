@@ -1,6 +1,6 @@
 """
 GCSLC Strategic Command Center — Mission Directive: No Placeholders.
-Map of Authority: Real Nigeria state borders (GeoJSON choropleth). Gold #FFD700 coal states, Navy #000080 else.
+Map of Authority: True Map of Nigeria — 36 State Borders (GeoJSON). 13 coal-reserve states Burnished Gold, rest Sovereign Navy.
 Sovereign Guardian: Navy + Gold SVG, coal with coal-glow 2s infinite alternate.
 Falcon: Python updates (x,y) to state coordinates on map (tactical dive).
 Agentic Reasoning: gr.HTML scrolling Thinking logs at bottom.
@@ -19,8 +19,14 @@ import struct
 import sys
 import time
 import zipfile
-from typing import Optional, Dict, Any, Tuple
+from typing import Optional, Dict, Any, Tuple, List
 from urllib.request import urlopen, Request
+
+try:
+    import geojson
+    _HAS_GEOJSON = True
+except Exception:
+    _HAS_GEOJSON = False
 
 try:
     import plotly.graph_objects as go
@@ -56,11 +62,17 @@ STATE_MAP_POS = {
     "Ondo": (36, 62), "Bauchi": (58, 38), "Anambra": (50, 75), "Ebonyi": (54, 72), "Abia": (52, 78),
 }
 
-# Falcon (lon, lat) on Plotly map — tactical dive target coordinates
+# Falcon (lon, lat) on Plotly map — tactical dive target coordinates (36 states + FCT)
 STATE_CENTROIDS_LNGLAT: Dict[str, Tuple[float, float]] = {
     "Enugu": (7.5, 6.4), "Kogi": (6.7, 7.8), "Benue": (8.2, 7.2), "Nasarawa": (8.5, 8.5),
     "Gombe": (11.2, 10.3), "Adamawa": (12.5, 9.3), "Delta": (6.2, 5.9), "Edo": (6.3, 6.5),
     "Ondo": (5.7, 7.2), "Bauchi": (9.8, 10.3), "Anambra": (7.0, 6.2), "Ebonyi": (8.1, 6.3), "Abia": (7.5, 5.5),
+    "FCT": (7.5, 9.1), "Lagos": (3.4, 6.5), "Kano": (8.5, 12.0), "Kaduna": (7.4, 10.5),
+    "Rivers": (6.9, 4.8), "Oyo": (3.9, 7.8), "Borno": (12.2, 11.8), "Jigawa": (9.4, 11.7),
+    "Imo": (7.0, 5.5), "Akwa Ibom": (7.9, 4.9), "Ogun": (3.5, 7.2), "Osun": (4.5, 7.6),
+    "Plateau": (8.9, 9.9), "Sokoto": (5.2, 13.0), "Katsina": (7.6, 12.9), "Niger": (6.0, 10.0),
+    "Kwara": (4.5, 8.5), "Cross River": (8.3, 5.9), "Bayelsa": (6.3, 4.8), "Ekiti": (5.2, 7.6),
+    "Taraba": (10.8, 7.9), "Yobe": (11.7, 11.9), "Kebbi": (4.2, 11.2), "Zamfara": (6.2, 12.2),
 }
 
 BY_PRODUCT_GERMANIUM_USD_PER_KG = 8597
@@ -129,8 +141,22 @@ AGENTIC_LOG_LINES = [
     "8R Determinants R1–R8 locked.",
 ]
 
-# Normalize state names from GeoJSON to our COAL_STATES / display names
-_GEOJSON_STATE_NORMALIZE = {"Nassarawa": "Nasarawa", "Federal Capital Territory": "FCT"}
+# Normalize state names from GeoJSON (HDX, geoBoundaries, etc.) to official 36 + FCT names
+_GEOJSON_STATE_NORMALIZE = {
+    "Nassarawa": "Nasarawa",
+    "Nasarawa": "Nasarawa",
+    "Federal Capital Territory": "FCT",
+    "FCT": "FCT",
+    "Abuja": "FCT",
+}
+
+# Official Nigeria 36 states + FCT (for validation)
+NIGERIA_STATE_NAMES = [
+    "Abia", "Adamawa", "Akwa Ibom", "Anambra", "Bauchi", "Bayelsa", "Benue", "Borno", "Cross River",
+    "Delta", "Ebonyi", "Edo", "Ekiti", "Enugu", "FCT", "Gombe", "Imo", "Jigawa", "Kaduna", "Kano",
+    "Katsina", "Kebbi", "Kogi", "Kwara", "Lagos", "Nasarawa", "Niger", "Ogun", "Ondo", "Osun",
+    "Oyo", "Plateau", "Rivers", "Sokoto", "Taraba", "Yobe", "Zamfara",
+]
 
 HDX_NIGERIA_GEOJSON_ZIP = (
     "https://data.humdata.org/dataset/81ac1d38-f603-4a98-804d-325c658599a3"
@@ -138,82 +164,147 @@ HDX_NIGERIA_GEOJSON_ZIP = (
 )
 
 
+def _state_name_from_feature(props: Dict[str, Any]) -> Optional[str]:
+    """Extract and normalize state name from GeoJSON feature properties (HDX, geoBoundaries, etc.)."""
+    if not props:
+        return None
+    name = (
+        props.get("shapeName")
+        or props.get("adm1_name")
+        or props.get("name_1")
+        or props.get("NAME_1")
+        or props.get("name")
+        or props.get("ADM1_NAME")
+        or ""
+    )
+    if isinstance(name, str):
+        name = name.strip()
+    else:
+        name = ""
+    if not name:
+        return None
+    return _GEOJSON_STATE_NORMALIZE.get(name, name)
+
+
+def _parse_geojson_raw(raw: Any) -> Optional[Dict[str, Any]]:
+    """Ensure we have a dict FeatureCollection. If geojson library was used, convert to dict."""
+    if hasattr(raw, "__geo_interface__"):
+        return raw.__geo_interface__
+    if isinstance(raw, dict):
+        return raw
+    return None
+
+
 def _load_nigeria_geojson() -> Optional[Dict[str, Any]]:
-    """Load Nigeria state-level GeoJSON: local data/ng_state.geojson or fetch HDX zip and merge by adm1."""
+    """Load Nigeria state-level GeoJSON (36 state borders) via geojson library and official sources.
+    Tries: (1) local data/ng_state.geojson, (2) HDX zip. Returns FeatureCollection with adm1_name per feature.
+    """
     repo = os.path.dirname(os.path.abspath(__file__))
     local_path = os.path.join(repo, "data", "ng_state.geojson")
+    data: Optional[Dict[str, Any]] = None
+
+    # 1. Local file (preferred) — use geojson library when available for validation
     if os.path.isfile(local_path):
         try:
             with open(local_path, "r", encoding="utf-8") as f:
-                data = json.load(f)
-            if data.get("type") == "FeatureCollection" and data.get("features"):
-                return data
+                if _HAS_GEOJSON:
+                    loaded = geojson.load(f)
+                    data = _parse_geojson_raw(loaded)
+                else:
+                    data = json.load(f)
+            if data and data.get("type") == "FeatureCollection" and data.get("features"):
+                # Normalize feature properties to adm1_name for choropleth
+                features = []
+                for f in data["features"]:
+                    props = f.get("properties") or {}
+                    name = _state_name_from_feature(props)
+                    if not name:
+                        continue
+                    geom = f.get("geometry")
+                    if not geom:
+                        continue
+                    features.append({
+                        "type": "Feature",
+                        "properties": {"adm1_name": name},
+                        "geometry": geom,
+                    })
+                if features:
+                    return {"type": "FeatureCollection", "features": features}
         except Exception:
             pass
+
+    # 2. HDX zip — merge by state name (requires shapely)
     if not _HAS_SHAPELY:
         return None
     try:
         req = Request(HDX_NIGERIA_GEOJSON_ZIP, headers={"User-Agent": "GCSLC-Sovereign-Gateway/1.0"})
         with urlopen(req, timeout=30) as resp:
             zdata = resp.read()
+        raw = None
         with zipfile.ZipFile(io.BytesIO(zdata), "r") as zf:
             for name in zf.namelist():
                 if name.endswith(".geojson"):
                     with zf.open(name) as f:
-                        raw = json.load(f)
+                        content = f.read().decode("utf-8", errors="replace")
+                    if _HAS_GEOJSON:
+                        loaded = geojson.loads(content)
+                        raw = _parse_geojson_raw(loaded)
+                    else:
+                        raw = json.loads(content)
                     break
-            else:
-                return None
+        if not raw or raw.get("type") != "FeatureCollection" or not raw.get("features"):
+            return None
+        by_state: Dict[str, List[Any]] = {}
+        for f in raw["features"]:
+            props = f.get("properties") or {}
+            name = _state_name_from_feature(props)
+            if not name:
+                continue
+            geom = f.get("geometry")
+            if not geom:
+                continue
+            try:
+                shp = shape(geom)
+                if not shp.is_valid:
+                    shp = shp.buffer(0)
+                by_state.setdefault(name, []).append(shp)
+            except Exception:
+                continue
+        features = []
+        for name, geoms in by_state.items():
+            try:
+                merged = unary_union(geoms)
+                if merged.is_empty:
+                    continue
+                features.append({
+                    "type": "Feature",
+                    "properties": {"adm1_name": name},
+                    "geometry": mapping(merged),
+                })
+            except Exception:
+                continue
+        if not features:
+            return None
+        return {"type": "FeatureCollection", "features": features}
     except Exception:
         return None
-    if raw.get("type") != "FeatureCollection" or not raw.get("features"):
-        return None
-    # Merge features by adm1_name to get one polygon per state
-    by_state: Dict[str, list] = {}
-    for f in raw["features"]:
-        props = f.get("properties") or {}
-        name = (props.get("adm1_name") or props.get("name_1") or props.get("NAME_1") or "").strip()
-        if not name:
-            continue
-        name = _GEOJSON_STATE_NORMALIZE.get(name, name)
-        geom = f.get("geometry")
-        if not geom:
-            continue
-        try:
-            shp = shape(geom)
-            if not shp.is_valid:
-                shp = shp.buffer(0)
-            by_state.setdefault(name, []).append(shp)
-        except Exception:
-            continue
-    features = []
-    for name, geoms in by_state.items():
-        try:
-            merged = unary_union(geoms)
-            if merged.is_empty:
-                continue
-            features.append({
-                "type": "Feature",
-                "properties": {"adm1_name": name},
-                "geometry": mapping(merged),
-            })
-        except Exception:
-            continue
-    if not features:
-        return None
-    return {"type": "FeatureCollection", "features": features}
+
+
+# Prestige palette: Burnished Gold (13 coal-reserve states), Sovereign Navy (others)
+_COLOR_SOVEREIGN_NAVY = "rgb(0, 32, 96)"
+_COLOR_BURNISHED_GOLD = "rgb(184, 134, 11)"
 
 
 def _nigeria_choropleth_figure(selected_state: Optional[str]) -> Optional[Any]:
-    """Build Plotly choropleth: real Nigeria state borders. Coal states Gold #FFD700, others Navy #000080. Falcon at selected state."""
+    """True Map of Nigeria: 36 state borders from GeoJSON. 13 coal-reserve states Burnished Gold, rest Sovereign Navy. Falcon at selected state."""
     if not _HAS_PLOTLY:
         return None
-    geojson = _load_nigeria_geojson()
-    if not geojson or not geojson.get("features"):
+    geojson_data = _load_nigeria_geojson()
+    if not geojson_data or not geojson_data.get("features"):
         return None
     locations = []
     z_vals = []
-    for f in geojson["features"]:
+    for f in geojson_data["features"]:
         name = (f.get("properties") or {}).get("adm1_name", "")
         if not name:
             continue
@@ -223,11 +314,11 @@ def _nigeria_choropleth_figure(selected_state: Optional[str]) -> Optional[Any]:
         return None
     fig = go.Figure(
         go.Choropleth(
-            geojson=geojson,
+            geojson=geojson_data,
             locations=locations,
             z=z_vals,
             featureidkey="properties.adm1_name",
-            colorscale=[[0, "#000080"], [1, "#FFD700"]],
+            colorscale=[[0, _COLOR_SOVEREIGN_NAVY], [1, _COLOR_BURNISHED_GOLD]],
             showscale=False,
             showlegend=False,
         )
@@ -239,11 +330,14 @@ def _nigeria_choropleth_figure(selected_state: Optional[str]) -> Optional[Any]:
         center={"lon": 8.7, "lat": 9.1},
     )
     fig.update_layout(
-        margin={"l": 0, "r": 0, "t": 24, "b": 0},
-        paper_bgcolor="rgba(5,5,5,0.9)",
-        plot_bgcolor="rgba(5,5,5,0.9)",
-        height=380,
-        title=dict(text="Map of Authority — Federal Republic of Nigeria (real state borders)", font=dict(size=14, color="#D4AF37")),
+        margin={"l": 0, "r": 0, "t": 28, "b": 0},
+        paper_bgcolor="rgba(5,5,5,0.95)",
+        plot_bgcolor="rgba(5,5,5,0.95)",
+        height=420,
+        title=dict(
+            text="Map of Authority — Federal Republic of Nigeria (36 State Borders)",
+            font=dict(size=14, color="rgb(212, 175, 55)"),
+        ),
     )
     if selected_state and selected_state in STATE_CENTROIDS_LNGLAT:
         lon, lat = STATE_CENTROIDS_LNGLAT[selected_state]
@@ -253,8 +347,13 @@ def _nigeria_choropleth_figure(selected_state: Optional[str]) -> Optional[Any]:
                 lat=[lat],
                 mode="markers+text",
                 text=["🦅"],
-                textfont=dict(size=22, color="#FFD700"),
-                marker=dict(size=16, symbol="diamond", color="#FFD700", line=dict(width=2, color="#B8860B")),
+                textfont=dict(size=22, color=_COLOR_BURNISHED_GOLD),
+                marker=dict(
+                    size=18,
+                    symbol="diamond",
+                    color=_COLOR_BURNISHED_GOLD,
+                    line=dict(width=2, color="rgb(184, 134, 11)"),
+                ),
                 name="Falcon",
             )
         )
@@ -317,22 +416,36 @@ def _medallion_svg() -> str:
     """
 
 
-# ---- Map of Authority fallback: no yellow octagon; navy outline only when real GeoJSON not available ----
+# ---- Map of Authority fallback when GeoJSON not available (no generic octagon) ----
 def _nigeria_svg() -> str:
-    """Fallback SVG when GeoJSON choropleth is not available. Navy outline only (no yellow octagon)."""
+    """Fallback SVG: Sovereign Navy outline only when True Map GeoJSON is not loaded."""
     return """
     <svg class="nigeria-svg true-map map-of-authority" viewBox="0 0 280 360" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="ngStroke" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" style="stop-color:#000080"/>
-          <stop offset="100%" style="stop-color:#000060"/>
+          <stop offset="0%" style="stop-color:rgb(0,32,96)"/>
+          <stop offset="100%" style="stop-color:rgb(0,20,60)"/>
         </linearGradient>
       </defs>
-      <path fill="rgba(0,0,128,0.2)" stroke="url(#ngStroke)" stroke-width="2"
+      <path fill="rgba(0,32,96,0.25)" stroke="url(#ngStroke)" stroke-width="2"
         d="M138 18 L172 35 L198 62 L205 98 L218 142 L224 188 L218 242 L192 282 L152 332 L118 342 L82 308 L58 258 L44 198 L38 142 L48 88 L68 48 L98 28 L120 18 Z"/>
-      <text x="140" y="178" text-anchor="middle" fill="rgba(212,175,55,0.5)" font-size="12" font-weight="700">FEDERAL REPUBLIC OF NIGERIA</text>
-      <text x="140" y="198" text-anchor="middle" fill="rgba(184,196,206,0.6)" font-size="10">13 coal-rich: Gold; others: Navy. Add data/ng_state.geojson for real borders.</text>
+      <text x="140" y="178" text-anchor="middle" fill="rgb(212,175,55)" font-size="12" font-weight="700">FEDERAL REPUBLIC OF NIGERIA</text>
+      <text x="140" y="198" text-anchor="middle" fill="rgba(184,196,206,0.8)" font-size="10">True Map: Add data/ng_state.geojson (36 state borders) or enable network for HDX.</text>
     </svg>
+    """
+
+
+def _true_map_fallback_html(selected_state: Optional[str]) -> str:
+    """Fallback when GeoJSON is unavailable: prestige Navy outline and instruction for 36 state borders."""
+    return f"""
+    <div class="map-wrap map-of-authority true-map-fallback">
+      <h3 class="shimmer">Map of Authority — Federal Republic of Nigeria</h3>
+      <p class="map-sub">36 State Borders (GeoJSON). 13 coal-reserve states: Burnished Gold; others: Sovereign Navy.</p>
+      <div class="nigeria-container">
+        {_nigeria_svg()}
+      </div>
+      <p class="map-note">Place <code>ng_state.geojson</code> in <code>data/</code> for geographically accurate boundaries, or ensure HDX download is reachable.</p>
+    </div>
     """
 
 
@@ -1148,10 +1261,22 @@ with demo:
     refresh_btn.click(fn=refresh_commodity_heartbeat, inputs=None, outputs=market_values_out)
     demo.load(fn=refresh_commodity_heartbeat, inputs=None, outputs=market_values_out, every=300)
 
-    # 2. Map of Authority — Africa: Nigeria as glowing golden center on deep navy. State click updates selection.
-    map_out = gr.HTML(value=_africa_map_html("Kogi"), label="Map of Authority — Africa")
-    def update_map(state: str):
-        return _africa_map_html(state)
+    # 2. Map of Authority — True Map of Nigeria: 36 state borders (GeoJSON). 13 coal-reserve Burnished Gold, rest Sovereign Navy.
+    _initial_fig = _nigeria_choropleth_figure("Kogi")
+    if _initial_fig is not None:
+        map_out = gr.Plot(
+            value=_initial_fig,
+            label="Map of Authority — Federal Republic of Nigeria (36 State Borders)",
+        )
+        def update_map(state: str):
+            return _nigeria_choropleth_figure(state)
+    else:
+        map_out = gr.HTML(
+            value=_true_map_fallback_html("Kogi"),
+            label="Map of Authority — Federal Republic of Nigeria (36 State Borders)",
+        )
+        def update_map(state: str):
+            return _true_map_fallback_html(state)
     with gr.Row():
         btns = []
         for s in COAL_STATES:
@@ -1215,4 +1340,4 @@ if __name__ == "__main__":
     print("  24/7 access: Samsung S24 Ultra (LAN or public URL).")
     print("=" * 60 + "\n")
     sys.stdout.flush()
-    demo.launch(share=True, server_name="0.0.0.0", server_port=SERVER_PORT, show_error=True)
+    demo.launch(server_name="0.0.0.0", server_port=7860, share=True, show_error=True)
