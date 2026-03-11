@@ -106,10 +106,7 @@ COAL_STATES_COORDS = [
     ("Ekiti", 7.6, 5.3),
     ("Kwara", 8.8, 4.6),
 ]
-HOVER_TEXT = (
-    "Strategic Energy Potential: Equivalent to "
-    "4.2 Million GPU-Hours/Year (NVIDIA H100 Clusters)."
-)
+HOVER_TEXT = "Strategic Reserve Node | Potential: 4.2 Million GPU-Hours/Year."
 
 
 def create_sovereign_map():
@@ -184,7 +181,7 @@ GATEWAY_CSS = """
 
 /* Diagonal watermark across entire UI */
 .gradio-container::before {
-  content: 'GCSLC PROPRIETARY - SOVEREIGN INTEL - DR. SA’AD JAAFARU';
+  content: "GCSLC PROPRIETARY - SOVEREIGN INTEL";
   position: fixed;
   top: 50%;
   left: 50%;
@@ -198,13 +195,17 @@ GATEWAY_CSS = """
   pointer-events: none;
 }
 
-body, .gradio-container, .contain, #root, .block, .wrap, section { background: #001f3f !important; }
+body, .gradio-container, .contain, #root, .wrap, section { background: #001f3f !important; }
 .gradio-container {
-  border: 4px solid #D4AF37 !important;
-  border-radius: 16px !important;
-  padding: 20px !important;
-  box-shadow: 0 0 40px rgba(212,175,55,0.25), inset 0 0 60px rgba(0,80,160,0.08) !important;
+  background: #001f3f !important;
+  border: 2px solid rgba(212, 175, 55, 0.35) !important;
+  border-radius: 8px !important;
+  padding: 24px !important;
+  box-shadow: 0 0 0 1px rgba(0,31,63,0.8), inset 0 0 80px rgba(0,40,80,0.15) !important;
 }
+.gradio-container .block, .gradio-container .form, .gradio-container .panel { background: transparent !important; border: none !important; box-shadow: none !important; }
+.gradio-container .block-title, .gradio-container label { color: #D4AF37 !important; border: none !important; }
+.gradio-container .plot-container { background: transparent !important; }
 
 /* Medallion: top center, rhythmic blue-ray pulse */
 @keyframes medallion-blue-ray {
@@ -217,7 +218,14 @@ body, .gradio-container, .contain, #root, .block, .wrap, section { background: #
   animation: medallion-blue-ray 2.5s ease-in-out infinite;
 }
 
-/* Guardian narrative text: coal-fire orange glow */
+/* Institutional header: Shimmering Gold title */
+@keyframes title-shimmer-gold {
+  0%, 100% { color: #B8860B; text-shadow: 0 0 12px rgba(212,175,55,0.7); }
+  50% { color: #FFD700; text-shadow: 0 0 20px rgba(255,215,0,0.9), 0 0 30px rgba(212,175,55,0.4); }
+}
+.title-shimmer-gold { animation: title-shimmer-gold 2.5s ease-in-out infinite; }
+
+/* Guardian narrative: "I NEED ENERGY TO THRIVE" — coal-fire orange glow */
 @keyframes prism-text-coal {
   0% { filter: drop-shadow(0 0 8px rgba(255,140,0,0.8)); text-shadow: 0 0 12px rgba(255,140,0,0.6); }
   100% { filter: drop-shadow(0 0 14px rgba(255,165,0,0.95)); text-shadow: 0 0 18px rgba(255,165,0,0.8); }
@@ -383,18 +391,18 @@ body, .gradio-container, .contain, #root, .block, .wrap, section { background: #
 
 
 def build_header_html():
-    """Institutional identity, shimmering gold official name, medallion top center."""
+    """Institutional header: Deep Navy, Shimmering Gold title, pulse medallion with blue-ray aura."""
     medallion_img = (
         f'<img src="data:image/png;base64,{B64_MEDALLION}" alt="GCSLC Medallion" />'
         if B64_MEDALLION
         else '<div style="width:120px;height:120px;border:3px solid #D4AF37;border-radius:50%;margin:0 auto;"></div>'
     )
     return f"""
-    <div style="text-align: center; padding: 12px 0 8px 0;">
-        <h1 style="color: #D4AF37; font-size: 1.2rem; font-weight: 700; letter-spacing: 0.16em; margin: 0 0 6px 0; line-height: 1.4;">
+    <div class="institutional-header" style="background: #001f3f; text-align: center; padding: 16px 0 12px 0; margin: -8px 0 0 0;">
+        <h1 class="title-shimmer-gold" style="color: #D4AF37; font-size: 1.15rem; font-weight: 700; letter-spacing: 0.18em; margin: 0 0 10px 0; line-height: 1.4; text-transform: uppercase;">
             GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION - GCSLC LTD/GTE
         </h1>
-        <div class="medallion-wrap" style="margin: 12px 0 4px 0;">
+        <div class="medallion-wrap" style="margin: 8px 0 4px 0;">
             {medallion_img}
         </div>
         <div class="data-block-label" style="margin-top: 6px;">GCSLC PROPRIETARY</div>
@@ -411,12 +419,13 @@ def build_guardian_html():
         else '<div style="font-size:48px; text-align:center;">🛡️</div>'
     )
     return f"""
-    <div style="background: #001021; border: 3px solid #D4AF37; border-radius: 12px; padding: 14px; text-align: center; position: relative;">
+    <div class="guardian-institutional" style="background: #001021; border: 1px solid rgba(212,175,55,0.5); border-radius: 8px; padding: 14px; text-align: center; position: relative;">
         <div class="data-block-label" style="position:absolute; top:8px; left:14px;">GCSLC PROPRIETARY</div>
         {img_html}
         <p class="guardian-prism-text" style="margin: 12px 4px 4px 4px;">
-            I NEED ENERGY TO THRIVE; process the coal and its by-products—they're my power.
+            I NEED ENERGY TO THRIVE
         </p>
+        <p style="font-size: 0.8rem; color: #c8d0d8; margin: 4px 4px 0 4px;">Process the coal and its by-products — they're my power.</p>
     </div>
     """
 
@@ -536,14 +545,14 @@ with gr.Blocks(
 
     gr.HTML(build_header_html())
 
-    # Arbitrage ticker above the map
+    # Wall Street ticker: high-urgency red/gold
     gr.HTML(
         """
         <div class="arbitrage-ticker-shell" style="margin: 10px 0 16px 0; padding: 6px 0;">
             <div class="arbitrage-ticker-inner">
                 <span>
-                NATIONAL ASSET RECOVERY DELAY COST: $1.87 BILLION/YEAR LOSS – RECOVERING VIA 8R STEALTH PARADIGM.
-                NATIONAL ASSET RECOVERY DELAY COST: $1.87 BILLION/YEAR LOSS – RECOVERING VIA 8R STEALTH PARADIGM.
+                NATIONAL ASSET RECOVERY DELAY COST: $1.87 BILLION/YEAR LOSS — RECOVERING VIA 8R STEALTH PARADIGM.
+                NATIONAL ASSET RECOVERY DELAY COST: $1.87 BILLION/YEAR LOSS — RECOVERING VIA 8R STEALTH PARADIGM.
                 </span>
             </div>
         </div>
@@ -579,8 +588,8 @@ with gr.Blocks(
     gr.HTML(build_convergence_metrics_html())
 
     _footer = (
-        '<div style="position: relative; min-height: 80px; padding: 20px 0 70px 0; '
-        'border-top: 1px solid rgba(212,175,55,0.4); margin-top: 24px;">'
+        '<div class="institutional-footer" style="position: relative; min-height: 80px; padding: 20px 0 70px 0; '
+        'border-top: 1px solid rgba(212,175,55,0.35); margin-top: 24px; background: #001f3f;">'
         '<p class="signature-calligraphy">Dr. Sa’ad Jaafaru, Chairman &amp; Founder</p>'
         '<p style="color: #b8c4ce; font-size: 0.85rem; margin: 4px 0 0 0; '
         'position: absolute; bottom: 10px; right: 24px;">'
