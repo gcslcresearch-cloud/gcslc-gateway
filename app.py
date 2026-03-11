@@ -72,18 +72,20 @@ def _load_b64_from_candidates(names) -> str:
 
 # Medallion and Falcon from project root; high-fidelity Guardian & Fortress from user images
 B64_MEDALLION = _load_b64_from_candidates(["medallion.png"])
-B64_FALCON = _load_b64_from_candidates(["falcon.png"])
+B64_FALCON = _load_b64_from_candidates(["falcon_final.png", "falcon.png"])
 B64_GUARDIAN_HF = _load_b64_from_candidates(
     [
+        "guardian_final.png",
         "guardian_hf.png",
-        "Screenshot_20260311_181838_Gallery-ac54866c-be0b-40d0-b6b9-a8fdceee1b42.png",
+        "Screenshot_20260311_181838_Gallery-b23e983b-7b8b-47e6-a048-9f38830f8659.png",
         "guardian.png",
     ]
 )
 B64_FORTRESS_HF = _load_b64_from_candidates(
     [
+        "fortress_final.png",
         "fortress_hf.png",
-        "Screenshot_20260311_181741_Gallery-30cf1785-4547-482a-8222-bb593a70cd40.png",
+        "Screenshot_20260311_181741_Gallery-0e9891e7-ce1a-4c36-8bfc-c0083216d6b4.png",
         "fortress.png",
     ]
 )
@@ -105,8 +107,8 @@ COAL_STATES_COORDS = [
     ("Kwara", 8.8, 4.6),
 ]
 HOVER_TEXT = (
-    "Strategic Reserve Node | Energy Potential: "
-    "4.2 Million GPU-Hours/Year (NVIDIA H100 Clusters)"
+    "Strategic Energy Potential: Equivalent to "
+    "4.2 Million GPU-Hours/Year (NVIDIA H100 Clusters)."
 )
 
 
@@ -229,25 +231,46 @@ body, .gradio-container, .contain, #root, .block, .wrap, section { background: #
   animation: prism-text-coal 2s ease-in-out infinite alternate;
 }
 
-/* Falcon: floats over map, 1.2s shouting pulse, no white background */
-@keyframes falcon-shouting {
-  0%, 100% { transform: translate(-50%, -50%) scale(1); }
-  50% { transform: translate(-50%, -50%) scale(1.15); }
+/* Falcon: absolute mobility — no box; shuttles across map markers, 1.2s hunting pulse */
+@keyframes falcon-shuttle {
+  0% { left: 24%; top: 81%; transform: translate(-50%, -50%) scale(1); }
+  8% { left: 24%; top: 69%; transform: translate(-50%, -50%) scale(1.08); }
+  15% { left: 31%; top: 65%; transform: translate(-50%, -50%) scale(1); }
+  23% { left: 42%; top: 73%; transform: translate(-50%, -50%) scale(1.08); }
+  31% { left: 38%; top: 52%; transform: translate(-50%, -50%) scale(1); }
+  38% { left: 62%; top: 28%; transform: translate(-50%, -50%) scale(1.08); }
+  46% { left: 54%; top: 45%; transform: translate(-50%, -50%) scale(1); }
+  54% { left: 48%; top: 58%; transform: translate(-50%, -50%) scale(1.08); }
+  62% { left: 45%; top: 95%; transform: translate(-50%, -50%) scale(1); }
+  69% { left: 41%; top: 87%; transform: translate(-50%, -50%) scale(1.08); }
+  77% { left: 50%; top: 94%; transform: translate(-50%, -50%) scale(1); }
+  85% { left: 32%; top: 80%; transform: translate(-50%, -50%) scale(1.08); }
+  92% { left: 30%; top: 69%; transform: translate(-50%, -50%) scale(1); }
+  100% { left: 24%; top: 81%; transform: translate(-50%, -50%) scale(1); }
 }
 .map-wrap-sovereign { position: relative; min-height: 440px; }
 .falcon-overlay-map {
-  position: absolute;
-  left: 78%;
-  top: 46%;
+  position: absolute !important;
+  left: 24%;
+  top: 81%;
+  width: 0;
+  height: 0;
   z-index: 10;
   pointer-events: none;
+  animation: falcon-shuttle 1.2s ease-in-out infinite;
 }
 .falcon-overlay-map img {
-  height: 80px;
-  animation: falcon-shouting 1.2s ease-in-out infinite;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 52px;
+  height: 52px;
+  margin-left: -26px;
+  margin-top: -26px;
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
+  object-fit: contain;
 }
 
 /* Fortress / Convergence Metrics wrap */
@@ -269,64 +292,68 @@ body, .gradio-container, .contain, #root, .block, .wrap, section { background: #
 }
 .convergence-metrics-wrap .fortress-content { position: relative; z-index: 1; padding: 24px; }
 
-/* Arbitrage ticker */
+/* Wall Street arbitrage ticker: shimmering, high-speed, gold/red */
 @keyframes ticker-scroll {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
-@keyframes ticker-color {
-  0%, 100% { color: #ff4444; }
-  50% { color: #D4AF37; }
+@keyframes ticker-shimmer {
+  0%, 100% { color: #ff4444; text-shadow: 0 0 12px rgba(255,68,68,0.8), 0 0 24px rgba(212,175,55,0.4); }
+  50% { color: #D4AF37; text-shadow: 0 0 16px rgba(212,175,55,0.95), 0 0 32px rgba(255,215,0,0.5); }
 }
 .arbitrage-ticker-shell {
   overflow: hidden;
-  border-radius: 999px;
-  border: 1px solid rgba(212,175,55,0.6);
-  background: radial-gradient(circle at center, rgba(50,0,0,0.7), rgba(0,0,0,0.8));
+  border-radius: 6px;
+  border: 1px solid rgba(212,175,55,0.5);
+  background: linear-gradient(90deg, rgba(80,0,0,0.4), rgba(20,0,0,0.7), rgba(212,175,55,0.08));
+  box-shadow: inset 0 0 20px rgba(255,68,68,0.1), 0 0 15px rgba(212,175,55,0.2);
 }
 .arbitrage-ticker-inner {
   display: inline-block;
   padding-left: 100%;
-  animation: ticker-scroll 25s linear infinite;
-  font-size: 0.9rem;
-  letter-spacing: 0.12em;
+  animation: ticker-scroll 12s linear infinite;
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  animation-timing-function: linear;
   white-space: nowrap;
 }
-.arbitrage-ticker-inner span { animation: ticker-color 2.4s ease-in-out infinite; }
+.arbitrage-ticker-inner span { animation: ticker-shimmer 1.8s ease-in-out infinite; }
 
-/* 8R Logic Terminal */
+/* 8R Logic Terminal — Grok-style: translucent, scrolling green text */
 .logic-terminal {
-  background: radial-gradient(circle at top left, rgba(0,120,60,0.35), rgba(0,0,0,0.9));
-  border-radius: 12px;
-  border: 2px solid rgba(0,255,128,0.6);
-  padding: 14px 16px;
+  background: rgba(0, 20, 12, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 10px;
+  border: 1px solid rgba(0, 255, 128, 0.4);
+  padding: 12px 14px;
   font-family: "SF Mono", Menlo, Monaco, Consolas, monospace;
-  color: #00ff9c;
-  font-size: 0.8rem;
+  color: #00ff88;
+  font-size: 0.78rem;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 255, 128, 0.15);
 }
 .logic-terminal::before {
-  content: 'GCSLC PROPRIETARY';
+  content: '8R LOGIC';
   position: absolute;
   top: 6px;
   right: 10px;
   font-size: 0.6rem;
   letter-spacing: 0.16em;
-  color: rgba(0,255,128,0.6);
+  color: rgba(0, 255, 128, 0.5);
 }
-@keyframes terminal-scan {
-  0% { opacity: 0; transform: translateY(8px); }
-  50% { opacity: 1; transform: translateY(0); }
-  100% { opacity: 0.4; transform: translateY(-6px); }
+@keyframes terminal-scroll-line {
+  0% { opacity: 0.5; transform: translateY(6px); }
+  40% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0.6; transform: translateY(-4px); }
 }
 .logic-line {
-  animation: terminal-scan 3s ease-in-out infinite;
+  animation: terminal-scroll-line 2.5s ease-in-out infinite;
 }
-.logic-line:nth-child(2) { animation-delay: 0.7s; }
-.logic-line:nth-child(3) { animation-delay: 1.4s; }
+.logic-line:nth-child(2) { animation-delay: 0.6s; }
+.logic-line:nth-child(3) { animation-delay: 1.2s; }
 
 /* Data blocks label */
 .data-block-label {
@@ -388,7 +415,7 @@ def build_guardian_html():
         <div class="data-block-label" style="position:absolute; top:8px; left:14px;">GCSLC PROPRIETARY</div>
         {img_html}
         <p class="guardian-prism-text" style="margin: 12px 4px 4px 4px;">
-            I NEED ENERGY TO THRIVE; process the coal and its by-products — they're my power
+            I NEED ENERGY TO THRIVE; process the coal and its by-products—they're my power.
         </p>
     </div>
     """
@@ -422,7 +449,7 @@ def build_fortress_html():
         <div class="fortress-content">
             <div class="data-block-label">GCSLC PROPRIETARY</div>
             <h3 style="color:#7de3ff; margin: 8px 0 12px 0; letter-spacing:0.12em; font-size:0.95rem;">
-                DESERT DRAGON – TIER-III/IV HYPERSCALE (Riyadh/Dubai Prototype)
+                TIER-III/IV HYPERSCALE (Riyadh/Dubai Immersion-Cooled Prototype).
             </h3>
             {img_html}
         </div>
@@ -534,7 +561,7 @@ with gr.Blocks(
             gr.Plot(create_sovereign_map(), label="")
             falcon_overlay = (
                 f'<div class="falcon-overlay-map" '
-                f'style="margin-top:-440px;height:0;overflow:visible;">'
+                f'style="margin-top:-440px;height:0;overflow:visible;border:none;background:transparent;">'
                 f"{build_falcon_html()}</div></div>"
                 if B64_FALCON
                 else '<div class="falcon-overlay-map" '
