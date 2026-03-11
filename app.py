@@ -1,6 +1,6 @@
 """
-GCSLC Sovereign Command Center — VIDEO-CERTIFIED BASELINE (0:00–0:18)
-Phase 1 Asset Hardening: Sovereign Radar (map_sovereign + diamonds), Guardian (guardian_final + breathing pulse).
+GCSLC Sovereign Command Center — D2 PROTOCOL (Engine Room Restoration)
+Deep Navy (#001f3f) + Institutional Gold (#D4AF37). Sovereign Radar Grid (4x4). No Folium/Mapbox.
 """
 # Fix Gradio ImportError: huggingface_hub no longer exposes HfFolder
 try:
@@ -31,7 +31,6 @@ import os
 from typing import Optional
 
 import gradio as gr
-import plotly.graph_objects as go
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 ASSETS = os.path.join(ROOT, "assets")
@@ -49,13 +48,8 @@ HOOK_TEXT = (
 COAL_STATES = ["Enugu", "Kogi", "Benue", "Nasarawa", "Gombe", "Delta", "Edo", "Anambra", "Plateau", "Oyo", "Ekiti", "Kwara", "Imo"]
 STATE_RESERVES_MT = {"Enugu": 168.0, "Kogi": 223.0, "Benue": 85.0, "Nasarawa": 22.0, "Gombe": 62.0, "Delta": 45.0, "Edo": 38.0, "Anambra": 27.3, "Plateau": 22.0, "Oyo": 20.0, "Ekiti": 15.0, "Kwara": 18.0, "Imo": 18.0}
 
-# Hard-coded (lat, lon) for Map of Authority — no GeoJSON
-COORDS = [
-    ("Enugu", 6.4, 7.5), ("Kogi", 7.8, 6.7), ("Benue", 7.3, 8.8), ("Gombe", 10.3, 11.2),
-    ("Delta", 5.5, 5.9), ("Imo", 5.5, 7.1), ("Anambra", 6.2, 7.1), ("Edo", 6.5, 6.0),
-    ("Plateau", 9.2, 9.5), ("Nasarawa", 8.5, 8.2), ("Oyo", 8.1, 3.6), ("Ekiti", 7.6, 5.3), ("Kwara", 8.8, 4.6),
-]
 BY_PRODUCT_GERMANIUM_USD = 8597
+NODE_TOOLTIP = "Potential: 4.2M GPU-Hours (NVIDIA H100 Equivalent)."
 BY_PRODUCT_AMMONIA_MT = 430
 BY_PRODUCT_SILICON_M = 6.50
 DETERMINANTS_R = ["R1 Refine", "R2 Reset", "R3 Research", "R4 Restructure", "R5 Resuscitate", "R6 Revitalize", "R7 Re-engineer", "R8 Retain"]
@@ -81,16 +75,7 @@ def _b64(name):
 
 
 B64_MEDALLION = _b64("medallion.png")
-# Phase 1: Sovereign Radar map image; Guardian humanoid image
-def _map_asset():
-    for name, mime in [("map_sovereign.jpg", "jpeg"), ("map_sovereign.png", "png"), ("Screenshot_20260311_005856_CapCut-d2f96cb5-38be-4e56-8295-2f997503d052.png", "png")]:
-        b = _b64(name)
-        if b:
-            return b, mime
-    return "", ""
-
-_B64_MAP, _MAP_MIME = _map_asset()
-B64_MAP_SOVEREIGN = _B64_MAP
+B64_FALCON = _b64("falcon_final.png") or _b64("falcon.png")
 B64_GUARDIAN_HF = _b64("guardian_final.png") or _b64("Screenshot_20260311_181838_Gallery-ca931142-993a-40d4-a43b-a4c28e3e56e3.png") or _b64("guardian.png")
 
 
@@ -98,64 +83,15 @@ def _medallion_svg():
     return """<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="medG" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#5c4a00"/><stop offset="50%" style="stop-color:#D4AF37"/><stop offset="100%" style="stop-color:#FFD700"/></linearGradient></defs><circle cx="24" cy="24" r="22" fill="url(#medG)" stroke="#B8860B" stroke-width="2"/><text x="24" y="28" text-anchor="middle" fill="#0a1628" font-size="10" font-weight="700">GCSLC</text></svg>"""
 
 
-# Nigeria bounds for overlay: lat 4–14, lon 2.5–15 (same as Plotly)
-LAT_LO, LAT_HI = 4.0, 14.0
-LON_LO, LON_HI = 2.5, 15.0
-
-def _latlon_to_pct(lat: float, lon: float) -> tuple:
-    """Map (lat, lon) to (left%, top%) for overlay on map image. North = low top."""
-    left = (lon - LON_LO) / (LON_HI - LON_LO) * 100
-    top = (LAT_HI - lat) / (LAT_HI - LAT_LO) * 100
-    return (max(0, min(100, left)), max(0, min(100, top)))
-
-
-def sovereign_radar_html() -> str:
-    """Sovereign Radar: map_sovereign image with Golden Diamond markers. Hover: glow + Strategic Node text."""
-    if not B64_MAP_SOVEREIGN:
+def falcon_overlay_html() -> str:
+    """Falcon shuttles diagonally across the Radar Grid with rhythmic pulse."""
+    if not B64_FALCON:
         return ""
-    markers_html = ""
-    for name, lat, lon in COORDS:
-        left, top = _latlon_to_pct(lat, lon)
-        title = "Strategic Energy Potential: Equivalent to 4.2 Million GPU-Hours/Year (NVIDIA H100 Clusters)."
-        markers_html += f'<div class="sovereign-diamond" style="left:{left}%;top:{top}%;" title="{html.escape(title)}" data-state="{html.escape(name)}"><span class="diamond-inner"></span><span class="diamond-tooltip">{html.escape(title)}</span></div>'
     return f"""
-    <div class="sovereign-radar-wrap">
-      <div class="sovereign-radar-bg" style="background-image:url('data:image/{_MAP_MIME};base64,{B64_MAP_SOVEREIGN}');"></div>
-      <div class="sovereign-radar-markers">{markers_html}</div>
+    <div class="falcon-shuttle-overlay" aria-hidden="true">
+      <img src="data:image/png;base64,{B64_FALCON}" alt="Falcon" />
     </div>
     """
-
-
-def build_map(highlight_state: Optional[str] = None):
-    """Scatter-plot fallback: preserves visual authority (dark navy/teal) when map image not used."""
-    lats = [c[1] for c in COORDS]
-    lons = [c[2] for c in COORDS]
-    names = [c[0] for c in COORDS]
-    hover_line = "Strategic Energy Potential: Equivalent to 4.2 Million GPU-Hours/Year (NVIDIA H100 Clusters)."
-    fig = go.Figure()
-    fig.add_trace(
-        go.Scattergeo(
-            lon=lons, lat=lats,
-            text=[hover_line.format(n) for n in names],
-            hoverinfo="text", mode="markers",
-            marker=dict(size=18, symbol="diamond", color="#D4AF37", line=dict(width=2, color="#FFD700")),
-            name="Reserve",
-        )
-    )
-    fig.update_geos(
-        center=dict(lat=9.08, lon=8.0), scope="africa",
-        showcountries=True, countrycolor="rgba(0,32,96,0.6)",
-        showland=True, landcolor="rgba(0,31,63,0.4)",
-        showocean=True, oceancolor="rgba(0,20,50,0.5)",
-        lataxis=dict(range=[4, 14]), lonaxis=dict(range=[2.5, 15]),
-    )
-    fig.update_layout(
-        margin=dict(r=0, t=0, l=0, b=0), height=380,
-        paper_bgcolor="rgba(0,0,0,0)", font=dict(color="#e8eef4", size=12),
-        hoverlabel=dict(bgcolor="#001f3f", bordercolor="#D4AF37"),
-        showlegend=False,
-    )
-    return fig
 
 
 def diamond_popup(state: str) -> str:
@@ -163,6 +99,7 @@ def diamond_popup(state: str) -> str:
     return f"""
     <div class="diamond-popup diamond-opportunity-box gold-outline-block">
       <h4 class="shimmer">Diamond Opportunity — {state}</h4>
+      <p class="reserves-line"><strong>{NODE_TOOLTIP}</strong></p>
       <p class="reserves-line"><strong>Proven Reserves:</strong> {state}: <strong>{reserves:.0f}M Tonnes</strong></p>
       <div class="opportunity-card">
         <p class="byproduct-title">Market values</p>
@@ -329,13 +266,13 @@ def footer_html() -> str:
 CSS = """
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
 .gradio-container, body, .main, .container, #root, .block, section {
-  background: linear-gradient(135deg, #050508 0%, #0a0a18 50%, #050510 100%) !important;
+  background: #001f3f !important;
   color: #e0e0e0 !important;
   font-family: Orbitron, sans-serif !important;
 }
 .gradio-container {
-  border: 2px solid rgba(0, 212, 255, 0.5);
-  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3), inset 0 0 60px rgba(0, 212, 255, 0.03);
+  border: 2px solid #D4AF37;
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.25), inset 0 0 60px rgba(0, 31, 63, 0.3);
 }
 .gradio-container .block { background: transparent !important; border: none !important; }
 
@@ -399,21 +336,16 @@ CSS = """
 .metrics-table th { color: #D4AF37; }
 .metrics-table td:last-child { text-align: right; color: #D4AF37; }
 
-/* Map of Authority */
-.map-wrap { padding: 20px; text-align: center; }
-.map-sub { color: #b8c4ce; font-size: 0.9rem; margin: 8px 0 12px 0; }
-
-/* Sovereign Radar: map image + Golden Diamond markers, hover glow + tooltip */
-.sovereign-radar-wrap { position: relative; width: 100%; max-width: 560px; margin: 0 auto; min-height: 380px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,212,255,0.35); }
-.sovereign-radar-bg { position: absolute; inset: 0; background-size: contain; background-position: center; background-repeat: no-repeat; background-color: #001f3f; }
-.sovereign-radar-markers { position: absolute; inset: 0; pointer-events: none; }
-.sovereign-diamond { position: absolute; width: 24px; height: 24px; margin: -12px 0 0 -12px; pointer-events: auto; cursor: pointer; transform: translate(-50%, -50%); transition: filter 0.25s, transform 0.2s; }
-.sovereign-diamond:hover { filter: drop-shadow(0 0 12px #FFD700) drop-shadow(0 0 20px rgba(255,215,0,0.8)); transform: translate(-50%, -50%) scale(1.2); z-index: 5; }
-.diamond-inner { display: block; width: 100%; height: 100%; background: #D4AF37; border: 2px solid #FFD700; transform: rotate(45deg); box-shadow: 0 0 8px rgba(212,175,55,0.6); }
-.sovereign-diamond .diamond-tooltip { position: absolute; left: 50%; bottom: 100%; transform: translate(-50%, -8px); white-space: nowrap; background: #001f3f; color: #D4AF37; border: 1px solid #D4AF37; padding: 6px 10px; font-size: 0.75rem; border-radius: 6px; opacity: 0; pointer-events: none; transition: opacity 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.6); }
-.sovereign-diamond:hover .diamond-tooltip { opacity: 1; white-space: normal; max-width: 280px; }
-/* When Sovereign Radar image is shown, hide the Plotly fallback */
-body:has(.sovereign-radar-wrap) #sovereign-map-plot { display: none !important; }
+/* D2 Sovereign Radar Grid: 4x4 dark-navy container, Golden Diamond buttons */
+.radar-grid-label { color: #D4AF37; font-weight: 600; font-size: 0.95rem; margin: 0 0 8px 0; }
+.radar-grid-wrap { position: relative; background: #001f3f; border: 2px solid #D4AF37; border-radius: 12px; padding: 16px; min-height: 320px; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 1fr); gap: 10px; }
+.radar-diamond-btn { min-width: 72px !important; border: 2px solid #D4AF37 !important; color: #D4AF37 !important; background: rgba(0, 26, 53, 0.95) !important; font-weight: 600 !important; border-radius: 8px !important; animation: gold-pulse 2s ease-in-out infinite !important; }
+.radar-diamond-btn:hover { box-shadow: 0 0 16px rgba(255, 215, 0, 0.7) !important; }
+#radar-column { position: relative !important; }
+/* Falcon: diagonal shuttle across grid with rhythmic pulse */
+.falcon-shuttle-overlay { position: absolute !important; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: 5; }
+.falcon-shuttle-overlay img { position: absolute; width: 48px; height: 48px; object-fit: contain; animation: falcon-diagonal 2.4s ease-in-out infinite; }
+@keyframes falcon-diagonal { 0% { left: 5%; top: 5%; transform: scale(1); opacity: 0.9; } 25% { left: 45%; top: 25%; transform: scale(1.1); opacity: 1; } 50% { left: 85%; top: 55%; transform: scale(1); opacity: 0.95; } 75% { left: 45%; top: 85%; transform: scale(1.08); opacity: 1; } 100% { left: 5%; top: 5%; transform: scale(1); opacity: 0.9; } }
 
 /* Guardian Humanoid: no box/border; breathing pulse (coal glow); institutional gold narrative */
 .guardian-humanoid-wrap { text-align: center; padding: 0; margin: 0; background: transparent; border: none; box-shadow: none; }
@@ -475,7 +407,8 @@ body:has(.sovereign-radar-wrap) #sovereign-map-plot { display: none !important; 
 .arbitrage-pulse-wrap { width: 100%; overflow: hidden; padding: 10px 0; background: rgba(0,26,53,0.9); border-top: 1px solid rgba(212,175,55,0.4); border-bottom: 1px solid rgba(212,175,55,0.4); margin: 16px 0 0 0; }
 .arbitrage-pulse-inner { display: inline-block; white-space: nowrap; animation: arbitrage-scroll 30s linear infinite; padding-left: 100%; }
 @keyframes arbitrage-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-.arbitrage-pulse-text { color: #D4AF37; font-size: 0.9rem; font-weight: 600; }
+@keyframes ticker-red-gold { 0%, 100% { color: #cc3333; } 50% { color: #D4AF37; } }
+.arbitrage-pulse-text { font-size: 0.9rem; font-weight: 700; animation: ticker-red-gold 2s ease-in-out infinite; }
 .arbitrage-pulse-sep { color: rgba(212,175,55,0.6); margin: 0 12px; }
 
 /* Footer */
@@ -524,40 +457,41 @@ with demo:
         + f"<p class='hook' style='text-align: center; font-size: 0.92rem; max-width: 700px; margin: 0 auto 20px auto; color: #e8eef4;'>{HOOK_TEXT}</p>"
     )
 
-    # 2. Real-Time Market Values (gold-outlined block)
-    gr.HTML(real_time_market_values_html())
-
-    # 3. Convergence Metrics (gold-outlined block)
-    gr.HTML(convergence_metrics_html())
-
-    # 4. Map of Authority — Sovereign Radar (image + diamonds) or Scattergeo fallback
-    gr.HTML(sovereign_radar_html())  # when map asset exists: image + Golden Diamond overlays; else empty
-    map_plot = gr.Plot(value=build_map(), label="Map of Authority — Federal Republic of Nigeria (13 Coal States)", elem_id="sovereign-map-plot")
-    with gr.Row():
-        state_btns = [gr.Button(s, elem_classes=["state-btn"], variant="secondary") for s in COAL_STATES]
-    popup_out = gr.HTML(value=diamond_popup("Kogi"), label="Diamond Opportunity")
-
-    for i, state in enumerate(COAL_STATES):
-        state_btns[i].click(
-            fn=lambda s=state: (diamond_popup(s), build_map(s)),
-            inputs=None,
-            outputs=[popup_out, map_plot],
-        )
-
-    # 5. Desert Dragon wireframe
-    gr.HTML(data_fortress_html())
-
-    gr.Markdown("---")
-
-    # 6. 8R Guardian schematic
-    gr.HTML(humanoid_block())
-
-    gr.Markdown("---")
-
-    # 7. Arbitrage pulse ticker
+    # 2. Wall Street ticker ($1.87 B/year loss — red-and-gold)
     gr.HTML(arbitrage_pulse_html())
 
-    # 8. Footer
+    # 3. Sovereign Radar Grid (D2): 4x4 dark-navy container + 13 Golden Diamond nodes + Falcon overlay
+    gr.HTML('<p class="radar-grid-label">Sovereign Radar — 13 State Nodes</p>')
+    with gr.Row(elem_id="radar-grid-row"):
+        with gr.Column(scale=3, elem_id="radar-column"):
+            gr.HTML('<div class="radar-grid-wrap">')
+            with gr.Row():
+                with gr.Column():
+                    b1 = gr.Button(COAL_STATES[0], elem_classes=["radar-diamond-btn"], variant="secondary")
+                    b2 = gr.Button(COAL_STATES[1], elem_classes=["radar-diamond-btn"], variant="secondary")
+                    b3 = gr.Button(COAL_STATES[2], elem_classes=["radar-diamond-btn"], variant="secondary")
+                    b4 = gr.Button(COAL_STATES[3], elem_classes=["radar-diamond-btn"], variant="secondary")
+                with gr.Column():
+                    b5 = gr.Button(COAL_STATES[4], elem_classes=["radar-diamond-btn"], variant="secondary")
+                    b6 = gr.Button(COAL_STATES[5], elem_classes=["radar-diamond-btn"], variant="secondary")
+                    b7 = gr.Button(COAL_STATES[6], elem_classes=["radar-diamond-btn"], variant="secondary")
+                    b8 = gr.Button(COAL_STATES[7], elem_classes=["radar-diamond-btn"], variant="secondary")
+                with gr.Column():
+                    b9 = gr.Button(COAL_STATES[8], elem_classes=["radar-diamond-btn"], variant="secondary")
+                    b10 = gr.Button(COAL_STATES[9], elem_classes=["radar-diamond-btn"], variant="secondary")
+                    b11 = gr.Button(COAL_STATES[10], elem_classes=["radar-diamond-btn"], variant="secondary")
+                    b12 = gr.Button(COAL_STATES[11], elem_classes=["radar-diamond-btn"], variant="secondary")
+                with gr.Column():
+                    b13 = gr.Button(COAL_STATES[12], elem_classes=["radar-diamond-btn"], variant="secondary")
+            gr.HTML(falcon_overlay_html() + "</div>")
+        with gr.Column(scale=1):
+            gr.HTML(humanoid_block())
+    popup_out = gr.HTML(value=diamond_popup("Kogi"), label="Diamond Opportunity")
+    state_btns = [b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13]
+    for i, state in enumerate(COAL_STATES):
+        state_btns[i].click(fn=lambda s=state: diamond_popup(s), inputs=None, outputs=[popup_out])
+
+    # 4. Footer
     gr.HTML(footer_html())
 
 
