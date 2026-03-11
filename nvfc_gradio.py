@@ -11,7 +11,6 @@ import io
 import json
 import math
 import random
-import gradio as gr
 import os
 import shutil
 import subprocess
@@ -21,6 +20,39 @@ import time
 import zipfile
 from typing import Optional, Dict, Any, Tuple, List
 from urllib.request import urlopen, Request
+
+# --- Compatibility shim for latest huggingface_hub + Gradio oauth ---
+try:
+    import huggingface_hub
+
+    if not hasattr(huggingface_hub, "HfFolder"):
+
+        class HfFolder:
+            """Minimal drop-in shim for deprecated huggingface_hub.HfFolder."""
+
+            @staticmethod
+            def get_token() -> Optional[str]:
+                try:
+                    from huggingface_hub import get_token
+
+                    return get_token()
+                except Exception:
+                    return None
+
+            @staticmethod
+            def save_token(token: str) -> None:
+                try:
+                    from huggingface_hub import set_token
+
+                    set_token(token)
+                except Exception:
+                    pass
+
+        setattr(huggingface_hub, "HfFolder", HfFolder)
+except Exception:
+    huggingface_hub = None  # type: ignore[assignment]
+
+import gradio as gr
 
 try:
     import geojson
