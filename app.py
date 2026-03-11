@@ -1,8 +1,7 @@
 """
-GCSLC SOVEREIGN COMMAND GATEWAY — Vision-Enhanced
-THE SOVEREIGN RESET DIRECTIVE
-Goldman Sachs-tier Institutional Dashboard.
-Official: GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION - GCSLC LTD/GTE
+THE GCSLC SOVEREIGN COMMAND GATEWAY — FINAL DIRECTIVE
+Goldman Sachs-tier institutional dashboard for:
+GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION - GCSLC LTD/GTE
 """
 import base64
 import os
@@ -11,6 +10,7 @@ from typing import Optional
 
 try:
     import huggingface_hub
+
     if not hasattr(huggingface_hub, "HfFolder"):
         class HfFolder:
             @staticmethod
@@ -20,6 +20,7 @@ try:
                     return get_token()
                 except Exception:
                     return None
+
             @staticmethod
             def save_token(token: str) -> None:
                 try:
@@ -27,6 +28,7 @@ try:
                     set_token(token)
                 except Exception:
                     pass
+
         setattr(huggingface_hub, "HfFolder", HfFolder)
 except Exception:
     pass
@@ -34,23 +36,57 @@ except Exception:
 import gradio as gr
 import plotly.graph_objects as go
 
-# --- PATHS & ASSETS ---
+# --- PATHS & ASSETS (root-first, then Cursor assets) ---
 ROOT = os.path.dirname(os.path.abspath(__file__))
-ASSETS = os.path.join(ROOT, "assets")
+ASSETS_ROOT = os.path.join(ROOT, "assets")
+CURSOR_ASSETS = os.path.join(
+    os.path.expanduser("~"),
+    ".cursor",
+    "projects",
+    "Users-user-Desktop-GCSLC-Sovereign-Gateway",
+    "assets",
+)
 
 
-def _load_b64(name: str) -> str:
-    path = os.path.join(ASSETS, name)
-    if os.path.isfile(path):
-        with open(path, "rb") as f:
-            return base64.b64encode(f.read()).decode("utf-8")
+def _load_b64_from_candidates(names) -> str:
+    for name in names:
+        if not name:
+            continue
+        # 1) try root directory directly
+        root_path = os.path.join(ROOT, name)
+        if os.path.isfile(root_path):
+            with open(root_path, "rb") as f:
+                return base64.b64encode(f.read()).decode("utf-8")
+        # 2) try assets/ under root
+        assets_path = os.path.join(ASSETS_ROOT, name)
+        if os.path.isfile(assets_path):
+            with open(assets_path, "rb") as f:
+                return base64.b64encode(f.read()).decode("utf-8")
+        # 3) try Cursor-side assets mirror
+        cursor_path = os.path.join(CURSOR_ASSETS, name)
+        if os.path.isfile(cursor_path):
+            with open(cursor_path, "rb") as f:
+                return base64.b64encode(f.read()).decode("utf-8")
     return ""
 
 
-B64_MEDALLION = _load_b64("medallion.png")
-B64_GUARDIAN = _load_b64("guardian.png")
-B64_FORTRESS = _load_b64("fortress.png")
-B64_FALCON = _load_b64("falcon.png")
+# Medallion and Falcon from project root; high-fidelity Guardian & Fortress from user images
+B64_MEDALLION = _load_b64_from_candidates(["medallion.png"])
+B64_FALCON = _load_b64_from_candidates(["falcon.png"])
+B64_GUARDIAN_HF = _load_b64_from_candidates(
+    [
+        "guardian_hf.png",
+        "Screenshot_20260311_181838_Gallery-ac54866c-be0b-40d0-b6b9-a8fdceee1b42.png",
+        "guardian.png",
+    ]
+)
+B64_FORTRESS_HF = _load_b64_from_candidates(
+    [
+        "fortress_hf.png",
+        "Screenshot_20260311_181741_Gallery-30cf1785-4547-482a-8222-bb593a70cd40.png",
+        "fortress.png",
+    ]
+)
 
 # --- HARD-CODED SOVEREIGN MAP: 13 Coal States (lat, lon) ---
 COAL_STATES_COORDS = [
@@ -68,7 +104,10 @@ COAL_STATES_COORDS = [
     ("Ekiti", 7.6, 5.3),
     ("Kwara", 8.8, 4.6),
 ]
-HOVER_TEXT = "Strategic Reserve Node | Byproducts: Germanium, Silicon, Ammonia"
+HOVER_TEXT = (
+    "Strategic Reserve Node | Energy Potential: "
+    "4.2 Million GPU-Hours/Year (NVIDIA H100 Clusters)"
+)
 
 
 def create_sovereign_map():
@@ -125,30 +164,25 @@ def create_sovereign_map():
     return fig
 
 
-def get_monthly_projections():
-    """Total Monthly Projections for Coal, Germanium, Silicon."""
-    t = time.time()
-    seed = int(t) % 86400
-
-    def _v(lo, hi, off=0):
-        x = abs(hash(str(seed + off))) % 100
-        return lo + (x / 100.0) * (hi - lo)
-
-    return [
-        {"commodity": "Coal", "monthly_proj_usd_m": round(18.5 * _v(0.95, 1.05, 0), 1)},
-        {"commodity": "Germanium", "monthly_proj_usd_m": round(22.0 * _v(0.95, 1.05, 1), 1)},
-        {"commodity": "Silicon", "monthly_proj_usd_m": round(6.5 * _v(0.95, 1.05, 2), 1)},
+def _logic_terminal_lines():
+    base = [
+        "Analyzing_Revolution_Determinants...",
+        "Sovereign_Wealth_Cloud_Syncing...",
+        "8R_Paradigm_Lock_Engaged.",
     ]
+    t = int(time.time())
+    suffix = f"T{t % 100000:05d}"
+    return [f"{line}  [{suffix}]" for line in base]
 
 
-# --- GATEWAY CSS: Diagonal watermark, Inter/Roboto, medallion blue-ray, guardian coal glow, falcon 1.2s pulse, fortress, signature ---
+# --- GATEWAY CSS: watermark, fonts, medallion, guardian, falcon, fortress, ticker, logic terminal, signature ---
 GATEWAY_CSS = """
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap');
 * { font-family: 'Inter', 'Roboto', sans-serif !important; }
 
 /* Diagonal watermark across entire UI */
 .gradio-container::before {
-  content: 'GCSLC PROPRIETARY - SOVEREIGN INTEL';
+  content: 'GCSLC PROPRIETARY - SOVEREIGN INTEL - DR. SA’AD JAAFARU';
   position: fixed;
   top: 50%;
   left: 50%;
@@ -156,11 +190,10 @@ GATEWAY_CSS = """
   font-size: clamp(2rem, 6vw, 4rem);
   font-weight: 700;
   letter-spacing: 0.25em;
-  color: rgba(212, 175, 55, 0.06);
+  color: rgba(212, 175, 55, 0.05);
   white-space: nowrap;
   z-index: 9997;
   pointer-events: none;
-  font-family: 'Inter', 'Roboto', sans-serif;
 }
 
 body, .gradio-container, .contain, #root, .block, .wrap, section { background: #001f3f !important; }
@@ -171,7 +204,7 @@ body, .gradio-container, .contain, #root, .block, .wrap, section { background: #
   box-shadow: 0 0 40px rgba(212,175,55,0.25), inset 0 0 60px rgba(0,80,160,0.08) !important;
 }
 
-/* Medallion: top center, blue-ray aura */
+/* Medallion: top center, rhythmic blue-ray pulse */
 @keyframes medallion-blue-ray {
   0%, 100% { box-shadow: 0 0 20px rgba(0,120,255,0.5), 0 0 40px rgba(0,150,255,0.25); filter: drop-shadow(0 0 8px rgba(212,175,55,0.4)); }
   50% { box-shadow: 0 0 35px rgba(0,180,255,0.7), 0 0 55px rgba(0,200,255,0.4); filter: drop-shadow(0 0 14px rgba(212,175,55,0.6)); }
@@ -182,7 +215,7 @@ body, .gradio-container, .contain, #root, .block, .wrap, section { background: #
   animation: medallion-blue-ray 2.5s ease-in-out infinite;
 }
 
-/* Guardian: "I NEED ENERGY TO THRIVE" — coal-fire orange glow */
+/* Guardian narrative text: coal-fire orange glow */
 @keyframes prism-text-coal {
   0% { filter: drop-shadow(0 0 8px rgba(255,140,0,0.8)); text-shadow: 0 0 12px rgba(255,140,0,0.6); }
   100% { filter: drop-shadow(0 0 14px rgba(255,165,0,0.95)); text-shadow: 0 0 18px rgba(255,165,0,0.8); }
@@ -190,9 +223,9 @@ body, .gradio-container, .contain, #root, .block, .wrap, section { background: #
 .guardian-prism-text {
   color: #FF8C00;
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   animation: prism-text-coal 2s ease-in-out infinite alternate;
 }
 
@@ -201,23 +234,23 @@ body, .gradio-container, .contain, #root, .block, .wrap, section { background: #
   0%, 100% { transform: translate(-50%, -50%) scale(1); }
   50% { transform: translate(-50%, -50%) scale(1.15); }
 }
+.map-wrap-sovereign { position: relative; min-height: 440px; }
 .falcon-overlay-map {
   position: absolute;
   left: 78%;
-  top: 48%;
+  top: 46%;
   z-index: 10;
   pointer-events: none;
 }
 .falcon-overlay-map img {
-  height: 72px;
+  height: 80px;
   animation: falcon-shouting 1.2s ease-in-out infinite;
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
 }
-.map-wrap-sovereign { position: relative; min-height: 440px; }
 
-/* Fortress as background for Convergence Metrics */
+/* Fortress / Convergence Metrics wrap */
 .convergence-metrics-wrap {
   position: relative;
   border: 3px solid #D4AF37;
@@ -231,10 +264,77 @@ body, .gradio-container, .contain, #root, .block, .wrap, section { background: #
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  opacity: 0.15;
+  opacity: 0.16;
   pointer-events: none;
 }
 .convergence-metrics-wrap .fortress-content { position: relative; z-index: 1; padding: 24px; }
+
+/* Arbitrage ticker */
+@keyframes ticker-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes ticker-color {
+  0%, 100% { color: #ff4444; }
+  50% { color: #D4AF37; }
+}
+.arbitrage-ticker-shell {
+  overflow: hidden;
+  border-radius: 999px;
+  border: 1px solid rgba(212,175,55,0.6);
+  background: radial-gradient(circle at center, rgba(50,0,0,0.7), rgba(0,0,0,0.8));
+}
+.arbitrage-ticker-inner {
+  display: inline-block;
+  padding-left: 100%;
+  animation: ticker-scroll 25s linear infinite;
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  animation-timing-function: linear;
+  white-space: nowrap;
+}
+.arbitrage-ticker-inner span { animation: ticker-color 2.4s ease-in-out infinite; }
+
+/* 8R Logic Terminal */
+.logic-terminal {
+  background: radial-gradient(circle at top left, rgba(0,120,60,0.35), rgba(0,0,0,0.9));
+  border-radius: 12px;
+  border: 2px solid rgba(0,255,128,0.6);
+  padding: 14px 16px;
+  font-family: "SF Mono", Menlo, Monaco, Consolas, monospace;
+  color: #00ff9c;
+  font-size: 0.8rem;
+  position: relative;
+  overflow: hidden;
+}
+.logic-terminal::before {
+  content: 'GCSLC PROPRIETARY';
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  color: rgba(0,255,128,0.6);
+}
+@keyframes terminal-scan {
+  0% { opacity: 0; transform: translateY(8px); }
+  50% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0.4; transform: translateY(-6px); }
+}
+.logic-line {
+  animation: terminal-scan 3s ease-in-out infinite;
+}
+.logic-line:nth-child(2) { animation-delay: 0.7s; }
+.logic-line:nth-child(3) { animation-delay: 1.4s; }
+
+/* Data blocks label */
+.data-block-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(212,175,55,0.78);
+}
 
 /* Signature: gold-shimmer calligraphy */
 @keyframes gold-shimmer {
@@ -256,40 +356,40 @@ body, .gradio-container, .contain, #root, .block, .wrap, section { background: #
 
 
 def build_header_html():
-    """Official name + medallion top center with blue-ray aura."""
+    """Institutional identity, shimmering gold official name, medallion top center."""
     medallion_img = (
         f'<img src="data:image/png;base64,{B64_MEDALLION}" alt="GCSLC Medallion" />'
         if B64_MEDALLION
         else '<div style="width:120px;height:120px;border:3px solid #D4AF37;border-radius:50%;margin:0 auto;"></div>'
     )
     return f"""
-    <div style="text-align: center; padding: 16px 0 12px 0;">
-        <h1 style="color: #D4AF37; font-size: 1.25rem; font-weight: 700; letter-spacing: 0.1em; margin: 0 0 8px 0; line-height: 1.35;">
-            GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION
+    <div style="text-align: center; padding: 12px 0 8px 0;">
+        <h1 style="color: #D4AF37; font-size: 1.2rem; font-weight: 700; letter-spacing: 0.16em; margin: 0 0 6px 0; line-height: 1.4;">
+            GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION - GCSLC LTD/GTE
         </h1>
-        <p style="color: #b8c4ce; font-size: 0.95rem; margin: 4px 0; letter-spacing: 0.06em;">
-            GCSLC LTD/GTE
-        </p>
-        <div class="medallion-wrap" style="margin: 16px 0;">
+        <div class="medallion-wrap" style="margin: 12px 0 4px 0;">
             {medallion_img}
         </div>
+        <div class="data-block-label" style="margin-top: 6px;">GCSLC PROPRIETARY</div>
     </div>
     """
 
 
 def build_guardian_html():
-    """Guardian on right flank + 'I NEED ENERGY TO THRIVE' in coal-fire orange glow."""
-    if not B64_GUARDIAN:
-        return """
-        <div style="background: #001f3f; border: 3px solid #D4AF37; border-radius: 12px; padding: 20px; text-align: center;">
-            <div style="font-size: 48px;">🛡️</div>
-            <p class="guardian-prism-text">I NEED ENERGY TO THRIVE</p>
-        </div>
-        """
+    """High-fidelity humanoid guardian with narrative."""
+    img_html = (
+        f'<img src="data:image/png;base64,{B64_GUARDIAN_HF}" alt="Guardian" '
+        'style="max-width: 100%; max-height: 260px; display: block; margin: 0 auto;" />'
+        if B64_GUARDIAN_HF
+        else '<div style="font-size:48px; text-align:center;">🛡️</div>'
+    )
     return f"""
-    <div style="background: #001f3f; border: 3px solid #D4AF37; border-radius: 12px; padding: 16px; text-align: center;">
-        <img src="data:image/png;base64,{B64_GUARDIAN}" alt="Guardian" style="max-width: 100%; max-height: 180px; display: block; margin: 0 auto;" />
-        <p class="guardian-prism-text" style="margin: 12px 0 0 0;">I NEED ENERGY TO THRIVE</p>
+    <div style="background: #001021; border: 3px solid #D4AF37; border-radius: 12px; padding: 14px; text-align: center; position: relative;">
+        <div class="data-block-label" style="position:absolute; top:8px; left:14px;">GCSLC PROPRIETARY</div>
+        {img_html}
+        <p class="guardian-prism-text" style="margin: 12px 4px 4px 4px;">
+            I NEED ENERGY TO THRIVE; process the coal and its by-products — they're my power
+        </p>
     </div>
     """
 
@@ -297,37 +397,88 @@ def build_guardian_html():
 def build_falcon_html():
     if not B64_FALCON:
         return '<span style="font-size:48px;">🦅</span>'
-    return f'<img src="data:image/png;base64,{B64_FALCON}" alt="Falcon" style="max-height: 100%; background: transparent !important;" />'
+    return (
+        f'<img src="data:image/png;base64,{B64_FALCON}" alt="Falcon" '
+        'style="max-height: 100%; background: transparent !important;" />'
+    )
+
+
+def build_fortress_html():
+    """Immersion-cooled data fortress: Desert Dragon label, cyan cooling feel."""
+    fortress_bg = ""
+    img_html = ""
+    if B64_FORTRESS_HF:
+        img_html = (
+            f'<img src="data:image/png;base64,{B64_FORTRESS_HF}" '
+            'alt="DESERT DRAGON – TIER-III/IV HYPERSCALE" '
+            'style="width:100%; max-height:260px; object-fit:cover; border-radius:10px;" />'
+        )
+        fortress_bg = (
+            f'background-image: url("data:image/png;base64,{B64_FORTRESS_HF}");'
+        )
+    return f"""
+    <div class="convergence-metrics-wrap" style="margin-top: 18px;">
+        <div class="fortress-bg" style="{fortress_bg}"></div>
+        <div class="fortress-content">
+            <div class="data-block-label">GCSLC PROPRIETARY</div>
+            <h3 style="color:#7de3ff; margin: 8px 0 12px 0; letter-spacing:0.12em; font-size:0.95rem;">
+                DESERT DRAGON – TIER-III/IV HYPERSCALE (Riyadh/Dubai Prototype)
+            </h3>
+            {img_html}
+        </div>
+    </div>
+    """
 
 
 def build_convergence_metrics_html():
-    """Convergence Metrics: fortress background + clean table (Coal, Germanium, Silicon)."""
-    rows = get_monthly_projections()
+    """Convergence Metrics table for Coal, Germanium, Silicon."""
+    # Static illustrative values (USD M / month)
+    rows = [
+        {"commodity": "Coal", "monthly_proj_usd_m": 18.5},
+        {"commodity": "Germanium", "monthly_proj_usd_m": 22.0},
+        {"commodity": "Silicon", "monthly_proj_usd_m": 6.5},
+    ]
     total = sum(r["monthly_proj_usd_m"] for r in rows)
-    fortress_bg = ""
-    if B64_FORTRESS:
-        fortress_bg = f'<div class="fortress-bg" style="background-image: url(\'data:image/png;base64,{B64_FORTRESS}\');"></div>'
     table_rows = "".join(
-        f"<tr><td style='padding:10px 16px; color:#e8eef4;'>{r['commodity']}</td><td style='padding:10px 16px; color:#D4AF37; font-weight:600;'>${r['monthly_proj_usd_m']}M</td></tr>"
+        f"<tr><td style='padding:10px 16px; color:#e8eef4;'>{r['commodity']}</td>"
+        f"<td style='padding:10px 16px; color:#D4AF37; font-weight:600; text-align:right;'>"
+        f"${r['monthly_proj_usd_m']}M</td></tr>"
         for r in rows
     )
     return f"""
-    <div class="convergence-metrics-wrap">
-        {fortress_bg}
+    <div class="convergence-metrics-wrap" style="margin-top: 20px;">
+        <div class="fortress-bg"></div>
         <div class="fortress-content">
-            <h3 style="color: #D4AF37; margin: 0 0 16px 0; letter-spacing: 0.1em;">Convergence Metrics</h3>
-            <table style="width: 100%; border-collapse: collapse; color: #e8eef4;">
+            <div class="data-block-label">GCSLC PROPRIETARY</div>
+            <h3 style="color: #D4AF37; margin: 6px 0 14px 0; letter-spacing: 0.1em; font-size:0.95rem;">
+                CONVERGENCE METRICS — MONTHLY PROJECTIONS
+            </h3>
+            <table style="width: 100%; border-collapse: collapse; color: #e8eef4; font-size:0.9rem;">
                 <thead>
-                    <tr><th style="text-align:left; padding:10px 16px; color:#D4AF37;">Commodity</th><th style="text-align:right; padding:10px 16px; color:#D4AF37;">Total Monthly Projection</th></tr>
+                    <tr>
+                        <th style="text-align:left; padding:8px 16px; color:#D4AF37;">Commodity</th>
+                        <th style="text-align:right; padding:8px 16px; color:#D4AF37;">Total Monthly Projection</th>
+                    </tr>
                 </thead>
                 <tbody>
                     {table_rows}
-                    <tr><td style="padding:12px 16px; font-weight:700; color:#e8eef4;">Total</td><td style="padding:12px 16px; color:#D4AF37; font-weight:700;">${total:.1f}M</td></tr>
+                    <tr>
+                        <td style="padding:12px 16px; font-weight:700; color:#e8eef4;">Total</td>
+                        <td style="padding:12px 16px; color:#D4AF37; font-weight:700; text-align:right;">
+                            ${total:.1f}M
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
     </div>
     """
+
+
+def build_logic_terminal_html():
+    lines = _logic_terminal_lines()
+    inner = "".join(f"<div class='logic-line'>{line}</div>" for line in lines)
+    return f"<div class='logic-terminal'>{inner}</div>"
 
 
 with gr.Blocks(
@@ -340,39 +491,77 @@ with gr.Blocks(
     ),
     css=GATEWAY_CSS,
 ) as demo:
+    # Shield script: disable right-click and key combos (Cmd+Shift+4, Cmd+S)
     gr.HTML(
-        '<div style="position:fixed; bottom:10px; right:14px; font-size:0.7rem; color:rgba(212,175,55,0.35); letter-spacing:0.12em; z-index:9998; pointer-events:none;">GCSLC PROPRIETARY - SOVEREIGN INTEL</div>'
+        """
+        <script>
+        document.addEventListener('contextmenu', function(e) { e.preventDefault(); }, { capture: true });
+        document.addEventListener('keydown', function(e) {
+            const key = e.key ? e.key.toLowerCase() : '';
+            if ((e.metaKey && e.shiftKey && key === '4') || (e.metaKey && key === 's')) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        }, { capture: true });
+        </script>
+        """
     )
 
     gr.HTML(build_header_html())
 
+    # Arbitrage ticker above the map
+    gr.HTML(
+        """
+        <div class="arbitrage-ticker-shell" style="margin: 10px 0 16px 0; padding: 6px 0;">
+            <div class="arbitrage-ticker-inner">
+                <span>
+                NATIONAL ASSET RECOVERY DELAY COST: $1.87 BILLION/YEAR LOSS – RECOVERING VIA 8R STEALTH PARADIGM.
+                NATIONAL ASSET RECOVERY DELAY COST: $1.87 BILLION/YEAR LOSS – RECOVERING VIA 8R STEALTH PARADIGM.
+                </span>
+            </div>
+        </div>
+        """
+    )
+
     with gr.Row():
         with gr.Column(scale=3):
             gr.HTML(
-                "<p style='color:#D4AF37; margin:0 0 8px 0; font-weight:600; font-size:0.95rem;'>Sovereign Map — 13 Coal States (Strategic Reserve Nodes)</p>"
+                "<p style='color:#D4AF37; margin:0 0 8px 0; font-weight:600; "
+                "font-size:0.95rem;'>Sovereign Map — 13 Coal States "
+                "(Strategic Reserve Nodes)</p>"
             )
             gr.HTML('<div class="map-wrap-sovereign">')
             gr.Plot(create_sovereign_map(), label="")
             falcon_overlay = (
-                f'<div class="falcon-overlay-map" style="margin-top:-440px;height:0;overflow:visible;">{build_falcon_html()}</div></div>'
+                f'<div class="falcon-overlay-map" '
+                f'style="margin-top:-440px;height:0;overflow:visible;">'
+                f"{build_falcon_html()}</div></div>"
                 if B64_FALCON
-                else '<div class="falcon-overlay-map" style="margin-top:-440px;height:0;overflow:visible;"><span style="font-size:48px;">🦅</span></div></div>'
+                else '<div class="falcon-overlay-map" '
+                'style="margin-top:-440px;height:0;overflow:visible;">'
+                '<span style="font-size:48px;">🦅</span></div></div>'
             )
             gr.HTML(falcon_overlay)
 
         with gr.Column(scale=1):
             gr.HTML(build_guardian_html())
+            gr.HTML("<div style='height:10px;'></div>")
+            gr.HTML(build_logic_terminal_html())
 
+    gr.HTML(build_fortress_html())
     gr.HTML(build_convergence_metrics_html())
 
     _footer = (
-        '<div style="position: relative; min-height: 80px; padding: 20px 0 70px 0; border-top: 1px solid rgba(212,175,55,0.4); margin-top: 24px;">'
-        '<p class="signature-calligraphy">Dr. Sa\'ad Jaafaru, Chairman & Founder</p>'
-        '<p style="color: #b8c4ce; font-size: 0.85rem; margin: 4px 0 0 0; position: absolute; bottom: 10px; right: 24px;">GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION — GCSLC LTD/GTE</p>'
-        '</div>'
+        '<div style="position: relative; min-height: 80px; padding: 20px 0 70px 0; '
+        'border-top: 1px solid rgba(212,175,55,0.4); margin-top: 24px;">'
+        '<p class="signature-calligraphy">Dr. Sa’ad Jaafaru, Chairman &amp; Founder</p>'
+        '<p style="color: #b8c4ce; font-size: 0.85rem; margin: 4px 0 0 0; '
+        'position: absolute; bottom: 10px; right: 24px;">'
+        "GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION — GCSLC LTD/GTE"
+        "</p>"
+        "</div>"
     )
     gr.HTML(_footer)
 
-
 if __name__ == "__main__":
-    demo.launch()
+    demo.launch(share=True)
