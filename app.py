@@ -1,9 +1,30 @@
 """
 GCSLC Sovereign Command Center — VIDEO-CERTIFIED BASELINE (0:00–0:18)
-High-complexity dashboard: Dark Navy/Carbon, Gold-outlined data blocks,
-Map of Authority, 8R Guardian schematic, Desert Dragon wireframe.
-No GeoJSON: map uses go.Scattergeo with hard-coded 13 state coordinates.
+Phase 1 Asset Hardening: Sovereign Radar (map_sovereign + diamonds), Guardian (guardian_final + breathing pulse).
 """
+# Fix Gradio ImportError: huggingface_hub no longer exposes HfFolder
+try:
+    import huggingface_hub
+    if not hasattr(huggingface_hub, "HfFolder"):
+        class HfFolder:
+            @staticmethod
+            def get_token():
+                try:
+                    from huggingface_hub import get_token as _get
+                    return _get()
+                except Exception:
+                    return None
+            @staticmethod
+            def save_token(token):
+                try:
+                    from huggingface_hub import set_token
+                    set_token(token)
+                except Exception:
+                    pass
+        setattr(huggingface_hub, "HfFolder", HfFolder)
+except Exception:
+    pass
+
 import base64
 import html
 import os
@@ -14,6 +35,7 @@ import plotly.graph_objects as go
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 ASSETS = os.path.join(ROOT, "assets")
+CURSOR_ASSETS = os.path.join(os.path.expanduser("~"), ".cursor", "projects", "Users-user-Desktop-GCSLC-Sovereign-Gateway", "assets")
 
 # --- Copy of constants from video-certified baseline ---
 TITLE_FULL = "Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC - LTD/GTE)"
@@ -50,7 +72,7 @@ DETERMINANT_STRATEGIC = {
 
 
 def _b64(name):
-    for p in (ROOT, ASSETS):
+    for p in (ROOT, ASSETS, CURSOR_ASSETS):
         path = os.path.join(p, name)
         if os.path.isfile(path):
             with open(path, "rb") as f:
@@ -59,22 +81,62 @@ def _b64(name):
 
 
 B64_MEDALLION = _b64("medallion.png")
+# Phase 1: Sovereign Radar map image; Guardian humanoid image
+def _map_asset():
+    for name, mime in [("map_sovereign.jpg", "jpeg"), ("map_sovereign.png", "png"), ("Screenshot_20260311_005856_CapCut-d2f96cb5-38be-4e56-8295-2f997503d052.png", "png")]:
+        b = _b64(name)
+        if b:
+            return b, mime
+    return "", ""
+
+_B64_MAP, _MAP_MIME = _map_asset()
+B64_MAP_SOVEREIGN = _B64_MAP
+B64_GUARDIAN_HF = _b64("guardian_final.png") or _b64("Screenshot_20260311_181838_Gallery-ca931142-993a-40d4-a43b-a4c28e3e56e3.png") or _b64("guardian.png")
 
 
 def _medallion_svg():
     return """<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="medG" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#5c4a00"/><stop offset="50%" style="stop-color:#D4AF37"/><stop offset="100%" style="stop-color:#FFD700"/></linearGradient></defs><circle cx="24" cy="24" r="22" fill="url(#medG)" stroke="#B8860B" stroke-width="2"/><text x="24" y="28" text-anchor="middle" fill="#0a1628" font-size="10" font-weight="700">GCSLC</text></svg>"""
 
 
+# Nigeria bounds for overlay: lat 4–14, lon 2.5–15 (same as Plotly)
+LAT_LO, LAT_HI = 4.0, 14.0
+LON_LO, LON_HI = 2.5, 15.0
+
+def _latlon_to_pct(lat: float, lon: float) -> tuple:
+    """Map (lat, lon) to (left%, top%) for overlay on map image. North = low top."""
+    left = (lon - LON_LO) / (LON_HI - LON_LO) * 100
+    top = (LAT_HI - lat) / (LAT_HI - LAT_LO) * 100
+    return (max(0, min(100, left)), max(0, min(100, top)))
+
+
+def sovereign_radar_html() -> str:
+    """Sovereign Radar: map_sovereign image with Golden Diamond markers. Hover: glow + Strategic Node text."""
+    if not B64_MAP_SOVEREIGN:
+        return ""
+    markers_html = ""
+    for name, lat, lon in COORDS:
+        left, top = _latlon_to_pct(lat, lon)
+        title = f"Strategic Node {name} | Energy Potential: 4.2M GPU-Hours/Year."
+        markers_html += f'<div class="sovereign-diamond" style="left:{left}%;top:{top}%;" title="{html.escape(title)}" data-state="{html.escape(name)}"><span class="diamond-inner"></span><span class="diamond-tooltip">{html.escape(title)}</span></div>'
+    return f"""
+    <div class="sovereign-radar-wrap">
+      <div class="sovereign-radar-bg" style="background-image:url('data:image/{_MAP_MIME};base64,{B64_MAP_SOVEREIGN}');"></div>
+      <div class="sovereign-radar-markers">{markers_html}</div>
+    </div>
+    """
+
+
 def build_map(highlight_state: Optional[str] = None):
+    """Scatter-plot fallback: preserves visual authority (dark navy/teal) when map image not used."""
     lats = [c[1] for c in COORDS]
     lons = [c[2] for c in COORDS]
     names = [c[0] for c in COORDS]
-    hover = "Strategic Reserve Node | Potential: 4.2 Million GPU-Hours/Year."
+    hover_line = "Strategic Node {} | Energy Potential: 4.2M GPU-Hours/Year."
     fig = go.Figure()
     fig.add_trace(
         go.Scattergeo(
             lon=lons, lat=lats,
-            text=[f"{n}<br>{hover}" for n in names],
+            text=[hover_line.format(n) for n in names],
             hoverinfo="text", mode="markers",
             marker=dict(size=18, symbol="diamond", color="#D4AF37", line=dict(width=2, color="#FFD700")),
             name="Reserve",
@@ -173,6 +235,16 @@ def humanoid_svg():
 
 
 def humanoid_block() -> str:
+    """Phase 1: Guardian humanoid (guardian_final.png). No boxes/borders. Breathing pulse on coal glow. Institutional gold narrative."""
+    if B64_GUARDIAN_HF:
+        return f"""
+        <div class="guardian-humanoid-wrap">
+          <div class="guardian-humanoid-img guardian-breathing">
+            <img src="data:image/png;base64,{B64_GUARDIAN_HF}" alt="8R Guardian" />
+          </div>
+          <p class="guardian-narrative">I NEED ENERGY TO THRIVE</p>
+        </div>
+        """
     orbs = "".join(
         f'<span class="r-orb" data-strategic="{html.escape(DETERMINANT_STRATEGIC.get(d, ""))}">{d}</span>'
         for d in DETERMINANTS_R
@@ -329,6 +401,27 @@ CSS = """
 /* Map of Authority */
 .map-wrap { padding: 20px; text-align: center; }
 .map-sub { color: #b8c4ce; font-size: 0.9rem; margin: 8px 0 12px 0; }
+
+/* Sovereign Radar: map image + Golden Diamond markers, hover glow + tooltip */
+.sovereign-radar-wrap { position: relative; width: 100%; max-width: 560px; margin: 0 auto; min-height: 380px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,212,255,0.35); }
+.sovereign-radar-bg { position: absolute; inset: 0; background-size: contain; background-position: center; background-repeat: no-repeat; background-color: #001f3f; }
+.sovereign-radar-markers { position: absolute; inset: 0; pointer-events: none; }
+.sovereign-diamond { position: absolute; width: 24px; height: 24px; margin: -12px 0 0 -12px; pointer-events: auto; cursor: pointer; transform: translate(-50%, -50%); transition: filter 0.25s, transform 0.2s; }
+.sovereign-diamond:hover { filter: drop-shadow(0 0 12px #FFD700) drop-shadow(0 0 20px rgba(255,215,0,0.8)); transform: translate(-50%, -50%) scale(1.2); z-index: 5; }
+.diamond-inner { display: block; width: 100%; height: 100%; background: #D4AF37; border: 2px solid #FFD700; transform: rotate(45deg); box-shadow: 0 0 8px rgba(212,175,55,0.6); }
+.sovereign-diamond .diamond-tooltip { position: absolute; left: 50%; bottom: 100%; transform: translate(-50%, -8px); white-space: nowrap; background: #001f3f; color: #D4AF37; border: 1px solid #D4AF37; padding: 6px 10px; font-size: 0.75rem; border-radius: 6px; opacity: 0; pointer-events: none; transition: opacity 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.6); }
+.sovereign-diamond:hover .diamond-tooltip { opacity: 1; white-space: normal; max-width: 280px; }
+/* When Sovereign Radar image is shown, hide the Plotly fallback */
+body:has(.sovereign-radar-wrap) #sovereign-map-plot { display: none !important; }
+
+/* Guardian Humanoid: no box/border; breathing pulse (coal glow); institutional gold narrative */
+.guardian-humanoid-wrap { text-align: center; padding: 0; margin: 0; background: transparent; border: none; box-shadow: none; }
+.guardian-humanoid-img { margin: 0 auto; max-width: 100%; line-height: 0; }
+.guardian-humanoid-img img { max-width: 100%; height: auto; display: block; margin: 0 auto; }
+@keyframes guardian-breathing { 0%, 100% { filter: brightness(1) drop-shadow(0 0 8px rgba(255,140,0,0.4)); } 50% { filter: brightness(1.08) drop-shadow(0 0 18px rgba(255,165,0,0.7)); } }
+.guardian-breathing { animation: guardian-breathing 3s ease-in-out infinite; }
+.guardian-narrative { color: #D4AF37; font-size: 1rem; font-weight: 700; letter-spacing: 0.08em; margin: 12px 0 0 0; text-shadow: 0 0 12px rgba(212,175,55,0.6); }
+
 .diamond-popup { padding: 18px; margin: 12px 0; }
 .diamond-opportunity-box .opportunity-card { background: #0d1117; border: 2px solid #00d4ff; border-radius: 10px; padding: 14px; margin: 10px 0; }
 .byproduct-title { color: #D4AF37; font-weight: 600; }
@@ -435,14 +528,12 @@ with demo:
     # 3. Convergence Metrics (gold-outlined block)
     gr.HTML(convergence_metrics_html())
 
-    # 4. Map of Authority — hard-coded Scattergeo, no GeoJSON
-    map_plot = gr.Plot(value=build_map(), label="Map of Authority — Federal Republic of Nigeria (13 Coal States)")
+    # 4. Map of Authority — Sovereign Radar (image + diamonds) or Scattergeo fallback
+    gr.HTML(sovereign_radar_html())  # when map asset exists: image + Golden Diamond overlays; else empty
+    map_plot = gr.Plot(value=build_map(), label="Map of Authority — Federal Republic of Nigeria (13 Coal States)", elem_id="sovereign-map-plot")
     with gr.Row():
         state_btns = [gr.Button(s, elem_classes=["state-btn"], variant="secondary") for s in COAL_STATES]
     popup_out = gr.HTML(value=diamond_popup("Kogi"), label="Diamond Opportunity")
-
-    def on_state_click(state):
-        return diamond_popup(state), build_map(state)
 
     for i, state in enumerate(COAL_STATES):
         state_btns[i].click(
