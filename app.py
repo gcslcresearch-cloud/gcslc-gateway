@@ -116,7 +116,7 @@ def sovereign_radar_html() -> str:
     markers_html = ""
     for name, lat, lon in COORDS:
         left, top = _latlon_to_pct(lat, lon)
-        title = f"Strategic Node {name} | Energy Potential: 4.2M GPU-Hours/Year."
+        title = "Strategic Energy Potential: Equivalent to 4.2 Million GPU-Hours/Year (NVIDIA H100 Clusters)."
         markers_html += f'<div class="sovereign-diamond" style="left:{left}%;top:{top}%;" title="{html.escape(title)}" data-state="{html.escape(name)}"><span class="diamond-inner"></span><span class="diamond-tooltip">{html.escape(title)}</span></div>'
     return f"""
     <div class="sovereign-radar-wrap">
@@ -131,7 +131,7 @@ def build_map(highlight_state: Optional[str] = None):
     lats = [c[1] for c in COORDS]
     lons = [c[2] for c in COORDS]
     names = [c[0] for c in COORDS]
-    hover_line = "Strategic Node {} | Energy Potential: 4.2M GPU-Hours/Year."
+    hover_line = "Strategic Energy Potential: Equivalent to 4.2 Million GPU-Hours/Year (NVIDIA H100 Clusters)."
     fig = go.Figure()
     fig.add_trace(
         go.Scattergeo(
@@ -298,12 +298,13 @@ def data_fortress_html() -> str:
 
 
 def arbitrage_pulse_html() -> str:
-    return """
+    ticker_line = "NATIONAL ASSET RECOVERY DELAY COST: $1.87 BILLION/YEAR LOSS — RECOVERING VIA 8R STEALTH PARADIGM."
+    return f"""
     <div class="arbitrage-pulse-wrap">
       <div class="arbitrage-pulse-inner">
-        <span class="arbitrage-pulse-text">Germanium YTD +47.88% — 2026 Diamond Opportunity Real-Time | Uncorrupted.</span>
+        <span class="arbitrage-pulse-text">{ticker_line}</span>
         <span class="arbitrage-pulse-sep">&#9670;</span>
-        <span class="arbitrage-pulse-text">NATIONAL ASSET RECOVERY DELAY COST: $1.87 BILLION/YEAR LOSS — RECOVERING VIA 8R STEALTH PARADIGM.</span>
+        <span class="arbitrage-pulse-text">{ticker_line}</span>
         <span class="arbitrage-pulse-sep">&#9670;</span>
       </div>
     </div>
@@ -518,6 +519,7 @@ with demo:
         + '<div class="header-area">'
         + "<h1 class='title-shimmer sovereign-title' style='text-align: center; font-size: 1.1rem; margin: 0 0 6px 0;'>Sovereign Command</h1>"
         + f"<p class='title-full' style='text-align: center; font-size: 0.95rem; margin: 0 0 8px 0; color: #D4AF37;'>{TITLE_FULL}</p>"
+        + "<p class='strategic-header' style='text-align: center; font-size: 0.9rem; margin: 0 0 12px 0; color: #D4AF37; font-weight: 600;'>NVIDIA &amp; Microsoft: The 8R Stealth Paradigm is the bridge between Nigerian Energy Sovereignty and Global AI Dominance.</p>"
         + "</div>"
         + f"<p class='hook' style='text-align: center; font-size: 0.92rem; max-width: 700px; margin: 0 auto 20px auto; color: #e8eef4;'>{HOOK_TEXT}</p>"
     )
@@ -560,4 +562,7 @@ with demo:
 
 
 if __name__ == "__main__":
-    demo.launch(server_name="0.0.0.0", server_port=7860, share=True)
+    try:
+        demo.launch(server_name="0.0.0.0", server_port=7865, share=True)
+    except OSError:
+        demo.launch(server_name="0.0.0.0", server_port=0, share=True)
