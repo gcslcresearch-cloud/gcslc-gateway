@@ -1,6 +1,7 @@
 """
-GCSLC Sovereign Command Center — THE GENERAL'S FINAL RESTORATION DIRECTIVE
-War Room Dashboard: Deep Navy-Charcoal (#050a15), 2-col 60/40, 3D Sovereign Radar, Guardian + Fortress.
+GCSLC Sovereign Command Center — SOVEREIGN COMMAND CENTER BASELINE
+Restored to match institutional density and layout of the original GCSLC dashboard video.
+Layout: Header → Real-Time Market Values (4 boxes) → Map of Authority (map + 13 diamond buttons) → Data Fortress (3x3 grid) → National Impact → 8R Guardian → Footer.
 """
 # Fix Gradio ImportError: huggingface_hub no longer exposes HfFolder
 try:
@@ -28,15 +29,9 @@ except Exception:
 import base64
 import html
 import os
-from typing import Optional, Dict, Tuple
+from typing import Optional
 
 import gradio as gr
-
-try:
-    import plotly.graph_objects as go
-    _HAS_PLOTLY = True
-except Exception:
-    _HAS_PLOTLY = False
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 ASSETS = os.path.join(ROOT, "assets")
@@ -53,13 +48,9 @@ HOOK_TEXT = (
 
 COAL_STATES = ["Enugu", "Kogi", "Benue", "Nasarawa", "Gombe", "Delta", "Edo", "Anambra", "Plateau", "Oyo", "Ekiti", "Kwara", "Imo"]
 STATE_RESERVES_MT = {"Enugu": 168.0, "Kogi": 223.0, "Benue": 85.0, "Nasarawa": 22.0, "Gombe": 62.0, "Delta": 45.0, "Edo": 38.0, "Anambra": 27.3, "Plateau": 22.0, "Oyo": 20.0, "Ekiti": 15.0, "Kwara": 18.0, "Imo": 18.0}
-# Coal state (lon, lat) for 3D Sovereign Radar pillars
-STATE_COORDS: Dict[str, Tuple[float, float]] = {
-    "Enugu": (7.5, 6.4), "Kogi": (6.7, 7.8), "Benue": (8.2, 7.2), "Nasarawa": (8.5, 8.5),
-    "Gombe": (11.2, 10.3), "Delta": (6.2, 5.9), "Edo": (6.3, 6.5), "Anambra": (7.0, 6.2),
-    "Plateau": (8.9, 9.9), "Oyo": (3.9, 7.8), "Ekiti": (5.2, 7.6), "Kwara": (4.5, 8.5), "Imo": (7.0, 5.5),
-}
-REVENUE_POTENTIAL_B = 125.8  # $125.8B Revenue Potential — pillar height scale
+REVENUE_POTENTIAL_B = 125.8
+AI_PROCESSING_POWER = "4.2M GPU-Hours"
+JOBS_CREATED = "1,203 MW Corridor"
 
 BY_PRODUCT_GERMANIUM_USD = 8597
 NODE_TOOLTIP = "Potential: 4.2M GPU-Hours (NVIDIA H100 Equivalent)."
@@ -97,90 +88,28 @@ def _medallion_svg():
     return """<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="medG" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#5c4a00"/><stop offset="50%" style="stop-color:#D4AF37"/><stop offset="100%" style="stop-color:#FFD700"/></linearGradient></defs><circle cx="24" cy="24" r="22" fill="url(#medG)" stroke="#B8860B" stroke-width="2"/><text x="24" y="28" text-anchor="middle" fill="#0a1628" font-size="10" font-weight="700">GCSLC</text></svg>"""
 
 
-def build_3d_sovereign_radar():
-    """3D Plotly Surface Map of Nigeria with 13 gold-illuminated pillars; height scales with Revenue Potential ($125.8B)."""
-    if not _HAS_PLOTLY:
-        return None
-    import numpy as np
-    # Nigeria bounds (lon, lat) approx
-    lon_min, lon_max = 3.0, 15.0
-    lat_min, lat_max = 4.0, 14.0
-    n = 24
-    lon_ = np.linspace(lon_min, lon_max, n)
-    lat_ = np.linspace(lat_min, lat_max, n)
-    lon_grid, lat_grid = np.meshgrid(lon_, lat_)
-    # Simple elevated base (surface) — low relief
-    z_base = 0.5 * np.exp(-((lon_grid - 9) ** 2 + (lat_grid - 9) ** 2) / 40)
-    fig = go.Figure(data=[go.Surface(
-        x=lon_grid, y=lat_grid, z=z_base,
-        colorscale=[[0, "rgb(5,10,21)"], [0.5, "rgb(10,20,40)"], [1, "rgb(15,30,55)"]],
-        showscale=False,
-        opacity=0.85,
-    )])
-    total_reserve = sum(STATE_RESERVES_MT.get(s, 0) for s in COAL_STATES) or 1
-    max_h = 18
-    gold = "rgb(212, 175, 55)"
-    for state in COAL_STATES:
-        if state not in STATE_COORDS:
-            continue
-        lon, lat = STATE_COORDS[state]
-        share = STATE_RESERVES_MT.get(state, 0) / total_reserve
-        h = max(1.5, share * max_h * (REVENUE_POTENTIAL_B / 100))
-        # Pillar: vertical line from base to height (gold-illuminated)
-        fig.add_trace(go.Scatter3d(
-            x=[lon, lon], y=[lat, lat], z=[0, h],
-            mode="lines",
-            line=dict(color=gold, width=14),
-            name=state,
-            hovertext=f"{state} — ${REVENUE_POTENTIAL_B * share:.1f}B",
-        ))
-        fig.add_trace(go.Scatter3d(
-            x=[lon], y=[lat], z=[h],
-            mode="markers",
-            marker=dict(size=10, color=gold, symbol="diamond", line=dict(width=2, color="rgb(255,215,0)")),
-            name=state,
-            hovertext=f"{state} — ${REVENUE_POTENTIAL_B * share:.1f}B",
-        ))
-    fig.update_layout(
-        margin=dict(l=0, r=0, t=28, b=0),
-        paper_bgcolor="rgba(5,10,21,0.97)",
-        scene=dict(
-            xaxis=dict(backgroundcolor="rgba(5,10,21,1)", gridcolor="rgba(212,175,55,0.2)", title=""),
-            yaxis=dict(backgroundcolor="rgba(5,10,21,1)", gridcolor="rgba(212,175,55,0.2)", title=""),
-            zaxis=dict(backgroundcolor="rgba(5,10,21,1)", gridcolor="rgba(212,175,55,0.2)", title=""),
-            camera=dict(eye=dict(x=1.4, y=1.4, z=1.0)),
-        ),
-        height=420,
-        showlegend=False,
-    )
-    return fig
-
-
-def map_and_falcon_html() -> str:
-    """Left column: 3D Sovereign Radar (embedded) + Falcon Tactical Glide overlay in one wrapper."""
-    fig = build_3d_sovereign_radar()
-    falcon = falcon_overlay_html()
-    if fig is not None:
-        try:
-            plotly_html = fig.to_html(full_html=False, include_plotlyjs="cdn", config={"displayModeBar": True, "responsive": True})
-        except Exception:
-            plotly_html = "<p class='shimmer'>3D Sovereign Radar — Nigeria</p>"
-    else:
-        plotly_html = "<div class='gold-outline-block' style='min-height:320px; display:flex; align-items:center; justify-content:center;'><p class='shimmer'>3D Sovereign Radar — Nigeria (Plotly required)</p></div>"
+def map_of_authority_html() -> str:
+    """Map of Authority: clean dark navy center map with falcon_final.png tactical dive overlay."""
+    falcon = ""
+    if B64_FALCON:
+        falcon = f"""
+    <div class="falcon-tactical-overlay falcon-glide" aria-hidden="true">
+      <img src="data:image/png;base64,{B64_FALCON}" alt="Falcon" />
+    </div>"""
     return f"""
-    <div class="map-metrics-wrap" style="position: relative; min-height: 420px;">
-      <div class="plotly-embed-wrap">{plotly_html}</div>
+    <div class="map-of-authority-wrap">
+      <div class="map-of-authority-center"></div>
       {falcon}
     </div>
     """
 
 
 def falcon_overlay_html() -> str:
-    """Kinetic Falcon: Tactical Glide toward 3D pillars on hover/click."""
+    """Falcon tactical dive animation over the map."""
     if not B64_FALCON:
         return ""
     return f"""
-    <div class="falcon-tactical-overlay falcon-glide" id="falcon-tactical" aria-hidden="true">
+    <div class="falcon-tactical-overlay falcon-glide" aria-hidden="true">
       <img src="data:image/png;base64,{B64_FALCON}" alt="Falcon" />
     </div>
     """
@@ -206,24 +135,16 @@ def diamond_popup(state: str) -> str:
 
 
 def real_time_market_values_html() -> str:
-    return f"""
-    <div class="market-values heartbeat-wrap gold-outline-block">
-      <h3 class="shimmer market-title">Real-Time Market Values — 5-Minute Heartbeat</h3>
-      <p class="market-sub">Germanium, Silicon, Benzene, Rare Earths. March 2026. Glittering Pulse = Hot.</p>
-      <div class="market-grid">
-        <div class="mv-card mv-hot"><p class="mv-label">Germanium</p><p class="mv-price">$8,597/kg</p><p class="mv-caption">Optics, chips, sensors</p></div>
-        <div class="mv-card mv-hot"><p class="mv-label">Silicon</p><p class="mv-price">$6,500/MT</p><p class="mv-caption">Solar, wafers, compute</p></div>
-        <div class="mv-card"><p class="mv-label">Benzene</p><p class="mv-price">$950/MT</p><p class="mv-caption">Petrochem feedstock</p></div>
-        <div class="mv-card"><p class="mv-label">Rare Earths</p><p class="mv-price">$120,000/kg</p><p class="mv-caption">Magnets, EV, defense</p></div>
-      </div>
-      <div class="opportunity-cost-box">
-        <div class="opportunity-cost-inner">
-          <span class="falcon-flap">&#9726;</span>
-          <p class="opportunity-cost-label">Cumulative National Opportunity Cost</p>
-          <p class="opportunity-cost-monthly">Monthly unrealized: $0.16 B</p>
-          <p class="opportunity-cost-annual">Annual unrealized: $1.87 B</p>
-          <p class="sovereign-warning">Sovereign Warning: Nigeria is losing $1.87 Billion annually in unrealized chemical wealth. ACT NOW.</p>
-        </div>
+    """Real-Time Market Values — 4 distinct gold-outlined glass boxes."""
+    return """
+    <div class="market-values gold-glass-block">
+      <h3 class="shimmer market-title">Real-Time Market Values</h3>
+      <p class="market-sub">Germanium, Silicon, Benzene, Rare Earths. March 2026.</p>
+      <div class="market-grid four-boxes">
+        <div class="mv-card gold-glass"><p class="mv-label">Germanium</p><p class="mv-price">$8,597/kg</p><p class="mv-caption">Optics, chips, sensors</p></div>
+        <div class="mv-card gold-glass"><p class="mv-label">Silicon</p><p class="mv-price">$6,500/MT</p><p class="mv-caption">Solar, wafers, compute</p></div>
+        <div class="mv-card gold-glass"><p class="mv-label">Benzene</p><p class="mv-price">$950/MT</p><p class="mv-caption">Petrochem feedstock</p></div>
+        <div class="mv-card gold-glass"><p class="mv-label">Rare Earths</p><p class="mv-price">$120,000/kg</p><p class="mv-caption">Magnets, EV, defense</p></div>
       </div>
     </div>
     """
@@ -264,11 +185,12 @@ def humanoid_svg():
 
 
 def humanoid_block() -> str:
-    """The Guardian: guardian_final.png, gold-rimmed Glassmorphism border, Pulsing Blue-Ray Core."""
+    """8R Humanoid Guardian: guardian_final.png, pulsing core, I NEED ENERGY TO THRIVE narrative."""
     if B64_GUARDIAN_HF:
         return f"""
-        <div class="guardian-glass-wrap">
-          <div class="guardian-glass-border guardian-blue-ray">
+        <div class="guardian-baseline gold-glass-block">
+          <h3 class="shimmer">8R Humanoid Guardian</h3>
+          <div class="guardian-pulse-wrap">
             <div class="guardian-humanoid-img guardian-breathing">
               <img src="data:image/png;base64,{B64_GUARDIAN_HF}" alt="8R Guardian" />
             </div>
@@ -305,21 +227,26 @@ def humanoid_block() -> str:
     """
 
 
-def fortress_module_html() -> str:
-    """The Fortress (Desert Dragon) — bottom-left module. fortress_final.png. Label: GCSLC Cyan Liquid Cooling Active."""
-    if not B64_FORTRESS:
-        return """
-        <div class="fortress-module gold-outline-block">
-          <h3 class="shimmer">Desert Dragon — Tier-III/IV Hyperscale</h3>
-          <p class="fortress-label">GCSLC Cyan Liquid Cooling Active</p>
-        </div>
-        """
+def data_fortress_3x3_html() -> str:
+    """The GCSLC Data Fortress — 3x3 grid: AI Processing Power, Jobs Created, Revenue Potential. fortress_final.png."""
+    img_block = ""
+    if B64_FORTRESS:
+        img_block = f'<div class="fortress-img-wrap"><img src="data:image/png;base64,{B64_FORTRESS}" alt="GCSLC Data Fortress" /></div>'
     return f"""
-    <div class="fortress-module gold-outline-block">
-      <div class="fortress-img-wrap">
-        <img src="data:image/png;base64,{B64_FORTRESS}" alt="Desert Dragon Fortress" />
+    <div class="data-fortress-section gold-glass-block">
+      <h3 class="shimmer">The GCSLC Data Fortress</h3>
+      {img_block}
+      <div class="fortress-grid-3x3">
+        <div class="fortress-cell gold-glass"><p class="fortress-cell-label">AI Processing Power</p><p class="fortress-cell-value">{AI_PROCESSING_POWER}</p></div>
+        <div class="fortress-cell gold-glass"><p class="fortress-cell-label">Jobs Created</p><p class="fortress-cell-value">{JOBS_CREATED}</p></div>
+        <div class="fortress-cell gold-glass"><p class="fortress-cell-label">Revenue Potential</p><p class="fortress-cell-value">${REVENUE_POTENTIAL_B}B</p></div>
+        <div class="fortress-cell gold-glass"><p class="fortress-cell-label">Coal Reserves</p><p class="fortress-cell-value">639.3 M MT</p></div>
+        <div class="fortress-cell gold-glass"><p class="fortress-cell-label">Power Corridor</p><p class="fortress-cell-value">1,203 MW</p></div>
+        <div class="fortress-cell gold-glass"><p class="fortress-cell-label">8R Paradigm</p><p class="fortress-cell-value">Active</p></div>
+        <div class="fortress-cell gold-glass"><p class="fortress-cell-label">Germanium</p><p class="fortress-cell-value">${BY_PRODUCT_GERMANIUM_USD:,}/kg</p></div>
+        <div class="fortress-cell gold-glass"><p class="fortress-cell-label">Liquid Cooling</p><p class="fortress-cell-value">Cyan Active</p></div>
+        <div class="fortress-cell gold-glass"><p class="fortress-cell-label">Sovereign Lock</p><p class="fortress-cell-value">95%</p></div>
       </div>
-      <p class="fortress-label">GCSLC Cyan Liquid Cooling Active</p>
     </div>
     """
 
@@ -353,43 +280,38 @@ def footer_html() -> str:
     """
 
 
-# ---- CSS: Dark Navy/Carbon, gold-outline blocks, watermark, Sovereign Command header ----
+# ---- CSS: BASELINE — Dark Navy-to-Charcoal #050a15, ghost-white watermark, 1px gold glassmorphism ----
 CSS = """
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
 .gradio-container, body, .main, .container, #root, .block, section {
-  background: #050a15 !important;
+  background: linear-gradient(180deg, #050a15 0%, #0a1225 50%, #050a15 100%) !important;
   color: #e0e0e0 !important;
   font-family: Orbitron, sans-serif !important;
 }
 .gradio-container {
-  border: 2px solid #D4AF37;
-  box-shadow: 0 0 20px rgba(212, 175, 55, 0.25), inset 0 0 60px rgba(5, 10, 21, 0.5);
+  border: 1px solid #D4AF37;
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
 }
 .gradio-container .block { background: transparent !important; border: none !important; }
 
-/* GCSLC PROPRIETARY — subtle diagonal watermark */
+/* GCSLC PROPRIETARY — large diagonal ghost-white watermark */
 .gradio-container::before {
   content: "GCSLC PROPRIETARY";
   position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-22deg);
-  font-size: clamp(1.8rem, 4vw, 3.2rem); font-weight: 700; letter-spacing: 0.2em;
-  color: rgba(212, 175, 55, 0.06); z-index: 9998; pointer-events: none;
+  font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 700; letter-spacing: 0.25em;
+  color: rgba(255, 255, 255, 0.08); z-index: 9998; pointer-events: none;
 }
 
-/* War Room 2-col: Left 60% Map/Metrics, Right 40% Guardian/Strategic Brief */
-.war-room-row { width: 100%; display: flex; gap: 16px; margin: 12px 0; }
-.war-room-left { flex: 0 0 60%; min-width: 0; position: relative; }
-.war-room-right { flex: 0 0 40%; min-width: 0; }
-@media (max-width: 900px) { .war-room-row { flex-direction: column; } .war-room-left, .war-room-right { flex: 1 1 auto; } }
-
-/* Gold-outlined data blocks */
-.gold-outline-block {
-  border: 2px solid #D4AF37 !important;
+/* Gold Glassmorphism: all containers 1px solid #D4AF37 */
+.gold-glass-block, .gold-outline-block {
+  border: 1px solid #D4AF37 !important;
   border-radius: 12px;
-  background: linear-gradient(135deg, #0a1225 0%, #050a15 100%);
+  background: linear-gradient(135deg, rgba(10, 22, 45, 0.7) 0%, rgba(5, 10, 21, 0.9) 100%);
   padding: 16px;
   margin: 14px 0;
-  box-shadow: 0 0 14px rgba(212, 175, 55, 0.25);
+  backdrop-filter: blur(8px);
 }
+.gold-glass { border: 1px solid #D4AF37 !important; border-radius: 10px; background: rgba(5, 10, 21, 0.6); }
 
 /* Medallion + Sovereign Command header */
 /* Gold Medallion top-center + Institutional title Bold Shimmering Gold */
@@ -410,22 +332,25 @@ CSS = """
 .header-area { padding: 8px 0 12px 0; text-align: center; }
 .gold-border { border: 2px solid #D4AF37; border-radius: 12px; background: linear-gradient(135deg, #0a1225 0%, #050a15 100%); }
 
-/* Real-Time Market Values */
-.market-values, .heartbeat-wrap { margin: 18px 0; text-align: center; }
+/* Real-Time Market Values — 4 distinct gold-outlined glass boxes */
+.market-values { margin: 18px 0; text-align: center; }
 .market-title { font-size: 0.95rem; margin-bottom: 6px; }
 .market-sub { font-size: 0.78rem; color: #b8c4ce; margin: 0 0 10px 0; }
-.market-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; max-width: 640px; margin: 0 auto; }
-.mv-card { border: 1px solid rgba(0, 212, 255, 0.5); border-radius: 10px; padding: 10px 12px; background: radial-gradient(circle at top, rgba(0,212,255,0.12) 0%, #02030a 55%, #010107 100%); box-shadow: 0 0 10px rgba(0, 212, 255, 0.25); }
-.mv-card.mv-hot { animation: mv-glitter-pulse 3.2s ease-in-out infinite; }
-.mv-card .mv-label { font-size: 0.8rem; color: #D4AF37; margin: 0 0 4px 0; }
+.market-grid.four-boxes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; max-width: 720px; margin: 0 auto; }
+@media (max-width: 640px) { .market-grid.four-boxes { grid-template-columns: repeat(2, 1fr); } }
+.mv-card.gold-glass { border: 1px solid #D4AF37 !important; border-radius: 10px; padding: 14px 12px; background: rgba(5, 10, 21, 0.7); }
+.mv-card .mv-label { font-size: 0.8rem; color: #D4AF37; margin: 0 0 4px 0; font-weight: 600; }
 .mv-card .mv-price { font-size: 0.95rem; font-weight: 700; color: #00d4ff; margin: 0 0 4px 0; }
 .mv-card .mv-caption { font-size: 0.72rem; color: #b8c4ce; margin: 0; }
-@keyframes mv-glitter-pulse { 0%, 100% { box-shadow: 0 0 6px rgba(0,212,255,0.35); } 50% { box-shadow: 0 0 16px rgba(0,212,255,0.85); } }
-.opportunity-cost-box { margin-top: 16px; padding: 18px; border-radius: 12px; border: 2px solid rgba(212,175,55,0.8); background: linear-gradient(135deg, rgba(0,26,53,0.95) 0%, rgba(0,11,30,0.98) 100%); text-align: center; }
-.opportunity-cost-label { font-size: 0.9rem; color: #D4AF37; margin: 0 0 8px 0; font-weight: 600; }
-.opportunity-cost-monthly, .opportunity-cost-annual { font-size: 1rem; color: #00d4ff; margin: 4px 0; }
-.falcon-flap { display: inline-block; font-size: 2rem; margin: 8px 0; }
-.sovereign-warning { font-size: 0.88rem; font-weight: 700; margin: 12px 0 0 0; color: rgba(255,80,80,1); }
+
+/* Map of Authority — clean dark navy center map + falcon overlay */
+.map-section-title { text-align: center; margin: 16px 0 8px 0; }
+.map-of-authority-wrap { position: relative; min-height: 320px; margin: 12px 0; border: 1px solid #D4AF37; border-radius: 12px; overflow: hidden; }
+.map-of-authority-center { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, #0a1628 0%, #050a15 100%); }
+.falcon-tactical-overlay { position: absolute !important; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: 10; display: flex; align-items: center; justify-content: center; }
+.falcon-tactical-overlay img { width: 52px; height: 52px; object-fit: contain; }
+.falcon-glide img { animation: falcon-tactical-glide 3.5s ease-in-out infinite; }
+@keyframes falcon-tactical-glide { 0% { transform: translate(-80%, -60%) scale(1); opacity: 0.85; } 35% { transform: translate(0, 0) scale(1.1); opacity: 1; } 70% { transform: translate(40%, 30%) scale(1); opacity: 0.9; } 100% { transform: translate(-80%, -60%) scale(1); opacity: 0.85; } }
 
 /* Convergence Metrics */
 .convergence-metrics-wrap { margin: 20px 0; }
@@ -438,7 +363,7 @@ CSS = """
 /* D2 Sovereign Radar Grid: 4x4 dark-navy container, Golden Diamond buttons */
 .radar-grid-label { color: #D4AF37; font-weight: 600; font-size: 0.95rem; margin: 0 0 8px 0; }
 .radar-grid-wrap { position: relative; background: #001f3f; border: 2px solid #D4AF37; border-radius: 12px; padding: 16px; min-height: 320px; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 1fr); gap: 10px; }
-.radar-diamond-btn { min-width: 72px !important; border: 2px solid #D4AF37 !important; color: #D4AF37 !important; background: rgba(0, 26, 53, 0.95) !important; font-weight: 600 !important; border-radius: 8px !important; animation: gold-pulse 2s ease-in-out infinite !important; }
+.radar-diamond-btn { min-width: 72px !important; border: 1px solid #D4AF37 !important; color: #D4AF37 !important; background: rgba(5, 10, 21, 0.9) !important; font-weight: 600 !important; border-radius: 8px !important; animation: gold-pulse 2s ease-in-out infinite !important; }
 .radar-diamond-btn:hover { box-shadow: 0 0 16px rgba(255, 215, 0, 0.7) !important; }
 #radar-column { position: relative !important; }
 /* Falcon: diagonal shuttle across grid with rhythmic pulse */
@@ -446,53 +371,25 @@ CSS = """
 .falcon-shuttle-overlay img { position: absolute; width: 48px; height: 48px; object-fit: contain; animation: falcon-diagonal 2.4s ease-in-out infinite; }
 @keyframes falcon-diagonal { 0% { left: 5%; top: 5%; transform: scale(1); opacity: 0.9; } 25% { left: 45%; top: 25%; transform: scale(1.1); opacity: 1; } 50% { left: 85%; top: 55%; transform: scale(1); opacity: 0.95; } 75% { left: 45%; top: 85%; transform: scale(1.08); opacity: 1; } 100% { left: 5%; top: 5%; transform: scale(1); opacity: 0.9; } }
 
-/* The Guardian: gold-rimmed Glassmorphism + Pulsing Blue-Ray Core */
-.guardian-glass-wrap { text-align: center; padding: 12px; margin: 0; }
-.guardian-glass-border {
-  position: relative;
-  padding: 16px;
-  border-radius: 20px;
-  border: 2px solid rgba(212, 175, 55, 0.85);
-  background: linear-gradient(135deg, rgba(10, 22, 45, 0.6) 0%, rgba(5, 10, 21, 0.8) 100%);
-  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 0 24px rgba(212, 175, 55, 0.2), inset 0 0 40px rgba(0, 212, 255, 0.08);
-}
-.guardian-blue-ray::after {
-  content: ""; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-  width: 80px; height: 80px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(0, 212, 255, 0.5) 0%, transparent 70%);
-  animation: blue-ray-pulse 2.5s ease-in-out infinite;
-  pointer-events: none;
-}
-@keyframes blue-ray-pulse { 0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 20px rgba(0, 212, 255, 0.4); } 50% { opacity: 1; transform: translate(-50%, -50%) scale(1.15); box-shadow: 0 0 35px rgba(0, 212, 255, 0.7); } }
+/* The GCSLC Data Fortress — 3x3 grid + fortress_final.png */
+.data-fortress-section { text-align: center; }
+.data-fortress-section h3 { margin-bottom: 12px; }
+.data-fortress-section .fortress-img-wrap { margin-bottom: 14px; }
+.data-fortress-section .fortress-img-wrap img { max-width: 100%; max-height: 160px; object-fit: contain; }
+.fortress-grid-3x3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 560px; margin: 0 auto; }
+.fortress-cell { padding: 12px; text-align: center; }
+.fortress-cell-label { font-size: 0.75rem; color: #D4AF37; margin: 0 0 4px 0; font-weight: 600; }
+.fortress-cell-value { font-size: 0.9rem; font-weight: 700; color: #00d4ff; margin: 0; }
+
+/* 8R Humanoid Guardian — pulsing core, I NEED ENERGY TO THRIVE */
+.guardian-baseline { text-align: center; }
+.guardian-baseline h3 { margin-bottom: 12px; }
+.guardian-pulse-wrap { position: relative; display: inline-block; }
 .guardian-humanoid-img { margin: 0 auto; max-width: 100%; line-height: 0; position: relative; z-index: 1; }
 .guardian-humanoid-img img { max-width: 100%; height: auto; display: block; margin: 0 auto; }
-@keyframes guardian-breathing { 0%, 100% { filter: brightness(1) drop-shadow(0 0 8px rgba(255,140,0,0.4)); } 50% { filter: brightness(1.08) drop-shadow(0 0 18px rgba(255,165,0,0.7)); } }
+@keyframes guardian-breathing { 0%, 100% { filter: brightness(1) drop-shadow(0 0 8px rgba(0,212,255,0.4)); } 50% { filter: brightness(1.08) drop-shadow(0 0 18px rgba(0,212,255,0.6)); } }
 .guardian-breathing { animation: guardian-breathing 3s ease-in-out infinite; }
 .guardian-narrative { color: #D4AF37; font-size: 1rem; font-weight: 700; letter-spacing: 0.08em; margin: 12px 0 0 0; text-shadow: 0 0 12px rgba(212,175,55,0.6); }
-
-/* Fortress module — bottom-left: Desert Dragon, GCSLC Cyan Liquid Cooling Active */
-.fortress-module { margin-top: 12px; }
-.fortress-img-wrap { text-align: center; margin-bottom: 8px; }
-.fortress-img-wrap img { max-width: 100%; max-height: 140px; object-fit: contain; }
-.fortress-label { font-size: 0.85rem; font-weight: 700; color: #00d4ff; text-align: center; margin: 0; }
-
-/* Map + Falcon wrapper */
-.map-metrics-wrap { position: relative !important; }
-.plotly-embed-wrap { position: relative; z-index: 1; min-height: 420px; }
-.plotly-embed-wrap .plotly { min-height: 420px !important; }
-/* Kinetic Falcon — Tactical Glide toward 3D pillars */
-.falcon-tactical-overlay { position: absolute !important; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: 10; display: flex; align-items: center; justify-content: center; }
-.falcon-tactical-overlay img { width: 52px; height: 52px; object-fit: contain; }
-.falcon-glide img { animation: falcon-tactical-glide 3.5s ease-in-out infinite; }
-@keyframes falcon-tactical-glide { 0% { transform: translate(-80%, -60%) scale(1); opacity: 0.85; } 35% { transform: translate(0, 0) scale(1.1); opacity: 1; } 70% { transform: translate(40%, 30%) scale(1); opacity: 0.9; } 100% { transform: translate(-80%, -60%) scale(1); opacity: 0.85; } }
-
-/* Bloomberg-style ticker — red/gold scrolling bar */
-.bloomberg-ticker-wrap { width: 100%; overflow: hidden; padding: 10px 0; background: linear-gradient(90deg, rgba(180,40,40,0.25) 0%, rgba(212,175,55,0.2) 50%, rgba(180,40,40,0.25) 100%); border-top: 2px solid rgba(212,175,55,0.5); border-bottom: 2px solid rgba(212,175,55,0.5); margin: 12px 0; }
-.bloomberg-ticker-inner { display: inline-block; white-space: nowrap; animation: bloomberg-scroll 25s linear infinite; padding-left: 100%; }
-@keyframes bloomberg-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-.bloomberg-ticker-text { font-size: 0.95rem; font-weight: 800; animation: ticker-red-gold 2s ease-in-out infinite; }
-.bloomberg-ticker-sep { color: rgba(212,175,55,0.7); margin: 0 14px; }
 
 .diamond-popup { padding: 18px; margin: 12px 0; }
 .diamond-opportunity-box .opportunity-card { background: #0d1117; border: 2px solid #00d4ff; border-radius: 10px; padding: 14px; margin: 10px 0; }
@@ -569,62 +466,67 @@ document.addEventListener('keydown', function(e) {
 """
 
 
-# ---- Build UI: War Room — 2-col 60/40, 3D Radar, Guardian, Fortress ----
+# ---- Build UI: Sovereign Command Center BASELINE (video order) ----
 demo = gr.Blocks(css=CSS, title="GCSLC Sovereign Command")
 with demo:
-    gr.HTML(
-        '<script>document.addEventListener("contextmenu", function(e){ e.preventDefault(); });</script>'
-    )
+    gr.HTML('<script>document.addEventListener("contextmenu", function(e){ e.preventDefault(); });</script>')
     gr.HTML(SHIELD_SCRIPT)
 
-    # 1. Gold Medallion top-center + Institutional title (Bold Shimmering Gold)
+    # 1. Header: Shimmering Gold Medallion + institutional name in gold bold text
     medallion_content = f'<img src="data:image/png;base64,{B64_MEDALLION}" alt="GCSLC Seal" />' if B64_MEDALLION else _medallion_svg()
     gr.HTML(
         '<div id="medallion" class="gcslc-medallion" aria-label="GCSLC Seal">' + medallion_content + '</div>'
         + '<div class="header-area">'
-        + "<h1 class='sovereign-title' style='text-align: center; font-size: 1.2rem; margin: 0 0 6px 0;'>Sovereign Command — War Room</h1>"
-        + f"<p class='title-full' style='text-align: center; font-size: 0.95rem; margin: 0 0 8px 0; color: #D4AF37;'>{TITLE_FULL}</p>"
-        + "<p class='strategic-header' style='text-align: center; font-size: 0.9rem; margin: 0 0 12px 0; color: #D4AF37; font-weight: 600;'>NVIDIA &amp; Microsoft: The 8R Stealth Paradigm is the bridge between Nigerian Energy Sovereignty and Global AI Dominance.</p>"
+        + "<h1 class='sovereign-title' style='text-align: center; font-size: 1.2rem; margin: 0 0 6px 0;'>Sovereign Command</h1>"
+        + f"<p class='title-full' style='text-align: center; font-size: 0.95rem; margin: 0 0 8px 0; color: #D4AF37; font-weight: 700;'>{TITLE_FULL}</p>"
         + "</div>"
         + f"<p class='hook' style='text-align: center; font-size: 0.92rem; max-width: 700px; margin: 0 auto 20px auto; color: #e8eef4;'>{HOOK_TEXT}</p>"
     )
 
-    # 2. Bloomberg-style ticker: NATIONAL ASSET RECOVERY DELAY COST: $1.87 BILLION/YEAR LOSS
-    gr.HTML(arbitrage_pulse_html())
+    # 2. Top Section: Real-Time Market Values — 4 distinct gold-outlined glass boxes
+    gr.HTML(real_time_market_values_html())
 
-    # 3. War Room 2-column: Left 60% Map/Metrics + Fortress | Right 40% Guardian/Strategic Brief
-    with gr.Row(elem_id="war-room-row"):
-        with gr.Column(scale=6, elem_id="war-room-left"):
-            # 3D Sovereign Radar (Nigeria surface + 13 gold pillars) + Falcon Tactical Glide overlay
-            gr.HTML(map_and_falcon_html())
-            # Fortress — bottom-left (Desert Dragon, GCSLC Cyan Liquid Cooling Active)
-            gr.HTML(fortress_module_html())
-        with gr.Column(scale=4, elem_id="war-room-right"):
-            gr.HTML(humanoid_block())
-            gr.HTML('<p class="radar-grid-label">Strategic Brief — Select State</p>')
-            with gr.Row():
-                b1 = gr.Button(COAL_STATES[0], elem_classes=["radar-diamond-btn"], variant="secondary")
-                b2 = gr.Button(COAL_STATES[1], elem_classes=["radar-diamond-btn"], variant="secondary")
-                b3 = gr.Button(COAL_STATES[2], elem_classes=["radar-diamond-btn"], variant="secondary")
-            with gr.Row():
-                b4 = gr.Button(COAL_STATES[3], elem_classes=["radar-diamond-btn"], variant="secondary")
-                b5 = gr.Button(COAL_STATES[4], elem_classes=["radar-diamond-btn"], variant="secondary")
-                b6 = gr.Button(COAL_STATES[5], elem_classes=["radar-diamond-btn"], variant="secondary")
-            with gr.Row():
-                b7 = gr.Button(COAL_STATES[6], elem_classes=["radar-diamond-btn"], variant="secondary")
-                b8 = gr.Button(COAL_STATES[7], elem_classes=["radar-diamond-btn"], variant="secondary")
-                b9 = gr.Button(COAL_STATES[8], elem_classes=["radar-diamond-btn"], variant="secondary")
-            with gr.Row():
-                b10 = gr.Button(COAL_STATES[9], elem_classes=["radar-diamond-btn"], variant="secondary")
-                b11 = gr.Button(COAL_STATES[10], elem_classes=["radar-diamond-btn"], variant="secondary")
-                b12 = gr.Button(COAL_STATES[11], elem_classes=["radar-diamond-btn"], variant="secondary")
-            b13 = gr.Button(COAL_STATES[12], elem_classes=["radar-diamond-btn"], variant="secondary")
-            popup_out = gr.HTML(value=diamond_popup("Kogi"), label="Diamond Opportunity")
+    # 3. Map Section: Map of Authority — dark navy center map + falcon overlay + 13 gold diamond buttons underneath
+    gr.HTML('<h3 class="shimmer map-section-title">Map of Authority</h3>')
+    gr.HTML(map_of_authority_html())
+    gr.HTML('<p class="radar-grid-label">13 State Nodes — Enugu to Imo</p>')
+    with gr.Row():
+        b1 = gr.Button(COAL_STATES[0], elem_classes=["radar-diamond-btn"], variant="secondary")
+        b2 = gr.Button(COAL_STATES[1], elem_classes=["radar-diamond-btn"], variant="secondary")
+        b3 = gr.Button(COAL_STATES[2], elem_classes=["radar-diamond-btn"], variant="secondary")
+        b4 = gr.Button(COAL_STATES[3], elem_classes=["radar-diamond-btn"], variant="secondary")
+    with gr.Row():
+        b5 = gr.Button(COAL_STATES[4], elem_classes=["radar-diamond-btn"], variant="secondary")
+        b6 = gr.Button(COAL_STATES[5], elem_classes=["radar-diamond-btn"], variant="secondary")
+        b7 = gr.Button(COAL_STATES[6], elem_classes=["radar-diamond-btn"], variant="secondary")
+        b8 = gr.Button(COAL_STATES[7], elem_classes=["radar-diamond-btn"], variant="secondary")
+    with gr.Row():
+        b9 = gr.Button(COAL_STATES[8], elem_classes=["radar-diamond-btn"], variant="secondary")
+        b10 = gr.Button(COAL_STATES[9], elem_classes=["radar-diamond-btn"], variant="secondary")
+        b11 = gr.Button(COAL_STATES[10], elem_classes=["radar-diamond-btn"], variant="secondary")
+        b12 = gr.Button(COAL_STATES[11], elem_classes=["radar-diamond-btn"], variant="secondary")
+    b13 = gr.Button(COAL_STATES[12], elem_classes=["radar-diamond-btn"], variant="secondary")
+    popup_out = gr.HTML(value=diamond_popup("Kogi"), label="Diamond Opportunity")
     state_btns = [b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13]
     for i, state in enumerate(COAL_STATES):
         state_btns[i].click(fn=lambda s=state: diamond_popup(s), inputs=None, outputs=[popup_out])
 
-    # 4. Footer
+    # 4. Metric Center: The GCSLC Data Fortress — 3x3 grid + fortress_final.png
+    gr.HTML(data_fortress_3x3_html())
+
+    # 5. Footer Section: National Impact (Coal Tonnage slider) → 8R Humanoid Guardian → Footer
+    gr.HTML('<h3 class="shimmer">National Impact</h3>')
+    coal_slider = gr.Slider(0, 500, value=100, step=10, label="Coal Tonnage (Million Tonnes)")
+    national_impact_out = gr.HTML(
+        value=f'<div class="gold-glass-block"><p class="reserves-line">At <strong>100</strong> M tonnes: {AI_PROCESSING_POWER} equivalent · Revenue potential scale: ${REVENUE_POTENTIAL_B}B.</p></div>'
+    )
+
+    def on_tonnage(t):
+        return f'<div class="gold-glass-block"><p class="reserves-line">At <strong>{int(t)}</strong> M tonnes: {AI_PROCESSING_POWER} equivalent · Revenue potential scale: ${REVENUE_POTENTIAL_B}B.</p></div>'
+
+    coal_slider.change(fn=on_tonnage, inputs=[coal_slider], outputs=[national_impact_out])
+
+    gr.HTML(humanoid_block())
     gr.HTML(footer_html())
 
 
