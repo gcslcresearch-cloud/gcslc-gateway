@@ -1,4 +1,4 @@
-"""Local launcher on 8091 — uses app.demo (FINAL_UI + Gradio UTC pulse)."""
+"""Fusion Center launcher — Port 8091. Native Gradio only, no HTML dependency."""
 from app import demo
 
 if __name__ == "__main__":

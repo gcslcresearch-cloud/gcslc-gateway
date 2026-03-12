@@ -80,23 +80,11 @@ def get_reserves_table():
 def get_leak_md():
     return "**Sovereign Wealth Leakage: The Cost of Delay**  \n# $2.0 B  \n*cumulative loss · sector moribund*"
 
-# Header only — minimal HTML
-HEADER_HTML = """
-<div style="text-align:center; color:#D4AF37; margin-bottom:1rem;">
-  <h1 style="margin:0; font-size:1.5rem;">GCSLC NRRFC — Nigeria Coal Reserves</h1>
-  <p style="color:#8fa3bf; font-size:0.9rem; margin:0.35rem 0 0 0;">National Resources Revitalization Fusion Center · 8R Stealth Paradigm</p>
-</div>
-"""
-
-FOOTER_HTML = """
-<div style="text-align:center; color:#8fa3bf; font-size:0.8rem; margin-top:1.5rem; padding-top:1rem; border-top:1px solid rgba(212,175,55,0.3);">
-  Galadiman Ruwa Center (GCSLC) · NRRFC 2026
-</div>
-"""
-
 CSS = (
     ":root, body, .gradio-container { background: #050a15 !important; } "
     ".block, .wrap { background: transparent !important; } "
+    ".header-native, .header-native p { color: #D4AF37 !important; text-align: center; } "
+    ".footer-native, .footer-native p { color: #8fa3bf !important; text-align: center; font-size: 0.9rem; margin-top: 1rem; } "
     "label { color: #D4AF37 !important; } "
     ".clock-pulse, .clock-pulse p { color: #D4AF37 !important; font-weight: 600; } "
     ".ticker-box { color: #D4AF37; font-weight: 600; } "
@@ -105,7 +93,7 @@ CSS = (
 )
 
 with gr.Blocks(css=CSS, title="GCSLC NRRFC Fusion Center") as demo:
-    gr.HTML(HEADER_HTML)
+    gr.Markdown("## GCSLC NRRFC — Nigeria Coal Reserves  \n*National Resources Revitalization Fusion Center · 8R Stealth Paradigm*", elem_classes=["header-native"])
 
     clock_md = gr.Markdown(value=get_utc_time(), elem_classes=["clock-pulse"])
     ticker_md = gr.Markdown(value=get_ticker(), elem_classes=["ticker-box"])
@@ -122,7 +110,7 @@ with gr.Blocks(css=CSS, title="GCSLC NRRFC Fusion Center") as demo:
         interactive=False,
     )
     leak_md = gr.Markdown(value=get_leak_md())
-    gr.HTML(FOOTER_HTML)
+    gr.Markdown("*Galadiman Ruwa Center (GCSLC) · NRRFC 2026*", elem_classes=["footer-native"])
 
     # Server heartbeat — every 1 second, bypasses browser
     demo.load(get_utc_time, None, clock_md, every=1)
