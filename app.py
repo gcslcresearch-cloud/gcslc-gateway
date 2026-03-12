@@ -1,6 +1,6 @@
 """
-GCSLC Sovereign Gateway — March 12 Monolithic Deployment.
-Self-contained Gradio app. FINAL_UI only. No external assets.
+GCSLC Sovereign Gateway — Fusion Center.
+Native Gradio components with server-driven pulse (.load every=1). No static HTML shell.
 """
 # Fix Gradio ImportError: huggingface_hub no longer exposes HfFolder
 try:
@@ -26,62 +26,112 @@ except Exception:
     pass
 
 import gradio as gr
+import time
+import random
 from datetime import datetime, timezone
+
+# Baseline data — 640.04 Mt, 1,199 MW, 13 states
+BASELINE_RESERVES = 640.04
+BASELINE_POWER = 1199
+BASELINE_STATES = 13
+RESERVES_TABLE = [
+    ["Enugu", 167.72, 401, "active"],
+    ["Kogi", 141.97, 320, "active"],
+    ["Benue", 97.9, 180, "reserve"],
+    ["Gombe", 61.99, 110, "reserve"],
+    ["Nasarawa", 48.09, 85, "reserve"],
+    ["Delta", 38.06, 65, "reserve"],
+    ["Imo", 31.91, 55, "reserve"],
+    ["Anambra", 27.97, 48, "active"],
+    ["Edo", 18.0, 30, "reserve"],
+    ["Kebbi", 15.05, 25, "reserve"],
+    ["Bauchi", 12.1, 20, "reserve"],
+    ["Kwara", 8.03, 12, "reserve"],
+    ["Plateau", 5.96, 10, "reserve"],
+]
+TICKER_MESSAGES = [
+    "▶ SOVEREIGN ACTIVE • 640.04 Mt LIVE • 8R PARADIGM ENGAGED",
+    "▶ WEALTH LEAK $2.0 B • 13 STATES • 1,199 MW POWER POTENTIAL",
+    "▶ NRRFC 2026 • GALADIMAN RUWA • GCSLC FUSION CENTER",
+    "▶ NIGERIA COAL RESERVES • REAL-TIME HEARTBEAT • DETERMINANT 8R",
+    "▶ SECTOR MORIBUND COST • $2.0 B CUMULATIVE • SOVEREIGN PULSE",
+]
 
 def get_utc_time():
     return "**Live UTC:** " + datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
 
-FINAL_UI = """
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>GCSLC NRRFC — Sovereign Dashboard</title>
-  <style>
-    :root, body, .gradio-container { background: #050a15 !important; }
-    * { box-sizing: border-box; }
-    body { margin: 0; padding: 0; color: #e8eef4; font-family: system-ui, sans-serif; min-height: 100vh; }
-    .wrap { max-width: 900px; margin: 0 auto; padding: 2rem; }
-    h1 { color: #D4AF37; font-size: 1.5rem; margin-bottom: 0.5rem; }
-    .sub { color: #8fa3bf; font-size: 0.9rem; margin-bottom: 1.5rem; }
-    .clock { color: #D4AF37; font-size: 1.1rem; font-weight: 600; margin-bottom: 1.5rem; }
-    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
-    .kpi { background: #0a1225; border: 1px solid #D4AF37; border-radius: 8px; padding: 1rem; }
-    .kpi .label { color: #8fa3bf; font-size: 0.75rem; text-transform: uppercase; }
-    .kpi .value { color: #D4AF37; font-size: 1.25rem; font-weight: 700; margin-top: 0.25rem; }
-    .leak { background: rgba(229,62,62,0.15); border-left: 4px solid #e53e3e; padding: 1rem; border-radius: 8px; margin-top: 1rem; }
-    .leak .val { font-size: 1.5rem; font-weight: 800; color: #e53e3e; }
-    .footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid rgba(212,175,55,0.3); color: #8fa3bf; font-size: 0.8rem; }
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <h1>GCSLC NRRFC — Nigeria Coal Reserves Dashboard</h1>
-    <p class="sub">National Resources Revitalization Fusion Center · 8R Stealth Paradigm</p>
-    <div class="kpis">
-      <div class="kpi"><div class="label">Total proven reserves</div><div class="value">640.04</div><span class="unit">Mt</span></div>
-      <div class="kpi"><div class="label">Power potential</div><div class="value">1,199</div><span class="unit">MW</span></div>
-      <div class="kpi"><div class="label">States with reserves</div><div class="value">13</div><span class="unit">regions</span></div>
-    </div>
-    <div class="leak">
-      <div class="label">Sovereign Wealth Leakage: The Cost of Delay</div>
-      <div class="val">$2.0 B</div>
-      <div class="sub">cumulative loss · sector moribund</div>
-    </div>
-    <p class="footer">Galadiman Ruwa Center (GCSLC) · NRRFC 2026</p>
-  </div>
-</body>
-</html>
+def get_reserves_pulse():
+    # Subtle pulse: 640.02–640.06 so the number "breathes"
+    return round(BASELINE_RESERVES + (random.random() * 0.04 - 0.02), 2)
+
+def get_power_pulse():
+    return BASELINE_POWER
+
+def get_states_count():
+    return BASELINE_STATES
+
+def get_ticker():
+    idx = int(time.time()) % len(TICKER_MESSAGES)
+    return "`" + TICKER_MESSAGES[idx] + "`"
+
+def get_reserves_table():
+    return RESERVES_TABLE
+
+def get_leak_md():
+    return "**Sovereign Wealth Leakage: The Cost of Delay**  \n# $2.0 B  \n*cumulative loss · sector moribund*"
+
+# Header only — minimal HTML
+HEADER_HTML = """
+<div style="text-align:center; color:#D4AF37; margin-bottom:1rem;">
+  <h1 style="margin:0; font-size:1.5rem;">GCSLC NRRFC — Nigeria Coal Reserves</h1>
+  <p style="color:#8fa3bf; font-size:0.9rem; margin:0.35rem 0 0 0;">National Resources Revitalization Fusion Center · 8R Stealth Paradigm</p>
+</div>
 """
 
-with gr.Blocks(
-    css=":root, body, .gradio-container { background: #050a15 !important; } .clock-pulse, .clock-pulse p { color: #D4AF37 !important; font-weight: 600; }",
-    title="GCSLC NRRFC Fusion Center",
-) as demo:
+FOOTER_HTML = """
+<div style="text-align:center; color:#8fa3bf; font-size:0.8rem; margin-top:1.5rem; padding-top:1rem; border-top:1px solid rgba(212,175,55,0.3);">
+  Galadiman Ruwa Center (GCSLC) · NRRFC 2026
+</div>
+"""
+
+CSS = (
+    ":root, body, .gradio-container { background: #050a15 !important; } "
+    ".block, .wrap { background: transparent !important; } "
+    "label { color: #D4AF37 !important; } "
+    ".clock-pulse, .clock-pulse p { color: #D4AF37 !important; font-weight: 600; } "
+    ".ticker-box { color: #D4AF37; font-weight: 600; } "
+    "input, .number input { background: #0a1225 !important; border: 1px solid #D4AF37 !important; color: #e8eef4 !important; } "
+    "table, .dataframe { background: #0a1225 !important; color: #e8eef4 !important; border: 1px solid #D4AF37 !important; } "
+)
+
+with gr.Blocks(css=CSS, title="GCSLC NRRFC Fusion Center") as demo:
+    gr.HTML(HEADER_HTML)
+
     clock_md = gr.Markdown(value=get_utc_time(), elem_classes=["clock-pulse"])
-    gr.HTML(FINAL_UI)
+    ticker_md = gr.Markdown(value=get_ticker(), elem_classes=["ticker-box"])
+
+    with gr.Row():
+        reserves_num = gr.Number(label="Total proven reserves (Mt)", value=BASELINE_RESERVES, precision=2)
+        power_num = gr.Number(label="Power potential (MW)", value=BASELINE_POWER, precision=0)
+        states_num = gr.Number(label="States with reserves", value=BASELINE_STATES, precision=0)
+
+    reserves_df = gr.Dataframe(
+        value=RESERVES_TABLE,
+        headers=["State", "Reserves (Mt)", "Power (MW)", "Status"],
+        label="Reserves by state",
+        interactive=False,
+    )
+    leak_md = gr.Markdown(value=get_leak_md())
+    gr.HTML(FOOTER_HTML)
+
+    # Server heartbeat — every 1 second, bypasses browser
     demo.load(get_utc_time, None, clock_md, every=1)
+    demo.load(get_ticker, None, ticker_md, every=1)
+    demo.load(get_reserves_pulse, None, reserves_num, every=1)
+    demo.load(get_power_pulse, None, power_num, every=1)
+    demo.load(get_states_count, None, states_num, every=1)
+    demo.load(get_reserves_table, None, reserves_df, every=1)
+    demo.load(get_leak_md, None, leak_md, every=1)
 
 if __name__ == "__main__":
     try:
