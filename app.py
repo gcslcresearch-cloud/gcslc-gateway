@@ -34,6 +34,10 @@ from datetime import datetime, timezone
 BASELINE_RESERVES = 640.04
 BASELINE_POWER = 1199
 BASELINE_STATES = 13
+LEAK_BASE_B = 2.4
+LEAK_STEP_B = 0.01
+LEAK_INTERVAL_S = 60
+START_TIME = time.time()
 RESERVES_TABLE = [
     ["Enugu", 167.72, 401, "active"],
     ["Kogi", 141.97, 320, "active"],
@@ -62,7 +66,7 @@ def get_utc_time():
 
 def get_reserves_pulse():
     # Subtle pulse: 640.02–640.06 so the number "breathes"
-    return round(BASELINE_RESERVES + (random.random() * 0.04 - 0.02), 2)
+    return round(BASELINE_RESERVES + random.uniform(-0.02, 0.02), 2)
 
 def get_power_pulse():
     return BASELINE_POWER
@@ -78,7 +82,10 @@ def get_reserves_table():
     return RESERVES_TABLE
 
 def get_leak_md():
-    return "**Sovereign Wealth Leakage: The Cost of Delay**  \n# $2.0 B  \n*cumulative loss · sector moribund*"
+    elapsed = max(0, time.time() - START_TIME)
+    steps = int(elapsed // LEAK_INTERVAL_S)
+    current_b = LEAK_BASE_B + LEAK_STEP_B * steps
+    return f"**Sovereign Wealth Leakage: The Cost of Delay**  \\n# ${current_b:.2f} B  \\n*cumulative loss · sector moribund*"
 
 CSS = (
     ":root, body, .gradio-container { background: #050a15 !important; } "
@@ -112,14 +119,14 @@ with gr.Blocks(css=CSS, title="GCSLC NRRFC Fusion Center") as demo:
     leak_md = gr.Markdown(value=get_leak_md())
     gr.Markdown("*Galadiman Ruwa Center (GCSLC) · NRRFC 2026*", elem_classes=["footer-native"])
 
-    # Server heartbeat — every 1 second, bypasses browser
+    # Server heartbeat — calibrated
     demo.load(get_utc_time, None, clock_md, every=1)
     demo.load(get_ticker, None, ticker_md, every=1)
-    demo.load(get_reserves_pulse, None, reserves_num, every=1)
-    demo.load(get_power_pulse, None, power_num, every=1)
-    demo.load(get_states_count, None, states_num, every=1)
-    demo.load(get_reserves_table, None, reserves_df, every=1)
-    demo.load(get_leak_md, None, leak_md, every=1)
+    demo.load(get_reserves_pulse, None, reserves_num, every=2)
+    demo.load(get_power_pulse, None, power_num, every=2)
+    demo.load(get_states_count, None, states_num, every=2)
+    demo.load(get_reserves_table, None, reserves_df, every=10)
+    demo.load(get_leak_md, None, leak_md, every=60)
 
 if __name__ == "__main__":
     try:
