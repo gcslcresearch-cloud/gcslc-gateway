@@ -457,8 +457,9 @@ st.markdown(
     '<p class="top-banner">KOMI — GENERATIVE EAGLE CLOUD (K-GEC): VEHICLE FOR NATIONS AND CONGLOMERATES</p>',
     unsafe_allow_html=True,
 )
+ch_name = "Dr. Sa'ad Jaafaru (Galadiman Ruwan Zazzau)"
 st.markdown(
-    '<p class="chairman-lock">Chairman Lock: Dr. Sa\\'ad Jaafaru (Galadiman Ruwan Zazzau)</p>',
+    f'<p class="chairman-lock">Chairman Lock: {ch_name}</p>',
     unsafe_allow_html=True,
 )
 st.write("---")
