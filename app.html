@@ -657,7 +657,7 @@
 
     <p class="last-updated">
       <span class="live-dot" aria-hidden="true"></span>
-      <span id="lastUpdated">Last updated: 2026-03-08 01:32:07 UTC</span>
+      <span id="last-updated">Last updated: 2026-03-08 01:32:07 UTC</span>
     </p>
 
     <div class="kpis">
@@ -895,7 +895,7 @@
 
   <script>
     (function () {
-      const lastUpdatedEl = document.getElementById('lastUpdated');
+      const lastUpdatedEl = document.getElementById('last-updated');
       const totalReservesEl = document.getElementById('totalReserves');
       const powerPotentialEl = document.getElementById('powerPotential');
       const statesCountEl = document.getElementById('statesCount');
@@ -1010,12 +1010,10 @@
         }
       }
 
-      // Real-Time Timestamp: update Last updated to current UTC every second
+      // Real-Time Timestamp: update to current UTC every second
       function updateUtcClock() {
-        if (lastUpdatedEl) {
-          var now = new Date();
-          lastUpdatedEl.textContent = 'Last updated: ' + now.toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
-        }
+        var el = document.getElementById('last-updated');
+        if (el) el.innerText = new Date().toUTCString();
       }
       setInterval(updateUtcClock, 1000);
       updateUtcClock();
