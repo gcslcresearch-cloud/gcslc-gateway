@@ -194,6 +194,38 @@ particles_html = "".join(
 
 st.markdown("""
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@700&display=swap');
+
+/* Sidebar Headings: 2pt Increase + Shimmer */
+section[data-testid="stSidebar"] h2, section[data-testid="stSidebar"] h3 {
+    font-family: 'Great Vibes', cursive !important;
+    font-size: 26px !important;
+    background: linear-gradient(to right, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 3s infinite linear;
+    background-size: 200% auto;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+/* Main Headings — Golden Calligraphy */
+.shimmer-gold {
+    font-family: 'Playfair Display', serif !important;
+    font-size: 42px !important;
+    background: linear-gradient(to right, #BF953F, #FBF5B7, #AA771C);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 5s infinite linear;
+    background-size: 200% auto;
+    font-weight: bold;
+}
+
+@keyframes shimmer {
+    to { background-position: 200% center; }
+}
+
 /* Deep Navy background; content above particles */
 .stApp, [data-testid="stAppViewContainer"] { background-color: #001a33 !important; min-height: 100vh; }
 .main .block-container { background-color: transparent !important; position: relative; z-index: 1; }
@@ -369,7 +401,7 @@ st.components.v1.html("""
 # --- Apex Predator Eagle: explicitly called in st.header area when agentic_eagle is True (Talon Lock) ---
 agentic_eagle = st.session_state.get("autonomous_sniff_enabled", True)
 if agentic_eagle:
-    st.header("Apex Predator Eagle — 8R Interface")
+    st.markdown('<p class="shimmer-gold">Apex Predator Eagle — 8R Interface</p>', unsafe_allow_html=True)
     col_cap, col_eagle = st.columns([4, 1])
     with col_cap:
         st.caption("Agentic Eagle active. Sovereign OS interface locked.")
@@ -405,6 +437,13 @@ st.markdown("---")
 with st.sidebar:
     st.markdown("**CAC:** " + CAC_AV_CODE)
     st.markdown("**Chairman Lock:** " + CHAIRMAN_LOCK)
+    st.markdown("---")
+    # Sovereign Frequency — Eagle + SWAT fusion audio (assets/eagle_swat_fusion.mp3)
+    _audio_path = os.path.join(_BASE, "assets", "eagle_swat_fusion.mp3")
+    if os.path.isfile(_audio_path):
+        st.markdown("### 🦅 Sovereign Frequency")
+        with open(_audio_path, "rb") as _f:
+            st.audio(_f.read(), format="audio/mp3", autoplay=True, loop=True)
     st.markdown("---")
     st.write("### Sovereign OS — 8R Stealth Paradigm")
     st.caption("Agentic, Generative. Interface: Apex Predator Eagle. Goal: Asset Resuscitation.")
