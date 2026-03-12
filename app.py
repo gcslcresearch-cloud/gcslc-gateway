@@ -18,6 +18,7 @@ SOVEREIGN_UI = """
   <meta property="og:title" content="GCSLC Sovereign · NRRFC — Coal Reserves &amp; NRRF Dashboard">
   <meta property="og:description" content="GCSLC Sovereign: Nigeria Coal Reserves, debt-swap comparison, coal-to-syngas vs diesel — NRRFC 2026.">
   <style>
+    html, body, div.gradio-container { background-color: #050a15 !important; margin: 0; padding: 0; }
     /* 8R Stealth palette: Navy blue & Gold */
     :root {
       --navy-bg: #0a1628;
