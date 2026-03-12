@@ -1,8 +1,8 @@
 import gradio as gr
 import os
 
-# Path to your high-fidelity asset
-FILE_PATH = os.path.expanduser("~/Desktop/8RStealthBfiles/app.html")
+# Path to your high-fidelity asset (project root)
+FILE_PATH = "app.html"
 
 
 def load_dashboard():
