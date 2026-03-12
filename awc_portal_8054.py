@@ -110,7 +110,7 @@ SOVEREIGN_GLASS_MAP_FALLBACK_HTML = """
 
 # --- Page config (must be first Streamlit call) ---
 st.set_page_config(
-    page_title="Galadiman Ruwa Center (GCSLC) — AWC Portal",
+    page_title="K-GEC Sovereign Gateway",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -209,10 +209,11 @@ section[data-testid="stSidebar"] h2, section[data-testid="stSidebar"] h3 {
     text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
 }
 
-/* Main Headings — Golden Calligraphy */
+/* MAIN HEADING: Apex Predator Eagle */
 .shimmer-gold {
     font-family: 'Playfair Display', serif !important;
-    font-size: 42px !important;
+    font-size: 46px !important;
+    text-align: center;
     background: linear-gradient(to right, #BF953F, #FBF5B7, #AA771C);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -224,6 +225,29 @@ section[data-testid="stSidebar"] h2, section[data-testid="stSidebar"] h3 {
 
 @keyframes shimmer {
     to { background-position: 200% center; }
+}
+
+/* TOP BANNER: K-GEC Vehicle - Higher Opacity & Shimmer */
+.top-banner {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px !important;
+    color: rgba(252, 246, 186, 0.95);
+    text-align: center;
+    letter-spacing: 2px;
+    background: linear-gradient(to right, #BF953F, #FCF6BA, #B38728);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 4s infinite linear;
+    margin-bottom: 0px;
+}
+
+/* CHAIRMAN LOCK: The Full Title */
+.chairman-lock {
+    font-family: 'Great Vibes', cursive;
+    font-size: 22px !important;
+    text-align: center;
+    color: #FCF6BA;
+    margin-top: -10px;
 }
 
 /* Deep Navy background; content above particles */
@@ -428,10 +452,23 @@ st.components.v1.html("""
 })();
 </script>
 """, height=0)
-# --- Apex Predator Eagle: explicitly called in st.header area when agentic_eagle is True (Talon Lock) ---
+# --- SOVEREIGN UI MANIFEST - K-GEC / GCSLC ---
+st.markdown(
+    '<p class="top-banner">KOMI — GENERATIVE EAGLE CLOUD (K-GEC): VEHICLE FOR NATIONS AND CONGLOMERATES</p>',
+    unsafe_allow_html=True,
+)
+st.markdown(
+    '<p class="chairman-lock">Chairman Lock: Dr. Sa\\'ad Jaafaru (Galadiman Ruwan Zazzau)</p>',
+    unsafe_allow_html=True,
+)
+st.write("---")
+st.markdown(
+    '<p class="shimmer-gold">Apex Predator Eagle — 8R Interface</p>',
+    unsafe_allow_html=True,
+)
+# Apex Predator Eagle: Talon Lock visual beside caption when Agentic Eagle is active
 agentic_eagle = st.session_state.get("autonomous_sniff_enabled", True)
 if agentic_eagle:
-    st.markdown('<p class="shimmer-gold">Apex Predator Eagle — 8R Interface</p>', unsafe_allow_html=True)
     col_cap, col_eagle = st.columns([4, 1])
     with col_cap:
         st.caption("Agentic Eagle active. Sovereign OS interface locked.")
