@@ -26,6 +26,10 @@ except Exception:
     pass
 
 import gradio as gr
+from datetime import datetime, timezone
+
+def get_utc_time():
+    return "**Live UTC:** " + datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
 
 FINAL_UI = """
 <!DOCTYPE html>
@@ -55,7 +59,6 @@ FINAL_UI = """
   <div class="wrap">
     <h1>GCSLC NRRFC — Nigeria Coal Reserves Dashboard</h1>
     <p class="sub">National Resources Revitalization Fusion Center · 8R Stealth Paradigm</p>
-    <p class="clock">UTC: <span id="clock">—</span></p>
     <div class="kpis">
       <div class="kpi"><div class="label">Total proven reserves</div><div class="value">640.04</div><span class="unit">Mt</span></div>
       <div class="kpi"><div class="label">Power potential</div><div class="value">1,199</div><span class="unit">MW</span></div>
@@ -68,25 +71,17 @@ FINAL_UI = """
     </div>
     <p class="footer">Galadiman Ruwa Center (GCSLC) · NRRFC 2026</p>
   </div>
-  <script>
-    (function() {
-      var el = document.getElementById('clock');
-      if (el) {
-        function tick() { el.innerText = new Date().toLocaleString(); }
-        tick();
-        setInterval(tick, 1000);
-      }
-    })();
-  </script>
 </body>
 </html>
 """
 
 with gr.Blocks(
-    css=":root, body, .gradio-container { background: #050a15 !important; }",
+    css=":root, body, .gradio-container { background: #050a15 !important; } .clock-pulse, .clock-pulse p { color: #D4AF37 !important; font-weight: 600; }",
     title="GCSLC NRRFC Fusion Center",
 ) as demo:
+    clock_md = gr.Markdown(value=get_utc_time(), elem_classes=["clock-pulse"])
     gr.HTML(FINAL_UI)
+    demo.load(get_utc_time, None, clock_md, every=1)
 
 if __name__ == "__main__":
     try:
