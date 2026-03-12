@@ -10,13 +10,13 @@
   <meta property="og:title" content="GCSLC Sovereign · NRRFC — Coal Reserves &amp; NRRF Dashboard">
   <meta property="og:description" content="GCSLC Sovereign: Nigeria Coal Reserves, debt-swap comparison, coal-to-syngas vs diesel — NRRFC 2026.">
   <style>
-    /* 8R Stealth palette: Navy blue & Gold */
+    /* 8R Stealth palette: Uniform Deep Navy (#050a15) & Gold (#D4AF37) */
     :root {
-      --navy-bg: #0a1628;
-      --navy-surface: #13274f;
+      --navy-bg: #050a15;
+      --navy-surface: #0a1225;
       --navy-border: #1e3a5f;
       --navy-light: #2c5282;
-      --gold: #d4af37;
+      --gold: #D4AF37;
       --gold-dim: #b8962e;
       --gold-bright: #f0c14b;
       --text: #e8eef4;
@@ -27,7 +27,7 @@
     body {
       margin: 0;
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background: var(--navy-bg);
+      background: #050a15;
       color: var(--text);
       min-height: 100vh;
       line-height: 1.5;
@@ -42,7 +42,7 @@
       margin: 0 0 0.35rem;
       font-size: 1.5rem;
       font-weight: 700;
-      color: #d4af37;
+      color: #D4AF37;
       letter-spacing: 0.02em;
     }
     header .institution-name small { font-weight: 600; opacity: 0.95; }
@@ -84,30 +84,18 @@
       vertical-align: middle;
     }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-    /* Sovereign Activation Alert — rhythmic blue/gold glow */
+    /* Sovereign Activation Alert — solid Deep Navy, Gold border */
     .sovereign-activation-alert {
-      background: linear-gradient(90deg, var(--navy-surface) 0%, rgba(30, 58, 95, 0.95) 50%, var(--navy-surface) 100%);
+      background: var(--navy-surface);
       border: 1px solid var(--gold);
       border-radius: 8px;
       padding: 0.75rem 1rem;
       margin-top: 1.5rem;
       margin-bottom: 2rem;
       text-align: center;
-      box-shadow: 0 0 20px rgba(212, 175, 55, 0.2), inset 0 0 30px rgba(44, 82, 130, 0.15);
-      animation: sovereign-glow 3s ease-in-out infinite;
-    }
-    @keyframes sovereign-glow {
-      0%, 100% {
-        box-shadow: 0 0 15px rgba(212, 175, 55, 0.25), inset 0 0 20px rgba(44, 82, 130, 0.2);
-        border-color: var(--gold-dim);
-      }
-      50% {
-        box-shadow: 0 0 28px rgba(212, 175, 55, 0.45), inset 0 0 35px rgba(44, 82, 130, 0.35);
-        border-color: var(--gold-bright);
-      }
     }
     .sovereign-activation-alert .alert-text {
-      color: var(--gold-bright);
+      color: #D4AF37;
       font-weight: 600;
       font-size: 0.9rem;
       letter-spacing: 0.04em;
@@ -168,13 +156,12 @@
       font-size: 0.8rem;
     }
 
-    /* High-end corporate footer — Navy & Gold gradient */
+    /* High-end corporate footer — solid Deep Navy */
     .footer-corporate {
       margin: 2rem -1.5rem -1.5rem;
       padding: 2rem 1.5rem 2.5rem;
-      background: linear-gradient(165deg, var(--navy-bg) 0%, var(--navy-surface) 35%, #0d1f3c 50%, var(--navy-surface) 65%, var(--navy-bg) 100%);
+      background: var(--navy-bg);
       border-top: 2px solid var(--gold);
-      box-shadow: 0 -4px 24px rgba(212, 175, 55, 0.08);
       text-align: center;
     }
     .footer-corporate .footer-statement {
@@ -205,7 +192,7 @@
       text-align: center;
       padding: 1.5rem 1rem 1.25rem;
       margin: -1.5rem -1.5rem 0;
-      background: linear-gradient(180deg, var(--navy-bg) 0%, var(--navy-surface) 40%, var(--navy-bg) 100%);
+      background: var(--navy-bg);
       border-bottom: 2px solid var(--gold);
     }
     .gold-medallion {
@@ -251,9 +238,9 @@
       color: var(--muted);
       letter-spacing: 0.02em;
       padding: 0.35rem 0.75rem;
-      background: linear-gradient(90deg, rgba(212,175,55,0.08) 0%, rgba(212,175,55,0.12) 50%, rgba(212,175,55,0.08) 100%);
+      background: var(--navy-surface);
       border-radius: 4px;
-      border: 1px solid rgba(212, 175, 55, 0.25);
+      border: 1px solid rgba(212, 175, 55, 0.4);
       display: inline-block;
     }
     .dashboard-header { margin-top: 1.5rem; }
@@ -386,8 +373,8 @@
       min-width: 4px;
       transition: width 0.4s ease;
     }
-    .bar-fill.raw { background: linear-gradient(90deg, var(--navy-light), var(--navy-border)); }
-    .bar-fill.processed { background: linear-gradient(90deg, var(--gold-dim), var(--gold)); }
+.bar-fill.raw { background: var(--navy-border); }
+.bar-fill.processed { background: var(--gold); }
     .bar-value {
       width: 90px;
       font-size: 0.85rem;
@@ -429,10 +416,9 @@
       opacity: 0.15;
     }
     .kwas-kwas-shimmer-bar {
-      background: linear-gradient(90deg, var(--navy-surface) 0%, rgba(30, 58, 95, 0.95) 50%, var(--navy-surface) 100%) !important;
-      box-shadow: 0 0 24px rgba(212, 175, 55, 0.25), inset 0 0 30px rgba(44, 82, 130, 0.15) !important;
+      background: var(--navy-surface) !important;
     }
-    .kwas-kwas-shimmer-bar .alert-text { color: var(--gold-bright); }
+    .kwas-kwas-shimmer-bar .alert-text { color: #D4AF37; }
     .kwas-kwas-shimmer {
       background: linear-gradient(90deg, var(--gold-dim) 0%, #e8eef4 25%, var(--gold-bright) 50%, #fff 75%, var(--gold-dim) 100%);
       background-size: 200% auto;
@@ -457,17 +443,14 @@
     }
     .footer-corporate .footer-signature { margin-top: 1.25rem; }
     .glassmorphism {
-      background: rgba(13, 31, 60, 0.55);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+      background: var(--navy-surface);
+      border: 1px solid var(--navy-border);
     }
     .table-wrap.glassmorphism { border-radius: 12px; overflow: hidden; }
-    .table-wrap.glassmorphism table { background: transparent; }
+    .table-wrap.glassmorphism table { background: var(--navy-surface); }
     .table-wrap.glassmorphism th,
-    .table-wrap.glassmorphism td { border-color: rgba(255,255,255,0.06); }
-    .kpi.glassmorphism { border-radius: 10px; border-color: rgba(255,255,255,0.08); }
+    .table-wrap.glassmorphism td { border-color: var(--navy-border); }
+    .kpi.glassmorphism { border-radius: 10px; border-color: var(--navy-border); }
 
     /* Falcon over Nigeria map */
     .falcon-map-wrap {
@@ -533,6 +516,14 @@
       border-radius: 10px;
       text-align: center;
       border-left: 4px solid var(--danger);
+    }
+    /* 8R Stealth Ticker: pulse every 5s — Engine Room live */
+    .moribund-penalty.engine-room-pulse {
+      animation: engine-room-pulse 5s ease-in-out infinite;
+    }
+    @keyframes engine-room-pulse {
+      0%, 88%, 100% { opacity: 1; box-shadow: none; }
+      94% { opacity: 0.92; box-shadow: 0 0 16px rgba(233, 62, 62, 0.4); }
     }
     .moribund-label { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
     .moribund-value { font-size: 1.75rem; font-weight: 800; color: var(--danger); margin-top: 0.25rem; }
@@ -653,7 +644,7 @@
     </header>
 
     <div class="sovereign-activation-alert kwas-kwas-shimmer-bar" role="status" aria-live="polite">
-      <span class="alert-text">Sovereign Activation Alert — 640.00 Mt reserves live · 1,199 MW power potential · 13 states</span>
+      <span class="alert-text">Sovereign Activation Alert — 640.04 Mt reserves live · 1,199 MW power potential · 13 states</span>
     </div>
 
     <p class="last-updated">
@@ -686,7 +677,7 @@
 
     <div class="section-title kwas-kwas-shimmer">Reserves by state — 8R Stealth Paradigm Convergence</div>
     <!-- Sovereign Wealth Leakage: The Cost of Delay (Moribund counter) -->
-    <div class="moribund-penalty glassmorphism">
+    <div class="moribund-penalty glassmorphism engine-room-pulse">
       <div class="moribund-label">Sovereign Wealth Leakage: The Cost of Delay</div>
       <div class="moribund-value" id="moribundCounter">$2.0 B</div>
       <div class="moribund-sub">cumulative loss · sector moribund · $1.4B+ and counting</div>
@@ -912,7 +903,7 @@
 
       var baselineData = {
         summary: {
-          totalProvenReservesMt: 640,
+          totalProvenReservesMt: 640.04,
           powerPotentialMW: 1199,
           statesWithReserves: 13,
           totalProductionCapacityMtpa: 0.02,
@@ -940,10 +931,6 @@
         var s = data.summary;
         var states = data.states || [];
 
-        var d = new Date();
-        d.setFullYear(2026); d.setMonth(2); d.setDate(8);
-        var displayDate = s.lastUpdated || d.toISOString();
-        lastUpdatedEl.textContent = 'Last updated: ' + displayDate.replace('T', ' ').slice(0, 19) + ' UTC';
         totalReservesEl.textContent = formatNum(s.totalProvenReservesMt);
         powerPotentialEl.textContent = formatNum(s.powerPotentialMW);
         statesCountEl.textContent = formatNum(s.statesWithReserves);
@@ -966,12 +953,10 @@
 
       function buildPulsedData() {
         var s = baselineData.summary;
-        var driftMt = 0.05;
-        var driftMw = 2;
         return {
           summary: {
-            totalProvenReservesMt: Math.round((s.totalProvenReservesMt + (Math.random() * 2 * driftMt - driftMt)) * 100) / 100,
-            powerPotentialMW: Math.round(s.powerPotentialMW + (Math.random() * 2 * driftMw - driftMw)),
+            totalProvenReservesMt: 640.04,
+            powerPotentialMW: 1199,
             statesWithReserves: s.statesWithReserves,
             totalProductionCapacityMtpa: s.totalProductionCapacityMtpa,
             lastUpdated: (function () { var t = new Date(); var d = new Date(); d.setFullYear(2026); d.setMonth(2); d.setDate(8); d.setHours(t.getHours(), t.getMinutes(), t.getSeconds(), t.getMilliseconds()); return d.toISOString(); })()
@@ -979,7 +964,7 @@
           states: baselineData.states.map(function (row) {
             return {
               name: row.name,
-              reservesMt: row.reservesMt + (Math.random() * 0.2 - 0.1),
+              reservesMt: row.reservesMt,
               powerPotentialMW: row.powerPotentialMW,
               productionMtpa: row.productionMtpa,
               status: row.status
@@ -1016,6 +1001,16 @@
           window.addEventListener('beforeunload', function () { clearInterval(interval); });
         }
       }
+
+      // Real-Time Timestamp: update Last updated to current UTC every second
+      function updateUtcClock() {
+        if (lastUpdatedEl) {
+          var now = new Date();
+          lastUpdatedEl.textContent = 'Last updated: ' + now.toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
+        }
+      }
+      setInterval(updateUtcClock, 1000);
+      updateUtcClock();
     })();
 
     // --- Animated Falcon: shuttle 13 states, trigger D1-D8, Market Strike Data (Ge $8,597/kg · NH3 $430/MT) ---
