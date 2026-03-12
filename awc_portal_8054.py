@@ -346,6 +346,36 @@ body.gcslc-blur-defend .gcslc-sovereign-strip-top, body.gcslc-blur-defend .gcslc
 <div id="awc-shimmer-wrap">""" + particles_html + """</div>
 """, unsafe_allow_html=True)
 
+# Bubbling GCSLC Watermark Overlay
+st.markdown("""
+<style>
+/* Bubbling GCSLC Watermark Overlay */
+.watermark {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    opacity: 0.15;
+    z-index: 9999;
+    pointer-events: none;
+    font-family: serif;
+    font-size: 12px;
+    color: #FCF6BA;
+}
+@keyframes bubble {
+    0% { transform: translateY(0) scale(1); opacity: 0.1; }
+    50% { transform: translateY(-20px) scale(1.1); opacity: 0.3; }
+    100% { transform: translateY(0) scale(1); opacity: 0.1; }
+}
+.bubble-unit {
+    display: inline-block;
+    animation: bubble 4s infinite ease-in-out;
+}
+</style>
+<div class="watermark">
+    <span class="bubble-unit">© GCSLC SOVEREIGN ASSET - DR. JAAFÀRU SA'AD</span>
+</div>
+""", unsafe_allow_html=True)
+
 # --- Escapeless Cloud UI: synced header (CAC) — GE GNCO ---
 st.markdown(
     '<div class="awc-header-lock" id="gcslc-header-wrap">'
