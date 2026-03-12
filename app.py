@@ -11,7 +11,6 @@ SOVEREIGN_UI = """
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="./NVFC Sovereign Pulse_files/css2" rel="stylesheet">
   <title>GCSLC Sovereign · NRRFC — Nigeria Coal Reserves &amp; NRRF Dashboard</title>
   <meta name="application-name" content="GCSLC Sovereign · NRRFC">
   <meta name="description" content="GCSLC Sovereign: Nigeria Coal Reserves, debt-swap (10% Big Tech Capex vs domestic debt), coal-to-syngas vs diesel. NRRFC 2026.">
@@ -636,6 +635,98 @@ SOVEREIGN_UI = """
       0%, 100% { box-shadow: 0 0 24px rgba(212, 175, 55, 0.5), inset 0 2px 0 rgba(255,255,255,0.3); }
       50% { box-shadow: 0 0 36px rgba(212, 175, 55, 0.7), 0 0 12px rgba(255,255,255,0.2), inset 0 2px 0 rgba(255,255,255,0.4); }
     }
+    /* Inlined from NVFC Sovereign Pulse_files/css2 - Cormorant Garamond */
+    /* cyrillic-ext */
+    @font-face {
+      font-family: 'Cormorant Garamond';
+      font-style: italic;
+      font-weight: 600;
+      font-display: swap;
+      src: url(https://fonts.gstatic.com/s/cormorantgaramond/v21/co3smX5slCNuHLi8bLeY9MK7whWMhyjYrGFEsdtdc62E6zd5LDf-hdM8A_6pUKz9ugk.woff2) format('woff2');
+      unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+    }
+    /* cyrillic */
+    @font-face {
+      font-family: 'Cormorant Garamond';
+      font-style: italic;
+      font-weight: 600;
+      font-display: swap;
+      src: url(https://fonts.gstatic.com/s/cormorantgaramond/v21/co3smX5slCNuHLi8bLeY9MK7whWMhyjYrGFEsdtdc62E6zd5LDf-jNM8A_6pUKz9ugk.woff2) format('woff2');
+      unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+    }
+    /* vietnamese */
+    @font-face {
+      font-family: 'Cormorant Garamond';
+      font-style: italic;
+      font-weight: 600;
+      font-display: swap;
+      src: url(https://fonts.gstatic.com/s/cormorantgaramond/v21/co3smX5slCNuHLi8bLeY9MK7whWMhyjYrGFEsdtdc62E6zd5LDf-h9M8A_6pUKz9ugk.woff2) format('woff2');
+      unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+    }
+    /* latin-ext */
+    @font-face {
+      font-family: 'Cormorant Garamond';
+      font-style: italic;
+      font-weight: 600;
+      font-display: swap;
+      src: url(https://fonts.gstatic.com/s/cormorantgaramond/v21/co3smX5slCNuHLi8bLeY9MK7whWMhyjYrGFEsdtdc62E6zd5LDf-htM8A_6pUKz9ugk.woff2) format('woff2');
+      unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+    }
+    /* latin */
+    @font-face {
+      font-family: 'Cormorant Garamond';
+      font-style: italic;
+      font-weight: 600;
+      font-display: swap;
+      src: url(https://fonts.gstatic.com/s/cormorantgaramond/v21/co3smX5slCNuHLi8bLeY9MK7whWMhyjYrGFEsdtdc62E6zd5LDf-iNM8A_6pUKz9.woff2) format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    /* cyrillic-ext */
+    @font-face {
+      font-family: 'Cormorant Garamond';
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+      src: url(https://fonts.gstatic.com/s/cormorantgaramond/v21/co3umX5slCNuHLi8bLeY9MK7whWMhyjypVO7abI26QOD_iE9KnnOitk9IfqxUYT9.woff2) format('woff2');
+      unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+    }
+    /* cyrillic */
+    @font-face {
+      font-family: 'Cormorant Garamond';
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+      src: url(https://fonts.gstatic.com/s/cormorantgaramond/v21/co3umX5slCNuHLi8bLeY9MK7whWMhyjypVO7abI26QOD_iE9KnDOitk9IfqxUYT9.woff2) format('woff2');
+      unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+    }
+    /* vietnamese */
+    @font-face {
+      font-family: 'Cormorant Garamond';
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+      src: url(https://fonts.gstatic.com/s/cormorantgaramond/v21/co3umX5slCNuHLi8bLeY9MK7whWMhyjypVO7abI26QOD_iE9KnvOitk9IfqxUYT9.woff2) format('woff2');
+      unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+    }
+    /* latin-ext */
+    @font-face {
+      font-family: 'Cormorant Garamond';
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+      src: url(https://fonts.gstatic.com/s/cormorantgaramond/v21/co3umX5slCNuHLi8bLeY9MK7whWMhyjypVO7abI26QOD_iE9KnrOitk9IfqxUYT9.woff2) format('woff2');
+      unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+    }
+    /* latin */
+    @font-face {
+      font-family: 'Cormorant Garamond';
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+      src: url(https://fonts.gstatic.com/s/cormorantgaramond/v21/co3umX5slCNuHLi8bLeY9MK7whWMhyjypVO7abI26QOD_iE9KnTOitk9IfqxUQ.woff2) format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    body { background: #050a15 !important; }
   </style>
 </head>
 <body>
@@ -996,33 +1087,31 @@ SOVEREIGN_UI = """
         };
       }
 
-      if (typeof NigeriaCoalAPI !== 'undefined') {
-        NigeriaCoalAPI.onUpdate(render);
-        setLoading(true);
-        NigeriaCoalAPI.getReserves().then(function (data) {
-          render(data);
-          setLoading(false);
-        }).catch(function () {
-          render(baselineData);
-          setLoading(false);
-          var fallbackInterval = setInterval(function () {
-            var pulsed = buildPulsedData();
-            render(pulsed);
-          }, 5000);
-          window.addEventListener('beforeunload', function () { clearInterval(fallbackInterval); });
-        });
-        var stopPolling = NigeriaCoalAPI.startRealtimePolling(5000);
-        if (typeof window.addEventListener === 'function') {
-          window.addEventListener('beforeunload', function () { stopPolling(); });
+      /* Monolithic API: inlined so no external api.js required (cloud deployment) */
+      var NigeriaCoalAPI = {
+        _cb: null,
+        onUpdate: function (fn) { this._cb = fn; },
+        getReserves: function () { return Promise.resolve(baselineData); },
+        startRealtimePolling: function (ms) {
+          var self = this;
+          var id = setInterval(function () {
+            if (self._cb) self._cb(buildPulsedData());
+          }, ms);
+          return function () { clearInterval(id); };
         }
-      } else {
+      };
+      NigeriaCoalAPI.onUpdate(render);
+      setLoading(true);
+      NigeriaCoalAPI.getReserves().then(function (data) {
+        render(data);
+        setLoading(false);
+      }).catch(function () {
         render(baselineData);
-        var interval = setInterval(function () {
-          render(buildPulsedData());
-        }, 5000);
-        if (typeof window.addEventListener === 'function') {
-          window.addEventListener('beforeunload', function () { clearInterval(interval); });
-        }
+        setLoading(false);
+      });
+      var stopPolling = NigeriaCoalAPI.startRealtimePolling(5000);
+      if (typeof window.addEventListener === 'function') {
+        window.addEventListener('beforeunload', function () { stopPolling(); });
       }
     })();
 
