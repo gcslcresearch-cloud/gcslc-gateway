@@ -2,6 +2,29 @@
 GCSLC Sovereign Gateway — March 12 Monolithic Deployment.
 Self-contained Gradio app. FINAL_UI only. No external assets.
 """
+# Fix Gradio ImportError: huggingface_hub no longer exposes HfFolder
+try:
+    import huggingface_hub
+    if not hasattr(huggingface_hub, "HfFolder"):
+        class HfFolder:
+            @staticmethod
+            def get_token():
+                try:
+                    from huggingface_hub import get_token as _get
+                    return _get()
+                except Exception:
+                    return None
+            @staticmethod
+            def save_token(token):
+                try:
+                    from huggingface_hub import set_token
+                    set_token(token)
+                except Exception:
+                    pass
+        setattr(huggingface_hub, "HfFolder", HfFolder)
+except Exception:
+    pass
+
 import gradio as gr
 
 FINAL_UI = """
