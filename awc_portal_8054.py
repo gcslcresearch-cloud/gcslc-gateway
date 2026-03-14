@@ -126,23 +126,51 @@ def _cached_awc_gateway():
 
 africa_map, continental_logic = _cached_awc_gateway()
 
-# Session state: continental node selection (Eagle's Global Strike)
-if "selected_node" not in st.session_state:
-    st.session_state.selected_node = None  # nigeria | ghana | south_africa | egypt | dubai
-if "pulse_triggered" not in st.session_state:
-    st.session_state.pulse_triggered = False
-if "play_swat" not in st.session_state:
-    st.session_state.play_swat = False
-# Backwards compat
-if "nigeria_selected" not in st.session_state:
-    st.session_state.nigeria_selected = False
-# Generative Agentic Engine v4.0: Autonomous Eagle
-if "autonomous_sniff_enabled" not in st.session_state:
-    st.session_state.autonomous_sniff_enabled = True
-if "autonomous_sniff_index" not in st.session_state:
-    st.session_state.autonomous_sniff_index = 0
+# --- Phase 4 Fused Nodal: single source of truth for continental node + pulse ---
+CONTINENTAL_NODE_IDS = ("nigeria", "ghana", "south_africa", "egypt", "dubai")
+# Node → pulse CSS class (fused map; default sovereign-pulse-active for nigeria/egypt/other)
+NODE_PULSE_CLASS = {
+    "nigeria": "sovereign-pulse-active",
+    "ghana": "pulse-ghana",
+    "dubai": "pulse-dubai",
+    "south_africa": "pulse-south_africa",
+    "egypt": "sovereign-pulse-active",
+}
 
-# Autonomous Sniff: when ?autonomous=1, Eagle performs strike on next $10B+ node (no user input)
+
+def _fused_select_node(node_id: str | None):
+    """Phase 4: single gate for node selection; sets all nodal state and reruns."""
+    st.session_state.selected_node = node_id
+    st.session_state.nigeria_selected = node_id == "nigeria"
+    st.session_state.pulse_triggered = node_id is not None
+    st.session_state.play_swat = node_id is not None
+    st.rerun()
+
+
+def _get_map_container_class(selected_node, pulse_triggered, is_10b_plus_fn):
+    """Fused logic: base glass + optional pulse class + optional radar sweep."""
+    out = "awc-map-glass"
+    if pulse_triggered and selected_node:
+        out += " " + NODE_PULSE_CLASS.get(selected_node, "sovereign-pulse-active")
+    if selected_node and is_10b_plus_fn(selected_node):
+        out += " awc-radar-sweep"
+    return out
+
+
+# Session state: Phase 4 Fused Nodal (single init block)
+_defaults = {
+    "selected_node": None,
+    "pulse_triggered": False,
+    "play_swat": False,
+    "nigeria_selected": False,
+    "autonomous_sniff_enabled": True,
+    "autonomous_sniff_index": 0,
+}
+for key, val in _defaults.items():
+    if key not in st.session_state:
+        st.session_state[key] = val
+
+# Autonomous Sniff: ?autonomous=1 → Eagle strikes next $10B+ node (Phase 4 fused state)
 try:
     qp = st.query_params
     if qp.get("autonomous") == "1":
@@ -150,9 +178,9 @@ try:
         if nodes_10b:
             idx = st.session_state.autonomous_sniff_index % len(nodes_10b)
             st.session_state.selected_node = nodes_10b[idx]
+            st.session_state.nigeria_selected = nodes_10b[idx] == "nigeria"
             st.session_state.pulse_triggered = True
             st.session_state.play_swat = True
-            st.session_state.nigeria_selected = st.session_state.selected_node == "nigeria"
             st.session_state.autonomous_sniff_index = idx + 1
         try:
             del qp["autonomous"]
@@ -253,6 +281,15 @@ section[data-testid="stSidebar"] h2, section[data-testid="stSidebar"] h3 {
 /* Deep Navy background; content above particles */
 .stApp, [data-testid="stAppViewContainer"] { background-color: #001a33 !important; min-height: 100vh; }
 .main .block-container { background-color: transparent !important; position: relative; z-index: 1; }
+
+/* Phase 4: Glassmorphism design tokens (4K-friendly) */
+.stApp {
+    --awc-glass-blur: 12px;
+    --awc-glass-radius: 16px;
+    --awc-glass-border: 1px solid rgba(255, 215, 0, 0.25);
+    --awc-glass-bg: rgba(0, 26, 51, 0.15);
+    --awc-glass-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+}
 /* Gold Shimmer keyframes */
 @keyframes awc-float {
     0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.7; }
@@ -260,8 +297,16 @@ section[data-testid="stSidebar"] h2, section[data-testid="stSidebar"] h3 {
     50% { transform: translate(-5px, -25px) scale(0.9); opacity: 0.9; }
     75% { transform: translate(-15px, -10px) scale(1.1); opacity: 0.85; }
 }
-/* Glassmorphism: 85% transparent map container */
-.awc-map-glass { background: rgba(0, 26, 51, 0.15); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-radius: 16px; border: 1px solid rgba(255, 215, 0, 0.25); box-shadow: inset 0 1px 0 rgba(255,255,255,0.08); position: relative; }
+/* Glassmorphism: Phase 4 fused — design tokens for 4K polish */
+.awc-map-glass {
+    background: var(--awc-glass-bg, rgba(0, 26, 51, 0.15));
+    backdrop-filter: blur(var(--awc-glass-blur, 12px));
+    -webkit-backdrop-filter: blur(var(--awc-glass-blur, 12px));
+    border-radius: var(--awc-glass-radius, 16px);
+    border: var(--awc-glass-border, 1px solid rgba(255, 215, 0, 0.25));
+    box-shadow: var(--awc-glass-shadow, inset 0 1px 0 rgba(255,255,255,0.08));
+    position: relative;
+}
 /* IP Shield: Proprietary Methodology watermark (8R Stealth Paradigm — screen-grab protection) */
 .gcslc-proprietary-watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%) rotate(-22deg); font-size: 1.4rem; font-weight: 700; color: rgba(212,175,55,0.18); pointer-events: none; white-space: nowrap; letter-spacing: 0.2em; text-transform: uppercase; z-index: 2; }
 /* Sovereign Stamp: persistent non-scrollable footer (CAC + Chairman Lock) */
@@ -366,6 +411,32 @@ body.gcslc-blur-defend [data-testid="stAppViewContainer"] { filter: blur(14px); 
 body.gcslc-blur-defend .gcslc-sovereign-strip-top, body.gcslc-blur-defend .gcslc-sovereign-strip-bottom { display: block !important; }
 .gcslc-header-opportunity-pulse { animation: gcslc-gold-pulse 0.6s ease-in-out 4; }
 @keyframes gcslc-gold-pulse { 0%, 100% { filter: brightness(1); box-shadow: 0 0 0 rgba(255,215,0,0); } 50% { filter: brightness(1.4); box-shadow: 0 0 24px rgba(255,215,0,0.8); } }
+
+/* 4K display: Phase 4 Glassmorphism polish — stronger blur, larger radius, scaled typography */
+@media (min-width: 2560px) {
+    .stApp {
+        --awc-glass-blur: 24px;
+        --awc-glass-radius: 24px;
+        --awc-glass-border: 2px solid rgba(255, 215, 0, 0.28);
+        --awc-glass-bg: rgba(0, 26, 51, 0.12);
+        --awc-glass-shadow: inset 0 2px 0 rgba(255,255,255,0.1), 0 8px 32px rgba(0,0,0,0.2);
+    }
+    .awc-map-glass { min-height: 360px; padding: 1.25rem; }
+    .awc-determinant-popup {
+        border-radius: 20px;
+        backdrop-filter: blur(var(--awc-glass-blur));
+        -webkit-backdrop-filter: blur(var(--awc-glass-blur));
+        padding: 1.25rem 1.5rem;
+    }
+    [data-testid="stExpander"] {
+        border-radius: 16px !important;
+        border-width: 2px !important;
+    }
+    .shimmer-gold { font-size: clamp(42px, 2.8vw, 52px) !important; }
+    .top-banner { font-size: clamp(22px, 1.4vw, 28px) !important; }
+    .chairman-lock { font-size: clamp(20px, 1.3vw, 26px) !important; }
+    .awc-prism-card, .awc-lab-panel { border-radius: 14px; }
+}
 </style>
 <div id="awc-shimmer-wrap">""" + particles_html + """</div>
 """, unsafe_allow_html=True)
@@ -538,37 +609,19 @@ with st.sidebar:
             st.caption(f"Primary corridor: **{cassava.get('corridor', 'Abuja-Zaria-Kano')}** — Sovereign AI Factories.")
     st.markdown("---")
     st.write("### Continental Nodes")
-    if st.button("🇳🇬 Nigeria", key="btn_nigeria"):
-        st.session_state.selected_node = "nigeria"
-        st.session_state.nigeria_selected = True
-        st.session_state.pulse_triggered = True
-        st.session_state.play_swat = True
-        st.rerun()
-    if st.button("🇬🇭 Ghana", key="btn_ghana"):
-        st.session_state.selected_node = "ghana"
-        st.session_state.pulse_triggered = True
-        st.session_state.play_swat = True
-        st.rerun()
-    if st.button("🇿🇦 South Africa", key="btn_south_africa"):
-        st.session_state.selected_node = "south_africa"
-        st.session_state.pulse_triggered = True
-        st.session_state.play_swat = True
-        st.rerun()
-    if st.button("🇪🇬 Egypt", key="btn_egypt"):
-        st.session_state.selected_node = "egypt"
-        st.session_state.pulse_triggered = True
-        st.session_state.play_swat = True
-        st.rerun()
-    if st.button("🇦🇪 Dubai (UAE)", key="btn_dubai"):
-        st.session_state.selected_node = "dubai"
-        st.session_state.pulse_triggered = True
-        st.session_state.play_swat = True
-        st.rerun()
+    # Phase 4 Fused Nodal: single gate per node
+    _node_labels = (
+        ("nigeria", "🇳🇬 Nigeria"),
+        ("ghana", "🇬🇭 Ghana"),
+        ("south_africa", "🇿🇦 South Africa"),
+        ("egypt", "🇪🇬 Egypt"),
+        ("dubai", "🇦🇪 Dubai (UAE)"),
+    )
+    for nid, label in _node_labels:
+        if st.button(label, key=f"btn_{nid}"):
+            _fused_select_node(nid)
     if st.button("Clear selection", key="btn_clear"):
-        st.session_state.selected_node = None
-        st.session_state.nigeria_selected = False
-        st.session_state.pulse_triggered = False
-        st.rerun()
+        _fused_select_node(None)
     st.caption("Eagle's Talon: any node → map centers on country + play_swat (180 Hz → 40 Hz) on strike.")
     st.session_state.autonomous_sniff_enabled = st.checkbox(
         "**Agentic Eagle** (Autonomous Sniffer)", value=st.session_state.autonomous_sniff_enabled, key="agentic_eagle"
@@ -582,11 +635,14 @@ with st.sidebar:
         st.markdown(continental_logic.INVESTOR_MANIFESTO)
     with st.expander("**Doctor vs. Pharmacist**", expanded=False):
         st.markdown(continental_logic.DOCTOR_VS_PHARMACIST)
-    # Strategic Doctrine: show when CEO interacts (i.e. when $10B+ node selected — eagle has struck)
-    _ceo_interaction = bool(st.session_state.selected_node and continental_logic.is_10b_plus_opportunity(st.session_state.selected_node))
-    with st.expander("**Strategic Doctrine (CEO Brief)**", expanded=_ceo_interaction):
+    # Phase 4: single gate for $10B+ strike (CEO + Silicon expanders)
+    _is_10b_strike = bool(
+        st.session_state.selected_node
+        and continental_logic.is_10b_plus_opportunity(st.session_state.selected_node)
+    )
+    with st.expander("**Strategic Doctrine (CEO Brief)**", expanded=_is_10b_strike):
         st.markdown(continental_logic.STRATEGIC_DOCTRINE_CEO)
-        if _ceo_interaction:
+        if _is_10b_strike:
             st.caption("AI models are moribund without physical asset grounding. This node secures the anchor.")
     st.markdown("---")
     st.write("### D3-Alpha Cross-Border (8R Paradigm)")
@@ -601,9 +657,7 @@ with st.sidebar:
         "Retain (D8): Sovereign retention flows through UAE strategic partner nodes."
     )
     st.markdown("---")
-    # Silicon Valley Strategic Intent — auto-open when $10B+ gap revealed
-    _expanded_silicon = bool(st.session_state.selected_node and continental_logic.is_10b_plus_opportunity(st.session_state.selected_node))
-    with st.expander("**Silicon Valley Strategic Intent**", expanded=_expanded_silicon):
+    with st.expander("**Silicon Valley Strategic Intent**", expanded=_is_10b_strike):
         st.markdown(continental_logic.ENERGY_MINERAL_SHIELD)
         st.markdown("---")
         st.markdown(continental_logic.SANTIAGO_COMPLIANCE)
@@ -619,21 +673,11 @@ st.write("### The Sovereign Glass — Continental View")
 st.caption("**GCSLC Sovereign Diagnostic** | **Live Eagle Engine:** Sniffer hovers over map → on node click, high-velocity **Talon Strike** with **play_swat** 180 Hz audio sync. ($10B+ nodes: golden radar sweep.)")
 # Talon Lock 100%: Force Sovereign Glass fallback so nodes always appear (GPU/WebGL disabled or not)
 st.markdown(SOVEREIGN_GLASS_MAP_FALLBACK_HTML, unsafe_allow_html=True)
-map_container_class = "awc-map-glass"
-if st.session_state.pulse_triggered and st.session_state.selected_node:
-    if st.session_state.selected_node == "nigeria":
-        map_container_class += " sovereign-pulse-active"
-    elif st.session_state.selected_node == "ghana":
-        map_container_class += " pulse-ghana"
-    elif st.session_state.selected_node == "dubai":
-        map_container_class += " pulse-dubai"
-    elif st.session_state.selected_node == "south_africa":
-        map_container_class += " pulse-south_africa"
-    else:
-        map_container_class += " sovereign-pulse-active"  # Egypt / fallback
-# 5km: Golden radar sweep when $10B+ opportunity (before strike)
-if st.session_state.selected_node and continental_logic.is_10b_plus_opportunity(st.session_state.selected_node):
-    map_container_class += " awc-radar-sweep"
+map_container_class = _get_map_container_class(
+    st.session_state.selected_node,
+    st.session_state.pulse_triggered,
+    continental_logic.is_10b_plus_opportunity,
+)
 # Build deck; if .json/data or import missing, deck is None — use inline fallback
 try:
     deck = africa_map.build_africa_deck(selected_node=st.session_state.selected_node, opacity=0.85)
