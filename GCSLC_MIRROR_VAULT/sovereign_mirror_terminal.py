@@ -147,9 +147,9 @@ st.markdown(
     background: rgba(0,0,51,0.9);
 }
 
-/* Hide audio players — integrated system response */
+/* Captain: hide audio component entirely so sound feels like integrated system response, not a website playing a media file */
 [data-testid="stAudio"], .stAudio, .element-container:has(audio) { display: none !important; }
-audio { display: none !important; visibility: hidden !important; position: absolute !important; width: 0 !important; height: 0 !important; }
+audio { display: none !important; }
 </style>
 """,
     unsafe_allow_html=True,
@@ -288,23 +288,30 @@ d8_html = "".join(
 )
 st.markdown(f'<div class="d8-row">{d8_html}</div>', unsafe_allow_html=True)
 
-# --- 5. Audio-Visual Handshake: Initiate → Eagle Cry; Sovereign Scan → HUD loop ---
+# --- 5. Cinematic Soundscape (Professional Integration) ---
+# Captain: Streamlit renders a visible player by default. Hide the component entirely using CSS
+# so the sound feels like an integrated system response, not a website playing a media file.
+st.markdown('<style>audio { display: none; }</style>', unsafe_allow_html=True)
+
 st.markdown("#### Sovereign Scan")
-initiate = st.button("**Initiate** — Cinematic Eagle Cry", type="primary")
+# The Handshake (Eagle): autoplay=True triggered by button to satisfy browser security (user gesture required)
+initiate = st.button("**INITIATE SOVEREIGN SCAN**", type="primary")
 if initiate:
     st.session_state.initiate_triggered = True
     st.rerun()
 
 if st.session_state.initiate_triggered:
+    # The Handshake (Eagle): Cinematic Eagle Cry — autoplay once
     if os.path.isfile(EAGLE_CRY_PATH):
         with open(EAGLE_CRY_PATH, "rb") as f:
             st.audio(f.read(), format="audio/mp3", autoplay=True, key="eagle_handshake")
+    # The Scan (HUD Chirps): Futuristic HUD Sound Design — loop during data-processing phase
     if os.path.isfile(HUD_CHIRP_PATH):
         with open(HUD_CHIRP_PATH, "rb") as f:
             st.audio(f.read(), format="audio/mp3", autoplay=True, loop=True, key="hud_scan")
-    st.caption("Eagle Cry (once) + HUD Sound (looping during Sovereign Scan). Players hidden.")
+    st.caption("Eagle handshake + HUD scan active. Audio components hidden for integrated experience.")
 else:
-    st.caption("Click **Initiate** to play the Cinematic Eagle Cry and start the Futuristic HUD Sound (SWAT-style chirping).")
+    st.caption("Click **INITIATE SOVEREIGN SCAN** to play the Eagle Cry and Futuristic HUD Sound.")
 
 # --- 6. Signature & Credibility ---
 st.markdown('<div class="footer-left">GCSLC / LTD / GTE</div>', unsafe_allow_html=True)
