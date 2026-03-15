@@ -7,14 +7,10 @@ Ido ba mudu bane amma yasan kima. Duniya a ido take.
 """
 
 import base64
-import io
-import json
 import os
 import struct
 import sys
 import math
-import zipfile
-import urllib.request
 
 import streamlit as st
 
@@ -24,14 +20,23 @@ _BASE = os.path.dirname(_VAULT)
 if _BASE not in sys.path:
     sys.path.insert(0, _BASE)
 ASSETS = os.path.join(_BASE, "assets")
-DATA_DIR = os.path.join(_VAULT, "data")
-NGA_ADM1_CACHE = os.path.join(DATA_DIR, "nga_admin1.geojson")
-HDX_NGA_GEOJSON_ZIP = (
-    "https://data.humdata.org/dataset/81ac1d38-f603-4a98-804d-325c658599a3/"
-    "resource/7e30ec96-7f29-4ee8-9f4c-77633b353cbb/download/nga_admin_boundaries.geojson.zip"
-)
 EAGLE_AUDIO_PATH = os.path.join(ASSETS, "eagle_swat_fusion.mp3")
 HUD_AUDIO_PATH = os.path.join(ASSETS, "hud_chirps.mp3")
+
+# High-performance Nigeria state center points (36 States + FCT) — no external download
+# Format: (name, lat, lon); strategic 13 get golden pulsing orbs
+NIGERIA_STATE_CENTERS = [
+    ("Abia", 5.45, 7.50), ("Adamawa", 9.20, 12.50), ("Akwa Ibom", 5.00, 7.85), ("Anambra", 6.20, 7.00),
+    ("Bauchi", 10.30, 9.80), ("Bayelsa", 4.75, 6.25), ("Benue", 7.73, 8.90), ("Borno", 11.80, 13.00),
+    ("Cross River", 5.90, 8.35), ("Delta", 5.90, 6.20), ("Ebonyi", 6.25, 8.10), ("Edo", 6.30, 6.00),
+    ("Ekiti", 7.60, 5.20), ("Enugu", 6.45, 7.50), ("Abuja", 9.06, 7.49), ("Gombe", 10.25, 11.17),
+    ("Imo", 5.50, 7.00), ("Jigawa", 12.00, 9.75), ("Kaduna", 10.50, 7.45), ("Kano", 11.99, 8.52),
+    ("Katsina", 12.99, 7.60), ("Kebbi", 11.24, 4.23), ("Kogi", 7.80, 6.75), ("Kwara", 8.50, 4.50),
+    ("Lagos", 6.45, 3.40), ("Nasarawa", 8.50, 8.20), ("Niger", 9.60, 6.00), ("Ogun", 7.00, 3.50),
+    ("Ondo", 7.25, 5.20), ("Osun", 7.60, 4.50), ("Oyo", 8.00, 4.00), ("Plateau", 9.90, 9.00),
+    ("Rivers", 4.85, 6.90), ("Sokoto", 13.06, 5.23), ("Taraba", 7.87, 10.77), ("Yobe", 11.75, 11.97),
+    ("Zamfara", 12.17, 6.22),
+]
 
 
 def _minimal_chirp_wav_base64():
@@ -53,53 +58,6 @@ def _minimal_chirp_wav_base64():
     chunk += b"fmt " + struct.pack("<IHHIIHH", 16, 1, 1, rate, rate, 1, 8)
     chunk += b"data" + struct.pack("<I", len(data)) + data
     return base64.b64encode(chunk).decode("ascii")
-
-
-def _get_nigeria_adm1_geojson():
-    """
-    Load Nigeria 36 States + FCT GeoJSON from cache or HDX (OCHA/OSGOF).
-    Returns a GeoJSON dict (FeatureCollection). Mission-critical: real GeoJSON only.
-    """
-    os.makedirs(DATA_DIR, exist_ok=True)
-    if os.path.isfile(NGA_ADM1_CACHE):
-        try:
-            with open(NGA_ADM1_CACHE, "r", encoding="utf-8") as f:
-                data = json.load(f)
-            for feat in data.get("features", []):
-                p = feat.get("properties", {})
-                if (p.get("adm1_name") or "").strip() in ("Federal Capital Territory", "FCT", "Federal Capital"):
-                    p["adm1_name"] = "Abuja"
-            return data
-        except (json.JSONDecodeError, OSError):
-            pass
-    try:
-        with urllib.request.urlopen(HDX_NGA_GEOJSON_ZIP, timeout=60) as resp:
-            z = zipfile.ZipFile(io.BytesIO(resp.read()), "r")
-            for name in ("nga_admin1.geojson", "nga_admin1_em.geojson"):
-                if name in z.namelist():
-                    with z.open(name) as f:
-                        data = json.loads(f.read().decode("utf-8"))
-                    break
-            else:
-                raise FileNotFoundError("No ADM1 GeoJSON in zip")
-    except Exception as e:
-        raise RuntimeError(
-            "Sovereign Terrestrial Base requires Nigeria ADM1 GeoJSON. "
-            "Download from HDX (data.humdata.org/dataset/81ac1d38-f603-4a98-804d-325c658599a3) "
-            f"and extract nga_admin1.geojson to {NGA_ADM1_CACHE}. Error: {e}"
-        ) from e
-    # Normalize state names: FCT -> Abuja
-    for feat in data.get("features", []):
-        props = feat.get("properties", {})
-        name = (props.get("adm1_name") or "").strip()
-        if name in ("Federal Capital Territory", "FCT", "Federal Capital"):
-            props["adm1_name"] = "Abuja"
-    try:
-        with open(NGA_ADM1_CACHE, "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False)
-    except OSError:
-        pass
-    return data
 
 
 st.set_page_config(
@@ -154,31 +112,17 @@ if not st.session_state.sovereign_authenticated:
     st.caption("Galadiman Ruwa Center (GCSLC) LTD/GTE · Authorized personnel only.")
     st.stop()
 
-# 36 states + Abuja (37 territories)
-TERRITORIES = [
-    "Abia", "Adamawa", "Akwa Ibom", "Anambra", "Bauchi", "Bayelsa", "Benue", "Borno",
-    "Cross River", "Delta", "Ebonyi", "Edo", "Ekiti", "Enugu", "Gombe", "Imo",
-    "Jigawa", "Kaduna", "Kano", "Katsina", "Kebbi", "Kogi", "Kwara", "Lagos",
-    "Nasarawa", "Niger", "Ogun", "Ondo", "Osun", "Oyo", "Plateau", "Rivers",
-    "Sokoto", "Taraba", "Yobe", "Zamfara", "Abuja",
-]
+TERRITORIES = [t[0] for t in NIGERIA_STATE_CENTERS]
 STRATEGIC_13 = {"Enugu", "Kogi", "Gombe", "Benue", "Delta", "Nasarawa", "Anambra", "Plateau", "Adamawa", "Edo", "Bauchi", "Kwara", "Imo"}
 D8 = ["D1: Refine", "D2: Reset", "D3: Research", "D4: Restructure", "D5: Resuscitate", "D6: Revitalize", "D7: Re-engineer", "D8: Retain"]
 
 NAVY = "#000033"
-NAVY_RGB = "0, 0, 51"
 GOLD = "#D4AF37"
 WHITE = "#f8f8ff"
 FLARE_STRATEGIC = "639.3M MT Reserves | 1.2GW Potential | $170.85B Valuation"
 selected_territory = st.query_params.get("state")
 if selected_territory and selected_territory not in TERRITORIES:
     selected_territory = None
-
-# Folium for real GeoJSON map (Sovereign Terrestrial Ground-Base)
-try:
-    import folium
-except ImportError:
-    folium = None
 
 # ---------- GLOBAL STYLES: Golden Navy Blue & White, Goldman, calligraphy, prism, security ----------
 st.markdown(
@@ -192,13 +136,13 @@ st.markdown(
 .stApp, [data-testid="stAppViewContainer"], .main .block-container { background: var(--navy) !important; }
 .main .block-container { padding: 0.6rem 1rem 6rem; max-width: 100%; }
 
-/* 1. Institutional Header — The Command: calligraphy + branding */
+/* 1. Institutional Header — Gold calligraphy with serif fallback (accuracy over broken shimmer) */
 .cmd-heading {
-    font-family: 'Goldman', serif;
+    font-family: 'Goldman', Georgia, 'Times New Roman', serif;
     font-size: clamp(1.6rem, 4vw, 2.4rem);
     font-weight: 700;
     text-align: center;
-    color: var(--gold);
+    color: var(--gold) !important;
     text-shadow: 0 0 24px rgba(212,175,55,0.5);
     letter-spacing: 0.06em;
     margin-bottom: 0.25rem;
@@ -209,9 +153,12 @@ st.markdown(
     background-clip: text;
     animation: shimmer 4s ease-in-out infinite;
 }
+@supports (not (-webkit-background-clip: text)) {
+    .cmd-heading { -webkit-text-fill-color: var(--gold); color: var(--gold); }
+}
 @keyframes shimmer { 0%,100% { background-position: 0% center; } 50% { background-position: 100% center; } }
 .branding {
-    font-family: 'Goldman', sans-serif;
+    font-family: 'Goldman', Georgia, 'Times New Roman', serif;
     font-size: clamp(0.85rem, 1.8vw, 1.05rem);
     text-align: center;
     color: var(--gold-subtle);
@@ -224,18 +171,18 @@ st.markdown(
 .pulse-cell .tz { font-size: 0.7rem; opacity: 0.9; }
 .pulse-cell .time { font-weight: 700; }
 
-/* 2. Terrestrial Ground-Base — live-mode map: prism frame on every state territory, 13 strategic in golden */
-.map-wrap { position: relative; width: 100%; margin: 1rem 0; }
-#nigeria-svg { width: 100%; height: auto; max-height: 440px; }
-.prism-frame { filter: drop-shadow(0 0 14px rgba(212,175,55,0.35)); }
-.state-region { cursor: pointer; transition: all 0.2s; }
-.state-region:hover { filter: brightness(1.15); }
-.state-region .state-glow { filter: url(#prism-state); }
-.state-region.strategic .state-glow { animation: golden-pulse 2s ease-in-out infinite; }
-@keyframes golden-pulse { 0%,100% { filter: url(#prism-state) drop-shadow(0 0 8px rgba(212,175,55,0.6)); } 50% { filter: url(#prism-state) drop-shadow(0 0 20px rgba(212,175,55,0.95)); } }
-/* GEC: Eagle moving inside map */
-.eagle-moving { position: absolute; left: 50%; top: 45%; transform: translate(-50%,-50%); pointer-events: none; animation: eagle-float 8s ease-in-out infinite; }
-@keyframes eagle-float { 0%,100% { transform: translate(-50%,-50%) translateX(0) translateY(0); } 25% { transform: translate(-50%,-50%) translateX(30px) translateY(-20px); } 50% { transform: translate(-50%,-50%) translateX(-20px) translateY(15px); } 75% { transform: translate(-50%,-50%) translateX(15px) translateY(10px); } }
+/* 2. Terrestrial Ground-Base — Prism frame: visible border-glow around map (force-visible, no external deps) */
+.map-wrap { position: relative; width: 100%; margin: 1rem 0; min-height: 420px; }
+.terrestrial-prism, [data-testid="stPydeckChart"] {
+    border: 3px solid var(--gold) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 0 20px rgba(212,175,55,0.5), inset 0 0 20px rgba(0,0,51,0.3) !important;
+    background: var(--navy) !important;
+    min-height: 420px !important;
+}
+/* GEC Eagle — visible over/next to map */
+.eagle-moving { display: block; margin: 0.5rem auto; animation: eagle-float 8s ease-in-out infinite; }
+@keyframes eagle-float { 0%,100% { transform: translateX(0) translateY(0); } 25% { transform: translateX(15px) translateY(-10px); } 50% { transform: translateX(-10px) translateY(8px); } 75% { transform: translateX(8px) translateY(5px); } }
 
 /* 3. Speedometer: needle at $170.8B, numbers pop up/down */
 .gauge-wrap { margin: 1rem auto; max-width: 460px; }
@@ -347,68 +294,65 @@ st.components.v1.html(
     height=56,
 )
 
-# ---------- 2. THE TERRESTRIAL GROUND-BASE — Real GeoJSON map (Folium), Navy/Gold, 13 strategic, GEC overlay ----------
+# ---------- 2. THE TERRESTRIAL GROUND-BASE — PyDeck (hardcoded state centers); prism border; no external GeoJSON ----------
 st.markdown("#### The Terrestrial Ground-Base — Live Map (36 States + FCT)")
-geojson_data = _get_nigeria_adm1_geojson()
-
-if folium is not None:
-    def _style_fn(feature):
-        name = (feature.get("properties") or {}).get("adm1_name") or ""
-        is_strategic = name in STRATEGIC_13
-        return {
-            "fillColor": GOLD if is_strategic else NAVY,
-            "color": GOLD,
-            "weight": 2,
-            "fillOpacity": 0.65 if is_strategic else 0.4,
-            "opacity": 1,
-        }
-
-    for f in geojson_data.get("features", []):
-        p = f.setdefault("properties", {})
-        p["_flare"] = FLARE_STRATEGIC if (p.get("adm1_name") or "") in STRATEGIC_13 else "Territorial node."
-
-    tooltip = folium.features.GeoJsonTooltip(
-        fields=["adm1_name", "_flare"],
-        aliases=["State", ""],
-        localize=True,
-        labels=True,
-        style="font-family: Goldman, sans-serif; background: #000033; color: #D4AF37; border: 1px solid #D4AF37; font-size: 12px;",
+map_ok = False
+try:
+    import pandas as pd
+    import pydeck as pdk
+    rows = []
+    for name, lat, lon in NIGERIA_STATE_CENTERS:
+        is_strat = name in STRATEGIC_13
+        r, g, b = (212, 175, 55) if is_strat else (0, 0, 51)
+        rows.append({
+            "name": name,
+            "lat": lat,
+            "lon": lon,
+            "radius": 45000 if is_strat else 25000,
+            "r": r, "g": g, "b": b,
+            "tooltip": FLARE_STRATEGIC if is_strat else "Territorial node.",
+        })
+    state_df = pd.DataFrame(rows)
+    layer = pdk.Layer(
+        "ScatterplotLayer",
+        state_df,
+        get_position=["lon", "lat"],
+        get_radius="radius",
+        get_fill_color="[r, g, b]",
+        get_line_color=[212, 175, 55],
+        line_width_min_pixels=2,
+        pickable=True,
+        opacity=0.85,
     )
-    m = folium.Map(
-        location=[9.08, 8.68],
-        zoom_start=5.5,
-        tiles=None,
-        max_bounds=[[3.9, 2.7], [14.0, 14.6]],
-        min_zoom=5,
-        max_zoom=10,
-        control_scale=True,
+    view = pdk.ViewState(latitude=9.08, longitude=8.68, zoom=5.2, pitch=0)
+    deck = pdk.Deck(
+        layers=[layer],
+        initial_view_state=view,
+        map_style="mapbox://styles/mapbox/dark-v10",
+        tooltip={"html": "<b>{name}</b><br/>{tooltip}", "style": {"background": "#000033", "color": "#D4AF37", "border": "1px solid #D4AF37"}},
     )
-    folium.TileLayer("CartoDB dark_matter", attr="CartoDB", name="Navy base").add_to(m)
-    folium.GeoJson(
-        geojson_data,
-        style_function=_style_fn,
-        name="Nigeria States",
-        overlay=True,
-        tooltip=tooltip,
-    ).add_to(m)
-    m_html = m._repr_html_()
-else:
-    m_html = "<p>Folium required for Terrestrial Base. pip install folium</p>"
-
-# Embed map via data URI (real GeoJSON rendered by Folium); GEC Eagle overlay on top
-m_b64 = base64.b64encode(m_html.encode("utf-8")).decode("ascii")
-st.components.v1.html(
-    f"""
-    <div class="map-wrap prism-frame" style="position:relative; width:100%; height:480px;">
-        <iframe src="data:text/html;base64,{m_b64}" style="width:100%; height:100%; border:2px solid #D4AF37; border-radius:8px;" referrerpolicy="no-referrer" title="Nigeria map"></iframe>
-        <div class="eagle-moving" aria-hidden="true" style="position:absolute; left:50%; top:45%; transform:translate(-50%,-50%); pointer-events:none; z-index:999;">
-            <svg width="56" height="40" viewBox="0 0 56 40"><ellipse cx="28" cy="20" rx="14" ry="10" fill="#D4AF37" stroke="#B8860B" stroke-width="1"/>
-            <path d="M18 16 L28 12 L38 16" stroke="#B8860B" fill="none"/><circle cx="24" cy="18" r="2" fill="#1a1a1a"/><circle cx="32" cy="18" r="2" fill="#1a1a1a"/></svg>
-        </div>
-    </div>
-    """,
-    height=490,
-)
+    st.pydeck_chart(deck, use_container_width=True, height=420)
+    map_ok = True
+except Exception:
+    # Fallback: no blank box — solid ground + GEC eagle visible
+    st.markdown(
+        '<div class="terrestrial-prism" style="padding:1.5rem; min-height:320px;">'
+        '<p style="color:#D4AF37; font-family: Georgia, serif; font-weight: bold;">Nigeria — 36 States + FCT</p>'
+        '<p style="color:rgba(212,175,55,0.9); font-size:0.9rem;">13 Strategic (Golden): ' + ", ".join(sorted(STRATEGIC_13)) + "</p>"
+        '<p style="color:rgba(248,248,255,0.8); font-size:0.85rem;">' + FLARE_STRATEGIC + "</p>"
+        '<div class="eagle-moving" style="text-align:center; margin-top:1rem;"><svg width="56" height="40" viewBox="0 0 56 40"><ellipse cx="28" cy="20" rx="14" ry="10" fill="#D4AF37" stroke="#B8860B" stroke-width="1"/><path d="M18 16 L28 12 L38 16" stroke="#B8860B" fill="none"/><circle cx="24" cy="18" r="2" fill="#1a1a1a"/><circle cx="32" cy="18" r="2" fill="#1a1a1a"/></svg></div>'
+        '<p style="color:rgba(212,175,55,0.7); font-size:0.8rem;">Prism frame active. PyDeck fallback.</p>'
+        '</div>',
+        unsafe_allow_html=True,
+    )
+if map_ok:
+    st.markdown(
+        '<div class="eagle-moving" aria-hidden="true" style="text-align:center;">'
+        '<svg width="56" height="40" viewBox="0 0 56 40"><ellipse cx="28" cy="20" rx="14" ry="10" fill="#D4AF37" stroke="#B8860B" stroke-width="1"/>'
+        '<path d="M18 16 L28 12 L38 16" stroke="#B8860B" fill="none"/><circle cx="24" cy="18" r="2" fill="#1a1a1a"/><circle cx="32" cy="18" r="2" fill="#1a1a1a"/></svg>'
+        '</div>',
+        unsafe_allow_html=True,
+    )
 
 # Flare message from URL param (click-through from map or sidebar)
 if selected_territory and selected_territory in STRATEGIC_13:
@@ -497,7 +441,7 @@ st.markdown('<style>audio, [data-testid="stAudio"], .element-container:has(audio
 initiate = st.button("**INITIATE** — Cinematic Eagle / Falcon (Security Agency Effect)", type="primary")
 if initiate:
     st.session_state.initiate_triggered = True
-    st.rerun()
+    # No rerun: eagle cries in same run to confirm system alive immediately
 
 if st.session_state.initiate_triggered:
     if os.path.isfile(EAGLE_AUDIO_PATH):
