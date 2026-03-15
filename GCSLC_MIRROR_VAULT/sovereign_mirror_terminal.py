@@ -1,16 +1,16 @@
 """
-Sovereign Mirror Gateway — Diligence & Honor Directive
-Institutional Master Order. Rebuilt from blank slate.
+Sovereign High-Velocity Nodal Mirror — System Directive: Start Fresh. Zero Omissions. Institutional Accuracy Only.
 Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC) LTD/GTE.
 © 2026 GCSLC. Chairman & Founder: Dr. Sa'ad Jaafaru.
 Launch: streamlit run GCSLC_MIRROR_VAULT/sovereign_mirror_terminal.py --server.port 8056
-Ido ba mudu bane amma yasan kima.
+Duniya a ido take.
 """
 
+import base64
 import os
+import struct
 import sys
 import math
-import time
 
 import streamlit as st
 
@@ -21,6 +21,28 @@ if _BASE not in sys.path:
     sys.path.insert(0, _BASE)
 ASSETS = os.path.join(_BASE, "assets")
 EAGLE_AUDIO_PATH = os.path.join(ASSETS, "eagle_swat_fusion.mp3")
+HUD_AUDIO_PATH = os.path.join(ASSETS, "hud_chirps.mp3")
+
+
+def _minimal_chirp_wav_base64():
+    """Generate a short SWAT-style digital chirp (two beeps) as WAV base64 for HUD loop."""
+    rate = 8000
+    duration = 0.5  # seconds
+    n = int(rate * duration)
+    freq = 880
+    samples = []
+    for i in range(n):
+        t = i / rate
+        # Two short beeps
+        env = 1.0 if (0.05 < t % 0.2 < 0.12) or (0.15 < t % 0.2 < 0.22) else 0.0
+        v = int(127 + 80 * env * math.sin(2 * math.pi * freq * t))
+        samples.append(max(0, min(255, v)))
+    data = bytes(samples)
+    # WAV header: 44 bytes
+    chunk = b"RIFF" + struct.pack("<I", 36 + len(data)) + b"WAVE"
+    chunk += b"fmt " + struct.pack("<IHHIIHH", 16, 1, 1, rate, rate, 1, 8)
+    chunk += b"data" + struct.pack("<I", len(data)) + data
+    return base64.b64encode(chunk).decode("ascii")
 
 st.set_page_config(
     page_title="Sovereign High-Velocity Nodal — GCSLC",
@@ -65,6 +87,7 @@ st.markdown(
 @import url('https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap');
 
 :root { --navy: #000033; --gold: #D4AF37; --gold-subtle: rgba(212,175,55,0.75); --white: #f8f8ff; }
+/* Golden Navy Blue & crisp White palette — institutional accuracy */
 
 .stApp, [data-testid="stAppViewContainer"], .main .block-container { background: var(--navy) !important; }
 .main .block-container { padding: 0.6rem 1rem 6rem; max-width: 100%; }
@@ -101,14 +124,15 @@ st.markdown(
 .pulse-cell .tz { font-size: 0.7rem; opacity: 0.9; }
 .pulse-cell .time { font-weight: 700; }
 
-/* 2. Terrestrial Ground-Base — map: prism frame on every state, 13 golden */
+/* 2. Terrestrial Ground-Base — live-mode map: prism frame on every state territory, 13 strategic in golden */
 .map-wrap { position: relative; width: 100%; margin: 1rem 0; }
 #nigeria-svg { width: 100%; height: auto; max-height: 440px; }
 .prism-frame { filter: drop-shadow(0 0 14px rgba(212,175,55,0.35)); }
 .state-region { cursor: pointer; transition: all 0.2s; }
 .state-region:hover { filter: brightness(1.15); }
-.state-region.strategic { animation: golden-pulse 2s ease-in-out infinite; }
-@keyframes golden-pulse { 0%,100% { filter: drop-shadow(0 0 8px rgba(212,175,55,0.6)); } 50% { filter: drop-shadow(0 0 20px rgba(212,175,55,0.95)); } }
+.state-region .state-glow { filter: url(#prism-state); }
+.state-region.strategic .state-glow { animation: golden-pulse 2s ease-in-out infinite; }
+@keyframes golden-pulse { 0%,100% { filter: url(#prism-state) drop-shadow(0 0 8px rgba(212,175,55,0.6)); } 50% { filter: url(#prism-state) drop-shadow(0 0 20px rgba(212,175,55,0.95)); } }
 /* GEC: Eagle moving inside map */
 .eagle-moving { position: absolute; left: 50%; top: 45%; transform: translate(-50%,-50%); pointer-events: none; animation: eagle-float 8s ease-in-out infinite; }
 @keyframes eagle-float { 0%,100% { transform: translate(-50%,-50%) translateX(0) translateY(0); } 25% { transform: translate(-50%,-50%) translateX(30px) translateY(-20px); } 50% { transform: translate(-50%,-50%) translateX(-20px) translateY(15px); } 75% { transform: translate(-50%,-50%) translateX(15px) translateY(10px); } }
@@ -156,9 +180,11 @@ st.markdown(
 }
 .security-overlay .shield-text { font-family: 'Goldman', sans-serif; font-size: 1.5rem; color: var(--gold); letter-spacing: 0.2em; text-shadow: 0 0 20px rgba(212,175,55,0.6); }
 .security-overlay .sub { font-size: 0.85rem; color: var(--gold-subtle); margin-top: 0.5rem; }
-.watermark-footer { position: fixed; bottom: 0; left: 0; right: 0; padding: 0.4rem 1rem; font-family: 'Goldman', sans-serif; font-size: 0.7rem; color: var(--gold-subtle); background: rgba(0,0,51,0.9); border-top: 1px solid rgba(212,175,55,0.4); z-index: 901; display: flex; justify-content: space-between; align-items: center; }
+.security-overlay .shield-icon { margin-bottom: 0.5rem; }
+.watermark-footer { position: fixed; bottom: 0; left: 0; right: 0; padding: 0.4rem 1rem; font-family: 'Goldman', sans-serif; font-size: 0.7rem; color: var(--gold-subtle); background: rgba(0,0,51,0.9); border-top: 1px solid rgba(212,175,55,0.4); z-index: 901; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
 .sig-seal { border-left: 3px solid var(--gold); padding-left: 0.5rem; }
 .stamp-copyright { letter-spacing: 0.05em; }
+.credibility-shield { display: inline-flex; align-items: center; gap: 0.35rem; color: var(--gold-subtle); }
 
 /* Hide audio for integrated experience */
 audio, [data-testid="stAudio"], .element-container:has(audio) { display: none !important; }
@@ -206,7 +232,7 @@ for i, name in enumerate(TERRITORIES):
     short = (name[:6] if name != "Abuja" else "Abuja")
     links.append(
         f'<a href="?state={name.replace(" ", "%20")}" target="_top" class="state-region{strat}">'
-        f'<circle cx="{x}" cy="{y}" r="13" fill="rgba(0,0,51,0.88)" stroke="#D4AF37" stroke-width="1.8"/>'
+        f'<circle class="state-glow" cx="{x}" cy="{y}" r="13" fill="rgba(0,0,51,0.88)" stroke="#D4AF37" stroke-width="1.8" filter="url(#prism-state)"/>'
         f'<text x="{x}" y="{y+4}" text-anchor="middle" fill="#D4AF37" font-family="Goldman,sans-serif" font-size="6">{short}</text></a>'
     )
 states_svg = "\n".join(links)
@@ -214,7 +240,10 @@ st.markdown(
     f'''
     <div class="map-wrap prism-frame">
         <svg id="nigeria-svg" viewBox="0 0 400 520" xmlns="http://www.w3.org/2000/svg">
-            <defs><filter id="pf"><feGaussianBlur stdDeviation="1.5"/><feColorMatrix type="matrix" values="0 0 0 0 0.83 0 0 0 0 0.69 0 0 0 0 0.22 0 0 0 0.5 0"/></filter></defs>
+            <defs>
+                <filter id="pf"><feGaussianBlur stdDeviation="1.5"/><feColorMatrix type="matrix" values="0 0 0 0 0.83 0 0 0 0 0.69 0 0 0 0 0.22 0 0 0 0.5 0"/></filter>
+                <filter id="prism-state"><feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            </defs>
             <path d="{NIGERIA_PATH}" fill="rgba(0,0,51,0.35)" stroke="#D4AF37" stroke-width="2" filter="url(#pf)"/>
             <g class="state-regions">{states_svg}</g>
         </svg>
@@ -232,7 +261,6 @@ elif selected_territory:
     st.caption(f"**{selected_territory}** — Territorial node. Strategic nodes show 639.3M MT on click.")
 
 # ---------- 3. LIVELY SPEEDOMETER — needle at $170.8B, numbers pop up/down ----------
-t = time.time()
 needle_val = 170.8
 needle_angle = math.radians(180 * 0.92)
 nx = 100 + 70 * math.cos(needle_angle)
@@ -300,14 +328,15 @@ st.markdown(
     unsafe_allow_html=True,
 )
 st.markdown("#### 8R Stealth Paradigm Convergence")
+st.caption("Each determinant drives market velocity. Eight determinants proving effect on valuation.")
 d8_html = "".join(
     f'<div class="d8-box">{d.split(": ")[0]}<br/>{d.split(": ")[1] if ": " in d else ""}</div>' for d in D8
 )
 st.markdown(f'<div class="d8-row">{d8_html}</div>', unsafe_allow_html=True)
 
-# ---------- 5. TACTICAL AUDIO-VISUAL SYNC: Eagle/Falcon sound + Security overlay ----------
+# ---------- 5. TACTICAL AUDIO-VISUAL SYNC: Eagle/Falcon handshake + HUD chirps (hidden), Security overlay ----------
 st.markdown("#### Tactical Audio-Visual Sync")
-st.markdown('<style>audio { display: none; }</style>', unsafe_allow_html=True)
+st.markdown('<style>audio, [data-testid="stAudio"], .element-container:has(audio) { display: none !important; }</style>', unsafe_allow_html=True)
 initiate = st.button("**INITIATE** — Cinematic Eagle / Falcon (Security Agency Effect)", type="primary")
 if initiate:
     st.session_state.initiate_triggered = True
@@ -317,26 +346,44 @@ if st.session_state.initiate_triggered:
     if os.path.isfile(EAGLE_AUDIO_PATH):
         with open(EAGLE_AUDIO_PATH, "rb") as f:
             st.audio(f.read(), format="audio/mp3", autoplay=True, key="eagle")
-    st.caption("Eagle/Falcon sound active. GEC music with map.")
+    # HUD chirps: loop SWAT/Rookie-style digital chirps during scan phase (native OS feel, hidden)
+    chirp_b64 = _minimal_chirp_wav_base64()
+    st.components.v1.html(
+        f"""
+        <audio id="hud-chirps" loop autoplay style="display:none;">
+            <source src="data:audio/wav;base64,{chirp_b64}" type="audio/wav"/>
+        </audio>
+        <script>
+        (function(){{
+            var a = document.getElementById('hud-chirps');
+            if (a) {{ a.volume = 0.35; a.play().catch(function(){{}}); }}
+        }})();
+        </script>
+        """,
+    height=5,
+)
+    st.caption("Eagle handshake active. HUD chirps looping — scan phase. GEC music with map.")
 
-# Security Protection overlay (screenshot-style credibility)
+# Security Protection overlay: Watermark, Shield, Copyright — global credibility
 st.markdown(
     """
     <div class="security-overlay">
         <div style="text-align:center;">
+            <div class="shield-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.5"><path d="M12 2L4 5v6.09a7 7 0 0 0 5.5 6.81 7 7 0 0 0 5.5-6.81V5L12 2z"/></svg></div>
             <p class="shield-text">SECURITY PROTECTION</p>
-            <p class="sub">Proprietary · Sovereign Data · GCSLC</p>
+            <p class="sub">Watermark · Signature · Copyright · Shield · Proprietary · Sovereign Data · GCSLC</p>
         </div>
     </div>
     """,
     unsafe_allow_html=True,
 )
 
-# ---------- 6. WATERMARK, SIGNATURE, COPYRIGHT (footer) ----------
+# ---------- 6. GLOBAL PULSE CREDIBILITY: Watermark, Signature, Copyright, Shield (footer) ----------
 st.markdown(
     '<div class="watermark-footer">'
-    '<span class="stamp-copyright">© 2026 Galadiman Ruwa Center (GCSLC) LTD/GTE. All rights reserved.</span>'
-    '<span class="sig-seal">Dr. Jaafaru Sa\'ad — Chairman & Founder</span>'
+    '<span class="stamp-copyright">© 2026 Galadiman Ruwa Center (GCSLC) LTD/GTE. All rights reserved. Watermark · Copyright</span>'
+    '<span class="credibility-shield">🛡 Shield</span>'
+    '<span class="sig-seal">Dr. Jaafaru Sa\'ad — Chairman & Founder · Signature</span>'
     '</div>',
     unsafe_allow_html=True,
 )
