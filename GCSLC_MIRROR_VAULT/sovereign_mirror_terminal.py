@@ -23,20 +23,23 @@ ASSETS = os.path.join(_BASE, "assets")
 EAGLE_AUDIO_PATH = os.path.join(ASSETS, "eagle_swat_fusion.mp3")
 HUD_AUDIO_PATH = os.path.join(ASSETS, "hud_chirps.mp3")
 
-# High-performance Nigeria state center points (36 States + FCT) — no external download
-# Format: (name, lat, lon); strategic 13 get golden pulsing orbs
-NIGERIA_STATE_CENTERS = [
-    ("Abia", 5.45, 7.50), ("Adamawa", 9.20, 12.50), ("Akwa Ibom", 5.00, 7.85), ("Anambra", 6.20, 7.00),
-    ("Bauchi", 10.30, 9.80), ("Bayelsa", 4.75, 6.25), ("Benue", 7.73, 8.90), ("Borno", 11.80, 13.00),
-    ("Cross River", 5.90, 8.35), ("Delta", 5.90, 6.20), ("Ebonyi", 6.25, 8.10), ("Edo", 6.30, 6.00),
-    ("Ekiti", 7.60, 5.20), ("Enugu", 6.45, 7.50), ("Abuja", 9.06, 7.49), ("Gombe", 10.25, 11.17),
-    ("Imo", 5.50, 7.00), ("Jigawa", 12.00, 9.75), ("Kaduna", 10.50, 7.45), ("Kano", 11.99, 8.52),
-    ("Katsina", 12.99, 7.60), ("Kebbi", 11.24, 4.23), ("Kogi", 7.80, 6.75), ("Kwara", 8.50, 4.50),
-    ("Lagos", 6.45, 3.40), ("Nasarawa", 8.50, 8.20), ("Niger", 9.60, 6.00), ("Ogun", 7.00, 3.50),
-    ("Ondo", 7.25, 5.20), ("Osun", 7.60, 4.50), ("Oyo", 8.00, 4.00), ("Plateau", 9.90, 9.00),
-    ("Rivers", 4.85, 6.90), ("Sokoto", 13.06, 5.23), ("Taraba", 7.87, 10.77), ("Yobe", 11.75, 11.97),
-    ("Zamfara", 12.17, 6.22),
+# Nigeria SVG: state names and (x,y) in viewBox 0 0 400 520 — no PyDeck/Folium
+TERRITORIES = [
+    "Abia", "Adamawa", "Akwa Ibom", "Anambra", "Bauchi", "Bayelsa", "Benue", "Borno",
+    "Cross River", "Delta", "Ebonyi", "Edo", "Ekiti", "Enugu", "Gombe", "Imo",
+    "Jigawa", "Kaduna", "Kano", "Katsina", "Kebbi", "Kogi", "Kwara", "Lagos",
+    "Nasarawa", "Niger", "Ogun", "Ondo", "Osun", "Oyo", "Plateau", "Rivers",
+    "Sokoto", "Taraba", "Yobe", "Zamfara", "Abuja",
 ]
+TERRITORY_POS = [
+    (120, 380), (280, 180), (200, 420), (160, 360), (260, 220), (180, 440), (220, 280), (320, 120),
+    (240, 420), (140, 400), (200, 340), (120, 340), (80, 360), (200, 320), (300, 200), (160, 380),
+    (280, 140), (240, 200), (260, 160), (260, 100), (180, 80), (220, 260), (200, 240), (60, 380),
+    (240, 260), (220, 200), (100, 340), (100, 300), (80, 320), (120, 280), (260, 240), (180, 420),
+    (180, 60), (300, 260), (320, 160), (240, 120), (220, 240),
+]
+# Nigeria outline path (high-res SVG, approximate border)
+NIGERIA_SVG_PATH = "M 48 52 L 352 46 L 376 128 L 368 318 L 352 478 L 52 482 L 20 328 L 28 180 Z"
 
 
 def _minimal_chirp_wav_base64():
@@ -112,10 +115,8 @@ if not st.session_state.sovereign_authenticated:
     st.caption("Galadiman Ruwa Center (GCSLC) LTD/GTE · Authorized personnel only.")
     st.stop()
 
-TERRITORIES = [t[0] for t in NIGERIA_STATE_CENTERS]
 STRATEGIC_13 = {"Enugu", "Kogi", "Gombe", "Benue", "Delta", "Nasarawa", "Anambra", "Plateau", "Adamawa", "Edo", "Bauchi", "Kwara", "Imo"}
 D8 = ["D1: Refine", "D2: Reset", "D3: Research", "D4: Restructure", "D5: Resuscitate", "D6: Revitalize", "D7: Re-engineer", "D8: Retain"]
-
 NAVY = "#000033"
 GOLD = "#D4AF37"
 WHITE = "#f8f8ff"
@@ -159,7 +160,7 @@ st.markdown(
 @keyframes shimmer { 0%,100% { background-position: 0% center; } 50% { background-position: 100% center; } }
 .branding {
     font-family: 'Goldman', Georgia, 'Times New Roman', serif;
-    font-size: clamp(0.85rem, 1.8vw, 1.05rem);
+    font-size: clamp(0.9rem, 1.8vw, 1.1rem);
     text-align: center;
     color: var(--gold-subtle);
     letter-spacing: 0.08em;
@@ -171,18 +172,15 @@ st.markdown(
 .pulse-cell .tz { font-size: 0.7rem; opacity: 0.9; }
 .pulse-cell .time { font-weight: 700; }
 
-/* 2. Terrestrial Ground-Base — Prism frame: visible border-glow around map (force-visible, no external deps) */
-.map-wrap { position: relative; width: 100%; margin: 1rem 0; min-height: 420px; }
-.terrestrial-prism, [data-testid="stPydeckChart"] {
-    border: 3px solid var(--gold) !important;
-    border-radius: 12px !important;
-    box-shadow: 0 0 20px rgba(212,175,55,0.5), inset 0 0 20px rgba(0,0,51,0.3) !important;
-    background: var(--navy) !important;
-    min-height: 420px !important;
-}
-/* GEC Eagle — visible over/next to map */
-.eagle-moving { display: block; margin: 0.5rem auto; animation: eagle-float 8s ease-in-out infinite; }
-@keyframes eagle-float { 0%,100% { transform: translateX(0) translateY(0); } 25% { transform: translateX(15px) translateY(-10px); } 50% { transform: translateX(-10px) translateY(8px); } 75% { transform: translateX(8px) translateY(5px); } }
+/* 2. No-fail map container: prism border, SVG + GEC overlay */
+.map-wrap { position: relative; width: 100%; margin: 1rem 0; min-height: 440px; }
+.map-wrap .nigeria-svg { width: 100%; height: auto; max-height: 440px; display: block; border-radius: 12px; }
+.map-wrap .node-strategic { filter: drop-shadow(0 0 12px rgba(212,175,55,0.9)); animation: gold-pulse 2s ease-in-out infinite; }
+.map-wrap .node-default { filter: drop-shadow(0 0 4px rgba(212,175,55,0.4)); }
+@keyframes gold-pulse { 0%,100% { filter: drop-shadow(0 0 10px rgba(212,175,55,0.7)); } 50% { filter: drop-shadow(0 0 22px rgba(212,175,55,1)); } }
+.gec-eagle-overlay { position: absolute; left: 50%; top: 45%; transform: translate(-50%,-50%); pointer-events: none; z-index: 10; animation: eagle-float 8s ease-in-out infinite; }
+@keyframes eagle-float { 0%,100% { transform: translate(-50%,-50%) translateX(0); } 25% { transform: translate(-50%,-50%) translateX(20px) translateY(-12px); } 50% { transform: translate(-50%,-50%) translateX(-15px) translateY(10px); } 75% { transform: translate(-50%,-50%) translateX(10px) translateY(8px); } }
+.map-fallback-img { width: 100%; max-height: 440px; object-fit: contain; border-radius: 12px; border: 2px solid var(--gold); }
 
 /* 3. Speedometer: needle at $170.8B, numbers pop up/down */
 .gauge-wrap { margin: 1rem auto; max-width: 460px; }
@@ -249,9 +247,9 @@ audio, [data-testid="stAudio"], .element-container:has(audio) { display: none !i
     unsafe_allow_html=True,
 )
 
-# ---------- 1. THE INSTITUTIONAL HEADER (The Command) ----------
+# ---------- 1. INSTITUTIONAL BRANDING: Gold Calligraphy + Identity ----------
 st.markdown('<p class="cmd-heading">Sovereign High-Velocity Nodal</p>', unsafe_allow_html=True)
-st.markdown('<p class="branding">Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC) LTD/GTE</p>', unsafe_allow_html=True)
+st.markdown('<p class="branding">Galadiman Ruwa Center (GCSLC)</p>', unsafe_allow_html=True)
 # Lock icon top-right: toggle Security Protection overlay (LinkedIn / screenshot mode)
 lock_col1, lock_col2 = st.columns([5, 1])
 with lock_col2:
@@ -294,65 +292,41 @@ st.components.v1.html(
     height=56,
 )
 
-# ---------- 2. THE TERRESTRIAL GROUND-BASE — PyDeck (hardcoded state centers); prism border; no external GeoJSON ----------
+# ---------- 2. NO-FAIL MAP: High-resolution inline SVG of Nigeria; 13 strategic = glowing gold circles; GEC overlay ----------
 st.markdown("#### The Terrestrial Ground-Base — Live Map (36 States + FCT)")
-map_ok = False
-try:
-    import pandas as pd
-    import pydeck as pdk
-    rows = []
-    for name, lat, lon in NIGERIA_STATE_CENTERS:
-        is_strat = name in STRATEGIC_13
-        r, g, b = (212, 175, 55) if is_strat else (0, 0, 51)
-        rows.append({
-            "name": name,
-            "lat": lat,
-            "lon": lon,
-            "radius": 45000 if is_strat else 25000,
-            "r": r, "g": g, "b": b,
-            "tooltip": FLARE_STRATEGIC if is_strat else "Territorial node.",
-        })
-    state_df = pd.DataFrame(rows)
-    layer = pdk.Layer(
-        "ScatterplotLayer",
-        state_df,
-        get_position=["lon", "lat"],
-        get_radius="radius",
-        get_fill_color="[r, g, b]",
-        get_line_color=[212, 175, 55],
-        line_width_min_pixels=2,
-        pickable=True,
-        opacity=0.85,
+# Build SVG: Nigeria outline + 37 state nodes (strategic = glowing gold circles)
+nodes_svg = []
+for i, name in enumerate(TERRITORIES):
+    x, y = TERRITORY_POS[i]
+    strat = name in STRATEGIC_13
+    cls = "node-strategic" if strat else "node-default"
+    fill = GOLD if strat else NAVY
+    r = 14 if strat else 10
+    href = f'?state={name.replace(" ", "%20")}'
+    short = name[:8] if name != "Abuja" else "Abuja"
+    nodes_svg.append(
+        f'<a href="{href}" target="_top" style="cursor:pointer;"><circle class="{cls}" cx="{x}" cy="{y}" r="{r}" fill="{fill}" stroke="#D4AF37" stroke-width="1.5"/><text x="{x}" y="{y+4}" text-anchor="middle" fill="#D4AF37" font-size="5" font-family="Georgia,serif">{short}</text></a>'
     )
-    view = pdk.ViewState(latitude=9.08, longitude=8.68, zoom=5.2, pitch=0)
-    deck = pdk.Deck(
-        layers=[layer],
-        initial_view_state=view,
-        map_style="mapbox://styles/mapbox/dark-v10",
-        tooltip={"html": "<b>{name}</b><br/>{tooltip}", "style": {"background": "#000033", "color": "#D4AF37", "border": "1px solid #D4AF37"}},
-    )
-    st.pydeck_chart(deck, use_container_width=True, height=420)
-    map_ok = True
-except Exception:
-    # Fallback: no blank box — solid ground + GEC eagle visible
-    st.markdown(
-        '<div class="terrestrial-prism" style="padding:1.5rem; min-height:320px;">'
-        '<p style="color:#D4AF37; font-family: Georgia, serif; font-weight: bold;">Nigeria — 36 States + FCT</p>'
-        '<p style="color:rgba(212,175,55,0.9); font-size:0.9rem;">13 Strategic (Golden): ' + ", ".join(sorted(STRATEGIC_13)) + "</p>"
-        '<p style="color:rgba(248,248,255,0.8); font-size:0.85rem;">' + FLARE_STRATEGIC + "</p>"
-        '<div class="eagle-moving" style="text-align:center; margin-top:1rem;"><svg width="56" height="40" viewBox="0 0 56 40"><ellipse cx="28" cy="20" rx="14" ry="10" fill="#D4AF37" stroke="#B8860B" stroke-width="1"/><path d="M18 16 L28 12 L38 16" stroke="#B8860B" fill="none"/><circle cx="24" cy="18" r="2" fill="#1a1a1a"/><circle cx="32" cy="18" r="2" fill="#1a1a1a"/></svg></div>'
-        '<p style="color:rgba(212,175,55,0.7); font-size:0.8rem;">Prism frame active. PyDeck fallback.</p>'
-        '</div>',
-        unsafe_allow_html=True,
-    )
-if map_ok:
-    st.markdown(
-        '<div class="eagle-moving" aria-hidden="true" style="text-align:center;">'
-        '<svg width="56" height="40" viewBox="0 0 56 40"><ellipse cx="28" cy="20" rx="14" ry="10" fill="#D4AF37" stroke="#B8860B" stroke-width="1"/>'
-        '<path d="M18 16 L28 12 L38 16" stroke="#B8860B" fill="none"/><circle cx="24" cy="18" r="2" fill="#1a1a1a"/><circle cx="32" cy="18" r="2" fill="#1a1a1a"/></svg>'
-        '</div>',
-        unsafe_allow_html=True,
-    )
+nigeria_svg_content = (
+    f'<svg class="nigeria-svg" viewBox="0 0 400 520" xmlns="http://www.w3.org/2000/svg">'
+    f'<defs><filter id="glow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>'
+    f'<path d="{NIGERIA_SVG_PATH}" fill="rgba(0,0,51,0.5)" stroke="#D4AF37" stroke-width="2" filter="url(#glow)"/>'
+    + "".join(nodes_svg)
+    + "</svg>"
+)
+# Map container: SVG + GEC Eagle overlay (visible immediately after password)
+st.markdown(
+    '<div class="map-wrap" style="border:3px solid #D4AF37; border-radius:12px; box-shadow:0 0 24px rgba(212,175,55,0.5); background:#000033;">'
+    + nigeria_svg_content +
+    '<div class="gec-eagle-overlay" aria-hidden="true">'
+    '<svg width="64" height="46" viewBox="0 0 56 40"><ellipse cx="28" cy="20" rx="14" ry="10" fill="#D4AF37" stroke="#B8860B" stroke-width="1.5"/>'
+    '<path d="M18 16 L28 12 L38 16" stroke="#B8860B" fill="none"/><circle cx="24" cy="18" r="2" fill="#1a1a1a"/><circle cx="32" cy="18" r="2" fill="#1a1a1a"/></svg>'
+    '</div></div>',
+    unsafe_allow_html=True,
+)
+# Fallback: high-quality image if SVG ever fails (First Contact impact)
+with st.expander("If map does not display — view static map", expanded=False):
+    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Nigeria_states.svg/500px-Nigeria_states.svg.png", use_container_width=True, caption="Nigeria — 36 States + FCT")
 
 # Flare message from URL param (click-through from map or sidebar)
 if selected_territory and selected_territory in STRATEGIC_13:
@@ -435,13 +409,16 @@ d8_html = "".join(
 )
 st.markdown(f'<div class="d8-row">{d8_html}</div>', unsafe_allow_html=True)
 
-# ---------- 5. TACTICAL AUDIO-VISUAL SYNC: Eagle/Falcon handshake + HUD chirps (hidden), Security overlay ----------
-st.markdown("#### Tactical Audio-Visual Sync")
+# ---------- 5. DECODE HANDSHAKE: Eagle Cry on Decode press; HUD chirps; Security overlay ----------
+st.markdown("#### Tactical Handshake")
 st.markdown('<style>audio, [data-testid="stAudio"], .element-container:has(audio) { display: none !important; }</style>', unsafe_allow_html=True)
-initiate = st.button("**INITIATE** — Cinematic Eagle / Falcon (Security Agency Effect)", type="primary")
-if initiate:
+decode_btn = st.button("**Decode** — Eagle Cry (Sovereign Handshake)", type="primary")
+if decode_btn:
     st.session_state.initiate_triggered = True
-    # No rerun: eagle cries in same run to confirm system alive immediately
+    # Eagle Cry triggers immediately on Decode press (same run)
+    if os.path.isfile(EAGLE_AUDIO_PATH):
+        with open(EAGLE_AUDIO_PATH, "rb") as f:
+            st.audio(f.read(), format="audio/mp3", autoplay=True, key="eagle_decode")
 
 if st.session_state.initiate_triggered:
     if os.path.isfile(EAGLE_AUDIO_PATH):
