@@ -15,6 +15,12 @@ warnings.filterwarnings("ignore", category=DeprecationWarning, module="streamlit
 warnings.filterwarnings("ignore", message=".*use_container_width.*")
 import pandas as pd
 
+from datetime import datetime, timezone, timedelta
+try:
+    from zoneinfo import ZoneInfo
+except ImportError:
+    ZoneInfo = None  # Python < 3.9
+
 from d8_logic import (
     WEALTH_RETENTION_LOCK,
     STRATEGIC_FOUNDATION,
@@ -27,6 +33,9 @@ from d8_logic import (
     D3_AMMONIA_USD_PER_MT,
     D3_SILICON_MONTHLY_YIELD_M,
     D3_COAL_SYNGAS_MONTHLY_REVENUE_M,
+    GEC_COAL_RESERVES_M_MT,
+    POWER_POTENTIAL_GW,
+    ABUJA_ZARIA_KANO_CORRIDOR,
 )
 from mineral_sovereignty import (
     get_nodes,
@@ -85,7 +94,7 @@ if not st.session_state.handshake_done:
 st.markdown("""
 <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet">
 <style>
-/* Viewport: GCSLC Sovereign Diagnostic | Diagonal GCSLC PROPRIETARY watermark */
+/* Viewport: GCSLC Sovereign Diagnostic | Persistent 15% opacity shimmering watermark (Security Layer) */
 .stApp { background-color: #002147 !important; min-height: 100vh; position: relative; }
 .stApp::before {
     content: "GCSLC PROPRIETARY";
@@ -96,12 +105,83 @@ st.markdown("""
     font-family: 'Goldman', sans-serif;
     font-size: clamp(3rem, 8vw, 6rem);
     font-weight: 700;
-    color: rgba(212, 175, 55, 0.06);
+    color: rgba(212, 175, 55, 0.15);
     white-space: nowrap;
     letter-spacing: 0.2em;
     pointer-events: none;
     z-index: 0;
+    animation: watermark-pulse 3s ease-in-out infinite;
 }
+@keyframes watermark-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+/* Screenshot Shield: Flash overlay — PROPRIETARY stamp on print / copy attempt */
+@media print {
+    body * { visibility: hidden !important; }
+    body::after {
+        content: "PROPRIETARY — GCSLC"; visibility: visible !important; position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 3rem; color: #D4AF37;
+    }
+}
+/* Prism Ticker frame */
+.prism-ticker-wrap {
+    border: 2px solid rgba(212,175,55,0.6);
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    margin: 0.75rem 0;
+    background: linear-gradient(135deg, rgba(0,33,71,0.95), rgba(0,51,102,0.9));
+    overflow: hidden;
+    animation: prism-border 2s linear infinite;
+}
+@keyframes prism-border {
+    0%, 100% { box-shadow: 0 0 12px rgba(212,175,55,0.4); }
+    50% { box-shadow: 0 0 24px rgba(255,229,92,0.6); }
+}
+.prism-ticker {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 1.5rem;
+    font-family: 'Goldman', sans-serif;
+    font-size: 0.9rem;
+    color: #D4AF37;
+    animation: ticker-scroll 30s linear infinite;
+}
+.prism-ticker span { white-space: nowrap; }
+@keyframes ticker-scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+/* Abuja-Zaria-Kano Corridor — Energy-Industrial Spine */
+.azk-corridor {
+    background: linear-gradient(135deg, rgba(212,175,55,0.15), rgba(0,33,71,0.95));
+    border: 2px solid #D4AF37;
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin: 0.75rem 0;
+    text-align: center;
+    font-family: 'Goldman', sans-serif;
+}
+.azk-corridor .azk-title { font-size: 1.1rem; font-weight: 700; color: #FFE55C; margin-bottom: 0.25rem; }
+.azk-corridor .azk-desc { color: #E8C547; font-size: 0.95rem; }
+/* Global Clocks — 4 shimmering nodes */
+.global-clocks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+    margin: 0.75rem 0;
+}
+.clock-node {
+    background: linear-gradient(135deg, rgba(0,33,71,0.98), rgba(0,51,102,0.95));
+    border: 1px solid #D4AF37;
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    min-width: 120px;
+    text-align: center;
+    animation: d8-breathing 2.5s ease-in-out infinite;
+}
+.clock-node .clock-label { font-size: 0.75rem; color: #E8C547; text-transform: uppercase; letter-spacing: 0.1em; }
+.clock-node .clock-time { font-family: 'Goldman', sans-serif; font-weight: 700; color: #FFE55C; font-size: 1rem; }
 [data-testid="stAppViewContainer"] { background-color: #002147 !important; position: relative; z-index: 1; }
 .main .block-container { background-color: #002147 !important; max-width: 100%; padding: 1rem 2rem; position: relative; z-index: 1; }
 /* Primary headings: Goldman font + Shimmering Prism-Text (gold-to-white high-velocity gradient) */
@@ -361,6 +441,30 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# Screenshot Shield: PROPRIETARY stamp on copy; blur overlay hint for unauthorized capture
+components.html("""
+<script>
+(function(){
+  document.addEventListener('copy', function(e) {
+    e.clipboardData.setData('text/plain', 'PROPRIETARY — GCSLC Sovereign Gateway. Unauthorized distribution prohibited.');
+    e.preventDefault();
+  });
+  document.addEventListener('cut', function(e) { e.preventDefault(); });
+  var flash = document.createElement('div');
+  flash.id = 'gcslc-shield-flash';
+  flash.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,33,71,0.85);display:none;align-items:center;justify-content:center;pointer-events:none;font-family:sans-serif;font-size:2rem;font-weight:800;color:#D4AF37;';
+  flash.textContent = 'PROPRIETARY';
+  document.body.appendChild(flash);
+  document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && (e.key === 'c' || e.key === 'C') || e.metaKey && (e.key === 'c' || e.key === 'C')) {
+      flash.style.display = 'flex';
+      setTimeout(function(){ flash.style.display = 'none'; }, 400);
+    }
+  });
+})();
+</script>
+""", height=0)
+
 # Global Branding: NWC/C&D header + seal
 if os.path.isfile(SEAL_PATH):
     st.logo(SEAL_PATH)
@@ -388,6 +492,62 @@ st.markdown("""
     Applying 8R to everything we do is the key to scientifically improving our lives."
 </div>
 """, unsafe_allow_html=True)
+
+# ——— Live Market Pulse: Prism Ticker (Germanium, Silicon, Benzene, Ammonia, Coal, Diamond) ———
+# Placeholder live indices (D3 anchors + market-style; cycle via CSS scroll)
+_BENZENE_USD_PER_MT = 720.0  # placeholder
+_COAL_INDEX = 142.0  # placeholder index
+_DIAMOND_INDEX = 98.5  # placeholder index
+_ticker_items = (
+    f"Germanium ${D3_GERMANIUM_USD_PER_KG:,.0f}/kg",
+    f"Silicon ${D3_SILICON_MONTHLY_YIELD_M}M/mo",
+    f"Benzene ${_BENZENE_USD_PER_MT:,.0f}/MT",
+    f"Ammonia ${D3_AMMONIA_USD_PER_MT:,.0f}/MT",
+    f"Coal Index {_COAL_INDEX:.1f}",
+    f"Diamond Index {_DIAMOND_INDEX:.1f}",
+)
+_ticker_html = "".join(f'<span>{t}</span>' for t in _ticker_items)
+st.markdown(
+    f'<div class="prism-ticker-wrap">'
+    f'<div class="prism-ticker">{_ticker_html}{_ticker_html}</div>'
+    f'</div>',
+    unsafe_allow_html=True,
+)
+
+# ——— Abuja-Zaria-Kano Corridor: Energy-Industrial Spine (Silk Road of NWC/C&D) ———
+st.markdown(
+    f'<div class="azk-corridor">'
+    f'<div class="azk-title">🛤️ {ABUJA_ZARIA_KANO_CORRIDOR} Corridor</div>'
+    f'<div class="azk-desc">Energy-Industrial Spine of NWC/C&D — The Silk Road linking sovereign coal-to-compute and 1.2 GW power potential.</div>'
+    f'</div>',
+    unsafe_allow_html=True,
+)
+
+# ——— Global Clocks: Wall Street (NY), Silicon Valley (CA), Dubai (UAE), Main Street (Abuja) ———
+def _now_tz(tz_name):
+    if ZoneInfo is None:
+        # Fallback for Python < 3.9: use UTC offset hints
+        offsets = {"America/New_York": -5, "America/Los_Angeles": -8, "Asia/Dubai": 4, "Africa/Lagos": 1}
+        off = offsets.get(tz_name, 0)
+        return (datetime.utcnow() + timedelta(hours=off)).strftime("%H:%M")
+    try:
+        return datetime.now(ZoneInfo(tz_name)).strftime("%H:%M")
+    except Exception:
+        return "—"
+_ny = _now_tz("America/New_York")
+_ca = _now_tz("America/Los_Angeles")
+_dubai = _now_tz("Asia/Dubai")
+_abuja = _now_tz("Africa/Lagos")
+st.markdown(
+    '<div class="global-clocks">'
+    f'<div class="clock-node"><div class="clock-label">Wall Street (NY)</div><div class="clock-time">{_ny}</div></div>'
+    f'<div class="clock-node"><div class="clock-label">Silicon Valley (CA)</div><div class="clock-time">{_ca}</div></div>'
+    f'<div class="clock-node"><div class="clock-label">Dubai (UAE)</div><div class="clock-time">{_dubai}</div></div>'
+    f'<div class="clock-node"><div class="clock-label">Main Street (Abuja)</div><div class="clock-time">{_abuja}</div></div>'
+    '</div>',
+    unsafe_allow_html=True,
+)
+st.caption("Global operational readiness — live time nodes.")
 
 # ——— 37-Node Geopolitical Grid (36 States + FCT) ———
 st.write("### 🗺️ Command & Control (C&D) Grid — 37-Node Geopolitical Grid")
@@ -469,15 +629,25 @@ st.markdown("---")
 
 # 8R Stealth Engine — D1–D8 Determinant Widgets (golden Breathing animation)
 st.write("### 8R Stealth Engine — Determinant Widgets (D1–D8)")
-# Central valuation linked to apply_95_5_talon_lock from d8_logic
+# Central valuation + Compute Potential (Inference-Ready) gauge — Diamond Standard for Silicon Valley / Jensen Huang
 _central_rev = VALUATION_ANCHOR_B * 1e9 / 1e6  # $170.85B as equivalent revenue scale for split
 _nat_anchor, _gl_pool = apply_95_5_talon_lock(_central_rev)
-st.markdown(
-    f'<p class="central-valuation">Central Valuation (D8 Talon Lock): <strong>${VALUATION_ANCHOR_B:.2f}B</strong> '
-    f'→ National: <strong>${_nat_anchor:,.0f}M</strong> · Global Pool: <strong>${_gl_pool:,.0f}M</strong></p>',
-    unsafe_allow_html=True,
-)
-st.caption("apply_95_5_talon_lock from d8_logic.py linked to central valuation.")
+# Coal reserves → power (1.2 GW) → H100/H200 GPU-Hours: 1.2e6 kW / ~0.7 kW per H100 ≈ 1.71e6 GPUs × 8760 hrs/yr
+_H100_KW = 0.7
+_H200_KW = 1.4
+_gpu_h100_hrs_yr = (POWER_POTENTIAL_GW * 1e6 / _H100_KW) * 8760
+_gpu_h200_hrs_yr = (POWER_POTENTIAL_GW * 1e6 / _H200_KW) * 8760
+_val_col, _compute_col = st.columns(2)
+with _val_col:
+    st.markdown(
+        f'<p class="central-valuation">Central Valuation (D8 Talon Lock): <strong>${VALUATION_ANCHOR_B:.2f}B</strong> '
+        f'→ National: <strong>${_nat_anchor:,.0f}M</strong> · Global Pool: <strong>${_gl_pool:,.0f}M</strong></p>',
+        unsafe_allow_html=True,
+    )
+with _compute_col:
+    st.metric("Compute Potential (Inference-Ready)", f"~{_gpu_h100_hrs_yr/1e9:.1f}B H100 GPU-Hrs/yr", "Diamond Standard for Silicon Valley")
+    st.caption(f"~{_gpu_h200_hrs_yr/1e9:.1f}B H200 GPU-Hrs/yr from {POWER_POTENTIAL_GW} GW corridor — coal reserves to GPU-hours.")
+st.caption("apply_95_5_talon_lock from d8_logic.py linked to central valuation. Inference-Ready metric: coal reserves → GPU-hours.")
 # D1–D8 with golden Breathing animation (CSS class .d8-widget-breathing)
 d8_html = "".join(
     f'<div class="d8-widget-breathing">D{i}: {det}</div>' for i, det in enumerate(DETERMINANTS, 1)
@@ -614,6 +784,12 @@ with st.sidebar:
     with st.expander("8R Stealth Paradigm (D1–D8)"):
         for i, det in enumerate(DETERMINANTS, 1):
             st.caption(f"**D{i}:** {det}")
+    st.markdown("---")
+    # WhatsApp Gateway — Contact for Sovereign Access (deep-data clearance)
+    st.header("📱 Sovereign Access")
+    whatsapp_contact = "https://wa.me/2340000000000"  # Replace with official GCSLC number for deep-data clearance
+    st.link_button("Contact WhatsApp for Sovereign Access", whatsapp_contact, type="secondary", help="Deep-data clearance and sovereign gateway access.")
+    st.caption("Security Layer: Use for verified sovereign access.")
     st.markdown("---")
     st.header("Strategic Strike Input")
     friction_target = st.text_input("Enter Friction Target:", "National Asset", key="gcslc_friction_key")
