@@ -3,7 +3,7 @@ Sovereign High-Velocity Nodal Mirror — System Directive: Start Fresh. Zero Omi
 Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC) LTD/GTE.
 © 2026 GCSLC. Chairman & Founder: Dr. Sa'ad Jaafaru.
 Launch: streamlit run GCSLC_MIRROR_VAULT/sovereign_mirror_terminal.py --server.port 8056
-Duniya a ido take.
+Ido ba mudu bane amma yasan kima. Duniya a ido take.
 """
 
 import base64
@@ -50,8 +50,51 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
+# ---------- Sovereign Login Gate: session state ----------
+SOVEREIGN_KEY = "GCSLC2026"
+if "sovereign_authenticated" not in st.session_state:
+    st.session_state.sovereign_authenticated = False
+if "play_eagle_on_login" not in st.session_state:
+    st.session_state.play_eagle_on_login = False
+if "security_overlay_visible" not in st.session_state:
+    st.session_state.security_overlay_visible = False
 if "initiate_triggered" not in st.session_state:
     st.session_state.initiate_triggered = False
+
+# ---------- SOVEREIGN LOGIN GATE: show only when not authenticated ----------
+if not st.session_state.sovereign_authenticated:
+    st.markdown(
+        """
+        <style>
+        @import url('https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap');
+        .login-gate { min-height: 100vh; background: #000033; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; }
+        .login-gate .vault-shield { margin-bottom: 1.5rem; }
+        .login-gate .vault-title { font-family: 'Goldman', sans-serif; font-size: clamp(1rem, 2.5vw, 1.35rem); color: #D4AF37; letter-spacing: 0.15em; text-align: center; margin-bottom: 2rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        '<div class="login-gate">'
+        '<div class="vault-shield"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="2"><path d="M12 2L4 5v6.09a7 7 0 0 0 5.5 6.81 7 7 0 0 0 5.5-6.81V5L12 2z"/></svg></div>'
+        '<p class="vault-title">GCSLC STRATEGIC VAULT — SECURE ACCESS</p>'
+        '</div>',
+        unsafe_allow_html=True,
+    )
+    key_input = st.text_input("Sovereign Key", type="password", key="sovereign_key_input", placeholder="Enter key")
+    cent, col2, _ = st.columns([1, 1, 1])
+    with col2:
+        submitted = st.button("Enter", type="primary", use_container_width=True)
+    if submitted:
+        if (key_input or "").strip() == SOVEREIGN_KEY:
+            st.session_state.sovereign_authenticated = True
+            st.session_state.play_eagle_on_login = True
+            st.rerun()
+        else:
+            st.error("Invalid Sovereign Key. Access denied.")
+    st.markdown("---")
+    st.caption("Galadiman Ruwa Center (GCSLC) LTD/GTE · Authorized personnel only.")
+    st.stop()
 
 # 36 states + Abuja (37 territories)
 TERRITORIES = [
@@ -185,6 +228,15 @@ st.markdown(
 .sig-seal { border-left: 3px solid var(--gold); padding-left: 0.5rem; }
 .stamp-copyright { letter-spacing: 0.05em; }
 .credibility-shield { display: inline-flex; align-items: center; gap: 0.35rem; color: var(--gold-subtle); }
+/* Chairman's Seal: bottom-right, gold seal border */
+.chairman-seal {
+    position: fixed; bottom: 0; right: 0; z-index: 902;
+    font-family: 'Goldman', sans-serif; font-size: 0.75rem; color: var(--gold);
+    padding: 0.5rem 1rem; margin: 0.4rem;
+    border: 2px solid var(--gold); border-radius: 8px;
+    background: rgba(0,0,51,0.92); box-shadow: 0 0 16px rgba(212,175,55,0.25);
+    letter-spacing: 0.04em;
+}
 
 /* Hide audio for integrated experience */
 audio, [data-testid="stAudio"], .element-container:has(audio) { display: none !important; }
@@ -196,7 +248,22 @@ audio, [data-testid="stAudio"], .element-container:has(audio) { display: none !i
 # ---------- 1. THE INSTITUTIONAL HEADER (The Command) ----------
 st.markdown('<p class="cmd-heading">Sovereign High-Velocity Nodal</p>', unsafe_allow_html=True)
 st.markdown('<p class="branding">Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC) LTD/GTE</p>', unsafe_allow_html=True)
+# Lock icon top-right: toggle Security Protection overlay (LinkedIn / screenshot mode)
+lock_col1, lock_col2 = st.columns([5, 1])
+with lock_col2:
+    lock_label = "🔓 Hide overlay" if st.session_state.security_overlay_visible else "🔒 Security"
+    if st.button(lock_label, key="security_overlay_toggle", help="Toggle Security Protection overlay for presentation"):
+        st.session_state.security_overlay_visible = not st.session_state.security_overlay_visible
+        st.rerun()
 st.markdown("---")
+
+# Eagle cry on successful login (Chairman's arrival)
+if st.session_state.play_eagle_on_login:
+    st.session_state.play_eagle_on_login = False
+    if os.path.isfile(EAGLE_AUDIO_PATH):
+        with open(EAGLE_AUDIO_PATH, "rb") as f:
+            st.audio(f.read(), format="audio/mp3", autoplay=True, key="eagle_login")
+    st.markdown('<style>audio, [data-testid="stAudio"], .element-container:has(audio){ display: none !important; }</style>', unsafe_allow_html=True)
 
 # ---------- 6. GLOBAL PULSE — live clocks ----------
 st.components.v1.html(
@@ -223,8 +290,8 @@ st.components.v1.html(
     height=56,
 )
 
-# ---------- 2. TERRESTRIAL GROUND-BASE — Official map: 36 states + Abuja, prism glow, 13 golden, GEC Eagle moving ----------
-st.markdown("#### The Terrestrial Ground-Base — Official Map (36 States + Abuja)")
+# ---------- 2. THE TERRESTRIAL BASE — Live map: 36 States + Abuja, prism-frame, 13 strategic golden, GEC Eagle + music ----------
+st.markdown("#### The Terrestrial Base — Live Map (36 States + Abuja)")
 links = []
 for i, name in enumerate(TERRITORIES):
     x, y = TERRITORY_POS[i]
@@ -256,9 +323,9 @@ st.markdown(
     unsafe_allow_html=True,
 )
 if selected_territory and selected_territory in STRATEGIC_13:
-    st.info(f"**{selected_territory}** — Reserves: **639.3M MT** (Strategic Node). Potential: 1.2 GW.")
+    st.success(f"**{selected_territory}** — 639.3M MT Reserves | 1.2GW Potential | $170.85B Valuation")
 elif selected_territory:
-    st.caption(f"**{selected_territory}** — Territorial node. Strategic nodes show 639.3M MT on click.")
+    st.caption(f"**{selected_territory}** — Territorial node. Click a strategic node for reserves and valuation.")
 
 # ---------- 3. LIVELY SPEEDOMETER — needle at $170.8B, numbers pop up/down ----------
 needle_val = 170.8
@@ -268,7 +335,7 @@ ny = 100 - 70 * math.sin(needle_angle)
 st.components.v1.html(
     f"""
     <div class="gauge-wrap">
-        <div class="gauge-label">AWC Valuation Velocity — Needle at $170.8B</div>
+        <div class="gauge-label">AWC Valuation — $170.8B · Velocity ↑ Friction ↓</div>
         <svg viewBox="0 0 200 120" style="width:100%; height:150px;">
             <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="rgba(212,175,55,0.25)" stroke-width="12" stroke-linecap="round"/>
             <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#D4AF37" stroke-width="10" stroke-linecap="round" stroke-dasharray="251" stroke-dashoffset="20"/>
@@ -279,6 +346,7 @@ st.components.v1.html(
         </svg>
         <div id="pop-container" style="position:relative; height:40px; text-align:center;"></div>
         <div style="text-align:center; font-family: Goldman,sans-serif; color: #D4AF37; font-size: 1.1rem;">$170.8B</div>
+        <div style="text-align:center; font-family: Goldman,sans-serif; font-size: 0.75rem; color: rgba(212,175,55,0.85); margin-top: 4px;">Pop-up: Velocity · Pop-down: Friction</div>
     </div>
     <script>
     (function(){{
@@ -364,26 +432,30 @@ if st.session_state.initiate_triggered:
 )
     st.caption("Eagle handshake active. HUD chirps looping — scan phase. GEC music with map.")
 
-# Security Protection overlay: Watermark, Shield, Copyright — global credibility
-st.markdown(
-    """
-    <div class="security-overlay">
-        <div style="text-align:center;">
-            <div class="shield-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.5"><path d="M12 2L4 5v6.09a7 7 0 0 0 5.5 6.81 7 7 0 0 0 5.5-6.81V5L12 2z"/></svg></div>
-            <p class="shield-text">SECURITY PROTECTION</p>
-            <p class="sub">Watermark · Signature · Copyright · Shield · Proprietary · Sovereign Data · GCSLC</p>
+# Security Protection overlay: toggled by Lock icon (LinkedIn / screenshot mode)
+if st.session_state.security_overlay_visible:
+    st.markdown(
+        """
+        <div class="security-overlay">
+            <div style="text-align:center;">
+                <div class="shield-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.5"><path d="M12 2L4 5v6.09a7 7 0 0 0 5.5 6.81 7 7 0 0 0 5.5-6.81V5L12 2z"/></svg></div>
+                <p class="shield-text">SECURITY PROTECTION</p>
+                <p class="sub">Watermark · Signature · Copyright · Shield · Proprietary · Sovereign Data · GCSLC</p>
+            </div>
         </div>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
+        """,
+        unsafe_allow_html=True,
+    )
 
-# ---------- 6. GLOBAL PULSE CREDIBILITY: Watermark, Signature, Copyright, Shield (footer) ----------
+# ---------- 6. Footer: Copyright (left) + Chairman's Seal (bottom-right, gold border) ----------
 st.markdown(
     '<div class="watermark-footer">'
-    '<span class="stamp-copyright">© 2026 Galadiman Ruwa Center (GCSLC) LTD/GTE. All rights reserved. Watermark · Copyright</span>'
+    '<span class="stamp-copyright">© 2026 Galadiman Ruwa Center (GCSLC) LTD/GTE. All rights reserved.</span>'
     '<span class="credibility-shield">🛡 Shield</span>'
-    '<span class="sig-seal">Dr. Jaafaru Sa\'ad — Chairman & Founder · Signature</span>'
     '</div>',
+    unsafe_allow_html=True,
+)
+st.markdown(
+    '<div class="chairman-seal" aria-label="Chairman signature">Dr. Jaafaru Sa\'ad — Chairman & Founder</div>',
     unsafe_allow_html=True,
 )
