@@ -7,10 +7,14 @@ Ido ba mudu bane amma yasan kima. Duniya a ido take.
 """
 
 import base64
+import io
+import json
 import os
 import struct
 import sys
 import math
+import zipfile
+import urllib.request
 
 import streamlit as st
 
@@ -20,6 +24,12 @@ _BASE = os.path.dirname(_VAULT)
 if _BASE not in sys.path:
     sys.path.insert(0, _BASE)
 ASSETS = os.path.join(_BASE, "assets")
+DATA_DIR = os.path.join(_VAULT, "data")
+NGA_ADM1_CACHE = os.path.join(DATA_DIR, "nga_admin1.geojson")
+HDX_NGA_GEOJSON_ZIP = (
+    "https://data.humdata.org/dataset/81ac1d38-f603-4a98-804d-325c658599a3/"
+    "resource/7e30ec96-7f29-4ee8-9f4c-77633b353cbb/download/nga_admin_boundaries.geojson.zip"
+)
 EAGLE_AUDIO_PATH = os.path.join(ASSETS, "eagle_swat_fusion.mp3")
 HUD_AUDIO_PATH = os.path.join(ASSETS, "hud_chirps.mp3")
 
@@ -43,6 +53,54 @@ def _minimal_chirp_wav_base64():
     chunk += b"fmt " + struct.pack("<IHHIIHH", 16, 1, 1, rate, rate, 1, 8)
     chunk += b"data" + struct.pack("<I", len(data)) + data
     return base64.b64encode(chunk).decode("ascii")
+
+
+def _get_nigeria_adm1_geojson():
+    """
+    Load Nigeria 36 States + FCT GeoJSON from cache or HDX (OCHA/OSGOF).
+    Returns a GeoJSON dict (FeatureCollection). Mission-critical: real GeoJSON only.
+    """
+    os.makedirs(DATA_DIR, exist_ok=True)
+    if os.path.isfile(NGA_ADM1_CACHE):
+        try:
+            with open(NGA_ADM1_CACHE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            for feat in data.get("features", []):
+                p = feat.get("properties", {})
+                if (p.get("adm1_name") or "").strip() in ("Federal Capital Territory", "FCT", "Federal Capital"):
+                    p["adm1_name"] = "Abuja"
+            return data
+        except (json.JSONDecodeError, OSError):
+            pass
+    try:
+        with urllib.request.urlopen(HDX_NGA_GEOJSON_ZIP, timeout=60) as resp:
+            z = zipfile.ZipFile(io.BytesIO(resp.read()), "r")
+            for name in ("nga_admin1.geojson", "nga_admin1_em.geojson"):
+                if name in z.namelist():
+                    with z.open(name) as f:
+                        data = json.loads(f.read().decode("utf-8"))
+                    break
+            else:
+                raise FileNotFoundError("No ADM1 GeoJSON in zip")
+    except Exception as e:
+        raise RuntimeError(
+            "Sovereign Terrestrial Base requires Nigeria ADM1 GeoJSON. "
+            "Download from HDX (data.humdata.org/dataset/81ac1d38-f603-4a98-804d-325c658599a3) "
+            f"and extract nga_admin1.geojson to {NGA_ADM1_CACHE}. Error: {e}"
+        ) from e
+    # Normalize state names: FCT -> Abuja
+    for feat in data.get("features", []):
+        props = feat.get("properties", {})
+        name = (props.get("adm1_name") or "").strip()
+        if name in ("Federal Capital Territory", "FCT", "Federal Capital"):
+            props["adm1_name"] = "Abuja"
+    try:
+        with open(NGA_ADM1_CACHE, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False)
+    except OSError:
+        pass
+    return data
+
 
 st.set_page_config(
     page_title="Sovereign High-Velocity Nodal — GCSLC",
@@ -105,23 +163,22 @@ TERRITORIES = [
     "Sokoto", "Taraba", "Yobe", "Zamfara", "Abuja",
 ]
 STRATEGIC_13 = {"Enugu", "Kogi", "Gombe", "Benue", "Delta", "Nasarawa", "Anambra", "Plateau", "Adamawa", "Edo", "Bauchi", "Kwara", "Imo"}
-# (x,y) for 37 territories in viewBox 0 0 400 520
-TERRITORY_POS = [
-    (120, 380), (280, 180), (200, 420), (160, 360), (260, 220), (180, 440), (220, 280), (320, 120),
-    (240, 420), (140, 400), (200, 340), (120, 340), (80, 360), (200, 320), (300, 200), (160, 380),
-    (280, 140), (240, 200), (260, 160), (260, 100), (180, 80), (220, 260), (200, 240), (60, 380),
-    (240, 260), (220, 200), (100, 340), (100, 300), (80, 320), (120, 280), (260, 240), (180, 420),
-    (180, 60), (300, 260), (320, 160), (240, 120), (220, 240),
-]
 D8 = ["D1: Refine", "D2: Reset", "D3: Research", "D4: Restructure", "D5: Resuscitate", "D6: Revitalize", "D7: Re-engineer", "D8: Retain"]
 
 NAVY = "#000033"
+NAVY_RGB = "0, 0, 51"
 GOLD = "#D4AF37"
 WHITE = "#f8f8ff"
-NIGERIA_PATH = "M 45 55 L 355 48 L 378 135 L 365 320 L 355 480 L 55 483 L 22 320 Z"
+FLARE_STRATEGIC = "639.3M MT Reserves | 1.2GW Potential | $170.85B Valuation"
 selected_territory = st.query_params.get("state")
 if selected_territory and selected_territory not in TERRITORIES:
     selected_territory = None
+
+# Folium for real GeoJSON map (Sovereign Terrestrial Ground-Base)
+try:
+    import folium
+except ImportError:
+    folium = None
 
 # ---------- GLOBAL STYLES: Golden Navy Blue & White, Goldman, calligraphy, prism, security ----------
 st.markdown(
@@ -290,42 +347,74 @@ st.components.v1.html(
     height=56,
 )
 
-# ---------- 2. THE TERRESTRIAL BASE — Live map: 36 States + Abuja, prism-frame, 13 strategic golden, GEC Eagle + music ----------
-st.markdown("#### The Terrestrial Base — Live Map (36 States + Abuja)")
-links = []
-for i, name in enumerate(TERRITORIES):
-    x, y = TERRITORY_POS[i]
-    strat = " strategic" if name in STRATEGIC_13 else ""
-    short = (name[:6] if name != "Abuja" else "Abuja")
-    links.append(
-        f'<a href="?state={name.replace(" ", "%20")}" target="_top" class="state-region{strat}">'
-        f'<circle class="state-glow" cx="{x}" cy="{y}" r="13" fill="rgba(0,0,51,0.88)" stroke="#D4AF37" stroke-width="1.8" filter="url(#prism-state)"/>'
-        f'<text x="{x}" y="{y+4}" text-anchor="middle" fill="#D4AF37" font-family="Goldman,sans-serif" font-size="6">{short}</text></a>'
+# ---------- 2. THE TERRESTRIAL GROUND-BASE — Real GeoJSON map (Folium), Navy/Gold, 13 strategic, GEC overlay ----------
+st.markdown("#### The Terrestrial Ground-Base — Live Map (36 States + FCT)")
+geojson_data = _get_nigeria_adm1_geojson()
+
+if folium is not None:
+    def _style_fn(feature):
+        name = (feature.get("properties") or {}).get("adm1_name") or ""
+        is_strategic = name in STRATEGIC_13
+        return {
+            "fillColor": GOLD if is_strategic else NAVY,
+            "color": GOLD,
+            "weight": 2,
+            "fillOpacity": 0.65 if is_strategic else 0.4,
+            "opacity": 1,
+        }
+
+    for f in geojson_data.get("features", []):
+        p = f.setdefault("properties", {})
+        p["_flare"] = FLARE_STRATEGIC if (p.get("adm1_name") or "") in STRATEGIC_13 else "Territorial node."
+
+    tooltip = folium.features.GeoJsonTooltip(
+        fields=["adm1_name", "_flare"],
+        aliases=["State", ""],
+        localize=True,
+        labels=True,
+        style="font-family: Goldman, sans-serif; background: #000033; color: #D4AF37; border: 1px solid #D4AF37; font-size: 12px;",
     )
-states_svg = "\n".join(links)
-st.markdown(
-    f'''
-    <div class="map-wrap prism-frame">
-        <svg id="nigeria-svg" viewBox="0 0 400 520" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-                <filter id="pf"><feGaussianBlur stdDeviation="1.5"/><feColorMatrix type="matrix" values="0 0 0 0 0.83 0 0 0 0 0.69 0 0 0 0 0.22 0 0 0 0.5 0"/></filter>
-                <filter id="prism-state"><feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-            </defs>
-            <path d="{NIGERIA_PATH}" fill="rgba(0,0,51,0.35)" stroke="#D4AF37" stroke-width="2" filter="url(#pf)"/>
-            <g class="state-regions">{states_svg}</g>
-        </svg>
-        <div class="eagle-moving" aria-hidden="true">
-            <svg width="48" height="34" viewBox="0 0 56 40"><ellipse cx="28" cy="20" rx="14" ry="10" fill="#D4AF37" stroke="#B8860B" stroke-width="1"/>
+    m = folium.Map(
+        location=[9.08, 8.68],
+        zoom_start=5.5,
+        tiles=None,
+        max_bounds=[[3.9, 2.7], [14.0, 14.6]],
+        min_zoom=5,
+        max_zoom=10,
+        control_scale=True,
+    )
+    folium.TileLayer("CartoDB dark_matter", attr="CartoDB", name="Navy base").add_to(m)
+    folium.GeoJson(
+        geojson_data,
+        style_function=_style_fn,
+        name="Nigeria States",
+        overlay=True,
+        tooltip=tooltip,
+    ).add_to(m)
+    m_html = m._repr_html_()
+else:
+    m_html = "<p>Folium required for Terrestrial Base. pip install folium</p>"
+
+# Embed map via data URI (real GeoJSON rendered by Folium); GEC Eagle overlay on top
+m_b64 = base64.b64encode(m_html.encode("utf-8")).decode("ascii")
+st.components.v1.html(
+    f"""
+    <div class="map-wrap prism-frame" style="position:relative; width:100%; height:480px;">
+        <iframe src="data:text/html;base64,{m_b64}" style="width:100%; height:100%; border:2px solid #D4AF37; border-radius:8px;" referrerpolicy="no-referrer" title="Nigeria map"></iframe>
+        <div class="eagle-moving" aria-hidden="true" style="position:absolute; left:50%; top:45%; transform:translate(-50%,-50%); pointer-events:none; z-index:999;">
+            <svg width="56" height="40" viewBox="0 0 56 40"><ellipse cx="28" cy="20" rx="14" ry="10" fill="#D4AF37" stroke="#B8860B" stroke-width="1"/>
             <path d="M18 16 L28 12 L38 16" stroke="#B8860B" fill="none"/><circle cx="24" cy="18" r="2" fill="#1a1a1a"/><circle cx="32" cy="18" r="2" fill="#1a1a1a"/></svg>
         </div>
     </div>
-    ''',
-    unsafe_allow_html=True,
+    """,
+    height=490,
 )
+
+# Flare message from URL param (click-through from map or sidebar)
 if selected_territory and selected_territory in STRATEGIC_13:
-    st.success(f"**{selected_territory}** — 639.3M MT Reserves | 1.2GW Potential | $170.85B Valuation")
+    st.success(f"**{selected_territory}** — {FLARE_STRATEGIC}")
 elif selected_territory:
-    st.caption(f"**{selected_territory}** — Territorial node. Click a strategic node for reserves and valuation.")
+    st.caption(f"**{selected_territory}** — Territorial node. Strategic nodes: {FLARE_STRATEGIC}")
 
 # ---------- 3. LIVELY SPEEDOMETER — needle at $170.8B, numbers pop up/down ----------
 needle_val = 170.8
