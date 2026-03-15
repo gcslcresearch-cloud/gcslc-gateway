@@ -232,6 +232,36 @@ st.markdown("""
     animation: prism-shimmer 2s linear infinite;
     margin-bottom: 0.25rem;
 }
+/* Identity Anchor — dominant top bar: GCSLC name with uniform Goldman Prism-Text shimmer */
+.identity-anchor-dominant {
+    font-family: 'Goldman', sans-serif !important;
+    font-weight: 700;
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+    text-align: center;
+    margin: 0;
+    background: linear-gradient(90deg, #D4AF37, #FFFFFF, #FFE55C, #FFFFFF, #D4AF37);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent !important;
+    animation: prism-shimmer 2s linear infinite;
+    letter-spacing: 0.02em;
+}
+.nwc-subtitle-balanced {
+    font-family: 'Goldman', sans-serif !important;
+    font-weight: 700;
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    text-align: center;
+    margin: 0.4rem 0 0.2rem 0;
+    background: linear-gradient(90deg, #D4AF37, #FFFFFF, #FFE55C, #FFFFFF, #D4AF37);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent !important;
+    animation: prism-shimmer 2.5s linear infinite;
+    letter-spacing: 0.03em;
+    line-height: 1.3;
+}
 .nwc-authority {
     font-family: 'Goldman', sans-serif !important;
     text-align: center;
@@ -335,21 +365,18 @@ st.markdown("""
 if os.path.isfile(SEAL_PATH):
     st.logo(SEAL_PATH)
 
-# Top bar: Authority only (Chairman signature moved to bottom-right sticky bar)
+# Identity Anchor (Top Bar): Galadiman Ruwa Center (GCSLC) LTD/GTE — dominant heading with uniform Goldman Prism-Text shimmer
 st.markdown(
-    '<div style="position: sticky; top: 0; z-index: 100; background: linear-gradient(180deg, #002147 0%, rgba(0,33,71,0.98) 100%); padding-bottom: 10px; margin-bottom: 8px; border-bottom: 1px solid rgba(212,175,55,0.25);">'
-    '<p style="text-align: center; font-weight: 800; color: #D4AF37; font-size: 0.95rem; margin: 0;">Galadiman Ruwa Center (GCSLC) LTD/GTE</p>'
+    '<div style="position: sticky; top: 0; z-index: 100; background: linear-gradient(180deg, #002147 0%, rgba(0,33,71,0.98) 100%); padding: 0.75rem 1rem 1rem; margin-bottom: 8px; border-bottom: 1px solid rgba(212,175,55,0.25);">'
+    '<p class="identity-anchor-dominant">Galadiman Ruwa Center (GCSLC) LTD/GTE</p>'
     '</div>',
     unsafe_allow_html=True,
 )
 
-# Master Header (Metallic Gold): National Wealth Cloud for Nigeria: Coal & Diamond (NWC/C&D)
+# Balanced sub-title and sub-header (symmetrical, authoritative)
 st.markdown("""
-<div class="nwc-master-header">
+<div class="nwc-subtitle-balanced">
     National Wealth Cloud for Nigeria: Coal & Diamond (NWC/C&D)
-</div>
-<div class="nwc-authority">
-    Authority: Galadiman Ruwa Center (GCSLC) LTD/GTE
 </div>
 <div class="nwc-subheader">
     Proprietors of 8R Stealth Paradigm Convergence
@@ -575,9 +602,8 @@ with st.sidebar:
         )
     with st.expander("SSMV"):
         st.markdown(
-            "**Sovereign Strategic Mineral Value** — "
-            "The proprietary valuation of coal, diamond, and derivative streams (Germanium, Ammonia, Silicon, Syngas) "
-            "under the 9.6× D3 multiplier and Talon Lock."
+            "**Special Strategic Mission Vehicle** — "
+            "The institutional framework designed to execute the 8R Stealth Paradigm and manifest the 9.6× wealth multiplier."
         )
     with st.expander("95/5 Talon Lock"):
         st.markdown(
