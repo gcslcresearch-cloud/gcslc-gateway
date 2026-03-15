@@ -2,7 +2,7 @@
 National Wealth Cloud for Nigeria: Coal & Diamond (NWC/C&D)
 Sovereign Gateway — 8R Stealth Paradigm | Galadiman Ruwa Center For Strategic Leadership and Communication LTD/GTE — GCSLC
 Launch-ready: width="stretch" (2026 standard); no use_container_width.
-PRESIDENTIAL_STRIKE_V1_RESTORE: Institutional Core, C&D Grid, 8R Engine, Tactical Audio-Visual Sync.
+PRESIDENTIAL_STRIKE_V1_RESTORE / V1_FINAL_EXECUTION: Identity Anchor, Engine Room (Port 8053), 774 LGA, 37-Node Grid only. No maps.
 """
 import base64
 import os
@@ -13,7 +13,6 @@ import streamlit.components.v1 as components
 
 warnings.filterwarnings("ignore", category=DeprecationWarning, module="streamlit")
 warnings.filterwarnings("ignore", message=".*use_container_width.*")
-import pydeck as pdk
 import pandas as pd
 
 from d8_logic import (
@@ -495,39 +494,6 @@ if toggle_minerals:
         )
         table_df["95% Retained Sovereign Value"] = table_df["95% Retained Sovereign Value"].map(lambda v: f"${v:,.0f}")
         st.dataframe(table_df, width="stretch")
-
-        # 3D NRRFC Heatmap — Sovereign Mineral Fortress (finalized pydeck at ~Line 158)
-        st.write("#### 3D NRRFC Heatmap — Sovereign Mineral Fortress")
-        st.caption("Proving Nigeria as a Sovereign Mineral Fortress: D3 Research nodes across North East (kimberlite) and North West (hydrothermal).")
-        heat_df = df.copy()
-        heat_df["elevation"] = (heat_df["retained_value_usd"] / 1_000_000_000).clip(lower=0.5)  # billions, min height for visibility
-        heat_df["retained_display"] = heat_df["retained_value_usd"].apply(lambda x: f"${x:,.0f}")
-
-        nrrfc_layer = pdk.Layer(
-            "ColumnLayer",
-            data=heat_df,
-            get_position="[lon, lat]",
-            get_elevation="elevation",
-            elevation_scale=8,
-            radius=45000,
-            get_fill_color="[212, 175, 55, 180]",
-            pickable=True,
-            auto_highlight=True,
-        )
-        nrrfc_view = pdk.ViewState(
-            longitude=8.5,
-            latitude=9.5,
-            zoom=5,
-            pitch=50,
-            bearing=0,
-        )
-        sovereign_fortress_deck = pdk.Deck(
-            layers=[nrrfc_layer],
-            initial_view_state=nrrfc_view,
-            map_style="mapbox://styles/mapbox/dark-v10",
-            tooltip={"text": "State: {state}\nProven Reserve Probability: {proven_reserve_probability}\n95% Retained Sovereign Value: {retained_display}"},
-        )
-        st.pydeck_chart(sovereign_fortress_deck)
 
 # Tactical Experience: Login (Password GCSLC2026) → Eagle cry; SWAT soundscape
 with st.sidebar:
