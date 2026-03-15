@@ -7,11 +7,18 @@ import sys
 import time
 
 _SOUNDS_DIR = "/System/Library/Sounds"
+_SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+_ASSETS = os.path.join(_SCRIPT_DIR, "assets")
 SOUNDS = {
     "boot": f"{_SOUNDS_DIR}/Glass.aiff",
     "process": f"{_SOUNDS_DIR}/Morse.aiff",
     "tink": f"{_SOUNDS_DIR}/Tink.aiff",
     "talon_lock": f"{_SOUNDS_DIR}/Submarine.aiff",
+    # Majestic Eagle/Falcon cry on NWC login (GCSLC2026) — fallback to system if no asset
+    "eagle_cry": os.path.join(_ASSETS, "eagle_cry.aiff") if os.path.isdir(_ASSETS) else None,
+    "eagle_cry_fallback": f"{_SOUNDS_DIR}/Hero.aiff",
+    # SWAT-style HUD two-beep loop (path only; playback via frontend <audio loop> when provided)
+    "swat_beep": os.path.join(_ASSETS, "swat_hud_beep.wav") if os.path.isdir(_ASSETS) else None,
 }
 
 # The 37-Node Mesh (36 States + FCT)
@@ -68,6 +75,23 @@ def run_sovereign_handshake() -> None:
 def play_talon_lock_confirmed() -> None:
     """Play Submarine chime when 95% Talon Lock is confirmed. Runs in background."""
     play_sound("talon_lock")
+
+
+def play_eagle_cry() -> None:
+    """Majestic Eagle/Falcon cry on NWC login (Password: GCSLC2026). Runs in background."""
+    path = SOUNDS.get("eagle_cry")
+    if path and os.path.isfile(path):
+        os.system(f"afplay {path!r} &")
+    else:
+        fallback = SOUNDS.get("eagle_cry_fallback")
+        if fallback and os.path.isfile(fallback):
+            os.system(f"afplay {fallback!r} &")
+
+
+def get_swat_beep_path():
+    """Return path to SWAT-style HUD two-beep WAV for frontend loop, or None."""
+    path = SOUNDS.get("swat_beep")
+    return path if path and os.path.isfile(path) else None
 
 
 if __name__ == "__main__":

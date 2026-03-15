@@ -2,11 +2,14 @@
 National Wealth Cloud for Nigeria: Coal & Diamond (NWC/C&D)
 Sovereign Gateway — 8R Stealth Paradigm | Galadiman Ruwa Center For Strategic Leadership and Communication LTD/GTE — GCSLC
 Launch-ready: width="stretch" (2026 standard); no use_container_width.
+PRESIDENTIAL_STRIKE_V1_RESTORE: Institutional Core, C&D Grid, 8R Engine, Tactical Audio-Visual Sync.
 """
+import base64
 import os
 import warnings
 from collections import defaultdict
 import streamlit as st
+import streamlit.components.v1 as components
 
 warnings.filterwarnings("ignore", category=DeprecationWarning, module="streamlit")
 warnings.filterwarnings("ignore", message=".*use_container_width.*")
@@ -33,7 +36,7 @@ from mineral_sovereignty import (
     get_diamond_reserves,
 )
 from spc_generator import generate_spc_image
-from handshake import run_diagnostic_pulse, play_talon_lock_confirmed, STATES
+from handshake import run_diagnostic_pulse, play_talon_lock_confirmed, play_eagle_cry, get_swat_beep_path, STATES
 from nwc_geopolitical import STATE_REGION, STATE_LGA_COUNT, get_lgas
 
 FULL_NAME = "Galadiman Ruwa Center For Strategic Leadership and Communication LTD/GTE"
@@ -42,6 +45,7 @@ SEAL_PATH = os.path.join(os.path.dirname(__file__), "assets", "gcslc_seal.png")
 DETERMINANTS = ["Refine", "Reset", "Research", "Restructure", "Resuscitate", "Revitalize", "Re-engineer", "Retain"]
 NWC_HEADER = "National Wealth Cloud for Nigeria: Coal & Diamond (NWC/C&D)"
 NWC_SUBTITLE = "Cloud-Level Pragmatic Reality — Powered by GCSLC Sovereign Gateway"
+VALUATION_ANCHOR_B = 170.85  # Central empirical metric — 95/5 Talon Lock flare
 
 # Sovereign Retention Protocol (D8 Logic) — 95% National Equity (Talon Lock)
 SOVEREIGN_RETENTION_PROTOCOL = f"""
@@ -69,6 +73,8 @@ if "state_nodes" not in st.session_state:
     st.session_state.state_nodes = []
 if "selected_state" not in st.session_state:
     st.session_state.selected_state = None
+if "nwc_authenticated" not in st.session_state:
+    st.session_state.nwc_authenticated = False
 
 # NWC/C&D diagnostic pulse once at startup: initialize 37 nodes, then run pulse
 if not st.session_state.handshake_done:
@@ -96,6 +102,35 @@ section[data-testid="stSidebar"] { background-color: #002147 !important; border-
 .nwc-lga-grid [data-testid="stExpander"] { background: rgba(0,33,71,0.98); border: 1px solid #D4AF37; border-radius: 6px; }
 .nwc-lga-grid [data-testid="stExpander"] summary { color: #D4AF37 !important; }
 .nwc-lga-grid [data-testid="stExpander"] li { color: #E8C547; }
+/* 95/5 Talon Lock data flare on node click */
+.talon-lock-flare {
+    background: linear-gradient(135deg, rgba(212,175,55,0.25), rgba(0,33,71,0.9));
+    border: 2px solid #D4AF37;
+    border-radius: 8px;
+    padding: 0.6rem 1rem;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    font-weight: 700;
+}
+.talon-lock-flare .flare-label { color: #E8C547; margin-right: 0.5rem; }
+.talon-lock-flare .flare-value { color: #FFE55C; font-size: 1.1rem; }
+/* 8R Stealth Engine — D1–D8 golden Breathing animation */
+@keyframes d8-breathing {
+    0%, 100% { box-shadow: 0 0 12px rgba(212,175,55,0.4); opacity: 0.9; transform: scale(1); }
+    50% { box-shadow: 0 0 24px rgba(232,197,71,0.8); opacity: 1; transform: scale(1.02); }
+}
+.d8-widgets-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.75rem 0; }
+.d8-widget-breathing {
+    background: linear-gradient(135deg, rgba(0,33,71,0.95), rgba(0,51,102,0.9));
+    border: 1px solid #D4AF37;
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    color: #D4AF37;
+    font-weight: 700;
+    font-size: 0.9rem;
+    animation: d8-breathing 2.5s ease-in-out infinite;
+}
+.central-valuation { text-align: center; color: #E8C547 !important; margin-bottom: 0.5rem; }
 </style>
 """, unsafe_allow_html=True)
 # Keyframes and .brand-8r kept in background (no leak)
@@ -144,6 +179,60 @@ st.markdown("""
     font-size: 1.1rem;
     letter-spacing: 2px;
     margin-top: -10px;
+}
+/* Master Header (Metallic Gold) — PRESIDENTIAL_STRIKE_V1_RESTORE */
+.nwc-master-header {
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 2rem;
+    text-align: center;
+    background: linear-gradient(90deg, #D4AF37, #FFE55C, #D4AF37, #E8C547, #D4AF37);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent !important;
+    animation: gold-shimmer 5s linear infinite;
+    margin-bottom: 0.25rem;
+}
+.nwc-authority {
+    text-align: center;
+    color: #D4AF37;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+.nwc-subheader {
+    font-family: 'serif';
+    font-style: italic;
+    text-align: center;
+    color: #E8C547;
+    font-size: 1.05rem;
+    letter-spacing: 2px;
+    margin-top: -4px;
+    margin-bottom: 0.5rem;
+}
+/* Chairman signature — Bottom-right sticky bar with shimmer (Dr. Jaafaru Sa'ad) */
+.chairman-signature-shimmer {
+    background: linear-gradient(90deg, #D4AF37, #FFE55C, #E8C547, #D4AF37);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent !important;
+    animation: gold-shimmer 4s linear infinite;
+}
+.chairman-sticky-bar {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    z-index: 999;
+    background: linear-gradient(90deg, rgba(0,33,71,0.97), rgba(0,33,71,0.98));
+    border-top: 2px solid rgba(212,175,55,0.5);
+    border-left: 2px solid rgba(212,175,55,0.5);
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    border-radius: 8px 0 0 0;
+    pointer-events: none;
 }
 .universal-message {
     background: rgba(212, 175, 55, 0.1);
@@ -206,21 +295,24 @@ st.markdown("""
 if os.path.isfile(SEAL_PATH):
     st.logo(SEAL_PATH)
 
-# Talon Lock: Chairman & Founder credentials locked at top (all ports)
+# Top bar: Authority only (Chairman signature moved to bottom-right sticky bar)
 st.markdown(
     '<div style="position: sticky; top: 0; z-index: 100; background: linear-gradient(180deg, #002147 0%, rgba(0,33,71,0.98) 100%); padding-bottom: 10px; margin-bottom: 8px; border-bottom: 1px solid rgba(212,175,55,0.25);">'
-    '<p style="text-align: center; font-weight: 800; color: #D4AF37; font-size: 0.95rem; margin: 0;">Galadiman Ruwa Center (GCSLC) LTD/GTE | Chairman & Founder: Dr. Sa\'ad Jaafaru</p>'
+    '<p style="text-align: center; font-weight: 800; color: #D4AF37; font-size: 0.95rem; margin: 0;">Galadiman Ruwa Center (GCSLC) LTD/GTE</p>'
     '</div>',
     unsafe_allow_html=True,
 )
 
-# D1: REFINE - Sovereign branding animation
+# Master Header (Metallic Gold): National Wealth Cloud for Nigeria: Coal & Diamond (NWC/C&D)
 st.markdown("""
-<div class="gcslc-header">
-    Galadiman Ruwa Center for Strategic Leadership and Communication
+<div class="nwc-master-header">
+    National Wealth Cloud for Nigeria: Coal & Diamond (NWC/C&D)
 </div>
-<div class="proprietor-tag">
-    (Proprietors of) 8R Stealth Paradigm Convergence and its Determinants
+<div class="nwc-authority">
+    Authority: Galadiman Ruwa Center (GCSLC) LTD/GTE
+</div>
+<div class="nwc-subheader">
+    Proprietors of 8R Stealth Paradigm Convergence
 </div>
 
 <div class="universal-message">
@@ -228,15 +320,11 @@ st.markdown("""
     they provide the scientific blueprint to Refine, Reset, and Revitalize every facet of human endeavor. 
     Applying 8R to everything we do is the key to scientifically improving our lives."
 </div>
-
-<h3 style='text-align: center; color: white;'>
-    We welcome you to our National Wealth Cloud for Nigeria (NWC/C&D)
-</h3>
 """, unsafe_allow_html=True)
 
 # ——— 37-Node Geopolitical Grid (36 States + FCT) ———
-st.write("### 🗺️ 37-Node Geopolitical Grid")
-st.caption("Click a state to drill down into Local Government Areas (LGAs).")
+st.write("### 🗺️ Command & Control (C&D) Grid — 37-Node Geopolitical Grid")
+st.caption("Click a state to trigger 95/5 Talon Lock data flare and drill down into Local Government Areas (774 LGA nodes).")
 
 # Group states by region for display
 region_to_states = defaultdict(list)
@@ -262,13 +350,21 @@ for region in REGION_ORDER:
                     st.session_state.selected_state = state
                     st.rerun()
 
-# Drill-down: selected state LGAs (774 total nodes nationwide; per-state list avoids dashboard crash)
+# Drill-down: selected state LGAs + 95/5 Talon Lock data flare (9.6x | $170.85B)
 if st.session_state.selected_state:
     state = st.session_state.selected_state
     region = STATE_REGION.get(state, "")
     lgas = get_lgas(state)
+    # 95/5 Talon Lock data flare on node click (per directive)
+    st.markdown(
+        f'<div class="talon-lock-flare">'
+        f'<span class="flare-label">95/5 Talon Lock</span> '
+        f'<span class="flare-value">9.6× Wealth Multiplier | ${VALUATION_ANCHOR_B:.2f}B Valuation Anchor.</span>'
+        f'</div>',
+        unsafe_allow_html=True,
+    )
     st.write(f"#### 📌 {state} — {region}")
-    st.caption(f"{len(lgas)} Local Government Areas")
+    st.caption(f"{len(lgas)} Local Government Areas (LGA Micro-Veracity active)")
     # 774 LGA grid: Navy Blue & Metallic Gold themed list (no overload)
     lga_items = "".join(f"<li>{lga}</li>" for lga in lgas)
     st.markdown(f'<div class="nwc-lga-grid"><ul style="color: #D4AF37; background: transparent;">{lga_items}</ul></div>', unsafe_allow_html=True)
@@ -304,11 +400,22 @@ st.metric("Example: $100M derivative revenue", f"National: **${nat:.0f}M** · Gl
 
 st.markdown("---")
 
-# 8R Determinant Status Matrix
-st.write("### 8R Determinant Status")
-cols = st.columns(4)
-for i, det in enumerate(DETERMINANTS):
-    cols[i % 4].success(f"D{i+1}: {det} [ACTIVE]")
+# 8R Stealth Engine — D1–D8 Determinant Widgets (golden Breathing animation)
+st.write("### 8R Stealth Engine — Determinant Widgets (D1–D8)")
+# Central valuation linked to apply_95_5_talon_lock from d8_logic
+_central_rev = VALUATION_ANCHOR_B * 1e9 / 1e6  # $170.85B as equivalent revenue scale for split
+_nat_anchor, _gl_pool = apply_95_5_talon_lock(_central_rev)
+st.markdown(
+    f'<p class="central-valuation">Central Valuation (D8 Talon Lock): <strong>${VALUATION_ANCHOR_B:.2f}B</strong> '
+    f'→ National: <strong>${_nat_anchor:,.0f}M</strong> · Global Pool: <strong>${_gl_pool:,.0f}M</strong></p>',
+    unsafe_allow_html=True,
+)
+st.caption("apply_95_5_talon_lock from d8_logic.py linked to central valuation.")
+# D1–D8 with golden Breathing animation (CSS class .d8-widget-breathing)
+d8_html = "".join(
+    f'<div class="d8-widget-breathing">D{i}: {det}</div>' for i, det in enumerate(DETERMINANTS, 1)
+)
+st.markdown(f'<div class="d8-widgets-grid">{d8_html}</div>', unsafe_allow_html=True)
 
 # Sovereign Retention Protocol (D8 Logic) — 95% National Equity (Talon Lock)
 with st.expander("🔒 Sovereign Retention Protocol (D8 Logic)", expanded=True):
@@ -422,8 +529,36 @@ if toggle_minerals:
         )
         st.pydeck_chart(sovereign_fortress_deck)
 
-# Strategic Strike Engine (single input, single button)
+# Tactical Experience: Login (Password GCSLC2026) → Eagle cry; SWAT soundscape
 with st.sidebar:
+    st.header("🔐 NWC/C&D Access")
+    if not st.session_state.nwc_authenticated:
+        _pw = st.text_input("Password", type="password", key="nwc_pw", placeholder="Enter directive password")
+        if st.button("Login", key="nwc_login") and _pw == "GCSLC2026":
+            st.session_state.nwc_authenticated = True
+            play_eagle_cry()  # Majestic Eagle/Falcon cry on login
+            st.rerun()
+        st.caption("Password: GCSLC2026 — Triggers Majestic Eagle/Falcon cry on success.")
+    else:
+        st.success("Authenticated — Eagle cry triggered.")
+        swat_path = get_swat_beep_path()
+        if swat_path:
+            try:
+                with open(swat_path, "rb") as f:
+                    wav_b64 = base64.b64encode(f.read()).decode("utf-8")
+                # Loop SWAT-style HUD two-beep WAV (injected HTML5 audio)
+                components.html(
+                    f'<audio id="swat-hud-loop" loop autoplay><source src="data:audio/wav;base64,{wav_b64}" type="audio/wav"></audio>',
+                    height=0,
+                )
+            except Exception:
+                try:
+                    with open(swat_path, "rb") as _f:
+                        st.audio(_f.read(), format="audio/wav")
+                except Exception:
+                    pass
+        st.caption("Soundscape: SWAT-style HUD two-beep (swat_hud_beep.wav) looping when asset present.")
+    st.markdown("---")
     st.header("📖 Sovereign Tactical Glossary")
     with st.expander("NWC/C&D", expanded=True):
         st.markdown(
@@ -502,3 +637,9 @@ if st.session_state.strike:
 # Footer (always)
 st.markdown("---")
 st.caption(f"Strategic Infrastructure Manifested by: {FULL_NAME} - {BRAND}  |  © 2026  |  Proprietary Nodal Logic — Protected Asset")
+
+# Chairman Signature: Bottom-right sticky bar with shimmer (Dr. Jaafaru Sa'ad — Chairman & Founder)
+st.markdown(
+    '<div class="chairman-sticky-bar chairman-signature-shimmer">Dr. Jaafaru Sa\'ad — Chairman & Founder</div>',
+    unsafe_allow_html=True,
+)

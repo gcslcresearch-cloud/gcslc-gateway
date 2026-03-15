@@ -9,4 +9,5 @@ cd "$ROOT"
 if [ -d ".venv" ] && [ -f ".venv/bin/activate" ]; then
   source .venv/bin/activate
 fi
-exec python -m streamlit run GCSLC_DASHBOARDS/3_AWC_Coal_Diamond.py --server.port 8053 --server.headless true
+# PRESIDENTIAL_STRIKE_V1_RESTORE: Port 8053 serves command_center.py (NWC/C&D logic)
+exec python -m streamlit run command_center.py --server.port 8053 --server.headless true
