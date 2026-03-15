@@ -81,13 +81,52 @@ if not st.session_state.handshake_done:
     run_diagnostic_pulse()
     st.session_state.handshake_done = True
 
-# NWC/C&D Sovereign Aesthetic — Navy Blue (#002147) & Metallic Gold (#D4AF37) | GCSLC Sovereign Diagnostic
+# NWC/C&D Sovereign Aesthetic — Goldman font, Prism-Text, diagonal watermark | GCSLC Institutional Finalization
 st.markdown("""
+<link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet">
 <style>
-/* Viewport: GCSLC Sovereign Diagnostic | 8R Scientific Analysis */
-.stApp { background-color: #002147 !important; min-height: 100vh; }
-[data-testid="stAppViewContainer"] { background-color: #002147 !important; }
-.main .block-container { background-color: #002147 !important; max-width: 100%; padding: 1rem 2rem; }
+/* Viewport: GCSLC Sovereign Diagnostic | Diagonal GCSLC PROPRIETARY watermark */
+.stApp { background-color: #002147 !important; min-height: 100vh; position: relative; }
+.stApp::before {
+    content: "GCSLC PROPRIETARY";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-35deg);
+    font-family: 'Goldman', sans-serif;
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 700;
+    color: rgba(212, 175, 55, 0.06);
+    white-space: nowrap;
+    letter-spacing: 0.2em;
+    pointer-events: none;
+    z-index: 0;
+}
+[data-testid="stAppViewContainer"] { background-color: #002147 !important; position: relative; z-index: 1; }
+.main .block-container { background-color: #002147 !important; max-width: 100%; padding: 1rem 2rem; position: relative; z-index: 1; }
+/* Primary headings: Goldman font + Shimmering Prism-Text (gold-to-white high-velocity gradient) */
+h1, h2, h3 { font-family: 'Goldman', sans-serif !important; }
+.main h3 {
+    background: linear-gradient(90deg, #D4AF37, #FFFFFF, #FFE55C, #FFFFFF, #D4AF37);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent !important;
+    animation: prism-shimmer 2.5s linear infinite;
+}
+.prism-text {
+    font-family: 'Goldman', sans-serif !important;
+    background: linear-gradient(90deg, #D4AF37, #FFFFFF, #FFE55C, #FFFFFF, #D4AF37);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent !important;
+    animation: prism-shimmer 2s linear infinite;
+}
+@keyframes prism-shimmer {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+}
 h1, h2, h3, p, span, label, .stMarkdown { color: #D4AF37 !important; }
 [data-testid="stMetricValue"], [data-testid="stMetricLabel"] { color: #D4AF37 !important; }
 section[data-testid="stSidebar"] { background-color: #002147 !important; border-right: 2px solid #D4AF37; }
@@ -179,21 +218,22 @@ st.markdown("""
     letter-spacing: 2px;
     margin-top: -10px;
 }
-/* Master Header (Metallic Gold) — PRESIDENTIAL_STRIKE_V1_RESTORE */
+/* Master Header — Goldman + Shimmering Prism-Text (gold-to-white high-velocity) */
 .nwc-master-header {
-    font-family: 'Inter', sans-serif;
-    font-weight: 800;
+    font-family: 'Goldman', sans-serif !important;
+    font-weight: 700;
     font-size: 2rem;
     text-align: center;
-    background: linear-gradient(90deg, #D4AF37, #FFE55C, #D4AF37, #E8C547, #D4AF37);
+    background: linear-gradient(90deg, #D4AF37, #FFFFFF, #FFE55C, #FFFFFF, #D4AF37);
     background-size: 200% auto;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent !important;
-    animation: gold-shimmer 5s linear infinite;
+    animation: prism-shimmer 2s linear infinite;
     margin-bottom: 0.25rem;
 }
 .nwc-authority {
+    font-family: 'Goldman', sans-serif !important;
     text-align: center;
     color: #D4AF37;
     font-size: 1rem;
@@ -201,7 +241,7 @@ st.markdown("""
     letter-spacing: 1px;
 }
 .nwc-subheader {
-    font-family: 'serif';
+    font-family: 'Goldman', sans-serif !important;
     font-style: italic;
     text-align: center;
     color: #E8C547;
@@ -210,14 +250,15 @@ st.markdown("""
     margin-top: -4px;
     margin-bottom: 0.5rem;
 }
-/* Chairman signature — Bottom-right sticky bar with shimmer (Dr. Jaafaru Sa'ad) */
+/* Chairman's Seal — Bottom-right fixed sticky bar, shimmering gold signature */
 .chairman-signature-shimmer {
-    background: linear-gradient(90deg, #D4AF37, #FFE55C, #E8C547, #D4AF37);
+    font-family: 'Goldman', sans-serif !important;
+    background: linear-gradient(90deg, #D4AF37, #FFE55C, #FFFFFF, #E8C547, #D4AF37);
     background-size: 200% auto;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent !important;
-    animation: gold-shimmer 4s linear infinite;
+    animation: prism-shimmer 2.5s linear infinite;
 }
 .chairman-sticky-bar {
     position: fixed;
@@ -600,12 +641,15 @@ if st.session_state.strike:
         """
         st.markdown(cert_html, unsafe_allow_html=True)
 
-# Footer (always)
+# Footer — Contact & Credibility (official contact; password gate GCSLC2026 maintained)
 st.markdown("---")
-st.caption(f"Strategic Infrastructure Manifested by: {FULL_NAME} - {BRAND}  |  © 2026  |  Proprietary Nodal Logic — Protected Asset")
+st.caption(
+    f"Strategic Infrastructure Manifested by: {FULL_NAME} — {BRAND}  |  © 2026  |  Proprietary Nodal Logic — Protected Asset  |  "
+    "**Contact:** [info@galadimanruwacenter.org](mailto:info@galadimanruwacenter.org)"
+)
 
-# Chairman Signature: Bottom-right sticky bar with shimmer (Dr. Jaafaru Sa'ad — Chairman & Founder)
+# Chairman's Seal: Bottom-right fixed sticky bar — Dr. Sa'ad Jaafaru with shimmering gold signature
 st.markdown(
-    '<div class="chairman-sticky-bar chairman-signature-shimmer">Dr. Jaafaru Sa\'ad — Chairman & Founder</div>',
+    '<div class="chairman-sticky-bar chairman-signature-shimmer">Dr. Sa\'ad Jaafaru — Chairman & Founder</div>',
     unsafe_allow_html=True,
 )
