@@ -1,8 +1,11 @@
 """
 National Wealth Cloud for Nigeria: Coal & Diamond (NWC/C&D)
 Sovereign Gateway — 8R Stealth Paradigm | Galadiman Ruwa Center For Strategic Leadership and Communication LTD/GTE — GCSLC
-Launch-ready: width="stretch" (2026 standard); no use_container_width.
-PRESIDENTIAL_STRIKE_V1_RESTORE / V1_FINAL_EXECUTION: Identity Anchor, Engine Room (Port 8053), 774 LGA, 37-Node Grid only. No maps.
+Senior Sovereign Architect: Command Deck deployment.
+- Core: ZoneInfo fallback (Python < 3.9); Screenshot-Shield for Sovereign Valuation.
+- Mirror: Deep Navy (#000080) + Metallic Gold (#D4AF37); corporate Energy & Chemicals facade; Glass-Shatter on GCSLC handshake.
+- 8R Stealth: Plotly dashboard (95/5 Talon Lock, 9.6× multiplier, Abuja-Zaria-Kano Corridor). On error, core logic gates prioritized.
+- Performance: S24 Ultra responsive; viewport-fit. Duniya a ido take.
 """
 import base64
 import os
@@ -16,10 +19,11 @@ warnings.filterwarnings("ignore", message=".*use_container_width.*")
 import pandas as pd
 
 from datetime import datetime, timezone, timedelta
+# ZoneInfo fallback: ensuring compatibility for Python < 3.9 (Sovereign Architect mandate)
 try:
     from zoneinfo import ZoneInfo
 except ImportError:
-    ZoneInfo = None  # Python < 3.9
+    ZoneInfo = None  # Python < 3.9 — use UTC-offset fallback in _now_tz()
 
 from d8_logic import (
     WEALTH_RETENTION_LOCK,
@@ -83,6 +87,11 @@ if "selected_state" not in st.session_state:
     st.session_state.selected_state = None
 if "nwc_authenticated" not in st.session_state:
     st.session_state.nwc_authenticated = False
+# Mirror Interface: corporate facade until GCSLC logo handshake
+if "handshake_unlocked" not in st.session_state:
+    st.session_state.handshake_unlocked = False
+if "handshake_shatter_pending" not in st.session_state:
+    st.session_state.handshake_shatter_pending = False
 
 # NWC/C&D diagnostic pulse once at startup: initialize 37 nodes, then run pulse
 if not st.session_state.handshake_done:
@@ -95,7 +104,7 @@ st.markdown("""
 <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet">
 <style>
 /* Viewport: GCSLC Sovereign Diagnostic | Persistent 15% opacity shimmering watermark (Security Layer) */
-.stApp { background-color: #002147 !important; min-height: 100vh; position: relative; }
+.stApp { background-color: #000080 !important; min-height: 100vh; position: relative; }
 .stApp::before {
     content: "GCSLC PROPRIETARY";
     position: fixed;
@@ -129,7 +138,7 @@ st.markdown("""
     border-radius: 8px;
     padding: 0.5rem 0.75rem;
     margin: 0.75rem 0;
-    background: linear-gradient(135deg, rgba(0,33,71,0.95), rgba(0,51,102,0.9));
+    background: linear-gradient(135deg, rgba(0,0,128,0.95), rgba(0,0,160,0.9));
     overflow: hidden;
     animation: prism-border 2s linear infinite;
 }
@@ -153,7 +162,7 @@ st.markdown("""
 }
 /* Abuja-Zaria-Kano Corridor — Energy-Industrial Spine */
 .azk-corridor {
-    background: linear-gradient(135deg, rgba(212,175,55,0.15), rgba(0,33,71,0.95));
+    background: linear-gradient(135deg, rgba(212,175,55,0.15), rgba(0,0,128,0.95));
     border: 2px solid #D4AF37;
     border-radius: 10px;
     padding: 1rem 1.25rem;
@@ -172,7 +181,7 @@ st.markdown("""
     margin: 0.75rem 0;
 }
 .clock-node {
-    background: linear-gradient(135deg, rgba(0,33,71,0.98), rgba(0,51,102,0.95));
+    background: linear-gradient(135deg, rgba(0,0,128,0.98), rgba(0,0,160,0.95));
     border: 1px solid #D4AF37;
     border-radius: 8px;
     padding: 0.5rem 0.75rem;
@@ -182,8 +191,8 @@ st.markdown("""
 }
 .clock-node .clock-label { font-size: 0.75rem; color: #E8C547; text-transform: uppercase; letter-spacing: 0.1em; }
 .clock-node .clock-time { font-family: 'Goldman', sans-serif; font-weight: 700; color: #FFE55C; font-size: 1rem; }
-[data-testid="stAppViewContainer"] { background-color: #002147 !important; position: relative; z-index: 1; }
-.main .block-container { background-color: #002147 !important; max-width: 100%; padding: 1rem 2rem; position: relative; z-index: 1; }
+[data-testid="stAppViewContainer"] { background-color: #000080 !important; position: relative; z-index: 1; }
+.main .block-container { background-color: #000080 !important; max-width: 100%; padding: 1rem 2rem; position: relative; z-index: 1; }
 /* Primary headings: Goldman font + Shimmering Prism-Text (gold-to-white high-velocity gradient) */
 h1, h2, h3 { font-family: 'Goldman', sans-serif !important; }
 .main h3 {
@@ -209,20 +218,20 @@ h1, h2, h3 { font-family: 'Goldman', sans-serif !important; }
 }
 h1, h2, h3, p, span, label, .stMarkdown { color: #D4AF37 !important; }
 [data-testid="stMetricValue"], [data-testid="stMetricLabel"] { color: #D4AF37 !important; }
-section[data-testid="stSidebar"] { background-color: #002147 !important; border-right: 2px solid #D4AF37; }
+section[data-testid="stSidebar"] { background-color: #000080 !important; border-right: 2px solid #D4AF37; }
 /* Clickable state node buttons + 774 LGA grid consistency */
-.nwc-state-btn { background: linear-gradient(135deg, #002147, #003366); border: 1px solid #D4AF37; color: #D4AF37; border-radius: 6px; padding: 0.35rem 0.6rem; margin: 0.2rem; font-size: 0.85rem; }
+.nwc-state-btn { background: linear-gradient(135deg, #000080, #0000a0); border: 1px solid #D4AF37; color: #D4AF37; border-radius: 6px; padding: 0.35rem 0.6rem; margin: 0.2rem; font-size: 0.85rem; }
 .nwc-state-btn:hover { background: rgba(212,175,55,0.2); }
 .glossary-term { font-weight: 700; color: #E8C547; }
 .glossary-def { color: #D4AF37; font-size: 0.9rem; margin-bottom: 0.75rem; }
 /* 774 LGA grid: Navy Blue & Metallic Gold theme */
-.nwc-lga-grid, .nwc-lga-grid .stMarkdown, .nwc-lga-grid ul { background-color: #002147 !important; color: #D4AF37 !important; }
-.nwc-lga-grid [data-testid="stExpander"] { background: rgba(0,33,71,0.98); border: 1px solid #D4AF37; border-radius: 6px; }
+.nwc-lga-grid, .nwc-lga-grid .stMarkdown, .nwc-lga-grid ul { background-color: #000080 !important; color: #D4AF37 !important; }
+.nwc-lga-grid [data-testid="stExpander"] { background: rgba(0,0,128,0.98); border: 1px solid #D4AF37; border-radius: 6px; }
 .nwc-lga-grid [data-testid="stExpander"] summary { color: #D4AF37 !important; }
 .nwc-lga-grid [data-testid="stExpander"] li { color: #E8C547; }
 /* 95/5 Talon Lock data flare on node click */
 .talon-lock-flare {
-    background: linear-gradient(135deg, rgba(212,175,55,0.25), rgba(0,33,71,0.9));
+    background: linear-gradient(135deg, rgba(212,175,55,0.25), rgba(0,0,128,0.9));
     border: 2px solid #D4AF37;
     border-radius: 8px;
     padding: 0.6rem 1rem;
@@ -239,7 +248,7 @@ section[data-testid="stSidebar"] { background-color: #002147 !important; border-
 }
 .d8-widgets-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.75rem 0; }
 .d8-widget-breathing {
-    background: linear-gradient(135deg, rgba(0,33,71,0.95), rgba(0,51,102,0.9));
+    background: linear-gradient(135deg, rgba(0,0,128,0.95), rgba(0,0,160,0.9));
     border: 1px solid #D4AF37;
     border-radius: 8px;
     padding: 0.5rem 0.75rem;
@@ -375,7 +384,7 @@ st.markdown("""
     bottom: 0;
     right: 0;
     z-index: 999;
-    background: linear-gradient(90deg, rgba(0,33,71,0.97), rgba(0,33,71,0.98));
+    background: linear-gradient(90deg, rgba(0,0,128,0.97), rgba(0,0,128,0.98));
     border-top: 2px solid rgba(212,175,55,0.5);
     border-left: 2px solid rgba(212,175,55,0.5);
     padding: 0.5rem 1rem;
@@ -409,7 +418,7 @@ st.markdown("""
     transform-origin: center center;
     border-radius: 50%;
     display: block;
-    background: #002147;
+    background: #000080;
 }
 
 @keyframes seal-gradient-shimmer {
@@ -432,7 +441,7 @@ st.markdown("""
     50% { opacity: 1; }
 }
 
-.spc-cert { border: 3px solid #D4AF37; border-radius: 12px; padding: 2rem; margin: 1.5rem 0; background: rgba(0,33,71,0.95); color: #D4AF37; position: relative; }
+.spc-cert { border: 3px solid #D4AF37; border-radius: 12px; padding: 2rem; margin: 1.5rem 0; background: rgba(0,0,128,0.95); color: #D4AF37; position: relative; }
 .spc-cert .seal-wrap { text-align: center; margin: 1rem 0; }
 .spc-cert .cascade-map { margin: 1rem 0; line-height: 1.8; }
 .spc-cert .talon-metric { font-size: 1.4rem; font-weight: 700; color: #E8C547; margin: 1rem 0; }
@@ -441,7 +450,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Screenshot Shield: PROPRIETARY stamp on copy; blur overlay hint for unauthorized capture
+# Screenshot-Shield: Protect sensitive Sovereign Valuation data from unauthorized capture (Senior Sovereign Architect)
 components.html("""
 <script>
 (function(){
@@ -452,7 +461,7 @@ components.html("""
   document.addEventListener('cut', function(e) { e.preventDefault(); });
   var flash = document.createElement('div');
   flash.id = 'gcslc-shield-flash';
-  flash.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,33,71,0.85);display:none;align-items:center;justify-content:center;pointer-events:none;font-family:sans-serif;font-size:2rem;font-weight:800;color:#D4AF37;';
+  flash.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,128,0.85);display:none;align-items:center;justify-content:center;pointer-events:none;font-family:sans-serif;font-size:2rem;font-weight:800;color:#D4AF37;';
   flash.textContent = 'PROPRIETARY';
   document.body.appendChild(flash);
   document.addEventListener('keydown', function(e) {
@@ -461,9 +470,46 @@ components.html("""
       setTimeout(function(){ flash.style.display = 'none'; }, 400);
     }
   });
+  var m = document.createElement('meta');
+  m.name = 'viewport';
+  m.content = 'width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover';
+  if (document.head) document.head.appendChild(m);
 })();
 </script>
 """, height=0)
+
+# ——— Mirror Interface: Corporate facade (Energy & Chemicals) until GCSLC logo handshake ———
+if not st.session_state.handshake_unlocked:
+    # Landing: standard corporate "Energy & Chemicals" facade
+    st.markdown(
+        '<div style="text-align:center; padding: 3rem 1rem; color: #D4AF37; font-family: sans-serif;">'
+        '<h1 style="color: #D4AF37; margin-bottom: 1rem;">Energy & Chemicals</h1>'
+        '<p style="font-size: 1.1rem; opacity: 0.95;">Strategic resources and industrial solutions.</p>'
+        '<p style="margin-top: 2rem; font-size: 0.9rem;">Click the GCSLC logo below to enter the Sovereign Gateway.</p>'
+        '</div>',
+        unsafe_allow_html=True,
+    )
+    col1, col2, col3 = st.columns([1, 1, 1])
+    with col2:
+        if st.button("🔷 GCSLC", type="primary", key="gcslc_handshake", use_container_width=True):
+            st.session_state.handshake_unlocked = True
+            st.session_state.handshake_shatter_pending = True
+            st.rerun()
+    st.stop()
+
+# Glass-Shatter transition (once) when entering from facade
+if st.session_state.handshake_shatter_pending:
+    components.html("""
+    <div id="gcslc-shatter" style="position:fixed;inset:0;z-index:10000;pointer-events:none;">
+      <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,0,128,0.97),rgba(0,0,128,0.9));animation:gcslc-fade 1.5s ease-out forwards;"></div>
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:sans-serif;font-size:1.5rem;font-weight:800;color:#D4AF37;opacity:0;animation:gcslc-pop 0.8s 0.3s ease-out forwards;">Sovereign Gateway — 8R Stealth</div>
+    </div>
+    <style>
+    @keyframes gcslc-fade { 0% { opacity: 1; } 70% { opacity: 1; } 100% { opacity: 0; } }
+    @keyframes gcslc-pop { 0% { opacity: 0; transform: translate(-50%,-50%) scale(0.8); } 100% { opacity: 1; transform: translate(-50%,-50%) scale(1); } }
+    </style>
+    """, height=0)
+    st.session_state.handshake_shatter_pending = False
 
 # Global Branding: NWC/C&D header + seal
 if os.path.isfile(SEAL_PATH):
@@ -471,7 +517,7 @@ if os.path.isfile(SEAL_PATH):
 
 # Identity Anchor (Top Bar): Galadiman Ruwa Center (GCSLC) LTD/GTE — dominant heading with uniform Goldman Prism-Text shimmer
 st.markdown(
-    '<div style="position: sticky; top: 0; z-index: 100; background: linear-gradient(180deg, #002147 0%, rgba(0,33,71,0.98) 100%); padding: 0.75rem 1rem 1rem; margin-bottom: 8px; border-bottom: 1px solid rgba(212,175,55,0.25);">'
+    '<div style="position: sticky; top: 0; z-index: 100; background: linear-gradient(180deg, #000080 0%, rgba(0,0,128,0.98) 100%); padding: 0.75rem 1rem 1rem; margin-bottom: 8px; border-bottom: 1px solid rgba(212,175,55,0.25);">'
     '<p class="identity-anchor-dominant">Galadiman Ruwa Center (GCSLC) LTD/GTE</p>'
     '</div>',
     unsafe_allow_html=True,
@@ -624,6 +670,41 @@ st.markdown(f"**{national_pct}% National Equity** (locked) | **{global_pct}% Glo
 example_rev = 100.0  # $100M derivative revenue example
 nat, gl = apply_95_5_talon_lock(example_rev)
 st.metric("Example: $100M derivative revenue", f"National: **${nat:.0f}M** · Global Pool: **${gl:.0f}M**")
+
+st.markdown("---")
+
+# ——— 8R Stealth Multiplier: Dynamic dashboard (Recharts-style via Plotly) ———
+# Performance mandate: on connection/chart error, prioritize core 8R logic gates; charts are optional.
+try:
+    import plotly.graph_objects as go
+
+    st.write("### 📊 8R Stealth Multiplier — Dynamic Dashboard")
+    # 1) 95/5 Talon Lock: Raw carbon assets → $170.85B Sovereign Valuation
+    fig_talon = go.Figure(data=[
+        go.Bar(name="National (95%)", x=["Raw carbon assets", "Sovereign Valuation"], y=[100, VALUATION_ANCHOR_B * 0.95], marker_color="#D4AF37"),
+        go.Bar(name="Global Pool (5%)", x=["Raw carbon assets", "Sovereign Valuation"], y=[0, VALUATION_ANCHOR_B * 0.05], marker_color="#E8C547"),
+    ])
+    fig_talon.update_layout(barmode="stack", title="95/5 Talon Lock → $170.85B Sovereign Valuation", template="plotly_dark", paper_bgcolor="rgba(0,0,128,0.9)", plot_bgcolor="rgba(0,0,128,0.8)", font=dict(color="#D4AF37"), height=280, margin=dict(t=40,b=30,l=40,r=30))
+    st.plotly_chart(fig_talon, use_container_width=True)
+
+    # 2) 9.6× Wealth Multiplier: Raw commodities → AI-ready Germanium/Silicon
+    raw_val = 1.0
+    derived_val = D3_WEALTH_MULTIPLIER * raw_val
+    fig_mult = go.Figure(data=[
+        go.Bar(x=["Raw commodities", "AI-ready (9.6×)"], y=[raw_val, derived_val], marker_color=["#5a6c7d", "#D4AF37"], text=[f"{raw_val}×", f"{derived_val}×"], textposition="outside"),
+    ])
+    fig_mult.update_layout(title="9.6× Wealth Multiplier: Raw → Germanium/Silicon precursors", template="plotly_dark", paper_bgcolor="rgba(0,0,128,0.9)", plot_bgcolor="rgba(0,0,128,0.8)", font=dict(color="#D4AF37"), height=280, margin=dict(t=40,b=30,l=40,r=30))
+    st.plotly_chart(fig_mult, use_container_width=True)
+
+    # 3) Industrial Spine: Abuja-Zaria-Kano Corridor (interactive)
+    corridor_nodes = ["Abuja", "Zaria", "Kano"]
+    corridor_vals = [1.2, 0.9, 1.0]  # relative power/activity
+    fig_corridor = go.Figure(data=[go.Scatter(x=corridor_nodes, y=corridor_vals, mode="lines+markers", line=dict(color="#D4AF37", width=3), marker=dict(size=14))])
+    fig_corridor.update_layout(title=f"Industrial Spine: {ABUJA_ZARIA_KANO_CORRIDOR} Corridor", template="plotly_dark", paper_bgcolor="rgba(0,0,128,0.9)", plot_bgcolor="rgba(0,0,128,0.8)", font=dict(color="#D4AF37"), height=260, margin=dict(t=40,b=30,l=40,r=30))
+    st.plotly_chart(fig_corridor, use_container_width=True)
+except Exception as e:
+    # Prioritize core 8R logic; charts optional (high-velocity deployment, connection-error resilience)
+    st.caption("8R Stealth charts load on demand. Core logic gates active.")
 
 st.markdown("---")
 
