@@ -8,7 +8,7 @@
 | **8051** | NRRFC Dashboard (8R B_Files; 9.6×, 1,205 MW) | `B_Files/nrrfc_dashboard.py` | `./run_nrrfc_dashboard_8051.sh` |
 | **8052** | Sovereign Asset Dashboard (AWC Portal) | `coal_corridor_8052.py` | `./run_coal_corridor_8052.sh` or `./GCSLC_DASHBOARDS/2_AWC_Portal_Launcher.sh` |
 | **8053** | 8R Strike (AWC Coal/Diamond) | `GCSLC_DASHBOARDS/3_AWC_Coal_Diamond.py` | `./run_strike_command_8053.sh` |
-| **8054** | AWC Portal (Continental View) | `awc_portal_8054.py` | `./run_awc_portal_8054.sh` |
+| **8054** | AWC Portal — Sovereign Cloud, Eagle, AI-Compute (Continental View) | `awc_portal_8054.py` | `./run_awc_portal_8054.sh` |
 
 ## Path mapping (project sidebar)
 
@@ -16,7 +16,7 @@
 - **NRRFC Dashboard (8051):** `GCSLC_Sovereign_Gateway/B_Files/nrrfc_dashboard.py` — 9.6×, $170.85B, 1,205 MW, 13 states; space-safe launch: `./run_nrrfc_dashboard_8051.sh` or `streamlit run "B_Files/nrrfc_dashboard.py" --server.port 8051`
 - **Coal Corridor (8052):** `GCSLC_Sovereign_Gateway/coal_corridor_8052.py` — 13-state Coal and By-products corridor, 639.3 Mt, 1,205 MW (WPC 2026 Roadmap Ready), $72B, 94%/22% reveal
 - **8R Strike (8053):** `GCSLC_Sovereign_Gateway/GCSLC_DASHBOARDS/3_AWC_Coal_Diamond.py`
-- **AWC Portal (8054):** `GCSLC_Sovereign_Gateway/awc_portal_8054.py`
+- **AWC Portal (8054):** `GCSLC_Sovereign_Gateway/awc_portal_8054.py` — Sovereign Cloud interface, RealTimeEngine 60s ($50.1M, 1,203 MW, 9.6×), Apex Eagle. The Eagle flies on 8054.
 
 ## One-line launch (from project root)
 

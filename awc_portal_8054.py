@@ -1,10 +1,12 @@
 """
-African Wealth Cloud (AWC) Portal — Port 8054
-The Sovereign Glass: Deep Navy, Gold Shimmer, 8R Convergence, Nigeria Sovereign Pulse.
+African Wealth Cloud (AWC) Portal — Port 8054 (standalone entity)
+The Eagle flies here. Sovereign Cloud interface: Deep Navy, Gold Shimmer, 8R Convergence, Nigeria Sovereign Pulse.
+Sovereign Glass continental view + AI-Compute metrics (RealTimeEngine: $50.1M, 1,203 MW, 9.6×).
 
 User Profile: Dr. Sa'ad Jaafaru (Galadiman Ruwan Zazzau)
 Entity: Galadiman Ruwa Center (GCSLC) LTD/GTE.
 © 2026 Galadiman Ruwa Center (GCSLC) LTD/GTE.
+Sannu a hankali.
 """
 
 import os
@@ -556,6 +558,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 st.markdown("---")
+st.write("### Sovereign Cloud — AI-Compute metrics")
 RealTimeEngine.run()
 st.markdown("---")
 
@@ -668,8 +671,8 @@ with st.expander("**Sovereign Rationale — Big Tech Handshake Manifesto**", exp
     st.markdown(continental_logic.BIG_TECH_HANDSHAKE_MANIFESTO)
     st.caption("Linked SSMV corridors: **" + "**, **".join(continental_logic.SSMV_CORRIDORS_MANIFESTO) + "**")
 
-# --- Map container: Glassmorphism + Regional Pulse + Eagle's Talon dive ---
-st.write("### The Sovereign Glass — Continental View")
+# --- Map container: Sovereign Cloud / Sovereign Glass — Continental View + Eagle's Talon ---
+st.write("### Sovereign Cloud — The Sovereign Glass (Continental View)")
 st.caption("**GCSLC Sovereign Diagnostic** | **Live Eagle Engine:** Sniffer hovers over map → on node click, high-velocity **Talon Strike** with **play_swat** 180 Hz audio sync. ($10B+ nodes: golden radar sweep.)")
 # Talon Lock 100%: Force Sovereign Glass fallback so nodes always appear (GPU/WebGL disabled or not)
 st.markdown(SOVEREIGN_GLASS_MAP_FALLBACK_HTML, unsafe_allow_html=True)
