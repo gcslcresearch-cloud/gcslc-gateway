@@ -56,7 +56,7 @@
       z-index: 0;
       opacity: 0.5;
     }
-    /* Visible watermark (45% opacity) of GCSLC logo text */
+    /* Official stamp: GCSLC watermark at 60% — authority behind the data */
     .gcslc-watermark {
       position: fixed;
       inset: 0;
@@ -65,14 +65,14 @@
       align-items: center;
       justify-content: center;
       z-index: 1;
-      opacity: 0.45;
+      opacity: 0.6;
     }
     .gcslc-watermark span {
       font-family: 'Goldman', sans-serif;
       font-size: clamp(2.4rem, 7vw, 4.2rem);
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      background: linear-gradient(135deg, rgba(212,175,55,0.7), rgba(240,213,140,0.9), rgba(184,150,46,0.8));
+      background: linear-gradient(135deg, rgba(212,175,55,0.75), rgba(240,213,140,0.95), rgba(184,150,46,0.85));
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
@@ -81,9 +81,9 @@
       animation: watermarkPulse 14s ease-in-out infinite alternate;
     }
     @keyframes watermarkPulse {
-      0% { opacity: 0.25; transform: rotate(-27deg) scale(1); }
-      50% { opacity: 0.45; transform: rotate(-27deg) scale(1.03); }
-      100% { opacity: 0.40; transform: rotate(-27deg) scale(1.01); }
+      0% { opacity: 0.52; transform: rotate(-27deg) scale(1); }
+      50% { opacity: 0.6; transform: rotate(-27deg) scale(1.02); }
+      100% { opacity: 0.58; transform: rotate(-27deg) scale(1.01); }
     }
 
     .smm-shell {
@@ -93,6 +93,7 @@
       max-width: 1280px;
       margin: 0 auto;
       padding: 1.5rem 1.25rem 1rem;
+      padding-bottom: max(4rem, env(safe-area-inset-bottom) + 3rem);
       display: flex;
       flex-direction: column;
       gap: 1rem;
@@ -468,6 +469,98 @@
       resize: vertical;
       min-height: 72px;
     }
+    /* WhatsApp: country code + number — searchable dropdown, S24/iPhone friendly */
+    .whatsapp-row {
+      display: flex;
+      gap: 0.5rem;
+      align-items: stretch;
+    }
+    .whatsapp-row .country-wrap {
+      position: relative;
+      flex: 0 0 auto;
+      min-width: 140px;
+      max-width: 180px;
+    }
+    .whatsapp-row .country-trigger {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid rgba(148,163,184,0.7);
+      background: rgba(3,14,34,0.95);
+      color: var(--text-main);
+      padding: 0.55rem 0.65rem;
+      font-size: 0.84rem;
+      outline: none;
+      cursor: pointer;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+    .whatsapp-row .country-trigger:focus,
+    .whatsapp-row .country-trigger.open {
+      border-color: rgba(212,175,55,0.85);
+      box-shadow: 0 0 0 1px rgba(212,175,55,0.5);
+    }
+    .whatsapp-row .country-trigger .arrow {
+      margin-left: 0.25rem;
+      opacity: 0.8;
+    }
+    .whatsapp-row .country-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      margin-top: 2px;
+      border-radius: 10px;
+      background: rgba(4,17,39,0.98);
+      border: 1px solid rgba(212,175,55,0.4);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      z-index: 50;
+      max-height: 220px;
+      overflow: hidden;
+      display: none;
+    }
+    .whatsapp-row .country-dropdown.open {
+      display: block;
+    }
+    .whatsapp-row .country-search {
+      width: 100%;
+      border: none;
+      border-bottom: 1px solid rgba(212,175,55,0.3);
+      background: rgba(2,10,25,0.98);
+      color: var(--text-main);
+      padding: 0.5rem 0.65rem;
+      font-size: 0.82rem;
+      outline: none;
+    }
+    .whatsapp-row .country-search::placeholder {
+      color: var(--muted);
+    }
+    .whatsapp-row .country-list {
+      max-height: 180px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .whatsapp-row .country-option {
+      padding: 0.5rem 0.65rem;
+      font-size: 0.82rem;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: background 0.12s ease;
+    }
+    .whatsapp-row .country-option:hover,
+    .whatsapp-row .country-option:focus {
+      background: rgba(212,175,55,0.2);
+    }
+    .whatsapp-row .country-option .code {
+      color: var(--gold-soft);
+      margin-right: 0.35rem;
+    }
+    .whatsapp-row .number-input {
+      flex: 1;
+      min-width: 0;
+    }
     .access-actions {
       margin-top: 0.8rem;
       display: flex;
@@ -510,15 +603,13 @@
       color: var(--muted);
     }
 
-    /* Sovereign Logout: gold button top-right */
+    /* Sovereign Logout: below Access Granted in Handshake widget — classy gold */
     .sovereign-logout {
-      position: fixed;
-      top: 0.75rem;
-      right: 1rem;
-      z-index: 100;
+      margin-top: 0.75rem;
+      width: 100%;
       border-radius: 999px;
       border: 1px solid rgba(212,175,55,0.7);
-      padding: 0.45rem 1rem;
+      padding: 0.5rem 1rem;
       font-size: 0.78rem;
       letter-spacing: 0.1em;
       text-transform: uppercase;
@@ -681,6 +772,97 @@
       color: var(--muted);
     }
 
+    /* Copyright: fixed ticker at absolute base — static shimmering metallic gold */
+    .copyright-ticker {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      padding: 0.5rem 1rem;
+      padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+      background: linear-gradient(180deg, transparent 0%, rgba(0,26,51,0.97) 30%, rgba(0,20,45,0.98) 100%);
+      border-top: 1px solid rgba(212,175,55,0.25);
+      text-align: center;
+    }
+    .copyright-ticker span {
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+      background: linear-gradient(90deg, #b8962e, #f0d58c, #D4AF37, #faf8f0, #b8962e);
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: copyrightShimmer 6s ease-in-out infinite;
+    }
+    @keyframes copyrightShimmer {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    /* Sovereign Shield modal — high-end proprietary asset notice */
+    .shield-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,26,51,0.94);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      padding: 1rem;
+    }
+    .shield-overlay.active {
+      display: flex;
+    }
+    .shield-modal {
+      max-width: 400px;
+      width: 100%;
+      background: linear-gradient(145deg, rgba(4,17,39,0.98), rgba(6,23,52,0.98));
+      border-radius: 18px;
+      padding: 1.75rem;
+      border: 1px solid rgba(212,175,55,0.6);
+      box-shadow: 0 0 40px rgba(212,175,55,0.35);
+      position: relative;
+    }
+    .shield-modal::before {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      border-radius: inherit;
+      padding: 2px;
+      background: conic-gradient(from 90deg, rgba(240,213,140,0.8), rgba(212,175,55,0.6), rgba(240,213,140,0.8));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      animation: prismOrbit 5s linear infinite;
+      opacity: 0.85;
+      pointer-events: none;
+    }
+    .shield-modal h3 {
+      margin: 0 0 0.6rem 0;
+      font-family: 'Goldman', sans-serif;
+      font-size: 0.95rem;
+      letter-spacing: 0.1em;
+      color: var(--gold-soft);
+    }
+    .shield-modal p {
+      margin: 0 0 1.25rem 0;
+      font-size: 0.88rem;
+      color: var(--text-main);
+      line-height: 1.5;
+    }
+    .shield-modal .shield-close {
+      border-radius: 999px;
+      border: 1px solid rgba(212,175,55,0.7);
+      padding: 0.45rem 1.1rem;
+      font-size: 0.8rem;
+      background: linear-gradient(135deg, #D4AF37, #f0d58c);
+      color: #05101f;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
     @media (max-width: 900px) {
       .smm-grid {
         grid-template-columns: minmax(0, 1fr);
@@ -711,10 +893,8 @@
         grid-template-rows: repeat(8, auto);
       }
       .sovereign-logout {
-        top: 0.5rem;
-        right: 0.75rem;
-        padding: 0.4rem 0.75rem;
-        font-size: 0.72rem;
+        padding: 0.55rem 1rem;
+        min-height: 44px;
       }
     }
     /* S24 Ultra / iPhone 16 Pro: safe areas and touch targets */
@@ -722,11 +902,9 @@
       .smm-shell {
         padding: max(1rem, env(safe-area-inset-top)) max(0.75rem, env(safe-area-inset-right)) max(0.75rem, env(safe-area-inset-bottom)) max(0.75rem, env(safe-area-inset-left));
       }
-      .sovereign-logout {
-        top: max(0.5rem, env(safe-area-inset-top));
-        right: max(0.75rem, env(safe-area-inset-right));
-        min-height: 44px;
-        min-width: 44px;
+      .whatsapp-row .country-wrap {
+        min-width: 120px;
+        max-width: 160px;
       }
       .bento-8r-box {
         min-height: 48px;
@@ -739,8 +917,6 @@
   <div class="gcslc-watermark">
     <span>GCSLC</span>
   </div>
-  <button type="button" class="sovereign-logout" id="sovereignLogout" aria-label="Sovereign Logout">Sovereign Logout</button>
-
   <div class="smm-shell">
     <header class="smm-header">
       <h1 class="smm-headline">GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION GCSLC LTD/GTE</h1>
@@ -893,20 +1069,42 @@
           </div>
           <div>
             <label for="smm-whatsapp">WhatsApp <span style="color: var(--muted);">(Optional)</span></label>
-            <input id="smm-whatsapp" name="whatsapp" type="tel" autocomplete="tel" placeholder="+234..." />
+            <div class="whatsapp-row">
+              <div class="country-wrap">
+                <button type="button" class="country-trigger" id="countryTrigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Country code">+234 <span class="arrow">▼</span></button>
+                <div class="country-dropdown" id="countryDropdown" role="listbox" aria-label="Country list">
+                  <input type="text" class="country-search" id="countrySearch" placeholder="Search country or code..." aria-label="Search countries" autocomplete="off" />
+                  <div class="country-list" id="countryList"></div>
+                </div>
+              </div>
+              <input id="smm-whatsapp" name="whatsapp" type="tel" class="number-input" autocomplete="tel" placeholder="800 123 4567" inputmode="numeric" />
+            </div>
+            <input type="hidden" name="whatsapp_code" id="whatsappCode" value="234" />
           </div>
           <div class="access-actions">
             <span class="access-note" id="timerNote">15-minute session. One 15-minute extension available.</span>
             <button type="button" class="primary-btn" id="extendSessionBtn" style="display: none;">Request extension</button>
             <button type="submit" class="primary-btn">Access Granted</button>
           </div>
+          <button type="button" class="sovereign-logout" id="sovereignLogout" aria-label="Sovereign Logout">Sovereign Logout</button>
         </form>
       </section>
     </main>
 
-    <footer class="smm-footer">
-      © 2026 Dr. Sa’ad Jaafaru (GaladimanRuwa)
-    </footer>
+  </div>
+
+  <!-- Copyright: fixed ticker at base — shimmering metallic gold -->
+  <div class="copyright-ticker" role="contentinfo">
+    <span>© 2026 Dr. Jaafaru Sa'ad Galadiman Ruwan Zazzau. NCC Registration No. LW15954.</span>
+  </div>
+
+  <!-- Sovereign Shield modal (F12 / right-click / print-screen) -->
+  <div class="shield-overlay" id="shieldOverlay" aria-modal="true" aria-labelledby="shieldTitle">
+    <div class="shield-modal">
+      <h3 id="shieldTitle">Sovereign Shield Active</h3>
+      <p>Proprietary Asset of GCSLC (NCC Reg: LW15954).</p>
+      <button type="button" class="shield-close" id="shieldClose">Acknowledge</button>
+    </div>
   </div>
 
   <!-- Sovereign Insight modal (8R pop-ups) -->
@@ -925,20 +1123,36 @@
   </audio>
 
   <script>
-    // Disable right-click + basic print-screen intent detection
+    // Sovereign Shield: right-click, F12, PrintScreen — high-end modal (NCC Reg: LW15954)
     (function () {
-      function shieldAlert() {
-        alert("Sovereign Shield Active — Protected by GCSLC.");
+      var overlay = document.getElementById("shieldOverlay");
+      var closeBtn = document.getElementById("shieldClose");
+      function showShield() {
+        if (overlay) overlay.classList.add("active");
+      }
+      function hideShield() {
+        if (overlay) overlay.classList.remove("active");
       }
       document.addEventListener("contextmenu", function (e) {
         e.preventDefault();
-        shieldAlert();
+        showShield();
       });
       document.addEventListener("keydown", function (e) {
         var key = e.key || e.code;
-        if (e.key === "PrintScreen" || key === "PrintScreen" || (e.ctrlKey && key === "p") || (e.metaKey && key === "p")) {
-          shieldAlert();
+        var keyCode = e.keyCode || e.which;
+        if (keyCode === 123 || e.key === "F12" || key === "F12") {
+          e.preventDefault();
+          showShield();
+          return false;
         }
+        if (e.key === "PrintScreen" || key === "PrintScreen" || (e.ctrlKey && key === "p") || (e.metaKey && key === "p")) {
+          e.preventDefault();
+          showShield();
+        }
+      });
+      if (closeBtn) closeBtn.addEventListener("click", hideShield);
+      if (overlay) overlay.addEventListener("click", function (ev) {
+        if (ev.target === overlay) hideShield();
       });
     })();
 
@@ -1053,6 +1267,71 @@
       if (overlay) overlay.addEventListener("click", function (e) {
         if (e.target === overlay) closeModal();
       });
+    })();
+
+    // WhatsApp: searchable country code dropdown (global list, S24/iPhone optimized)
+    (function () {
+      var COUNTRY_LIST = [
+        { n: "Afghanistan", c: "93" },{ n: "Albania", c: "355" },{ n: "Algeria", c: "213" },{ n: "Andorra", c: "376" },{ n: "Angola", c: "244" },{ n: "Antigua and Barbuda", c: "1268" },{ n: "Argentina", c: "54" },{ n: "Armenia", c: "374" },{ n: "Australia", c: "61" },{ n: "Austria", c: "43" },{ n: "Azerbaijan", c: "994" },{ n: "Bahamas", c: "1242" },{ n: "Bahrain", c: "973" },{ n: "Bangladesh", c: "880" },{ n: "Barbados", c: "1246" },{ n: "Belarus", c: "375" },{ n: "Belgium", c: "32" },{ n: "Belize", c: "501" },{ n: "Benin", c: "229" },{ n: "Bhutan", c: "975" },{ n: "Bolivia", c: "591" },{ n: "Bosnia and Herzegovina", c: "387" },{ n: "Botswana", c: "267" },{ n: "Brazil", c: "55" },{ n: "Brunei", c: "673" },{ n: "Bulgaria", c: "359" },{ n: "Burkina Faso", c: "226" },{ n: "Burundi", c: "257" },{ n: "Cambodia", c: "855" },{ n: "Cameroon", c: "237" },{ n: "Canada", c: "1" },{ n: "Cape Verde", c: "238" },{ n: "Central African Republic", c: "236" },{ n: "Chad", c: "235" },{ n: "Chile", c: "56" },{ n: "China", c: "86" },{ n: "Colombia", c: "57" },{ n: "Comoros", c: "269" },{ n: "Congo", c: "242" },{ n: "Costa Rica", c: "506" },{ n: "Croatia", c: "385" },{ n: "Cuba", c: "53" },{ n: "Cyprus", c: "357" },{ n: "Czech Republic", c: "420" },{ n: "Denmark", c: "45" },{ n: "Djibouti", c: "253" },{ n: "Dominica", c: "1767" },{ n: "Dominican Republic", c: "1809" },{ n: "Ecuador", c: "593" },{ n: "Egypt", c: "20" },{ n: "El Salvador", c: "503" },{ n: "Equatorial Guinea", c: "240" },{ n: "Eritrea", c: "291" },{ n: "Estonia", c: "372" },{ n: "Eswatini", c: "268" },{ n: "Ethiopia", c: "251" },{ n: "Fiji", c: "679" },{ n: "Finland", c: "358" },{ n: "France", c: "33" },{ n: "Gabon", c: "241" },{ n: "Gambia", c: "220" },{ n: "Georgia", c: "995" },{ n: "Germany", c: "49" },{ n: "Ghana", c: "233" },{ n: "Greece", c: "30" },{ n: "Grenada", c: "1473" },{ n: "Guatemala", c: "502" },{ n: "Guinea", c: "224" },{ n: "Guinea-Bissau", c: "245" },{ n: "Guyana", c: "592" },{ n: "Haiti", c: "509" },{ n: "Honduras", c: "504" },{ n: "Hong Kong", c: "852" },{ n: "Hungary", c: "36" },{ n: "Iceland", c: "354" },{ n: "India", c: "91" },{ n: "Indonesia", c: "62" },{ n: "Iran", c: "98" },{ n: "Iraq", c: "964" },{ n: "Ireland", c: "353" },{ n: "Israel", c: "972" },{ n: "Italy", c: "39" },{ n: "Jamaica", c: "1876" },{ n: "Japan", c: "81" },{ n: "Jordan", c: "962" },{ n: "Kazakhstan", c: "7" },{ n: "Kenya", c: "254" },{ n: "Kiribati", c: "686" },{ n: "Kuwait", c: "965" },{ n: "Kyrgyzstan", c: "996" },{ n: "Laos", c: "856" },{ n: "Latvia", c: "371" },{ n: "Lebanon", c: "961" },{ n: "Lesotho", c: "266" },{ n: "Liberia", c: "231" },{ n: "Libya", c: "218" },{ n: "Liechtenstein", c: "423" },{ n: "Lithuania", c: "370" },{ n: "Luxembourg", c: "352" },{ n: "Macau", c: "853" },{ n: "Madagascar", c: "261" },{ n: "Malawi", c: "265" },{ n: "Malaysia", c: "60" },{ n: "Maldives", c: "960" },{ n: "Mali", c: "223" },{ n: "Malta", c: "356" },{ n: "Marshall Islands", c: "692" },{ n: "Mauritania", c: "222" },{ n: "Mauritius", c: "230" },{ n: "Mexico", c: "52" },{ n: "Micronesia", c: "691" },{ n: "Moldova", c: "373" },{ n: "Monaco", c: "377" },{ n: "Mongolia", c: "976" },{ n: "Montenegro", c: "382" },{ n: "Morocco", c: "212" },{ n: "Mozambique", c: "258" },{ n: "Myanmar", c: "95" },{ n: "Namibia", c: "264" },{ n: "Nauru", c: "674" },{ n: "Nepal", c: "977" },{ n: "Netherlands", c: "31" },{ n: "New Zealand", c: "64" },{ n: "Nicaragua", c: "505" },{ n: "Niger", c: "227" },{ n: "Nigeria", c: "234" },{ n: "North Korea", c: "850" },{ n: "North Macedonia", c: "389" },{ n: "Norway", c: "47" },{ n: "Oman", c: "968" },{ n: "Pakistan", c: "92" },{ n: "Palau", c: "680" },{ n: "Palestine", c: "970" },{ n: "Panama", c: "507" },{ n: "Papua New Guinea", c: "675" },{ n: "Paraguay", c: "595" },{ n: "Peru", c: "51" },{ n: "Philippines", c: "63" },{ n: "Poland", c: "48" },{ n: "Portugal", c: "351" },{ n: "Qatar", c: "974" },{ n: "Romania", c: "40" },{ n: "Russia", c: "7" },{ n: "Rwanda", c: "250" },{ n: "Saint Kitts and Nevis", c: "1869" },{ n: "Saint Lucia", c: "1758" },{ n: "Saint Vincent and the Grenadines", c: "1784" },{ n: "Samoa", c: "685" },{ n: "San Marino", c: "378" },{ n: "Saudi Arabia", c: "966" },{ n: "Senegal", c: "221" },{ n: "Serbia", c: "381" },{ n: "Seychelles", c: "248" },{ n: "Sierra Leone", c: "232" },{ n: "Singapore", c: "65" },{ n: "Slovakia", c: "421" },{ n: "Slovenia", c: "386" },{ n: "Solomon Islands", c: "677" },{ n: "Somalia", c: "252" },{ n: "South Africa", c: "27" },{ n: "South Korea", c: "82" },{ n: "South Sudan", c: "211" },{ n: "Spain", c: "34" },{ n: "Sri Lanka", c: "94" },{ n: "Sudan", c: "249" },{ n: "Suriname", c: "597" },{ n: "Sweden", c: "46" },{ n: "Switzerland", c: "41" },{ n: "Syria", c: "963" },{ n: "Taiwan", c: "886" },{ n: "Tajikistan", c: "992" },{ n: "Tanzania", c: "255" },{ n: "Thailand", c: "66" },{ n: "Timor-Leste", c: "670" },{ n: "Togo", c: "228" },{ n: "Tonga", c: "676" },{ n: "Trinidad and Tobago", c: "1868" },{ n: "Tunisia", c: "216" },{ n: "Turkey", c: "90" },{ n: "Turkmenistan", c: "993" },{ n: "Tuvalu", c: "688" },{ n: "Uganda", c: "256" },{ n: "Ukraine", c: "380" },{ n: "United Arab Emirates", c: "971" },{ n: "United Kingdom", c: "44" },{ n: "United States", c: "1" },{ n: "Uruguay", c: "598" },{ n: "Uzbekistan", c: "998" },{ n: "Vanuatu", c: "678" },{ n: "Vatican City", c: "379" },{ n: "Venezuela", c: "58" },{ n: "Vietnam", c: "84" },{ n: "Yemen", c: "967" },{ n: "Zambia", c: "260" },{ n: "Zimbabwe", c: "263" }
+      ];
+      var trigger = document.getElementById("countryTrigger");
+      var dropdown = document.getElementById("countryDropdown");
+      var searchInput = document.getElementById("countrySearch");
+      var listEl = document.getElementById("countryList");
+      var codeHidden = document.getElementById("whatsappCode");
+      if (!trigger || !dropdown || !listEl) return;
+      function renderList(filter) {
+        var q = (filter || "").toLowerCase().trim();
+        var list = q ? COUNTRY_LIST.filter(function (x) {
+          return x.n.toLowerCase().indexOf(q) >= 0 || x.c.indexOf(q) >= 0;
+        }) : COUNTRY_LIST;
+        listEl.innerHTML = "";
+        list.forEach(function (x) {
+          var opt = document.createElement("div");
+          opt.className = "country-option";
+          opt.setAttribute("role", "option");
+          opt.innerHTML = "<span class=\"code\">+" + x.c + "</span>" + x.n;
+          opt.addEventListener("click", function () {
+            trigger.textContent = "+" + x.c + " \u25BC";
+            trigger.setAttribute("aria-expanded", "false");
+            if (codeHidden) codeHidden.value = x.c;
+            dropdown.classList.remove("open");
+            trigger.classList.remove("open");
+            searchInput.value = "";
+            renderList("");
+          });
+          listEl.appendChild(opt);
+        });
+      }
+      trigger.addEventListener("click", function (e) {
+        e.preventDefault();
+        var open = dropdown.classList.toggle("open");
+        trigger.classList.toggle("open", open);
+        trigger.setAttribute("aria-expanded", open ? "true" : "false");
+        if (open) {
+          renderList("");
+          searchInput.value = "";
+          searchInput.focus();
+        }
+      });
+      searchInput.addEventListener("input", function () {
+        renderList(this.value);
+      });
+      searchInput.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          dropdown.classList.remove("open");
+          trigger.classList.remove("open");
+          trigger.setAttribute("aria-expanded", "false");
+        }
+      });
+      document.addEventListener("click", function (e) {
+        if (!dropdown.contains(e.target) && e.target !== trigger) {
+          dropdown.classList.remove("open");
+          trigger.classList.remove("open");
+          trigger.setAttribute("aria-expanded", "false");
+        }
+      });
+      renderList("");
     })();
   </script>
 </body>
