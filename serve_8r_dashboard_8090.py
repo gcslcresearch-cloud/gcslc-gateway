@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """
-Serve the NRRFC pulsing dashboard from 8RStealthBfiles on localhost:8090.
-ONLY ~/Desktop/8RStealthBfiles/app.html is served (639.3 Mt live).
-Strategy: 37-Node Grid Status. GCSLC Sovereign Gateway — © 2026 GCSLC LTD/GTE.
+Serve the NRRFC pulsing dashboard on localhost:8090.
+Strategy: 37-Node Grid Status from the current project (GCSLC_Sovereign_Gateway/app.html).
+No external 8RStealthBfiles path; app.html is resolved from the working directory.
+GCSLC Sovereign Gateway — © 2026 GCSLC LTD/GTE.
 """
 import os
 import sys
@@ -10,9 +11,9 @@ import webbrowser
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 
-# LOCK ROOT: Hard-link ONLY to ~/Desktop/8RStealthBfiles/app.html (no other dashboard sources)
-ROOT = (Path.home() / "Desktop" / "8RStealthBfiles").resolve()
-LIVE_APP = ROOT / "app.html"  # Only file served: 639.3 Mt reserves
+# ROOT: lock to current working directory (GCSLC_Sovereign_Gateway)
+ROOT = Path.cwd().resolve()
+LIVE_APP = ROOT / "app.html"  # LIVE dashboard HTML served from project root
 APP_HTML = "app.html"
 PORT = 8090
 
@@ -47,11 +48,11 @@ class DashboardHandler(SimpleHTTPRequestHandler):
 def main():
     if not ROOT.is_dir():
         print(f"Error: Directory not found: {ROOT}")
-        print("Create ~/Desktop/8RStealthBfiles/ and add app.html (639.3 Mt).")
+        print("Run from the GCSLC_Sovereign_Gateway project root so app.html is accessible.")
         sys.exit(1)
     if not LIVE_APP.is_file():
         print(f"Error: LIVE app not found: {LIVE_APP}")
-        print("Only ~/Desktop/8RStealthBfiles/app.html is allowed (639.3 Mt reserves).")
+        print("Ensure app.html exists in the project root (GCSLC_Sovereign_Gateway/app.html).")
         sys.exit(1)
 
     try:
@@ -63,11 +64,12 @@ def main():
     except Exception:
         pass
 
+    # Serve from the project root so relative assets resolve correctly
     os.chdir(ROOT)
     server = HTTPServer(("", PORT), DashboardHandler)
     url = f"http://localhost:{PORT}/"
     print("SOVEREIGN GATEWAY LIVE ON 8090")
-    print(f"NRRFC LIVE Dashboard — serving ONLY: {LIVE_APP}")
+    print(f"NRRFC LIVE Dashboard — serving LIVE app from: {LIVE_APP}")
     print(f"Open: {url}  (redirects to {url}{APP_HTML})")
     webbrowser.open(url)
     try:
