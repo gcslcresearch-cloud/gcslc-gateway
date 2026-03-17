@@ -16,6 +16,7 @@ import importlib.util
 import math
 import time
 from datetime import datetime
+from typing import Optional
 
 import streamlit as st
 import warnings
@@ -140,7 +141,7 @@ NODE_PULSE_CLASS = {
 }
 
 
-def _fused_select_node(node_id: str | None):
+def _fused_select_node(node_id: Optional[str]):
     """Phase 4: single gate for node selection; sets all nodal state and reruns."""
     st.session_state.selected_node = node_id
     st.session_state.nigeria_selected = node_id == "nigeria"

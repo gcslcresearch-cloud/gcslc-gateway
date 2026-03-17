@@ -1069,22 +1069,55 @@
       setInterval(place, 2200);
     })();
 
-    // --- Sovereign Wealth Leakage: The Cost of Delay (Moribund counter — increases every second) ---
+    // --- Sovereign Wealth Leakage: The Cost of Delay (grounded in $1.7B baseline) ---
     (function () {
       var el = document.getElementById('moribundCounter');
       if (!el) return;
-      var totalMillions = 1400;
-      var ratePerSecond = 2.4;
+      // NRRF Strategic Brief baseline: $1.7B cumulative loss
+      var baselineMillions = 1700;
       function formatMillions(m) {
         if (m >= 1000) return '$' + (m / 1000).toFixed(1) + ' B';
         return '$' + m.toFixed(1) + ' M';
       }
       function tick() {
-        totalMillions += ratePerSecond;
-        el.textContent = formatMillions(totalMillions);
+        // Ground the counter in the $1.7B baseline; no runaway growth
+        el.textContent = formatMillions(baselineMillions);
       }
+      // Keep a gentle heartbeat without changing the baseline value
       setInterval(tick, 1000);
       tick();
+    })();
+
+    // --- Sovereign Activation Alert: dynamic total proven reserves from state-by-state table ---
+    (function () {
+      var alertEl = document.querySelector('.sovereign-activation-alert .alert-text');
+      var statesBody = document.getElementById('statesBody');
+      if (!alertEl || !statesBody) return;
+      var rows = statesBody.querySelectorAll('tr');
+      var totalMt = 0;
+      rows.forEach(function (row) {
+        if (!row.cells || row.cells.length < 2) return;
+        var v = parseFloat(row.cells[1].textContent.replace(/,/g, '')) || 0;
+        totalMt += v;
+      });
+      // Round to 2 decimal places for display
+      totalMt = Math.round(totalMt * 100) / 100;
+      var totalReservesEl = document.getElementById('totalReserves');
+      if (totalReservesEl) {
+        totalReservesEl.textContent = totalMt.toFixed(2);
+      }
+      var powerEl = document.getElementById('powerPotential');
+      var statesCountEl = document.getElementById('statesCount');
+      var powerText = powerEl ? powerEl.textContent : '—';
+      var statesText = statesCountEl ? statesCountEl.textContent : (rows.length || 0).toString();
+      alertEl.textContent =
+        'Sovereign Activation Alert — ' +
+        totalMt.toFixed(2) +
+        ' Mt reserves live · ' +
+        powerText +
+        ' MW power potential · ' +
+        statesText +
+        ' states';
     })();
 
     // --- National debt-swap & NRRF (2026 FX: ₦1,350 = $1) ---
