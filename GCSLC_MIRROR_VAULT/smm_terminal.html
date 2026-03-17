@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SMM | Sovereign Materiality Mirror</title>
+    <style>
+        :root {
+            --neon-gold: #c5a059;
+            --deep-black: #050505;
+            --terminal-green: #00ff41;
+        }
+
+        body {
+            background-color: var(--deep-black);
+            color: var(--neon-gold);
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            margin: 0;
+            transition: filter 0.3s ease;
+        }
+
+        /* Sovereign Shield: Visual protection */
+        @media print { body { display: none; } }
+
+        /* Watermark Vitality: 50% Size + Breathing Pulse */
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 250px;
+            max-width: 50vw;
+            opacity: 0.6;
+            z-index: -1;
+            pointer-events: none;
+            animation: breathing 4s ease-in-out infinite;
+        }
+
+        @keyframes breathing {
+            0%, 100% { transform: translate(-50%, -50%) scale(1) rotate(-45deg); }
+            50% { transform: translate(-50%, -50%) scale(1.1) rotate(-45deg); }
+        }
+
+        /* Bento Intelligence Grid */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            padding: 40px;
+            min-height: 60vh;
+        }
+
+        @media (max-width: 640px) {
+            .bento-grid {
+                grid-template-columns: repeat(2, 1fr);
+                padding: 20px;
+            }
+        }
+
+        .determinant-box {
+            border: 1px solid var(--neon-gold);
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(197, 160, 89, 0.05);
+        }
+
+        .determinant-box:hover {
+            background: var(--neon-gold);
+            color: var(--deep-black);
+            box-shadow: 0 0 20px var(--neon-gold);
+        }
+
+        /* Chronos Sync Display */
+        .chronos-bar {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 20px;
+            border-top: 1px solid #333;
+            font-size: 0.8rem;
+        }
+
+        #insight-terminal {
+            min-height: 100px;
+            padding: 20px;
+            margin: 0 40px;
+            border-left: 3px solid var(--terminal-green);
+            background: rgba(0, 255, 65, 0.02);
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 640px) {
+            #insight-terminal { margin: 0 20px; font-size: 0.95rem; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+    <img src="gcslc_logo.png" class="watermark" alt="GCSLC SECURED" onerror="this.style.display='none'">
+
+    <div class="bento-grid" id="grid"></div>
+
+    <div id="insight-terminal">
+        &gt; SYSTEM READY: Awaiting Sovereign Query...
+    </div>
+
+    <div class="chronos-bar" id="clocks"></div>
+
+    <script>
+        // Bento Intelligence: Unique Sovereign Insights
+        const insights = {
+            D1: "STRATEGIC SCARCITY: Mapping non-terrestrial asset yields.",
+            D2: "8R CONVERGENCE: Stealth paradigm locked under LW15954.",
+            D3: "MATERIALITY MIRROR: Reflecting institutional liquidity voids.",
+            D4: "MUBADALA SYNC: Aligning sovereign wealth trajectory.",
+            D5: "MGX PROTOCOL: Computational authority established.",
+            D6: "TITAN HOOK: High-entropy engagement activated.",
+            D7: "LEGAL ARMOUR: NCC Registration LW15954 enforced.",
+            D8: "FUSION CENTER: 8090 NRRFC data stream live."
+        };
+
+        const grid = document.getElementById('grid');
+        for (let i = 1; i <= 8; i++) {
+            const box = document.createElement('div');
+            box.className = 'determinant-box';
+            box.innerHTML = `[D${i}] DETERMINANT`;
+            box.onclick = () => typeInsight(insights[`D${i}`]);
+            grid.appendChild(box);
+        }
+
+        function typeInsight(text) {
+            const term = document.getElementById('insight-terminal');
+            term.innerHTML = "&gt; ";
+            let i = 0;
+            const timer = setInterval(() => {
+                if (i < text.length) {
+                    term.innerHTML += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(timer);
+                }
+            }, 30);
+        }
+
+        // Chronos Sync: Real-time clock synchronization
+        function updateClocks() {
+            const zones = [
+                { city: 'NEW YORK', tz: 'America/New_York' },
+                { city: 'LONDON', tz: 'Europe/London' },
+                { city: 'GENEVA', tz: 'Europe/Zurich' },
+                { city: 'DUBAI', tz: 'Asia/Dubai' },
+                { city: 'HONG KONG', tz: 'Asia/Hong_Kong' },
+                { city: 'ZARIA/ABUJA', tz: 'Africa/Lagos' }
+            ];
+
+            const html = zones.map(z => {
+                const time = new Intl.DateTimeFormat('en-GB', {
+                    timeZone: z.tz,
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false
+                }).format(new Date());
+                return `<div>${z.city}: <span style="color:#fff">${time}</span></div>`;
+            }).join('');
+
+            document.getElementById('clocks').innerHTML = html;
+        }
+
+        setInterval(updateClocks, 1000);
+        updateClocks();
+
+        // Sovereign Shield: Anti-Inspect / Print protection
+        document.onkeydown = function(e) {
+            const k = e.keyCode || e.which;
+            const f12 = k === 123;
+            const devTools = e.ctrlKey && e.shiftKey && (k === 73 || k === 74 || k === 67);
+            const viewSource = e.ctrlKey && k === 85;
+            if (f12 || devTools || viewSource) {
+                document.body.style.filter = "blur(10px)";
+                setTimeout(() => { document.body.style.filter = "none"; }, 2000);
+                return false;
+            }
+        };
+    </script>
+</body>
+</html>
