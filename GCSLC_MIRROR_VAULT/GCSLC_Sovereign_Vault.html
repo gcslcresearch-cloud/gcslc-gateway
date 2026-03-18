@@ -1,829 +1,530 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>GCSLC | Sovereign Materiality Mirror (SSMV)</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Goldman:wght@400;700&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --gold-solid: #d4af37;
-      --gold-shimmer: linear-gradient(135deg, #bf953f 0%, #fcf6ba 25%, #b38728 50%, #fbf5b7 75%, #aa771c 100%);
-      --navy-vault: #00001a;
-      --terminal-white: #f8f8f8;
-      --terminal-green: #00ff41;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>GCSLC | Sovereign Strategic Mirror (SSMV)</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" />
+    <style>
+        :root {
+            --gold-shimmer: linear-gradient(135deg, #bf953f 0%, #fcf6ba 25%, #b38728 50%, #fbf5b7 75%, #aa771c 100%);
+            --navy-vault: #00020a;
+            --gold-solid: #d4af37;
+        }
 
-      --surface-0: rgba(255,255,255,0.03);
-      --surface-1: rgba(255,255,255,0.06);
-      --surface-2: rgba(0,0,0,0.45);
-    }
+        body {
+            background: var(--navy-vault);
+            color: #fff;
+            font-family: 'Goldman', system-ui, sans-serif;
+            margin: 0;
+            padding: 20px;
+            overflow: hidden;
+            height: 100vh;
+            box-sizing: border-box;
+            border: 8px solid var(--gold-solid);
+            animation: borderPulse 4s infinite ease-in-out;
+        }
 
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
+        @keyframes borderPulse {
+            0%, 100% { border-color: #aa771c; }
+            50% { border-color: #fcf6ba; }
+        }
 
-    body {
-      margin: 0;
-      padding: 18px;
-      overflow: hidden;
-      background: var(--navy-vault);
-      color: #fff;
-      font-family: 'Cinzel', serif;
-    }
+        /* NODAL 4 & 5: SOVEREIGN HEADER */
+        .sov-header {
+            text-align: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--gold-solid);
+            background: rgba(212, 175, 55, 0.05);
+        }
+        .shimmer-text {
+            background: var(--gold-shimmer);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+            background-size: 200% auto;
+            animation: shine 5s linear infinite;
+            background-position: 0% 50%;
+            font-weight: 900;
+        }
+        @keyframes shine { to { background-position: 200% center; } }
 
-    /* --- Breathing pulse across major containers --- */
-    .breathe {
-      animation: breathePulse 6.2s ease-in-out infinite;
-    }
-    @keyframes breathePulse {
-      0%, 100% { transform: translateZ(0) scale(1); }
-      50% { transform: translateZ(0) scale(1.015); }
-    }
+        /* NODAL 1: ANALOG CLOCKS */
+        .clock-grid {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px;
+            border-bottom: 1px solid rgba(212,175,55,0.2);
+        }
+        .clock-case { text-align: center; width: 70px; }
+        .analog-face {
+            width: 50px;
+            height: 50px;
+            border: 2px solid var(--gold-solid);
+            border-radius: 50%;
+            position: relative;
+            margin: 0 auto;
+            box-shadow: 0 0 10px rgba(212,175,55,0.3);
+            background: rgba(255,255,255,0.03);
+        }
 
-    /* --- Shimmering metallic gold headers --- */
-    .gold-header {
-      font-family: 'Goldman', system-ui, sans-serif;
-      font-weight: 900;
-      background: var(--gold-shimmer);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      display: inline-block;
-      background-size: 220% 100%;
-      animation: goldShimmer 5.5s linear infinite;
-      letter-spacing: 0.02em;
-    }
-    @keyframes goldShimmer {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 220% 50%; }
-    }
+        .hand {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom center;
+            background: #fff;
+            border-radius: 999px;
+        }
+        .hour { width: 3px; height: 12px; }
+        .min { width: 2px; height: 18px; }
+        .clock-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            border-radius: 999px;
+            background: var(--gold-solid);
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 12px rgba(212,175,55,0.35);
+        }
 
-    /* --- Watermark diagonal repeat (GCSLC mark) --- */
-    .watermark-layer {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: -1;
-      overflow: hidden;
-      opacity: 0.11;
-      animation: wmBreathe 7s ease-in-out infinite;
-    }
-    @keyframes wmBreathe {
-      0%, 100% { filter: saturate(1); transform: translateZ(0) scale(1); }
-      50% { filter: saturate(1.15); transform: translateZ(0) scale(1.03); }
-    }
-    .wm-grid {
-      position: absolute;
-      inset: -40%;
-      transform: rotate(-30deg);
-      display: grid;
-      grid-template-columns: repeat(6, 240px);
-      grid-auto-rows: 120px;
-      align-items: center;
-      justify-items: center;
-      gap: 20px;
-    }
-    .wm-cell {
-      font-family: 'Goldman', system-ui, sans-serif;
-      font-size: clamp(18px, 2.3vw, 34px);
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      background: var(--gold-shimmer);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      filter: drop-shadow(0 0 10px rgba(0,0,0,0.45));
-      white-space: nowrap;
-    }
+        /* NODAL 1: KINETIC TICKER */
+        .ticker-wrap {
+            width: 100%;
+            overflow: hidden;
+            background: #000;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--gold-solid);
+        }
+        .ticker-content {
+            display: inline-block;
+            white-space: nowrap;
+            animation: scroll 40s linear infinite;
+            color: var(--gold-solid);
+            font-weight: 900;
+            padding-left: 100%;
+            letter-spacing: 0.02em;
+        }
+        @keyframes scroll {
+            from { transform: translateX(0); }
+            to { transform: translateX(-200%); }
+        }
 
-    /* --- Kinetic ticker (top) --- */
-    .ticker-container {
-      border-bottom: 2px solid var(--gold-solid);
-      background: rgba(0,0,0,0.75);
-      margin: 0 -18px 14px;
-      padding: 8px 0;
-      overflow: hidden;
-    }
-    .ticker-move {
-      display: inline-block;
-      white-space: nowrap;
-      animation: tickerScroll 30s linear infinite;
-      font-weight: 900;
-      letter-spacing: 0.03em;
-      color: var(--gold-solid);
-      padding-left: 100%;
-    }
-    @keyframes tickerScroll {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-200%); }
-    }
+        /* NODAL 2: PRISM LIVE FORM (CALLIGRAPHY) */
+        .prism-form {
+            font-family: 'Cinzel Decorative', cursive;
+            padding: 20px;
+            border: 2px solid var(--gold-solid);
+            background: rgba(0,0,0,0.8);
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(212,175,55,0.2);
+            animation: boxPulse 3s infinite ease-in-out;
+        }
+        @keyframes boxPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        .prism-input {
+            width: 100%;
+            background: #000;
+            border: 1px solid var(--gold-solid);
+            color: #fff;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 9px;
+            font-family: 'Goldman', system-ui, sans-serif;
+            outline: none;
+        }
+        .btn-gold {
+            width: 100%;
+            padding: 15px;
+            background: var(--gold-shimmer);
+            border: none;
+            font-weight: 900;
+            color: #000;
+            cursor: pointer;
+            border-radius: 30px;
+            margin-top: 10px;
+            font-size: 1rem;
+        }
+        .auth-row {
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .btn-metallic {
+            width: 48%;
+            padding: 12px;
+            font-weight: 900;
+            border-radius: 25px;
+            border: 1px solid var(--gold-solid);
+            cursor: pointer;
+            background: transparent;
+            color: #fff;
+        }
+        .btn-metallic.primary {
+            background: var(--gold-shimmer);
+            color: #000;
+        }
 
-    /* --- Apex: humanoid + 8R convergence header --- */
-    .apex {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
+        /* NODAL 3: HUMANOID MESSAGE */
+        .humanoid-box {
+            padding: 20px;
+            border-left: 5px solid var(--gold-solid);
+            background: rgba(255,255,255,0.02);
+            margin: 20px 0;
+            border-radius: 14px;
+        }
 
-    .humanoid-row {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-    }
-    .humanoid-avatar {
-      width: 58px;
-      height: 58px;
-      border-radius: 999px;
-      border: 2px solid rgba(212,175,55,0.55);
-      background:
-        radial-gradient(circle at 30% 25%, rgba(255,255,255,0.22), transparent 55%),
-        radial-gradient(circle at 80% 85%, rgba(212,175,55,0.35), transparent 55%),
-        linear-gradient(145deg, #07101f, #020617);
-      box-shadow: 0 0 18px rgba(212,175,55,0.25);
-      position: relative;
-    }
-    .humanoid-avatar::after {
-      content: "";
-      position: absolute;
-      inset: -6px;
-      border-radius: inherit;
-      border: 1px solid rgba(212,175,55,0.25);
-      opacity: 0.7;
-      animation: halo 2.8s ease-in-out infinite;
-    }
-    @keyframes halo {
-      0%, 100% { transform: scale(0.98); opacity: 0.55; }
-      50% { transform: scale(1.05); opacity: 0.95; }
-    }
+        /* WATERMARK & COPYRIGHT */
+        .footer-vault {
+            position: fixed;
+            bottom: 15px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: rgba(212,175,55,0.5);
+            pointer-events: none;
+            z-index: 2;
+        }
 
-    .humanoid-bubble {
-      max-width: 820px;
-      padding: 14px 18px;
-      border-radius: 16px;
-      background: rgba(0,0,0,0.35);
-      border: 1px solid rgba(212,175,55,0.35);
-      box-shadow: 0 0 24px rgba(212,175,55,0.18);
-      color: rgba(255,255,255,0.92);
-      font-size: 0.95rem;
-      line-height: 1.4;
-      position: relative;
-    }
-    .humanoid-bubble::after {
-      content: "";
-      position: absolute;
-      left: 24px;
-      bottom: -10px;
-      border-width: 10px 10px 0 10px;
-      border-style: solid;
-      border-color: rgba(0,0,0,0.35) transparent transparent transparent;
-      filter: drop-shadow(0 -1px 0 rgba(0,0,0,0.35));
-    }
+        /* Simple breathing pulse for major blocks */
+        .breathe { animation: breathe 7s ease-in-out infinite; }
+        @keyframes breathe {
+            0%, 100% { transform: translateZ(0) scale(1); }
+            50% { transform: translateZ(0) scale(1.01); }
+        }
 
-    .layout {
-      display: grid;
-      grid-template-columns: 1.35fr 1fr;
-      gap: 18px;
-      height: calc(100vh - 150px);
-      min-height: 520px;
-      align-items: start;
-    }
+        /* Terminal overlay (optional; kept from your base) */
+        #smm-terminal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 650px;
+            background: rgba(0,0,15,0.98);
+            border: 5px solid var(--gold-solid);
+            padding: 50px;
+            z-index: 9999;
+            box-shadow: 0 0 150px #000;
+        }
+        #term-content {
+            color: #f8f8f8;
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .gold-cursor {
+            display: inline-block;
+            width: 12px;
+            height: 24px;
+            background: var(--gold-solid);
+            animation: blink 1s steps(1, start) infinite;
+            vertical-align: middle;
+            margin-left: 6px;
+            border-radius: 2px;
+            box-shadow: 0 0 18px rgba(212,175,55,0.25);
+        }
+        @keyframes blink { 50% { opacity: 0; } }
 
-    /* --- K-GEC Data center panel --- */
-    .panel {
-      border: 2px solid rgba(212,175,55,0.75);
-      background: rgba(255,255,255,0.02);
-      padding: 16px;
-      border-radius: 14px;
-      box-shadow: 0 0 28px rgba(212,175,55,0.12);
-    }
+        /* Layout */
+        .page-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
 
-    /* --- 6-zone analog clocks --- */
-    .clock-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-      padding: 12px 0 0;
-    }
-    @media (max-width: 980px) {
-      .layout { grid-template-columns: 1fr; }
-      .clock-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    }
-    @media (max-width: 520px) {
-      .clock-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
+        @media (max-width: 1020px) {
+            .clock-grid { gap: 12px; flex-wrap: wrap; }
+            .page-grid { grid-template-columns: 1fr; }
+            #smm-terminal { width: calc(100vw - 28px); padding: 30px; }
+        }
 
-    .clock-card {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-    }
-    .analog-face {
-      width: 68px;
-      height: 68px;
-      border-radius: 999px;
-      border: 2px solid rgba(212,175,55,0.9);
-      background:
-        radial-gradient(circle at 30% 20%, rgba(255,255,255,0.18), transparent 55%),
-        linear-gradient(180deg, rgba(2,6,23,0.65), rgba(0,0,0,0.35));
-      box-shadow: 0 0 12px rgba(0,0,0,0.75), 0 0 16px rgba(212,175,55,0.15);
-      position: relative;
-      overflow: hidden;
-    }
-    .analog-face::before {
-      content: "";
-      position: absolute;
-      inset: -2px;
-      background: conic-gradient(from 0deg,
-        rgba(212,175,55,0.0),
-        rgba(212,175,55,0.6),
-        rgba(255,255,255,0.2),
-        rgba(212,175,55,0.0));
-      opacity: 0.22;
-      animation: prismOrbit 6.8s linear infinite;
-    }
-    @keyframes prismOrbit { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-    .center-dot {
-      position: absolute;
-      width: 6px;
-      height: 6px;
-      background: var(--gold-solid);
-      border-radius: 999px;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      box-shadow: 0 0 10px rgba(212,175,55,0.35);
-      z-index: 1;
-    }
-
-    .hand {
-      position: absolute;
-      left: 50%;
-      bottom: 50%;
-      transform-origin: bottom center;
-      border-radius: 999px;
-      background: var(--gold-solid);
-      z-index: 1;
-    }
-    .hand.hour {
-      width: 3px;
-      height: 18px;
-      transform: translateX(-50%) rotate(0deg);
-    }
-    .hand.min {
-      width: 2px;
-      height: 26px;
-      background: rgba(248,246,186,0.92);
-      transform: translateX(-50%) rotate(0deg);
-    }
-
-    .clock-label {
-      font-size: 0.75rem;
-      letter-spacing: 0.08em;
-      color: rgba(212,175,55,0.95);
-      text-transform: uppercase;
-      font-weight: 700;
-    }
-
-    /* --- Bento determinants --- */
-    .bento-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 12px;
-      padding-top: 14px;
-    }
-    @media (max-width: 980px) { .bento-grid { grid-template-columns: repeat(3, minmax(0,1fr)); } }
-    @media (max-width: 560px) { .bento-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
-
-    .det-node {
-      border: 2px solid rgba(212,175,55,0.85);
-      height: 92px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
-      background: rgba(255,255,255,0.02);
-      border-radius: 12px;
-      user-select: none;
-    }
-    .det-node:hover {
-      transform: scale(1.04);
-      background: rgba(212,175,55,0.18);
-      box-shadow: 0 0 22px rgba(212,175,55,0.28);
-    }
-    .det-node .det-code {
-      font-weight: 900;
-      font-size: 1.3rem;
-      font-family: 'Goldman', system-ui, sans-serif;
-      background: var(--gold-shimmer);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-    .det-node .det-tag {
-      font-size: 0.7rem;
-      color: rgba(255,255,255,0.86);
-      margin-top: 4px;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    /* --- Access form (Prism Live) --- */
-    .access-panel {
-      border-radius: 16px;
-      border: 2px solid rgba(212,175,55,0.8);
-      background: rgba(255,255,255,0.03);
-      backdrop-filter: blur(10px);
-      padding: 18px;
-      box-shadow: 0 0 32px rgba(212,175,55,0.12);
-      position: relative;
-      overflow: hidden;
-    }
-    .access-panel::before {
-      content: "";
-      position: absolute;
-      inset: -2px;
-      background: conic-gradient(from 180deg,
-        rgba(212,175,55,0.0),
-        rgba(212,175,55,0.55),
-        rgba(255,255,255,0.18),
-        rgba(212,175,55,0.0));
-      opacity: 0.32;
-      animation: prismOrbit 7s linear infinite;
-      pointer-events: none;
-    }
-    .access-inner { position: relative; z-index: 1; }
-    .access-title {
-      text-align: center;
-      margin-bottom: 14px;
-    }
-
-    .calligraphy {
-      font-family: 'Goldman', system-ui, sans-serif;
-      letter-spacing: 0.12em;
-    }
-
-    .access-form { display: grid; gap: 12px; }
-    .access-form label {
-      font-size: 0.72rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: rgba(212,175,55,0.95);
-      font-weight: 800;
-    }
-    .access-form input {
-      width: 100%;
-      border-radius: 12px;
-      border: 1px solid rgba(212,175,55,0.65);
-      background: rgba(0,0,0,0.6);
-      color: #fff;
-      padding: 12px 14px;
-      outline: none;
-    }
-    .access-form input:focus {
-      box-shadow: 0 0 0 2px rgba(212,175,55,0.25);
-      border-color: rgba(212,175,55,0.95);
-    }
-
-    .auth-row {
-      display: flex;
-      gap: 12px;
-      margin-top: 6px;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .btn-metal {
-      flex: 1;
-      border-radius: 999px;
-      border: 1px solid rgba(212,175,55,0.85);
-      background: rgba(0,0,0,0.35);
-      color: rgba(212,175,55,0.98);
-      padding: 12px 14px;
-      cursor: pointer;
-      font-weight: 900;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
-    }
-    .btn-metal.primary {
-      background: var(--gold-shimmer);
-      color: #000;
-      border-color: rgba(212,175,55,0.95);
-      box-shadow: 0 0 16px rgba(212,175,55,0.22);
-    }
-    .btn-metal:hover { transform: translateY(-1px); }
-
-    .auth-note {
-      margin-top: 10px;
-      text-align: center;
-      font-size: 0.68rem;
-      color: rgba(248,246,186,0.95);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-weight: 700;
-    }
-
-    /* --- Terminal overlay with pulsing gold cursor --- */
-    #smm-terminal {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: min(740px, calc(100vw - 28px));
-      background: rgba(0,0,15,0.98);
-      border: 5px solid var(--gold-solid);
-      border-radius: 18px;
-      padding: 34px 28px;
-      z-index: 9999;
-      box-shadow: 0 0 150px rgba(0,0,0,0.85);
-    }
-
-    #term-content {
-      color: var(--terminal-white);
-      font-family: "Courier New", monospace;
-      font-size: 1.35rem;
-      line-height: 1.6;
-      white-space: pre-wrap;
-    }
-
-    .cursor-gold {
-      display: inline-block;
-      width: 10px;
-      height: 26px;
-      background: var(--gold-solid);
-      vertical-align: middle;
-      margin-left: 6px;
-      animation: blink 0.9s steps(1, start) infinite;
-      border-radius: 2px;
-      box-shadow: 0 0 18px rgba(212,175,55,0.25);
-    }
-    @keyframes blink {
-      50% { opacity: 0; }
-    }
-
-    .term-close {
-      position: absolute;
-      right: 16px;
-      top: 16px;
-      background: transparent;
-      border: 1px solid rgba(212,175,55,0.9);
-      color: rgba(212,175,55,0.98);
-      padding: 10px 16px;
-      border-radius: 999px;
-      cursor: pointer;
-      font-weight: 900;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    /* --- Bottom footer copyright (fixed) --- */
-    .footer-fixed {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 5;
-      padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
-      background: linear-gradient(180deg, transparent, rgba(0,0,0,0.45) 40%, rgba(0,0,0,0.65));
-      border-top: 1px solid rgba(212,175,55,0.25);
-      text-align: center;
-      pointer-events: none;
-    }
-    .footer-fixed .footer-text {
-      font-size: 0.7rem;
-      letter-spacing: 0.06em;
-      background: var(--gold-shimmer);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      animation: goldShimmer 6s linear infinite;
-      font-weight: 900;
-    }
-
-    /* Responsive breathing reductions */
-    @media (prefers-reduced-motion: reduce) {
-      .breathe, .gold-header, .ticker-move, .watermark-layer, .cursor-gold, .watermark-layer { animation: none !important; }
-    }
-  </style>
+        /* Determinant grid */
+        .bento-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
+        .det-node {
+            border: 2px solid var(--gold-solid);
+            height: 95px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.4s;
+            background: rgba(255,255,255,0.02);
+            border-radius: 12px;
+            user-select: none;
+        }
+        .det-node:hover { background: var(--gold-shimmer); color: #000; transform: scale(1.05); }
+        .det-code {
+            font-size: 2rem;
+            font-weight: 900;
+            line-height: 1;
+        }
+        .det-tag {
+            font-size: 0.7rem;
+            font-weight: 900;
+            letter-spacing: 0.04em;
+        }
+    </style>
 </head>
 <body>
-  <div class="watermark-layer" aria-hidden="true">
-    <div class="wm-grid" aria-hidden="true">
-      <div class="wm-cell">GCSLC</div><div class="wm-cell">GCSLC</div><div class="wm-cell">GCSLC</div><div class="wm-cell">GCSLC</div><div class="wm-cell">GCSLC</div><div class="wm-cell">GCSLC</div>
-      <div class="wm-cell">GCSLC</div><div class="wm-cell">GCSLC</div><div class="wm-cell">GCSLC</div><div class="wm-cell">GCSLC</div><div class="wm-cell">GCSLC</div><div class="wm-cell">GCSLC</div>
-      <div class="wm-cell">GCSLC</div><div class="wm-cell">GCSLC</div><div class="wm-cell">GCSLC</div><div class="wm-cell">GCSLC</div><div class="wm-cell">GCSLC</div><div class="wm-cell">GCSLC</div>
-      <div class="wm-cell">GCSLC</div><div class="wm-cell">GCSLC</div><div class="wm-cell">GCSLC</div><div class="wm-cell">GCSLC</div><div class="wm-cell">GCSLC</div><div class="wm-cell">GCSLC</div>
-      <div class="wm-cell">GCSLC</div><div class="wm-cell">GCSLC</div><div class="wm-cell">GCSLC</div><div class="wm-cell">GCSLC</div><div class="wm-cell">GCSLC</div><div class="wm-cell">GCSLC</div>
-      <div class="wm-cell">GCSLC</div><div class="wm-cell">GCSLC</div><div class="wm-cell">GCSLC</div><div class="wm-cell">GCSLC</div><div class="wm-cell">GCSLC</div><div class="wm-cell">GCSLC</div>
-    </div>
-  </div>
-
-  <!-- Kinetic NGECC commodity ticker -->
-  <div class="ticker-container breathe" aria-label="NGECC Commodity Pricing Ticker">
-    <div class="ticker-move">
-      COAL (NGECC): $131.00/MT ▲ // SILICON METAL: $1.81/KG ▼ // GERMANIUM: $8,597/KG ▲
-    </div>
-  </div>
-
-  <div class="apex breathe">
-    <div class="gold-header" style="text-align:center; font-size: clamp(18px, 3vw, 30px);">
-      8R Stealth Paradigm Convergence
+    <div class="ticker-wrap breathe">
+        <div class="ticker-content">
+            NGECC COAL: $131.40/MT ▲ | AMMONIA: $650/MT | GERMANIUM: $8,597/KG ▲ | MINED DIAMONDS (RAW): $7,100/CT ▲ | POLISHED: $12,400/CT | SOVEREIGN COMPUTE: ACTIVE
+        </div>
     </div>
 
-    <div class="humanoid-row">
-      <div class="humanoid-avatar" aria-hidden="true"></div>
-      <div class="humanoid-bubble">
-        The Humanoid, thank you for stopping by. I need energy to thrive. Come in to decode—precision first, then sovereignty.
-      </div>
+    <div class="sov-header breathe">
+        <h2 class="shimmer-text" style="margin:0; font-size: 1.1rem;">
+            EVERYTHING IS POWERED BY THE 8R STEALTH PARADIGM CONVERGENCE AND ITS DETERMINANTS
+        </h2>
+        <p style="font-size: 0.7rem; letter-spacing: 2px; margin: 6px 0 0;">LET'S CONVERGE FOR YOU TO UNDERSTAND</p>
     </div>
-  </div>
 
-  <div class="layout">
-    <section class="panel breathe" aria-label="K-GEC Sovereign Data Center">
-      <div style="text-align:center;">
-        <div class="gold-header" style="font-size: 1.35rem; margin-bottom: 6px;">K-GEC SOVEREIGN DATA CENTER</div>
-        <div style="font-size: 0.9rem; color: rgba(255,255,255,0.86); letter-spacing: 0.02em;">
-          The Humanoid, thank you for stopping by. I need energy to thrive. Come in to decode.
+    <div class="clock-grid breathe" aria-label="Analog Clock Grid">
+        <div class="clock-case">
+            <div class="analog-face" id="ZAR"></div>
+            <div style="font-size:0.5rem; margin-top:5px;">ABUJA</div>
         </div>
-      </div>
-
-      <!-- 6-zone analog clock grid -->
-      <div class="clock-grid" id="clockGrid" aria-label="World Analog Clocks">
-        <div class="clock-card">
-          <div class="analog-face" data-tz="America/New_York">
-            <div class="center-dot"></div>
-            <div class="hand hour"></div>
-            <div class="hand min"></div>
-          </div>
-          <div class="clock-label">New York</div>
+        <div class="clock-case">
+            <div class="analog-face" id="LON"></div>
+            <div style="font-size:0.5rem; margin-top:5px;">LONDON</div>
         </div>
-
-        <div class="clock-card">
-          <div class="analog-face" data-tz="Europe/London">
-            <div class="center-dot"></div>
-            <div class="hand hour"></div>
-            <div class="hand min"></div>
-          </div>
-          <div class="clock-label">London</div>
+        <div class="clock-case">
+            <div class="analog-face" id="GEN"></div>
+            <div style="font-size:0.5rem; margin-top:5px;">GENEVA</div>
         </div>
-
-        <div class="clock-card">
-          <div class="analog-face" data-tz="Europe/Zurich">
-            <div class="center-dot"></div>
-            <div class="hand hour"></div>
-            <div class="hand min"></div>
-          </div>
-          <div class="clock-label">Geneva</div>
+        <div class="clock-case">
+            <div class="analog-face" id="DXB"></div>
+            <div style="font-size:0.5rem; margin-top:5px;">DUBAI</div>
         </div>
+        <div class="clock-case">
+            <div class="analog-face" id="BEI"></div>
+            <div style="font-size:0.5rem; margin-top:5px;">BEIJING</div>
+        </div>
+        <div class="clock-case">
+            <div class="analog-face" id="NYC"></div>
+            <div style="font-size:0.5rem; margin-top:5px;">NEW YORK</div>
+        </div>
+    </div>
 
-        <div class="clock-card">
-          <div class="analog-face" data-tz="Asia/Dubai">
-            <div class="center-dot"></div>
-            <div class="hand hour"></div>
-            <div class="hand min"></div>
-          </div>
-          <div class="clock-label">Dubai</div>
+    <div class="page-grid">
+        <div>
+            <div class="humanoid-box breathe">
+                <h1 class="shimmer-text" style="font-size: 2.5rem; line-height: 1.2; margin: 0;">
+                    I thank you for stopping by. I need energy to thrive, function, and augment productivity. Come in to decode.
+                </h1>
+                <p style="color: var(--gold-solid); font-weight: bold; margin-top: 20px; margin-bottom: 0;">[SOVEREIGN SENTINEL ACTIVE]</p>
+            </div>
+
+            <!-- 8R determinants -->
+            <div class="bento-grid" id="node-container" aria-label="8R Determinants Bento"></div>
         </div>
 
-        <div class="clock-card">
-          <div class="analog-face" data-tz="Asia/Hong_Kong">
-            <div class="center-dot"></div>
-            <div class="hand hour"></div>
-            <div class="hand min"></div>
-          </div>
-          <div class="clock-label">Hong Kong</div>
+        <div class="prism-form breathe" aria-label="Prism Live Access">
+            <h3 class="shimmer-text" style="text-align:center; margin-top:0; font-size: 1.1rem;">Prism Live Access</h3>
+            <input type="email" class="prism-input" id="acc-email" placeholder="REQUIRED EMAIL" required />
+            <input type="text" class="prism-input" id="acc-org" placeholder="ORGANIZATION" required />
+            <input type="text" class="prism-input" id="acc-whatsapp" placeholder="WHATSAPP (OPTIONAL)" />
+
+            <div class="auth-row">
+                <button type="button" class="btn-metallic primary" id="authToggle">LOGIN</button>
+                <button type="button" class="btn-metallic" id="logoutBtn">LOGOUT</button>
+            </div>
+
+            <p style="text-align:center; font-size:0.6rem; color:var(--gold-solid); margin-top:10px;">
+                SESSION HEARTBEAT: 15min + 15min
+            </p>
         </div>
+    </div>
 
-        <div class="clock-card">
-          <div class="analog-face" data-tz="Africa/Lagos">
-            <div class="center-dot"></div>
-            <div class="hand hour"></div>
-            <div class="hand min"></div>
-          </div>
-          <div class="clock-label">Zaria / Abuja</div>
-        </div>
-      </div>
+    <div class="footer-vault" aria-hidden="true">
+        <div>© 2026 GALADIMAN RUWA CENTER (GCSLC) | ALL RIGHTS RESERVED</div>
+        <div style="font-family: 'Cinzel Decorative', cursive; letter-spacing: 5px;">GCSLC PROPRIETARY WATERMARK</div>
+    </div>
 
-      <!-- Bento determinants -->
-      <div class="bento-grid" id="detGrid" aria-label="8R Determinants Bento">
-      </div>
-    </section>
+    <div id="smm-terminal" aria-modal="true" role="dialog" aria-label="Terminal">
+        <div id="term-content">&gt; </div>
+        <span class="gold-cursor" aria-hidden="true"></span>
+        <button type="button" onclick="closeSMM()" style="margin-top:30px; background:var(--gold-solid); border:none; padding:12px 25px; cursor:pointer; font-weight:900; float:right;">CLOSE TERMINAL</button>
+    </div>
 
-    <aside class="access-panel breathe" aria-label="Prism Live Access Form">
-      <div class="access-inner">
-        <div class="access-title">
-          <div class="gold-header calligraphy" style="font-size: 1.25rem;">PRISM LIVE ACCESS</div>
-        </div>
+    <script>
+        // Determinants + Insights
+        const DETERMINANTS = {
+            D1: "REFINE: Precision is the first step to sovereignty. We strip away the noise to reveal the asset.",
+            D2: "RESET: Decouple from legacy to reclaim the future. A clean slate creates new empires.",
+            D3: "RESEARCH: Data is raw; research is refined fuel. We map the unseen corridors of wealth.",
+            D4: "RESTRUCTURE: Old structures cannot hold new wealth. We redesign the architecture of the state.",
+            D5: "RESUSCITATE: Breathing life into the moribund. The Nigerian Coal Corp lives through the NGECC.",
+            D6: "REVITALIZE: Energy is the heartbeat. We synchronize the Abuja-Zaria-Kano pulse.",
+            D7: "RE-ENGINEER: The 8R Stealth Paradigm: Re-engineering the human and AI worlds simultaneously.",
+            D8: "RETAIN: Wealth is useless if it leaks. 95% retention is our absolute standard."
+        };
 
-        <form id="accessForm" class="access-form" autocomplete="on">
-          <div>
-            <label for="acc-name">NAME</label>
-            <input id="acc-name" name="name" type="text" placeholder="Your Name" />
-          </div>
-
-          <div>
-            <label for="acc-org">ORGANIZATION (Required)</label>
-            <input id="acc-org" name="org" type="text" required placeholder="Organization" />
-          </div>
-
-          <div>
-            <label for="acc-email">EMAIL (Required)</label>
-            <input id="acc-email" name="email" type="email" required placeholder="name@domain.com" />
-          </div>
-
-          <div>
-            <label for="acc-whatsapp">WHATSAPP (Optional)</label>
-            <input id="acc-whatsapp" name="whatsapp" type="tel" placeholder="+234..." />
-          </div>
-
-          <div class="auth-row">
-            <button type="button" class="btn-metal" id="authToggle">LOGIN</button>
-          </div>
-
-          <div class="auth-note" id="authNote">15-MINUTE SESSION. ONE 15-MINUTE EXTENSION AVAILABLE.</div>
-        </form>
-      </div>
-    </aside>
-  </div>
-
-  <!-- Terminal overlay -->
-  <div id="smm-terminal" class="breathe" role="dialog" aria-modal="true" aria-label="SMM Terminal">
-    <button type="button" class="term-close" id="termClose">CLOSE TERMINAL</button>
-    <div id="term-content">&gt; </div>
-    <span class="cursor-gold" aria-hidden="true"></span>
-  </div>
-
-  <div class="footer-fixed" aria-hidden="true">
-    <div class="footer-text">© 2026 Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau. NCC Registration No. LW15954. All Rights Reserved.</div>
-  </div>
-
-  <script>
-    (function () {
-      // Determinants + insights (D1-D8 terminal logic)
-      var DETERMINANTS = {
-        D1: "REFINE: Precision is the first step to sovereignty. We strip away the noise to reveal the asset.",
-        D2: "RESET: Decouple from legacy to reclaim the future. A clean slate creates new empires.",
-        D3: "RESEARCH: Data is raw; research is refined fuel. We map the unseen corridors of wealth.",
-        D4: "RESTRUCTURE: Old structures cannot hold new wealth. We redesign the architecture of the state.",
-        D5: "RESUSCITATE: Breathing life into the moribund. The Nigerian Coal Corp lives through the NGECC.",
-        D6: "REVITALIZE: Energy is the heartbeat. We synchronize the Abuja-Zaria-Kano pulse.",
-        D7: "RE-ENGINEER: The 8R Stealth Paradigm: Re-engineering the human and AI worlds simultaneously.",
-        D8: "RETAIN: Wealth is useless if it leaks. 95% retention is our absolute standard."
-      };
-
-      var detGrid = document.getElementById("detGrid");
-      var terminal = document.getElementById("smm-terminal");
-      var termContent = document.getElementById("term-content");
-      var termClose = document.getElementById("termClose");
-
-      function setTerminalText(text) {
-        termContent.textContent = "> ";
-        var i = 0;
-        var speed = 34; // slightly elegant pacing
-
-        // Typewriter: keep cursor as CSS animated element
-        var timer = window.setInterval(function () {
-          if (i < text.length) {
-            termContent.textContent += text.charAt(i);
-            i++;
-          } else {
-            window.clearInterval(timer);
-          }
-        }, speed);
-      }
-
-      function openTerminal(id) {
-        var text = DETERMINANTS[id];
-        if (!text) return;
-        if (terminal) terminal.style.display = "block";
-        setTerminalText(text);
-      }
-
-      function closeTerminal() {
-        if (terminal) terminal.style.display = "none";
-      }
-
-      if (termClose) termClose.addEventListener("click", closeTerminal);
-
-      // Build Bento nodes
-      Object.keys(DETERMINANTS).forEach(function (id) {
-        var node = document.createElement("div");
-        node.className = "det-node";
-        var tag = (DETERMINANTS[id].split(":")[0] || id).replace(/\s+/g, " ").trim();
-        node.innerHTML =
-          '<div class="det-code">[' + id + ']</div>' +
-          '<div class="det-tag">' + tag + '</div>';
-        node.addEventListener("click", function () { openTerminal(id); });
-        detGrid && detGrid.appendChild(node);
-      });
-
-      // 6-zone analog clock live movement (hour + minute hands)
-      function updateClocks() {
-        var faces = document.querySelectorAll(".analog-face[data-tz]");
-        if (!faces || !faces.length) return;
-
-        faces.forEach(function (face) {
-          var tz = face.getAttribute("data-tz");
-          var hourHand = face.querySelector(".hand.hour");
-          var minHand = face.querySelector(".hand.min");
-          if (!tz || !hourHand || !minHand) return;
-
-          // Obtain time parts via Intl in that time zone
-          var now = new Date();
-          var parts = now.toLocaleString("en-US", {
-            timeZone: tz,
-            hour12: false,
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit"
-          }).match(/\d+/g) || ["00","00","00"];
-
-          var h = parseInt(parts[0], 10) || 0;
-          var m = parseInt(parts[1], 10) || 0;
-          var s = parseInt(parts[2], 10) || 0;
-
-          // Smooth enough for seconds precision
-          var hourDeg = ((h % 12) * 30) + (m * 0.5) + (s * (0.5 / 60));
-          var minDeg = (m * 6) + (s * 0.1);
-
-          hourHand.style.transform = "translateX(-50%) rotate(" + hourDeg + "deg)";
-          minHand.style.transform = "translateX(-50%) rotate(" + minDeg + "deg)";
+        const nodeContainer = document.getElementById("node-container");
+        Object.keys(DETERMINANTS).forEach(function (id) {
+            const node = document.createElement("div");
+            node.className = "det-node";
+            const tag = (DETERMINANTS[id].split(":")[0] || id).trim();
+            node.innerHTML =
+                '<div class="det-code">[' + id + ']</div>' +
+                '<div class="det-tag">' + tag + '</div>';
+            node.addEventListener("click", function () {
+                openSMM(id);
+            });
+            nodeContainer && nodeContainer.appendChild(node);
         });
-      }
 
-      updateClocks();
-      setInterval(updateClocks, 250);
+        function openSMM(id) {
+            var shell = document.getElementById("smm-terminal");
+            var term = document.getElementById("term-content");
+            if (!shell || !term) return;
+            var text = DETERMINANTS[id] || "";
+            shell.style.display = "block";
+            term.textContent = "> ";
+            var i = 0;
+            var timer = window.setInterval(function () {
+                if (i < text.length) {
+                    term.textContent += text.charAt(i);
+                    i++;
+                } else {
+                    window.clearInterval(timer);
+                }
+            }, 35);
+        }
 
-      // Prism Live Access: Login/Logout toggle (email/org required)
-      var authToggle = document.getElementById("authToggle");
-      var accessForm = document.getElementById("accessForm");
-      var authNote = document.getElementById("authNote");
-      var SESSION_MIN = 15;
+        function closeSMM() {
+            var shell = document.getElementById("smm-terminal");
+            if (shell) shell.style.display = "none";
+        }
 
-      var loggedIn = false;
-      var timer = null;
-      var endAt = null;
+        // --- FIXED CLOCKS: IANA time zones (Intl) + live analog movement ---
+        const CLOCKS = {
+            "ZAR": "Africa/Lagos",
+            "LON": "Europe/London",
+            "GEN": "Europe/Zurich",
+            "DXB": "Asia/Dubai",
+            "BEI": "Asia/Shanghai",
+            "NYC": "America/New_York"
+        };
 
-      function clearTimer() {
-        if (timer) window.clearInterval(timer);
-        timer = null;
-        endAt = null;
-      }
-
-      function startSessionTimer() {
-        clearTimer();
-        endAt = Date.now() + SESSION_MIN * 60 * 1000;
-
-        timer = window.setInterval(function () {
-          if (!endAt) return;
-          var left = Math.max(0, endAt - Date.now());
-          var mins = Math.floor(left / 60000);
-          var secs = Math.floor((left % 60000) / 1000);
-          if (authNote) authNote.textContent = "SESSION: " + mins + ":" + (secs < 10 ? "0" : "") + secs + "  (Logout resets)";
-          if (left <= 0) {
-            clearTimer();
-            loggedIn = false;
-            authToggle && (authToggle.textContent = "LOGIN");
-            if (authNote) authNote.textContent = "SESSION ENDED. PLEASE LOGIN AGAIN.";
-          }
-        }, 500);
-      }
-
-      function validateRequired() {
-        var email = (document.getElementById("acc-email") || {}).value;
-        var org = (document.getElementById("acc-org") || {}).value;
-        return !!email && !!org;
-      }
-
-      if (authToggle) {
-        authToggle.addEventListener("click", function () {
-          if (!loggedIn) {
-            if (!validateRequired()) {
-              if (authNote) authNote.textContent = "EMAIL + ORGANIZATION ARE REQUIRED.";
-              return;
+        function ensureHands(face) {
+            if (!face.querySelector(".hand.hour")) {
+                const hour = document.createElement("div");
+                hour.className = "hand hour";
+                const min = document.createElement("div");
+                min.className = "hand min";
+                const center = document.createElement("div");
+                center.className = "clock-center";
+                face.appendChild(hour);
+                face.appendChild(min);
+                face.appendChild(center);
             }
-            loggedIn = true;
-            authToggle.textContent = "LOGOUT";
-            if (authNote) authNote.textContent = "ACCESS GRANTED. SESSION LIVE.";
-            startSessionTimer();
-          } else {
-            loggedIn = false;
-            authToggle.textContent = "LOGIN";
-            if (authNote) authNote.textContent = "LOGGED OUT. READY FOR NEW ACCESS.";
-            clearTimer();
-          }
-        });
-      }
-    })();
-  </script>
+        }
+
+        function updateAnalog(faceId, tz) {
+            const face = document.getElementById(faceId);
+            if (!face) return;
+            ensureHands(face);
+            const hourHand = face.querySelector(".hand.hour");
+            const minHand = face.querySelector(".hand.min");
+            if (!hourHand || !minHand) return;
+
+            const now = new Date();
+            const parts = now.toLocaleString("en-US", {
+                timeZone: tz,
+                hour12: false,
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit"
+            }).match(/\d+/g) || ["00", "00", "00"];
+
+            const h = parseInt(parts[0], 10) || 0;
+            const m = parseInt(parts[1], 10) || 0;
+            const s = parseInt(parts[2], 10) || 0;
+
+            const hourDeg = ((h % 12) * 30) + (m * 0.5) + (s * (0.5 / 60));
+            const minDeg = (m * 6) + (s * 0.1);
+
+            hourHand.style.transform = "translateX(-50%) rotate(" + hourDeg + "deg)";
+            minHand.style.transform = "translateX(-50%) rotate(" + minDeg + "deg)";
+        }
+
+        function tickAll() {
+            Object.keys(CLOCKS).forEach(function (id) {
+                updateAnalog(id, CLOCKS[id]);
+            });
+        }
+
+        tickAll();
+        setInterval(tickAll, 250);
+
+        // Prism Live Session Timer (Login/Logout toggle)
+        (function () {
+            var authToggle = document.getElementById("authToggle");
+            var logoutBtn = document.getElementById("logoutBtn");
+            var accEmail = document.getElementById("acc-email");
+            var accOrg = document.getElementById("acc-org");
+            var SESSION_MIN = 15;
+            var EXT_MIN = 15;
+            var loggedIn = false;
+            var endAt = null;
+            var extended = false;
+            var interval = null;
+
+            function stop() {
+                if (interval) window.clearInterval(interval);
+                interval = null;
+                endAt = null;
+                extended = false;
+            }
+
+            function validate() {
+                return !!(accEmail && accOrg && accEmail.value && accOrg.value);
+            }
+
+            function start() {
+                if (!validate()) return false;
+                loggedIn = true;
+                authToggle.textContent = "LOGOUT";
+                stop();
+                endAt = Date.now() + SESSION_MIN * 60 * 1000;
+                interval = window.setInterval(function () {
+                    if (!endAt) return;
+                    if (Date.now() >= endAt) {
+                        loggedIn = false;
+                        authToggle.textContent = "LOGIN";
+                        stop();
+                    }
+                }, 500);
+                return true;
+            }
+
+            function logout() {
+                loggedIn = false;
+                authToggle.textContent = "LOGIN";
+                stop();
+            }
+
+            if (authToggle) {
+                authToggle.addEventListener("click", function () {
+                    if (!loggedIn) start();
+                    else logout();
+                });
+            }
+            if (logoutBtn) logoutBtn.addEventListener("click", logout);
+        })();
+    </script>
 </body>
 </html>
 
