@@ -30,27 +30,26 @@
         .ticker-move { display: inline-block; animation: scrollT 35s linear infinite; background: var(--gold-shimmer); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; font-size: 0.9rem; }
         @keyframes scrollT { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
 
-        /* Commodity ticker: SSMV Materials Pulse */
-        .commodity-ticker {
+        /* SSMV Commodity Ticker (kinetic, top-of-screen) */
+        .ticker-container {
             width: 100%;
-            padding: 6px 0;
-            border-bottom: 1px solid rgba(212,175,55,0.35);
-            background: rgba(0,0,0,0.65);
-            font-size: 0.8rem;
-            letter-spacing: 0.08em;
+            overflow: hidden;
+            background: rgba(0,0,0,0.7);
+            border-bottom: 2px solid var(--gold-solid);
+            padding: 8px 0;
+            margin-bottom: 10px;
         }
-        .commodity-track {
-            display: flex;
-            justify-content: center;
-            gap: 28px;
+        .ticker-move {
+            display: inline-block;
+            white-space: nowrap;
+            animation: tickerScroll 30s linear infinite;
+            font-weight: 800;
             color: var(--gold-solid);
+            letter-spacing: 0.06em;
         }
-        .commodity-item span.label {
-            opacity: 0.8;
-        }
-        .commodity-item span.price {
-            font-weight: 700;
-            margin-left: 4px;
+        @keyframes tickerScroll {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
         }
 
         .header { text-align: center; margin: 20px 0; border-bottom: 2px solid var(--gold-solid); padding-bottom: 15px; }
@@ -144,11 +143,9 @@
         <div class="ticker-move">DR. JAAFARU SA'AD (GALADIMANRUWA) // GCSLC LTD/GTE // 8R STEALTH PARADIGM // INFO@GALADIMANRUWACENTER.ORG // +234 8099111515 // NCC REG: LW15954</div>
     </div>
 
-    <div class="commodity-ticker">
-        <div class="commodity-track">
-            <div class="commodity-item"><span class="label">COAL (NGECC):</span><span class="price">$131.00/MT</span></div>
-            <div class="commodity-item"><span class="label">SILICON METAL:</span><span class="price">$1.81/KG</span></div>
-            <div class="commodity-item"><span class="label">GERMANIUM:</span><span class="price">$8,597/KG</span></div>
+    <div class="ticker-container" aria-label="SSMV Commodity Ticker">
+        <div class="ticker-move">
+            COAL (NGECC): $131.00/MT ▲ // SILICON METAL: $1.81/KG ▼ // GERMANIUM: $8,597/KG ▲
         </div>
     </div>
 
