@@ -1,4 +1,3 @@
-"""
 Sovereign High-Velocity Nodal Mirror — System Directive: Start Fresh. Zero Omissions. Institutional Accuracy Only.
 Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC) LTD/GTE.
 © 2026 GCSLC. Chairman & Founder: Dr. Sa'ad Jaafaru.
@@ -27,7 +26,7 @@ HUD_AUDIO_PATH = os.path.join(ASSETS, "hud_chirps.mp3")
 TERRITORIES = [
     "Abia", "Adamawa", "Akwa Ibom", "Anambra", "Bauchi", "Bayelsa", "Benue", "Borno",
     "Cross River", "Delta", "Ebonyi", "Edo", "Ekiti", "Enugu", "Gombe", "Imo",
-    "Jigawa", "Kaduna", "Kano", "Katsina", "Kebbi", "Kogi", "Kwara", "Lagos",
+    "Jigawa", "Kaduna", "Kano", "Katsina", "Kebbi", "Kogi", "Kwara", 
     "Nasarawa", "Niger", "Ogun", "Ondo", "Osun", "Oyo", "Plateau", "Rivers",
     "Sokoto", "Taraba", "Yobe", "Zamfara", "Abuja",
 ]
@@ -260,7 +259,7 @@ with lock_col2:
 st.markdown("---")
 
 # Eagle cry on successful login (Chairman's arrival)
-if st.session_state.play_eagle_on_login:
+if st.session_state.play_eagle_
     st.session_state.play_eagle_on_login = False
     if os.path.isfile(EAGLE_AUDIO_PATH):
         with open(EAGLE_AUDIO_PATH, "rb") as f:
