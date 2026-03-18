@@ -2,139 +2,106 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>GCSLC | Sovereign Vault V3.1</title>
+    <title>GCSLC | Sovereign Strategic Vault V3.0</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&family=Cinzel:wght@700&display=swap">
     <style>
         :root {
-            --gold: #d4af37;
-            --navy: #000510;
-            --sov-green: #00FF41;
-            --shimmer: linear-gradient(135deg, #bf953f 0%, #fcf6ba 25%, #b38728 50%, #fbf5b7 75%, #aa771c 100%);
+            --gold-shimmer: linear-gradient(135deg, #bf953f 0%, #fcf6ba 25%, #b38728 50%, #fbf5b7 75%, #aa771c 100%);
+            --navy-vault: #000510;
+            --gold-border: #d4af37;
         }
 
         body {
-            background: var(--navy); color: #fff; font-family: 'Goldman', sans-serif;
-            margin: 0; padding: 15px; overflow: hidden; height: 100vh;
-            border: 6px solid var(--gold); box-sizing: border-box;
-            display: flex; flex-direction: column;
+            background: var(--navy-vault); color: #fff; font-family: 'Goldman', sans-serif;
+            margin: 0; padding: 20px; overflow: hidden; height: 100vh;
+            border: 8px solid var(--gold-border); box-sizing: border-box;
         }
 
-        /* NODAL 1: THE CENTER NAME (REQUIRED) */
-        .inst-header { text-align: center; border-bottom: 1px solid rgba(212,175,55,0.3); padding: 8px 0; }
-        .center-title { font-family: 'Cinzel', serif; font-size: 1.2rem; margin: 0; letter-spacing: 2px; }
+        /* 1. INSTITUTIONAL HEADER (REQUIRED) */
+        .inst-header { text-align: center; border-bottom: 1px solid rgba(212,175,55,0.3); padding: 10px 0; }
+        .center-name { font-family: 'Cinzel', serif; font-size: 1.3rem; margin: 0; letter-spacing: 2px; }
 
         .shimmer {
-            background: var(--shimmer); -webkit-background-clip: text;
+            background: var(--gold-shimmer); -webkit-background-clip: text;
             -webkit-text-fill-color: transparent; background-size: 200% auto;
-            animation: shine 6s linear infinite;
+            animation: shine 5s linear infinite;
         }
         @keyframes shine { to { background-position: 200% center; } }
 
-        /* TICKER - MATERIAL PACE */
-        .ticker { width: 100%; overflow: hidden; background: rgba(0,0,0,0.8); border-bottom: 1px solid var(--gold); padding: 6px 0; font-size: 0.75rem; }
-        .ticker-move { display: inline-block; white-space: nowrap; animation: scroll 35s linear infinite; color: var(--gold); font-weight: bold; }
+        /* KINETIC COMMODITY TICKER (MODERATE VELOCITY) */
+        .ticker-wrap { width: 100%; overflow: hidden; background: rgba(0,0,0,0.8); border-bottom: 1px solid var(--gold-border); padding: 8px 0; }
+        .ticker-content { display: inline-block; white-space: nowrap; animation: scroll 35s linear infinite; color: var(--gold-border); font-size: 0.8rem; font-weight: bold; }
         @keyframes scroll { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
 
-        /* MAIN CONTENT */
-        .vault-layout { display: grid; grid-template-columns: 1.7fr 1fr; gap: 20px; flex-grow: 1; padding-top: 15px; position: relative; }
+        /* MAIN STAGE */
+        .vault-grid { display: grid; grid-template-columns: 1.8fr 1fr; gap: 25px; padding-top: 15px; position: relative; }
 
-        /* THE APEX MESSAGE */
-        .message { font-size: 1.5rem; line-height: 1.25; border-left: 3px solid var(--gold); padding-left: 15px; margin-bottom: 15px; }
+        /* THE APEX MESSAGE (REFIDENTIAL SIZE) */
+        .apex-message { font-size: 1.7rem; line-height: 1.25; border-left: 4px solid var(--gold-border); padding-left: 15px; margin-bottom: 20px; }
 
-        /* DETERMINANT SQUARES (MODERATE) */
-        .det-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        .det-sq {
-            border: 1px solid rgba(212,175,55,0.4); height: 75px;
+        /* DETERMINANT NODES (MODERATE SQUARES) */
+        .node-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .det-node {
+            border: 1px solid rgba(212,175,55,0.4); height: 80px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; background: rgba(255,255,255,0.02); transition: 0.3s;
+            cursor: pointer; transition: 0.3s; background: rgba(255,255,255,0.01);
         }
-        .det-sq:hover { background: var(--shimmer); color: #000; }
+        .det-node:hover { background: var(--gold-shimmer); color: #000; transform: scale(1.03); }
 
-        /* ACCESS FORM - NAVY & GOLD */
-        .access-panel { border: 1.5px solid var(--gold); background: rgba(255,255,255,0.03); padding: 15px; border-radius: 8px; align-self: start; }
-        .access-input { width: 100%; background: #000; border: 1px solid var(--gold); color: #fff; padding: 8px; margin: 5px 0; font-size: 0.7rem; }
+        /* ACCESS FORM - NAVY & GOLD (PRISM STYLE) */
+        .prism-box { border: 2px solid var(--gold-border); background: rgba(255,255,255,0.03); padding: 20px; border-radius: 8px; align-self: start; }
+        .prism-input { width: 100%; background: #000; border: 1px solid var(--gold-border); color: #fff; padding: 10px; margin: 8px 0; font-size: 0.75rem; }
 
         /* POP-UP TERMINAL (NAVY & GOLD) */
-        #term-pop {
-            display: none; position: absolute; top: 35%; left: 35%; transform: translate(-50%, -50%);
-            width: 380px; background: var(--navy); border: 2px solid var(--gold);
-            padding: 25px; z-index: 1000; box-shadow: 0 0 50px #000;
+        #det-terminal {
+            display: none; position: fixed; top: 40%; left: 35%; transform: translate(-50%, -50%);
+            width: 420px; min-height: 120px; background: var(--navy-vault);
+            border: 3px solid var(--gold-border); padding: 30px; z-index: 1000;
+            color: #00FF41; font-family: monospace; font-size: 1.1rem; line-height: 1.5;
         }
-        #term-text { color: var(--sov-green); font-family: monospace; font-size: 1rem; line-height: 1.4; }
 
-        /* CLOCKS */
-        .clock-row { display: flex; justify-content: space-around; padding: 10px 0; border-bottom: 1px solid rgba(212,175,55,0.1); }
-        .face { width: 38px; height: 38px; border: 1px solid var(--gold); border-radius: 50%; position: relative; margin: 0 auto; }
-        .h-hand { position: absolute; bottom: 50%; left: 50%; transform-origin: bottom; background: #fff; width: 2px; height: 10px; }
-        .m-hand { position: absolute; bottom: 50%; left: 50%; transform-origin: bottom; background: #fff; width: 1px; height: 16px; }
-
-        /* FOOTER - FIXED */
-        .footer { display: flex; justify-content: space-between; font-size: 0.6rem; color: rgba(212,175,55,0.6); padding-top: 10px; border-top: 1px solid rgba(212,175,55,0.1); margin-top: auto; }
+        /* AZK CORRIDOR PULSE */
+        .azk-widget {
+            position: fixed; bottom: 20px; right: 20px; width: 180px;
+            border: 1.5px solid var(--gold-border); background: var(--navy-vault); padding: 10px;
+            text-align: center; font-size: 0.6rem;
+        }
+        .pulse { width: 10px; height: 10px; background: var(--gold-border); border-radius: 50%; display: inline-block; animation: blink 2s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
     </style>
 </head>
 <body>
 
     <div class="inst-header">
-        <h1 class="center-title shimmer">The Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC) LTD/GTE</h1>
-        <div style="font-size: 0.6rem; color: var(--gold); letter-spacing: 3px; margin-top: 3px;">8R STEALTH PARADIGM CONVERGENCE</div>
+        <h1 class="center-name shimmer">The Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC) LTD/GTE</h1>
+        <div style="font-size: 0.65rem; color: var(--gold-border); letter-spacing: 3px; margin-top: 4px;">8R STEALTH PARADIGM | CONVERGENCE OF MATERIALITY & AUTHORITY</div>
     </div>
 
-    <div class="ticker"><div class="ticker-move">NGECC COAL: $131.00/MT ▲ | AMMONIA: $650/MT | GERMANIUM: $8,597/KG | RAW DIAMONDS: $7,100/CT ▲ | AZK CORRIDOR ACTIVE</div></div>
+    <div class="ticker-wrap"><div class="ticker-content">NGECC COAL: $131.00/MT ▲ | AMMONIA: $650/MT | GERMANIUM: $8,597/KG | RAW DIAMONDS: $7,100/CT ▲ | SILICON: $1.81/KG</div></div>
 
-    <div class="clock-row" id="clock-container"></div>
-
-    <div class="vault-layout">
+    <div class="vault-grid">
         <div>
-            <div class="message shimmer">"I thank you for stopping by. I need energy to thrive, function, and augment productivity. Come in to decode."</div>
-            <div class="det-grid" id="det-grid"></div>
+            <div class="apex-message shimmer">
+                "I thank you for stopping by. I need energy to thrive, function, and augment productivity. Come in to decode."
+            </div>
+            <div class="node-grid" id="node-grid"></div>
         </div>
-        <div class="access-panel">
-            <h5 class="shimmer" style="text-align:center; margin:0 0 10px 0;">SOVEREIGN ACCESS</h5>
-            <input type="email" class="access-input" placeholder="EMAIL REQUIRED">
-            <input type="text" class="access-input" placeholder="ORGANIZATION">
-            <button style="width:100%; padding:10px; background:var(--shimmer); border:none; font-weight:bold; cursor:pointer; color:#000;">LOGIN</button>
-            <div style="font-size: 0.45rem; text-align: center; margin-top: 8px; color: var(--gold);">SESSION HEARTBEAT: 15min + 15min</div>
+        <div class="prism-box">
+            <h4 class="shimmer" style="margin:0 0 10px 0; text-align:center;">SOVEREIGN ACCESS</h4>
+            <input type="email" class="prism-input" placeholder="EMAIL REQUIRED">
+            <input type="text" class="prism-input" placeholder="ORGANIZATION">
+            <button style="width:100%; padding:12px; background:var(--gold-shimmer); border:none; font-weight:bold; cursor:pointer; color:#000;">ACCESS VAULT</button>
+            <div style="font-size: 0.5rem; text-align: center; margin-top: 10px; color: var(--gold-border);">SESSION HEARTBEAT: 15min + 15min</div>
         </div>
-        <div id="term-pop">
-            <div id="term-text">> </div>
-            <button onclick="this.parentElement.style.display='none'" style="margin-top:15px; background:var(--gold); border:none; color:#000; padding:5px 10px; cursor:pointer; float:right; font-weight:bold;">CLOSE</button>
+        <div id="det-terminal">
+            <div id="typewriter-text">> </div>
+            <button onclick="this.parentElement.style.display='none'" style="margin-top:20px; background:var(--gold-border); border:none; color:#000; padding:5px 10px; cursor:pointer; float:right; font-weight:bold;">CLOSE</button>
         </div>
     </div>
 
-    <div class="footer">
-        <div>© 2026 GCSLC LTD/GTE | PROPRIETARY WATERMARK NCC LW15954</div>
-        <div style="letter-spacing: 2px;">ABUJA-ZARIA-KANO STRATEGIC NODAL CORRIDOR</div>
+    <div class="azk-widget">
+        <div class="pulse"></div> ABUJA-ZARIA-KANO<br>STRATEGIC NODAL CORRIDOR
     </div>
 
-    <script>
-        const CITIES = ['ABUJA', 'LONDON', 'GENEVA', 'DUBAI', 'BEIJING', 'NYC'];
-        const cont = document.getElementById('clock-container');
-        CITIES.forEach(c => { cont.innerHTML += `<div style="text-align:center;"><div class="face" id="${c}"></div><div style="font-size:0.45rem; margin-top:3px;">${c}</div></div>`; });
-
-        const DETERMINANTS = { D1: "REFINE: Distilling national coal into high-yield digital liquidity.", D2: "RESET: Global alignment of SMM protocols.", D3: "RESEARCH: Proprietary Intelligence NCC LW15954.", D4: "RESTRUCTURE: Engineering fiscal pathways.", D5: "RESUSCITATE: Reviving moribund entities.", D6: "REVITALIZE: NGECC Strategic Roadmap.", D7: "RE-ENGINEER: 8R Stealth OS Build.", D8: "RETAIN: Anchoring Authority." };
-
-        const grid = document.getElementById('det-grid');
-        Object.keys(DETERMINANTS).forEach(k => {
-            const d = document.createElement('div');
-            d.className = 'det-sq';
-            d.innerHTML = `<div class="shimmer" style="font-size:1.1rem; font-weight:bold;">[${k}]</div><div style="font-size:0.55rem;">${DETERMINANTS[k].split(':')[0]}</div>`;
-            d.onclick = () => {
-                const t = document.getElementById('term-pop'); t.style.display = 'block';
-                const o = document.getElementById('term-text'); o.innerHTML = "> ";
-                let i = 0, s = DETERMINANTS[k];
-                let timer = setInterval(() => { if(i < s.length) { o.innerHTML += s.charAt(i); i++; } else clearInterval(timer); }, 30);
-            };
-            grid.appendChild(d);
-        });
-
-        setInterval(() => {
-            const d = new Date();
-            document.querySelectorAll('.face').forEach(f => {
-                const h = (d.getHours() * 30) + (d.getMinutes() * 0.5);
-                const m = d.getMinutes() * 6;
-                f.innerHTML = `<div class="h-hand" style="transform:translateX(-50%) rotate(${h}deg)"></div><div class="m-hand" style="transform:translateX(-50%) rotate(${m}deg)"></div>`;
-            });
-        }, 1000);
-    </script>
 </body>
 </html>
