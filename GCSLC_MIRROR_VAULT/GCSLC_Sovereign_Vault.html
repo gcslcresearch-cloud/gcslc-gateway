@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GCSLC | Sovereign Materiality Mirror</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"/>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&display=swap');
+        :root {
+            --gold-shimmer: linear-gradient(135deg, #bf953f 0%, #fcf6ba 25%, #b38728 50%, #fbf5b7 75%, #aa771c 100%);
+            --navy-vault: #00001a;
+            --gold-solid: #d4af37;
+            --terminal-green: #00ff41;
+            --terminal-white: #f8f8f8;
+        }
+        body {
+            background: var(--navy-vault); color: #fff; font-family: 'Cinzel', serif;
+            margin: 0; padding: 25px; overflow: hidden; height: 100vh;
+            border: 12px solid var(--gold-solid); box-sizing: border-box;
+        }
+        .watermark-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-wrap: wrap; gap: 60px; justify-content: center;
+            opacity: 0.05; transform: rotate(-30deg) scale(1.2); z-index: -1;
+            pointer-events: none; animation: zoomWM 15s infinite ease-in-out;
+        }
+        @keyframes zoomWM { 0%, 100% { transform: rotate(-30deg) scale(1); } 50% { transform: rotate(-30deg) scale(1.15); } }
+
+        .sig-ticker { width: 100%; overflow: hidden; border-bottom: 2px solid var(--gold-solid); padding: 10px 0; background: rgba(0,0,0,0.5); }
+        .ticker-move { display: inline-block; animation: scrollT 35s linear infinite; background: var(--gold-shimmer); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; font-size: 0.9rem; }
+        @keyframes scrollT { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
+
+        /* Commodity ticker: SSMV Materials Pulse */
+        .commodity-ticker {
+            width: 100%;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(212,175,55,0.35);
+            background: rgba(0,0,0,0.65);
+            font-size: 0.8rem;
+            letter-spacing: 0.08em;
+        }
+        .commodity-track {
+            display: flex;
+            justify-content: center;
+            gap: 28px;
+            color: var(--gold-solid);
+        }
+        .commodity-item span.label {
+            opacity: 0.8;
+        }
+        .commodity-item span.price {
+            font-weight: 700;
+            margin-left: 4px;
+        }
+
+        .header { text-align: center; margin: 20px 0; border-bottom: 2px solid var(--gold-solid); padding-bottom: 15px; }
+        .goldman { background: var(--gold-shimmer); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; }
+
+        .main-container { display: grid; grid-template-columns: 2fr 1.2fr; gap: 35px; }
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 25px; }
+        .node { border: 2px solid var(--gold-solid); height: 100px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: 0.4s; background: rgba(255,255,255,0.02); }
+        .node:hover { background: var(--gold-shimmer); color: #000; transform: scale(1.03); box-shadow: 0 0 20px var(--gold-solid); }
+
+        #smm-terminal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 650px; background: #000; border: 4px solid var(--gold-solid); padding: 40px; z-index: 5000; font-family: 'Courier New', monospace; box-shadow: 0 0 150px #000; }
+        #term-text {
+            color: var(--terminal-white);
+            font-size: 1.4rem;
+            white-space: pre-wrap;
+        }
+        .cursor-gold {
+            display: inline-block;
+            width: 0.6ch;
+            height: 1.2em;
+            margin-left: 2px;
+            background: var(--gold-solid);
+            animation: blinkCursor 0.9s steps(1, start) infinite;
+            vertical-align: text-bottom;
+        }
+        @keyframes blinkCursor {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+        
+        .widget { border: 3px solid var(--gold-solid); padding: 25px; background: rgba(255,255,255,0.03); }
+        .s-input { width: 100%; background: #000; border: 1px solid var(--gold-solid); color: #fff; padding: 10px; margin: 10px 0; font-family: sans-serif; }
+        .btn-metallic { width: 48%; padding: 12px; font-weight: 900; border-radius: 25px; border: 1px solid var(--gold-solid); cursor: pointer; }
+
+        .clocks { position: fixed; bottom: 0; left: 0; width: 100%; display: flex; justify-content: space-around; padding: 15px 0; border-top: 3px solid var(--gold-solid); background: var(--navy-vault); }
+        .clock-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            color: var(--gold-solid);
+        }
+        .clock-face {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 2px solid var(--gold-solid);
+            position: relative;
+            background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.18), transparent 55%), #020617;
+            box-shadow: 0 0 12px rgba(0,0,0,0.9);
+        }
+        .clock-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 4px;
+            height: 4px;
+            background: var(--gold-solid);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .hand {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom center;
+            background: var(--gold-solid);
+            border-radius: 999px;
+        }
+        .hand.hour {
+            width: 2px;
+            height: 14px;
+        }
+        .hand.min {
+            width: 2px;
+            height: 18px;
+            opacity: 0.9;
+        }
+        .clock-label {
+            font-size: 0.7rem;
+            letter-spacing: 0.09em;
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+
+    <div class="watermark-layer" id="wm-gen"></div>
+
+    <div class="sig-ticker">
+        <div class="ticker-move">DR. JAAFARU SA'AD (GALADIMANRUWA) // GCSLC LTD/GTE // 8R STEALTH PARADIGM // INFO@GALADIMANRUWACENTER.ORG // +234 8099111515 // NCC REG: LW15954</div>
+    </div>
+
+    <div class="commodity-ticker">
+        <div class="commodity-track">
+            <div class="commodity-item"><span class="label">COAL (NGECC):</span><span class="price">$131.00/MT</span></div>
+            <div class="commodity-item"><span class="label">SILICON METAL:</span><span class="price">$1.81/KG</span></div>
+            <div class="commodity-item"><span class="label">GERMANIUM:</span><span class="price">$8,597/KG</span></div>
+        </div>
+    </div>
+
+    <div class="header">
+        <h1 class="goldman" style="font-size: 1.8rem; margin:0;">GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION</h1>
+        <div class="goldman" style="font-size: 1rem; letter-spacing: 3px;">GCSLC LTD/GTE</div>
+    </div>
+
+    <div class="main-container">
+        <div>
+            <div style="border: 2px solid var(--gold-solid); padding: 25px;">
+                <h3 class="goldman">K-GEC SOVEREIGN DATA CENTER</h3>
+                <p style="font-size: 0.9rem;">The Humanoid, thank you for stopping by. I need energy to thrive. Come in to decode.</p>
+            </div>
+            <div class="grid" id="node-grid"></div>
+        </div>
+
+        <div class="widget">
+            <h2 class="goldman" style="text-align: center;">ACCESS PROTOCOL</h2>
+            <div style="font-size: 0.7rem; color: var(--gold-solid);">NAME</div><input type="text" class="s-input">
+            <div style="font-size: 0.7rem; color: var(--gold-solid);">ORGANIZATION</div><input type="text" class="s-input">
+            <div style="font-size: 0.7rem; color: var(--gold-solid);">EMAIL</div><input type="email" class="s-input">
+            <div style="font-size: 0.7rem; color: var(--gold-solid);">WHATSAPP</div><input type="tel" id="phone" class="s-input">
+            <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                <button class="btn-metallic" style="background: var(--gold-shimmer); color: #000;">LOGIN</button>
+                <button class="btn-metallic" style="background: transparent; color: #fff;">LOGOUT</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="smm-terminal">
+        <div id="term-text">> INITIALIZING SMM VAULT<span class="cursor-gold"></span></div>
+        <button onclick="closeSMM()" style="margin-top:20px; background:var(--gold-solid); border:none; padding:10px 20px; cursor:pointer; font-weight:bold; float:right;">CLOSE</button>
+    </div>
+
+    <div class="clocks" id="clock-bar"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+    <script>
+        const wm = document.getElementById('wm-gen');
+        for(let i=0; i<40; i++) { wm.innerHTML += '<span>GCSLC</span>'; }
+
+        window.intlTelInput(document.querySelector("#phone"), { initialCountry: "ng", utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js" });
+
+        const DATA = { 
+            D1: "REFINE: Distilling national assets.", D2: "RESET: Global alignment.", 
+            D3: "RESEARCH: Proprietary intelligence NCC LW15954.", D4: "RESTRUCTURE: Fiscal pathways.", 
+            D5: "RESUSCITATE: Reviving entities.", D6: "REVITALIZE: NGECC Core.", 
+            D7: "RE-ENGINEER: 8R Stealth OS.", D8: "RETAIN: Mirror Authority." 
+        };
+        
+        const g = document.getElementById('node-grid');
+        Object.keys(DATA).forEach(k => {
+            const d = document.createElement('div');
+            d.className = 'node';
+            d.innerHTML = `<div class="goldman" style="font-size:1.8rem;">[${k}]</div><div style="font-size:0.6rem;">${DATA[k].split(':')[0]}</div>`;
+            d.onclick = () => {
+                openTerminalWithType(DATA[k]);
+            };
+            g.appendChild(d);
+        });
+
+        let termInterval = null;
+        function openTerminalWithType(text) {
+            const term = document.getElementById('term-text');
+            const shell = document.getElementById('smm-terminal');
+            if (!term || !shell) return;
+            shell.style.display = 'block';
+            if (termInterval) clearInterval(termInterval);
+            term.innerHTML = '&gt; ';
+            let i = 0;
+            termInterval = setInterval(() => {
+                if (i < text.length) {
+                    term.innerHTML += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(termInterval);
+                    termInterval = null;
+                    term.innerHTML += '<span class="cursor-gold"></span>';
+                }
+            }, 35);
+        }
+
+        function closeSMM() {
+            const shell = document.getElementById('smm-terminal');
+            if (shell) shell.style.display = 'none';
+        }
+
+        function clocks() {
+            const zones = [
+                { city: 'LONDON', tz: 'Europe/London' },
+                { city: 'DUBAI', tz: 'Asia/Dubai' },
+                { city: 'ZARIA', tz: 'Africa/Lagos' },
+                { city: 'NEW YORK', tz: 'America/New_York' }
+            ];
+            const bar = document.getElementById('clock-bar');
+            if (!bar) return;
+            bar.innerHTML = zones.map(z => {
+                return `
+                    <div class="clock-card" data-tz="${z.tz}">
+                        <div class="clock-face">
+                            <div class="clock-center"></div>
+                            <div class="hand hour"></div>
+                            <div class="hand min"></div>
+                        </div>
+                        <div class="clock-label">${z.city}</div>
+                    </div>
+                `;
+            }).join('');
+
+            function updateAnalog() {
+                const cards = bar.querySelectorAll('.clock-card');
+                const now = new Date();
+                cards.forEach(card => {
+                    const tz = card.getAttribute('data-tz');
+                    const locale = now.toLocaleString('en-GB', {
+                        timeZone: tz,
+                        hour12: false,
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                    });
+                    const parts = locale.split(/[:\s]/);
+                    const h = parseInt(parts[0], 10) || 0;
+                    const m = parseInt(parts[1], 10) || 0;
+                    const s = parseInt(parts[2], 10) || 0;
+                    const hourDeg = (h % 12) * 30 + m * 0.5;
+                    const minDeg = m * 6 + s * 0.1;
+                    const hEl = card.querySelector('.hand.hour');
+                    const mEl = card.querySelector('.hand.min');
+                    if (hEl) hEl.style.transform = `translate(-50%, 0) rotate(${hourDeg}deg)`;
+                    if (mEl) mEl.style.transform = `translate(-50%, 0) rotate(${minDeg}deg)`;
+                });
+            }
+
+            updateAnalog();
+            setInterval(updateAnalog, 1000);
+        }
+        clocks();
+    </script>
+</body>
+</html>
+
