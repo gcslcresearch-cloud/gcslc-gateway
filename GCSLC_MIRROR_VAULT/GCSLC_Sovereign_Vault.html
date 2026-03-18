@@ -2,529 +2,144 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>GCSLC | Sovereign Strategic Mirror (SSMV)</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" />
+    <title>GCSLC | Sovereign Strategic Mirror</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&family=Cinzel:wght@700&display=swap">
     <style>
         :root {
             --gold-shimmer: linear-gradient(135deg, #bf953f 0%, #fcf6ba 25%, #b38728 50%, #fbf5b7 75%, #aa771c 100%);
-            --navy-vault: #00020a;
-            --gold-solid: #d4af37;
+            --navy-vault: #000510;
+            --gold-border: #d4af37;
         }
 
         body {
-            background: var(--navy-vault);
-            color: #fff;
-            font-family: 'Goldman', system-ui, sans-serif;
-            margin: 0;
-            padding: 20px;
-            overflow: hidden;
-            height: 100vh;
-            box-sizing: border-box;
-            border: 8px solid var(--gold-solid);
-            animation: borderPulse 4s infinite ease-in-out;
+            background: var(--navy-vault); color: #fff; font-family: 'Goldman', sans-serif;
+            margin: 0; padding: 20px; overflow: hidden; height: 100vh;
+            border: 8px solid var(--gold-border); box-sizing: border-box;
         }
 
-        @keyframes borderPulse {
-            0%, 100% { border-color: #aa771c; }
-            50% { border-color: #fcf6ba; }
-        }
+        /* INSTITUTIONAL HEADER */
+        .header-anchor { text-align: center; border-bottom: 1px solid rgba(212,175,55,0.3); padding: 10px 0; }
+        .center-name { font-family: 'Cinzel', serif; font-size: 1.3rem; margin: 0; letter-spacing: 2px; }
 
-        /* NODAL 4 & 5: SOVEREIGN HEADER */
-        .sov-header {
-            text-align: center;
-            padding: 15px;
-            border-bottom: 1px solid var(--gold-solid);
-            background: rgba(212, 175, 55, 0.05);
-        }
-        .shimmer-text {
-            background: var(--gold-shimmer);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: inline-block;
-            background-size: 200% auto;
+        .shimmer {
+            background: var(--gold-shimmer); -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; background-size: 200% auto;
             animation: shine 5s linear infinite;
-            background-position: 0% 50%;
-            font-weight: 900;
         }
         @keyframes shine { to { background-position: 200% center; } }
 
-        /* NODAL 1: ANALOG CLOCKS */
-        .clock-grid {
-            display: flex;
-            justify-content: space-around;
-            padding: 15px;
-            border-bottom: 1px solid rgba(212,175,55,0.2);
-        }
-        .clock-case { text-align: center; width: 70px; }
-        .analog-face {
-            width: 50px;
-            height: 50px;
-            border: 2px solid var(--gold-solid);
-            border-radius: 50%;
-            position: relative;
-            margin: 0 auto;
-            box-shadow: 0 0 10px rgba(212,175,55,0.3);
-            background: rgba(255,255,255,0.03);
-        }
+        /* KINETIC COMMODITY TICKER (MODERATE VELOCITY) */
+        .ticker-wrap { width: 100%; overflow: hidden; background: rgba(0,0,0,0.8); border-bottom: 1px solid var(--gold-border); padding: 8px 0; }
+        .ticker-content { display: inline-block; white-space: nowrap; animation: scroll 35s linear infinite; color: var(--gold-border); font-size: 0.8rem; font-weight: bold; }
+        @keyframes scroll { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
 
-        .hand {
-            position: absolute;
-            bottom: 50%;
-            left: 50%;
-            transform-origin: bottom center;
-            background: #fff;
-            border-radius: 999px;
-        }
-        .hour { width: 3px; height: 12px; }
-        .min { width: 2px; height: 18px; }
-        .clock-center {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 5px;
-            height: 5px;
-            border-radius: 999px;
-            background: var(--gold-solid);
-            transform: translate(-50%, -50%);
-            box-shadow: 0 0 12px rgba(212,175,55,0.35);
-        }
+        /* CONTENT LAYOUT */
+        .main-stage { display: grid; grid-template-columns: 1.7fr 1fr; gap: 25px; padding-top: 20px; }
 
-        /* NODAL 1: KINETIC TICKER */
-        .ticker-wrap {
-            width: 100%;
-            overflow: hidden;
-            background: #000;
-            padding: 8px 0;
-            border-bottom: 1px solid var(--gold-solid);
-        }
-        .ticker-content {
-            display: inline-block;
-            white-space: nowrap;
-            animation: scroll 40s linear infinite;
-            color: var(--gold-solid);
-            font-weight: 900;
-            padding-left: 100%;
-            letter-spacing: 0.02em;
-        }
-        @keyframes scroll {
-            from { transform: translateX(0); }
-            to { transform: translateX(-200%); }
-        }
+        /* THE MESSAGE */
+        .apex-message { font-size: 1.8rem; line-height: 1.2; border-left: 4px solid var(--gold-border); padding-left: 20px; margin-bottom: 20px; }
 
-        /* NODAL 2: PRISM LIVE FORM (CALLIGRAPHY) */
-        .prism-form {
-            font-family: 'Cinzel Decorative', cursive;
-            padding: 20px;
-            border: 2px solid var(--gold-solid);
-            background: rgba(0,0,0,0.8);
-            border-radius: 15px;
-            box-shadow: 0 0 30px rgba(212,175,55,0.2);
-            animation: boxPulse 3s infinite ease-in-out;
+        /* DETERMINANT NODES (MODERATE SQUARES) */
+        .node-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .node-sq {
+            border: 1px solid rgba(212,175,55,0.4); height: 80px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.3s; background: rgba(255,255,255,0.02);
         }
-        @keyframes boxPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-        }
-        .prism-input {
-            width: 100%;
-            background: #000;
-            border: 1px solid var(--gold-solid);
-            color: #fff;
-            padding: 10px;
-            margin: 8px 0;
-            border-radius: 9px;
-            font-family: 'Goldman', system-ui, sans-serif;
-            outline: none;
-        }
-        .btn-gold {
-            width: 100%;
-            padding: 15px;
-            background: var(--gold-shimmer);
-            border: none;
-            font-weight: 900;
-            color: #000;
-            cursor: pointer;
-            border-radius: 30px;
-            margin-top: 10px;
-            font-size: 1rem;
-        }
-        .auth-row {
-            display: flex;
-            gap: 10px;
-            justify-content: space-between;
-            margin-top: 10px;
-        }
-        .btn-metallic {
-            width: 48%;
-            padding: 12px;
-            font-weight: 900;
-            border-radius: 25px;
-            border: 1px solid var(--gold-solid);
-            cursor: pointer;
-            background: transparent;
-            color: #fff;
-        }
-        .btn-metallic.primary {
-            background: var(--gold-shimmer);
-            color: #000;
-        }
+        .node-sq:hover { background: var(--gold-shimmer); color: #000; transform: scale(1.03); }
 
-        /* NODAL 3: HUMANOID MESSAGE */
-        .humanoid-box {
-            padding: 20px;
-            border-left: 5px solid var(--gold-solid);
-            background: rgba(255,255,255,0.02);
-            margin: 20px 0;
-            border-radius: 14px;
-        }
+        /* ACCESS FORM (PRISM LIVE STYLE) */
+        .prism-box { border: 2px solid var(--gold-border); background: rgba(255,255,255,0.03); padding: 20px; border-radius: 8px; }
+        .prism-input { width: 100%; background: #000; border: 1px solid var(--gold-border); color: #fff; padding: 10px; margin: 8px 0; font-size: 0.75rem; }
 
-        /* WATERMARK & COPYRIGHT */
-        .footer-vault {
-            position: fixed;
-            bottom: 15px;
-            left: 20px;
-            right: 20px;
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.7rem;
-            color: rgba(212,175,55,0.5);
-            pointer-events: none;
-            z-index: 2;
+        /* TERMINAL (NAVY & GOLD) */
+        #vault-term {
+            display: none; position: fixed; top: 40%; left: 35%; transform: translate(-50%, -50%);
+            width: 450px; background: var(--navy-vault); border: 3px solid var(--gold-border);
+            padding: 35px; z-index: 999; box-shadow: 0 0 100px #000;
         }
+        #term-out { color: #00FF41; font-family: monospace; font-size: 1.2rem; line-height: 1.5; }
 
-        /* Simple breathing pulse for major blocks */
-        .breathe { animation: breathe 7s ease-in-out infinite; }
-        @keyframes breathe {
-            0%, 100% { transform: translateZ(0) scale(1); }
-            50% { transform: translateZ(0) scale(1.01); }
-        }
+        /* CLOCKS */
+        .clock-strip { display: flex; justify-content: space-around; padding: 15px 0; border-bottom: 1px solid rgba(212,175,55,0.1); }
+        .face { width: 45px; height: 45px; border: 1.5px solid var(--gold-border); border-radius: 50%; position: relative; margin: 0 auto; }
+        .h { position: absolute; bottom: 50%; left: 50%; transform-origin: bottom; background: #fff; width: 2.5px; height: 12px; }
+        .m { position: absolute; bottom: 50%; left: 50%; transform-origin: bottom; background: #fff; width: 1.5px; height: 18px; }
 
-        /* Terminal overlay (optional; kept from your base) */
-        #smm-terminal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 650px;
-            background: rgba(0,0,15,0.98);
-            border: 5px solid var(--gold-solid);
-            padding: 50px;
-            z-index: 9999;
-            box-shadow: 0 0 150px #000;
-        }
-        #term-content {
-            color: #f8f8f8;
-            font-family: 'Courier New', monospace;
-            font-size: 1.5rem;
-            line-height: 1.6;
-            white-space: pre-wrap;
-        }
-        .gold-cursor {
-            display: inline-block;
-            width: 12px;
-            height: 24px;
-            background: var(--gold-solid);
-            animation: blink 1s steps(1, start) infinite;
-            vertical-align: middle;
-            margin-left: 6px;
-            border-radius: 2px;
-            box-shadow: 0 0 18px rgba(212,175,55,0.25);
-        }
-        @keyframes blink { 50% { opacity: 0; } }
-
-        /* Layout */
-        .page-grid {
-            display: grid;
-            grid-template-columns: 1.5fr 1fr;
-            gap: 30px;
-            padding: 30px;
-        }
-
-        @media (max-width: 1020px) {
-            .clock-grid { gap: 12px; flex-wrap: wrap; }
-            .page-grid { grid-template-columns: 1fr; }
-            #smm-terminal { width: calc(100vw - 28px); padding: 30px; }
-        }
-
-        /* Determinant grid */
-        .bento-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
-        .det-node {
-            border: 2px solid var(--gold-solid);
-            height: 95px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: 0.4s;
-            background: rgba(255,255,255,0.02);
-            border-radius: 12px;
-            user-select: none;
-        }
-        .det-node:hover { background: var(--gold-shimmer); color: #000; transform: scale(1.05); }
-        .det-code {
-            font-size: 2rem;
-            font-weight: 900;
-            line-height: 1;
-        }
-        .det-tag {
-            font-size: 0.7rem;
-            font-weight: 900;
-            letter-spacing: 0.04em;
-        }
+        /* FOOTER */
+        .footer { position: fixed; bottom: 12px; width: calc(100% - 40px); display: flex; justify-content: space-between; font-size: 0.65rem; color: rgba(212,175,55,0.5); border-top: 1px solid rgba(212,175,55,0.2); padding-top: 10px; }
     </style>
 </head>
 <body>
-    <div class="ticker-wrap breathe">
+
+    <div class="header-anchor">
+        <h1 class="center-name shimmer">The Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC) LTD/GTE</h1>
+        <div style="font-size: 0.65rem; color: var(--gold-border); letter-spacing: 3px; margin-top: 5px;">SOVEREIGN STRATEGIC MISSION VEHICLE | 8R STEALTH PARADIGM</div>
+    </div>
+
+    <div class="ticker-wrap">
         <div class="ticker-content">
-            NGECC COAL: $131.40/MT ▲ | AMMONIA: $650/MT | GERMANIUM: $8,597/KG ▲ | MINED DIAMONDS (RAW): $7,100/CT ▲ | POLISHED: $12,400/CT | SOVEREIGN COMPUTE: ACTIVE
+            NGECC COAL: $131.00/MT ▲ | AMMONIA: $650/MT | GERMANIUM: $8,597/KG | RAW DIAMONDS: $7,100/CT ▲ | SILICON: $1.81/KG | AZK CORRIDOR: OPTIMIZED
         </div>
     </div>
 
-    <div class="sov-header breathe">
-        <h2 class="shimmer-text" style="margin:0; font-size: 1.1rem;">
-            EVERYTHING IS POWERED BY THE 8R STEALTH PARADIGM CONVERGENCE AND ITS DETERMINANTS
-        </h2>
-        <p style="font-size: 0.7rem; letter-spacing: 2px; margin: 6px 0 0;">LET'S CONVERGE FOR YOU TO UNDERSTAND</p>
-    </div>
+    <div class="clock-strip" id="clocks"></div>
 
-    <div class="clock-grid breathe" aria-label="Analog Clock Grid">
-        <div class="clock-case">
-            <div class="analog-face" id="ZAR"></div>
-            <div style="font-size:0.5rem; margin-top:5px;">ABUJA</div>
-        </div>
-        <div class="clock-case">
-            <div class="analog-face" id="LON"></div>
-            <div style="font-size:0.5rem; margin-top:5px;">LONDON</div>
-        </div>
-        <div class="clock-case">
-            <div class="analog-face" id="GEN"></div>
-            <div style="font-size:0.5rem; margin-top:5px;">GENEVA</div>
-        </div>
-        <div class="clock-case">
-            <div class="analog-face" id="DXB"></div>
-            <div style="font-size:0.5rem; margin-top:5px;">DUBAI</div>
-        </div>
-        <div class="clock-case">
-            <div class="analog-face" id="BEI"></div>
-            <div style="font-size:0.5rem; margin-top:5px;">BEIJING</div>
-        </div>
-        <div class="clock-case">
-            <div class="analog-face" id="NYC"></div>
-            <div style="font-size:0.5rem; margin-top:5px;">NEW YORK</div>
-        </div>
-    </div>
-
-    <div class="page-grid">
+    <div class="main-stage">
         <div>
-            <div class="humanoid-box breathe">
-                <h1 class="shimmer-text" style="font-size: 2.5rem; line-height: 1.2; margin: 0;">
-                    I thank you for stopping by. I need energy to thrive, function, and augment productivity. Come in to decode.
-                </h1>
-                <p style="color: var(--gold-solid); font-weight: bold; margin-top: 20px; margin-bottom: 0;">[SOVEREIGN SENTINEL ACTIVE]</p>
+            <div class="apex-message shimmer">
+                "I thank you for stopping by. I need energy to thrive, function, and augment productivity. Come in to decode."
             </div>
-
-            <!-- 8R determinants -->
-            <div class="bento-grid" id="node-container" aria-label="8R Determinants Bento"></div>
+            <div class="node-grid" id="grid"></div>
         </div>
-
-        <div class="prism-form breathe" aria-label="Prism Live Access">
-            <h3 class="shimmer-text" style="text-align:center; margin-top:0; font-size: 1.1rem;">Prism Live Access</h3>
-            <input type="email" class="prism-input" id="acc-email" placeholder="REQUIRED EMAIL" required />
-            <input type="text" class="prism-input" id="acc-org" placeholder="ORGANIZATION" required />
-            <input type="text" class="prism-input" id="acc-whatsapp" placeholder="WHATSAPP (OPTIONAL)" />
-
-            <div class="auth-row">
-                <button type="button" class="btn-metallic primary" id="authToggle">LOGIN</button>
-                <button type="button" class="btn-metallic" id="logoutBtn">LOGOUT</button>
-            </div>
-
-            <p style="text-align:center; font-size:0.6rem; color:var(--gold-solid); margin-top:10px;">
-                SESSION HEARTBEAT: 15min + 15min
-            </p>
+        <div class="prism-box">
+            <h4 class="shimmer" style="margin:0 0 10px 0; text-align:center;">SOVEREIGN ACCESS</h4>
+            <input type="email" class="prism-input" placeholder="EMAIL REQUIRED">
+            <input type="text" class="prism-input" placeholder="ORGANIZATION">
+            <button style="width:100%; padding:12px; background:var(--gold-shimmer); border:none; font-weight:bold; cursor:pointer; color:#000;">ACCESS VAULT</button>
+            <div style="font-size: 0.5rem; text-align: center; margin-top: 10px; color: var(--gold-border);">SESSION HEARTBEAT: 15min + 15min</div>
         </div>
     </div>
 
-    <div class="footer-vault" aria-hidden="true">
-        <div>© 2026 GALADIMAN RUWA CENTER (GCSLC) | ALL RIGHTS RESERVED</div>
-        <div style="font-family: 'Cinzel Decorative', cursive; letter-spacing: 5px;">GCSLC PROPRIETARY WATERMARK</div>
+    <div id="vault-term">
+        <div id="term-out">> </div>
+        <button onclick="this.parentElement.style.display='none'" style="margin-top:20px; background:var(--gold-border); border:none; padding:8px 15px; cursor:pointer; font-weight:bold; float:right;">CLOSE</button>
     </div>
 
-    <div id="smm-terminal" aria-modal="true" role="dialog" aria-label="Terminal">
-        <div id="term-content">&gt; </div>
-        <span class="gold-cursor" aria-hidden="true"></span>
-        <button type="button" onclick="closeSMM()" style="margin-top:30px; background:var(--gold-solid); border:none; padding:12px 25px; cursor:pointer; font-weight:900; float:right;">CLOSE TERMINAL</button>
+    <div class="footer">
+        <div>© 2026 GCSLC LTD/GTE | PROPRIETARY WATERMARK NCC LW15954</div>
+        <div style="letter-spacing: 2px;">ABUJA-ZARIA-KANO STRATEGIC NODAL CORRIDOR ACTIVE</div>
     </div>
 
     <script>
-        // Determinants + Insights
-        const DETERMINANTS = {
-            D1: "REFINE: Precision is the first step to sovereignty. We strip away the noise to reveal the asset.",
-            D2: "RESET: Decouple from legacy to reclaim the future. A clean slate creates new empires.",
-            D3: "RESEARCH: Data is raw; research is refined fuel. We map the unseen corridors of wealth.",
-            D4: "RESTRUCTURE: Old structures cannot hold new wealth. We redesign the architecture of the state.",
-            D5: "RESUSCITATE: Breathing life into the moribund. The Nigerian Coal Corp lives through the NGECC.",
-            D6: "REVITALIZE: Energy is the heartbeat. We synchronize the Abuja-Zaria-Kano pulse.",
-            D7: "RE-ENGINEER: The 8R Stealth Paradigm: Re-engineering the human and AI worlds simultaneously.",
-            D8: "RETAIN: Wealth is useless if it leaks. 95% retention is our absolute standard."
-        };
+        const ZONES = ['ABUJA', 'LONDON', 'GENEVA', 'DUBAI', 'BEIJING', 'NYC'];
+        const cont = document.getElementById('clocks');
+        ZONES.forEach(z => { cont.innerHTML += `<div style="text-align:center;"><div class="face" id="${z}"></div><div style="font-size:0.5rem; margin-top:4px;">${z}</div></div>`; });
 
-        const nodeContainer = document.getElementById("node-container");
-        Object.keys(DETERMINANTS).forEach(function (id) {
-            const node = document.createElement("div");
-            node.className = "det-node";
-            const tag = (DETERMINANTS[id].split(":")[0] || id).trim();
-            node.innerHTML =
-                '<div class="det-code">[' + id + ']</div>' +
-                '<div class="det-tag">' + tag + '</div>';
-            node.addEventListener("click", function () {
-                openSMM(id);
-            });
-            nodeContainer && nodeContainer.appendChild(node);
+        const DATA = { D1: "REFINE: Distilling national coal into high-yield digital liquidity.", D2: "RESET: Global alignment of SMM protocols.", D3: "RESEARCH: Proprietary Intelligence NCC LW15954.", D4: "RESTRUCTURE: Engineering fiscal pathways.", D5: "RESUSCITATE: Reviving moribund entities.", D6: "REVITALIZE: NGECC Strategic Roadmap.", D7: "RE-ENGINEER: 8R Stealth OS Build.", D8: "RETAIN: Anchoring Authority." };
+
+        const g = document.getElementById('grid');
+        Object.keys(DATA).forEach(k => {
+            const d = document.createElement('div');
+            d.className = 'node-sq';
+            d.innerHTML = `<div class="shimmer" style="font-size:1.5rem; font-weight:bold;">[${k}]</div><div style="font-size:0.6rem;">${DATA[k].split(':')[0]}</div>`;
+            d.onclick = () => {
+                const t = document.getElementById('vault-term'); t.style.display = 'block';
+                const o = document.getElementById('term-out'); o.innerHTML = "> ";
+                let i = 0, s = DATA[k];
+                let timer = setInterval(() => { if(i < s.length) { o.innerHTML += s.charAt(i); i++; } else clearInterval(timer); }, 35);
+            };
+            g.appendChild(d);
         });
 
-        function openSMM(id) {
-            var shell = document.getElementById("smm-terminal");
-            var term = document.getElementById("term-content");
-            if (!shell || !term) return;
-            var text = DETERMINANTS[id] || "";
-            shell.style.display = "block";
-            term.textContent = "> ";
-            var i = 0;
-            var timer = window.setInterval(function () {
-                if (i < text.length) {
-                    term.textContent += text.charAt(i);
-                    i++;
-                } else {
-                    window.clearInterval(timer);
-                }
-            }, 35);
-        }
-
-        function closeSMM() {
-            var shell = document.getElementById("smm-terminal");
-            if (shell) shell.style.display = "none";
-        }
-
-        // --- FIXED CLOCKS: IANA time zones (Intl) + live analog movement ---
-        const CLOCKS = {
-            "ZAR": "Africa/Lagos",
-            "LON": "Europe/London",
-            "GEN": "Europe/Zurich",
-            "DXB": "Asia/Dubai",
-            "BEI": "Asia/Shanghai",
-            "NYC": "America/New_York"
-        };
-
-        function ensureHands(face) {
-            if (!face.querySelector(".hand.hour")) {
-                const hour = document.createElement("div");
-                hour.className = "hand hour";
-                const min = document.createElement("div");
-                min.className = "hand min";
-                const center = document.createElement("div");
-                center.className = "clock-center";
-                face.appendChild(hour);
-                face.appendChild(min);
-                face.appendChild(center);
-            }
-        }
-
-        function updateAnalog(faceId, tz) {
-            const face = document.getElementById(faceId);
-            if (!face) return;
-            ensureHands(face);
-            const hourHand = face.querySelector(".hand.hour");
-            const minHand = face.querySelector(".hand.min");
-            if (!hourHand || !minHand) return;
-
-            const now = new Date();
-            const parts = now.toLocaleString("en-US", {
-                timeZone: tz,
-                hour12: false,
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit"
-            }).match(/\d+/g) || ["00", "00", "00"];
-
-            const h = parseInt(parts[0], 10) || 0;
-            const m = parseInt(parts[1], 10) || 0;
-            const s = parseInt(parts[2], 10) || 0;
-
-            const hourDeg = ((h % 12) * 30) + (m * 0.5) + (s * (0.5 / 60));
-            const minDeg = (m * 6) + (s * 0.1);
-
-            hourHand.style.transform = "translateX(-50%) rotate(" + hourDeg + "deg)";
-            minHand.style.transform = "translateX(-50%) rotate(" + minDeg + "deg)";
-        }
-
-        function tickAll() {
-            Object.keys(CLOCKS).forEach(function (id) {
-                updateAnalog(id, CLOCKS[id]);
+        setInterval(() => {
+            const d = new Date();
+            document.querySelectorAll('.face').forEach(f => {
+                const h = (d.getHours() * 30) + (d.getMinutes() * 0.5);
+                const m = d.getMinutes() * 6;
+                f.innerHTML = `<div class="h" style="transform:translateX(-50%) rotate(${h}deg)"></div><div class="m" style="transform:translateX(-50%) rotate(${m}deg)"></div>`;
             });
-        }
-
-        tickAll();
-        setInterval(tickAll, 250);
-
-        // Prism Live Session Timer (Login/Logout toggle)
-        (function () {
-            var authToggle = document.getElementById("authToggle");
-            var logoutBtn = document.getElementById("logoutBtn");
-            var accEmail = document.getElementById("acc-email");
-            var accOrg = document.getElementById("acc-org");
-            var SESSION_MIN = 15;
-            var EXT_MIN = 15;
-            var loggedIn = false;
-            var endAt = null;
-            var extended = false;
-            var interval = null;
-
-            function stop() {
-                if (interval) window.clearInterval(interval);
-                interval = null;
-                endAt = null;
-                extended = false;
-            }
-
-            function validate() {
-                return !!(accEmail && accOrg && accEmail.value && accOrg.value);
-            }
-
-            function start() {
-                if (!validate()) return false;
-                loggedIn = true;
-                authToggle.textContent = "LOGOUT";
-                stop();
-                endAt = Date.now() + SESSION_MIN * 60 * 1000;
-                interval = window.setInterval(function () {
-                    if (!endAt) return;
-                    if (Date.now() >= endAt) {
-                        loggedIn = false;
-                        authToggle.textContent = "LOGIN";
-                        stop();
-                    }
-                }, 500);
-                return true;
-            }
-
-            function logout() {
-                loggedIn = false;
-                authToggle.textContent = "LOGIN";
-                stop();
-            }
-
-            if (authToggle) {
-                authToggle.addEventListener("click", function () {
-                    if (!loggedIn) start();
-                    else logout();
-                });
-            }
-            if (logoutBtn) logoutBtn.addEventListener("click", logout);
-        })();
+        }, 1000);
     </script>
 </body>
 </html>
-
