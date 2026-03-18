@@ -98,6 +98,59 @@
         @media (max-width: 640px) {
             #insight-display, #insight-terminal { margin: 0 20px; font-size: 0.95rem; }
         }
+
+        /* Sovereign Insight Modal — typewriter runs inside here */
+        .insight-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 5, 5, 0.92);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .insight-modal-overlay.open {
+            display: flex;
+        }
+        .insight-modal {
+            max-width: 520px;
+            width: 100%;
+            border: 2px solid var(--neon-gold);
+            background: var(--deep-black);
+            padding: 24px;
+            box-shadow: 0 0 30px rgba(197, 160, 89, 0.3);
+        }
+        .insight-modal h2 {
+            margin: 0 0 16px 0;
+            font-size: 1rem;
+            color: var(--terminal-green);
+            border-bottom: 1px solid #333;
+            padding-bottom: 8px;
+        }
+        .insight-modal .modal-body {
+            min-height: 4em;
+            padding: 12px 0;
+            border-left: 3px solid var(--terminal-green);
+            padding-left: 12px;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: var(--neon-gold);
+        }
+        .insight-modal .modal-close {
+            margin-top: 16px;
+            padding: 8px 20px;
+            background: transparent;
+            border: 1px solid var(--neon-gold);
+            color: var(--neon-gold);
+            font-family: inherit;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .insight-modal .modal-close:hover {
+            background: var(--neon-gold);
+            color: var(--deep-black);
+        }
     </style>
 </head>
 <body oncontextmenu="return false;">
@@ -110,6 +163,15 @@
     </div>
 
     <div class="chronos-bar" id="clocks"></div>
+
+    <!-- Modal: Sovereign Insight typewriter runs inside this -->
+    <div class="insight-modal-overlay" id="insightModal" aria-hidden="true">
+        <div class="insight-modal">
+            <h2 id="modal-title">Sovereign Insight</h2>
+            <div class="modal-body" id="modal-insight-text">&gt; </div>
+            <button type="button" class="modal-close" id="modalClose">Close</button>
+        </div>
+    </div>
 
     <script>
         /* --- GCSLC SOVEREIGN MAPPING: DO NOT SIMPLIFY --- */
@@ -124,19 +186,56 @@
             D8: "RETAIN: Anchoring material authority in the GCSLC Mirror."
         };
 
+        let typewriterInterval = null;
+
+        /* --- CHAIRMAN'S FINAL BRIDGE: MODAL INJECTION --- */
         function runTypewriter(id) {
             const text = DETERMINANTS[id];
-            const display = document.getElementById('insight-display');
-            if (!display) return;
+            const modal = document.getElementById('insightModal');
+            const modalTitle = document.getElementById('modal-title');
 
-            display.innerHTML = "&gt; ";
-            let i = 0;
-            const interval = setInterval(() => {
-                display.innerHTML += text.charAt(i);
-                i++;
-                if (i >= text.length) clearInterval(interval);
-            }, 30);
+            if (typewriterInterval) clearInterval(typewriterInterval);
+
+            /* Open modal and set title */
+            if (modal) {
+                modal.classList.add('open');
+                modal.setAttribute('aria-hidden', 'false');
+            }
+            if (modalTitle) modalTitle.textContent = id + " — Sovereign Insight";
+
+            // 1. Target the element INSIDE the pop-up modal
+            const modalDisplay = document.querySelector('.modal-body') || document.getElementById('insight-display');
+
+            if (modalDisplay) {
+                modalDisplay.innerHTML = "&gt; ";
+                let i = 0;
+                typewriterInterval = setInterval(() => {
+                    modalDisplay.innerHTML += text.charAt(i);
+                    i++;
+                    if (i >= text.length) {
+                        clearInterval(typewriterInterval);
+                        typewriterInterval = null;
+                    }
+                }, 30);
+            }
         }
+
+        function closeModal() {
+            const modal = document.getElementById('insightModal');
+            if (typewriterInterval) {
+                clearInterval(typewriterInterval);
+                typewriterInterval = null;
+            }
+            if (modal) {
+                modal.classList.remove('open');
+                modal.setAttribute('aria-hidden', 'true');
+            }
+        }
+
+        document.getElementById('modalClose').onclick = closeModal;
+        document.getElementById('insightModal').onclick = function(e) {
+            if (e.target === this) closeModal();
+        };
 
         const grid = document.getElementById('grid');
         for (let i = 1; i <= 8; i++) {
