@@ -58,6 +58,7 @@
             }
         }
 
+        .determinant-card,
         .determinant-box {
             border: 1px solid var(--neon-gold);
             padding: 20px;
@@ -66,6 +67,7 @@
             background: rgba(197, 160, 89, 0.05);
         }
 
+        .determinant-card:hover,
         .determinant-box:hover {
             background: var(--neon-gold);
             color: var(--deep-black);
@@ -83,6 +85,7 @@
             font-size: 0.8rem;
         }
 
+        #insight-display,
         #insight-terminal {
             min-height: 100px;
             padding: 20px;
@@ -93,7 +96,7 @@
         }
 
         @media (max-width: 640px) {
-            #insight-terminal { margin: 0 20px; font-size: 0.95rem; }
+            #insight-display, #insight-terminal { margin: 0 20px; font-size: 0.95rem; }
         }
     </style>
 </head>
@@ -102,47 +105,52 @@
 
     <div class="bento-grid" id="grid"></div>
 
-    <div id="insight-terminal">
+    <div id="insight-display">
         &gt; SYSTEM READY: Awaiting Sovereign Query...
     </div>
 
     <div class="chronos-bar" id="clocks"></div>
 
     <script>
-        // Bento Intelligence: Unique Sovereign Insights
-        const insights = {
-            D1: "STRATEGIC SCARCITY: Mapping non-terrestrial asset yields.",
-            D2: "8R CONVERGENCE: Stealth paradigm locked under LW15954.",
-            D3: "MATERIALITY MIRROR: Reflecting institutional liquidity voids.",
-            D4: "MUBADALA SYNC: Aligning sovereign wealth trajectory.",
-            D5: "MGX PROTOCOL: Computational authority established.",
-            D6: "TITAN HOOK: High-entropy engagement activated.",
-            D7: "LEGAL ARMOUR: NCC Registration LW15954 enforced.",
-            D8: "FUSION CENTER: 8090 NRRFC data stream live."
+        /* --- GCSLC SOVEREIGN MAPPING: DO NOT SIMPLIFY --- */
+        const DETERMINANTS = {
+            D1: "REFINE: Distilling national assets into high-yield liquidity.",
+            D2: "RESET: Calibrating the 8090 NRRFC for global alignment.",
+            D3: "RESEARCH: Proprietary intelligence under NCC LW15954.",
+            D4: "RESTRUCTURE: Engineering fiscal pathways for MGX/Mubadala.",
+            D5: "RESUSCITATE: Revitalizing moribund sovereign entities.",
+            D6: "REVITALIZE: Boosting the NGECC green energy chemical core.",
+            D7: "RE-ENGINEER: Rebuilding the 8R Stealth Paradigm OS.",
+            D8: "RETAIN: Anchoring material authority in the GCSLC Mirror."
         };
+
+        function runTypewriter(id) {
+            const text = DETERMINANTS[id];
+            const display = document.getElementById('insight-display');
+            if (!display) return;
+
+            display.innerHTML = "&gt; ";
+            let i = 0;
+            const interval = setInterval(() => {
+                display.innerHTML += text.charAt(i);
+                i++;
+                if (i >= text.length) clearInterval(interval);
+            }, 30);
+        }
 
         const grid = document.getElementById('grid');
         for (let i = 1; i <= 8; i++) {
-            const box = document.createElement('div');
-            box.className = 'determinant-box';
-            box.innerHTML = `[D${i}] DETERMINANT`;
-            box.onclick = () => typeInsight(insights[`D${i}`]);
-            grid.appendChild(box);
+            const card = document.createElement('div');
+            card.className = 'determinant-card';
+            card.innerHTML = `[D${i}] DETERMINANT`;
+            grid.appendChild(card);
         }
 
-        function typeInsight(text) {
-            const term = document.getElementById('insight-terminal');
-            term.innerHTML = "&gt; ";
-            let i = 0;
-            const timer = setInterval(() => {
-                if (i < text.length) {
-                    term.innerHTML += text.charAt(i);
-                    i++;
-                } else {
-                    clearInterval(timer);
-                }
-            }, 30);
-        }
+        /* Ensure each box in the Bento Grid calls its specific ID */
+        document.querySelectorAll('.determinant-card').forEach((card, index) => {
+            const id = `D${index + 1}`;
+            card.onclick = () => runTypewriter(id);
+        });
 
         // Chronos Sync: Real-time clock synchronization
         function updateClocks() {
