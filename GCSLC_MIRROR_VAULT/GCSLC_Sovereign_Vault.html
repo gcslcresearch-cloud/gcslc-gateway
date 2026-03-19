@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>GCSLC | Sovereign Strategic Vault</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&family=Cinzel:wght@700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap">
     <style>
         :root {
             --gold: #d4af37; --navy: #00020a; --sov-green: #00FF41;
@@ -14,18 +14,26 @@
             background: var(--navy); color: #fff; font-family: 'Goldman', sans-serif;
             margin: 0; padding: 20px; overflow: hidden; height: 100vh;
             border: 8px solid var(--gold); box-sizing: border-box;
-            background-image: linear-gradient(rgba(0,2,10,0.85), rgba(0,2,10,0.85)), url('1003950037.jpg');
-            background-size: cover; background-position: center;
         }
 
         .shimmer-gold {
             background: var(--shimmer); -webkit-background-clip: text;
             -webkit-text-fill-color: transparent; background-size: 200% auto;
-            animation: shine 5s linear infinite; font-family: 'Cinzel', serif;
+            animation: shine 5s linear infinite; font-family: 'Goldman', sans-serif;
         }
         @keyframes shine { to { background-position: 200% center; } }
 
         .header-anchor { text-align: center; border-bottom: 2px solid var(--gold); padding: 15px; background: rgba(0,0,0,0.7); }
+        .strategic-message {
+            max-width: 1100px;
+            margin: 10px auto 0;
+            padding: 10px 14px;
+            border-left: 5px solid var(--gold);
+            background: rgba(0,2,10,0.55);
+            color: rgba(255,255,255,0.95);
+            font-size: 0.95rem;
+            letter-spacing: 0.02em;
+        }
 
         .ticker { background: rgba(0,0,0,0.9); border-bottom: 1px solid var(--gold); padding: 8px 0; overflow: hidden; font-size: 0.8rem; }
         .ticker-move { display: inline-block; white-space: nowrap; animation: scroll 35s linear infinite; color: var(--gold); font-weight: bold; }
@@ -35,18 +43,112 @@
 
         .node-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 20px; }
         .node-sq {
-            border: 1px solid var(--gold); height: 80px;
-            background: rgba(0,2,10,0.9); display: flex; flex-direction: column;
-            align-items: center; justify-content: center; cursor: pointer; transition: 0.3s;
+            border: 1px solid rgba(212,175,55,0.95);
+            background: rgba(0,2,10,0.9);
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            height: auto;
+            border-radius: 10px;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center; cursor: pointer;
+            transition: transform 0.18s ease, box-shadow 0.2s ease, background 0.2s ease;
+            animation: detPulse 2.6s ease-in-out infinite;
         }
-        .node-sq:hover { background: var(--shimmer); color: #000; box-shadow: 0 0 20px var(--gold); }
+        .node-sq:hover { background: var(--shimmer); color: #000; box-shadow: 0 0 24px rgba(212,175,55,0.55); transform: scale(1.04); animation: none; }
+        @keyframes detPulse {
+            0%, 100% { box-shadow: 0 0 10px rgba(212,175,55,0.12); }
+            50% { box-shadow: 0 0 18px rgba(212,175,55,0.35); }
+        }
+
+        /* Analog clocks */
+        .clock-strip {
+            margin-top: 14px;
+            display: flex;
+            justify-content: space-around;
+            gap: 12px;
+            padding: 10px 0 14px;
+            border-bottom: 1px solid rgba(212,175,55,0.25);
+        }
+        .clock-cell { display: flex; flex-direction: column; align-items: center; }
+        .clock-face {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(212,175,55,0.85);
+            background: rgba(0,2,10,0.35);
+            position: relative;
+        }
+        .clock-hand {
+            position: absolute;
+            left: 50%;
+            bottom: 50%;
+            transform-origin: bottom center;
+            background: var(--gold);
+            border-radius: 2px;
+            transform: translateX(-50%) rotate(0deg);
+        }
+        .clock-hand.hour { width: 3px; height: 14px; }
+        .clock-hand.min { width: 2px; height: 18px; }
+        .clock-label {
+            margin-top: 5px;
+            font-size: 0.48rem;
+            letter-spacing: 0.06em;
+            color: rgba(212,175,55,0.95);
+            font-weight: bold;
+        }
+
+        /* Access form styling */
+        .access-panel {
+            background: rgba(0,0,0,0.85);
+            border: 2px solid var(--gold);
+            padding: 25px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .access-field { text-align: left; margin-top: 12px; }
+        .access-label {
+            font-size: 0.65rem;
+            color: rgba(212,175,55,0.95);
+            font-weight: bold;
+            letter-spacing: 0.05em;
+        }
+        .access-input {
+            width: 100%;
+            margin-top: 6px;
+            background: rgba(0,2,10,0.0);
+            border: 1px solid var(--gold);
+            color: #fff;
+            padding: 10px;
+            border-radius: 10px;
+            font-family: inherit;
+        }
+        .access-input::placeholder { color: rgba(255,255,255,0.35); }
+        .auth-row { display: flex; gap: 10px; margin-top: 14px; }
+        .auth-btn {
+            flex: 1;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: inherit;
+        }
+        .auth-login { background: var(--shimmer); color: #000; }
+        .auth-logout { background: rgba(212,175,55,0.12); color: var(--gold); border: 1px solid rgba(212,175,55,0.65); }
+        .heartbeat {
+            font-size: 0.5rem;
+            color: var(--gold);
+            margin-top: 12px;
+            letter-spacing: 0.02em;
+            font-weight: bold;
+        }
 
         /* THE GREEN TYPEWRITER TERMINAL */
         #term-pop {
             display: none; position: absolute; top: 50%; left: 45%; transform: translate(-50%, -50%);
             width: 500px; min-height: 150px; background: rgba(0,10,0,0.98);
             border: 2px solid var(--sov-green); padding: 25px; z-index: 1000;
-            color: var(--sov-green); font-family: 'Courier New', monospace; font-size: 1.2rem;
+            color: var(--sov-green); font-family: 'Goldman', sans-serif; font-size: 1.2rem;
             box-shadow: 0 0 30px var(--sov-green);
         }
 
@@ -61,11 +163,13 @@
 </head>
 <body>
     <div class="header-anchor">
-        <h1 class="shimmer-gold" style="font-size: 1.8rem; margin: 0;">THE GALADIMAN RUWA CENTER (GCSLC) LTD/GTE</h1>
-        <div style="font-size: 0.7rem; color: var(--gold); letter-spacing: 4px; margin-top: 5px;">8R STEALTH PARADIGM | NGECC STRATEGIC MISSION VEHICLE</div>
+        <h1 class="shimmer-gold" style="font-size: 1.8rem; margin: 0;">Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE</h1>
     </div>
+    <div class="strategic-message">Everything is powered by 8R Stealth Paradigm Convergence and its Determinants; come in for you to understand.</div>
 
     <div class="ticker"><div class="ticker-move">NGECC COAL: $131.00/MT ▲ | AMMONIA: $650/MT ▲ | RAW DIAMONDS: $7,100/CT ▲ | AZK NODAL CORRIDOR ACTIVE</div></div>
+
+    <div class="clock-strip" id="clock-strip" aria-label="Analog clocks"></div>
 
     <div class="vault-layout">
         <div>
@@ -75,11 +179,30 @@
             <div class="node-grid" id="grid"></div>
         </div>
         
-        <div style="background: rgba(0,0,0,0.85); border: 2px solid var(--gold); padding: 25px; border-radius: 8px; text-align: center;">
-            <h3 class="shimmer-gold">SOVEREIGN ACCESS</h3>
-            <input type="text" style="width:100%; background:transparent; border:1px solid var(--gold); color:#fff; padding:10px; margin-bottom:15px;" placeholder="ORGANIZATION / EMAIL">
-            <button style="width:100%; background:var(--shimmer); border:none; padding:12px; font-weight:bold; cursor:pointer; color:#000;">DECODE VAULT</button>
-            <div style="font-size: 0.5rem; color: var(--gold); margin-top: 10px;">SESSION HEARTBEAT: 15min + 15min</div>
+        <div class="access-panel">
+            <h3 class="shimmer-gold" style="margin-top:0;">SOVEREIGN ACCESS</h3>
+
+            <div class="access-field">
+                <div class="access-label">Email (Required)</div>
+                <input id="acc-email" class="access-input" type="email" placeholder="ENTER EMAIL" required />
+            </div>
+
+            <div class="access-field">
+                <div class="access-label">Organization (Required)</div>
+                <input id="acc-org" class="access-input" type="text" placeholder="ENTER ORGANIZATION" required />
+            </div>
+
+            <div class="access-field">
+                <div class="access-label">WhatsApp (Optional)</div>
+                <input id="acc-wa" class="access-input" type="text" placeholder="WHATSAPP (OPTIONAL)" />
+            </div>
+
+            <div class="auth-row">
+                <button id="loginBtn" type="button" class="auth-btn auth-login">LOGIN</button>
+                <button id="logoutBtn" type="button" class="auth-btn auth-logout">LOGOUT</button>
+            </div>
+
+            <div class="heartbeat">SESSION HEARTBEAT: 15min + 15min</div>
         </div>
 
         <div id="term-pop">
@@ -139,6 +262,85 @@
                 }
             }, 30);
         }
+
+        // ---------- Analog clocks (Abuja, London, Dubai, Geneva, Beijing, NYC) ----------
+        const clockStrip = document.getElementById("clock-strip");
+        const clockDefs = [
+            { tz: "Africa/Lagos", label: "ABUJA" },
+            { tz: "Europe/London", label: "LONDON" },
+            { tz: "Asia/Dubai", label: "DUBAI" },
+            { tz: "Europe/Zurich", label: "GENEVA" },
+            { tz: "Asia/Shanghai", label: "BEIJING" },
+            { tz: "America/New_York", label: "NYC" }
+        ];
+
+        if (clockStrip) {
+            clockDefs.forEach((def) => {
+                const cell = document.createElement("div");
+                cell.className = "clock-cell";
+                cell.dataset.tz = def.tz;
+                cell.innerHTML = `
+                    <div class="clock-face">
+                        <div class="clock-hand hour"></div>
+                        <div class="clock-hand min"></div>
+                    </div>
+                    <div class="clock-label">${def.label}</div>
+                `;
+                clockStrip.appendChild(cell);
+            });
+
+            function getTZParts(timeZone) {
+                const d = new Date();
+                const fmt = new Intl.DateTimeFormat("en-US", {
+                    timeZone,
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                    hour12: false
+                });
+                const parts = fmt.formatToParts(d);
+                const map = {};
+                parts.forEach((p) => {
+                    if (p.type && p.type !== "literal") map[p.type] = p.value;
+                });
+                return {
+                    hour: parseInt(map.hour, 10),
+                    minute: parseInt(map.minute, 10),
+                    second: parseInt(map.second, 10)
+                };
+            }
+
+            function updateClocks() {
+                const cells = clockStrip.querySelectorAll(".clock-cell");
+                cells.forEach((cell) => {
+                    const t = getTZParts(cell.dataset.tz);
+                    const hourDeg = (t.hour % 12) * 30 + t.minute * 0.5;
+                    const minDeg = t.minute * 6 + t.second * 0.1;
+
+                    const hourHand = cell.querySelector(".clock-hand.hour");
+                    const minHand = cell.querySelector(".clock-hand.min");
+                    if (hourHand) hourHand.style.transform = `translateX(-50%) rotate(${hourDeg}deg)`;
+                    if (minHand) minHand.style.transform = `translateX(-50%) rotate(${minDeg}deg)`;
+                });
+            }
+
+            updateClocks();
+            (function tick() {
+                updateClocks();
+                const now = new Date();
+                setTimeout(tick, 1000 - now.getMilliseconds());
+            })();
+        }
+
+        // ---------- Access form buttons ----------
+        const loginBtn = document.getElementById("loginBtn");
+        const logoutBtn = document.getElementById("logoutBtn");
+        if (loginBtn) loginBtn.addEventListener("click", () => typeMessage("LOGIN REQUEST: sovereign access handshake initiated (UI layer only)."));
+        if (logoutBtn) logoutBtn.addEventListener("click", () => typeMessage("LOGOUT REQUEST: sovereign session termination initiated (UI layer only)."));
+
+        // ---------- Auto-load welcome (green typewriter) ----------
+        const welcomeMessage = "I thank you for stopping by. I need energy to thrive, function, and augment productivity. Come in to decode.";
+        typeMessage(welcomeMessage);
 
         Object.keys(D).forEach(k => {
             const d = document.createElement('div');
