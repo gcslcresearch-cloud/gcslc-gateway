@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>GCSLC | Sovereign Strategic Vault</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&family=Cinzel+Decorative:wght@700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&family=Cinzel:wght@700&display=swap">
     <style>
         :root {
-            --gold: #d4af37; --navy: #000510; --glow: #00FF41;
+            --gold: #d4af37; --navy: #00020a; --sov-green: #00FF41;
             --shimmer: linear-gradient(135deg, #bf953f 0%, #fcf6ba 25%, #b38728 50%, #fbf5b7 75%, #aa771c 100%);
         }
 
@@ -14,80 +14,137 @@
             background: var(--navy); color: #fff; font-family: 'Goldman', sans-serif;
             margin: 0; padding: 20px; overflow: hidden; height: 100vh;
             border: 8px solid var(--gold); box-sizing: border-box;
-            background-image: url('1003950037.jpg'); /* THE HUMANOID SENTINEL */
-            background-size: cover; background-position: center; background-blend-mode: overlay;
+            background-image: linear-gradient(rgba(0,2,10,0.85), rgba(0,2,10,0.85)), url('1003950037.jpg');
+            background-size: cover; background-position: center;
         }
 
         .shimmer-gold {
             background: var(--shimmer); -webkit-background-clip: text;
             -webkit-text-fill-color: transparent; background-size: 200% auto;
-            animation: shine 5s linear infinite; font-family: 'Cinzel Decorative', serif;
+            animation: shine 5s linear infinite; font-family: 'Cinzel', serif;
         }
         @keyframes shine { to { background-position: 200% center; } }
 
-        .header-box { text-align: center; border-bottom: 2px solid var(--gold); padding: 15px; background: rgba(0,5,16,0.8); }
+        .header-anchor { text-align: center; border-bottom: 2px solid var(--gold); padding: 15px; background: rgba(0,0,0,0.7); }
 
-        .ticker { background: rgba(0,0,0,0.9); border-bottom: 1px solid var(--gold); padding: 10px 0; overflow: hidden; font-size: 0.8rem; }
+        .ticker { background: rgba(0,0,0,0.9); border-bottom: 1px solid var(--gold); padding: 8px 0; overflow: hidden; font-size: 0.8rem; }
         .ticker-move { display: inline-block; white-space: nowrap; animation: scroll 35s linear infinite; color: var(--gold); font-weight: bold; }
         @keyframes scroll { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
 
-        .main-layout { display: grid; grid-template-columns: 1.8fr 1fr; gap: 30px; height: 60vh; padding: 20px; align-items: center; }
+        .vault-layout { display: grid; grid-template-columns: 1.8fr 1.2fr; gap: 30px; padding: 20px; align-items: center; }
 
-        .message-box { font-size: 2rem; border-left: 5px solid var(--gold); padding: 20px; background: rgba(0,0,0,0.6); }
-
-        .node-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
+        .node-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 20px; }
         .node-sq {
-            border: 1.5px solid var(--gold); height: 90px;
-            background: rgba(0,5,16,0.7); display: flex; flex-direction: column;
+            border: 1px solid var(--gold); height: 80px;
+            background: rgba(0,2,10,0.9); display: flex; flex-direction: column;
             align-items: center; justify-content: center; cursor: pointer; transition: 0.3s;
         }
-        .node-sq:hover { background: var(--shimmer); color: #000; box-shadow: 0 0 25px var(--gold); }
+        .node-sq:hover { background: var(--shimmer); color: #000; box-shadow: 0 0 20px var(--gold); }
 
-        .azk-widget {
-            position: fixed; bottom: 30px; right: 30px; padding: 15px;
-            border: 2px solid var(--gold); background: rgba(0,5,16,0.9);
-            text-align: center; font-size: 0.7rem; box-shadow: 0 0 20px rgba(212,175,55,0.4);
+        /* THE GREEN TYPEWRITER TERMINAL */
+        #term-pop {
+            display: none; position: absolute; top: 50%; left: 45%; transform: translate(-50%, -50%);
+            width: 500px; min-height: 150px; background: rgba(0,10,0,0.98);
+            border: 2px solid var(--sov-green); padding: 25px; z-index: 1000;
+            color: var(--sov-green); font-family: 'Courier New', monospace; font-size: 1.2rem;
+            box-shadow: 0 0 30px var(--sov-green);
         }
-        .pulse-dot { width: 12px; height: 12px; background: var(--gold); border-radius: 50%; display: inline-block; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(0.8); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
+
+        .azk-radar {
+            position: fixed; bottom: 30px; right: 30px; padding: 15px;
+            border: 2px solid var(--gold); background: rgba(0,2,10,0.9);
+            text-align: center; font-size: 0.7rem; box-shadow: 0 0 15px rgba(212,175,55,0.4);
+        }
+        .pulse { width: 10px; height: 10px; background: var(--gold); border-radius: 50%; display: inline-block; animation: blink 2s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.2; transform: scale(1.5); } }
     </style>
 </head>
 <body>
-
-    <div class="header-box">
-        <h1 class="shimmer-gold" style="font-size: 1.6rem; margin: 0;">THE GALADIMAN RUWA CENTER (GCSLC) LTD/GTE</h1>
+    <div class="header-anchor">
+        <h1 class="shimmer-gold" style="font-size: 1.8rem; margin: 0;">THE GALADIMAN RUWA CENTER (GCSLC) LTD/GTE</h1>
         <div style="font-size: 0.7rem; color: var(--gold); letter-spacing: 4px; margin-top: 5px;">8R STEALTH PARADIGM | NGECC STRATEGIC MISSION VEHICLE</div>
     </div>
 
-    <div class="ticker"><div class="ticker-move">NGECC COAL: $131.00/MT ▲ | AMMONIA: $650/MT | RAW DIAMONDS: $7,100/CT ▲ | AZK NODAL CORRIDOR ACTIVE</div></div>
+    <div class="ticker"><div class="ticker-move">NGECC COAL: $131.00/MT ▲ | AMMONIA: $650/MT ▲ | RAW DIAMONDS: $7,100/CT ▲ | AZK NODAL CORRIDOR ACTIVE</div></div>
 
-    <div class="main-layout">
+    <div class="vault-layout">
         <div>
-            <div class="message-box shimmer-gold">
+            <div style="font-size: 1.8rem; border-left: 5px solid var(--gold); padding: 15px; background: rgba(0,0,0,0.6); line-height: 1.2;">
                 "I thank you for stopping by. I need energy to thrive, function, and augment productivity. Come in to decode."
             </div>
-            <div class="node-grid" id="nodes"></div>
+            <div class="node-grid" id="grid"></div>
         </div>
         
-        <div style="background: rgba(0,0,0,0.8); border: 2px solid var(--gold); padding: 30px; border-radius: 10px;">
-            <h3 class="shimmer-gold" style="text-align:center;">SOVEREIGN ACCESS</h3>
+        <div style="background: rgba(0,0,0,0.85); border: 2px solid var(--gold); padding: 25px; border-radius: 8px; text-align: center;">
+            <h3 class="shimmer-gold">SOVEREIGN ACCESS</h3>
             <input type="text" style="width:100%; background:transparent; border:1px solid var(--gold); color:#fff; padding:10px; margin-bottom:15px;" placeholder="ORGANIZATION / EMAIL">
-            <button style="width:100%; background:var(--shimmer); border:none; padding:15px; font-weight:bold; cursor:pointer;">DECODE VAULT</button>
+            <button style="width:100%; background:var(--shimmer); border:none; padding:12px; font-weight:bold; cursor:pointer; color:#000;">DECODE VAULT</button>
+            <div style="font-size: 0.5rem; color: var(--gold); margin-top: 10px;">SESSION HEARTBEAT: 15min + 15min</div>
+        </div>
+
+        <div id="term-pop">
+            <div id="term-text">> </div>
+            <button onclick="closeTerminal()" style="margin-top:20px; background:var(--sov-green); border:none; color:#000; padding:8px 15px; cursor:pointer; font-weight:bold; float:right;">CLOSE TERMINAL</button>
         </div>
     </div>
 
-    <div class="azk-widget">
-        <div class="pulse-dot"></div><br>
+    <div class="azk-radar">
+        <div class="pulse"></div><br>
         <strong>ABUJA-ZARIA-KANO</strong><br>
-        STRATEGIC CORRIDOR ACTIVE
+        NODAL CORRIDOR ACTIVE
     </div>
 
     <script>
-        const D = { D1: "REFINE", D2: "RESET", D3: "RESEARCH", D4: "RESTRUCTURE", D5: "RESUSCITATE", D6: "REVITALIZE", D7: "RE-ENGINEER", D8: "RETAIN" };
-        const g = document.getElementById('nodes');
+        const D = { 
+            D1: "REFINE: Distilling national coal into high-yield digital liquidity.", 
+            D2: "RESET: Global alignment of SMM protocols for Authority.", 
+            D3: "RESEARCH: Proprietary Intelligence NCC LW15954.", 
+            D4: "RESTRUCTURE: Engineering fiscal high-velocity pathways.", 
+            D5: "RESUSCITATE: Reviving moribund entities into Green Energy Cores.", 
+            D6: "REVITALIZE: Converting fossil energy into green digital energy.", 
+            D7: "RE-ENGINEER: Building the 8R Stealth OS.", 
+            D8: "RETAIN: Anchoring material authority in the Vault." 
+        };
+        const g = document.getElementById('grid');
+        const terminal = document.getElementById('term-pop');
+        const outEl = document.getElementById('term-text');
+
+        let typingTimer = null;
+
+        function clearTyping() {
+            if (typingTimer) {
+                clearInterval(typingTimer);
+                typingTimer = null;
+            }
+        }
+
+        function closeTerminal() {
+            clearTyping();
+            terminal.style.display = 'none';
+        }
+
+        function typeMessage(message) {
+            // Ghost-proof: always reset output + cancel prior timer before typing a new stream.
+            clearTyping();
+            terminal.style.display = 'block';
+            outEl.innerHTML = '> ';
+
+            let i = 0;
+            typingTimer = setInterval(() => {
+                if (i < message.length) {
+                    outEl.innerHTML += message.charAt(i);
+                    i++;
+                } else {
+                    clearTyping();
+                }
+            }, 30);
+        }
+
         Object.keys(D).forEach(k => {
-            const d = document.createElement('div'); d.className = 'node-sq';
-            d.innerHTML = `<div class="shimmer-gold" style="font-size:1.5rem; font-weight:bold;">[${k}]</div><div style="font-size:0.6rem;">${D[k]}</div>`;
+            const d = document.createElement('div');
+            d.className = 'node-sq';
+            d.innerHTML = `<div class="shimmer-gold" style="font-size:1.3rem; font-weight:bold;">[${k}]</div><div style="font-size:0.55rem;">${D[k].split(':')[0]}</div>`;
+            d.onclick = () => typeMessage(D[k]);
             g.appendChild(d);
         });
     </script>
