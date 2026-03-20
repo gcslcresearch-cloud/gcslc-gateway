@@ -74,8 +74,20 @@ REALTIME_ENGINE_INTERVAL_SEC = int(os.environ.get("GCSLC_AWC_REALTIME_INTERVAL_S
 CAC_AV_CODE = "176917792057"
 CHAIRMAN_LOCK = "Dr. Sa'ad Jaafaru"
 
-# Talon Lock: Apex Eagle asset path — African_Gateway/assets/ (fallback to inline SVG if missing)
-EAGLE_ASSET_PATH = os.path.join(_GATEWAY, "assets", "apex_eagle.svg")
+# Talon Lock: K-GEC / Apex Eagle — resolve relative to this file's directory (repo root when run standalone)
+def _resolve_eagle_asset_path() -> Optional[str]:
+    """Prefer African_Gateway./assets/apex_eagle.svg; then repo assets/kgec_eagle.svg (mirror vault copy)."""
+    for rel in (
+        os.path.join(_GATEWAY, "assets", "apex_eagle.svg"),
+        os.path.join(_BASE, "assets", "kgec_eagle.svg"),
+        os.path.join(_BASE, "assets", "apex_eagle.svg"),
+    ):
+        if os.path.isfile(rel):
+            return rel
+    return None
+
+
+EAGLE_ASSET_PATH = _resolve_eagle_asset_path()
 APEX_EAGLE_INLINE_SVG = '''<svg class="awc-apex-eagle-header" width="48" height="34" viewBox="0 0 56 40" fill="none" xmlns="http://www.w3.org/2000/svg">
   <ellipse cx="28" cy="20" rx="14" ry="10" fill="#FFD700" stroke="#B8860B" stroke-width="1"/>
   <path d="M18 16 L28 12 L38 16" stroke="#B8860B" stroke-width="1" fill="none"/>
@@ -85,9 +97,10 @@ APEX_EAGLE_INLINE_SVG = '''<svg class="awc-apex-eagle-header" width="48" height=
 </svg>'''
 def _render_apex_eagle(use_asset_path=True):
     """Render Apex Predator Eagle: from assets/ if present, else inline SVG. Explicit call for Talon Lock."""
-    if use_asset_path and os.path.isfile(EAGLE_ASSET_PATH):
+    path = EAGLE_ASSET_PATH or _resolve_eagle_asset_path()
+    if use_asset_path and path and os.path.isfile(path):
         try:
-            st.image(EAGLE_ASSET_PATH, width=48)
+            st.image(path, width=48)
             return
         except Exception:
             pass
