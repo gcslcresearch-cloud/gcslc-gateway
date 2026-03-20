@@ -2,471 +2,985 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>GCSLC | Sovereign Mirror Final</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>GCSLC | Sovereign Vault Gateway</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Goldman:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root{
-      --obsidian:#05060b;
       --navy:#000510;
+      --obsidian:#05060b;
       --gold:#D4AF37;
       --white:#f4f6ff;
       --green:#00FF41;
       --glass:rgba(255,255,255,.08);
-      --glass-b:rgba(255,255,255,.12);
-      --ink:#e5e1d7;
+      --glass2:rgba(255,255,255,.13);
+      --shimmer: linear-gradient(110deg, #ffffff 0%, #fff8cf 14%, #D4AF37 38%, #f7f9ff 62%, #1e3f7a 100%);
+      --shadow: rgba(0,0,0,.45);
     }
-    *{box-sizing:border-box}
-    html,body{height:100%}
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
     body{
       margin:0;
       background:
-        radial-gradient(950px 520px at 12% 8%, rgba(212,175,55,.10), transparent 58%),
-        radial-gradient(820px 420px at 88% 10%, rgba(35,79,133,.14), transparent 55%),
-        linear-gradient(180deg,var(--navy),var(--obsidian));
-      color:var(--ink);
-      font-family:'Goldman',system-ui,sans-serif;
+        radial-gradient(980px 520px at 18% 12%, rgba(212,175,55,.10), transparent 58%),
+        radial-gradient(860px 460px at 88% 8%, rgba(35,79,133,.18), transparent 55%),
+        linear-gradient(180deg, var(--navy), var(--obsidian));
+      color:var(--white);
+      font-family:'Goldman', system-ui, sans-serif;
       overflow:hidden;
     }
 
-    .app{height:100%;display:flex;flex-direction:column;position:relative}
+    /* Fixed bottom ticker */
+    .legal{
+      position:fixed;
+      left:0; right:0; bottom:0;
+      z-index:30;
+      background: rgba(5,6,11,.96);
+      border-top: 1px solid rgba(212,175,55,.22);
+      height:54px;
+      display:flex;
+      align-items:center;
+      overflow:hidden;
+      padding:0 12px;
+    }
+    .legal-track{
+      white-space:nowrap;
+      will-change: transform;
+      display:inline-block;
+      padding-left:100%;
+      animation: legal-scroll 42s linear infinite;
+      font-size:.7rem;
+      letter-spacing:.07em;
+      color: rgba(212,175,55,.95);
+      font-weight:800;
+    }
+    @keyframes legal-scroll{
+      0%{ transform: translateX(0); }
+      100%{ transform: translateX(-100%); }
+    }
 
-    /* Top ribbon */
-    .material-ribbon{
-      position:fixed;left:0;right:0;top:0;z-index:60;
-      background:rgba(5,6,11,.72);
-      border-bottom:1px solid rgba(212,175,55,.28);
-      backdrop-filter:blur(10px);
-      -webkit-backdrop-filter:blur(10px);
-      padding:8px 10px;
+    /* Layout */
+    .app{
+      height:100%;
+      padding-bottom:62px; /* keep content above legal ticker */
+      display:flex;
+      flex-direction:column;
     }
-    .material-inner{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
-    .material-title{
-      color:var(--gold);font-size:.74rem;font-weight:700;letter-spacing:.16em;white-space:nowrap
-    }
-    .material-pills{display:flex;gap:10px;flex-wrap:wrap}
-    .mat-pill{
-      border:1px solid rgba(212,175,55,.35);
-      border-radius:999px;
-      padding:6px 10px;
-      font-size:.78rem;
-      background:rgba(212,175,55,.06);
-      color:var(--white);
-      display:flex;align-items:center;gap:7px;
-    }
-    .mat-dot{
-      width:8px;height:8px;border-radius:50%;
-      background:#7f8ef8;box-shadow:0 0 12px rgba(127,142,248,.55);
-      animation:pulse 2.2s ease-in-out infinite;
-    }
-    .mat-dot.silicon{background:#2a6ea8;box-shadow:0 0 12px rgba(42,110,168,.55)}
-    .mat-dot.coal{background:#9a7840;box-shadow:0 0 12px rgba(154,120,64,.55)}
-    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.35);opacity:.65}}
 
-    /* Header identity */
-    .identity{
-      margin-top:54px;
-      text-align:center;
-      padding:14px 14px 10px;
-      border-bottom:1px solid rgba(212,175,55,.25);
+    /* Top identity */
+    .topbar{
       position:relative;
-      z-index:2;
+      z-index:5;
+      padding:14px 14px 10px;
+      border-bottom: 1px solid rgba(212,175,55,.25);
+      background: linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,0));
     }
     .title{
       margin:0;
+      text-align:center;
       font-family:'Cinzel','Goldman',sans-serif;
-      font-size:clamp(1.05rem,2.6vw,1.55rem);
-      line-height:1.35;
-      letter-spacing:.02em;
+      font-size: clamp(1.05rem, 2.6vw, 1.55rem);
       font-weight:700;
-      background:linear-gradient(115deg,var(--white) 0%,#fff8cf 18%,var(--gold) 42%,#f7f9ff 68%,#234f85 100%);
-      background-size:260% auto;
+      letter-spacing:.03em;
+      background: var(--shimmer);
+      background-size: 240% auto;
       -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
+      -webkit-text-fill-color: transparent;
       background-clip:text;
-      animation:shine 5.6s linear infinite;
-      text-shadow:0 0 22px rgba(212,175,55,.16);
+      animation: shimmerShift 5.2s linear infinite;
+      text-shadow: 0 0 22px rgba(212,175,55,.12);
+      will-change: background-position;
     }
-    .hook{
+    @keyframes shimmerShift{
+      0%{ background-position: 0% center; }
+      100%{ background-position: 240% center; }
+    }
+    .tagline{
       margin:8px auto 0;
       max-width:980px;
-      color:rgba(212,175,55,.95);
-      font-size:.8rem;
-      letter-spacing:.04em;
+      text-align:center;
+      font-size:.82rem;
+      color: rgba(212,175,55,.95);
+      letter-spacing:.02em;
     }
-    @keyframes shine{to{background-position:260% center}}
+
+    /* Prices ribbon */
+    .prices{
+      margin:10px auto 0;
+      max-width:1180px;
+      padding:8px 10px;
+      border:1px solid rgba(212,175,55,.25);
+      border-radius:12px;
+      background: rgba(0,5,16,.55);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .price-left{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width: 260px;
+    }
+    .pulse-dot{
+      width:10px;height:10px;border-radius:50%;
+      background: var(--gold);
+      box-shadow:0 0 18px rgba(212,175,55,.35);
+      animation: pulseDot 2.2s ease-in-out infinite;
+    }
+    @keyframes pulseDot{
+      0%,100%{ transform: scale(1); opacity:1; }
+      50%{ transform: scale(1.45); opacity:.7; }
+    }
+    .pulse-label{
+      font-weight:900;
+      letter-spacing:.14em;
+      color: rgba(212,175,55,.92);
+      font-size:.72rem;
+      white-space:nowrap;
+    }
+    .price-pills{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .pill{
+      border-radius:999px;
+      border:1px solid rgba(212,175,55,.35);
+      background: rgba(212,175,55,.06);
+      padding:8px 10px;
+      display:flex;
+      align-items:baseline;
+      gap:8px;
+      font-weight:800;
+      letter-spacing:.02em;
+      min-width: 210px;
+      justify-content:center;
+    }
+    .pill .chip{
+      width:8px;height:8px;border-radius:50%;
+      background:#7f8ef8;
+      box-shadow:0 0 14px rgba(127,142,248,.55);
+      animation: chipPulse 2.1s ease-in-out infinite;
+    }
+    .pill.silicon .chip{
+      background:#2a6ea8;
+      box-shadow:0 0 14px rgba(42,110,168,.55);
+    }
+    .pill.ammonia .chip{
+      background:#2a6ea8; /* Pulse Blue */
+      box-shadow:0 0 14px rgba(42,110,168,.60);
+    }
+    .pill.diamond .chip{
+      background: #f4f6ff; /* Pulse White */
+      box-shadow:0 0 14px rgba(244,246,255,.55);
+      animation: chipPulseDiamond 2.1s ease-in-out infinite;
+    }
+    .pill.coal .chip{
+      background: #D4AF37; /* Pulse Gold */
+      box-shadow:0 0 14px rgba(212,175,55,.60);
+    }
+    @keyframes chipPulse{
+      0%,100%{ transform: scale(1); opacity:1; }
+      50%{ transform: scale(1.4); opacity:.65; }
+    }
+    @keyframes chipPulseDiamond{
+      0%,100%{ transform: scale(1); opacity:1; }
+      50%{ transform: scale(1.35); opacity:.70; }
+    }
+    .pill strong{ color:var(--white); font-weight:900; }
+    .pill span{ color: rgba(212,175,55,.92); }
 
     /* Clock grid */
-    .clock-grid{
-      display:grid;
-      grid-template-columns:repeat(6,minmax(0,1fr));
-      gap:10px;
-      padding:10px 12px;
-      border-bottom:1px solid rgba(212,175,55,.18);
-      position:relative;z-index:2;
-    }
-    @media (max-width:900px){ .clock-grid{grid-template-columns:repeat(3,minmax(0,1fr));} }
-    .clock-cell{text-align:center}
-    .face{
-      width:48px;height:48px;border-radius:50%;
-      border:1.5px solid rgba(212,175,55,.85);
-      margin:0 auto;background:rgba(255,255,255,.04);
+    .clock-wrap{
       position:relative;
+      z-index:5;
+      padding:12px 14px;
+      border-bottom: 1px solid rgba(212,175,55,.18);
+    }
+    .clock-grid{
+      max-width:1180px;
+      margin:0 auto;
+      display:grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap:10px;
+    }
+    @media (max-width: 900px){
+      .clock-grid{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    .clock{
+      text-align:center;
+      padding:8px 6px;
+      border-radius:12px;
+      border:1px solid rgba(212,175,55,.18);
+      background: rgba(0,5,16,.35);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .clock-face{
+      margin:0 auto;
+      width:44px;height:44px;border-radius:50%;
+      border:1.5px solid rgba(212,175,55,.8);
+      position:relative;
+      background: rgba(255,255,255,.03);
     }
     .hand{
-      position:absolute;left:50%;bottom:50%;
-      transform-origin:bottom center;background:var(--gold);
-      transform:translateX(-50%) rotate(0deg);border-radius:2px;
+      position:absolute;
+      left:50%;
+      bottom:50%;
+      transform-origin: bottom center;
+      background: var(--gold);
+      border-radius:2px;
+      transform: translateX(-50%) rotate(0deg);
     }
-    .hand.h{width:3px;height:14px}
-    .hand.m{width:2px;height:19px}
-    .clock-label{margin-top:5px;font-size:.52rem;color:rgba(212,175,55,.95);letter-spacing:.06em}
+    .hand.hour{ width:3px;height:14px; }
+    .hand.min{ width:2px;height:19px; }
+    .clock-name{
+      margin-top:6px;
+      font-size:.52rem;
+      color: rgba(212,175,55,.92);
+      font-weight:800;
+      letter-spacing:.06em;
+    }
 
-    /* Main composition */
+    /* Main center composition */
     .main{
-      position:relative;z-index:2;
-      flex:1;min-height:0;
+      z-index:5;
+      position:relative;
+      flex:1;
       display:grid;
-      grid-template-columns:1.15fr 1fr;
+      grid-template-columns: 1.05fr 1fr;
       gap:14px;
-      padding:12px;
-      overflow:hidden;
-    }
-    @media (max-width:980px){ .main{grid-template-columns:1fr;overflow:auto;padding-bottom:110px;} }
-
-    .guardian-wrap{
-      border:1px solid rgba(212,175,55,.28);
-      border-radius:14px;
-      background:rgba(4,8,16,.55);
       padding:14px;
-      display:flex;flex-direction:column;gap:10px;
+      overflow:hidden;
+      min-height:0;
+    }
+    @media (max-width: 980px){
+      .main{ grid-template-columns:1fr; overflow:auto; }
+    }
+
+    /* Humanoid guardian focus */
+    .guardian{
+      border-radius:18px;
+      border:1px solid rgba(212,175,55,.22);
+      background: rgba(0,5,16,.42);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 18px 60px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
       min-height:0;
     }
     .guardian-visual{
-      display:flex;justify-content:center;align-items:center;
-      min-height:220px;
-      background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));
+      border-radius:14px;
       border:1px solid rgba(255,255,255,.08);
-      border-radius:12px;
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      padding:12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height: 220px;
       position:relative;
       overflow:hidden;
     }
     .guardian-visual img{
-      width:min(84%,460px);
+      max-width: 92%;
       height:auto;
       object-fit:contain;
-      filter:drop-shadow(0 0 24px rgba(212,175,55,.22));
+      filter: drop-shadow(0 0 24px rgba(212,175,55,.18));
+      animation: guardian-breathe 4.6s ease-in-out infinite;
+      will-change: transform, opacity;
     }
-    .fallback-human{
+    @keyframes guardian-breathe{
+      0%,100%{ transform: scale(.99); opacity:.92; }
+      50%{ transform: scale(1.02); opacity:1; }
+    }
+    .guardian-fallback{
       display:none;
-      color:rgba(212,175,55,.88);
+      color: rgba(212,175,55,.92);
       font-family:'Cinzel','Goldman',sans-serif;
-      letter-spacing:.08em;
+      letter-spacing:.1em;
+      font-weight:700;
       text-align:center;
-      font-size:.95rem;
-      max-width:80%;
+      padding:24px 12px;
     }
-    .speech{
-      border-left:4px solid var(--gold);
-      padding:10px 12px;
-      background:rgba(255,255,255,.03);
-      color:var(--white);
-      font-size:.88rem;
-      line-height:1.45;
+    .guardian-speech{
+      border-left:4px solid rgba(212,175,55,.9);
+      padding:12px 14px;
+      border-radius:12px;
+      background: rgba(255,255,255,.03);
+      font-size:.92rem;
+      line-height:1.5;
+      color: rgba(244,246,255,.98);
+    }
+
+    /* ENERGY CORE ACTIVE frame + triple node cards */
+    .energy-core-frame{
+      position:relative;
+      width:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      padding:8px 6px 6px;
+      border-radius:14px;
+      border:1px solid rgba(212,175,55,.25);
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.01));
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      overflow:hidden;
+    }
+    .energy-core-label{
+      position:absolute;
+      top:10px;
+      left:12px;
+      right:12px;
+      text-align:center;
+      color: rgba(212,175,55,.95);
+      font-weight:900;
+      letter-spacing:.12em;
+      font-size:.62rem;
+      text-shadow:0 0 18px rgba(212,175,55,.14);
+      pointer-events:none;
+    }
+    .energy-core-frame::after{
+      content:'';
+      position:absolute;
+      inset:-20%;
+      background: radial-gradient(closest-side, rgba(212,175,55,.22), transparent 62%);
+      opacity:.45;
+      animation: core-pulse 3.8s ease-in-out infinite;
+      pointer-events:none;
+    }
+    @keyframes core-pulse{
+      0%,100%{ transform: scale(1); opacity:.35; }
+      50%{ transform: scale(1.08); opacity:.60; }
+    }
+    .node-cards{
+      margin-top:10px;
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+    }
+    .node-card{
+      border-radius:14px;
+      border:1px solid rgba(212,175,55,.35);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.02));
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      padding:12px 12px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+      text-decoration:none;
+      color: inherit;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+    .node-card:hover{
+      transform: translateY(-2px);
+      border-color: rgba(212,175,55,.65);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 0 26px rgba(212,175,55,.20);
+    }
+    .node-card-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:6px;
+    }
+    .node-port{
+      font-size:.72rem;
+      font-weight:900;
+      letter-spacing:.16em;
+      color: var(--gold);
+      white-space:nowrap;
+    }
+    .node-title{
+      font-size: .96rem;
+      font-weight:900;
+      letter-spacing:.03em;
+      color: var(--gold);
+    }
+    .node-sub{
+      margin-top:6px;
+      font-size:.82rem;
+      color: rgba(244,246,255,.92);
+      line-height:1.35;
     }
 
     /* Prism vault */
     .prism{
-      border:1px solid rgba(212,175,55,.28);
-      border-radius:14px;
-      background:rgba(4,8,16,.55);
+      border-radius:18px;
+      border:1px solid rgba(212,175,55,.22);
+      background: rgba(0,5,16,.42);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       padding:14px;
-      display:flex;flex-direction:column;
+      box-shadow: 0 18px 60px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
+      display:flex;
+      flex-direction:column;
       min-height:0;
     }
-    .prism-title{
-      color:var(--gold);
-      font-family:'Cinzel','Goldman',sans-serif;
-      letter-spacing:.08em;
-      margin:0 0 10px;
-      font-size:.95rem;
+    .prism-head{
+      display:flex;
+      align-items:baseline;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
     }
-    .prism-frame{
-      border:1px solid rgba(212,175,55,.35);
+    .prism-head h2{
+      margin:0;
+      font-size:.98rem;
+      letter-spacing:.08em;
+      color: var(--gold);
+      font-family:'Cinzel','Goldman',sans-serif;
+      font-weight:800;
+    }
+    .prism-note{
+      font-size:.68rem;
+      letter-spacing:.04em;
+      color: rgba(212,175,55,.85);
+      font-weight:800;
+    }
+
+    /* Decode Vault sign-on panel */
+    .decode-panel{
+      margin-top:10px;
+      border-radius:16px;
+      border:1px solid rgba(212,175,55,.28);
+      background: rgba(0,5,16,.35);
+      padding:12px;
+    }
+    .decode-title{
+      font-size:.78rem;
+      letter-spacing:.10em;
+      color: var(--gold);
+      font-weight:900;
+      margin-bottom:10px;
+      text-align:center;
+    }
+    .decode-field{
+      margin-top:10px;
+    }
+    .decode-field label{
+      display:block;
+      font-size:.62rem;
+      letter-spacing:.06em;
+      color: rgba(212,175,55,.95);
+      font-weight:900;
+      margin-bottom:6px;
+    }
+    .decode-field input, .decode-field select{
+      width:100%;
+      padding:10px 10px;
       border-radius:12px;
-      padding:10px;
-      background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
+      background: rgba(0,0,0,.25);
+      border:1px solid rgba(212,175,55,.40);
+      color:#fff;
+      font-family:inherit;
+      outline:none;
+    }
+    .decode-field input::placeholder{ color: rgba(255,255,255,.35); }
+    .wa-row{
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    .wa-row select{ flex:1; }
+    .wa-row input{ flex:2; }
+    @media (max-width:520px){
+      .wa-row{ flex-direction:column; align-items:stretch; }
+      .wa-row select, .wa-row input{ width:100%; flex:none; }
+    }
+    .decode-actions{
+      margin-top:12px;
+      display:flex;
+      justify-content:center;
+    }
+    .decode-submit{
+      border:none;
+      cursor:pointer;
+      padding:12px 16px;
+      border-radius:14px;
+      background: linear-gradient(90deg, rgba(212,175,55,1), rgba(249,241,164,.92));
+      color:#05060b;
+      font-weight:900;
+      letter-spacing:.08em;
+      box-shadow: 0 0 22px rgba(212,175,55,.12);
+    }
+    .decode-submit:active{ transform: translateY(1px); }
+
+    .prism-frame{
+      border-radius:16px;
+      border:1px solid rgba(212,175,55,.3);
+      padding:12px;
+      background:
+        radial-gradient(500px 220px at 20% 0%, rgba(212,175,55,.18), transparent 55%),
+        radial-gradient(460px 260px at 90% 10%, rgba(42,110,168,.22), transparent 58%),
+        rgba(255,255,255,.02);
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-height:0;
+      position:relative;
+      overflow:hidden;
+    }
+    .prism-frame::before{
+      content:'';
+      position:absolute;
+      inset:-18%;
+      background: url('../assets/1003929272.jpg') center/cover no-repeat;
+      opacity:0.05;
+      filter: blur(1.2px) grayscale(1) contrast(1.2) saturate(.4) hue-rotate(15deg);
+      mix-blend-mode: screen;
+      transform: scale(1.04);
+      z-index:0;
+      pointer-events:none;
     }
     .det-grid{
       display:grid;
       grid-template-columns:repeat(4,minmax(0,1fr));
       gap:10px;
+      min-height:0;
+      position:relative;
+      z-index:1;
+    }
+    @media (max-width: 980px){
+      .det-grid{ grid-template-columns:repeat(4,minmax(0,1fr)); }
+    }
+    @media (max-width: 520px){
+      .det-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
     }
     .det{
+      border-radius:12px;
       border:1px solid rgba(212,175,55,.55);
-      border-radius:10px;
-      background:rgba(0,5,16,.72);
-      min-height:74px;
-      display:flex;flex-direction:column;align-items:center;justify-content:center;
-      cursor:pointer;user-select:none;
-      transition:.18s transform ease,.22s box-shadow ease,.18s background ease;
-      animation:detGlow 2.6s ease-in-out infinite;
+      background: rgba(0,5,16,.66);
+      min-height:78px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      user-select:none;
+      transition: transform .18s ease, box-shadow .22s ease, background .18s ease;
+      box-shadow: 0 0 10px rgba(212,175,55,.10);
+      animation: detBorderPulse 4s ease-in-out infinite;
+      padding:8px 6px;
+      will-change: border-color, box-shadow, transform;
     }
     .det:hover{
-      transform:translateY(-2px);
-      box-shadow:0 0 22px rgba(212,175,55,.45);
-      background:rgba(14,22,40,.88);
+      transform: translateY(-2px);
+      background: rgba(14,22,44,.9);
+      box-shadow: 0 0 26px rgba(212,175,55,.55);
       animation:none;
     }
-    .det-code{color:var(--gold);font-weight:700;font-size:.95rem;line-height:1}
-    .det-tag{font-size:.48rem;color:rgba(212,175,55,.95);margin-top:3px;letter-spacing:.06em}
-    @keyframes detGlow{0%,100%{box-shadow:0 0 10px rgba(212,175,55,.13)}50%{box-shadow:0 0 17px rgba(212,175,55,.33)}}
-
-    /* Matrix typewriter terminal */
-    .terminal{
-      margin-top:10px;
-      border:1px solid rgba(0,255,65,.65);
-      border-radius:12px;
-      min-height:140px;
-      background:rgba(0,10,0,.92);
-      color:var(--green);
-      font-size:.88rem;
-      line-height:1.48;
-      padding:12px;
-      white-space:pre-wrap;
-      overflow:auto;
-      font-family:'Goldman', system-ui, sans-serif;
-      box-shadow:0 0 20px rgba(0,255,65,.15) inset;
+    @keyframes detBorderPulse{
+      0%,100%{
+        box-shadow: 0 0 10px rgba(212,175,55,.12);
+        border-color: rgba(212,175,55,.55);
+      }
+      50%{
+        box-shadow: 0 0 18px rgba(212,175,55,.34);
+        box-shadow: 0 0 18px rgba(0,5,16,.55);
+        border-color: rgba(0,5,16,.95);
+      }
     }
-    .term-head{
-      display:flex;align-items:center;justify-content:space-between;
-      margin-bottom:8px;font-size:.7rem;letter-spacing:.1em;color:rgba(0,255,65,.85);
+    .det-code{
+      color: var(--gold);
+      font-weight:900;
+      font-size:.95rem;
+      line-height:1;
+      letter-spacing:.03em;
     }
-    .term-close{
-      border:1px solid rgba(0,255,65,.65);
-      color:var(--green);
-      background:transparent;
-      border-radius:8px;
-      padding:4px 8px;
-      cursor:pointer;
-      font-family:inherit;
-      font-size:.66rem;
-      font-weight:700;
+    .det-tag{
+      margin-top:4px;
+      font-size:.47rem;
+      color: rgba(212,175,55,.95);
+      font-weight:900;
+      letter-spacing:.06em;
+      text-align:center;
     }
 
-    /* Legal fixed ticker */
-    .signature{
+    /* Typewriter modal */
+    .modal{
       position:fixed;
-      left:12px;
-      bottom:58px;
-      z-index:40;
-      color:rgba(212,175,55,.85);
-      font-size:.62rem;
-      letter-spacing:.08em;
-      font-weight:700;
-      pointer-events:none;
-      text-shadow:0 0 12px rgba(212,175,55,.15);
+      inset:0;
+      z-index:100;
+      background: rgba(0,0,0,.60);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
     }
-    .legal{
-      position:fixed;left:0;right:0;bottom:0;z-index:50;
-      background:rgba(3,4,8,.96);
-      border-top:1px solid rgba(212,175,55,.25);
-      height:52px;overflow:hidden;
-      display:flex;align-items:center;
+    .modal.show{ display:flex; }
+    .modal-dialog{
+      width:min(820px, 100%);
+      border-radius:18px;
+      border:1px solid rgba(0,255,65,.55);
+      background: rgba(0,10,0,.96);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 28px 120px rgba(0,0,0,.55);
+      overflow:hidden;
     }
-    .legal-track{
-      white-space:nowrap;
-      padding-left:100%;
-      display:inline-block;
-      animation:scroll 42s linear infinite;
-      color:rgba(212,175,55,.95);
-      font-size:.69rem;
-      font-weight:700;
-      letter-spacing:.07em;
+    .modal-top{
+      padding:14px 16px 12px;
+      border-bottom: 1px solid rgba(0,255,65,.25);
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
     }
-    @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
+    .modal-title{
+      color: rgba(0,255,65,.95);
+      font-weight:900;
+      letter-spacing:.10em;
+      font-size:.78rem;
+    }
+    .modal-close{
+      cursor:pointer;
+      border:none;
+      border-radius:12px;
+      padding:8px 12px;
+      background: rgba(0,255,65,.15);
+      color: rgba(0,255,65,.95);
+      font-weight:900;
+      font-family:inherit;
+    }
+    .modal-body{
+      padding:16px;
+    }
+    .terminal{
+      color: var(--green);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size:.95rem;
+      line-height:1.55;
+      white-space:pre-wrap;
+      word-break:break-word;
+      min-height:120px;
+      max-height:48vh;
+      overflow:auto;
+      border:1px solid rgba(0,255,65,.25);
+      border-radius:14px;
+      padding:12px 12px;
+      background: rgba(0,5,0,.35);
+    }
   </style>
 </head>
 <body>
   <div class="app">
-    <div class="material-ribbon">
-      <div class="material-inner">
-        <div class="material-title">MATERIAL PULSE · REAL-TIME FEED</div>
-        <div class="material-pills">
-          <div class="mat-pill"><span class="mat-dot"></span><span>Germanium</span><strong id="px-ge">$8,597/kg</strong></div>
-          <div class="mat-pill"><span class="mat-dot silicon"></span><span>Silicon</span><strong id="px-si">$1.81/kg</strong></div>
-          <div class="mat-pill"><span class="mat-dot coal"></span><span>Coal</span><strong id="px-coal">$131/MT</strong></div>
+    <div class="topbar">
+      <h1 class="title">Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC LTD/GTE)</h1>
+      <div class="tagline">Everything is powered by the 8R Stealth Paradigm Convergence and its Determinants. Come in to understand.</div>
+
+      <div class="prices" aria-label="Live material pricing ribbon">
+        <div class="price-left">
+          <span class="pulse-dot"></span>
+          <div class="pulse-label">MATERIAL PULSE</div>
+        </div>
+        <div class="price-pills">
+          <div class="pill" id="pill-ge">
+            <span class="chip"></span>
+            <span>Germanium</span>
+            <strong id="px-ge">$8,597/kg</strong>
+          </div>
+          <div class="pill silicon" id="pill-si">
+            <span class="chip silicon"></span>
+            <span>Silicon</span>
+            <strong id="px-si">$1.81/kg</strong>
+          </div>
+            <div class="pill ammonia" id="pill-nh3">
+              <span class="chip"></span>
+              <span>Ammonia</span>
+              <strong id="px-nh3">$650/MT</strong>
+            </div>
+            <div class="pill diamond" id="pill-diamond">
+              <span class="chip"></span>
+              <span>Raw Diamond</span>
+              <strong id="px-diamond">$7,100/CT</strong>
+            </div>
+            <div class="pill coal" id="pill-coal">
+              <span class="chip"></span>
+              <span>Coal</span>
+              <strong id="px-coal">$131/MT</strong>
+            </div>
         </div>
       </div>
     </div>
 
-    <header class="identity">
-      <h1 class="title">Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC LTD/GTE)</h1>
-      <div class="hook">Everything is powered by the 8R Stealth Paradigm Convergence and its Determinants. Come in to understand</div>
-    </header>
+    <div class="clock-wrap">
+      <div class="clock-grid" id="clock-grid" aria-label="6-city Sovereign Clock"></div>
+    </div>
 
-    <section class="clock-grid" id="clock-grid" aria-label="6-City Sovereign Clock"></section>
-
-    <main class="main">
-      <section class="guardian-wrap">
+    <div class="main">
+      <section class="guardian" aria-label="Humanoid guardian">
         <div class="guardian-visual">
-          <img id="guardian-img" src="../assets/humanoid_coal.png" alt="Humanoid holding coal" onerror="this.style.display='none';document.getElementById('guardian-fallback').style.display='block';" />
-          <div id="guardian-fallback" class="fallback-human">HUMANOID GUARDIAN · ENERGY CORE ACTIVE</div>
+          <div class="energy-core-frame" aria-label="ENERGY CORE ACTIVE frame">
+            <div class="energy-core-label">ENERGY CORE ACTIVE</div>
+            <img id="guardian-img" src="../assets/humanoid_coal.png" alt="Humanoid holding coal"
+              onerror="this.style.display='none';document.getElementById('guardian-fallback').style.display='block';" />
+            <div id="guardian-fallback" class="guardian-fallback">HUMANOID GUARDIAN · ENERGY CORE ACTIVE</div>
+          </div>
         </div>
-        <div class="speech">Thank you for stopping by. I need energy to function, thrive, and augment human productivity. Come in to decode</div>
+        <div class="guardian-speech">
+          Thank you for stopping by. I need energy to function, thrive, and augment human productivity. Come in to decode.
+        </div>
+
+        <div class="node-cards" aria-label="Triple node cards">
+          <a class="node-card" href="http://127.0.0.1:8090" target="_blank" rel="noopener noreferrer">
+            <div class="node-card-top">
+              <span class="node-port">NRRFC · 8090</span>
+              <span class="node-title">NRRFC</span>
+            </div>
+            <div class="node-sub">National Resources Revitalization Fusion Center — <strong>The Energy Engine</strong>.</div>
+          </a>
+
+          <a class="node-card" href="http://127.0.0.1:8053" target="_blank" rel="noopener noreferrer">
+            <div class="node-card-top">
+              <span class="node-port">NWC/C&amp;D · 8053</span>
+              <span class="node-title">NWC</span>
+            </div>
+            <div class="node-sub">National Wealth Cloud — <strong>The 37-Node Geopolitical Grid</strong>.</div>
+          </a>
+
+          <a class="node-card" href="http://127.0.0.1:8054" target="_blank" rel="noopener noreferrer">
+            <div class="node-card-top">
+              <span class="node-port">K-GEC · 8054</span>
+              <span class="node-title">K-GEC</span>
+            </div>
+            <div class="node-sub">Komi Generative Eagle Cloud — <strong>$170.85B Sovereign AI Anchor</strong>.</div>
+          </a>
+        </div>
       </section>
 
-      <section class="prism">
-        <h2 class="prism-title">8R SHIMMERING PRISM VAULT</h2>
+      <section class="prism" aria-label="8R prism vault terminal mode">
+        <div class="prism-head">
+          <h2>8R SHIMMERING PRISM VAULT</h2>
+          <div class="prism-note">Click prism → Typewriter Terminal</div>
+        </div>
         <div class="prism-frame">
           <div class="det-grid" id="det-grid"></div>
+          <div class="terminal" style="display:none"></div>
         </div>
-        <div class="terminal" id="terminal">
-          <div class="term-head">
-            <span>MATRIX TYPEWRITER MODE</span>
-            <button class="term-close" type="button" onclick="closeTerminal()">CLEAR</button>
+
+        <div class="decode-panel" aria-label="DECODE VAULT sign-on">
+          <div class="decode-title">SOVEREIGN ACCESS · DECODE VAULT</div>
+
+          <div class="decode-field">
+            <label for="acc-email">Email (Required)</label>
+            <input id="acc-email" type="email" placeholder="Enter email" required />
           </div>
-          <div id="term-text">&gt; Awaiting determinant selection...</div>
+
+          <div class="decode-field">
+            <label for="acc-org">Organization (Required)</label>
+            <input id="acc-org" type="text" placeholder="Enter organization" required />
+          </div>
+
+          <div class="decode-field">
+            <label for="acc-wa">WhatsApp (Optional)</label>
+            <div class="wa-row">
+              <select id="acc-wa-code" aria-label="WhatsApp country code"></select>
+              <input id="acc-wa-num" type="tel" placeholder="Number" />
+            </div>
+          </div>
+
+          <div class="decode-actions">
+            <button type="button" class="decode-submit" id="decode-btn">DECODE VAULT</button>
+          </div>
+
+          <div style="margin-top:10px; text-align:center; font-size:.62rem; letter-spacing:.06em; color: rgba(212,175,55,.85); font-weight:900;">
+            SESSION HEARTBEAT: 15min + 15min
+          </div>
         </div>
       </section>
-    </main>
+    </div>
 
-    <div class="signature">Dr. Sa’ad Jaafaru — Signature Verified</div>
-
-    <footer class="legal" aria-label="Legal ticker">
-      <div class="legal-track">
-        Proprietary Methodology of Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau — Copyright Registration No. LW15954 — NON-TRANSFERABLE — 95/5 TALON LOCK ·
-        Proprietary Methodology of Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau — Copyright Registration No. LW15954 — NON-TRANSFERABLE — 95/5 TALON LOCK ·
-        Proprietary Methodology of Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau — Copyright Registration No. LW15954 — NON-TRANSFERABLE — 95/5 TALON LOCK ·
+    <div class="modal" id="type-modal" role="dialog" aria-modal="true" aria-label="Typewriter determinant modal">
+      <div class="modal-dialog">
+        <div class="modal-top">
+          <div>
+            <div class="modal-title">MATRIX TYPEWRITER MODE</div>
+            <div style="margin-top:6px;color:rgba(0,255,65,.82);font-weight:800;font-size:.72rem;letter-spacing:.03em;">
+              Determinant Definition Spool
+            </div>
+          </div>
+          <button class="modal-close" type="button" id="modal-close-btn">CLOSE</button>
+        </div>
+        <div class="modal-body">
+          <div class="terminal" id="term-text">&gt; Awaiting determinant selection...</div>
+        </div>
       </div>
-    </footer>
+    </div>
+  </div>
+
+  <div class="legal" aria-label="Legal base ticker">
+    <div class="legal-track" id="legal-track">
+      Proprietary Methodology of Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau — Copyright Registration No. LW15954 — NON-TRANSFERABLE — 95/5 TALON LOCK
+    </div>
   </div>
 
   <script>
-    // ---------- 6-city clock grid (UTC-relative, zero lag style update) ----------
-    const CLOCKS = [
-      { id: "ABJ", label: "ABUJA", tz: "Africa/Lagos" },
-      { id: "LON", label: "LONDON", tz: "Europe/London" },
-      { id: "DXB", label: "DUBAI", tz: "Asia/Dubai" },
-      { id: "GVA", label: "GENEVA", tz: "Europe/Zurich" },
-      { id: "NYC", label: "NEW YORK", tz: "America/New_York" },
-      { id: "BJS", label: "BEIJING", tz: "Asia/Shanghai" }
+    // ---------- Build clocks (live, aligned) ----------
+    const clocks = [
+      { name: "Abuja", tz: "Africa/Lagos" },
+      { name: "London", tz: "Europe/London" },
+      { name: "Dubai", tz: "Asia/Dubai" },
+      { name: "Geneva", tz: "Europe/Zurich" },
+      { name: "New York", tz: "America/New_York" },
+      { name: "Beijing", tz: "Asia/Shanghai" }
     ];
+
     const clockGrid = document.getElementById("clock-grid");
-    CLOCKS.forEach(c => {
-      const el = document.createElement("div");
-      el.className = "clock-cell";
-      el.innerHTML = `<div class="face" id="face-${c.id}"><div class="hand h"></div><div class="hand m"></div></div><div class="clock-label">${c.label}</div>`;
-      clockGrid.appendChild(el);
+    clocks.forEach(c => {
+      const cell = document.createElement("div");
+      cell.className = "clock";
+      cell.innerHTML = `
+        <div class="clock-face">
+          <div class="hand hour" data-role="h"></div>
+          <div class="hand min" data-role="m"></div>
+        </div>
+        <div class="clock-name">${c.name}</div>
+      `;
+      cell.dataset.tz = c.tz;
+      clockGrid.appendChild(cell);
     });
 
-    function getTZParts(tz) {
+    function tzParts(tz) {
       const now = new Date();
       const fmt = new Intl.DateTimeFormat("en-US", {
-        timeZone: tz, hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false
+        timeZone: tz, hour12: false,
+        hour: "2-digit", minute: "2-digit", second: "2-digit"
       });
       const parts = fmt.formatToParts(now);
       const map = {};
       parts.forEach(p => { if (p.type !== "literal") map[p.type] = parseInt(p.value, 10); });
       return map;
     }
+
     function updateClocks() {
-      CLOCKS.forEach(c => {
-        const t = getTZParts(c.tz);
-        const hourDeg = (t.hour % 12) * 30 + t.minute * 0.5;
+      document.querySelectorAll(".clock").forEach(cell => {
+        const t = tzParts(cell.dataset.tz);
+        const hour12 = (t.hour % 12);
+        const hourDeg = hour12 * 30 + t.minute * 0.5;
         const minDeg = t.minute * 6 + t.second * 0.1;
-        const face = document.getElementById(`face-${c.id}`);
-        if (!face) return;
-        const h = face.querySelector(".hand.h");
-        const m = face.querySelector(".hand.m");
-        h.style.transform = `translateX(-50%) rotate(${hourDeg}deg)`;
-        m.style.transform = `translateX(-50%) rotate(${minDeg}deg)`;
+        const h = cell.querySelector('[data-role="h"]');
+        const m = cell.querySelector('[data-role="m"]');
+        if (h) h.style.transform = `translateX(-50%) rotate(${hourDeg}deg)`;
+        if (m) m.style.transform = `translateX(-50%) rotate(${minDeg}deg)`;
       });
     }
+
     updateClocks();
-    (function clockTick() {
+    (function tick(){
       updateClocks();
       const now = new Date();
-      setTimeout(clockTick, 1000 - now.getMilliseconds());
+      setTimeout(tick, 1000 - now.getMilliseconds());
     })();
 
-    // ---------- Real-time material polling (API -> CSV fallback -> constants) ----------
-    const priceEls = {
-      germanium: document.getElementById("px-ge"),
-      silicon: document.getElementById("px-si"),
-      coal: document.getElementById("px-coal")
-    };
-    const fallbackPrices = { germanium: 8597, silicon: 1.81, coal: 131 };
+    // ---------- Real-time ribbon prices (zero-lag first load) ----------
+    const pxGe = document.getElementById("px-ge");
+    const pxSi = document.getElementById("px-si");
+    const pxNh3 = document.getElementById("px-nh3");
+    const pxDiamond = document.getElementById("px-diamond");
+    const pxCoal = document.getElementById("px-coal");
 
-    function renderPrices(p) {
-      if (typeof p.germanium === "number") priceEls.germanium.textContent = `$${p.germanium.toLocaleString()}/kg`;
-      if (typeof p.silicon === "number") priceEls.silicon.textContent = `$${p.silicon.toLocaleString()}/kg`;
-      if (typeof p.coal === "number") priceEls.coal.textContent = `$${p.coal.toLocaleString()}/MT`;
+    const fallback = { ge: 8597, si: 1.81, nh3: 650, diamond: 7100, coal: 131 };
+
+    function setPrices(p) {
+      if (pxGe && typeof p.ge === "number" && Number.isFinite(p.ge)) pxGe.textContent = "$" + p.ge.toLocaleString() + "/kg";
+      if (pxSi && typeof p.si === "number" && Number.isFinite(p.si)) pxSi.textContent = "$" + p.si.toLocaleString(undefined, { maximumFractionDigits: 2 }) + "/kg";
+      if (pxNh3 && typeof p.nh3 === "number" && Number.isFinite(p.nh3)) pxNh3.textContent = "$" + p.nh3.toLocaleString() + "/MT";
+      if (pxDiamond && typeof p.diamond === "number" && Number.isFinite(p.diamond)) pxDiamond.textContent = "$" + p.diamond.toLocaleString() + "/CT";
+      if (pxCoal && typeof p.coal === "number" && Number.isFinite(p.coal)) pxCoal.textContent = "$" + p.coal.toLocaleString() + "/MT";
     }
 
-    async function tryCsv(paths) {
-      for (const p of paths) {
+    function parseCSV(text) {
+      // Expected: material,value (header allowed)
+      const lines = (text || "").trim().split(/\\r?\\n/);
+      const out = { ...fallback };
+      for (let i = 0; i < lines.length; i++) {
+        const cols = (lines[i] || "").split(",");
+        if (cols.length < 2) continue;
+        const key = (cols[0] || "").toLowerCase().trim();
+        const val = parseFloat((cols[1] || "").replace(/[^0-9.\\-]/g, ""));
+        if (!Number.isFinite(val)) continue;
+        if (key.includes("german")) out.ge = val;
+        if (key === "si" || key.includes("silicon")) out.si = val;
+        if (key.includes("ammon") || key === "nh3") out.nh3 = val;
+        if (key.includes("diamond")) out.diamond = val;
+        if (key === "coal" || key.includes("coal")) out.coal = val;
+      }
+      return out;
+    }
+
+    async function loadLocalPrices() {
+      const paths = ["data/live_prices.csv", "./data/live_prices.csv", "../data/live_prices.csv"];
+      for (const path of paths) {
         try {
-          const r = await fetch(p, { cache: "no-store" });
+          const r = await fetch(path, { cache: "no-store" });
           if (!r.ok) continue;
           const txt = await r.text();
-          if (!txt || txt.length < 6) continue;
-          const rows = txt.trim().split(/\\r?\\n/);
-          // Supports either: material,price OR key,value OR last row as latest snapshot
-          const out = { ...fallbackPrices };
-          rows.slice(1).forEach(line => {
-            const cols = line.split(",");
-            if (cols.length < 2) return;
-            const k = cols[0].trim().toLowerCase();
-            const v = parseFloat(cols[1].replace(/[^0-9.\\-]/g, ""));
-            if (!Number.isFinite(v)) return;
-            if (k.includes("german")) out.germanium = v;
-            if (k.includes("silicon")) out.silicon = v;
-            if (k.includes("coal")) out.coal = v;
-          });
-          return out;
-        } catch (_) {}
+          if (txt && txt.length > 10) return parseCSV(txt);
+        } catch (e) {}
+      }
+      return fallback;
+    }
+
+    function extractBestNumber(src, aliases) {
+      for (const a of aliases) {
+        const v = src?.[a];
+        if (v === undefined || v === null) continue;
+        const n = typeof v === "string" ? parseFloat(v.replace(/[^0-9.\\-]/g, "")) : Number(v);
+        if (Number.isFinite(n)) return n;
       }
       return null;
     }
 
-    async function pollPrices() {
+    async function pollPricesFromAPI() {
       try {
-        // Lightweight API request. If CORS/availability fails, fallback to CSV.
         const api = await fetch("https://api.metalprice.com/v1/latest", { cache: "no-store" });
-        if (api.ok) {
-          const data = await api.json();
-          // Flexible extraction:
-          const p = { ...fallbackPrices };
-          if (data && typeof data === "object") {
-            const src = data.data || data.prices || data;
-            const ge = src.germanium || src.Germanium || src.GE;
-            const si = src.silicon || src.Silicon || src.SI;
-            const co = src.coal || src.Coal || src.COAL;
-            if (Number.isFinite(+ge)) p.germanium = +ge;
-            if (Number.isFinite(+si)) p.silicon = +si;
-            if (Number.isFinite(+co)) p.coal = +co;
-          }
-          renderPrices(p);
-          return;
-        }
-      } catch (_) {}
+        if (!api.ok) return;
+        const data = await api.json();
+        const src = data.data || data.prices || data;
 
-      const csvData = await tryCsv([
-        "./data/material_prices.csv",
-        "../data/material_prices.csv",
-        "./data/prices.csv",
-        "../data/prices.csv"
-      ]);
-      if (csvData) renderPrices(csvData);
-      else renderPrices(fallbackPrices);
+        const p = { ...fallback };
+
+        const ge = extractBestNumber(src, ["germanium", "Germanium", "GE", "ge"]);
+        const si = extractBestNumber(src, ["silicon", "Silicon", "SI", "si"]);
+        const nh3 = extractBestNumber(src, ["ammonia", "Ammonia", "NH3", "nh3"]);
+        const diamond = extractBestNumber(src, ["diamond", "Diamond", "diamonds", "raw_diamond", "raw diamonds"]);
+        const coal = extractBestNumber(src, ["coal", "Coal", "co", "CO"]);
+
+        if (ge !== null) p.ge = ge;
+        if (si !== null) p.si = si;
+        if (nh3 !== null) p.nh3 = nh3;
+        if (diamond !== null) p.diamond = diamond;
+        if (coal !== null) p.coal = coal;
+
+        setPrices(p);
+      } catch (e) {
+        // Keep current ribbon values (zero-lag UX wins)
+      }
     }
-    pollPrices();
-    setInterval(pollPrices, 15000);
 
-    // ---------- 8R prism + matrix typewriter ----------
+    // First load: local CSV for zero-lag
+    (async () => {
+      const localPrices = await loadLocalPrices();
+      setPrices(localPrices);
+      // Second load: background API polling
+      pollPricesFromAPI();
+      setInterval(pollPricesFromAPI, 15000);
+    })();
+
+    // ---------- 8R prism determinants (D1–D8) ----------
     const DETS = {
       D1: "REFINE: Distilling national coal into high-yield digital liquidity.",
       D2: "RESET: Global alignment of sovereign material protocols.",
@@ -477,22 +991,22 @@
       D7: "RE-ENGINEER: Building and optimizing the 8R Stealth OS.",
       D8: "RETAIN: Anchoring sovereign authority and material ownership."
     };
+
     const detGrid = document.getElementById("det-grid");
+    const modal = document.getElementById("type-modal");
     const termText = document.getElementById("term-text");
+    const closeBtn = document.getElementById("modal-close-btn");
     let typingTimer = null;
 
-    function stopTypewriter() {
+    function stopType() {
       if (typingTimer) {
         clearInterval(typingTimer);
         typingTimer = null;
       }
     }
-    function closeTerminal() {
-      stopTypewriter();
-      termText.textContent = "> Awaiting determinant selection...";
-    }
+
     function typeOut(msg) {
-      stopTypewriter();
+      stopType();
       termText.textContent = "> ";
       let i = 0;
       typingTimer = setInterval(() => {
@@ -500,21 +1014,171 @@
           i++;
           termText.textContent = "> " + msg.slice(0, i);
         } else {
-          stopTypewriter();
+          stopType();
         }
       }, 24);
     }
 
-    Object.keys(DETS).forEach(k => {
-      const box = document.createElement("button");
-      box.type = "button";
-      box.className = "det";
-      const tag = DETS[k].split(":")[0];
-      box.innerHTML = `<div class="det-code">[${k}]</div><div class="det-tag">${tag}</div>`;
-      box.addEventListener("click", () => typeOut(DETS[k]));
-      detGrid.appendChild(box);
+    function openModalFor(key) {
+      modal.classList.add("show");
+      modal.setAttribute("aria-hidden", "false");
+      typeOut(DETS[key]);
+    }
+
+    function openModalWithText(text) {
+      modal.classList.add("show");
+      modal.setAttribute("aria-hidden", "false");
+      typeOut(text);
+    }
+
+    function closeModal() {
+      stopType();
+      modal.classList.remove("show");
+      modal.setAttribute("aria-hidden", "true");
+    }
+
+    closeBtn.addEventListener("click", closeModal);
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeModal();
     });
+
+    // ---------- Sovereign session gating (15m active + 15m re-verification) ----------
+    const SESSION_STORAGE_KEY = "gcscl_vault_session";
+    const FIFTEEN_MIN_MS = 15 * 60 * 1000;
+
+    function loadSessionState() {
+      try {
+        const raw = sessionStorage.getItem(SESSION_STORAGE_KEY);
+        if (!raw) return { validUntil: 0, reverifyUntil: 0 };
+        const parsed = JSON.parse(raw);
+        return {
+          validUntil: Number(parsed.validUntil) || 0,
+          reverifyUntil: Number(parsed.reverifyUntil) || 0
+        };
+      } catch {
+        return { validUntil: 0, reverifyUntil: 0 };
+      }
+    }
+
+    function onDeterminantClick(key) {
+      const st = loadSessionState();
+      const nowMs = Date.now();
+
+      if (nowMs <= st.validUntil) {
+        openModalFor(key);
+        return;
+      }
+      if (nowMs <= st.reverifyUntil) {
+        openModalWithText(
+          "RE-VERIFICATION REQUIRED — Your session is in the 15-minute re-check window. Decode the Vault again to extend.\n\n" +
+          DETS[key]
+        );
+        return;
+      }
+
+      openModalWithText("ACCESS EXPIRED — Decode Vault again to unlock determinants.");
+    }
+
+    Object.keys(DETS).forEach(k => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "det";
+      const short = DETS[k].split(":")[0];
+      b.innerHTML = `<div class="det-code">[${k}]</div><div class="det-tag">${short}</div>`;
+      b.addEventListener("click", () => onDeterminantClick(k));
+      detGrid.appendChild(b);
+    });
+
+    // ---------- Sovereign Access: DECODE VAULT ----------
+    const decodeBtn = document.getElementById("decode-btn");
+    const waCodeSel = document.getElementById("acc-wa-code");
+    if (waCodeSel) {
+      // ISO-3166 alpha-2 -> WhatsApp calling dial code (local source, no external API).
+      // Note: This set is optimized for performance while remaining privacy-preserving.
+      const WHATSAPP_COUNTRIES_ISO = {
+        NG: { name: "Nigeria", dial: "+234" },
+        GB: { name: "United Kingdom", dial: "+44" },
+        US: { name: "United States", dial: "+1" },
+        AE: { name: "United Arab Emirates", dial: "+971" },
+        CH: { name: "Switzerland", dial: "+41" },
+        CN: { name: "China", dial: "+86" },
+        FR: { name: "France", dial: "+33" },
+        DE: { name: "Germany", dial: "+49" },
+        IT: { name: "Italy", dial: "+39" },
+        ZA: { name: "South Africa", dial: "+27" },
+        KE: { name: "Kenya", dial: "+254" },
+        EG: { name: "Egypt", dial: "+20" },
+        ES: { name: "Spain", dial: "+34" },
+        SE: { name: "Sweden", dial: "+46" },
+        NO: { name: "Norway", dial: "+47" },
+        DK: { name: "Denmark", dial: "+45" },
+        JP: { name: "Japan", dial: "+81" },
+        KR: { name: "South Korea", dial: "+82" },
+        AU: { name: "Australia", dial: "+61" },
+        NZ: { name: "New Zealand", dial: "+64" },
+        IN: { name: "India", dial: "+91" },
+        PK: { name: "Pakistan", dial: "+92" },
+        BR: { name: "Brazil", dial: "+55" },
+        MX: { name: "Mexico", dial: "+52" },
+        AR: { name: "Argentina", dial: "+54" },
+        SG: { name: "Singapore", dial: "+65" },
+        ID: { name: "Indonesia", dial: "+62" },
+        TH: { name: "Thailand", dial: "+66" },
+        VN: { name: "Vietnam", dial: "+84" },
+        QA: { name: "Qatar", dial: "+974" },
+        SA: { name: "Saudi Arabia", dial: "+966" },
+        OM: { name: "Oman", dial: "+968" },
+        BH: { name: "Bahrain", dial: "+973" },
+        IL: { name: "Israel", dial: "+972" },
+        UG: { name: "Uganda", dial: "+255" },
+        GH: { name: "Ghana", dial: "+233" }
+      };
+
+      waCodeSel.innerHTML = "";
+      Object.entries(WHATSAPP_COUNTRIES_ISO).forEach(([iso, v]) => {
+        const opt = document.createElement("option");
+        opt.value = v.dial;
+        opt.textContent = `${v.dial} ${v.name}`;
+        opt.dataset.iso = iso;
+        waCodeSel.appendChild(opt);
+      });
+
+      waCodeSel.value = "+234";
+    }
+
+    if (decodeBtn) {
+      decodeBtn.addEventListener("click", () => {
+        const email = (document.getElementById("acc-email") || {}).value || "";
+        const org = (document.getElementById("acc-org") || {}).value || "";
+        const waCode = (document.getElementById("acc-wa-code") || {}).value || "";
+        const waNum = (document.getElementById("acc-wa-num") || {}).value || "";
+
+        const okEmail = email.trim().length > 2;
+        const okOrg = org.trim().length > 1;
+        if (!okEmail || !okOrg) {
+          openModalWithText("VAULT ACCESS DENIED — Enter Email (Required) and Organization (Required).");
+          return;
+        }
+
+        // 15-minute active session, followed by a second 15-minute re-verification window.
+        const nowMs = Date.now();
+        const validUntil = nowMs + FIFTEEN_MIN_MS;
+        const reverifyUntil = validUntil + FIFTEEN_MIN_MS;
+        try {
+          sessionStorage.setItem(
+            SESSION_STORAGE_KEY,
+            JSON.stringify({ validUntil, reverifyUntil })
+          );
+        } catch (e) {}
+
+        const waPart = waNum.trim().length ? ` · WhatsApp: ${waCode} ${waNum.trim()}` : "";
+        openModalWithText(
+          "VAULT DECODE ACCEPTED — Session ACTIVE for 15 minutes. " +
+          "After that, determinants remain viewable during the 15-minute re-verification window.\n\n" +
+          waPart
+        );
+      });
+    }
   </script>
 </body>
 </html>
-
