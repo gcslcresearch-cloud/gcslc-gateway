@@ -89,7 +89,7 @@
       -webkit-background-clip:text;
       -webkit-text-fill-color: transparent;
       background-clip:text;
-      animation: shimmerShift 5.2s linear infinite;
+      animation: liquidMetalFlow 16s linear infinite;
       text-shadow: 0 0 22px rgba(212,175,55,.12);
       will-change: background-position;
     }
@@ -102,8 +102,18 @@
       max-width:980px;
       text-align:center;
       font-size:.82rem;
-      color: rgba(212,175,55,.95);
+      background: var(--shimmer);
+      background-size: 260% auto;
+      -webkit-background-clip:text;
+      -webkit-text-fill-color: transparent;
+      background-clip:text;
       letter-spacing:.02em;
+      animation: liquidMetalFlow 18s linear infinite reverse;
+      will-change: background-position;
+    }
+    @keyframes liquidMetalFlow{
+      0%{ background-position: 0% center; }
+      100%{ background-position: 260% center; }
     }
 
     /* Prices ribbon */
@@ -164,6 +174,18 @@
       letter-spacing:.02em;
       min-width: 210px;
       justify-content:center;
+      transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease, opacity .35s ease;
+      will-change: transform, box-shadow, opacity;
+    }
+    .pill.material-active{
+      transform: scale(1.06);
+      border-color: rgba(212,175,55,.82);
+      box-shadow: 0 0 28px rgba(212,175,55,.34);
+      opacity:1;
+    }
+    .pill.material-dim{
+      transform: scale(.95);
+      opacity:.52;
     }
     .pill .chip{
       width:8px;height:8px;border-radius:50%;
@@ -206,15 +228,56 @@
       padding:12px 14px;
       border-bottom: 1px solid rgba(212,175,55,.18);
     }
-    .clock-grid{
+    .portrait-prism{
       max-width:1180px;
       margin:0 auto;
+      border-radius:16px;
+      border:1px solid rgba(212,175,55,.32);
+      padding:12px;
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      position:relative;
+      overflow:hidden;
+    }
+    .portrait-prism::before{
+      content:'';
+      position:absolute;
+      inset:-1px;
+      border-radius:16px;
+      pointer-events:none;
+      background: conic-gradient(from 0deg, rgba(212,175,55,.15), rgba(30,63,122,.35), rgba(248,250,255,.18), rgba(212,175,55,.15));
+      filter: blur(.2px);
+      animation: borderRotate 8s linear infinite;
+    }
+    .portrait-prism::after{
+      content:'';
+      position:absolute;
+      inset:1px;
+      border-radius:14px;
+      background: linear-gradient(180deg, rgba(0,5,16,.82), rgba(0,5,16,.56));
+      z-index:0;
+    }
+    @keyframes borderRotate{ to{ transform: rotate(360deg);} }
+    .clock-grid{
+      position:relative;
+      z-index:1;
       display:grid;
       grid-template-columns: repeat(6, minmax(0, 1fr));
       gap:10px;
     }
     @media (max-width: 900px){
       .clock-grid{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (max-width: 520px){
+      .portrait-prism{ backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+      .pill{ min-width: 100%; }
+      .decode-panel{
+        right:8px;
+        top:116px;
+        width: calc(100vw - 16px);
+        max-height: calc(100vh - 190px);
+      }
     }
     .clock{
       text-align:center;
@@ -224,6 +287,17 @@
       background: rgba(0,5,16,.35);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
+      transition: transform .4s ease, opacity .4s ease, box-shadow .4s ease;
+    }
+    .clock.seq-active{
+      transform: scale(1.1);
+      opacity:1;
+      box-shadow: 0 0 24px rgba(212,175,55,.30);
+      border-color: rgba(212,175,55,.7);
+    }
+    .clock.seq-dim{
+      opacity:.26;
+      transform: scale(.84);
     }
     .clock-face{
       margin:0 auto;
@@ -293,12 +367,15 @@
       position:relative;
       overflow:hidden;
     }
+    .guardian-visual.portrait-prism{
+      padding:14px;
+    }
     .guardian-visual img{
       max-width: 92%;
       height:auto;
       object-fit:contain;
       filter: drop-shadow(0 0 24px rgba(212,175,55,.18));
-      animation: guardian-breathe 4.6s ease-in-out infinite;
+      animation: guardian-breathe 5.4s ease-in-out infinite;
       will-change: transform, opacity;
     }
     @keyframes guardian-breathe{
@@ -463,6 +540,14 @@
       border:1px solid rgba(212,175,55,.28);
       background: rgba(0,5,16,.35);
       padding:12px;
+      position:fixed;
+      right:16px;
+      top:132px;
+      width:min(360px, calc(100vw - 24px));
+      max-height: calc(100vh - 210px);
+      overflow:auto;
+      z-index:26;
+      box-shadow: 0 14px 34px rgba(0,0,0,.48);
     }
     .decode-title{
       font-size:.78rem;
@@ -510,6 +595,23 @@
       display:flex;
       justify-content:center;
     }
+    .decode-top-actions{
+      display:flex;
+      justify-content:flex-end;
+      margin-bottom:8px;
+    }
+    .decode-terminate{
+      border:1px solid rgba(212,175,55,.5);
+      border-radius:12px;
+      background: linear-gradient(120deg, rgba(0,5,16,.96), rgba(30,63,122,.62), rgba(212,175,55,.38));
+      color: #f7f7f9;
+      padding:8px 10px;
+      font-size:.56rem;
+      letter-spacing:.06em;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .decode-terminate:hover{ box-shadow: 0 0 16px rgba(212,175,55,.25); }
     .decode-submit{
       border:none;
       cursor:pointer;
@@ -684,7 +786,7 @@
   <div class="app">
     <div class="topbar">
       <h1 class="title">Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC LTD/GTE)</h1>
-      <div class="tagline">Everything is powered by the 8R Stealth Paradigm Convergence and its Determinants. Come in to understand.</div>
+      <div class="tagline">Everything is powered by the 8R Stealth Paradigm Convergence and its Determinants.</div>
 
       <div class="prices" aria-label="Live material pricing ribbon">
         <div class="price-left">
@@ -694,40 +796,42 @@
         <div class="price-pills">
           <div class="pill" id="pill-ge">
             <span class="chip"></span>
-            <span>Germanium</span>
-            <strong id="px-ge">$8,597/kg</strong>
+            <span>Germanium (Historical Surge)</span>
+            <strong id="px-ge">$8,597.50/kg</strong>
           </div>
           <div class="pill silicon" id="pill-si">
             <span class="chip silicon"></span>
-            <span>Silicon</span>
+            <span>Silicon (North America Benchmark)</span>
             <strong id="px-si">$1.81/kg</strong>
           </div>
             <div class="pill ammonia" id="pill-nh3">
               <span class="chip"></span>
-              <span>Ammonia</span>
+              <span>Ammonia (Gulf Coast CFR)</span>
               <strong id="px-nh3">$650/MT</strong>
             </div>
             <div class="pill diamond" id="pill-diamond">
               <span class="chip"></span>
-              <span>Raw Diamond</span>
-              <strong id="px-diamond">$7,100/CT</strong>
+              <span>Raw Diamond (2026 Projected Avg)</span>
+              <strong id="px-diamond">$10,425/CT</strong>
             </div>
             <div class="pill coal" id="pill-coal">
               <span class="chip"></span>
-              <span>Coal</span>
-              <strong id="px-coal">$131/MT</strong>
+              <span>Coal (Multi-Month High)</span>
+              <strong id="px-coal">$145.20/MT</strong>
             </div>
         </div>
       </div>
     </div>
 
     <div class="clock-wrap">
-      <div class="clock-grid" id="clock-grid" aria-label="6-city Sovereign Clock"></div>
+      <div class="portrait-prism" aria-label="6-city pulse portrait widget">
+        <div class="clock-grid" id="clock-grid" aria-label="6-city Sovereign Clock"></div>
+      </div>
     </div>
 
     <div class="main">
       <section class="guardian" aria-label="Humanoid guardian">
-        <div class="guardian-visual">
+        <div class="guardian-visual portrait-prism">
           <div class="energy-core-frame" aria-label="ENERGY CORE ACTIVE frame">
             <div class="energy-core-label">ENERGY CORE ACTIVE</div>
             <img id="guardian-img" src="../assets/humanoid_coal.png" alt="Humanoid holding coal"
@@ -786,6 +890,9 @@
         </div>
 
         <div class="decode-panel" aria-label="DECODE VAULT sign-on">
+          <div class="decode-top-actions">
+            <button type="button" class="decode-terminate" id="terminate-session-btn">TERMINATE SOVEREIGN SESSION</button>
+          </div>
           <div class="decode-title">SOVEREIGN ACCESS · DECODE VAULT</div>
 
           <div class="decode-field">
@@ -899,21 +1006,49 @@
       setTimeout(tick, 1000 - now.getMilliseconds());
     })();
 
+    // CNN-style 6-city sequential focus (3s per city)
+    let cityFocusIdx = 0;
+    function applyCityFocus() {
+      const cells = Array.from(document.querySelectorAll(".clock"));
+      cells.forEach((cell, idx) => {
+        const active = idx === cityFocusIdx;
+        cell.classList.toggle("seq-active", active);
+        cell.classList.toggle("seq-dim", !active);
+      });
+      cityFocusIdx = (cityFocusIdx + 1) % Math.max(1, cells.length);
+    }
+    applyCityFocus();
+    setInterval(applyCityFocus, 3000);
+
     // ---------- Real-time ribbon prices (zero-lag first load) ----------
     const pxGe = document.getElementById("px-ge");
     const pxSi = document.getElementById("px-si");
     const pxNh3 = document.getElementById("px-nh3");
     const pxDiamond = document.getElementById("px-diamond");
     const pxCoal = document.getElementById("px-coal");
+    const materialPills = Array.from(document.querySelectorAll(".price-pills .pill"));
 
-    const fallback = { ge: 8597, si: 1.81, nh3: 650, diamond: 7100, coal: 131 };
+    // Sequential 15-second material pop/zoom loop.
+    let materialIdx = 0;
+    function applyMaterialFocus() {
+      materialPills.forEach((pill, idx) => {
+        const active = idx === materialIdx;
+        pill.classList.toggle("material-active", active);
+        pill.classList.toggle("material-dim", !active);
+      });
+      materialIdx = (materialIdx + 1) % Math.max(1, materialPills.length);
+    }
+    applyMaterialFocus();
+    setInterval(applyMaterialFocus, 15000);
+
+    const fallback = { ge: 8597.5, si: 1.81, nh3: 650, diamond: 10425, coal: 145.2 };
 
     function setPrices(p) {
-      if (pxGe && typeof p.ge === "number" && Number.isFinite(p.ge)) pxGe.textContent = "$" + p.ge.toLocaleString() + "/kg";
+      if (pxGe && typeof p.ge === "number" && Number.isFinite(p.ge)) pxGe.textContent = "$" + p.ge.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "/kg";
       if (pxSi && typeof p.si === "number" && Number.isFinite(p.si)) pxSi.textContent = "$" + p.si.toLocaleString(undefined, { maximumFractionDigits: 2 }) + "/kg";
       if (pxNh3 && typeof p.nh3 === "number" && Number.isFinite(p.nh3)) pxNh3.textContent = "$" + p.nh3.toLocaleString() + "/MT";
       if (pxDiamond && typeof p.diamond === "number" && Number.isFinite(p.diamond)) pxDiamond.textContent = "$" + p.diamond.toLocaleString() + "/CT";
-      if (pxCoal && typeof p.coal === "number" && Number.isFinite(p.coal)) pxCoal.textContent = "$" + p.coal.toLocaleString() + "/MT";
+      if (pxCoal && typeof p.coal === "number" && Number.isFinite(p.coal)) pxCoal.textContent = "$" + p.coal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "/MT";
     }
 
     function parseCSV(text) {
@@ -1163,6 +1298,7 @@
 
     // ---------- Sovereign Access: DECODE VAULT ----------
     const decodeBtn = document.getElementById("decode-btn");
+    const terminateBtn = document.getElementById("terminate-session-btn");
     const waCodeSel = document.getElementById("acc-wa-code");
     if (waCodeSel) {
       // ISO-3166 alpha-2 -> WhatsApp calling dial code (local source, no external API).
@@ -1470,6 +1606,13 @@
           "After that, determinants remain viewable during the 15-minute re-verification window.\n\n" +
           waPart
         );
+      });
+    }
+
+    if (terminateBtn) {
+      terminateBtn.addEventListener("click", () => {
+        try { sessionStorage.removeItem(SESSION_STORAGE_KEY); } catch (e) {}
+        openModalWithText("SOVEREIGN SESSION TERMINATED — Decode Vault required for core access.");
       });
     }
   </script>
