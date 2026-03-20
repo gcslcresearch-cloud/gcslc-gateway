@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>GCSLC | Sovereign Vault Gateway</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --obsidian:#0a0a12;
+      --obsidian-2:#05050b;
+      --gold:#D4AF37;
+      --gold-2:rgba(212,175,55,.55);
+      --gold-dim:rgba(212,175,55,.22);
+      --germanium:#8b96ff; /* Germanium Blue (pulsing) */
+      --silicon:#2a6ea8;   /* blue for silicon */
+      --glass: rgba(255,255,255,0.06);
+      --glass2: rgba(255,255,255,0.10);
+      --ink:#eae6de;
+      --green:#00FF41;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family:'Goldman', system-ui, sans-serif;
+      background: radial-gradient(900px 520px at 20% 15%, rgba(212,175,55,.08), transparent 60%),
+                  radial-gradient(900px 520px at 80% 10%, rgba(42,110,168,.10), transparent 55%),
+                  linear-gradient(180deg, var(--obsidian) 0%, var(--obsidian-2) 100%);
+      color:var(--ink);
+      overflow:hidden;
+    }
+
+    /* Breathing watermark */
+    .wm-wrap{
+      position:fixed; inset:0;
+      display:flex; align-items:center; justify-content:center;
+      pointer-events:none;
+      z-index:0;
+      overflow:hidden;
+    }
+    .wm{
+      width:min(62vw,520px);
+      height:auto;
+      opacity:.55;
+      filter: drop-shadow(0 0 38px rgba(212,175,55,.15));
+      transform: scale(.98);
+      animation: wm-breathe 7s ease-in-out infinite;
+      will-change: transform, opacity;
+    }
+    @keyframes wm-breathe{
+      0%,100%{ transform: scale(.95); opacity:.40; }
+      50%{ transform: scale(1.05); opacity:.60; }
+    }
+
+    /* Layout */
+    .app{
+      position:relative;
+      z-index:1;
+      height:100%;
+      display:flex;
+      flex-direction:column;
+    }
+
+    /* Top pricing ribbon */
+    .pulse-top{
+      position:fixed;
+      top:0; left:0; right:0;
+      z-index:50;
+      padding:10px 12px;
+      background: rgba(5,5,11,0.65);
+      border-bottom: 1px solid var(--gold-dim);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .pulse-top-inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .pulse-title{
+      font-size:.78rem;
+      letter-spacing:.14em;
+      font-weight:700;
+      color:var(--gold);
+      white-space:nowrap;
+    }
+    .prices{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:flex-end;
+    }
+    .price-pill{
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid rgba(212,175,55,.35);
+      background: rgba(212,175,55,.06);
+      box-shadow: 0 0 0 1px rgba(42,110,168,.12) inset;
+      font-size:.8rem;
+      letter-spacing:.02em;
+      display:flex;
+      align-items:baseline;
+      gap:8px;
+      will-change: transform;
+    }
+    .pulse-chip{
+      width:7px; height:7px; border-radius:50%;
+      background: var(--germanium);
+      box-shadow: 0 0 12px rgba(139,150,255,.55);
+      animation: chip-pulse 2.2s ease-in-out infinite;
+    }
+    .pulse-chip.silicon{
+      background: var(--silicon);
+      box-shadow: 0 0 12px rgba(42,110,168,.55);
+    }
+    @keyframes chip-pulse{
+      0%,100%{ transform: scale(1); opacity:1; }
+      50%{ transform: scale(1.35); opacity:.65; }
+    }
+
+    /* Main stage */
+    .stage{
+      padding-top:70px;
+      flex:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:18px;
+      padding-left:14px;
+      padding-right:14px;
+    }
+
+    .stack{
+      width: min(1120px, 100%);
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+    }
+
+    .cards{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap:16px;
+    }
+    @media (max-width: 980px){
+      .cards{ grid-template-columns: 1fr; }
+    }
+
+    /* Glass-morphism 3D cards */
+    .card{
+      position:relative;
+      border-radius:18px;
+      border:1px solid rgba(212,175,55,.35);
+      background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+      box-shadow:
+        0 20px 60px rgba(0,0,0,.35),
+        inset 0 1px 0 rgba(255,255,255,0.10),
+        inset 0 0 0 1px rgba(42,110,168,.10);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      padding:18px;
+      transform-style: preserve-3d;
+      transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+      will-change: transform;
+    }
+    .card::before{
+      content:'';
+      position:absolute; inset:-1px;
+      border-radius:18px;
+      pointer-events:none;
+      background:
+        radial-gradient(500px 160px at 20% 0%, rgba(212,175,55,.22), transparent 55%),
+        radial-gradient(420px 220px at 90% 10%, rgba(42,110,168,.20), transparent 58%);
+      opacity:.9;
+      mix-blend-mode: screen;
+    }
+
+    .card:hover{
+      transform: translateY(-4px) rotateX(6deg) rotateY(-8deg);
+      border-color: rgba(212,175,55,.65);
+      box-shadow:
+        0 28px 90px rgba(0,0,0,.45),
+        inset 0 1px 0 rgba(255,255,255,0.12),
+        inset 0 0 0 1px rgba(42,110,168,.18);
+    }
+
+    .card-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      position:relative;
+      z-index:1;
+    }
+    .port{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      font-size:.72rem;
+      letter-spacing:.18em;
+      font-weight:800;
+      color: var(--obsidian);
+      background: linear-gradient(90deg, rgba(212,175,55,.95), rgba(249,241,164,.9));
+      padding:7px 10px;
+      border-radius:999px;
+      box-shadow: 0 0 0 1px rgba(212,175,55,.55) inset, 0 8px 20px rgba(212,175,55,.12);
+      white-space:nowrap;
+    }
+    .badge-dot{
+      width:9px; height:9px; border-radius:50%;
+      background: rgba(42,110,168,.9);
+      box-shadow: 0 0 14px rgba(42,110,168,.45);
+    }
+    .card-title{
+      margin-top:14px;
+      font-size:1.12rem;
+      font-weight:900;
+      letter-spacing:.02em;
+      color:var(--gold);
+      text-shadow: 0 0 18px rgba(212,175,55,.12);
+      position:relative;
+      z-index:1;
+    }
+    .card-sub{
+      margin-top:8px;
+      font-size:.86rem;
+      line-height:1.35;
+      color:rgba(234,230,222,.92);
+      position:relative;
+      z-index:1;
+    }
+    .cta{
+      margin-top:14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      position:relative;
+      z-index:1;
+    }
+    .open-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      text-decoration:none;
+      font-weight:900;
+      letter-spacing:.08em;
+      font-size:.78rem;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(212,175,55,.50);
+      background: rgba(212,175,55,.10);
+      color: var(--gold);
+      box-shadow: inset 0 0 0 1px rgba(42,110,168,.12);
+      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+      white-space:nowrap;
+      will-change: transform;
+    }
+    .open-btn:hover{
+      transform: translateY(-1px);
+      background: rgba(212,175,55,.16);
+      border-color: rgba(212,175,55,.75);
+    }
+
+    /* Sovereign access modal (light) */
+    .modal{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.55);
+      z-index:100;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+    }
+    .modal.show{ display:flex; }
+    .modal-dialog{
+      width:min(720px, 100%);
+      border-radius:18px;
+      border:1px solid rgba(212,175,55,.45);
+      background: rgba(6,6,12,.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 30px 120px rgba(0,0,0,.5);
+      overflow:hidden;
+    }
+    .modal-head{
+      padding:16px 16px 12px;
+      border-bottom: 1px solid rgba(212,175,55,.22);
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .modal-title{
+      color: var(--gold);
+      font-weight:900;
+      letter-spacing:.06em;
+    }
+    .modal-close{
+      cursor:pointer;
+      border:none;
+      padding:9px 12px;
+      border-radius:12px;
+      background: rgba(212,175,55,.14);
+      color: var(--gold);
+      font-weight:900;
+    }
+    .modal-body{
+      padding:16px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    @media (max-width: 720px){ .modal-body{ grid-template-columns: 1fr; } }
+    .modal-field label{
+      display:block;
+      color: rgba(212,175,55,.92);
+      font-weight:800;
+      letter-spacing:.06em;
+      font-size:.72rem;
+      margin-bottom:6px;
+    }
+    .modal-field input{
+      width:100%;
+      padding:11px 12px;
+      background: rgba(0,0,0,.25);
+      border-radius:12px;
+      border:1px solid rgba(212,175,55,.42);
+      color:#fff;
+      outline:none;
+      font-family:inherit;
+    }
+    .modal-foot{
+      padding:14px 16px 18px;
+      border-top: 1px solid rgba(212,175,55,.16);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .modal-foot small{
+      color: rgba(212,175,55,.75);
+      letter-spacing:.06em;
+      font-weight:800;
+    }
+    .decode-btn{
+      border:none;
+      cursor:pointer;
+      padding:12px 16px;
+      border-radius:14px;
+      background: linear-gradient(90deg, rgba(212,175,55,1), rgba(249,241,164,.92));
+      color: var(--obsidian);
+      font-weight:900;
+      letter-spacing:.08em;
+    }
+
+    /* Bottom signature ticker + fixed signature always visible */
+    .sig-fixed{
+      position:fixed;
+      left:18px;
+      bottom:74px; /* above the ticker bar */
+      z-index:80;
+      font-size:.64rem;
+      letter-spacing:.08em;
+      color: rgba(212,175,55,.85);
+      font-weight:900;
+      text-shadow: 0 0 18px rgba(212,175,55,.14);
+      pointer-events:none;
+    }
+
+    .ticker-bottom{
+      position:fixed;
+      left:0; right:0; bottom:0;
+      z-index:90;
+      background: rgba(5,5,11,.95);
+      border-top: 1px solid rgba(212,175,55,.25);
+      padding: 10px 0;
+      height:52px;
+      overflow:hidden;
+    }
+    .ticker-track{
+      display:inline-block;
+      white-space:nowrap;
+      padding-left:100%;
+      animation: sig-scroll 42s linear infinite;
+      font-size:.7rem;
+      letter-spacing:.08em;
+      color: rgba(212,175,55,.92);
+      font-weight:900;
+    }
+    @keyframes sig-scroll{
+      0%{ transform: translateX(0); }
+      100%{ transform: translateX(-100%); }
+    }
+
+    /* Ensure there is room for fixed UI on small devices */
+    .pad-bottom { padding-bottom: 70px; }
+  </style>
+</head>
+<body>
+  <div class="wm-wrap">
+    <!-- Uses local medallion asset (fast, no external frameworks). -->
+    <img class="wm" src="../assets/medallion.png" alt="" />
+  </div>
+
+  <div class="app pad-bottom">
+    <div class="pulse-top" role="banner" aria-label="Live pricing ribbon">
+      <div class="pulse-top-inner">
+        <div class="pulse-title">REAL-TIME PULSE · GCSLC PRICES</div>
+        <div class="prices">
+          <div class="price-pill" aria-label="Germanium price">
+            <span class="pulse-chip"></span>
+            <span>Germanium</span>
+            <strong>$8,597/kg</strong>
+          </div>
+          <div class="price-pill" aria-label="Silicon price">
+            <span class="pulse-chip silicon"></span>
+            <span>Silicon</span>
+            <strong>$1.81/kg</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="stack">
+        <div class="cards" aria-label="Port cards">
+          <div class="card" aria-label="Port 8090 - NRRFC">
+            <div class="card-top">
+              <span class="port"><span class="badge-dot"></span>8090</span>
+            </div>
+            <div class="card-title">NRRFC</div>
+            <div class="card-sub">National Resources Revitalization Fusion Center — <strong>The Energy Engine</strong>.</div>
+            <div class="cta">
+              <button type="button" class="open-btn" onclick="openAccess('8090')">Enter 8090 →</button>
+              <a class="open-btn" href="http://127.0.0.1:8090" target="_blank" rel="noopener noreferrer">Open node</a>
+            </div>
+          </div>
+
+          <div class="card" aria-label="Port 8053 - NWC/C&D">
+            <div class="card-top">
+              <span class="port"><span class="badge-dot"></span>8053</span>
+            </div>
+            <div class="card-title">NWC / C&amp;D</div>
+            <div class="card-sub">National Wealth Cloud — <strong>The 37-Node Geopolitical Grid</strong>.</div>
+            <div class="cta">
+              <button type="button" class="open-btn" onclick="openAccess('8053')">Enter 8053 →</button>
+              <a class="open-btn" href="http://127.0.0.1:8053" target="_blank" rel="noopener noreferrer">Open node</a>
+            </div>
+          </div>
+
+          <div class="card" aria-label="Port 8054 - K-GEC">
+            <div class="card-top">
+              <span class="port"><span class="badge-dot"></span>8054</span>
+            </div>
+            <div class="card-title">K-GEC</div>
+            <div class="card-sub">Komi Generative Eagle Cloud — <strong>$170.85B Sovereign AI Anchor</strong>.</div>
+            <div class="cta">
+              <button type="button" class="open-btn" onclick="openAccess('8054')">Enter 8054 →</button>
+              <a class="open-btn" href="http://127.0.0.1:8054" target="_blank" rel="noopener noreferrer">Open node</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Access modal -->
+    <div class="modal" id="accessModal" aria-hidden="true" role="dialog" aria-label="Sovereign Access Protocol">
+      <div class="modal-dialog">
+        <div class="modal-head">
+          <div>
+            <div class="modal-title">SOVEREIGN ACCESS PROTOCOL</div>
+            <div style="color:rgba(212,175,55,.85); font-weight:800; margin-top:6px; font-size:.78rem; letter-spacing:.06em;">
+              Decode context before entering primary nodes.
+            </div>
+          </div>
+          <button class="modal-close" type="button" onclick="closeAccess()">CLOSE</button>
+        </div>
+        <div class="modal-body">
+          <div class="modal-field">
+            <label for="orgEmail">Organization/Email</label>
+            <input id="orgEmail" type="text" placeholder="Organization or email" />
+          </div>
+          <div class="modal-field">
+            <label for="nodePort">Target Port</label>
+            <input id="nodePort" type="text" value="" disabled />
+          </div>
+        </div>
+        <div class="modal-foot">
+          <small>SESSION: 95/5 TALON LOCK · Sovereign Gate</small>
+          <button class="decode-btn" type="button" onclick="acknowledgeAccess()">DECODE</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sig-fixed" aria-hidden="true">Dr. Sa’ad Jaafaru — Signature Verified</div>
+  </div>
+
+  <div class="ticker-bottom" aria-label="Signature ticker">
+    <div class="ticker-track" id="sigTrack">
+      Proprietary Methodology of Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau — Copyright LW15954 — NON-TRANSFERABLE — 95/5 TALON LOCK ·
+      Proprietary Methodology of Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau — Copyright LW15954 — NON-TRANSFERABLE — 95/5 TALON LOCK ·
+      Proprietary Methodology of Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau — Copyright LW15954 — NON-TRANSFERABLE — 95/5 TALON LOCK ·
+    </div>
+  </div>
+
+  <script>
+    // Minimal JS only for modal state (keeps UI smooth).
+    const modal = document.getElementById('accessModal');
+    const nodePortEl = document.getElementById('nodePort');
+    const orgEmailEl = document.getElementById('orgEmail');
+
+    function openAccess(port) {
+      if (!modal) return;
+      nodePortEl.value = port;
+      modal.classList.add('show');
+      modal.setAttribute('aria-hidden', 'false');
+      setTimeout(() => { try { orgEmailEl.focus(); } catch(e){} }, 50);
+    }
+
+    function closeAccess() {
+      if (!modal) return;
+      modal.classList.remove('show');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+
+    function acknowledgeAccess() {
+      // No heavy logic: just close modal and let users open the target node in new tabs.
+      // This preserves performance while serving the UX “air-lock”.
+      closeAccess();
+    }
+  </script>
+</body>
+</html>
+

@@ -1,16 +1,24 @@
 """
-Sovereign Mirror — Digital Doorstep for GCSLC (Sovereign Command Aesthetic)
+Sovereign Mirror — GCSLC Legal Vault Air-Lock (Streamlit)
 Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC) LTD/GTE.
-Port 8055. Key 8R-DECODE-2026 fuses into full Universal Impact Radar.
-© 2026 GCSLC. Chairman & Founder: Dr. Sa'ad Jaafaru.
+
+Backend preserved:
+  - African_Gateway continental_logic → Universal Impact Radar (post-decode)
+  - Session decode gate (8R-DECODE-2026)
+  - Primary node targets: NRRFC 8090, NWC 8053, K-GEC 8054 (env-overridable URLs)
+
+Frontend: Sovereign Vault aesthetic only (navy vault + metallic gold; prior UI removed).
 """
 
+from __future__ import annotations
+
+import importlib.util
 import os
 import sys
-import importlib.util
+
 import streamlit as st
 
-# --- African_Gateway load (for Universal Impact Radar after decode) ---
+# --- African_Gateway load (Universal Impact Radar after decode) ---
 _BASE = os.path.dirname(os.path.abspath(__file__))
 _GATEWAY = os.path.join(_BASE, "African_Gateway.")
 if _BASE not in sys.path:
@@ -30,355 +38,400 @@ def _get_continental_logic():
     return _load_module("awc_continental_logic", os.path.join(_GATEWAY, "continental_logic.py"))
 
 
-# --- Page config (must be first Streamlit call) ---
+# --- Primary nodes (backend targets; override for deployment) ---
+NRRFC_URL = os.environ.get("GCSLC_NRRFC_URL", "http://127.0.0.1:8090")
+NWC_URL = os.environ.get("GCSLC_NWC_URL", "http://127.0.0.1:8053")
+KGEC_URL = os.environ.get("GCSLC_KGEC_URL", "http://127.0.0.1:8054")
+
 st.set_page_config(
-    page_title="Sovereign Mirror — GCSLC",
+    page_title="Sovereign Mirror | GCSLC Vault",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
 
-# --- Session state ---
 if "mirror_decoded" not in st.session_state:
     st.session_state.mirror_decoded = False
 
-# --- Design tokens ---
-NAVY = "#000033"
-GOLD = "#D4AF37"
+# --- Copy / data (backend-adjacent constants) ---
 PASSWORD_UNLOCK = "8R-DECODE-2026"
 FULL_NAME = "Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC) LTD/GTE"
 SIGNATURE = "Dr. Jaafaru Sa'ad — Chairman & Founder"
-TICKER_TEXT = "COAL [NGECC]: $170.8B INDEX  |  SILICON FEEDSTOCK: 639.3M MT  |  GERMANIUM PULSE: ACTIVE  |  ABUJA-ZARIA-KANO CORRIDOR"
+TICKER_TEXT = (
+    "COAL [NGECC]: $170.8B INDEX  |  SILICON FEEDSTOCK: 639.3M MT  |  "
+    "GERMANIUM PULSE: ACTIVE  |  ABUJA-ZARIA-KANO CORRIDOR"
+)
+PULSE_LINE = "Germanium $8,597/kg  ·  Silicon $1.81/kg  ·  Ammonia $650/MT"
 
-# 13 State Nodes (Map of Authority): Enugu to Imo corridor
 STATE_NODES = (
     "Enugu", "Kogi", "Gombe", "Benue", "Delta", "Nasarawa", "Anambra",
     "Plateau", "Adamawa", "Edo", "Bauchi", "Kwara", "Imo",
 )
 
-# Apex Predator Eagle emblem (inline SVG, top center)
-APEX_EAGLE_SVG = '''<svg width="64" height="46" viewBox="0 0 56 40" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;filter:drop-shadow(0 0 12px rgba(212,175,55,0.6));">
-  <ellipse cx="28" cy="20" rx="14" ry="10" fill="#D4AF37" stroke="#B8860B" stroke-width="1"/>
-  <path d="M18 16 L28 12 L38 16" stroke="#B8860B" stroke-width="1" fill="none"/>
-  <path d="M20 22 Q28 18 36 22" stroke="#C9A227" stroke-width="0.7" fill="none" opacity="0.9"/>
-  <circle cx="24" cy="18" r="2" fill="#1a1a1a"/><circle cx="32" cy="18" r="2" fill="#1a1a1a"/>
-  <path d="M26 24 L28 30 L30 24" stroke="#B8860B" stroke-width="0.5" fill="none"/>
-</svg>'''
-
-# --- Global CSS: Sovereign Command aesthetic ---
-st.markdown(
-    """
+# --- Sovereign Vault: single CSS surface (replaces all prior mirror styling) ---
+VAULT_CSS = """
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap');
 
 :root {
-    --institutional-navy: #000033;
-    --sovereign-gold: #D4AF37;
-    --gold-light: rgba(212, 175, 55, 0.95);
-    --gold-subtle: rgba(212, 175, 55, 0.6);
+  --vault-navy: #000510;
+  --vault-navy-mid: #0a1020;
+  --vault-gold: #D4AF37;
+  --vault-gold-dim: rgba(212, 175, 55, 0.45);
+  --vault-ink: #c9c4b8;
 }
 
-.stApp, [data-testid="stAppViewContainer"], .main .block-container {
-    background: var(--institutional-navy) !important;
-    color: var(--sovereign-gold) !important;
-}
-.main .block-container { padding: 1rem 2rem 6rem; max-width: 100%; }
-
-h1, h2, h3, .gcslc-header, .ticker-text, .market-card h3, .map-node {
-    font-family: 'Goldman', sans-serif !important;
-    color: var(--sovereign-gold) !important;
+html, body, .stApp, [data-testid="stAppViewContainer"] {
+  background: var(--vault-navy) !important;
+  color: var(--vault-ink) !important;
 }
 
-/* Header: Goldman + Shimmering Prism (liquid gold) */
-.prism-name {
-    font-family: 'Goldman', sans-serif !important;
-    font-size: clamp(1.25rem, 3vw, 2rem) !important;
-    font-weight: 700;
-    text-align: center;
-    letter-spacing: 0.02em;
-    line-height: 1.4;
-    background: linear-gradient(110deg, #D4AF37 0%, #F9F295 15%, #FFFFFF 35%, #F9F295 55%, #D4AF37 75%, #B8960C 100%);
-    background-size: 300% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: prism-shimmer 4s ease-in-out infinite;
-}
-@keyframes prism-shimmer {
-    0%, 100% { background-position: 0% center; }
-    50% { background-position: 100% center; }
+.main .block-container {
+  padding: 1rem 1.25rem 5rem !important;
+  max-width: 1200px !important;
+  font-family: 'Goldman', system-ui, sans-serif !important;
 }
 
-/* Real-Time Market Values: 4 high-fidelity glowing cards */
-.market-row {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
-    margin: 1.5rem 0;
-    max-width: 1100px;
-    margin-left: auto;
-    margin-right: auto;
-}
-.market-card {
-    background: rgba(0, 0, 51, 0.7);
-    border: 2px solid var(--sovereign-gold);
-    border-radius: 12px;
-    padding: 1.25rem;
-    text-align: center;
-    box-shadow: 0 0 24px rgba(212, 175, 55, 0.2), inset 0 1px 0 rgba(255,255,255,0.06);
-    transition: box-shadow 0.3s ease, transform 0.2s ease;
-}
-.market-card:hover {
-    box-shadow: 0 0 32px rgba(212, 175, 55, 0.4), inset 0 1px 0 rgba(255,255,255,0.08);
-    transform: translateY(-2px);
-}
-.market-card h3 { font-size: clamp(0.8rem, 1.2vw, 1rem); margin: 0 0 0.4rem; text-transform: uppercase; letter-spacing: 0.08em; }
-.market-card .price { font-family: 'Goldman', sans-serif; font-size: clamp(1rem, 1.8vw, 1.3rem); font-weight: 700; color: var(--sovereign-gold); }
-.market-card .sub { font-size: 0.7rem; color: var(--gold-subtle); margin-top: 0.35rem; line-height: 1.3; }
+h1, h2, h3, h4, p, span, label { font-family: 'Goldman', system-ui, sans-serif !important; }
 
-/* Map of Authority: 13 State Nodes */
-.map-of-authority {
-    margin: 2rem 0;
-    padding: 1.25rem;
-    border: 2px solid rgba(212, 175, 55, 0.4);
-    border-radius: 12px;
-    background: rgba(0, 0, 51, 0.5);
+/* Streamlit chrome */
+header[data-testid="stHeader"] { background: transparent !important; }
+[data-testid="stToolbar"] { display: none !important; }
+
+/* Vault title */
+.vault-apex {
+  text-align: center;
+  padding: 0.75rem 0 1rem;
+  border-bottom: 1px solid var(--vault-gold-dim);
+  margin-bottom: 1rem;
 }
-.map-of-authority h3 {
-    font-family: 'Goldman', sans-serif !important;
-    color: var(--sovereign-gold) !important;
-    text-align: center;
-    margin-bottom: 1rem;
-    letter-spacing: 0.15em;
+.vault-apex h1 {
+  margin: 0;
+  font-size: clamp(1.05rem, 2.4vw, 1.45rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  background: linear-gradient(110deg, #bf953f, #fcf6ba, #D4AF37, #aa771c);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: vault-shine 5s linear infinite;
 }
-.map-nodes {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.5rem;
-}
-.map-node {
-    padding: 0.4rem 0.75rem;
-    border: 1px solid var(--sovereign-gold);
-    border-radius: 8px;
-    font-size: 0.85rem;
-    background: rgba(212, 175, 55, 0.08);
-    color: var(--sovereign-gold);
+@keyframes vault-shine { to { background-position: 200% center; } }
+.vault-sub {
+  margin: 0.5rem 0 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  color: var(--vault-gold);
+  opacity: 0.9;
 }
 
-/* Live Ticker */
-.ticker-wrap {
-    position: fixed;
-    bottom: 3rem;
-    left: 0;
-    right: 0;
-    height: 2.5rem;
-    background: rgba(0, 0, 51, 0.95);
-    border-top: 2px solid var(--sovereign-gold);
-    overflow: hidden;
-    z-index: 900;
-    display: flex;
-    align-items: center;
-}
-.ticker-inner { display: flex; animation: ticker-scroll 35s linear infinite; white-space: nowrap; }
-.ticker-text { font-family: 'Goldman', sans-serif; font-size: 0.9rem; color: var(--sovereign-gold); letter-spacing: 0.15em; padding: 0 3rem; }
-@keyframes ticker-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-
-/* Signature: bottom-left, sovereign seal */
-.signature-watermark {
-    position: fixed;
-    bottom: 0.5rem;
-    left: 1rem;
-    font-family: 'Goldman', sans-serif;
-    font-size: 0.7rem;
-    color: var(--gold-subtle);
-    letter-spacing: 0.08em;
-    z-index: 901;
-    opacity: 0.9;
-    padding: 0.25rem 0.5rem;
-    border-left: 3px solid var(--sovereign-gold);
-    background: rgba(0, 0, 51, 0.6);
-}
-.signature-watermark { border-radius: 0 4px 4px 0; }
-
-/* Sovereign Bridge (after decode) */
-.bridge-overlay {
-    position: fixed;
-    inset: 0;
-    background: var(--institutional-navy);
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    animation: bridge-fade-in 0.5s ease-out;
-}
-.bridge-scan {
-    width: 100%;
-    height: 4px;
-    background: linear-gradient(90deg, transparent, var(--sovereign-gold), transparent);
-    animation: bridge-scan 2s ease-in-out 1;
-    box-shadow: 0 0 20px var(--sovereign-gold);
-}
-.bridge-title {
-    font-family: 'Goldman', sans-serif;
-    font-size: clamp(1.5rem, 4vw, 2.5rem);
-    color: var(--sovereign-gold);
-    margin: 2rem 0;
-    letter-spacing: 0.2em;
-    animation: bridge-glow 1.5s ease-in-out 2;
-}
-@keyframes bridge-fade-in { from { opacity: 0; } to { opacity: 1; } }
-@keyframes bridge-scan { 0% { transform: translateY(-100vh); } 100% { transform: translateY(100vh); } }
-@keyframes bridge-glow {
-    0%, 100% { opacity: 1; text-shadow: 0 0 20px var(--gold-subtle); }
-    50% { opacity: 0.9; text-shadow: 0 0 40px var(--sovereign-gold); }
+/* Pulse rail */
+.vault-pulse {
+  border: 1px solid var(--vault-gold-dim);
+  background: rgba(0, 5, 16, 0.85);
+  border-radius: 8px;
+  padding: 0.5rem 0.85rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.78rem;
+  color: var(--vault-gold);
+  letter-spacing: 0.04em;
 }
 
-/* Password / Decode */
-.stTextInput input { border: 2px solid var(--sovereign-gold) !important; border-radius: 8px !important; }
+/* Node portals */
+.vault-nodes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.85rem;
+  margin-bottom: 1.25rem;
+}
+@media (max-width: 900px) { .vault-nodes { grid-template-columns: 1fr; } }
+
+.vault-slab {
+  border: 1px solid var(--vault-gold);
+  border-radius: 10px;
+  background: rgba(0, 5, 16, 0.72);
+  padding: 1rem 0.9rem;
+  box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.08);
+}
+.vault-slab .port {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--vault-navy);
+  background: var(--vault-gold);
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+}
+.vault-slab h3 {
+  margin: 0.5rem 0 0.35rem;
+  font-size: 0.95rem;
+  color: var(--vault-gold) !important;
+}
+.vault-slab p {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--vault-ink) !important;
+  opacity: 0.92;
+}
+.vault-slab a {
+  display: inline-block;
+  margin-top: 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--vault-gold) !important;
+  text-decoration: none;
+  border-bottom: 1px solid var(--vault-gold-dim);
+}
+.vault-slab a:hover { opacity: 0.85; }
+
+/* 13-state strip */
+.vault-registry {
+  border-left: 3px solid var(--vault-gold);
+  padding: 0.65rem 0.85rem;
+  background: rgba(0, 5, 16, 0.5);
+  margin: 1rem 0;
+  font-size: 0.72rem;
+  color: var(--vault-ink);
+  line-height: 1.6;
+}
+
+/* Decode zone */
+.vault-gate {
+  border: 1px solid var(--vault-gold-dim);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  background: rgba(0, 5, 16, 0.55);
+  margin-top: 0.5rem;
+}
+.vault-gate h4 {
+  margin: 0 0 0.5rem;
+  color: var(--vault-gold) !important;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+}
+
+.stTextInput input {
+  background: var(--vault-navy) !important;
+  color: #fff !important;
+  border: 1px solid var(--vault-gold) !important;
+  border-radius: 8px !important;
+  font-family: 'Goldman', sans-serif !important;
+}
 .stButton > button {
-    font-family: 'Goldman', sans-serif !important;
-    background: transparent !important;
-    color: var(--sovereign-gold) !important;
-    border: 2px solid var(--sovereign-gold) !important;
-    border-radius: 8px !important;
+  font-family: 'Goldman', sans-serif !important;
+  background: var(--vault-gold) !important;
+  color: var(--vault-navy) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-weight: 700 !important;
 }
 .stButton > button:hover {
-    background: rgba(212, 175, 55, 0.15) !important;
-    border-color: var(--sovereign-gold) !important;
-    color: var(--sovereign-gold) !important;
+  filter: brightness(1.08);
 }
 
-/* Universal Impact Radar (fused view) */
-.radar-header { font-family: 'Goldman', sans-serif !important; color: var(--sovereign-gold) !important; }
+/* Fixed ticker + seal */
+.vault-ticker {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 900;
+  background: rgba(0, 5, 16, 0.96);
+  border-top: 1px solid var(--vault-gold-dim);
+  padding: 0.4rem 0;
+  overflow: hidden;
+}
+.vault-ticker-inner {
+  display: inline-block;
+  white-space: nowrap;
+  animation: vault-scroll 40s linear infinite;
+  padding-left: 100%;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--vault-gold);
+}
+@keyframes vault-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+.vault-seal {
+  position: fixed;
+  bottom: 2.35rem;
+  left: 0.75rem;
+  z-index: 901;
+  font-size: 0.62rem;
+  color: var(--vault-gold-dim);
+  letter-spacing: 0.06em;
+  max-width: 70vw;
+}
 
-@media (max-width: 768px) {
-    .market-row { grid-template-columns: 1fr 1fr; }
-    .main .block-container { padding: 0.75rem 1rem 5rem; }
-    .ticker-wrap { bottom: 2.5rem; height: 2rem; }
-    .ticker-text { font-size: 0.75rem; }
-    .signature-watermark { font-size: 0.6rem; left: 0.5rem; }
+/* Post-decode bridge (vault tone) */
+.vault-bridge {
+  text-align: center;
+  padding: 2rem 1rem;
+  border: 1px solid var(--vault-gold-dim);
+  border-radius: 12px;
+  background: rgba(0, 5, 16, 0.65);
+  margin-bottom: 1rem;
+}
+.vault-bridge h2 {
+  color: var(--vault-gold) !important;
+  letter-spacing: 0.2em;
+  font-size: 1.1rem;
 }
 </style>
-""",
-    unsafe_allow_html=True,
-)
+"""
 
-# --- Post-decode: Sovereign Bridge then fuse into Universal Impact Radar ---
+st.markdown(VAULT_CSS, unsafe_allow_html=True)
+
+
+# --- Post-decode: same continental logic / radar (backend unchanged) ---
 if st.session_state.mirror_decoded:
     st.markdown(
         """
-        <div class="bridge-overlay" id="gcslc-bridge">
-            <div class="bridge-scan"></div>
-            <p class="bridge-title">SOVEREIGN BRIDGE</p>
-            <p style="font-family: Goldman, sans-serif; color: rgba(212,175,55,0.8); font-size: 0.95rem;">Decode verified. Fusing into Universal Impact Radar.</p>
+        <div class="vault-bridge">
+            <h2>VAULT UNSEALED</h2>
+            <p style="color:rgba(201,196,184,0.9);font-size:0.85rem;margin:0;">
+                Decode verified. Universal Impact Radar — live fusion.
+            </p>
         </div>
         """,
         unsafe_allow_html=True,
     )
-    st.markdown("---")
     st.markdown("### Universal Impact Radar")
-    st.caption("How the **$170.85B** anchor and **8R Strike on Atoms** (Energy/Minerals) drive Jobs, Security, and Health.")
+    st.caption(
+        "How the **$170.85B** anchor and **8R Strike on Atoms** (Energy/Minerals) drive Jobs, Security, and Health."
+    )
     continental_logic = _get_continental_logic()
-    radar_t1, radar_t2, radar_t3 = st.tabs(["National Security Impact", "Social Well-being Index", "Sovereign Well-being Index"])
+    radar_t1, radar_t2, radar_t3 = st.tabs(
+        ["National Security Impact", "Social Well-being Index", "Sovereign Well-being Index"]
+    )
     with radar_t1:
         st.write("**National Security Impact** — $170.85B anchor → regional stability")
         sec_heat = continental_logic.get_national_security_impact_heatmap()
         st.dataframe(
-            [{"Region": r["region"], "Indicator": r["indicator"], "Before anchor": r["before_anchor"], "After anchor": r["after_anchor"], "Δ Stability": r["stability_delta"]} for r in sec_heat],
+            [
+                {
+                    "Region": r["region"],
+                    "Indicator": r["indicator"],
+                    "Before anchor": r["before_anchor"],
+                    "After anchor": r["after_anchor"],
+                    "Δ Stability": r["stability_delta"],
+                }
+                for r in sec_heat
+            ],
             use_container_width=True,
             hide_index=True,
         )
-        st.caption("Higher scores = more stability. The anchor increases sovereign retention and reduces resource conflict.")
+        st.caption(
+            "Higher scores = more stability. The anchor increases sovereign retention and reduces resource conflict."
+        )
     with radar_t2:
         st.write("**Social Well-being Index** — $170.85B anchor → poverty reduction")
         soc_heat = continental_logic.get_social_wellbeing_index_heatmap()
         st.dataframe(
-            [{"Dimension": d["dimension"], "Baseline (%)": d["baseline_pct"], "Post-anchor (%)": d["post_anchor_pct"], "Change": d["reduction"]} for d in soc_heat],
+            [
+                {
+                    "Dimension": d["dimension"],
+                    "Baseline (%)": d["baseline_pct"],
+                    "Post-anchor (%)": d["post_anchor_pct"],
+                    "Change": d["reduction"],
+                }
+                for d in soc_heat
+            ],
             use_container_width=True,
             hide_index=True,
         )
-        st.caption("Poverty headcount drops; employment and energy access rise under 8R sovereign corridors.")
+        st.caption(
+            "Poverty headcount drops; employment and energy access rise under 8R sovereign corridors."
+        )
     with radar_t3:
         st.write("**Sovereign Well-being Index** — 8R Strike on Atoms → Jobs, Security, Health")
         swi = continental_logic.get_sovereign_wellbeing_index()
         st.dataframe(
-            [{"Atoms domain": r["atoms_domain"], "Well-being": r["wellbeing_dimension"], "Metric": r["metric"], "Before 8R": r["before_8r"], "After 8R": r["after_8r"], "Unit": r["unit"]} for r in swi],
+            [
+                {
+                    "Atoms domain": r["atoms_domain"],
+                    "Well-being": r["wellbeing_dimension"],
+                    "Metric": r["metric"],
+                    "Before 8R": r["before_8r"],
+                    "After 8R": r["after_8r"],
+                    "Unit": r["unit"],
+                }
+                for r in swi
+            ],
             use_container_width=True,
             hide_index=True,
         )
-        st.caption("The Eagle's strike on Energy and Minerals generates Jobs (FTE), Security (index), and Health (compliance / air quality).")
+        st.caption(
+            "The Eagle's strike on Energy and Minerals generates Jobs (FTE), Security (index), and Health (compliance / air quality)."
+        )
     st.markdown(
-        f'<div class="ticker-wrap"><div class="ticker-inner"><span class="ticker-text">{TICKER_TEXT}</span><span class="ticker-text">{TICKER_TEXT}</span></div></div>',
+        f'<div class="vault-ticker"><div class="vault-ticker-inner">{TICKER_TEXT} · {TICKER_TEXT}</div></div>',
         unsafe_allow_html=True,
     )
-    st.markdown(f'<div class="signature-watermark">{SIGNATURE}</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="vault-seal">{SIGNATURE}</div>', unsafe_allow_html=True)
     st.stop()
 
-# --- Main Mirror: Sovereign Command face ---
-# Eagle at top center
-st.markdown(f'<div style="text-align:center; margin-bottom:0.5rem;">{APEX_EAGLE_SVG}</div>', unsafe_allow_html=True)
-st.markdown(f'<p class="prism-name">{FULL_NAME}</p>', unsafe_allow_html=True)
-st.markdown("---")
 
-# Real-Time Market Values: 4 glowing cards
-st.markdown(
-    """
-    <div class="market-row">
-        <div class="market-card">
-            <h3>Germanium</h3>
-            <p class="price">$2,152/kg</p>
-            <p class="sub">Optics, chips, sensors.</p>
-        </div>
-        <div class="market-card">
-            <h3>Silicon</h3>
-            <p class="price">$18.27/sq</p>
-            <p class="sub">Solar, wafers, compute.</p>
-        </div>
-        <div class="market-card">
-            <h3>Benzene</h3>
-            <p class="price">$858/MT</p>
-            <p class="sub">Petrochem feedstock.</p>
-        </div>
-        <div class="market-card">
-            <h3>Rare Earths</h3>
-            <p class="price">$132,853/kg</p>
-            <p class="sub">Magnets, EV, Defense.</p>
-        </div>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
-st.markdown("---")
-
-# Map of Authority: 13 State Nodes (Enugu to Imo)
-nodes_html = "".join(f'<span class="map-node">{s}</span>' for s in STATE_NODES)
+# --- Air-lock: Sovereign Vault face (no legacy layout) ---
 st.markdown(
     f"""
-    <div class="map-of-authority">
-        <h3>Map of Authority — 13 State Nodes</h3>
-        <div class="map-nodes">{nodes_html}</div>
+    <div class="vault-apex">
+        <h1>{FULL_NAME}</h1>
+        <p class="vault-sub">SOVEREIGN MIRROR · LEGAL VAULT AIR-LOCK</p>
+    </div>
+    <div class="vault-pulse"><strong>PULSE</strong> — {PULSE_LINE}</div>
+    <div class="vault-nodes">
+        <div class="vault-slab">
+            <span class="port">8090</span>
+            <h3>NRRFC</h3>
+            <p>National Resources Revitalization Fusion Center. Coal-to-chemicals &amp; 1.2 GW AI–DC engine.</p>
+            <a href="{NRRFC_URL}" target="_blank" rel="noopener noreferrer">Open node →</a>
+        </div>
+        <div class="vault-slab">
+            <span class="port">8053</span>
+            <h3>NWC / C&amp;D</h3>
+            <p>National Wealth Cloud. 37-node geopolitical grid &amp; sovereign materiality.</p>
+            <a href="{NWC_URL}" target="_blank" rel="noopener noreferrer">Open node →</a>
+        </div>
+        <div class="vault-slab">
+            <span class="port">8054</span>
+            <h3>K-GEC</h3>
+            <p>Komi Generative Eagle Cloud. Proprietary $170.85B global AI anchor.</p>
+            <a href="{KGEC_URL}" target="_blank" rel="noopener noreferrer">Open node →</a>
+        </div>
     </div>
     """,
     unsafe_allow_html=True,
 )
-st.markdown("---")
 
-# Decode: key 8R-DECODE-2026 fuses into Universal Impact Radar
-st.markdown("#### Access Universal Impact Radar")
-pwd = st.text_input("Decode phrase", type="password", placeholder="Enter decode phrase", key="mirror_pwd", label_visibility="collapsed")
-col1, col2, _ = st.columns([1, 1, 2])
-with col1:
-    submit = st.button("Decode")
+st.markdown(
+    f'<div class="vault-registry"><strong>13-State registry</strong> — {" · ".join(STATE_NODES)}</div>',
+    unsafe_allow_html=True,
+)
+
+st.markdown('<div class="vault-gate"><h4>ACCESS · UNIVERSAL IMPACT RADAR</h4></div>', unsafe_allow_html=True)
+pwd = st.text_input(
+    "Decode phrase",
+    type="password",
+    placeholder="Vault decode phrase",
+    key="mirror_pwd",
+    label_visibility="collapsed",
+)
+c1, c2, _ = st.columns([1, 1, 2])
+with c1:
+    submit = st.button("Decode", use_container_width=True)
 if submit and pwd.strip() == PASSWORD_UNLOCK:
     st.session_state.mirror_decoded = True
     st.rerun()
 elif submit and pwd:
     st.caption("Incorrect decode phrase.")
 
-# Live Ticker + Signature (bottom-left seal)
 st.markdown(
-    f'<div class="ticker-wrap"><div class="ticker-inner"><span class="ticker-text">{TICKER_TEXT}</span><span class="ticker-text">{TICKER_TEXT}</span></div></div>',
+    f'<div class="vault-ticker"><div class="vault-ticker-inner">{TICKER_TEXT} · {TICKER_TEXT}</div></div>',
     unsafe_allow_html=True,
 )
-st.markdown(f'<div class="signature-watermark">{SIGNATURE}</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="vault-seal">{SIGNATURE}</div>', unsafe_allow_html=True)
