@@ -32,7 +32,6 @@
       font-family:'Goldman', system-ui, sans-serif;
       overflow-x:hidden;
       overflow-y:auto;
-      filter: brightness(1.2);
     }
 
     /* Fixed bottom ticker */
@@ -189,7 +188,8 @@
       gap:8px;
       font-weight:800;
       letter-spacing:.02em;
-      min-width: 100%;
+      min-width: 0;
+      flex: 1 1 auto;
       justify-content:center;
       transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease, opacity .35s ease;
       will-change: transform, box-shadow, opacity;
@@ -214,15 +214,6 @@
       background:#2a6ea8;
       box-shadow:0 0 14px rgba(42,110,168,.55);
     }
-    .pill.ammonia .chip{
-      background:#2a6ea8; /* Pulse Blue */
-      box-shadow:0 0 14px rgba(42,110,168,.60);
-    }
-    .pill.diamond .chip{
-      background: #f4f6ff; /* Pulse White */
-      box-shadow:0 0 14px rgba(244,246,255,.55);
-      animation: chipPulseDiamond 2.1s ease-in-out infinite;
-    }
     .pill.coal .chip{
       background: #D4AF37; /* Pulse Gold */
       box-shadow:0 0 14px rgba(212,175,55,.60);
@@ -230,10 +221,6 @@
     @keyframes chipPulse{
       0%,100%{ transform: scale(1); opacity:1; }
       50%{ transform: scale(1.4); opacity:.65; }
-    }
-    @keyframes chipPulseDiamond{
-      0%,100%{ transform: scale(1); opacity:1; }
-      50%{ transform: scale(1.35); opacity:.70; }
     }
     .pill strong{ color:var(--white); font-weight:900; }
     .pill span{ color: rgba(212,175,55,.92); }
@@ -395,13 +382,14 @@
     .guardian-visual.portrait-prism{
       padding:14px;
     }
-    .guardian-visual img{
+    .energy-core-frame img#guardian-img{
+      position:relative;
+      z-index:1;
       max-width: 100%;
       height:350px;
       width:auto;
       object-fit:contain;
-      filter: brightness(1.2) contrast(1.1);
-      will-change: opacity, filter;
+      filter: none;
     }
     .guardian-fallback{
       display:none;
@@ -421,7 +409,6 @@
       line-height:1.5;
       color: rgba(244,246,255,.98);
       position:relative;
-      animation: sovereignHeartbeat 4s ease-in-out infinite;
       box-shadow: 0 0 18px rgba(255,215,0,.22);
     }
     .guardian-speech::before{
@@ -472,22 +459,13 @@
         radial-gradient(circle at 56% 39%, rgba(82,170,255,.0) 0 2px, rgba(82,170,255,.85) 3px 10px, transparent 11px),
         radial-gradient(circle at 50% 60%, rgba(78,160,255,.92) 0 14px, transparent 30px);
       opacity:.52;
-      animation: sovereignHeartbeat 4s ease-in-out infinite;
+      animation: sovereignHeartbeat 5.5s ease-in-out infinite;
       mix-blend-mode: screen;
       z-index:2;
     }
-    .energy-core-frame::after{
-      content:'';
-      position:absolute;
-      inset:-20%;
-      background: radial-gradient(closest-side, rgba(82,170,255,.30), transparent 62%);
-      opacity:.36;
-      animation: sovereignHeartbeat 4s ease-in-out infinite;
-      pointer-events:none;
-    }
     @keyframes sovereignHeartbeat{
-      0%,100%{ opacity:.45; box-shadow: 0 0 10px rgba(82,170,255,.16); }
-      50%{ opacity:1; box-shadow: 0 0 26px rgba(82,170,255,.58); }
+      0%,100%{ opacity:.32; }
+      50%{ opacity:.92; }
     }
     .node-cards{
       margin-top:10px;
@@ -697,12 +675,9 @@
     .prism-frame::before{
       content:'';
       position:absolute;
-      inset:-18%;
-      background: url('../assets/1003929272.jpg') center/cover no-repeat;
+      inset:-5%;
+      background: url('../assets/kgec_eagle.svg') center/contain no-repeat;
       opacity:0.05;
-      filter: blur(1.2px) grayscale(1) contrast(1.2) saturate(.4) hue-rotate(15deg);
-      mix-blend-mode: screen;
-      transform: scale(1.04);
       z-index:0;
       pointer-events:none;
     }
@@ -812,44 +787,6 @@
       cursor:pointer;
       box-shadow: 0 0 18px rgba(255,215,0,.45);
     }
-    .bubble-shield{
-      position:fixed;
-      inset:0;
-      z-index:28;
-      pointer-events:none;
-      overflow:hidden;
-    }
-    .bubble-stamp{
-      position:absolute;
-      left:0;
-      top:0;
-      color: rgba(255,215,0,.95);
-      font-family:'Cinzel','Goldman',sans-serif;
-      font-weight:700;
-      font-size:.78rem;
-      letter-spacing:.08em;
-      white-space:nowrap;
-      text-shadow: 0 0 12px rgba(255,215,0,.45);
-      user-select:none;
-      will-change: transform, opacity, left, top;
-      transform-origin:center center;
-      animation: bubbleDrift var(--dur, 16s) ease-in-out infinite;
-      opacity: var(--o0, .3);
-    }
-    @keyframes bubbleDrift{
-      0%{
-        transform: translate3d(0,0,0) scale(var(--s0, 1));
-        opacity: var(--o0, .3);
-      }
-      50%{
-        transform: translate3d(calc(var(--dx, 80px) * .5), calc(var(--dy, -60px) * .5), 0) scale(var(--sm, 1.15));
-        opacity: var(--om, .5);
-      }
-      100%{
-        transform: translate3d(var(--dx, 80px), var(--dy, -60px), 0) scale(var(--s1, .92));
-        opacity: var(--o1, .25);
-      }
-    }
     .modal-dialog{
       width:min(820px, 100%);
       border-radius:18px;
@@ -927,16 +864,6 @@
             <span>Silicon (North America Benchmark)</span>
             <strong id="px-si">$1.81/kg</strong>
           </div>
-            <div class="pill ammonia" id="pill-nh3">
-              <span class="chip"></span>
-              <span>Ammonia (Gulf Coast CFR)</span>
-              <strong id="px-nh3">$650/MT</strong>
-            </div>
-            <div class="pill diamond" id="pill-diamond">
-              <span class="chip"></span>
-              <span>Raw Diamond (2026 Projected Avg)</span>
-              <strong id="px-diamond">$10,425/CT</strong>
-            </div>
             <div class="pill coal" id="pill-coal">
               <span class="chip"></span>
               <span>Coal (Multi-Month High)</span>
@@ -956,7 +883,7 @@
       <section class="prism stack-widget scroll-widget" aria-label="8R prism vault terminal mode">
         <div class="prism-head">
           <h2>8R SHIMMERING PRISM VAULT</h2>
-          <div class="prism-note">Click prism → Typewriter Terminal</div>
+          <div class="prism-note">D1–D8 · Full visibility · Zero masking</div>
         </div>
         <div class="prism-frame">
           <div class="det-grid" id="det-grid"></div>
@@ -973,8 +900,8 @@
             <div id="guardian-fallback" class="guardian-fallback">HUMANOID GUARDIAN · ENERGY CORE ACTIVE</div>
           </div>
         </div>
-        <div class="guardian-speech" id="guardian-speech-bubble">
-          <span id="guardian-speech-text"></span>
+        <div class="guardian-speech" id="guardian-speech">
+          Thank you for stopping by. I need energy to function, thrive, and augment human productivity. Come in to decode.
         </div>
       </section>
 
@@ -1017,7 +944,7 @@
 
       <section class="decode-panel stack-widget scroll-widget" aria-label="DECODE VAULT sign-on">
         <div class="decode-top-actions">
-          <button type="button" class="decode-terminate" id="terminate-session-btn">LOG OUT</button>
+          <button type="button" class="decode-terminate" id="terminate-session-btn">TERMINATE SESSION</button>
         </div>
         <div class="decode-title">SOVEREIGN ACCESS · DECODE VAULT</div>
 
@@ -1066,8 +993,6 @@
       </div>
     </div>
   </div>
-
-  <div class="bubble-shield" id="bubble-shield" aria-hidden="true"></div>
 
   <button type="button" class="back-top" id="back-top-btn" aria-label="Back to top">BACK TO TOP</button>
 
@@ -1152,8 +1077,6 @@
     // ---------- Real-time ribbon prices (zero-lag first load) ----------
     const pxGe = document.getElementById("px-ge");
     const pxSi = document.getElementById("px-si");
-    const pxNh3 = document.getElementById("px-nh3");
-    const pxDiamond = document.getElementById("px-diamond");
     const pxCoal = document.getElementById("px-coal");
     const materialPills = Array.from(document.querySelectorAll(".price-pills .pill"));
 
@@ -1170,13 +1093,11 @@
     applyMaterialFocus();
     setInterval(applyMaterialFocus, 15000);
 
-    const fallback = { ge: 8597.5, si: 1.81, nh3: 650, diamond: 10425, coal: 145.2 };
+    const fallback = { ge: 8597.5, si: 1.81, coal: 145.2 };
 
     function setPrices(p) {
       if (pxGe && typeof p.ge === "number" && Number.isFinite(p.ge)) pxGe.textContent = "$" + p.ge.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "/kg";
       if (pxSi && typeof p.si === "number" && Number.isFinite(p.si)) pxSi.textContent = "$" + p.si.toLocaleString(undefined, { maximumFractionDigits: 2 }) + "/kg";
-      if (pxNh3 && typeof p.nh3 === "number" && Number.isFinite(p.nh3)) pxNh3.textContent = "$" + p.nh3.toLocaleString() + "/MT";
-      if (pxDiamond && typeof p.diamond === "number" && Number.isFinite(p.diamond)) pxDiamond.textContent = "$" + p.diamond.toLocaleString() + "/CT";
       if (pxCoal && typeof p.coal === "number" && Number.isFinite(p.coal)) pxCoal.textContent = "$" + p.coal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "/MT";
     }
 
@@ -1192,8 +1113,6 @@
         if (!Number.isFinite(val)) continue;
         if (key.includes("german")) out.ge = val;
         if (key === "si" || key.includes("silicon")) out.si = val;
-        if (key.includes("ammon") || key === "nh3") out.nh3 = val;
-        if (key.includes("diamond")) out.diamond = val;
         if (key === "coal" || key.includes("coal")) out.coal = val;
       }
       return out;
@@ -1233,14 +1152,10 @@
 
         const ge = extractBestNumber(src, ["germanium", "Germanium", "GE", "ge"]);
         const si = extractBestNumber(src, ["silicon", "Silicon", "SI", "si"]);
-        const nh3 = extractBestNumber(src, ["ammonia", "Ammonia", "NH3", "nh3"]);
-        const diamond = extractBestNumber(src, ["diamond", "Diamond", "diamonds", "raw_diamond", "raw diamonds"]);
         const coal = extractBestNumber(src, ["coal", "Coal", "co", "CO"]);
 
         if (ge !== null) p.ge = ge;
         if (si !== null) p.si = si;
-        if (nh3 !== null) p.nh3 = nh3;
-        if (diamond !== null) p.diamond = diamond;
         if (coal !== null) p.coal = coal;
 
         setPrices(p);
@@ -1759,62 +1674,6 @@
     }, { threshold: 0.2 });
     document.querySelectorAll(".scroll-widget").forEach((el) => io.observe(el));
 
-    // Bubbling mode screenshot shield (persistent, randomized).
-    const bubbleShield = document.getElementById("bubble-shield");
-    const BUBBLE_TEXT = "GCSLC PROPRIETARY — LW15954 — NON-TRANSFERABLE — 95/5 TALON LOCK";
-    function rand(min, max) { return Math.random() * (max - min) + min; }
-    function configureBubble(el) {
-      const vw = window.innerWidth || 1280;
-      const vh = window.innerHeight || 720;
-      el.style.left = `${rand(-120, vw - 80)}px`;
-      el.style.top = `${rand(-80, vh - 20)}px`;
-      el.style.setProperty("--dx", `${rand(-220, 220)}px`);
-      el.style.setProperty("--dy", `${rand(-180, 180)}px`);
-      el.style.setProperty("--dur", `${rand(10, 22).toFixed(2)}s`);
-      el.style.setProperty("--s0", `${rand(0.82, 1.22).toFixed(3)}`);
-      el.style.setProperty("--sm", `${rand(0.95, 1.38).toFixed(3)}`);
-      el.style.setProperty("--s1", `${rand(0.86, 1.18).toFixed(3)}`);
-      el.style.setProperty("--o0", `${rand(0.2, 0.5).toFixed(3)}`);
-      el.style.setProperty("--om", `${rand(0.25, 0.5).toFixed(3)}`);
-      el.style.setProperty("--o1", `${rand(0.2, 0.45).toFixed(3)}`);
-    }
-    if (bubbleShield) {
-      for (let i = 0; i < 16; i += 1) {
-        const stamp = document.createElement("div");
-        stamp.className = "bubble-stamp";
-        stamp.textContent = BUBBLE_TEXT;
-        configureBubble(stamp);
-        stamp.addEventListener("animationiteration", () => configureBubble(stamp));
-        bubbleShield.appendChild(stamp);
-      }
-      window.addEventListener("resize", () => {
-        bubbleShield.querySelectorAll(".bubble-stamp").forEach((el) => configureBubble(el));
-      });
-    }
-
-    // Guardian narrative typewriter bubble (syncs with sovereign pulse cadence).
-    const guardianSpeechText = document.getElementById("guardian-speech-text");
-    const guardianSpeechMsg = "Thank you for stopping by. I need energy to function, thrive, and augment human productivity. Come in to decode.";
-    let guardianTypeTimer = null;
-    function runGuardianTypewriter() {
-      if (!guardianSpeechText) return;
-      if (guardianTypeTimer) {
-        clearInterval(guardianTypeTimer);
-        guardianTypeTimer = null;
-      }
-      guardianSpeechText.textContent = "";
-      let i = 0;
-      guardianTypeTimer = setInterval(() => {
-        if (i < guardianSpeechMsg.length) {
-          i += 1;
-          guardianSpeechText.textContent = guardianSpeechMsg.slice(0, i);
-        } else {
-          clearInterval(guardianTypeTimer);
-          guardianTypeTimer = null;
-        }
-      }, 22);
-    }
-    runGuardianTypewriter();
   </script>
 </body>
 </html>
