@@ -71,7 +71,7 @@
       padding-bottom:62px; /* keep content above legal ticker */
       display:flex;
       flex-direction:column;
-      width:min(500px, 100%);
+      width:min(1400px, 96vw);
       margin:0 auto;
     }
 
@@ -79,18 +79,16 @@
     .topbar{
       position:relative;
       z-index:5;
-      padding:10px 10px 10px;
+      padding:0 16px;
       border-bottom:none;
       background: transparent;
-      display:flex;
-      flex-direction:column;
-      gap:40px;
+      margin-bottom:100px;
     }
     .identity-widget{
-      border-radius:16px;
-      border:1px solid rgba(255,215,0,.82);
-      background: linear-gradient(180deg, rgba(255,255,255,.90), rgba(0,5,16,.90));
-      padding:12px;
+      border-radius:18px;
+      border:1px solid rgba(255,215,0,.72);
+      background: linear-gradient(180deg, rgba(12,18,34,.95), rgba(5,6,11,.95));
+      padding:16px;
       box-shadow: 0 0 22px rgba(255,215,0,.22);
     }
     .title{
@@ -106,7 +104,7 @@
       -webkit-text-fill-color: transparent;
       background-clip:text;
       animation: liquidMetalFlow 16s linear infinite;
-      text-shadow: 0 0 22px rgba(212,175,55,.12);
+      text-shadow: 0 0 18px rgba(255,255,255,.28), 0 0 22px rgba(255,215,0,.24);
       will-change: background-position;
     }
     @keyframes shimmerShift{
@@ -134,12 +132,12 @@
 
     /* Prices ribbon */
     .prices{
-      margin:10px auto 0;
+      margin:0 auto;
       max-width:100%;
       padding:8px 10px;
       border:1px solid rgba(212,175,55,.25);
       border-radius:12px;
-      background: linear-gradient(180deg, rgba(255,255,255,.90), rgba(0,5,16,.90));
+      background: linear-gradient(180deg, rgba(12,18,34,.95), rgba(5,6,11,.95));
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       display:flex;
@@ -147,6 +145,9 @@
       justify-content:space-between;
       gap:12px;
       flex-wrap:wrap;
+      position: sticky;
+      top: 0;
+      z-index: 35;
     }
     .price-left{
       display:flex;
@@ -236,12 +237,27 @@
     }
     .pill strong{ color:var(--white); font-weight:900; }
     .pill span{ color: rgba(212,175,55,.92); }
+    .pulse-label,
+    .node-port,
+    .node-title,
+    .prism-head h2,
+    .decode-title,
+    .energy-core-label,
+    .det-code{
+      color:#FFD700;
+    }
+    .clock-name,
+    .guardian-speech,
+    .node-sub,
+    .det-tag{
+      color:#FFFFFF;
+    }
 
     /* Clock grid */
     .clock-wrap{
       position:relative;
       z-index:5;
-      padding:10px;
+      padding:0 16px;
       border-bottom:none;
     }
     .portrait-prism{
@@ -250,7 +266,7 @@
       border-radius:16px;
       border:1px solid rgba(255,215,0,.82);
       padding:12px;
-      background: linear-gradient(180deg, rgba(255,255,255,.90), rgba(0,5,16,.90));
+      background: linear-gradient(180deg, rgba(12,18,34,.95), rgba(5,6,11,.95));
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       position:relative;
@@ -272,7 +288,7 @@
       position:absolute;
       inset:1px;
       border-radius:14px;
-      background: linear-gradient(180deg, rgba(0,5,16,.82), rgba(0,5,16,.56));
+      background: linear-gradient(180deg, rgba(8,12,22,.95), rgba(5,6,11,.95));
       z-index:0;
     }
     @keyframes borderRotate{ to{ transform: rotate(360deg);} }
@@ -280,19 +296,23 @@
       position:relative;
       z-index:1;
       display:grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(6, minmax(0, 1fr));
       gap:10px;
+    }
+    @media (max-width: 1100px){
+      .clock-grid{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
     @media (max-width: 520px){
       .portrait-prism{ backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
       .pill{ min-width: 100%; }
+      .clock-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
     .clock{
       text-align:center;
       padding:8px 6px;
       border-radius:12px;
       border:1px solid rgba(212,175,55,.18);
-      background: rgba(0,5,16,.35);
+      background: rgba(8,12,22,.95);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       transition: transform .4s ease, opacity .4s ease, box-shadow .4s ease;
@@ -340,8 +360,8 @@
       flex:1;
       display:flex;
       flex-direction:column;
-      gap:40px;
-      padding:10px;
+      gap:100px;
+      padding:0 16px 100px;
       overflow:visible;
       min-height:0;
     }
@@ -350,7 +370,7 @@
     .guardian{
       border-radius:18px;
       border:1px solid rgba(212,175,55,.22);
-      background: linear-gradient(180deg, rgba(255,255,255,.90), rgba(0,5,16,.90));
+      background: linear-gradient(180deg, rgba(12,18,34,.95), rgba(5,6,11,.95));
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       box-shadow: 0 18px 60px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
@@ -457,7 +477,7 @@
     .node-card{
       border-radius:14px;
       border:1px solid rgba(212,175,55,.35);
-      background: linear-gradient(180deg, rgba(255,255,255,.90), rgba(0,5,16,.90));
+      background: linear-gradient(180deg, rgba(12,18,34,.95), rgba(5,6,11,.95));
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       padding:12px 12px;
@@ -494,8 +514,18 @@
     .node-sub{
       margin-top:6px;
       font-size:.82rem;
-      color: rgba(244,246,255,.92);
+      color: #FFFFFF;
       line-height:1.35;
+    }
+
+    .asset-nodes{
+      border-radius:18px;
+      border:1px solid rgba(255,215,0,.72);
+      background: linear-gradient(180deg, rgba(12,18,34,.95), rgba(5,6,11,.95));
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 18px 60px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
+      padding:14px;
     }
 
     /* Technical cores (revived + linked by id) */
@@ -507,7 +537,7 @@
     .prism{
       border-radius:18px;
       border:1px solid rgba(212,175,55,.22);
-      background: linear-gradient(180deg, rgba(255,255,255,.90), rgba(0,5,16,.90));
+      background: linear-gradient(180deg, rgba(12,18,34,.95), rgba(5,6,11,.95));
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       padding:14px;
@@ -543,7 +573,7 @@
       margin-top:10px;
       border-radius:16px;
       border:1px solid rgba(212,175,55,.28);
-      background: linear-gradient(180deg, rgba(255,255,255,.90), rgba(0,5,16,.90));
+      background: linear-gradient(180deg, rgba(12,18,34,.95), rgba(5,6,11,.95));
       padding:12px;
       position:relative;
       width:100%;
@@ -635,7 +665,7 @@
       background:
         radial-gradient(500px 220px at 20% 0%, rgba(255,215,0,.32), transparent 55%),
         radial-gradient(460px 260px at 90% 10%, rgba(42,110,168,.36), transparent 58%),
-        rgba(255,255,255,.90);
+        rgba(8,12,22,.95);
       display:flex;
       flex-direction:column;
       gap:10px;
@@ -737,6 +767,11 @@
       transform: translateY(0);
       box-shadow: 0 0 24px rgba(255,215,0,.32), 0 0 14px rgba(255,255,255,.22);
       border-color: rgba(255,255,255,.92);
+      animation: sectionGlow 4.8s ease-in-out infinite;
+    }
+    @keyframes sectionGlow{
+      0%,100%{ box-shadow: 0 0 24px rgba(255,215,0,.26), 0 0 14px rgba(255,255,255,.18); }
+      50%{ box-shadow: 0 0 30px rgba(255,215,0,.45), 0 0 18px rgba(255,255,255,.34); }
     }
 
     .back-top{
@@ -846,19 +881,20 @@
             </div>
         </div>
       </div>
-      <div class="identity-widget stack-widget scroll-widget">
-        <h1 class="title">Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC LTD/GTE)</h1>
-        <div class="tagline">Everything is powered by the 8R Stealth Paradigm Convergence and its Determinants.</div>
-      </div>
-    </div>
-
-    <div class="clock-wrap stack-widget scroll-widget">
-      <div class="portrait-prism" aria-label="6-city pulse portrait widget">
-        <div class="clock-grid" id="clock-grid" aria-label="6-city Sovereign Clock"></div>
-      </div>
     </div>
 
     <div class="main">
+      <section class="identity-widget stack-widget scroll-widget" aria-label="Institutional identity">
+        <h1 class="title">Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC LTD/GTE)</h1>
+        <div class="tagline">Everything is powered by the 8R Stealth Paradigm Convergence and its Determinants.</div>
+      </section>
+
+      <section class="clock-wrap stack-widget scroll-widget" aria-label="Global sync clocks">
+        <div class="portrait-prism" aria-label="6-city pulse portrait widget">
+          <div class="clock-grid" id="clock-grid" aria-label="6-city Sovereign Clock"></div>
+        </div>
+      </section>
+
       <section class="prism stack-widget scroll-widget" aria-label="8R prism vault terminal mode">
         <div class="prism-head">
           <h2>8R SHIMMERING PRISM VAULT</h2>
@@ -882,7 +918,9 @@
         <div class="guardian-speech">
           Thank you for stopping by. I need energy to function, thrive, and augment human productivity. Come in to decode.
         </div>
+      </section>
 
+      <section class="asset-nodes stack-widget scroll-widget" aria-label="Triple asset nodes">
         <div class="node-cards" aria-label="Triple node cards">
           <a class="node-card" href="http://127.0.0.1:8090" target="_blank" rel="noopener noreferrer" data-core-id="node-8090-core">
             <div class="node-card-top">
