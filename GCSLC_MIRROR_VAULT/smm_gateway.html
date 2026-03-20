@@ -103,8 +103,8 @@
       -webkit-background-clip:text;
       -webkit-text-fill-color: transparent;
       background-clip:text;
-      animation: liquidMetalFlow 16s linear infinite;
-      text-shadow: 0 0 18px rgba(255,255,255,.28), 0 0 22px rgba(255,215,0,.24);
+      animation: liquidMetalFlow 12s linear infinite;
+      text-shadow: 0 0 24px rgba(255,255,255,.45), 0 0 34px rgba(255,215,0,.45);
       will-change: background-position;
     }
     @keyframes shimmerShift{
@@ -396,16 +396,12 @@
       padding:14px;
     }
     .guardian-visual img{
-      max-width: 92%;
-      height:auto;
+      max-width: 100%;
+      height:320px;
+      width:auto;
       object-fit:contain;
-      filter: drop-shadow(0 0 24px rgba(212,175,55,.18));
-      animation: guardian-breathe 5.4s ease-in-out infinite;
-      will-change: transform, opacity;
-    }
-    @keyframes guardian-breathe{
-      0%,100%{ transform: scale(.99); opacity:.92; }
-      50%{ transform: scale(1.02); opacity:1; }
+      filter: brightness(1.2) contrast(1.1);
+      will-change: opacity, filter;
     }
     .guardian-fallback{
       display:none;
@@ -420,10 +416,21 @@
       border-left:4px solid rgba(212,175,55,.9);
       padding:12px 14px;
       border-radius:12px;
-      background: rgba(255,255,255,.03);
+      background: rgba(10,16,30,.90);
       font-size:.92rem;
       line-height:1.5;
       color: rgba(244,246,255,.98);
+      position:relative;
+      animation: sovereignPulse 4s ease-in-out infinite;
+      box-shadow: 0 0 18px rgba(255,215,0,.22);
+    }
+    .guardian-speech::before{
+      content:'';
+      position:absolute;
+      left:24px;
+      top:-10px;
+      border:10px solid transparent;
+      border-bottom-color: rgba(10,16,30,.90);
     }
 
     /* ENERGY CORE ACTIVE frame + triple node cards */
@@ -455,18 +462,32 @@
       text-shadow:0 0 18px rgba(212,175,55,.14);
       pointer-events:none;
     }
+    .energy-core-frame::before{
+      content:'';
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      background:
+        radial-gradient(circle at 44% 39%, rgba(255,215,0,.0) 0 2px, rgba(255,215,0,.75) 3px 10px, transparent 11px),
+        radial-gradient(circle at 56% 39%, rgba(255,215,0,.0) 0 2px, rgba(255,215,0,.75) 3px 10px, transparent 11px),
+        radial-gradient(circle at 50% 60%, rgba(255,215,0,.85) 0 14px, transparent 30px);
+      opacity:.45;
+      animation: sovereignPulse 4s ease-in-out infinite;
+      mix-blend-mode: screen;
+      z-index:2;
+    }
     .energy-core-frame::after{
       content:'';
       position:absolute;
       inset:-20%;
       background: radial-gradient(closest-side, rgba(212,175,55,.22), transparent 62%);
-      opacity:.45;
-      animation: core-pulse 3.8s ease-in-out infinite;
+      opacity:.32;
+      animation: sovereignPulse 4s ease-in-out infinite;
       pointer-events:none;
     }
-    @keyframes core-pulse{
-      0%,100%{ transform: scale(1); opacity:.35; }
-      50%{ transform: scale(1.08); opacity:.60; }
+    @keyframes sovereignPulse{
+      0%,100%{ opacity:.42; box-shadow: 0 0 14px rgba(255,215,0,.15); }
+      50%{ opacity:.95; box-shadow: 0 0 30px rgba(255,215,0,.45); }
     }
     .node-cards{
       margin-top:10px;
@@ -791,6 +812,30 @@
       cursor:pointer;
       box-shadow: 0 0 18px rgba(255,215,0,.45);
     }
+    .ghost-shield{
+      position:fixed;
+      inset:0;
+      z-index:28;
+      pointer-events:none;
+      overflow:hidden;
+      opacity:.3;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .ghost-shield-track{
+      transform: rotate(-27deg);
+      width:180%;
+      text-align:center;
+      color:#FFD700;
+      font-family:'Cinzel','Goldman',sans-serif;
+      font-weight:700;
+      font-size:1.05rem;
+      letter-spacing:.18em;
+      line-height:2.8;
+      text-shadow: 0 0 10px rgba(255,215,0,.35);
+      user-select:none;
+    }
     .modal-dialog{
       width:min(820px, 100%);
       border-radius:18px;
@@ -848,6 +893,10 @@
 <body>
   <div class="app">
     <div class="topbar">
+      <div class="identity-widget stack-widget scroll-widget" aria-label="Institutional identity">
+        <h1 class="title">Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC LTD/GTE)</h1>
+        <div class="tagline">Everything is powered by the 8R Stealth Paradigm Convergence and its Determinants.</div>
+      </div>
       <div class="prices stack-widget scroll-widget" aria-label="Live material pricing ribbon">
         <div class="price-left">
           <span class="pulse-dot"></span>
@@ -884,11 +933,6 @@
     </div>
 
     <div class="main">
-      <section class="identity-widget stack-widget scroll-widget" aria-label="Institutional identity">
-        <h1 class="title">Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC LTD/GTE)</h1>
-        <div class="tagline">Everything is powered by the 8R Stealth Paradigm Convergence and its Determinants.</div>
-      </section>
-
       <section class="clock-wrap stack-widget scroll-widget" aria-label="Global sync clocks">
         <div class="portrait-prism" aria-label="6-city pulse portrait widget">
           <div class="clock-grid" id="clock-grid" aria-label="6-city Sovereign Clock"></div>
@@ -915,8 +959,8 @@
             <div id="guardian-fallback" class="guardian-fallback">HUMANOID GUARDIAN · ENERGY CORE ACTIVE</div>
           </div>
         </div>
-        <div class="guardian-speech">
-          Thank you for stopping by. I need energy to function, thrive, and augment human productivity. Come in to decode.
+        <div class="guardian-speech" id="guardian-speech-bubble">
+          <span id="guardian-speech-text"></span>
         </div>
       </section>
 
@@ -1006,6 +1050,14 @@
           <div class="terminal" id="term-text">&gt; Awaiting determinant selection...</div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div class="ghost-shield" aria-hidden="true">
+    <div class="ghost-shield-track">
+      GCSLC PROPRIETARY — LW15954 · GCSLC PROPRIETARY — LW15954 · GCSLC PROPRIETARY — LW15954 ·
+      GCSLC PROPRIETARY — LW15954 · GCSLC PROPRIETARY — LW15954 · GCSLC PROPRIETARY — LW15954 ·
+      GCSLC PROPRIETARY — LW15954 · GCSLC PROPRIETARY — LW15954 · GCSLC PROPRIETARY — LW15954
     </div>
   </div>
 
@@ -1698,6 +1750,30 @@
       });
     }, { threshold: 0.2 });
     document.querySelectorAll(".scroll-widget").forEach((el) => io.observe(el));
+
+    // Guardian narrative typewriter bubble (syncs with sovereign pulse cadence).
+    const guardianSpeechText = document.getElementById("guardian-speech-text");
+    const guardianSpeechMsg = "Thank you for stopping by. I need energy to function, thrive, and augment human productivity. Come in to decode.";
+    let guardianTypeTimer = null;
+    function runGuardianTypewriter() {
+      if (!guardianSpeechText) return;
+      if (guardianTypeTimer) {
+        clearInterval(guardianTypeTimer);
+        guardianTypeTimer = null;
+      }
+      guardianSpeechText.textContent = "";
+      let i = 0;
+      guardianTypeTimer = setInterval(() => {
+        if (i < guardianSpeechMsg.length) {
+          i += 1;
+          guardianSpeechText.textContent = guardianSpeechMsg.slice(0, i);
+        } else {
+          clearInterval(guardianTypeTimer);
+          guardianTypeTimer = null;
+        }
+      }, 22);
+    }
+    runGuardianTypewriter();
   </script>
 </body>
 </html>
