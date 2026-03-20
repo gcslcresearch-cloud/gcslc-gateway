@@ -2,542 +2,518 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>GCSLC | Sovereign Vault Gateway</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GCSLC | Sovereign Mirror Final</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Goldman:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root{
-      --obsidian:#0a0a12;
-      --obsidian-2:#05050b;
+      --obsidian:#05060b;
+      --navy:#000510;
       --gold:#D4AF37;
-      --gold-2:rgba(212,175,55,.55);
-      --gold-dim:rgba(212,175,55,.22);
-      --germanium:#8b96ff; /* Germanium Blue (pulsing) */
-      --silicon:#2a6ea8;   /* blue for silicon */
-      --glass: rgba(255,255,255,0.06);
-      --glass2: rgba(255,255,255,0.10);
-      --ink:#eae6de;
+      --white:#f4f6ff;
       --green:#00FF41;
+      --glass:rgba(255,255,255,.08);
+      --glass-b:rgba(255,255,255,.12);
+      --ink:#e5e1d7;
     }
-
-    *{ box-sizing:border-box; }
-    html,body{ height:100%; }
+    *{box-sizing:border-box}
+    html,body{height:100%}
     body{
       margin:0;
-      font-family:'Goldman', system-ui, sans-serif;
-      background: radial-gradient(900px 520px at 20% 15%, rgba(212,175,55,.08), transparent 60%),
-                  radial-gradient(900px 520px at 80% 10%, rgba(42,110,168,.10), transparent 55%),
-                  linear-gradient(180deg, var(--obsidian) 0%, var(--obsidian-2) 100%);
-      color:var(--ink);
-      overflow:hidden;
-    }
-
-    /* Breathing watermark */
-    .wm-wrap{
-      position:fixed; inset:0;
-      display:flex; align-items:center; justify-content:center;
-      pointer-events:none;
-      z-index:0;
-      overflow:hidden;
-    }
-    .wm{
-      width:min(62vw,520px);
-      height:auto;
-      opacity:.55;
-      filter: drop-shadow(0 0 38px rgba(212,175,55,.15));
-      transform: scale(.98);
-      animation: wm-breathe 7s ease-in-out infinite;
-      will-change: transform, opacity;
-    }
-    @keyframes wm-breathe{
-      0%,100%{ transform: scale(.95); opacity:.40; }
-      50%{ transform: scale(1.05); opacity:.60; }
-    }
-
-    /* Layout */
-    .app{
-      position:relative;
-      z-index:1;
-      height:100%;
-      display:flex;
-      flex-direction:column;
-    }
-
-    /* Top pricing ribbon */
-    .pulse-top{
-      position:fixed;
-      top:0; left:0; right:0;
-      z-index:50;
-      padding:10px 12px;
-      background: rgba(5,5,11,0.65);
-      border-bottom: 1px solid var(--gold-dim);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-    }
-    .pulse-top-inner{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-    .pulse-title{
-      font-size:.78rem;
-      letter-spacing:.14em;
-      font-weight:700;
-      color:var(--gold);
-      white-space:nowrap;
-    }
-    .prices{
-      display:flex;
-      gap:14px;
-      flex-wrap:wrap;
-      align-items:center;
-      justify-content:flex-end;
-    }
-    .price-pill{
-      padding:7px 10px;
-      border-radius:999px;
-      border:1px solid rgba(212,175,55,.35);
-      background: rgba(212,175,55,.06);
-      box-shadow: 0 0 0 1px rgba(42,110,168,.12) inset;
-      font-size:.8rem;
-      letter-spacing:.02em;
-      display:flex;
-      align-items:baseline;
-      gap:8px;
-      will-change: transform;
-    }
-    .pulse-chip{
-      width:7px; height:7px; border-radius:50%;
-      background: var(--germanium);
-      box-shadow: 0 0 12px rgba(139,150,255,.55);
-      animation: chip-pulse 2.2s ease-in-out infinite;
-    }
-    .pulse-chip.silicon{
-      background: var(--silicon);
-      box-shadow: 0 0 12px rgba(42,110,168,.55);
-    }
-    @keyframes chip-pulse{
-      0%,100%{ transform: scale(1); opacity:1; }
-      50%{ transform: scale(1.35); opacity:.65; }
-    }
-
-    /* Main stage */
-    .stage{
-      padding-top:70px;
-      flex:1;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:18px;
-      padding-left:14px;
-      padding-right:14px;
-    }
-
-    .stack{
-      width: min(1120px, 100%);
-      display:flex;
-      flex-direction:column;
-      gap:18px;
-    }
-
-    .cards{
-      display:grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap:16px;
-    }
-    @media (max-width: 980px){
-      .cards{ grid-template-columns: 1fr; }
-    }
-
-    /* Glass-morphism 3D cards */
-    .card{
-      position:relative;
-      border-radius:18px;
-      border:1px solid rgba(212,175,55,.35);
-      background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
-      box-shadow:
-        0 20px 60px rgba(0,0,0,.35),
-        inset 0 1px 0 rgba(255,255,255,0.10),
-        inset 0 0 0 1px rgba(42,110,168,.10);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      padding:18px;
-      transform-style: preserve-3d;
-      transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
-      will-change: transform;
-    }
-    .card::before{
-      content:'';
-      position:absolute; inset:-1px;
-      border-radius:18px;
-      pointer-events:none;
       background:
-        radial-gradient(500px 160px at 20% 0%, rgba(212,175,55,.22), transparent 55%),
-        radial-gradient(420px 220px at 90% 10%, rgba(42,110,168,.20), transparent 58%);
-      opacity:.9;
-      mix-blend-mode: screen;
+        radial-gradient(950px 520px at 12% 8%, rgba(212,175,55,.10), transparent 58%),
+        radial-gradient(820px 420px at 88% 10%, rgba(35,79,133,.14), transparent 55%),
+        linear-gradient(180deg,var(--navy),var(--obsidian));
+      color:var(--ink);
+      font-family:'Goldman',system-ui,sans-serif;
+      overflow:hidden;
     }
 
-    .card:hover{
-      transform: translateY(-4px) rotateX(6deg) rotateY(-8deg);
-      border-color: rgba(212,175,55,.65);
-      box-shadow:
-        0 28px 90px rgba(0,0,0,.45),
-        inset 0 1px 0 rgba(255,255,255,0.12),
-        inset 0 0 0 1px rgba(42,110,168,.18);
-    }
+    .app{height:100%;display:flex;flex-direction:column;position:relative}
 
-    .card-top{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      position:relative;
-      z-index:1;
+    /* Top ribbon */
+    .material-ribbon{
+      position:fixed;left:0;right:0;top:0;z-index:60;
+      background:rgba(5,6,11,.72);
+      border-bottom:1px solid rgba(212,175,55,.28);
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+      padding:8px 10px;
     }
-    .port{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      font-size:.72rem;
-      letter-spacing:.18em;
-      font-weight:800;
-      color: var(--obsidian);
-      background: linear-gradient(90deg, rgba(212,175,55,.95), rgba(249,241,164,.9));
-      padding:7px 10px;
+    .material-inner{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+    .material-title{
+      color:var(--gold);font-size:.74rem;font-weight:700;letter-spacing:.16em;white-space:nowrap
+    }
+    .material-pills{display:flex;gap:10px;flex-wrap:wrap}
+    .mat-pill{
+      border:1px solid rgba(212,175,55,.35);
       border-radius:999px;
-      box-shadow: 0 0 0 1px rgba(212,175,55,.55) inset, 0 8px 20px rgba(212,175,55,.12);
-      white-space:nowrap;
-    }
-    .badge-dot{
-      width:9px; height:9px; border-radius:50%;
-      background: rgba(42,110,168,.9);
-      box-shadow: 0 0 14px rgba(42,110,168,.45);
-    }
-    .card-title{
-      margin-top:14px;
-      font-size:1.12rem;
-      font-weight:900;
-      letter-spacing:.02em;
-      color:var(--gold);
-      text-shadow: 0 0 18px rgba(212,175,55,.12);
-      position:relative;
-      z-index:1;
-    }
-    .card-sub{
-      margin-top:8px;
-      font-size:.86rem;
-      line-height:1.35;
-      color:rgba(234,230,222,.92);
-      position:relative;
-      z-index:1;
-    }
-    .cta{
-      margin-top:14px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      position:relative;
-      z-index:1;
-    }
-    .open-btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      text-decoration:none;
-      font-weight:900;
-      letter-spacing:.08em;
+      padding:6px 10px;
       font-size:.78rem;
-      padding:10px 12px;
-      border-radius:12px;
-      border:1px solid rgba(212,175,55,.50);
-      background: rgba(212,175,55,.10);
-      color: var(--gold);
-      box-shadow: inset 0 0 0 1px rgba(42,110,168,.12);
-      transition: transform .18s ease, background .18s ease, border-color .18s ease;
-      white-space:nowrap;
-      will-change: transform;
+      background:rgba(212,175,55,.06);
+      color:var(--white);
+      display:flex;align-items:center;gap:7px;
     }
-    .open-btn:hover{
-      transform: translateY(-1px);
-      background: rgba(212,175,55,.16);
-      border-color: rgba(212,175,55,.75);
+    .mat-dot{
+      width:8px;height:8px;border-radius:50%;
+      background:#7f8ef8;box-shadow:0 0 12px rgba(127,142,248,.55);
+      animation:pulse 2.2s ease-in-out infinite;
     }
+    .mat-dot.silicon{background:#2a6ea8;box-shadow:0 0 12px rgba(42,110,168,.55)}
+    .mat-dot.coal{background:#9a7840;box-shadow:0 0 12px rgba(154,120,64,.55)}
+    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.35);opacity:.65}}
 
-    /* Sovereign access modal (light) */
-    .modal{
-      position:fixed;
-      inset:0;
-      background: rgba(0,0,0,.55);
-      z-index:100;
-      display:none;
-      align-items:center;
-      justify-content:center;
-      padding:18px;
+    /* Header identity */
+    .identity{
+      margin-top:54px;
+      text-align:center;
+      padding:14px 14px 10px;
+      border-bottom:1px solid rgba(212,175,55,.25);
+      position:relative;
+      z-index:2;
     }
-    .modal.show{ display:flex; }
-    .modal-dialog{
-      width:min(720px, 100%);
-      border-radius:18px;
-      border:1px solid rgba(212,175,55,.45);
-      background: rgba(6,6,12,.92);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      box-shadow: 0 30px 120px rgba(0,0,0,.5);
-      overflow:hidden;
+    .title{
+      margin:0;
+      font-family:'Cinzel','Goldman',sans-serif;
+      font-size:clamp(1.05rem,2.6vw,1.55rem);
+      line-height:1.35;
+      letter-spacing:.02em;
+      font-weight:700;
+      background:linear-gradient(115deg,var(--white) 0%,#fff8cf 18%,var(--gold) 42%,#f7f9ff 68%,#234f85 100%);
+      background-size:260% auto;
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+      animation:shine 5.6s linear infinite;
+      text-shadow:0 0 22px rgba(212,175,55,.16);
     }
-    .modal-head{
-      padding:16px 16px 12px;
-      border-bottom: 1px solid rgba(212,175,55,.22);
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:12px;
+    .hook{
+      margin:8px auto 0;
+      max-width:980px;
+      color:rgba(212,175,55,.95);
+      font-size:.8rem;
+      letter-spacing:.04em;
     }
-    .modal-title{
-      color: var(--gold);
-      font-weight:900;
-      letter-spacing:.06em;
-    }
-    .modal-close{
-      cursor:pointer;
-      border:none;
-      padding:9px 12px;
-      border-radius:12px;
-      background: rgba(212,175,55,.14);
-      color: var(--gold);
-      font-weight:900;
-    }
-    .modal-body{
-      padding:16px;
+    @keyframes shine{to{background-position:260% center}}
+
+    /* Clock grid */
+    .clock-grid{
       display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px;
+      grid-template-columns:repeat(6,minmax(0,1fr));
+      gap:10px;
+      padding:10px 12px;
+      border-bottom:1px solid rgba(212,175,55,.18);
+      position:relative;z-index:2;
     }
-    @media (max-width: 720px){ .modal-body{ grid-template-columns: 1fr; } }
-    .modal-field label{
-      display:block;
-      color: rgba(212,175,55,.92);
-      font-weight:800;
-      letter-spacing:.06em;
-      font-size:.72rem;
-      margin-bottom:6px;
+    @media (max-width:900px){ .clock-grid{grid-template-columns:repeat(3,minmax(0,1fr));} }
+    .clock-cell{text-align:center}
+    .face{
+      width:48px;height:48px;border-radius:50%;
+      border:1.5px solid rgba(212,175,55,.85);
+      margin:0 auto;background:rgba(255,255,255,.04);
+      position:relative;
     }
-    .modal-field input{
-      width:100%;
-      padding:11px 12px;
-      background: rgba(0,0,0,.25);
-      border-radius:12px;
-      border:1px solid rgba(212,175,55,.42);
-      color:#fff;
-      outline:none;
-      font-family:inherit;
+    .hand{
+      position:absolute;left:50%;bottom:50%;
+      transform-origin:bottom center;background:var(--gold);
+      transform:translateX(-50%) rotate(0deg);border-radius:2px;
     }
-    .modal-foot{
-      padding:14px 16px 18px;
-      border-top: 1px solid rgba(212,175,55,.16);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      flex-wrap:wrap;
-    }
-    .modal-foot small{
-      color: rgba(212,175,55,.75);
-      letter-spacing:.06em;
-      font-weight:800;
-    }
-    .decode-btn{
-      border:none;
-      cursor:pointer;
-      padding:12px 16px;
-      border-radius:14px;
-      background: linear-gradient(90deg, rgba(212,175,55,1), rgba(249,241,164,.92));
-      color: var(--obsidian);
-      font-weight:900;
-      letter-spacing:.08em;
-    }
+    .hand.h{width:3px;height:14px}
+    .hand.m{width:2px;height:19px}
+    .clock-label{margin-top:5px;font-size:.52rem;color:rgba(212,175,55,.95);letter-spacing:.06em}
 
-    /* Bottom signature ticker + fixed signature always visible */
-    .sig-fixed{
-      position:fixed;
-      left:18px;
-      bottom:74px; /* above the ticker bar */
-      z-index:80;
-      font-size:.64rem;
-      letter-spacing:.08em;
-      color: rgba(212,175,55,.85);
-      font-weight:900;
-      text-shadow: 0 0 18px rgba(212,175,55,.14);
-      pointer-events:none;
-    }
-
-    .ticker-bottom{
-      position:fixed;
-      left:0; right:0; bottom:0;
-      z-index:90;
-      background: rgba(5,5,11,.95);
-      border-top: 1px solid rgba(212,175,55,.25);
-      padding: 10px 0;
-      height:52px;
+    /* Main composition */
+    .main{
+      position:relative;z-index:2;
+      flex:1;min-height:0;
+      display:grid;
+      grid-template-columns:1.15fr 1fr;
+      gap:14px;
+      padding:12px;
       overflow:hidden;
     }
-    .ticker-track{
-      display:inline-block;
+    @media (max-width:980px){ .main{grid-template-columns:1fr;overflow:auto;padding-bottom:110px;} }
+
+    .guardian-wrap{
+      border:1px solid rgba(212,175,55,.28);
+      border-radius:14px;
+      background:rgba(4,8,16,.55);
+      padding:14px;
+      display:flex;flex-direction:column;gap:10px;
+      min-height:0;
+    }
+    .guardian-visual{
+      display:flex;justify-content:center;align-items:center;
+      min-height:220px;
+      background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:12px;
+      position:relative;
+      overflow:hidden;
+    }
+    .guardian-visual img{
+      width:min(84%,460px);
+      height:auto;
+      object-fit:contain;
+      filter:drop-shadow(0 0 24px rgba(212,175,55,.22));
+    }
+    .fallback-human{
+      display:none;
+      color:rgba(212,175,55,.88);
+      font-family:'Cinzel','Goldman',sans-serif;
+      letter-spacing:.08em;
+      text-align:center;
+      font-size:.95rem;
+      max-width:80%;
+    }
+    .speech{
+      border-left:4px solid var(--gold);
+      padding:10px 12px;
+      background:rgba(255,255,255,.03);
+      color:var(--white);
+      font-size:.88rem;
+      line-height:1.45;
+    }
+
+    /* Prism vault */
+    .prism{
+      border:1px solid rgba(212,175,55,.28);
+      border-radius:14px;
+      background:rgba(4,8,16,.55);
+      padding:14px;
+      display:flex;flex-direction:column;
+      min-height:0;
+    }
+    .prism-title{
+      color:var(--gold);
+      font-family:'Cinzel','Goldman',sans-serif;
+      letter-spacing:.08em;
+      margin:0 0 10px;
+      font-size:.95rem;
+    }
+    .prism-frame{
+      border:1px solid rgba(212,175,55,.35);
+      border-radius:12px;
+      padding:10px;
+      background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
+    }
+    .det-grid{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:10px;
+    }
+    .det{
+      border:1px solid rgba(212,175,55,.55);
+      border-radius:10px;
+      background:rgba(0,5,16,.72);
+      min-height:74px;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      cursor:pointer;user-select:none;
+      transition:.18s transform ease,.22s box-shadow ease,.18s background ease;
+      animation:detGlow 2.6s ease-in-out infinite;
+    }
+    .det:hover{
+      transform:translateY(-2px);
+      box-shadow:0 0 22px rgba(212,175,55,.45);
+      background:rgba(14,22,40,.88);
+      animation:none;
+    }
+    .det-code{color:var(--gold);font-weight:700;font-size:.95rem;line-height:1}
+    .det-tag{font-size:.48rem;color:rgba(212,175,55,.95);margin-top:3px;letter-spacing:.06em}
+    @keyframes detGlow{0%,100%{box-shadow:0 0 10px rgba(212,175,55,.13)}50%{box-shadow:0 0 17px rgba(212,175,55,.33)}}
+
+    /* Matrix typewriter terminal */
+    .terminal{
+      margin-top:10px;
+      border:1px solid rgba(0,255,65,.65);
+      border-radius:12px;
+      min-height:140px;
+      background:rgba(0,10,0,.92);
+      color:var(--green);
+      font-size:.88rem;
+      line-height:1.48;
+      padding:12px;
+      white-space:pre-wrap;
+      overflow:auto;
+      font-family:'Goldman', system-ui, sans-serif;
+      box-shadow:0 0 20px rgba(0,255,65,.15) inset;
+    }
+    .term-head{
+      display:flex;align-items:center;justify-content:space-between;
+      margin-bottom:8px;font-size:.7rem;letter-spacing:.1em;color:rgba(0,255,65,.85);
+    }
+    .term-close{
+      border:1px solid rgba(0,255,65,.65);
+      color:var(--green);
+      background:transparent;
+      border-radius:8px;
+      padding:4px 8px;
+      cursor:pointer;
+      font-family:inherit;
+      font-size:.66rem;
+      font-weight:700;
+    }
+
+    /* Legal fixed ticker */
+    .signature{
+      position:fixed;
+      left:12px;
+      bottom:58px;
+      z-index:40;
+      color:rgba(212,175,55,.85);
+      font-size:.62rem;
+      letter-spacing:.08em;
+      font-weight:700;
+      pointer-events:none;
+      text-shadow:0 0 12px rgba(212,175,55,.15);
+    }
+    .legal{
+      position:fixed;left:0;right:0;bottom:0;z-index:50;
+      background:rgba(3,4,8,.96);
+      border-top:1px solid rgba(212,175,55,.25);
+      height:52px;overflow:hidden;
+      display:flex;align-items:center;
+    }
+    .legal-track{
       white-space:nowrap;
       padding-left:100%;
-      animation: sig-scroll 42s linear infinite;
-      font-size:.7rem;
-      letter-spacing:.08em;
-      color: rgba(212,175,55,.92);
-      font-weight:900;
+      display:inline-block;
+      animation:scroll 42s linear infinite;
+      color:rgba(212,175,55,.95);
+      font-size:.69rem;
+      font-weight:700;
+      letter-spacing:.07em;
     }
-    @keyframes sig-scroll{
-      0%{ transform: translateX(0); }
-      100%{ transform: translateX(-100%); }
-    }
-
-    /* Ensure there is room for fixed UI on small devices */
-    .pad-bottom { padding-bottom: 70px; }
+    @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
   </style>
 </head>
 <body>
-  <div class="wm-wrap">
-    <!-- Uses local medallion asset (fast, no external frameworks). -->
-    <img class="wm" src="../assets/medallion.png" alt="" />
-  </div>
-
-  <div class="app pad-bottom">
-    <div class="pulse-top" role="banner" aria-label="Live pricing ribbon">
-      <div class="pulse-top-inner">
-        <div class="pulse-title">REAL-TIME PULSE · GCSLC PRICES</div>
-        <div class="prices">
-          <div class="price-pill" aria-label="Germanium price">
-            <span class="pulse-chip"></span>
-            <span>Germanium</span>
-            <strong>$8,597/kg</strong>
-          </div>
-          <div class="price-pill" aria-label="Silicon price">
-            <span class="pulse-chip silicon"></span>
-            <span>Silicon</span>
-            <strong>$1.81/kg</strong>
-          </div>
+  <div class="app">
+    <div class="material-ribbon">
+      <div class="material-inner">
+        <div class="material-title">MATERIAL PULSE · REAL-TIME FEED</div>
+        <div class="material-pills">
+          <div class="mat-pill"><span class="mat-dot"></span><span>Germanium</span><strong id="px-ge">$8,597/kg</strong></div>
+          <div class="mat-pill"><span class="mat-dot silicon"></span><span>Silicon</span><strong id="px-si">$1.81/kg</strong></div>
+          <div class="mat-pill"><span class="mat-dot coal"></span><span>Coal</span><strong id="px-coal">$131/MT</strong></div>
         </div>
       </div>
     </div>
 
-    <div class="stage">
-      <div class="stack">
-        <div class="cards" aria-label="Port cards">
-          <div class="card" aria-label="Port 8090 - NRRFC">
-            <div class="card-top">
-              <span class="port"><span class="badge-dot"></span>8090</span>
-            </div>
-            <div class="card-title">NRRFC</div>
-            <div class="card-sub">National Resources Revitalization Fusion Center — <strong>The Energy Engine</strong>.</div>
-            <div class="cta">
-              <button type="button" class="open-btn" onclick="openAccess('8090')">Enter 8090 →</button>
-              <a class="open-btn" href="http://127.0.0.1:8090" target="_blank" rel="noopener noreferrer">Open node</a>
-            </div>
-          </div>
+    <header class="identity">
+      <h1 class="title">Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC LTD/GTE)</h1>
+      <div class="hook">Everything is powered by the 8R Stealth Paradigm Convergence and its Determinants. Come in to understand</div>
+    </header>
 
-          <div class="card" aria-label="Port 8053 - NWC/C&D">
-            <div class="card-top">
-              <span class="port"><span class="badge-dot"></span>8053</span>
-            </div>
-            <div class="card-title">NWC / C&amp;D</div>
-            <div class="card-sub">National Wealth Cloud — <strong>The 37-Node Geopolitical Grid</strong>.</div>
-            <div class="cta">
-              <button type="button" class="open-btn" onclick="openAccess('8053')">Enter 8053 →</button>
-              <a class="open-btn" href="http://127.0.0.1:8053" target="_blank" rel="noopener noreferrer">Open node</a>
-            </div>
-          </div>
+    <section class="clock-grid" id="clock-grid" aria-label="6-City Sovereign Clock"></section>
 
-          <div class="card" aria-label="Port 8054 - K-GEC">
-            <div class="card-top">
-              <span class="port"><span class="badge-dot"></span>8054</span>
-            </div>
-            <div class="card-title">K-GEC</div>
-            <div class="card-sub">Komi Generative Eagle Cloud — <strong>$170.85B Sovereign AI Anchor</strong>.</div>
-            <div class="cta">
-              <button type="button" class="open-btn" onclick="openAccess('8054')">Enter 8054 →</button>
-              <a class="open-btn" href="http://127.0.0.1:8054" target="_blank" rel="noopener noreferrer">Open node</a>
-            </div>
-          </div>
+    <main class="main">
+      <section class="guardian-wrap">
+        <div class="guardian-visual">
+          <img id="guardian-img" src="../assets/humanoid_coal.png" alt="Humanoid holding coal" onerror="this.style.display='none';document.getElementById('guardian-fallback').style.display='block';" />
+          <div id="guardian-fallback" class="fallback-human">HUMANOID GUARDIAN · ENERGY CORE ACTIVE</div>
         </div>
+        <div class="speech">Thank you for stopping by. I need energy to function, thrive, and augment human productivity. Come in to decode</div>
+      </section>
+
+      <section class="prism">
+        <h2 class="prism-title">8R SHIMMERING PRISM VAULT</h2>
+        <div class="prism-frame">
+          <div class="det-grid" id="det-grid"></div>
+        </div>
+        <div class="terminal" id="terminal">
+          <div class="term-head">
+            <span>MATRIX TYPEWRITER MODE</span>
+            <button class="term-close" type="button" onclick="closeTerminal()">CLEAR</button>
+          </div>
+          <div id="term-text">&gt; Awaiting determinant selection...</div>
+        </div>
+      </section>
+    </main>
+
+    <div class="signature">Dr. Sa’ad Jaafaru — Signature Verified</div>
+
+    <footer class="legal" aria-label="Legal ticker">
+      <div class="legal-track">
+        Proprietary Methodology of Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau — Copyright Registration No. LW15954 — NON-TRANSFERABLE — 95/5 TALON LOCK ·
+        Proprietary Methodology of Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau — Copyright Registration No. LW15954 — NON-TRANSFERABLE — 95/5 TALON LOCK ·
+        Proprietary Methodology of Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau — Copyright Registration No. LW15954 — NON-TRANSFERABLE — 95/5 TALON LOCK ·
       </div>
-    </div>
-
-    <!-- Access modal -->
-    <div class="modal" id="accessModal" aria-hidden="true" role="dialog" aria-label="Sovereign Access Protocol">
-      <div class="modal-dialog">
-        <div class="modal-head">
-          <div>
-            <div class="modal-title">SOVEREIGN ACCESS PROTOCOL</div>
-            <div style="color:rgba(212,175,55,.85); font-weight:800; margin-top:6px; font-size:.78rem; letter-spacing:.06em;">
-              Decode context before entering primary nodes.
-            </div>
-          </div>
-          <button class="modal-close" type="button" onclick="closeAccess()">CLOSE</button>
-        </div>
-        <div class="modal-body">
-          <div class="modal-field">
-            <label for="orgEmail">Organization/Email</label>
-            <input id="orgEmail" type="text" placeholder="Organization or email" />
-          </div>
-          <div class="modal-field">
-            <label for="nodePort">Target Port</label>
-            <input id="nodePort" type="text" value="" disabled />
-          </div>
-        </div>
-        <div class="modal-foot">
-          <small>SESSION: 95/5 TALON LOCK · Sovereign Gate</small>
-          <button class="decode-btn" type="button" onclick="acknowledgeAccess()">DECODE</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="sig-fixed" aria-hidden="true">Dr. Sa’ad Jaafaru — Signature Verified</div>
-  </div>
-
-  <div class="ticker-bottom" aria-label="Signature ticker">
-    <div class="ticker-track" id="sigTrack">
-      Proprietary Methodology of Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau — Copyright LW15954 — NON-TRANSFERABLE — 95/5 TALON LOCK ·
-      Proprietary Methodology of Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau — Copyright LW15954 — NON-TRANSFERABLE — 95/5 TALON LOCK ·
-      Proprietary Methodology of Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau — Copyright LW15954 — NON-TRANSFERABLE — 95/5 TALON LOCK ·
-    </div>
+    </footer>
   </div>
 
   <script>
-    // Minimal JS only for modal state (keeps UI smooth).
-    const modal = document.getElementById('accessModal');
-    const nodePortEl = document.getElementById('nodePort');
-    const orgEmailEl = document.getElementById('orgEmail');
+    // ---------- 6-city clock grid (UTC-relative, zero lag style update) ----------
+    const CLOCKS = [
+      { id: "ABJ", label: "ABUJA", tz: "Africa/Lagos" },
+      { id: "LON", label: "LONDON", tz: "Europe/London" },
+      { id: "DXB", label: "DUBAI", tz: "Asia/Dubai" },
+      { id: "GVA", label: "GENEVA", tz: "Europe/Zurich" },
+      { id: "NYC", label: "NEW YORK", tz: "America/New_York" },
+      { id: "BJS", label: "BEIJING", tz: "Asia/Shanghai" }
+    ];
+    const clockGrid = document.getElementById("clock-grid");
+    CLOCKS.forEach(c => {
+      const el = document.createElement("div");
+      el.className = "clock-cell";
+      el.innerHTML = `<div class="face" id="face-${c.id}"><div class="hand h"></div><div class="hand m"></div></div><div class="clock-label">${c.label}</div>`;
+      clockGrid.appendChild(el);
+    });
 
-    function openAccess(port) {
-      if (!modal) return;
-      nodePortEl.value = port;
-      modal.classList.add('show');
-      modal.setAttribute('aria-hidden', 'false');
-      setTimeout(() => { try { orgEmailEl.focus(); } catch(e){} }, 50);
+    function getTZParts(tz) {
+      const now = new Date();
+      const fmt = new Intl.DateTimeFormat("en-US", {
+        timeZone: tz, hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false
+      });
+      const parts = fmt.formatToParts(now);
+      const map = {};
+      parts.forEach(p => { if (p.type !== "literal") map[p.type] = parseInt(p.value, 10); });
+      return map;
+    }
+    function updateClocks() {
+      CLOCKS.forEach(c => {
+        const t = getTZParts(c.tz);
+        const hourDeg = (t.hour % 12) * 30 + t.minute * 0.5;
+        const minDeg = t.minute * 6 + t.second * 0.1;
+        const face = document.getElementById(`face-${c.id}`);
+        if (!face) return;
+        const h = face.querySelector(".hand.h");
+        const m = face.querySelector(".hand.m");
+        h.style.transform = `translateX(-50%) rotate(${hourDeg}deg)`;
+        m.style.transform = `translateX(-50%) rotate(${minDeg}deg)`;
+      });
+    }
+    updateClocks();
+    (function clockTick() {
+      updateClocks();
+      const now = new Date();
+      setTimeout(clockTick, 1000 - now.getMilliseconds());
+    })();
+
+    // ---------- Real-time material polling (API -> CSV fallback -> constants) ----------
+    const priceEls = {
+      germanium: document.getElementById("px-ge"),
+      silicon: document.getElementById("px-si"),
+      coal: document.getElementById("px-coal")
+    };
+    const fallbackPrices = { germanium: 8597, silicon: 1.81, coal: 131 };
+
+    function renderPrices(p) {
+      if (typeof p.germanium === "number") priceEls.germanium.textContent = `$${p.germanium.toLocaleString()}/kg`;
+      if (typeof p.silicon === "number") priceEls.silicon.textContent = `$${p.silicon.toLocaleString()}/kg`;
+      if (typeof p.coal === "number") priceEls.coal.textContent = `$${p.coal.toLocaleString()}/MT`;
     }
 
-    function closeAccess() {
-      if (!modal) return;
-      modal.classList.remove('show');
-      modal.setAttribute('aria-hidden', 'true');
+    async function tryCsv(paths) {
+      for (const p of paths) {
+        try {
+          const r = await fetch(p, { cache: "no-store" });
+          if (!r.ok) continue;
+          const txt = await r.text();
+          if (!txt || txt.length < 6) continue;
+          const rows = txt.trim().split(/\\r?\\n/);
+          // Supports either: material,price OR key,value OR last row as latest snapshot
+          const out = { ...fallbackPrices };
+          rows.slice(1).forEach(line => {
+            const cols = line.split(",");
+            if (cols.length < 2) return;
+            const k = cols[0].trim().toLowerCase();
+            const v = parseFloat(cols[1].replace(/[^0-9.\\-]/g, ""));
+            if (!Number.isFinite(v)) return;
+            if (k.includes("german")) out.germanium = v;
+            if (k.includes("silicon")) out.silicon = v;
+            if (k.includes("coal")) out.coal = v;
+          });
+          return out;
+        } catch (_) {}
+      }
+      return null;
     }
 
-    function acknowledgeAccess() {
-      // No heavy logic: just close modal and let users open the target node in new tabs.
-      // This preserves performance while serving the UX “air-lock”.
-      closeAccess();
+    async function pollPrices() {
+      try {
+        // Lightweight API request. If CORS/availability fails, fallback to CSV.
+        const api = await fetch("https://api.metalprice.com/v1/latest", { cache: "no-store" });
+        if (api.ok) {
+          const data = await api.json();
+          // Flexible extraction:
+          const p = { ...fallbackPrices };
+          if (data && typeof data === "object") {
+            const src = data.data || data.prices || data;
+            const ge = src.germanium || src.Germanium || src.GE;
+            const si = src.silicon || src.Silicon || src.SI;
+            const co = src.coal || src.Coal || src.COAL;
+            if (Number.isFinite(+ge)) p.germanium = +ge;
+            if (Number.isFinite(+si)) p.silicon = +si;
+            if (Number.isFinite(+co)) p.coal = +co;
+          }
+          renderPrices(p);
+          return;
+        }
+      } catch (_) {}
+
+      const csvData = await tryCsv([
+        "./data/material_prices.csv",
+        "../data/material_prices.csv",
+        "./data/prices.csv",
+        "../data/prices.csv"
+      ]);
+      if (csvData) renderPrices(csvData);
+      else renderPrices(fallbackPrices);
     }
+    pollPrices();
+    setInterval(pollPrices, 15000);
+
+    // ---------- 8R prism + matrix typewriter ----------
+    const DETS = {
+      D1: "REFINE: Distilling national coal into high-yield digital liquidity.",
+      D2: "RESET: Global alignment of sovereign material protocols.",
+      D3: "RESEARCH: Proprietary intelligence model under LW15954.",
+      D4: "RESTRUCTURE: Engineering fiscal high-velocity pathways.",
+      D5: "RESUSCITATE: Reviving moribund entities into productive cores.",
+      D6: "REVITALIZE: Converting fossil energy into digital energy value.",
+      D7: "RE-ENGINEER: Building and optimizing the 8R Stealth OS.",
+      D8: "RETAIN: Anchoring sovereign authority and material ownership."
+    };
+    const detGrid = document.getElementById("det-grid");
+    const termText = document.getElementById("term-text");
+    let typingTimer = null;
+
+    function stopTypewriter() {
+      if (typingTimer) {
+        clearInterval(typingTimer);
+        typingTimer = null;
+      }
+    }
+    function closeTerminal() {
+      stopTypewriter();
+      termText.textContent = "> Awaiting determinant selection...";
+    }
+    function typeOut(msg) {
+      stopTypewriter();
+      termText.textContent = "> ";
+      let i = 0;
+      typingTimer = setInterval(() => {
+        if (i < msg.length) {
+          i++;
+          termText.textContent = "> " + msg.slice(0, i);
+        } else {
+          stopTypewriter();
+        }
+      }, 24);
+    }
+
+    Object.keys(DETS).forEach(k => {
+      const box = document.createElement("button");
+      box.type = "button";
+      box.className = "det";
+      const tag = DETS[k].split(":")[0];
+      box.innerHTML = `<div class="det-code">[${k}]</div><div class="det-tag">${tag}</div>`;
+      box.addEventListener("click", () => typeOut(DETS[k]));
+      detGrid.appendChild(box);
+    });
   </script>
 </body>
 </html>
