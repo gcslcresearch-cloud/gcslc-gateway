@@ -397,7 +397,7 @@
     }
     .guardian-visual img{
       max-width: 100%;
-      height:320px;
+      height:350px;
       width:auto;
       object-fit:contain;
       filter: brightness(1.2) contrast(1.1);
@@ -421,7 +421,7 @@
       line-height:1.5;
       color: rgba(244,246,255,.98);
       position:relative;
-      animation: sovereignPulse 4s ease-in-out infinite;
+      animation: sovereignHeartbeat 4s ease-in-out infinite;
       box-shadow: 0 0 18px rgba(255,215,0,.22);
     }
     .guardian-speech::before{
@@ -468,11 +468,11 @@
       inset:0;
       pointer-events:none;
       background:
-        radial-gradient(circle at 44% 39%, rgba(255,215,0,.0) 0 2px, rgba(255,215,0,.75) 3px 10px, transparent 11px),
-        radial-gradient(circle at 56% 39%, rgba(255,215,0,.0) 0 2px, rgba(255,215,0,.75) 3px 10px, transparent 11px),
-        radial-gradient(circle at 50% 60%, rgba(255,215,0,.85) 0 14px, transparent 30px);
-      opacity:.45;
-      animation: sovereignPulse 4s ease-in-out infinite;
+        radial-gradient(circle at 44% 39%, rgba(82,170,255,.0) 0 2px, rgba(82,170,255,.85) 3px 10px, transparent 11px),
+        radial-gradient(circle at 56% 39%, rgba(82,170,255,.0) 0 2px, rgba(82,170,255,.85) 3px 10px, transparent 11px),
+        radial-gradient(circle at 50% 60%, rgba(78,160,255,.92) 0 14px, transparent 30px);
+      opacity:.52;
+      animation: sovereignHeartbeat 4s ease-in-out infinite;
       mix-blend-mode: screen;
       z-index:2;
     }
@@ -480,14 +480,14 @@
       content:'';
       position:absolute;
       inset:-20%;
-      background: radial-gradient(closest-side, rgba(212,175,55,.22), transparent 62%);
-      opacity:.32;
-      animation: sovereignPulse 4s ease-in-out infinite;
+      background: radial-gradient(closest-side, rgba(82,170,255,.30), transparent 62%);
+      opacity:.36;
+      animation: sovereignHeartbeat 4s ease-in-out infinite;
       pointer-events:none;
     }
-    @keyframes sovereignPulse{
-      0%,100%{ opacity:.42; box-shadow: 0 0 14px rgba(255,215,0,.15); }
-      50%{ opacity:.95; box-shadow: 0 0 30px rgba(255,215,0,.45); }
+    @keyframes sovereignHeartbeat{
+      0%,100%{ opacity:.45; box-shadow: 0 0 10px rgba(82,170,255,.16); }
+      50%{ opacity:1; box-shadow: 0 0 26px rgba(82,170,255,.58); }
     }
     .node-cards{
       margin-top:10px;
@@ -812,29 +812,43 @@
       cursor:pointer;
       box-shadow: 0 0 18px rgba(255,215,0,.45);
     }
-    .ghost-shield{
+    .bubble-shield{
       position:fixed;
       inset:0;
       z-index:28;
       pointer-events:none;
       overflow:hidden;
-      opacity:.3;
-      display:flex;
-      align-items:center;
-      justify-content:center;
     }
-    .ghost-shield-track{
-      transform: rotate(-27deg);
-      width:180%;
-      text-align:center;
-      color:#FFD700;
+    .bubble-stamp{
+      position:absolute;
+      left:0;
+      top:0;
+      color: rgba(255,215,0,.95);
       font-family:'Cinzel','Goldman',sans-serif;
       font-weight:700;
-      font-size:1.05rem;
-      letter-spacing:.18em;
-      line-height:2.8;
-      text-shadow: 0 0 10px rgba(255,215,0,.35);
+      font-size:.78rem;
+      letter-spacing:.08em;
+      white-space:nowrap;
+      text-shadow: 0 0 12px rgba(255,215,0,.45);
       user-select:none;
+      will-change: transform, opacity, left, top;
+      transform-origin:center center;
+      animation: bubbleDrift var(--dur, 16s) ease-in-out infinite;
+      opacity: var(--o0, .3);
+    }
+    @keyframes bubbleDrift{
+      0%{
+        transform: translate3d(0,0,0) scale(var(--s0, 1));
+        opacity: var(--o0, .3);
+      }
+      50%{
+        transform: translate3d(calc(var(--dx, 80px) * .5), calc(var(--dy, -60px) * .5), 0) scale(var(--sm, 1.15));
+        opacity: var(--om, .5);
+      }
+      100%{
+        transform: translate3d(var(--dx, 80px), var(--dy, -60px), 0) scale(var(--s1, .92));
+        opacity: var(--o1, .25);
+      }
     }
     .modal-dialog{
       width:min(820px, 100%);
@@ -1053,13 +1067,7 @@
     </div>
   </div>
 
-  <div class="ghost-shield" aria-hidden="true">
-    <div class="ghost-shield-track">
-      GCSLC PROPRIETARY — LW15954 · GCSLC PROPRIETARY — LW15954 · GCSLC PROPRIETARY — LW15954 ·
-      GCSLC PROPRIETARY — LW15954 · GCSLC PROPRIETARY — LW15954 · GCSLC PROPRIETARY — LW15954 ·
-      GCSLC PROPRIETARY — LW15954 · GCSLC PROPRIETARY — LW15954 · GCSLC PROPRIETARY — LW15954
-    </div>
-  </div>
+  <div class="bubble-shield" id="bubble-shield" aria-hidden="true"></div>
 
   <button type="button" class="back-top" id="back-top-btn" aria-label="Back to top">BACK TO TOP</button>
 
@@ -1750,6 +1758,39 @@
       });
     }, { threshold: 0.2 });
     document.querySelectorAll(".scroll-widget").forEach((el) => io.observe(el));
+
+    // Bubbling mode screenshot shield (persistent, randomized).
+    const bubbleShield = document.getElementById("bubble-shield");
+    const BUBBLE_TEXT = "GCSLC PROPRIETARY — LW15954 — NON-TRANSFERABLE — 95/5 TALON LOCK";
+    function rand(min, max) { return Math.random() * (max - min) + min; }
+    function configureBubble(el) {
+      const vw = window.innerWidth || 1280;
+      const vh = window.innerHeight || 720;
+      el.style.left = `${rand(-120, vw - 80)}px`;
+      el.style.top = `${rand(-80, vh - 20)}px`;
+      el.style.setProperty("--dx", `${rand(-220, 220)}px`);
+      el.style.setProperty("--dy", `${rand(-180, 180)}px`);
+      el.style.setProperty("--dur", `${rand(10, 22).toFixed(2)}s`);
+      el.style.setProperty("--s0", `${rand(0.82, 1.22).toFixed(3)}`);
+      el.style.setProperty("--sm", `${rand(0.95, 1.38).toFixed(3)}`);
+      el.style.setProperty("--s1", `${rand(0.86, 1.18).toFixed(3)}`);
+      el.style.setProperty("--o0", `${rand(0.2, 0.5).toFixed(3)}`);
+      el.style.setProperty("--om", `${rand(0.25, 0.5).toFixed(3)}`);
+      el.style.setProperty("--o1", `${rand(0.2, 0.45).toFixed(3)}`);
+    }
+    if (bubbleShield) {
+      for (let i = 0; i < 16; i += 1) {
+        const stamp = document.createElement("div");
+        stamp.className = "bubble-stamp";
+        stamp.textContent = BUBBLE_TEXT;
+        configureBubble(stamp);
+        stamp.addEventListener("animationiteration", () => configureBubble(stamp));
+        bubbleShield.appendChild(stamp);
+      }
+      window.addEventListener("resize", () => {
+        bubbleShield.querySelectorAll(".bubble-stamp").forEach((el) => configureBubble(el));
+      });
+    }
 
     // Guardian narrative typewriter bubble (syncs with sovereign pulse cadence).
     const guardianSpeechText = document.getElementById("guardian-speech-text");
