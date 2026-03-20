@@ -21,7 +21,7 @@
       --shadow: rgba(0,0,0,.45);
     }
     *{ box-sizing:border-box; }
-    html,body{ height:100%; }
+    html,body{ height:auto; min-height:100%; }
     body{
       margin:0;
       background:
@@ -30,7 +30,8 @@
         linear-gradient(180deg, var(--navy), var(--obsidian));
       color:var(--white);
       font-family:'Goldman', system-ui, sans-serif;
-      overflow:hidden;
+      overflow-x:hidden;
+      overflow-y:auto;
       filter: brightness(1.2);
     }
 
@@ -65,7 +66,8 @@
 
     /* Layout */
     .app{
-      height:100%;
+      height:auto;
+      min-height:100%;
       padding-bottom:62px; /* keep content above legal ticker */
       display:flex;
       flex-direction:column;
@@ -78,8 +80,18 @@
       position:relative;
       z-index:5;
       padding:10px 10px 10px;
-      border-bottom: 1px solid rgba(212,175,55,.25);
-      background: linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,0));
+      border-bottom:none;
+      background: transparent;
+      display:flex;
+      flex-direction:column;
+      gap:40px;
+    }
+    .identity-widget{
+      border-radius:16px;
+      border:1px solid rgba(255,215,0,.82);
+      background: linear-gradient(180deg, rgba(255,255,255,.90), rgba(0,5,16,.90));
+      padding:12px;
+      box-shadow: 0 0 22px rgba(255,215,0,.22);
     }
     .title{
       margin:0;
@@ -127,7 +139,7 @@
       padding:8px 10px;
       border:1px solid rgba(212,175,55,.25);
       border-radius:12px;
-      background: linear-gradient(180deg, rgba(255,255,255,.85), rgba(0,5,16,.85));
+      background: linear-gradient(180deg, rgba(255,255,255,.90), rgba(0,5,16,.90));
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       display:flex;
@@ -230,7 +242,7 @@
       position:relative;
       z-index:5;
       padding:10px;
-      border-bottom: 1px solid rgba(212,175,55,.18);
+      border-bottom:none;
     }
     .portrait-prism{
       max-width:100%;
@@ -238,7 +250,7 @@
       border-radius:16px;
       border:1px solid rgba(255,215,0,.82);
       padding:12px;
-      background: linear-gradient(180deg, rgba(255,255,255,.85), rgba(0,5,16,.85));
+      background: linear-gradient(180deg, rgba(255,255,255,.90), rgba(0,5,16,.90));
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       position:relative;
@@ -328,9 +340,9 @@
       flex:1;
       display:flex;
       flex-direction:column;
-      gap:10px;
+      gap:40px;
       padding:10px;
-      overflow:auto;
+      overflow:visible;
       min-height:0;
     }
 
@@ -338,7 +350,7 @@
     .guardian{
       border-radius:18px;
       border:1px solid rgba(212,175,55,.22);
-      background: linear-gradient(180deg, rgba(255,255,255,.85), rgba(0,5,16,.85));
+      background: linear-gradient(180deg, rgba(255,255,255,.90), rgba(0,5,16,.90));
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       box-shadow: 0 18px 60px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
@@ -445,7 +457,7 @@
     .node-card{
       border-radius:14px;
       border:1px solid rgba(212,175,55,.35);
-      background: linear-gradient(180deg, rgba(255,255,255,.85), rgba(0,5,16,.85));
+      background: linear-gradient(180deg, rgba(255,255,255,.90), rgba(0,5,16,.90));
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       padding:12px 12px;
@@ -495,7 +507,7 @@
     .prism{
       border-radius:18px;
       border:1px solid rgba(212,175,55,.22);
-      background: linear-gradient(180deg, rgba(255,255,255,.85), rgba(0,5,16,.85));
+      background: linear-gradient(180deg, rgba(255,255,255,.90), rgba(0,5,16,.90));
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       padding:14px;
@@ -531,7 +543,7 @@
       margin-top:10px;
       border-radius:16px;
       border:1px solid rgba(212,175,55,.28);
-      background: linear-gradient(180deg, rgba(255,255,255,.85), rgba(0,5,16,.85));
+      background: linear-gradient(180deg, rgba(255,255,255,.90), rgba(0,5,16,.90));
       padding:12px;
       position:relative;
       width:100%;
@@ -623,7 +635,7 @@
       background:
         radial-gradient(500px 220px at 20% 0%, rgba(255,215,0,.32), transparent 55%),
         radial-gradient(460px 260px at 90% 10%, rgba(42,110,168,.36), transparent 58%),
-        rgba(255,255,255,.85);
+        rgba(255,255,255,.90);
       display:flex;
       flex-direction:column;
       gap:10px;
@@ -715,6 +727,35 @@
       padding:16px;
     }
     .modal.show{ display:flex; }
+    .scroll-widget{
+      opacity:.92;
+      transform: translateY(8px);
+      transition: transform .45s ease, opacity .45s ease, box-shadow .45s ease, border-color .45s ease;
+    }
+    .scroll-widget.in-view{
+      opacity:1;
+      transform: translateY(0);
+      box-shadow: 0 0 24px rgba(255,215,0,.32), 0 0 14px rgba(255,255,255,.22);
+      border-color: rgba(255,255,255,.92);
+    }
+
+    .back-top{
+      position:fixed;
+      right:14px;
+      bottom:72px;
+      z-index:40;
+      border:1px solid rgba(255,215,0,.9);
+      border-radius:999px;
+      background: linear-gradient(120deg, rgba(255,215,0,.96), rgba(255,255,255,.85));
+      color:#0a0d18;
+      font-family:inherit;
+      font-weight:900;
+      font-size:.66rem;
+      letter-spacing:.08em;
+      padding:10px 12px;
+      cursor:pointer;
+      box-shadow: 0 0 18px rgba(255,215,0,.45);
+    }
     .modal-dialog{
       width:min(820px, 100%);
       border-radius:18px;
@@ -772,7 +813,7 @@
 <body>
   <div class="app">
     <div class="topbar">
-      <div class="prices" aria-label="Live material pricing ribbon">
+      <div class="prices stack-widget scroll-widget" aria-label="Live material pricing ribbon">
         <div class="price-left">
           <span class="pulse-dot"></span>
           <div class="pulse-label">MATERIAL PULSE</div>
@@ -805,18 +846,20 @@
             </div>
         </div>
       </div>
-      <h1 class="title">Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC LTD/GTE)</h1>
-      <div class="tagline">Everything is powered by the 8R Stealth Paradigm Convergence and its Determinants.</div>
+      <div class="identity-widget stack-widget scroll-widget">
+        <h1 class="title">Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC LTD/GTE)</h1>
+        <div class="tagline">Everything is powered by the 8R Stealth Paradigm Convergence and its Determinants.</div>
+      </div>
     </div>
 
-    <div class="clock-wrap">
+    <div class="clock-wrap stack-widget scroll-widget">
       <div class="portrait-prism" aria-label="6-city pulse portrait widget">
         <div class="clock-grid" id="clock-grid" aria-label="6-city Sovereign Clock"></div>
       </div>
     </div>
 
     <div class="main">
-      <section class="prism" aria-label="8R prism vault terminal mode">
+      <section class="prism stack-widget scroll-widget" aria-label="8R prism vault terminal mode">
         <div class="prism-head">
           <h2>8R SHIMMERING PRISM VAULT</h2>
           <div class="prism-note">Click prism → Typewriter Terminal</div>
@@ -827,7 +870,7 @@
         </div>
       </section>
 
-      <section class="guardian" aria-label="Humanoid guardian">
+      <section class="guardian stack-widget scroll-widget" aria-label="Humanoid guardian">
         <div class="guardian-visual portrait-prism">
           <div class="energy-core-frame" aria-label="ENERGY CORE ACTIVE frame">
             <div class="energy-core-label">ENERGY CORE ACTIVE</div>
@@ -876,7 +919,7 @@
         </div>
       </section>
 
-      <section class="decode-panel" aria-label="DECODE VAULT sign-on">
+      <section class="decode-panel stack-widget scroll-widget" aria-label="DECODE VAULT sign-on">
         <div class="decode-top-actions">
           <button type="button" class="decode-terminate" id="terminate-session-btn">LOG OUT</button>
         </div>
@@ -927,6 +970,8 @@
       </div>
     </div>
   </div>
+
+  <button type="button" class="back-top" id="back-top-btn" aria-label="Back to top">BACK TO TOP</button>
 
   <div class="legal" aria-label="Legal base ticker">
     <div class="legal-track" id="legal-track">
@@ -1601,6 +1646,20 @@
         openModalWithText("SOVEREIGN SESSION TERMINATED — Decode Vault required for core access.");
       });
     }
+
+    // Scroll-in border shimmer + back-to-top.
+    const backTopBtn = document.getElementById("back-top-btn");
+    if (backTopBtn) {
+      backTopBtn.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) entry.target.classList.add("in-view");
+      });
+    }, { threshold: 0.2 });
+    document.querySelectorAll(".scroll-widget").forEach((el) => io.observe(el));
   </script>
 </body>
 </html>
