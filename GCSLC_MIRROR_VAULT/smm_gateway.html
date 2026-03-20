@@ -416,6 +416,11 @@
       line-height:1.35;
     }
 
+    /* Technical cores (revived + linked by id) */
+    .node-core{
+      display:none;
+    }
+
     /* Prism vault */
     .prism{
       border-radius:18px;
@@ -735,28 +740,37 @@
         </div>
 
         <div class="node-cards" aria-label="Triple node cards">
-          <a class="node-card" href="http://127.0.0.1:8090" target="_blank" rel="noopener noreferrer">
+          <a class="node-card" href="http://127.0.0.1:8090" target="_blank" rel="noopener noreferrer" data-core-id="node-8090-core">
             <div class="node-card-top">
               <span class="node-port">NRRFC · 8090</span>
               <span class="node-title">NRRFC</span>
             </div>
             <div class="node-sub">National Resources Revitalization Fusion Center — <strong>The Energy Engine</strong>.</div>
+            <div id="node-8090-core" class="node-core" aria-hidden="true" data-core-url="http://127.0.0.1:8090">
+              NRRFC CORE · 8090
+            </div>
           </a>
 
-          <a class="node-card" href="http://127.0.0.1:8053" target="_blank" rel="noopener noreferrer">
+          <a class="node-card" href="http://127.0.0.1:8053" target="_blank" rel="noopener noreferrer" data-core-id="node-8053-grid">
             <div class="node-card-top">
               <span class="node-port">NWC/C&amp;D · 8053</span>
               <span class="node-title">NWC</span>
             </div>
             <div class="node-sub">National Wealth Cloud — <strong>The 37-Node Geopolitical Grid</strong>.</div>
+            <div id="node-8053-grid" class="node-core" aria-hidden="true" data-core-url="http://127.0.0.1:8053">
+              NWC GRID CORE · 8053
+            </div>
           </a>
 
-          <a class="node-card" href="http://127.0.0.1:8054" target="_blank" rel="noopener noreferrer">
+          <a class="node-card" href="http://127.0.0.1:8054" target="_blank" rel="noopener noreferrer" data-core-id="node-8054-anchor">
             <div class="node-card-top">
               <span class="node-port">K-GEC · 8054</span>
               <span class="node-title">K-GEC</span>
             </div>
             <div class="node-sub">Komi Generative Eagle Cloud — <strong>$170.85B Sovereign AI Anchor</strong>.</div>
+            <div id="node-8054-anchor" class="node-core" aria-hidden="true" data-core-url="http://127.0.0.1:8054">
+              K-GEC ANCHOR CORE · 8054
+            </div>
           </a>
         </div>
       </section>
@@ -971,14 +985,32 @@
       }
     }
 
-    // First load: local CSV for zero-lag
-    (async () => {
-      const localPrices = await loadLocalPrices();
-      setPrices(localPrices);
-      // Second load: background API polling
-      pollPricesFromAPI();
-      setInterval(pollPricesFromAPI, 15000);
-    })();
+    // Primary source for first 15 minutes (local CSV), then switch to API.
+    const LOCAL_PRIMARY_MS = 15 * 60 * 1000;
+    const localStartMs = Date.now();
+    let pricesBusy = false;
+
+    async function tickRibbonPrices() {
+      if (pricesBusy) return;
+      pricesBusy = true;
+      try {
+      const ageMs = Date.now() - localStartMs;
+      if (ageMs < LOCAL_PRIMARY_MS) {
+        // Keep local as the first source-of-truth in the initial instance.
+        const localPrices = await loadLocalPrices();
+        setPrices(localPrices);
+        return;
+      }
+      // Secondary: API polling
+      await pollPricesFromAPI();
+      } finally {
+        pricesBusy = false;
+      }
+    }
+
+    // First tick immediately (no lag)
+    tickRibbonPrices();
+    setInterval(tickRibbonPrices, 15000);
 
     // ---------- 8R prism determinants (D1–D8) ----------
     const DETS = {
@@ -1089,6 +1121,46 @@
       detGrid.appendChild(b);
     });
 
+    // ---------- Revived Triple-Node linking (8090 / 8053 / 8054) ----------
+    function openCoreTerminalAndLink(cardEl) {
+      const coreId = cardEl.dataset.coreId || "";
+      const coreUrl = cardEl.getAttribute("href") || "";
+      const title = (cardEl.querySelector(".node-title") || {}).textContent || coreId;
+      const msg = `${title} CORE ACTIVATED — CONNECTING to ${coreUrl}...`;
+
+      openModalWithText(msg);
+
+      // Navigate shortly after the typewriter finishes (approx).
+      const delayMs = Math.min(2200, msg.length * 16 + 160);
+      setTimeout(() => {
+        if (!coreUrl) return;
+        window.open(coreUrl, "_blank", "noopener,noreferrer");
+      }, delayMs);
+    }
+
+    document.querySelectorAll(".node-card[data-core-id]").forEach(card => {
+      card.addEventListener("click", (e) => {
+        const st = loadSessionState();
+        const nowMs = Date.now();
+        const coreId = card.dataset.coreId || "UNKNOWN CORE";
+
+        if (nowMs <= st.validUntil) {
+          e.preventDefault();
+          openCoreTerminalAndLink(card);
+          return;
+        }
+
+        if (nowMs <= st.reverifyUntil) {
+          e.preventDefault();
+          openModalWithText(`RE-VERIFICATION REQUIRED — Decode again to revive ${coreId}.`);
+          return;
+        }
+
+        e.preventDefault();
+        openModalWithText(`ACCESS EXPIRED — Decode again to revive ${coreId}.`);
+      });
+    });
+
     // ---------- Sovereign Access: DECODE VAULT ----------
     const decodeBtn = document.getElementById("decode-btn");
     const waCodeSel = document.getElementById("acc-wa-code");
@@ -1096,49 +1168,270 @@
       // ISO-3166 alpha-2 -> WhatsApp calling dial code (local source, no external API).
       // Note: This set is optimized for performance while remaining privacy-preserving.
       const WHATSAPP_COUNTRIES_ISO = {
-        NG: { name: "Nigeria", dial: "+234" },
-        GB: { name: "United Kingdom", dial: "+44" },
-        US: { name: "United States", dial: "+1" },
-        AE: { name: "United Arab Emirates", dial: "+971" },
-        CH: { name: "Switzerland", dial: "+41" },
-        CN: { name: "China", dial: "+86" },
-        FR: { name: "France", dial: "+33" },
-        DE: { name: "Germany", dial: "+49" },
-        IT: { name: "Italy", dial: "+39" },
-        ZA: { name: "South Africa", dial: "+27" },
-        KE: { name: "Kenya", dial: "+254" },
-        EG: { name: "Egypt", dial: "+20" },
-        ES: { name: "Spain", dial: "+34" },
-        SE: { name: "Sweden", dial: "+46" },
-        NO: { name: "Norway", dial: "+47" },
-        DK: { name: "Denmark", dial: "+45" },
-        JP: { name: "Japan", dial: "+81" },
-        KR: { name: "South Korea", dial: "+82" },
-        AU: { name: "Australia", dial: "+61" },
-        NZ: { name: "New Zealand", dial: "+64" },
-        IN: { name: "India", dial: "+91" },
-        PK: { name: "Pakistan", dial: "+92" },
-        BR: { name: "Brazil", dial: "+55" },
-        MX: { name: "Mexico", dial: "+52" },
-        AR: { name: "Argentina", dial: "+54" },
-        SG: { name: "Singapore", dial: "+65" },
-        ID: { name: "Indonesia", dial: "+62" },
-        TH: { name: "Thailand", dial: "+66" },
-        VN: { name: "Vietnam", dial: "+84" },
-        QA: { name: "Qatar", dial: "+974" },
-        SA: { name: "Saudi Arabia", dial: "+966" },
-        OM: { name: "Oman", dial: "+968" },
-        BH: { name: "Bahrain", dial: "+973" },
-        IL: { name: "Israel", dial: "+972" },
-        UG: { name: "Uganda", dial: "+255" },
-        GH: { name: "Ghana", dial: "+233" }
+        AD: { dial: '+376' },
+        AE: { dial: '+971' },
+        AF: { dial: '+93' },
+        AG: { dial: '+1-268' },
+        AI: { dial: '+1-264' },
+        AL: { dial: '+355' },
+        AM: { dial: '+374' },
+        AO: { dial: '+244' },
+        AQ: { dial: '+672' },
+        AR: { dial: '+54' },
+        AS: { dial: '+1-684' },
+        AT: { dial: '+43' },
+        AU: { dial: '+61' },
+        AW: { dial: '+297' },
+        AX: { dial: '+358-18' },
+        AZ: { dial: '+994' },
+        BA: { dial: '+387' },
+        BB: { dial: '+1-246' },
+        BD: { dial: '+880' },
+        BE: { dial: '+32' },
+        BF: { dial: '+226' },
+        BG: { dial: '+359' },
+        BH: { dial: '+973' },
+        BI: { dial: '+257' },
+        BJ: { dial: '+229' },
+        BL: { dial: '+590' },
+        BM: { dial: '+1-441' },
+        BN: { dial: '+673' },
+        BO: { dial: '+591' },
+        BQ: { dial: '+599' },
+        BR: { dial: '+55' },
+        BS: { dial: '+1-242' },
+        BT: { dial: '+975' },
+        BV: { dial: '+0055' },
+        BW: { dial: '+267' },
+        BY: { dial: '+375' },
+        BZ: { dial: '+501' },
+        CA: { dial: '+1' },
+        CC: { dial: '+61' },
+        CD: { dial: '+243' },
+        CF: { dial: '+236' },
+        CG: { dial: '+242' },
+        CH: { dial: '+41' },
+        CI: { dial: '+225' },
+        CK: { dial: '+682' },
+        CL: { dial: '+56' },
+        CM: { dial: '+237' },
+        CN: { dial: '+86' },
+        CO: { dial: '+57' },
+        CR: { dial: '+506' },
+        CU: { dial: '+53' },
+        CV: { dial: '+238' },
+        CW: { dial: '+599' },
+        CX: { dial: '+61' },
+        CY: { dial: '+357' },
+        CZ: { dial: '+420' },
+        DE: { dial: '+49' },
+        DJ: { dial: '+253' },
+        DK: { dial: '+45' },
+        DM: { dial: '+1-767' },
+        DO: { dial: '+1-809 and 1-829' },
+        DZ: { dial: '+213' },
+        EC: { dial: '+593' },
+        EE: { dial: '+372' },
+        EG: { dial: '+20' },
+        EH: { dial: '+212' },
+        ER: { dial: '+291' },
+        ES: { dial: '+34' },
+        ET: { dial: '+251' },
+        FI: { dial: '+358' },
+        FJ: { dial: '+679' },
+        FK: { dial: '+500' },
+        FM: { dial: '+691' },
+        FO: { dial: '+298' },
+        FR: { dial: '+33' },
+        GA: { dial: '+241' },
+        GB: { dial: '+44' },
+        GD: { dial: '+1-473' },
+        GE: { dial: '+995' },
+        GF: { dial: '+594' },
+        GG: { dial: '+44-1481' },
+        GH: { dial: '+233' },
+        GI: { dial: '+350' },
+        GL: { dial: '+299' },
+        GM: { dial: '+220' },
+        GN: { dial: '+224' },
+        GP: { dial: '+590' },
+        GQ: { dial: '+240' },
+        GR: { dial: '+30' },
+        GS: { dial: '+500' },
+        GT: { dial: '+502' },
+        GU: { dial: '+1-671' },
+        GW: { dial: '+245' },
+        GY: { dial: '+592' },
+        HK: { dial: '+852' },
+        HM: { dial: '+672' },
+        HN: { dial: '+504' },
+        HR: { dial: '+385' },
+        HT: { dial: '+509' },
+        HU: { dial: '+36' },
+        ID: { dial: '+62' },
+        IE: { dial: '+353' },
+        IL: { dial: '+972' },
+        IM: { dial: '+44-1624' },
+        IN: { dial: '+91' },
+        IO: { dial: '+246' },
+        IQ: { dial: '+964' },
+        IR: { dial: '+98' },
+        IS: { dial: '+354' },
+        IT: { dial: '+39' },
+        JE: { dial: '+44-1534' },
+        JM: { dial: '+1-876' },
+        JO: { dial: '+962' },
+        JP: { dial: '+81' },
+        KE: { dial: '+254' },
+        KG: { dial: '+996' },
+        KH: { dial: '+855' },
+        KI: { dial: '+686' },
+        KM: { dial: '+269' },
+        KN: { dial: '+1-869' },
+        KP: { dial: '+850' },
+        KR: { dial: '+82' },
+        KW: { dial: '+965' },
+        KY: { dial: '+1-345' },
+        KZ: { dial: '+7' },
+        LA: { dial: '+856' },
+        LB: { dial: '+961' },
+        LC: { dial: '+1-758' },
+        LI: { dial: '+423' },
+        LK: { dial: '+94' },
+        LR: { dial: '+231' },
+        LS: { dial: '+266' },
+        LT: { dial: '+370' },
+        LU: { dial: '+352' },
+        LV: { dial: '+371' },
+        LY: { dial: '+218' },
+        MA: { dial: '+212' },
+        MC: { dial: '+377' },
+        MD: { dial: '+373' },
+        ME: { dial: '+382' },
+        MF: { dial: '+590' },
+        MG: { dial: '+261' },
+        MH: { dial: '+692' },
+        MK: { dial: '+389' },
+        ML: { dial: '+223' },
+        MM: { dial: '+95' },
+        MN: { dial: '+976' },
+        MO: { dial: '+853' },
+        MP: { dial: '+1-670' },
+        MQ: { dial: '+596' },
+        MR: { dial: '+222' },
+        MS: { dial: '+1-664' },
+        MT: { dial: '+356' },
+        MU: { dial: '+230' },
+        MV: { dial: '+960' },
+        MW: { dial: '+265' },
+        MX: { dial: '+52' },
+        MY: { dial: '+60' },
+        MZ: { dial: '+258' },
+        NA: { dial: '+264' },
+        NC: { dial: '+687' },
+        NE: { dial: '+227' },
+        NF: { dial: '+672' },
+        NG: { dial: '+234' },
+        NI: { dial: '+505' },
+        NL: { dial: '+31' },
+        NO: { dial: '+47' },
+        NP: { dial: '+977' },
+        NR: { dial: '+674' },
+        NU: { dial: '+683' },
+        NZ: { dial: '+64' },
+        OM: { dial: '+968' },
+        PA: { dial: '+507' },
+        PE: { dial: '+51' },
+        PF: { dial: '+689' },
+        PG: { dial: '+675' },
+        PH: { dial: '+63' },
+        PK: { dial: '+92' },
+        PL: { dial: '+48' },
+        PM: { dial: '+508' },
+        PN: { dial: '+870' },
+        PR: { dial: '+1-787 and 1-939' },
+        PS: { dial: '+970' },
+        PT: { dial: '+351' },
+        PW: { dial: '+680' },
+        PY: { dial: '+595' },
+        QA: { dial: '+974' },
+        RE: { dial: '+262' },
+        RO: { dial: '+40' },
+        RS: { dial: '+381' },
+        RU: { dial: '+7' },
+        RW: { dial: '+250' },
+        SA: { dial: '+966' },
+        SB: { dial: '+677' },
+        SC: { dial: '+248' },
+        SD: { dial: '+249' },
+        SE: { dial: '+46' },
+        SG: { dial: '+65' },
+        SH: { dial: '+290' },
+        SI: { dial: '+386' },
+        SJ: { dial: '+47' },
+        SK: { dial: '+421' },
+        SL: { dial: '+232' },
+        SM: { dial: '+378' },
+        SN: { dial: '+221' },
+        SO: { dial: '+252' },
+        SR: { dial: '+597' },
+        SS: { dial: '+211' },
+        ST: { dial: '+239' },
+        SV: { dial: '+503' },
+        SX: { dial: '+1721' },
+        SY: { dial: '+963' },
+        SZ: { dial: '+268' },
+        TC: { dial: '+1-649' },
+        TD: { dial: '+235' },
+        TF: { dial: '+262' },
+        TG: { dial: '+228' },
+        TH: { dial: '+66' },
+        TJ: { dial: '+992' },
+        TK: { dial: '+690' },
+        TL: { dial: '+670' },
+        TM: { dial: '+993' },
+        TN: { dial: '+216' },
+        TO: { dial: '+676' },
+        TR: { dial: '+90' },
+        TT: { dial: '+1-868' },
+        TV: { dial: '+688' },
+        TW: { dial: '+886' },
+        TZ: { dial: '+255' },
+        UA: { dial: '+380' },
+        UG: { dial: '+256' },
+        UM: { dial: '+1' },
+        US: { dial: '+1' },
+        UY: { dial: '+598' },
+        UZ: { dial: '+998' },
+        VA: { dial: '+379' },
+        VC: { dial: '+1-784' },
+        VE: { dial: '+58' },
+        VG: { dial: '+1-284' },
+        VI: { dial: '+1-340' },
+        VN: { dial: '+84' },
+        VU: { dial: '+678' },
+        WF: { dial: '+681' },
+        WS: { dial: '+685' },
+        XK: { dial: '+383' },
+        YE: { dial: '+967' },
+        YT: { dial: '+262' },
+        ZA: { dial: '+27' },
+        ZM: { dial: '+260' },
+        ZW: { dial: '+263' },
+      };
+
+      const normalizeDial = (dial) => {
+        const s = String(dial || "").trim();
+        const m = s.match(/^\+[\d-]+/);
+        return m ? m[0] : s;
       };
 
       waCodeSel.innerHTML = "";
       Object.entries(WHATSAPP_COUNTRIES_ISO).forEach(([iso, v]) => {
         const opt = document.createElement("option");
-        opt.value = v.dial;
-        opt.textContent = `${v.dial} ${v.name}`;
+        const dial = normalizeDial(v.dial);
+        opt.value = dial;
+        opt.textContent = `${dial} ${iso}`;
         opt.dataset.iso = iso;
         waCodeSel.appendChild(opt);
       });
