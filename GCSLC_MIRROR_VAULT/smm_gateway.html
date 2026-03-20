@@ -12,6 +12,7 @@
       --navy:#000510;
       --obsidian:#05060b;
       --gold:#D4AF37;
+      --gold-bright:#FFD700;
       --white:#f4f6ff;
       --green:#00FF41;
       --glass:rgba(255,255,255,.08);
@@ -30,6 +31,7 @@
       color:var(--white);
       font-family:'Goldman', system-ui, sans-serif;
       overflow:hidden;
+      filter: brightness(1.2);
     }
 
     /* Fixed bottom ticker */
@@ -67,13 +69,15 @@
       padding-bottom:62px; /* keep content above legal ticker */
       display:flex;
       flex-direction:column;
+      width:min(500px, 100%);
+      margin:0 auto;
     }
 
     /* Top identity */
     .topbar{
       position:relative;
       z-index:5;
-      padding:14px 14px 10px;
+      padding:10px 10px 10px;
       border-bottom: 1px solid rgba(212,175,55,.25);
       background: linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,0));
     }
@@ -119,11 +123,11 @@
     /* Prices ribbon */
     .prices{
       margin:10px auto 0;
-      max-width:1180px;
+      max-width:100%;
       padding:8px 10px;
       border:1px solid rgba(212,175,55,.25);
       border-radius:12px;
-      background: rgba(0,5,16,.55);
+      background: linear-gradient(180deg, rgba(255,255,255,.85), rgba(0,5,16,.85));
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       display:flex;
@@ -136,7 +140,7 @@
       display:flex;
       align-items:center;
       gap:10px;
-      min-width: 260px;
+      min-width: 180px;
     }
     .pulse-dot{
       width:10px;height:10px;border-radius:50%;
@@ -172,7 +176,7 @@
       gap:8px;
       font-weight:800;
       letter-spacing:.02em;
-      min-width: 210px;
+      min-width: 100%;
       justify-content:center;
       transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease, opacity .35s ease;
       will-change: transform, box-shadow, opacity;
@@ -225,16 +229,16 @@
     .clock-wrap{
       position:relative;
       z-index:5;
-      padding:12px 14px;
+      padding:10px;
       border-bottom: 1px solid rgba(212,175,55,.18);
     }
     .portrait-prism{
-      max-width:1180px;
+      max-width:100%;
       margin:0 auto;
       border-radius:16px;
-      border:1px solid rgba(212,175,55,.32);
+      border:1px solid rgba(255,215,0,.82);
       padding:12px;
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      background: linear-gradient(180deg, rgba(255,255,255,.85), rgba(0,5,16,.85));
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       position:relative;
@@ -246,9 +250,10 @@
       inset:-1px;
       border-radius:16px;
       pointer-events:none;
-      background: conic-gradient(from 0deg, rgba(212,175,55,.15), rgba(30,63,122,.35), rgba(248,250,255,.18), rgba(212,175,55,.15));
+      background: conic-gradient(from 0deg, rgba(255,215,0,.92), rgba(30,63,122,.55), rgba(255,255,255,.86), rgba(255,215,0,.92));
       filter: blur(.2px);
       animation: borderRotate 8s linear infinite;
+      box-shadow: 0 0 24px rgba(255,215,0,.75), 0 0 14px rgba(255,255,255,.62);
     }
     .portrait-prism::after{
       content:'';
@@ -263,21 +268,12 @@
       position:relative;
       z-index:1;
       display:grid;
-      grid-template-columns: repeat(6, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap:10px;
-    }
-    @media (max-width: 900px){
-      .clock-grid{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
     @media (max-width: 520px){
       .portrait-prism{ backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
       .pill{ min-width: 100%; }
-      .decode-panel{
-        right:8px;
-        top:116px;
-        width: calc(100vw - 16px);
-        max-height: calc(100vh - 190px);
-      }
     }
     .clock{
       text-align:center;
@@ -330,22 +326,19 @@
       z-index:5;
       position:relative;
       flex:1;
-      display:grid;
-      grid-template-columns: 1.05fr 1fr;
-      gap:14px;
-      padding:14px;
-      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      padding:10px;
+      overflow:auto;
       min-height:0;
-    }
-    @media (max-width: 980px){
-      .main{ grid-template-columns:1fr; overflow:auto; }
     }
 
     /* Humanoid guardian focus */
     .guardian{
       border-radius:18px;
       border:1px solid rgba(212,175,55,.22);
-      background: rgba(0,5,16,.42);
+      background: linear-gradient(180deg, rgba(255,255,255,.85), rgba(0,5,16,.85));
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       box-shadow: 0 18px 60px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
@@ -452,7 +445,7 @@
     .node-card{
       border-radius:14px;
       border:1px solid rgba(212,175,55,.35);
-      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.02));
+      background: linear-gradient(180deg, rgba(255,255,255,.85), rgba(0,5,16,.85));
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       padding:12px 12px;
@@ -502,7 +495,7 @@
     .prism{
       border-radius:18px;
       border:1px solid rgba(212,175,55,.22);
-      background: rgba(0,5,16,.42);
+      background: linear-gradient(180deg, rgba(255,255,255,.85), rgba(0,5,16,.85));
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       padding:14px;
@@ -538,15 +531,13 @@
       margin-top:10px;
       border-radius:16px;
       border:1px solid rgba(212,175,55,.28);
-      background: rgba(0,5,16,.35);
+      background: linear-gradient(180deg, rgba(255,255,255,.85), rgba(0,5,16,.85));
       padding:12px;
-      position:fixed;
-      right:16px;
-      top:132px;
-      width:min(360px, calc(100vw - 24px));
-      max-height: calc(100vh - 210px);
-      overflow:auto;
-      z-index:26;
+      position:relative;
+      width:100%;
+      max-height:none;
+      overflow:visible;
+      z-index:6;
       box-shadow: 0 14px 34px rgba(0,0,0,.48);
     }
     .decode-title{
@@ -601,9 +592,9 @@
       margin-bottom:8px;
     }
     .decode-terminate{
-      border:1px solid rgba(212,175,55,.5);
+      border:1px solid rgba(255,215,0,.88);
       border-radius:12px;
-      background: linear-gradient(120deg, rgba(0,5,16,.96), rgba(30,63,122,.62), rgba(212,175,55,.38));
+      background: linear-gradient(120deg, rgba(0,5,16,.96), rgba(30,63,122,.72), rgba(255,215,0,.38));
       color: #f7f7f9;
       padding:8px 10px;
       font-size:.56rem;
@@ -627,12 +618,12 @@
 
     .prism-frame{
       border-radius:16px;
-      border:1px solid rgba(212,175,55,.3);
+      border:1px solid rgba(255,215,0,.82);
       padding:12px;
       background:
-        radial-gradient(500px 220px at 20% 0%, rgba(212,175,55,.18), transparent 55%),
-        radial-gradient(460px 260px at 90% 10%, rgba(42,110,168,.22), transparent 58%),
-        rgba(255,255,255,.02);
+        radial-gradient(500px 220px at 20% 0%, rgba(255,215,0,.32), transparent 55%),
+        radial-gradient(460px 260px at 90% 10%, rgba(42,110,168,.36), transparent 58%),
+        rgba(255,255,255,.85);
       display:flex;
       flex-direction:column;
       gap:10px;
@@ -654,16 +645,13 @@
     }
     .det-grid{
       display:grid;
-      grid-template-columns:repeat(4,minmax(0,1fr));
+      grid-template-columns:repeat(2,minmax(0,1fr));
       gap:10px;
       min-height:0;
       position:relative;
       z-index:1;
     }
     @media (max-width: 980px){
-      .det-grid{ grid-template-columns:repeat(4,minmax(0,1fr)); }
-    }
-    @media (max-width: 520px){
       .det-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
     }
     .det{
@@ -695,9 +683,8 @@
         border-color: rgba(212,175,55,.55);
       }
       50%{
-        box-shadow: 0 0 18px rgba(212,175,55,.34);
-        box-shadow: 0 0 18px rgba(0,5,16,.55);
-        border-color: rgba(0,5,16,.95);
+        box-shadow: 0 0 18px rgba(255,255,255,.52), 0 0 28px rgba(255,215,0,.55);
+        border-color: rgba(255,215,0,.95);
       }
     }
     .det-code{
@@ -785,9 +772,6 @@
 <body>
   <div class="app">
     <div class="topbar">
-      <h1 class="title">Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC LTD/GTE)</h1>
-      <div class="tagline">Everything is powered by the 8R Stealth Paradigm Convergence and its Determinants.</div>
-
       <div class="prices" aria-label="Live material pricing ribbon">
         <div class="price-left">
           <span class="pulse-dot"></span>
@@ -821,6 +805,8 @@
             </div>
         </div>
       </div>
+      <h1 class="title">Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC LTD/GTE)</h1>
+      <div class="tagline">Everything is powered by the 8R Stealth Paradigm Convergence and its Determinants.</div>
     </div>
 
     <div class="clock-wrap">
@@ -830,6 +816,17 @@
     </div>
 
     <div class="main">
+      <section class="prism" aria-label="8R prism vault terminal mode">
+        <div class="prism-head">
+          <h2>8R SHIMMERING PRISM VAULT</h2>
+          <div class="prism-note">Click prism → Typewriter Terminal</div>
+        </div>
+        <div class="prism-frame">
+          <div class="det-grid" id="det-grid"></div>
+          <div class="terminal" style="display:none"></div>
+        </div>
+      </section>
+
       <section class="guardian" aria-label="Humanoid guardian">
         <div class="guardian-visual portrait-prism">
           <div class="energy-core-frame" aria-label="ENERGY CORE ACTIVE frame">
@@ -879,47 +876,36 @@
         </div>
       </section>
 
-      <section class="prism" aria-label="8R prism vault terminal mode">
-        <div class="prism-head">
-          <h2>8R SHIMMERING PRISM VAULT</h2>
-          <div class="prism-note">Click prism → Typewriter Terminal</div>
+      <section class="decode-panel" aria-label="DECODE VAULT sign-on">
+        <div class="decode-top-actions">
+          <button type="button" class="decode-terminate" id="terminate-session-btn">LOG OUT</button>
         </div>
-        <div class="prism-frame">
-          <div class="det-grid" id="det-grid"></div>
-          <div class="terminal" style="display:none"></div>
+        <div class="decode-title">SOVEREIGN ACCESS · DECODE VAULT</div>
+
+        <div class="decode-field">
+          <label for="acc-email">Email (Required)</label>
+          <input id="acc-email" type="email" placeholder="Enter email" required />
         </div>
 
-        <div class="decode-panel" aria-label="DECODE VAULT sign-on">
-          <div class="decode-top-actions">
-            <button type="button" class="decode-terminate" id="terminate-session-btn">TERMINATE SOVEREIGN SESSION</button>
-          </div>
-          <div class="decode-title">SOVEREIGN ACCESS · DECODE VAULT</div>
+        <div class="decode-field">
+          <label for="acc-org">Organization (Required)</label>
+          <input id="acc-org" type="text" placeholder="Enter organization" required />
+        </div>
 
-          <div class="decode-field">
-            <label for="acc-email">Email (Required)</label>
-            <input id="acc-email" type="email" placeholder="Enter email" required />
+        <div class="decode-field">
+          <label for="acc-wa">WhatsApp (Optional)</label>
+          <div class="wa-row">
+            <select id="acc-wa-code" aria-label="WhatsApp country code"></select>
+            <input id="acc-wa-num" type="tel" placeholder="Number" />
           </div>
+        </div>
 
-          <div class="decode-field">
-            <label for="acc-org">Organization (Required)</label>
-            <input id="acc-org" type="text" placeholder="Enter organization" required />
-          </div>
+        <div class="decode-actions">
+          <button type="button" class="decode-submit" id="decode-btn">DECODE VAULT</button>
+        </div>
 
-          <div class="decode-field">
-            <label for="acc-wa">WhatsApp (Optional)</label>
-            <div class="wa-row">
-              <select id="acc-wa-code" aria-label="WhatsApp country code"></select>
-              <input id="acc-wa-num" type="tel" placeholder="Number" />
-            </div>
-          </div>
-
-          <div class="decode-actions">
-            <button type="button" class="decode-submit" id="decode-btn">DECODE VAULT</button>
-          </div>
-
-          <div style="margin-top:10px; text-align:center; font-size:.62rem; letter-spacing:.06em; color: rgba(212,175,55,.85); font-weight:900;">
-            SESSION HEARTBEAT: 15min + 15min
-          </div>
+        <div style="margin-top:10px; text-align:center; font-size:.62rem; letter-spacing:.06em; color: rgba(212,175,55,.85); font-weight:900;">
+          SESSION HEARTBEAT: 15min + 15min
         </div>
       </section>
     </div>
