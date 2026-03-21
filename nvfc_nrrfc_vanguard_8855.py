@@ -1,114 +1,62 @@
 #!/usr/bin/env python3
 """
-NRRFC Vanguard — Node 8855 · Institutional Urgency Format
-Pure Streamlit only — NO st.image / NO gcs_logo (prevents white-widget occlusion).
-NO Gradio. Particle/blueprint stream, vector prism, 13-state grid, geology sidebar.
+NRRFC Sovereign Vanguard — Node 8855 · Institutional Urgency Format
+Pure Streamlit. NO st.image / NO gcs_logo. NO Gradio.
 Launch: streamlit run nvfc_nrrfc_vanguard_8855.py --server.port 8855
 """
 from __future__ import annotations
 
 import time
-import streamlit as st
 from datetime import timedelta
 
+import streamlit as st
+
+# ---------------------------------------------------------------------------
+# Sovereign Shimmer + full override stylesheet (defined immediately after imports).
+# Streamlit requires st.set_page_config() as the first st.* call — CSS is injected
+# immediately after that (see below).
+# ---------------------------------------------------------------------------
 BG_NAVY = "#001F3F"
 GOLD = "#FFD700"
 TEXT_SLATE = "#E0E0E0"
 
-RESERVES_MT = 640.04
-POWER_MW = 1199
-LEAKAGE_ANCHOR_B = 1.812
-LEAK_TICK_B = 0.01
-LEAK_INTERVAL_SEC = 10
-
-# NGECC line (sovereign GCSLC <h1> is rendered once at top — see st.markdown after set_page_config)
-ENTITY_LINE = (
-    "Nigerian Green Energy and Chemicals Corporation (NGECC) — Special Strategic Mission Vehicle (SSMV)"
-)
-
-# 13-state geopolitical grid (proven reserves)
-STATES_13 = (
-    "Kogi",
-    "Enugu",
-    "Benue",
-    "Nasarawa",
-    "Adamawa",
-    "Anambra",
-    "Delta",
-    "Plateau",
-    "Gombe",
-    "Ondo",
-    "Abia",
-    "Bauchi",
-    "Edo",
-)
-
-STATE_INTEL = {
-    "Kogi": "<strong>Kogi Strike Zone</strong> — Corridor convergence; BUA-adjacent offtake; syngas & AI-DC alignment.",
-    "Enugu": "<strong>Enugu Strike Zone</strong> — Anambra Basin anchor; D1/D3 priority.",
-    "Benue": "<strong>Benue Strike Zone</strong> — Central belt reserves; SSMV agro-industrial synergy.",
-    "Nasarawa": "<strong>Nasarawa Strike Zone</strong> — Data-center corridor; AZK strategic flank.",
-    "Adamawa": "<strong>Adamawa Strike Zone</strong> — NE proven coal; 8R reserve activation.",
-    "Anambra": "<strong>Anambra Strike Zone</strong> — Active production; NGECC feedstock linkage.",
-    "Delta": "<strong>Delta Strike Zone</strong> — Niger Delta energy corridor; hybrid sovereignty.",
-    "Plateau": "<strong>Plateau Strike Zone</strong> — Central highland reserves; mineral co-location.",
-    "Gombe": "<strong>Gombe Strike Zone</strong> — NE tier; D2 moribund capture.",
-    "Ondo": "<strong>Ondo Strike Zone</strong> — SW coastal flank; export logistics.",
-    "Abia": "<strong>Abia Strike Zone</strong> — Aba industrial corridor; SME value chain.",
-    "Bauchi": "<strong>Bauchi Strike Zone</strong> — NE tier; D2/D3 cross-border research.",
-    "Edo": "<strong>Edo Strike Zone</strong> — Benin corridor; high-value feedstock detection (NRRFC lens).",
-}
-
-# Localized geological parameters (sidebar)
-GEOLOGY = {
-    "Kogi": "Basin: Nupe / Bida · Rank: sub-bituminous · Depth est.: 150–450 m · Sulfur: medium · Seismic: low",
-    "Enugu": "Basin: Anambra · Rank: sub-bituminous · Depth est.: 80–350 m · Cleat: well-developed · Seismic: low",
-    "Benue": "Basin: Benue Trough fringe · Rank: sub-bituminous · Depth est.: 200–500 m · Structure: folded · Seismic: low–moderate",
-    "Nasarawa": "Basin: Middle Benue · Rank: sub-bituminous · Depth est.: 120–400 m · Proximity: Abuja DC arc · Seismic: low",
-    "Adamawa": "Basin: Chad / Benue influence · Rank: lignite–sub-bituminous · Depth est.: 150–600 m · Seismic: low",
-    "Anambra": "Basin: Anambra · Rank: sub-bituminous · Depth est.: 60–300 m · Permeability: moderate · Seismic: low",
-    "Delta": "Basin: Niger Delta margin · Rank: sub-bituminous · Depth est.: 200–800 m · Overpressure risk: moderate",
-    "Plateau": "Basin: Jos–Bauchi fringe · Rank: sub-bituminous · Depth est.: 100–400 m · Igneous intrusions: localized",
-    "Gombe": "Basin: Benue Trough · Rank: sub-bituminous · Depth est.: 180–500 m · Seismic: low",
-    "Ondo": "Basin: Dahomey / SW margin · Rank: sub-bituminous · Depth est.: 150–550 m · Coastal logistics: high",
-    "Abia": "Basin: Imo / Anambra fringe · Rank: sub-bituminous · Depth est.: 80–280 m · Industrial density: high",
-    "Bauchi": "Basin: Benue Trough NE · Rank: sub-bituminous · Depth est.: 200–550 m · Seismic: low",
-    "Edo": "Basin: Benin flank / Dahomey margin · Rank: sub-bituminous · Depth est.: 150–450 m · Feedstock signature: high-value (NRRFC)",
-}
-
-if "leak_t0" not in st.session_state:
-    st.session_state.leak_t0 = time.time()
-if "power_highlight" not in st.session_state:
-    st.session_state.power_highlight = False
-if "selected_state" not in st.session_state:
-    st.session_state.selected_state = None
-
-
-def _fragment_supported() -> bool:
-    return hasattr(st, "fragment")
-
-
-st.set_page_config(
-    page_title="NRRFC Vanguard — Node 8855",
-    layout="wide",
-    initial_sidebar_state="expanded",
-)
-
-# Sovereign identity FIRST (before styles / mirror / engine) — no st.image
-st.markdown(
-    """<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet">""",
-    unsafe_allow_html=True,
-)
-st.markdown(
-    "<h1 style='text-align: center; color: #FFD700; font-family: Goldman, sans-serif;'>GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION (GCSLC) LTD/GTE</h1>",
-    unsafe_allow_html=True,
-)
-
-st.markdown(
-    f"""
-<style>
+SOVEREIGN_SHIMMER_CSS = f"""
+<style id="gcslc-sovereign-shimmer-8855">
+  /* --- Sovereign Shimmer (institutional urgency — overrides defaults first) --- */
+  @keyframes vg-sovereign-shimmer {{
+    0% {{ background-position: -180% 0; opacity: 0.72; }}
+    50% {{ background-position: 0% 0; opacity: 0.88; }}
+    100% {{ background-position: 180% 0; opacity: 0.72; }}
+  }}
+  @keyframes vg-blu-ray-sweep {{
+    0%, 100% {{ background-position: 0% 50%; filter: brightness(1.02); }}
+    50% {{ background-position: 100% 50%; filter: brightness(1.08); }}
+  }}
+  .vg-blu-ray-text {{
+    background: linear-gradient(
+      95deg,
+      rgba(255, 215, 0, 0.88) 0%,
+      rgba(200, 230, 255, 0.4) 18%,
+      rgba(255, 215, 0, 0.92) 38%,
+      rgba(180, 220, 255, 0.35) 58%,
+      rgba(255, 215, 0, 0.9) 100%
+    );
+    background-size: 220% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: vg-blu-ray-sweep 24s ease-in-out infinite;
+    opacity: 0.78;
+  }}
+  @supports not (background-clip: text) {{
+    .vg-blu-ray-text {{
+      color: {GOLD} !important;
+      -webkit-text-fill-color: {GOLD};
+      background: none;
+      animation: none;
+      opacity: 0.92;
+    }}
+  }}
   @keyframes vg-blueprint-drift {{
     0% {{ transform: translate(0, 0); }}
     100% {{ transform: translate(-80px, 40px); }}
@@ -129,7 +77,10 @@ st.markdown(
     from {{ transform: rotate(0deg); }}
     to {{ transform: rotate(360deg); }}
   }}
-  /* Flowing particle / blueprint stream (no yellow — Radiant Gold #FFD700 only) */
+  @keyframes vg-metric-blu-ray {{
+    0%, 100% {{ opacity: 0.9; filter: brightness(1); }}
+    50% {{ opacity: 1; filter: brightness(1.07); }}
+  }}
   .stApp {{
     background-color: {BG_NAVY} !important;
     font-family: 'Goldman', system-ui, sans-serif !important;
@@ -150,7 +101,6 @@ st.markdown(
     background-size: 100% 100%, 100% 100%, 200px 200px, 180px 180px;
     animation: vg-particles 28s linear infinite, vg-blueprint-drift 45s linear infinite;
   }}
-  /* Central vector prism (geometric overlay) */
   .vg-prism-vector {{
     position: fixed;
     left: 50%;
@@ -183,7 +133,7 @@ st.markdown(
   section.main .block-container {{
     position: relative;
     z-index: 3;
-    padding: 0.4rem 0.55rem !important;
+    padding: 0.35rem 0.5rem !important;
     max-width: 100% !important;
     overflow: hidden !important;
     background: linear-gradient(
@@ -196,100 +146,85 @@ st.markdown(
       rgba(0, 31, 63, 0.96) 100%
     ) !important;
     background-size: 1000px 100%;
-    animation: vg-shimmer 18s linear infinite;
+    animation: vg-shimmer 18s linear infinite, vg-sovereign-shimmer 22s ease-in-out infinite;
     border-radius: 10px;
     box-shadow: 0 0 14px rgba(255, 215, 0, 0.2), inset 0 0 18px rgba(255, 255, 255, 0.03);
   }}
-  /* S24 Ultra landscape: zoom lock — fit console without scroll */
-  @media (max-height: 520px) {{
-    [data-testid="stMain"] .block-container {{
-      zoom: 0.88;
-    }}
+  @media (max-height: 720px) and (orientation: landscape) {{
+    [data-testid="stMain"] .block-container {{ zoom: 0.9; padding: 0.22rem 0.38rem !important; }}
+  }}
+  @media (max-height: 560px) {{
+    [data-testid="stMain"] .block-container {{ zoom: 0.84; }}
+  }}
+  @media (max-height: 480px) {{
+    [data-testid="stMain"] .block-container {{ zoom: 0.78; }}
   }}
   @media (max-height: 430px) {{
-    [data-testid="stMain"] .block-container {{
-      zoom: 0.78;
+    [data-testid="stMain"] .block-container {{ zoom: 0.72; }}
+  }}
+  @media (max-height: 520px) {{
+    [data-testid="stMain"] .stButton > button {{
+      min-height: 1.5rem !important;
+      padding: 0.08rem 0.25rem !important;
+      font-size: 0.6rem !important;
     }}
+    .vg-leak-wrap {{ min-height: 86px !important; }}
   }}
   .stApp, .stApp * {{
     font-family: 'Goldman', system-ui, sans-serif !important;
   }}
-  .vg-header-primary {{
+  .vg-header-secondary, .vg-gateway, .vg-command, .vg-dash-title {{
     font-family: 'Goldman', system-ui, sans-serif !important;
-    font-weight: 700;
-    font-size: clamp(0.75rem, 2vw, 1.05rem);
-    color: {GOLD};
     text-align: center;
-    margin: 0 0 0.25rem 0;
-    line-height: 1.2;
+    line-height: 1.28;
   }}
-  .vg-header-secondary {{
-    font-family: 'Goldman', system-ui, sans-serif !important;
-    font-weight: 400;
-    font-size: clamp(0.65rem, 1.65vw, 0.88rem);
-    color: {GOLD};
-    text-align: center;
-    margin: 0 0 0.2rem 0;
-  }}
-  .vg-gateway {{
-    font-family: 'Goldman', system-ui, sans-serif !important;
-    font-weight: 700;
-    font-size: clamp(0.64rem, 1.55vw, 0.82rem);
-    color: {GOLD};
-    text-align: center;
-    margin: 0.15rem 0;
-  }}
-  .vg-command {{
-    font-family: 'Goldman', system-ui, sans-serif !important;
-    font-size: clamp(0.6rem, 1.45vw, 0.76rem);
-    color: {TEXT_SLATE};
-    text-align: center;
-    margin: 0.1rem 0 0.35rem 0;
-  }}
+  .vg-header-secondary {{ font-size: clamp(0.56rem, 1.42vw, 0.82rem); margin: 0 0 0.12rem 0; }}
+  .vg-gateway {{ font-weight: 700; font-size: clamp(0.54rem, 1.38vw, 0.78rem); margin: 0.08rem 0; }}
+  .vg-command {{ font-size: clamp(0.52rem, 1.3vw, 0.74rem); margin: 0.06rem 0 0.18rem 0; }}
   .vg-dash-title {{
-    font-family: 'Goldman', system-ui, sans-serif !important;
     font-weight: 700;
-    font-size: clamp(0.68rem, 1.75vw, 0.9rem);
-    color: {TEXT_SLATE};
-    text-align: center;
-    margin: 0.3rem 0 0.45rem 0;
+    font-size: clamp(0.52rem, 1.35vw, 0.76rem);
+    margin: 0.12rem 0 0.2rem 0;
     border-bottom: 1px solid rgba(255,215,0,0.28);
-    padding-bottom: 0.35rem;
+    padding-bottom: 0.2rem;
   }}
   [data-testid="stMetricLabel"], [data-testid="stMetricValue"] {{
     font-family: 'Goldman', system-ui, sans-serif !important;
     color: {GOLD} !important;
   }}
+  [data-testid="stMetricValue"] {{
+    animation: vg-metric-blu-ray 18s ease-in-out infinite;
+  }}
   .vg-section-label {{
     font-family: 'Goldman', system-ui, sans-serif !important;
     font-weight: 700;
     color: {GOLD};
-    font-size: clamp(0.65rem, 1.5vw, 0.8rem);
-    margin: 0.35rem 0 0.25rem 0;
+    font-size: clamp(0.6rem, 1.4vw, 0.76rem);
+    margin: 0.25rem 0 0.18rem 0;
     letter-spacing: 0.06em;
   }}
   .vg-body {{
     font-family: 'Goldman', system-ui, sans-serif !important;
     color: {TEXT_SLATE};
-    font-size: clamp(0.58rem, 1.35vw, 0.72rem);
+    font-size: clamp(0.55rem, 1.28vw, 0.7rem);
     line-height: 1.35;
   }}
   .vg-geo {{
     font-family: 'Goldman', system-ui, sans-serif !important;
     color: {TEXT_SLATE};
-    font-size: clamp(0.55rem, 1.25vw, 0.68rem);
+    font-size: clamp(0.52rem, 1.2vw, 0.66rem);
     line-height: 1.4;
     border-left: 2px solid {GOLD};
-    padding-left: 0.5rem;
-    margin-top: 0.35rem;
+    padding-left: 0.45rem;
+    margin-top: 0.3rem;
   }}
   .vg-leak-wrap {{
     position: relative;
-    min-height: 110px;
+    min-height: 100px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0.2rem 0;
+    margin: 0.15rem 0;
   }}
   .vg-falcon-orbit {{
     position: absolute;
@@ -315,30 +250,30 @@ st.markdown(
     position: relative;
     z-index: 2;
     text-align: center;
-    padding: 0.35rem 0.45rem;
+    padding: 0.3rem 0.4rem;
     background: rgba(0, 31, 63, 0.82);
     border-radius: 10px;
     border: 1px solid rgba(255,215,0,0.4);
   }}
   .vg-leak-label {{
     font-family: 'Goldman', system-ui, sans-serif !important;
-    font-size: clamp(0.58rem, 1.3vw, 0.7rem);
+    font-size: clamp(0.55rem, 1.25vw, 0.68rem);
     color: {GOLD};
     font-weight: 700;
-    margin-bottom: 0.15rem;
+    margin-bottom: 0.12rem;
   }}
   .vg-leak-value {{
     font-family: 'Goldman', system-ui, sans-serif !important;
-    font-size: clamp(1.1rem, 3.2vw, 1.45rem);
+    font-size: clamp(1rem, 3vw, 1.38rem);
     color: {GOLD};
     font-weight: 700;
   }}
   .vg-leak-ticker {{
     font-family: 'Goldman', system-ui, sans-serif !important;
-    font-size: clamp(0.5rem, 1.15vw, 0.62rem);
+    font-size: clamp(0.48rem, 1.1vw, 0.6rem);
     color: {TEXT_SLATE};
     text-align: center;
-    margin-top: 0.25rem;
+    margin-top: 0.2rem;
   }}
   [data-testid="stMain"] .stButton > button {{
     font-family: 'Goldman', system-ui, sans-serif !important;
@@ -346,12 +281,13 @@ st.markdown(
     color: {TEXT_SLATE} !important;
     border: 1px solid rgba(255,215,0,0.45) !important;
     border-radius: 8px !important;
-    min-height: 2rem;
+    min-height: 1.85rem;
   }}
   [data-testid="stMain"] .stButton > button:hover {{
     border-color: {GOLD} !important;
     color: {GOLD} !important;
   }}
+  /* 12-cell grid: Streamlit st.columns(4)×3 implements a stable flex-like row layout (no :has() — avoids breaking mirror|engine split) */
   [data-testid="stSidebar"] {{
     background: rgba(0, 20, 45, 0.98) !important;
     border-right: 1px solid rgba(255,215,0,0.25) !important;
@@ -359,7 +295,6 @@ st.markdown(
   [data-testid="stSidebar"] * {{
     font-family: 'Goldman', system-ui, sans-serif !important;
   }}
-  /* Streamlit chrome: remove white occlusion strip / match sovereign navy */
   header[data-testid="stHeader"] {{
     background: rgba(0, 26, 51, 0.98) !important;
     border-bottom: 1px solid rgba(255, 215, 0, 0.25) !important;
@@ -368,7 +303,122 @@ st.markdown(
   [data-testid="stToolbar"] {{ background: transparent !important; }}
 </style>
 <div class="vg-prism-vector" aria-hidden="true"></div>
-""",
+"""
+
+RESERVES_MT = 640.04
+POWER_MW = 1199
+LEAKAGE_ANCHOR_B = 1.812
+LEAK_TICK_B = 0.01
+LEAK_INTERVAL_SEC = 10
+
+MASTER_BRAND = (
+    "Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC) LTD/GTE"
+)
+ENTITY_LINE = (
+    "Nigerian Green Energy and Chemicals Corporation (NGECC) — Special Strategic Mission Vehicle (SSMV)"
+)
+GATEWAY_LINE = "Falcon-Class Sovereign Gateway: Seizing the 9.6x Wealth Multiplier"
+PARADIGM_LINE = (
+    "National Resources Revitalization Fusion Center (NRRFC) — Powered by the 8R Stealth Paradigm Convergence and its Determinants"
+)
+INSTITUTIONAL_LINE = (
+    "Nigeria Coal Reserves — Real-Time Dashboard | Galadiman Ruwa- GCSLC Sovereign Energy solution for global AI data centers"
+)
+POWER_PORTFOLIO_MW = f"{POWER_MW:,} MW"
+
+# 12 active flex cells (13 proven states: Bauchi + Edo share one dual node for layout)
+GRID_12_KEYS = (
+    "Kogi",
+    "Enugu",
+    "Benue",
+    "Nasarawa",
+    "Adamawa",
+    "Anambra",
+    "Delta",
+    "Plateau",
+    "Gombe",
+    "Ondo",
+    "Abia",
+    "Bauchi / Edo",
+)
+
+STATES_13_PROVEN = (
+    "Kogi",
+    "Enugu",
+    "Benue",
+    "Nasarawa",
+    "Adamawa",
+    "Anambra",
+    "Delta",
+    "Plateau",
+    "Gombe",
+    "Ondo",
+    "Abia",
+    "Bauchi",
+    "Edo",
+)
+
+STATE_INTEL = {
+    "Kogi": "<strong>Kogi Strike Zone</strong> — Okaba / Ogboyoga strike zones; corridor convergence; BUA-adjacent offtake; syngas & AI-DC alignment.",
+    "Enugu": "<strong>Enugu Strike Zone</strong> — Anambra Basin anchor; D1/D3 priority.",
+    "Benue": "<strong>Benue Strike Zone</strong> — Central belt reserves; SSMV agro-industrial synergy.",
+    "Nasarawa": "<strong>Nasarawa Strike Zone</strong> — Data-center corridor; AZK strategic flank.",
+    "Adamawa": "<strong>Adamawa Strike Zone</strong> — NE proven coal; 8R reserve activation.",
+    "Anambra": "<strong>Anambra Strike Zone</strong> — Active production; NGECC feedstock linkage.",
+    "Delta": "<strong>Delta Strike Zone</strong> — Niger Delta energy corridor; hybrid sovereignty.",
+    "Plateau": "<strong>Plateau Strike Zone</strong> — Central highland reserves; mineral co-location.",
+    "Gombe": "<strong>Gombe Strike Zone</strong> — NE tier; D2 moribund capture.",
+    "Ondo": "<strong>Ondo Strike Zone</strong> — SW coastal flank; export logistics.",
+    "Abia": "<strong>Abia Strike Zone</strong> — Aba industrial corridor; SME value chain.",
+    "Bauchi / Edo": "<strong>Bauchi / Edo Dual Node</strong> — NE cross-border research (Bauchi) + Benin corridor feedstock (Edo); unified NGECC lens.",
+}
+
+GEOLOGY = {
+    "Kogi": "Okaba / Ogboyoga strike zones · Basin: Nupe / Bida · Rank: sub-bituminous · Depth est.: 150–450 m · Sulfur: medium · Seismic: low · Localized AI power potential: 1,199 MW (portfolio)",
+    "Enugu": "Basin: Anambra · Rank: sub-bituminous · Depth est.: 80–350 m · Cleat: well-developed · Seismic: low",
+    "Benue": "Basin: Benue Trough fringe · Rank: sub-bituminous · Depth est.: 200–500 m · Structure: folded · Seismic: low–moderate",
+    "Nasarawa": "Basin: Middle Benue · Rank: sub-bituminous · Depth est.: 120–400 m · Proximity: Abuja DC arc · Seismic: low",
+    "Adamawa": "Basin: Chad / Benue influence · Rank: lignite–sub-bituminous · Depth est.: 150–600 m · Seismic: low",
+    "Anambra": "Basin: Anambra · Rank: sub-bituminous · Depth est.: 60–300 m · Permeability: moderate · Seismic: low",
+    "Delta": "Basin: Niger Delta margin · Rank: sub-bituminous · Depth est.: 200–800 m · Overpressure risk: moderate",
+    "Plateau": "Basin: Jos–Bauchi fringe · Rank: sub-bituminous · Depth est.: 100–400 m · Igneous intrusions: localized",
+    "Gombe": "Basin: Benue Trough · Rank: sub-bituminous · Depth est.: 180–500 m · Seismic: low",
+    "Ondo": "Basin: Dahomey / SW margin · Rank: sub-bituminous · Depth est.: 150–550 m · Coastal logistics: high",
+    "Abia": "Basin: Imo / Anambra fringe · Rank: sub-bituminous · Depth est.: 80–280 m · Industrial density: high",
+    "Bauchi / Edo": "Bauchi: Benue Trough NE — depth 200–550 m, rank sub-bituminous. Edo: Benin flank — depth 150–450 m, high-value feedstock signature. Joint: D3 cross-corridor.",
+}
+
+if "leak_t0" not in st.session_state:
+    st.session_state.leak_t0 = time.time()
+if "power_highlight" not in st.session_state:
+    st.session_state.power_highlight = False
+if "selected_state" not in st.session_state:
+    st.session_state.selected_state = None
+
+
+def _fragment_supported() -> bool:
+    return hasattr(st, "fragment")
+
+
+# First Streamlit call (required) — then immediate Sovereign CSS injection
+st.set_page_config(
+    page_title="NRRFC Sovereign Vanguard — Node 8855",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
+
+st.markdown(SOVEREIGN_SHIMMER_CSS, unsafe_allow_html=True)
+
+st.markdown(
+    """<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet">""",
+    unsafe_allow_html=True,
+)
+st.markdown(
+    f"""<h1 class="vg-sovereign-h1 vg-blu-ray-text" style="text-align:center;font-family:Goldman,sans-serif;font-weight:700;
+    margin:0 0 4px 0;font-size:clamp(0.5rem,1.45vw,0.88rem);line-height:1.2;word-wrap:break-word;padding:6px 8px;
+    border-radius:8px;border:1px solid rgba(255,215,0,0.35);background:rgba(0,26,51,0.55);position:relative;z-index:10002;">{MASTER_BRAND}</h1>""",
     unsafe_allow_html=True,
 )
 
@@ -380,7 +430,6 @@ def _current_leakage_b() -> float:
 
 
 def _falcon_svg() -> str:
-    # Strict Radiant Gold #FFD700 — no legacy yellow hex
     return """<svg viewBox="0 0 32 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
   <path fill="#FFD700" stroke="#FFD700" stroke-width="0.45" opacity="0.85"
     d="M16 12 L8 14 L6 12 L8 10 L16 8 L24 10 L26 12 L24 14 Z"/>
@@ -397,7 +446,7 @@ def _render_leakage_block():
 <div class="vg-leak-wrap">
   <div class="vg-falcon-orbit" aria-hidden="true">{_falcon_svg()}</div>
   <div class="vg-leak-core">
-    <div class="vg-leak-label">Sovereign Wealth Leakage</div>
+    <div class="vg-leak-label">Wealth Leakage (live stream · anchor ${LEAKAGE_ANCHOR_B:.3f} B)</div>
     <div class="vg-leak-value">${v:.3f} B</div>
   </div>
 </div>
@@ -419,21 +468,22 @@ else:
         _render_leakage_block()
 
 
-# --- Sidebar: Strike Zone + geology (localized parameters) ---
 with st.sidebar:
-    st.markdown(f'<p class="vg-section-label">STRIKE ZONE PANEL</p>', unsafe_allow_html=True)
+    st.markdown('<p class="vg-section-label">STRIKE ZONE PANEL</p>', unsafe_allow_html=True)
     if st.session_state.selected_state:
         sk = st.session_state.selected_state
+        st.markdown(f'<div class="vg-body">{STATE_INTEL.get(sk, "")}</div>', unsafe_allow_html=True)
         st.markdown(
-            f'<div class="vg-body">{STATE_INTEL.get(sk, "")}</div>',
-            unsafe_allow_html=True,
-        )
-        st.markdown(
-            f'<p class="vg-section-label" style="margin-top:0.75rem;">GEOLOGICAL PARAMETERS</p>',
+            '<p class="vg-section-label" style="margin-top:0.65rem;">LOCALIZED PARAMETERS</p>',
             unsafe_allow_html=True,
         )
         st.markdown(
             f'<p class="vg-geo">{GEOLOGY.get(sk, "Parameters pending sovereign survey.")}</p>',
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            f'<p class="vg-section-label" style="margin-top:0.45rem;">DATA CONVERGENCE</p>'
+            f'<p class="vg-body" style="color:{GOLD};font-weight:700;">AI Power Potential (13-state portfolio): {POWER_PORTFOLIO_MW}</p>',
             unsafe_allow_html=True,
         )
         if st.button("Clear node selection", key="clear_sel"):
@@ -441,60 +491,63 @@ with st.sidebar:
             st.rerun()
     else:
         st.markdown(
-            '<p class="vg-body">Select a state node from the 13-state grid to load localized geological parameters.</p>',
+            '<p class="vg-body">Select a strike zone from the 12-cell flex grid (13 proven states incl. Bauchi/Edo dual node).</p>',
             unsafe_allow_html=True,
         )
 
 
-# --- Main console (identity <h1> is rendered once above, before global CSS) ---
 with st.container():
-    st.markdown(f'<p class="vg-header-secondary">{ENTITY_LINE}</p>', unsafe_allow_html=True)
-    st.markdown(
-        '<p class="vg-gateway">Falcon-Class Sovereign Gateway: Seizing the 9.6x Wealth Multiplier</p>',
-        unsafe_allow_html=True,
-    )
-    st.markdown(
-        '<p class="vg-command">National Resources Revitalization Fusion Center (NRRFC) — Powered by the 8R Stealth Paradigm Convergence and its Determinants</p>',
-        unsafe_allow_html=True,
-    )
-    st.markdown(
-        '<p class="vg-dash-title">Nigeria Coal Reserves — Real-Time Dashboard | Energy solution for global AI data centers</p>',
-        unsafe_allow_html=True,
-    )
+    st.markdown(f'<p class="vg-header-secondary vg-blu-ray-text">{ENTITY_LINE}</p>', unsafe_allow_html=True)
+    st.markdown(f'<p class="vg-gateway vg-blu-ray-text">{GATEWAY_LINE}</p>', unsafe_allow_html=True)
+    st.markdown(f'<p class="vg-command vg-blu-ray-text">{PARADIGM_LINE}</p>', unsafe_allow_html=True)
+    st.markdown(f'<p class="vg-dash-title vg-blu-ray-text">{INSTITUTIONAL_LINE}</p>', unsafe_allow_html=True)
 
-mirror_col, engine_col = st.columns([1.15, 2.85])
+mirror_col, engine_col = st.columns([1.12, 2.88])
 with mirror_col:
     with st.container():
-        st.markdown('<p class="vg-section-label">NVFC MIRROR</p>', unsafe_allow_html=True)
+        st.markdown('<p class="vg-section-label vg-blu-ray-text">NVFC MIRROR</p>', unsafe_allow_html=True)
         _leakage_fragment()
 
 with engine_col:
     with st.container():
-        st.markdown('<p class="vg-section-label">NRRFC ENGINE — 13-STATE GRID</p>', unsafe_allow_html=True)
-        m1, m2 = st.columns(2)
+        st.markdown(
+            '<p class="vg-section-label vg-blu-ray-text">NRRFC ENGINE — 13-STATE CONVERGENCE (12-CELL FLEX)</p>',
+            unsafe_allow_html=True,
+        )
+        m1, m2, m3 = st.columns(3)
         with m1:
             st.metric("Proven Reserves (13-State)", f"{RESERVES_MT} Mt")
         with m2:
-            st.metric("Power Potential (AI DC ready)", f"{POWER_MW:,} MW")
-        if st.button("1,199 MW Power potential for AI Data Centers", use_container_width=True, key="power_alert"):
+            st.metric("Wealth Leakage (anchor)", f"${LEAKAGE_ANCHOR_B:.3f} B")
+        with m3:
+            st.metric("AI Power Potential", f"{POWER_MW:,} MW")
+        if st.button(
+            "1,199 MW — AI Data Center Power Potential",
+            use_container_width=True,
+            key="power_alert",
+        ):
             st.session_state.power_highlight = True
             st.rerun()
         if st.session_state.power_highlight:
             st.markdown(
-                f'<p class="vg-body" style="color:{GOLD};font-weight:700;border:2px solid {GOLD};border-radius:8px;padding:0.3rem;">ACTION ALERT: 1,199 MW Power potential for AI Data Centers</p>',
+                f'<p class="vg-body" style="color:{GOLD};font-weight:700;border:2px solid {GOLD};border-radius:8px;padding:0.28rem;">ACTION ALERT: 1,199 MW Power potential for AI Data Centers</p>',
                 unsafe_allow_html=True,
             )
-        # 13 cells: 4 + 4 + 4 + 1 (stable widget keys)
-        for r in range(4):
-            ncols = 4 if r < 3 else 1
-            row_keys = STATES_13[r * 4 : r * 4 + ncols]
-            cols = st.columns(ncols)
-            for c in range(len(row_keys)):
+        st.markdown(
+            f'<p class="vg-body" style="text-align:center;margin:0.15rem 0 0.2rem 0;color:{TEXT_SLATE};font-size:0.62rem;">'
+            f"Proven states: {', '.join(STATES_13_PROVEN)}</p>",
+            unsafe_allow_html=True,
+        )
+        # 12 clickable cells — 3×4 rows; flex-wrap via SOVEREIGN_SHIMMER_CSS :has(stButton)
+        for r in range(3):
+            row_keys = GRID_12_KEYS[r * 4 : (r + 1) * 4]
+            cols = st.columns(4)
+            for c in range(4):
                 key = row_keys[c]
                 with cols[c]:
-                    if st.button(key, key=f"node_r{r}_c{c}", use_container_width=True):
+                    if st.button(key, key=f"flex_r{r}_c{c}", use_container_width=True):
                         st.session_state.selected_state = key
 
 with st.container():
     st.markdown("---")
-    st.caption("NRRFC Vanguard · Node 8855 · GCSLC LTD/GTE")
+    st.caption("NRRFC Sovereign Vanguard · Node 8855 · GCSLC LTD/GTE · 13-state proven reserves")
