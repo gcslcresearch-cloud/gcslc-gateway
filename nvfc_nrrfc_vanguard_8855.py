@@ -67,15 +67,33 @@ st.markdown(
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet">
 <style>
+  /* Sovereign Shimmer — main dashboard canvas */
+  @keyframes shimmer {{
+    0% {{ background-position: -150% 0; }}
+    100% {{ background-position: 150% 0; }}
+  }}
   html, body, [data-testid="stAppViewContainer"], .stApp {{
     background-color: {BG_NAVY} !important;
     font-family: 'Goldman', system-ui, sans-serif !important;
   }}
-  .block-container {{
+  /* Main container: animated gradient + gold glow (stable selectors; no fragile Streamlit hashes) */
+  [data-testid="stMain"] .block-container,
+  section.main .block-container {{
     padding-top: 0.5rem !important;
     padding-bottom: 0.5rem !important;
     max-width: 100% !important;
     overflow-x: hidden !important;
+    background: linear-gradient(
+      to right,
+      #001A33 4%,
+      #FFD700 25%,
+      #C0C0C0 36%,
+      #001A33 63%
+    ) !important;
+    background-size: 1000px 100%;
+    animation: shimmer 15s linear infinite;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
   }}
   /* S24 Ultra / iPhone landscape: flexbox single-screen, no scroll */
   .vg-flex-row {{
@@ -86,7 +104,8 @@ st.markdown(
     min-height: 0;
   }}
   @media (max-height: 500px) {{
-    .block-container {{ padding-top: 0.25rem !important; padding-bottom: 0.25rem !important; }}
+    [data-testid="stMain"] .block-container,
+    section.main .block-container {{ padding-top: 0.25rem !important; padding-bottom: 0.25rem !important; }}
     .vg-header-primary {{ font-size: 0.72rem !important; margin: 0 0 0.2rem 0; }}
     .vg-header-secondary {{ font-size: 0.6rem !important; margin: 0 0 0.15rem 0; }}
     .vg-gateway {{ font-size: 0.6rem !important; margin: 0.15rem 0; }}
