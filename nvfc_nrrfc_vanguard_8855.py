@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 NRRFC Vanguard — Node 8855 · Institutional Urgency Format
-Particle/blueprint stream, vector prism, 12-cell grid, geology sidebar.
+Pure Streamlit only — NO st.image / NO gcs_logo (prevents white-widget occlusion).
+NO Gradio. Particle/blueprint stream, vector prism, 13-state grid, geology sidebar.
 Launch: streamlit run nvfc_nrrfc_vanguard_8855.py --server.port 8855
 """
 from __future__ import annotations
@@ -20,16 +21,13 @@ LEAKAGE_ANCHOR_B = 1.812
 LEAK_TICK_B = 0.01
 LEAK_INTERVAL_SEC = 10
 
-# Char-for-char identity
-MASTER_BRAND = (
-    "Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC) LTD/GTE"
-)
+# NGECC line (sovereign GCSLC <h1> is rendered once at top — see st.markdown after set_page_config)
 ENTITY_LINE = (
     "Nigerian Green Energy and Chemicals Corporation (NGECC) — Special Strategic Mission Vehicle (SSMV)"
 )
 
-# 12 clickable nodes (video sync): Bauchi + Edo share one container
-GRID_12_KEYS = (
+# 13-state geopolitical grid (proven reserves)
+STATES_13 = (
     "Kogi",
     "Enugu",
     "Benue",
@@ -41,7 +39,8 @@ GRID_12_KEYS = (
     "Gombe",
     "Ondo",
     "Abia",
-    "Bauchi / Edo",
+    "Bauchi",
+    "Edo",
 )
 
 STATE_INTEL = {
@@ -56,7 +55,8 @@ STATE_INTEL = {
     "Gombe": "<strong>Gombe Strike Zone</strong> — NE tier; D2 moribund capture.",
     "Ondo": "<strong>Ondo Strike Zone</strong> — SW coastal flank; export logistics.",
     "Abia": "<strong>Abia Strike Zone</strong> — Aba industrial corridor; SME value chain.",
-    "Bauchi / Edo": "<strong>Bauchi / Edo Dual Node</strong> — NE cross-border research (Bauchi) + Benin corridor feedstock (Edo); unified NGECC lens.",
+    "Bauchi": "<strong>Bauchi Strike Zone</strong> — NE tier; D2/D3 cross-border research.",
+    "Edo": "<strong>Edo Strike Zone</strong> — Benin corridor; high-value feedstock detection (NRRFC lens).",
 }
 
 # Localized geological parameters (sidebar)
@@ -72,7 +72,8 @@ GEOLOGY = {
     "Gombe": "Basin: Benue Trough · Rank: sub-bituminous · Depth est.: 180–500 m · Seismic: low",
     "Ondo": "Basin: Dahomey / SW margin · Rank: sub-bituminous · Depth est.: 150–550 m · Coastal logistics: high",
     "Abia": "Basin: Imo / Anambra fringe · Rank: sub-bituminous · Depth est.: 80–280 m · Industrial density: high",
-    "Bauchi / Edo": "Bauchi: Benue Trough NE — depth 200–550 m, rank sub-bituminous. Edo: Benin flank — depth 150–450 m, high-value feedstock signature. Joint: D3 cross-corridor.",
+    "Bauchi": "Basin: Benue Trough NE · Rank: sub-bituminous · Depth est.: 200–550 m · Seismic: low",
+    "Edo": "Basin: Benin flank / Dahomey margin · Rank: sub-bituminous · Depth est.: 150–450 m · Feedstock signature: high-value (NRRFC)",
 }
 
 if "leak_t0" not in st.session_state:
@@ -93,12 +94,20 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+# Sovereign identity FIRST (before styles / mirror / engine) — no st.image
+st.markdown(
+    """<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet">""",
+    unsafe_allow_html=True,
+)
+st.markdown(
+    "<h1 style='text-align: center; color: #FFD700; font-family: Goldman, sans-serif;'>GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION (GCSLC) LTD/GTE</h1>",
+    unsafe_allow_html=True,
+)
 
 st.markdown(
     f"""
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet">
 <style>
   @keyframes vg-blueprint-drift {{
     0% {{ transform: translate(0, 0); }}
@@ -350,6 +359,13 @@ st.markdown(
   [data-testid="stSidebar"] * {{
     font-family: 'Goldman', system-ui, sans-serif !important;
   }}
+  /* Streamlit chrome: remove white occlusion strip / match sovereign navy */
+  header[data-testid="stHeader"] {{
+    background: rgba(0, 26, 51, 0.98) !important;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.25) !important;
+  }}
+  [data-testid="stDecoration"] {{ display: none !important; }}
+  [data-testid="stToolbar"] {{ background: transparent !important; }}
 </style>
 <div class="vg-prism-vector" aria-hidden="true"></div>
 """,
@@ -425,35 +441,13 @@ with st.sidebar:
             st.rerun()
     else:
         st.markdown(
-            '<p class="vg-body">Select a state node from the 12-cell grid to load localized geological parameters.</p>',
+            '<p class="vg-body">Select a state node from the 13-state grid to load localized geological parameters.</p>',
             unsafe_allow_html=True,
         )
 
 
-# --- Main console ---
+# --- Main console (identity <h1> is rendered once above, before global CSS) ---
 with st.container():
-    # GCSLC Sovereign Header — forced visibility (Radiant Gold / Deepest Navy / Goldman non-serif)
-    st.markdown(
-        f"""
-    <h1 style="
-        text-align: center;
-        color: #FFD700;
-        font-family: 'Goldman', sans-serif;
-        font-weight: 700;
-        font-size: clamp(0.65rem, 1.85vw, 1rem);
-        line-height: 1.35;
-        letter-spacing: 0.02em;
-        background-color: #001A33;
-        padding: 10px 12px;
-        margin: 0 0 0.5rem 0;
-        border: 2px solid #FFD700;
-        border-radius: 10px;
-        position: relative;
-        z-index: 9999;
-    ">{MASTER_BRAND.upper()}</h1>
-""",
-        unsafe_allow_html=True,
-    )
     st.markdown(f'<p class="vg-header-secondary">{ENTITY_LINE}</p>', unsafe_allow_html=True)
     st.markdown(
         '<p class="vg-gateway">Falcon-Class Sovereign Gateway: Seizing the 9.6x Wealth Multiplier</p>',
@@ -468,7 +462,7 @@ with st.container():
         unsafe_allow_html=True,
     )
 
-mirror_col, engine_col = st.columns([1, 3])
+mirror_col, engine_col = st.columns([1.15, 2.85])
 with mirror_col:
     with st.container():
         st.markdown('<p class="vg-section-label">NVFC MIRROR</p>', unsafe_allow_html=True)
@@ -476,7 +470,7 @@ with mirror_col:
 
 with engine_col:
     with st.container():
-        st.markdown('<p class="vg-section-label">NRRFC ENGINE — 12 NODES</p>', unsafe_allow_html=True)
+        st.markdown('<p class="vg-section-label">NRRFC ENGINE — 13-STATE GRID</p>', unsafe_allow_html=True)
         m1, m2 = st.columns(2)
         with m1:
             st.metric("Proven Reserves (13-State)", f"{RESERVES_MT} Mt")
@@ -490,11 +484,12 @@ with engine_col:
                 f'<p class="vg-body" style="color:{GOLD};font-weight:700;border:2px solid {GOLD};border-radius:8px;padding:0.3rem;">ACTION ALERT: 1,199 MW Power potential for AI Data Centers</p>',
                 unsafe_allow_html=True,
             )
-        # 12 cells: 4 × 3 (stable widget keys — no slashes in key id)
-        for r in range(3):
-            row_keys = GRID_12_KEYS[r * 4 : (r + 1) * 4]
-            cols = st.columns(4)
-            for c in range(4):
+        # 13 cells: 4 + 4 + 4 + 1 (stable widget keys)
+        for r in range(4):
+            ncols = 4 if r < 3 else 1
+            row_keys = STATES_13[r * 4 : r * 4 + ncols]
+            cols = st.columns(ncols)
+            for c in range(len(row_keys)):
                 key = row_keys[c]
                 with cols[c]:
                     if st.button(key, key=f"node_r{r}_c{c}", use_container_width=True):
