@@ -432,7 +432,28 @@ with st.sidebar:
 
 # --- Main console ---
 with st.container():
-    st.markdown(f'<p class="vg-header-primary">{MASTER_BRAND}</p>', unsafe_allow_html=True)
+    # GCSLC Sovereign Header — forced visibility (Radiant Gold / Deepest Navy / Goldman non-serif)
+    st.markdown(
+        f"""
+    <h1 style="
+        text-align: center;
+        color: #FFD700;
+        font-family: 'Goldman', sans-serif;
+        font-weight: 700;
+        font-size: clamp(0.65rem, 1.85vw, 1rem);
+        line-height: 1.35;
+        letter-spacing: 0.02em;
+        background-color: #001A33;
+        padding: 10px 12px;
+        margin: 0 0 0.5rem 0;
+        border: 2px solid #FFD700;
+        border-radius: 10px;
+        position: relative;
+        z-index: 9999;
+    ">{MASTER_BRAND.upper()}</h1>
+""",
+        unsafe_allow_html=True,
+    )
     st.markdown(f'<p class="vg-header-secondary">{ENTITY_LINE}</p>', unsafe_allow_html=True)
     st.markdown(
         '<p class="vg-gateway">Falcon-Class Sovereign Gateway: Seizing the 9.6x Wealth Multiplier</p>',
