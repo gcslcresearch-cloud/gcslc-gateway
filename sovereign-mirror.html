@@ -328,7 +328,7 @@
     .clocks-stage {
       max-width: 960px;
       margin: 0 auto;
-      padding: calc(1rem + 40px) 0.75rem 1rem;
+      padding: 0.85rem 0.75rem 1rem;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -376,6 +376,42 @@
       animation-delay: var(--exit-delay);
     }
     .mirror-stage.mirror-exit .clock-svg { animation: none !important; }
+    .mirror-stage.mirror-exit .analog-clock-frame { animation: none !important; box-shadow: none; }
+    /* Gold / navy border shimmer around clock face (sequential zoom preserved on .analog-wrap) */
+    .analog-clock-frame {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      padding: 3px;
+      background: linear-gradient(135deg, rgba(232, 197, 71, 0.55), rgba(5, 10, 20, 0.85), rgba(0, 229, 255, 0.35), rgba(232, 197, 71, 0.5));
+      background-size: 240% 240%;
+      box-shadow:
+        0 0 0 1px rgba(232, 197, 71, 0.35),
+        0 0 16px rgba(232, 197, 71, 0.2),
+        inset 0 0 20px rgba(0, 229, 255, 0.08);
+      animation: clock-ring-shimmer 6s ease-in-out infinite;
+      animation-delay: calc(var(--i) * 1s + 0.85s);
+    }
+    @keyframes clock-ring-shimmer {
+      0%, 100% {
+        background-position: 0% 40%;
+        filter: brightness(1);
+        box-shadow:
+          0 0 0 1px rgba(232, 197, 71, 0.4),
+          0 0 14px rgba(10, 22, 42, 0.5),
+          inset 0 0 18px rgba(0, 229, 255, 0.06);
+      }
+      50% {
+        background-position: 100% 58%;
+        filter: brightness(1.08);
+        box-shadow:
+          0 0 0 2px rgba(0, 229, 255, 0.35),
+          0 0 22px rgba(232, 197, 71, 0.35),
+          inset 0 0 26px rgba(232, 197, 71, 0.08);
+      }
+    }
     @keyframes clock-zoom-in {
       from { transform: scale(0.38); opacity: 0; filter: blur(5px); }
       to { transform: scale(1); opacity: 1; filter: blur(0); }
@@ -418,42 +454,48 @@
       text-align: center;
     }
 
-    /* Compact asset strip — breathing zoom */
-    .sovereign-asset-widget {
-      max-width: 240px;
-      margin: 0.55rem auto 0.4rem;
-      padding: 0.38rem 0.62rem 0.48rem;
-      border-radius: 8px;
-      border: 1px solid rgba(232, 197, 71, 0.32);
-      background: linear-gradient(160deg, rgba(10, 30, 52, 0.9), rgba(4, 14, 26, 0.94));
+    /* Top-row Sovereign Spine — metallic gold / navy (Rose Gold Humanoid palette) */
+    .sovereign-spine-widget {
+      max-width: min(920px, 94vw);
+      margin: 0.35rem auto 0;
+      padding: 0.55rem 1rem 0.58rem;
+      border-radius: 12px;
+      border: 1px solid rgba(232, 197, 71, 0.42);
+      background:
+        linear-gradient(155deg, rgba(5, 10, 20, 0.97) 0%, rgba(10, 22, 42, 0.92) 28%, rgba(232, 197, 71, 0.18) 48%, rgba(8, 18, 38, 0.95) 72%, rgba(0, 229, 255, 0.08) 100%);
+      background-size: 220% 220%;
       text-align: center;
-      animation: asset-widget-breathe 7.5s ease-in-out infinite;
+      box-shadow:
+        inset 0 0 50px rgba(0, 0, 0, 0.45),
+        inset 0 1px 0 rgba(255, 248, 220, 0.12),
+        0 6px 28px rgba(0, 0, 0, 0.35),
+        0 0 24px rgba(232, 197, 71, 0.12);
+      animation: spine-widget-metallic 12s ease-in-out infinite;
     }
-    @keyframes asset-widget-breathe {
-      0%, 100% {
-        transform: scale(1);
-        box-shadow: 0 3px 14px rgba(0, 0, 0, 0.32), 0 0 12px rgba(232, 197, 71, 0.07);
-      }
-      50% {
-        transform: scale(1.015);
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.38), 0 0 18px rgba(232, 197, 71, 0.14);
-      }
+    @keyframes spine-widget-metallic {
+      0%, 100% { background-position: 0% 40%; filter: brightness(1); }
+      50% { background-position: 100% 60%; filter: brightness(1.06); }
     }
-    .sovereign-asset-widget-title {
-      margin: 0 0 0.22rem;
+    .sovereign-spine-widget-title {
+      margin: 0 0 0.38rem;
       font-family: 'Goldman', 'Segoe UI', sans-serif;
-      font-size: 0.52rem;
+      font-size: clamp(0.55rem, 1.5vw, 0.68rem);
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255, 248, 220, 0.96);
+      text-shadow:
+        0 0 18px rgba(232, 197, 71, 0.45),
+        0 0 32px rgba(10, 22, 42, 0.9);
+    }
+    .sovereign-spine-widget-body {
+      margin: 0;
+      font-family: 'Goldman', 'Segoe UI', sans-serif;
+      font-size: clamp(0.58rem, 1.55vw, 0.72rem);
       font-weight: 700;
       letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--gold-dim);
-    }
-    .sovereign-asset-widget-body {
-      margin: 0;
-      font-size: 0.62rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      color: rgba(232, 238, 244, 0.95);
+      color: rgba(232, 238, 244, 0.96);
+      text-shadow: 0 1px 0 rgba(5, 10, 20, 0.8);
     }
 
     /* 3-column Sovereign Strike row */
@@ -524,8 +566,11 @@
       border: 1px dashed rgba(232, 197, 71, 0.35);
       background: linear-gradient(165deg, rgba(8, 24, 44, 0.65), rgba(4, 14, 26, 0.55));
       overflow: hidden;
-      min-height: 180px;
       width: 100%;
+      max-width: 280px;
+      height: min(520px, 68vh);
+      min-height: min(520px, 68vh);
+      box-sizing: border-box;
     }
     .deck-placeholder::before {
       content: '';
@@ -540,17 +585,19 @@
       align-items: center;
       justify-content: flex-start;
       padding: 0.75rem;
+      gap: 0.65rem;
     }
     /* GWY + DATA CENTER — identical asset frame (220×260 logical, same viewport cap) */
     .flank-asset-wrap {
-      flex: 1;
+      flex: 0 0 auto;
       display: flex;
       align-items: center;
       justify-content: center;
       width: 100%;
-      min-height: 140px;
-      height: min(260px, 38vh);
-      max-height: min(260px, 38vh);
+      height: min(260px, 36vh);
+      max-height: min(260px, 36vh);
+      min-height: min(260px, 36vh);
+      margin-top: auto;
     }
     .flank-asset-wrap img {
       display: block;
@@ -578,6 +625,10 @@
     .quote-goldman {
       font-family: 'Goldman', 'Segoe UI', sans-serif;
       font-weight: 700;
+    }
+    .deck-placeholder .speech-bubble {
+      margin: 0;
+      flex-shrink: 0;
     }
     .speech-bubble {
       position: relative;
@@ -611,12 +662,42 @@
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-4px); }
     }
+    /* DC narrative — same shell as GWY speech-bubble + living metallic gold shimmer */
+    .speech-bubble--dc-exec {
+      max-width: 100%;
+      font-size: clamp(0.56rem, 1.42vw, 0.68rem);
+      line-height: 1.42;
+    }
+    .exec-insight-shimmer {
+      display: inline;
+      background: linear-gradient(
+        110deg,
+        #c9a227 0%,
+        #fff8dc 14%,
+        #e8c547 28%,
+        #fffef5 42%,
+        #b8942a 55%,
+        #4a6fa5 68%,
+        #fff0a3 82%,
+        #e8c547 100%
+      );
+      background-size: 260% 260%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: exec-insight-shimmer 9s ease-in-out infinite;
+    }
+    @keyframes exec-insight-shimmer {
+      0%, 100% { background-position: 0% 45%; filter: brightness(1); }
+      50% { background-position: 100% 55%; filter: brightness(1.12); }
+    }
     .deck-datacenter {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       padding: 0.75rem;
+      gap: 0.65rem;
     }
     .dc-fallback {
       display: none;
@@ -641,18 +722,6 @@
     @keyframes dc-flicker {
       0%, 100% { opacity: 0.92; box-shadow: inset 0 0 30px rgba(0, 229, 255, 0.15); }
       50% { opacity: 1; box-shadow: inset 0 0 45px rgba(0, 229, 255, 0.22); }
-    }
-    .dc-narrative-goldman {
-      margin: 0.65rem 0 0;
-      max-width: min(280px, 100%);
-      padding: 0 0.35rem;
-      font-family: 'Goldman', 'Segoe UI', sans-serif;
-      font-weight: 700;
-      font-size: clamp(0.58rem, 1.5vw, 0.7rem);
-      line-height: 1.5;
-      letter-spacing: 0.04em;
-      text-align: center;
-      color: rgba(232, 238, 244, 0.92);
     }
     .deck-label {
       margin-top: 0.5rem;
@@ -892,13 +961,14 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .bluelaser-edge, .bluelaser-scan, .satellite-scanlines, .gcslc-identity, .flank-head-goldman, .analog-wrap, .btn-submit, .clock-svg, .session-bar, .speech-bubble, .dc-placeholder-inner, .sovereign-asset-widget, .signature-metallic, .btn-sovereign-logout {
+      .bluelaser-edge, .bluelaser-scan, .satellite-scanlines, .gcslc-identity, .flank-head-goldman, .analog-wrap, .btn-submit, .clock-svg, .session-bar, .speech-bubble, .dc-placeholder-inner, .sovereign-spine-widget, .analog-clock-frame, .signature-metallic, .btn-sovereign-logout, .exec-insight-shimmer {
         animation: none !important;
       }
       .btn-submit { background-position: 50% 50%; }
       .analog-wrap { opacity: 1; transform: none; }
       .speech-bubble { transform: none; }
-      .sovereign-asset-widget { transform: none; }
+      .sovereign-spine-widget { filter: none; }
+      .exec-insight-shimmer { filter: none; opacity: 1; color: rgba(232, 238, 244, 0.95); background: none; -webkit-background-clip: border-box; background-clip: border-box; }
       .signature-metallic { opacity: 1; filter: drop-shadow(0 0 12px rgba(232, 197, 71, 0.5)); }
     }
   </style>
@@ -922,16 +992,16 @@
       <h1 class="gcslc-identity hero-title-os">Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE</h1>
     </header>
 
+    <div class="sovereign-spine-widget" role="region" aria-label="Sovereign spine">
+      <p class="sovereign-spine-widget-title">Sovereign Spine</p>
+      <p class="sovereign-spine-widget-body">NRRFC / NWC / AWC</p>
+    </div>
+
     <div class="mirror-stage clocks-stage" id="mirrorStage">
       <div class="clocks-pulse-header">
         <p class="clocks-label">GLOBAL PULSE</p>
       </div>
       <div class="clocks-grid" id="clocksGrid" role="group" aria-label="World clocks"></div>
-    </div>
-
-    <div class="sovereign-asset-widget" role="region" aria-label="Sovereign asset pillars">
-      <p class="sovereign-asset-widget-title">Sovereign Portfolio</p>
-      <p class="sovereign-asset-widget-body">NRRFC / NWC / AWC</p>
     </div>
 
     <section class="form-deck" aria-label="Sovereign strike — organization intake">
@@ -986,13 +1056,15 @@
         <div class="strike-flank strike-flank--dc">
           <p class="flank-head-goldman">DATA CENTER</p>
           <div class="deck-placeholder deck-datacenter">
+            <div class="speech-bubble speech-bubble--dc-exec quote-goldman">
+              <span class="exec-insight-shimmer">Energy powers data centers 24/7/365. AI and Robotics are dormant without Sovereign Energy. Come in to decode the fuel of the future.</span>
+            </div>
             <div class="flank-asset-wrap">
               <img src="assets/Data 1.png" alt="Data center environment" width="220" height="260" onerror="var w=this.parentNode; this.style.display='none'; w.querySelector('.dc-fallback').style.display='block'; w.querySelector('.dc-placeholder-inner').style.display='block';">
               <p class="dc-fallback" style="display:none;">Placeholder — add <code>assets/Data 1.png</code></p>
               <div class="dc-placeholder-inner" aria-hidden="true" style="display:none"></div>
             </div>
           </div>
-          <p class="dc-narrative-goldman">Energy powers data centers 24/7/365. AI and Robotics are dormant without Sovereign Energy. Come in to decode the fuel of the future.</p>
         </div>
       </div>
     </section>
@@ -1052,6 +1124,7 @@
         var exitDelay = ((zones.length - 1 - idx) * 0.1).toFixed(2) + 's';
         return (
           '<div class="analog-wrap" style="--delay:' + delay + ';--exit-delay:' + exitDelay + ';--i:' + idx + '" data-tz="' + zones[idx].tz + '">' +
+            '<div class="analog-clock-frame">' +
             '<svg class="clock-svg" viewBox="0 0 100 100" aria-hidden="true">' +
               '<circle class="clock-face" cx="50" cy="50" r="48"/>' +
               '<g class="ticks"></g>' +
@@ -1060,6 +1133,7 @@
               '<line class="hand-second" x1="50" y1="50" x2="50" y2="18" transform="rotate(0 50 50)"/>' +
               '<circle cx="50" cy="50" r="2.5" fill="#e8c547"/>' +
             '</svg>' +
+            '</div>' +
             '<span class="clock-city">' + city + '</span>' +
           '</div>'
         );
