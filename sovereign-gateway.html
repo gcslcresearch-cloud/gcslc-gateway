@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&amp;family=Great+Vibes&amp;display=swap" rel="stylesheet">
-  <title>GCSLC Sovereign Gateway | Live Command Center</title>
-  <meta name="description" content="Galadiman Ruwa Center (GCSLC) — CNN-style live command center: Global Pulse, 8R Prism Vault, SFP stream.">
+  <title>GCSLC Sovereign Gateway | Live Terminal</title>
+  <meta name="description" content="Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE — Live Terminal: Global Pulse, 8R Prism Vault, SFP stream.">
   <style>
     :root {
       --navy-deep: #061018;
@@ -51,7 +51,6 @@
       position: fixed;
       left: 50%;
       top: 50%;
-      transform: translate(-50%, -50%);
       z-index: 15;
       pointer-events: none;
       font-weight: 800;
@@ -59,6 +58,9 @@
       font-size: clamp(3.5rem, 28vw, 14rem);
       color: rgba(232, 197, 71, 0.4);
       white-space: nowrap;
+      transform: translate(-50%, -50%) scale(var(--wm-scale, 1));
+      transition: transform 0.2s ease-out, opacity 0.25s ease;
+      will-change: transform;
     }
     .ip-shield-overlay {
       position: fixed;
@@ -85,16 +87,21 @@
     }
     .wow-spine-sub {
       margin: 0.5rem auto 0;
-      max-width: 48rem;
-      font-size: clamp(0.72rem, 2.1vw, 0.88rem);
+      max-width: 52rem;
+      font-size: clamp(0.72rem, 2.1vw, 0.9rem);
       font-weight: 600;
-      line-height: 1.45;
+      line-height: 1.5;
       text-align: center;
-      color: rgba(232, 238, 244, 0.9);
-      text-shadow: 0 0 18px rgba(0, 229, 255, 0.15);
+      color: rgba(232, 238, 244, 0.94);
+      text-shadow: 0 0 18px rgba(0, 229, 255, 0.2);
+      animation: hook-pulse 4.2s ease-in-out infinite;
+    }
+    @keyframes hook-pulse {
+      0%, 100% { opacity: 0.82; filter: brightness(0.98); }
+      50% { opacity: 1; filter: brightness(1.06); text-shadow: 0 0 22px rgba(232, 197, 71, 0.35), 0 0 36px rgba(0, 229, 255, 0.15); }
     }
     .footer-signature-metallic {
-      margin: 1rem 0 0;
+      margin: 1.25rem 0 0;
       font-family: 'Great Vibes', cursive;
       font-size: clamp(1.35rem, 4vw, 1.85rem);
       background: linear-gradient(90deg, #e8c547, #fff8dc, #b8942a);
@@ -102,6 +109,18 @@
       background-clip: text;
       color: transparent;
       filter: drop-shadow(0 0 10px rgba(232, 197, 71, 0.4));
+      animation: signature-float 5s ease-in-out infinite;
+    }
+    @keyframes signature-float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    .footer-ip {
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 0.75rem;
     }
 
     /* —— Bluelaser: cyan ↔ gold gradient border pulse (viewport) —— */
@@ -211,15 +230,32 @@
     .tz-cell {
       text-align: center;
       padding: 0.4rem 0.2rem;
-      background: rgba(0, 40, 70, 0.4);
-      border: 1px solid rgba(0, 229, 255, 0.2);
-      border-radius: 10px;
       min-width: 0;
-      animation: tz-shimmer-border 4s ease-in-out infinite;
+      border-radius: 10px;
+      border: 2px solid transparent;
+      background:
+        linear-gradient(180deg, rgba(6, 20, 38, 0.92), rgba(4, 14, 24, 0.88)) padding-box,
+        linear-gradient(
+          125deg,
+          #00f0ff 0%,
+          #0099cc 18%,
+          #e8c547 42%,
+          #fff8c4 55%,
+          #00d4e8 78%,
+          #00f0ff 100%
+        ) border-box;
+      background-size: 100% 100%, 320% 320%;
+      animation: tz-bluelaser-pulse 4.5s ease-in-out infinite;
     }
-    @keyframes tz-shimmer-border {
-      0%, 100% { box-shadow: 0 0 0 1px rgba(0, 229, 255, 0.25), inset 0 0 12px rgba(232, 197, 71, 0.06); }
-      50% { box-shadow: 0 0 14px rgba(0, 229, 255, 0.35), 0 0 4px rgba(232, 197, 71, 0.35), inset 0 0 16px rgba(232, 197, 71, 0.1); }
+    @keyframes tz-bluelaser-pulse {
+      0%, 100% {
+        background-position: 0% 0%, 0% 40%;
+        box-shadow: 0 0 8px rgba(0, 240, 255, 0.25), inset 0 0 12px rgba(232, 197, 71, 0.06);
+      }
+      50% {
+        background-position: 0% 0%, 100% 60%;
+        box-shadow: 0 0 16px rgba(0, 229, 255, 0.45), 0 0 6px rgba(232, 197, 71, 0.4), inset 0 0 18px rgba(0, 200, 255, 0.08);
+      }
     }
     .tz-city {
       display: block;
@@ -267,7 +303,7 @@
     .ticker-track {
       display: flex;
       width: max-content;
-      animation: ticker-scroll 52s linear infinite;
+      animation: ticker-scroll 104s linear infinite;
     }
     .ticker-track:hover { animation-play-state: paused; }
     @keyframes ticker-scroll {
@@ -621,6 +657,8 @@
       padding: 0.85rem 1.75rem;
       max-width: 340px;
       width: 100%;
+      font-family: inherit;
+      cursor: pointer;
       background: linear-gradient(135deg, var(--gold) 0%, #f5e6a8 45%, var(--gold-dim) 100%);
       background-size: 200% 200%;
       color: var(--navy-deep);
@@ -753,6 +791,100 @@
     }
     .modal-close:hover { background: rgba(0, 60, 45, 0.75); }
 
+    .arb-calc-panel { max-width: 480px; max-height: min(90dvh, 620px); }
+    .arb-calc-panel .arb-lead {
+      margin: 0 0 1rem;
+      font-size: 0.82rem;
+      line-height: 1.55;
+      color: var(--text);
+    }
+    .arb-calc-panel .arb-lead strong { color: var(--gold-bright); }
+    .arb-label {
+      display: block;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 0.35rem;
+    }
+    .arb-input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0.55rem 0.65rem;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 255, 157, 0.35);
+      background: rgba(0, 24, 36, 0.75);
+      color: var(--emerald);
+      font-family: ui-monospace, 'Cascadia Code', monospace;
+      font-size: 0.88rem;
+    }
+    .arb-multiplier-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.85rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 10px;
+      background: rgba(0, 40, 70, 0.45);
+      border: 1px solid rgba(0, 229, 255, 0.22);
+    }
+    .arb-mul-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+    .arb-mul-value { font-size: 1.4rem; font-weight: 800; color: var(--gold-bright); text-shadow: 0 0 14px rgba(232, 197, 71, 0.35); }
+    .arb-viz { margin-bottom: 0.85rem; }
+    .arb-viz-track {
+      display: flex;
+      height: 14px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid rgba(0, 229, 255, 0.25);
+      background: rgba(0, 0, 0, 0.35);
+    }
+    .arb-viz-capex {
+      width: 10.417%;
+      min-width: 4px;
+      background: rgba(100, 120, 150, 0.85);
+    }
+    .arb-viz-gain {
+      flex: 1;
+      background: linear-gradient(90deg, rgba(0, 229, 255, 0.5), rgba(232, 197, 71, 0.95));
+    }
+    .arb-viz-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.35rem;
+      font-size: 0.58rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+    }
+    .arb-result {
+      margin: 0 0 0.65rem;
+      font-size: 0.88rem;
+      color: var(--text);
+      line-height: 1.45;
+    }
+    .arb-result strong { color: var(--gold); font-family: ui-monospace, monospace; }
+    .arb-footnote {
+      margin: 0 0 1rem;
+      font-size: 0.72rem;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+    .arb-mailto {
+      display: block;
+      text-align: center;
+      margin-bottom: 0.75rem;
+      padding: 0.55rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--emerald) !important;
+      border: 1px solid rgba(0, 255, 157, 0.35);
+      border-radius: 10px;
+      text-decoration: none !important;
+    }
+    .arb-mailto:hover { background: rgba(0, 60, 45, 0.35); }
+
     @media (prefers-reduced-motion: reduce) {
       .bluelaser-scan,
       .bluelaser-edge,
@@ -765,10 +897,14 @@
       .r8-node::before,
       .card.glass-metric::after,
       .live-num,
-      .goldman-head {
+      .goldman-head,
+      .wow-spine-sub,
+      .footer-signature-metallic,
+      .tz-cell {
         animation: none !important;
       }
       .goldman-head { background-position: 0% 40%; }
+      .tz-cell { background-position: 0% 0%, 0% 40%; }
       .ticker-track {
         flex-wrap: wrap;
         width: 100%;
@@ -796,7 +932,7 @@
     </div>
 
     <div class="ticker-outer">
-      <div class="ticker-label">Material pulse · March 2026 · Germanium $8,597/kg</div>
+      <div class="ticker-label">Live market pulse · March 2026 · Ge $8,597/kg · Si $1.81/lb · Fly ash $148/MT</div>
       <div class="ticker-track" id="tickerTrack">
         <div class="ticker-inner" id="tickerA"></div>
         <div class="ticker-inner" id="tickerB" aria-hidden="true"></div>
@@ -807,8 +943,8 @@
       <div class="logo-wrap">
         <img src="assets/kgec_eagle.svg" width="56" height="40" alt="GCSLC emblem">
       </div>
-      <h1 class="goldman-head">Galadiman Ruwa Center (GCSLC) LTD/GTE</h1>
-      <p class="wow-spine-sub">Everything is powered by the 8R Stealth Paradigm Convergence; The AZK Spine governing the National Coal Corridor.</p>
+      <h1 class="goldman-head">Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE</h1>
+      <p class="wow-spine-sub">Everything is powered by the 8R Stealth Paradigm Convergence and its Determinants; enter the AZK Spine governing the National Coal Corridor.</p>
       <div class="impact-tag">ARCHITECTING NATIONAL ASSET REVITALIZATION: NIGERIA &amp; AFRICA TO THE GLOBAL SOUTH</div>
       <p class="nav-dash"><a href="app.html">Open NRRFC coal reserves dashboard</a></p>
     </header>
@@ -840,11 +976,11 @@
               <tr>
                 <td>Fly Ash &amp; Silicon</td>
                 <td class="mono live-num" data-sfp="flysi">$9.5M</td>
-                <td>61.0k MT @ $148/MT + 260.8k kg @ $1.81/kg</td>
+                <td>61.0k MT @ $148/MT + 260.8k kg @ $1.81/lb equiv.</td>
               </tr>
               <tr class="total-row">
                 <td><strong>TOTAL REVENUE</strong></td>
-                <td class="mono live-num" style="font-size: 1.05em;" id="sfpTotal">$50.1M</td>
+                <td class="mono live-num" style="font-size: 1.05em;" id="sfpTotal">$50.7M</td>
                 <td><strong>Zenith Phase Target</strong></td>
               </tr>
             </tbody>
@@ -880,7 +1016,7 @@
       </section>
 
       <div class="cta-wrap">
-        <a href="mailto:info@galadimanruwacenter.org?subject=Executive%20Access%20Request%20%E2%80%94%20GCSLC%20Sovereign%20Gateway" class="btn-gateway" id="execBtn"><span>Request Executive Access</span></a>
+        <button type="button" class="btn-gateway" id="execBtn" aria-haspopup="dialog" aria-controls="arbModal"><span>Request Executive Access</span></button>
       </div>
     </main>
 
@@ -892,6 +1028,7 @@
       </p>
       <p>+234 809 911 1515 · © 2026 GCSLC LTD/GTE · Proprietary sovereign framework</p>
       <p class="footer-signature-metallic">Dr. Sa'ad Jaafaru</p>
+      <p class="footer-ip">Copyright · Proprietary framework · IP LW15954</p>
     </footer>
   </div>
 
@@ -900,6 +1037,30 @@
       <h4 id="modalTitle"></h4>
       <p id="modalBody"></p>
       <button type="button" class="modal-close" id="modalClose">Dismiss</button>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="arbModal" role="dialog" aria-modal="true" aria-labelledby="arbModalTitle" aria-hidden="true">
+    <div class="modal-panel matrix-vault arb-calc-panel">
+      <h4 id="arbModalTitle">Sovereign Arbitrage Calculator</h4>
+      <p class="arb-lead">Enter CAPEX to visualize the <strong>9.6×</strong> wealth multiplier and sovereign de-risking of your AI supply chain via AZK-governed mineral derivatives.</p>
+      <label class="arb-label" for="arbCapexInput">CAPEX (USD)</label>
+      <input type="number" class="arb-input" id="arbCapexInput" value="1000000000" min="1000000" step="1000000" />
+      <div class="arb-multiplier-row">
+        <span class="arb-mul-label">Wealth multiplier</span>
+        <span class="arb-mul-value">9.6×</span>
+      </div>
+      <div class="arb-viz" aria-hidden="true">
+        <div class="arb-viz-track">
+          <div class="arb-viz-capex" title="CAPEX share of terminal (1÷9.6)"></div>
+          <div class="arb-viz-gain" title="Sovereign wealth uplift (AZK mineral derivatives)"></div>
+        </div>
+        <div class="arb-viz-labels"><span>CAPEX slice</span><span>9.6× terminal stack</span></div>
+      </div>
+      <p class="arb-result" id="arbResult">Implied sovereign terminal value: <strong id="arbTerminalUsd">$9.60 B</strong></p>
+      <p class="arb-footnote">Mineral corridor throughput (Ge · Si · fly ash) under the National Coal Corridor — AZK spine governance only.</p>
+      <a href="mailto:info@galadimanruwacenter.org?subject=Executive%20Access%20Request%20%E2%80%94%20GCSLC%20Live%20Terminal" class="arb-mailto">Email executive access request</a>
+      <button type="button" class="modal-close" id="arbModalClose">Close</button>
     </div>
   </div>
 
@@ -941,33 +1102,22 @@
         }).join('');
       }
 
-      /* Material ticker — baseline anchors per brief */
-      var mats = {
-        germanium: 8597,
-        silicon: 1.81,
-        flyAsh: 148,
-        diamonds: 94.5
-      };
+      /* Live market pulse — March 2026 anchors */
+      var mats = { germanium: 8597, siliconLb: 1.81, flyAsh: 148 };
 
       function jitterMats() {
         mats.germanium = 8597 + (Math.random() - 0.5) * 6;
-        mats.silicon = 1.81 + (Math.random() - 0.5) * 0.03;
+        mats.siliconLb = 1.81 + (Math.random() - 0.5) * 0.03;
         mats.flyAsh = 148 + (Math.random() - 0.5) * 0.9;
-        mats.diamonds = 94.5 + (Math.random() - 0.5) * 0.8;
       }
 
       function buildTickerHtml() {
-        return (
+        var pulse =
           '<span class="tick-item"><span class="live-dot"></span><strong>Germanium</strong> $' +
           mats.germanium.toFixed(0) + '/kg</span>' +
-          '<span class="tick-item"><strong>Silicon</strong> $' + mats.silicon.toFixed(2) + '/kg</span>' +
-          '<span class="tick-item"><strong>Coal Fly Ash</strong> $' + mats.flyAsh.toFixed(0) + '/MT</span>' +
-          '<span class="tick-item"><strong>Industrial Diamonds</strong> $' + mats.diamonds.toFixed(1) + '/ct bench</span>' +
-          '<span class="tick-item"><strong>Germanium</strong> $' + mats.germanium.toFixed(0) + '/kg</span>' +
-          '<span class="tick-item"><strong>Silicon</strong> $' + mats.silicon.toFixed(2) + '/kg</span>' +
-          '<span class="tick-item"><strong>Coal Fly Ash</strong> $' + mats.flyAsh.toFixed(0) + '/MT</span>' +
-          '<span class="tick-item"><strong>Industrial Diamonds</strong> $' + mats.diamonds.toFixed(1) + '/ct bench</span>'
-        );
+          '<span class="tick-item"><strong>Silicon</strong> $' + mats.siliconLb.toFixed(2) + '/lb</span>' +
+          '<span class="tick-item"><strong>Coal Fly Ash</strong> $' + mats.flyAsh.toFixed(0) + '/MT</span>';
+        return pulse + pulse;
       }
 
       function updateTicker() {
@@ -1080,14 +1230,31 @@
         if (e.target === modal) closeModal();
       });
       document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
+        if (e.key !== 'Escape') return;
+        var arbEl = document.getElementById('arbModal');
+        if (arbEl && arbEl.classList.contains('is-open')) {
+          arbEl.classList.remove('is-open');
+          arbEl.setAttribute('aria-hidden', 'true');
+          document.body.style.overflow = '';
+          return;
+        }
+        if (modal.classList.contains('is-open')) closeModal();
       });
 
-      /* March 2026 Zenith SFP: Syngas $22.4M + Ge @ $8,597/kg + Fly Ash $148/MT & Si $1.81/kg → $50.1M */
-      var MARCH_2026 = { GE: 8597, FLY_MT: 148, SI: 1.81, ZENITH_FLY_MT: 61000, ZENITH_SI_KG: 260773, ZENITH_GE_KG: 2116.55 };
+      /* March 2026 Zenith SFP — Si quoted $/lb → $/kg for ledger math */
+      var LB_TO_KG = 0.45359237;
+      var MARCH_2026 = {
+        GE: 8597,
+        FLY_MT: 148,
+        SI_PER_LB: 1.81,
+        SI_PER_KG: 1.81 / LB_TO_KG,
+        ZENITH_FLY_MT: 61000,
+        ZENITH_SI_KG: 260773,
+        ZENITH_GE_KG: 2116.55
+      };
       var sfpSyn = 22.4;
       var sfpGeM = (MARCH_2026.ZENITH_GE_KG * MARCH_2026.GE) / 1e6;
-      var sfpFlySiM = (MARCH_2026.ZENITH_FLY_MT * MARCH_2026.FLY_MT + MARCH_2026.ZENITH_SI_KG * MARCH_2026.SI) / 1e6;
+      var sfpFlySiM = (MARCH_2026.ZENITH_FLY_MT * MARCH_2026.FLY_MT + MARCH_2026.ZENITH_SI_KG * MARCH_2026.SI_PER_KG) / 1e6;
 
       function microJitter(x, w) {
         return Math.max(0, x + (Math.random() - 0.5) * w);
@@ -1134,12 +1301,70 @@
     })();
 
     (function () {
+      var arb = document.getElementById('arbModal');
+      var execBtn = document.getElementById('execBtn');
+      var inp = document.getElementById('arbCapexInput');
+      var out = document.getElementById('arbTerminalUsd');
+      var MULT = 9.6;
+      function fmtUsd(n) {
+        if (!isFinite(n) || n < 0) return '—';
+        if (n >= 1e12) return '$' + (n / 1e12).toFixed(2) + ' T';
+        if (n >= 1e9) return '$' + (n / 1e9).toFixed(2) + ' B';
+        if (n >= 1e6) return '$' + (n / 1e6).toFixed(2) + ' M';
+        return '$' + n.toLocaleString(undefined, { maximumFractionDigits: 0 });
+      }
+      function updateArb() {
+        var c = parseFloat(inp && inp.value) || 0;
+        if (out) out.textContent = fmtUsd(c * MULT);
+      }
+      function openArb() {
+        if (!arb) return;
+        arb.classList.add('is-open');
+        arb.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        updateArb();
+        if (inp) inp.focus();
+      }
+      function closeArb() {
+        if (!arb) return;
+        arb.classList.remove('is-open');
+        arb.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+      if (execBtn) execBtn.addEventListener('click', openArb);
+      if (inp) inp.addEventListener('input', updateArb);
+      var arbClose = document.getElementById('arbModalClose');
+      if (arbClose) arbClose.addEventListener('click', closeArb);
+      if (arb) arb.addEventListener('click', function (e) { if (e.target === arb) closeArb(); });
+    })();
+
+    (function () {
+      var wm = document.querySelector('.wm-gcslc');
+      if (!wm) return;
+      function tick() {
+        var sc = window.scrollY || 0;
+        var vz = window.visualViewport;
+        var z = vz ? vz.scale : 1;
+        var bump = Math.min(0.12, sc * 0.00012 + Math.abs(Math.sin(Date.now() / 1800)) * 0.04);
+        var scale = 1 + bump + (z - 1) * 0.08;
+        wm.style.setProperty('--wm-scale', String(Math.min(1.14, Math.max(0.94, scale))));
+      }
+      window.addEventListener('scroll', tick, { passive: true });
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', tick);
+        window.visualViewport.addEventListener('scroll', tick);
+      }
+      setInterval(tick, 120);
+      tick();
+    })();
+
+    (function () {
       document.addEventListener('contextmenu', function (e) {
-        if (e.target.closest && e.target.closest('#rModal.is-open')) return;
+        if (e.target.closest && e.target.closest('#rModal.is-open, #arbModal.is-open')) return;
         e.preventDefault();
       });
       document.addEventListener('copy', function (e) {
-        if (e.target.closest && e.target.closest('#rModal.is-open')) return;
+        if (e.target.closest && e.target.closest('#rModal.is-open, #arbModal.is-open')) return;
         e.preventDefault();
       });
       document.addEventListener('keydown', function (e) {
