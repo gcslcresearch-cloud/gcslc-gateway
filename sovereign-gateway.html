@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a1628">
+  <title>GCSLC Sovereign Gateway | Command Center</title>
+  <meta name="description" content="Galadiman Ruwa Center (GCSLC) — Live command center: SFP, 8R Paradigm, global markets.">
+  <style>
+    :root {
+      --navy-deep: #0a1628;
+      --navy-mid: #0d2137;
+      --navy-card: #102a45;
+      --gold: #e8c547;
+      --gold-dim: #b8942a;
+      --gold-bright: #fff0a3;
+      --blue-laser: #00b4ff;
+      --blue-laser-soft: rgba(0, 180, 255, 0.35);
+      --emerald: #00ff88;
+      --text: #e8eef4;
+      --muted: #8fa3bf;
+      --fx-rate: 1350;
+      font-size: clamp(14px, 2.8vw, 16px);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100dvh;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: radial-gradient(ellipse 120% 80% at 50% -20%, #152a45 0%, var(--navy-deep) 45%);
+      color: var(--gold);
+      overflow-x: hidden;
+      padding: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0) env(safe-area-inset-bottom, 0) env(safe-area-inset-left, 0);
+    }
+
+    /* —— Bluelaser broadcast frame (CNN-style edge pulse + scan) —— */
+    .bluelaser-stack {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .bluelaser-edge {
+      position: absolute;
+      inset: 0;
+      border: 3px solid transparent;
+      border-radius: 2px;
+      background:
+        linear-gradient(var(--navy-deep), var(--navy-deep)) padding-box,
+        linear-gradient(
+          90deg,
+          rgba(0, 80, 160, 0.2),
+          var(--blue-laser-soft),
+          rgba(0, 212, 255, 0.65),
+          var(--blue-laser-soft),
+          rgba(0, 80, 160, 0.2)
+        ) border-box;
+      background-size: 300% 300%;
+      animation: bluelaser-flow 5s ease-in-out infinite, edge-pulse 3s ease-in-out infinite;
+      opacity: 0.85;
+    }
+    .bluelaser-scan {
+      position: absolute;
+      inset: -40%;
+      background: conic-gradient(
+        from 0deg at 50% 50%,
+        transparent 0deg,
+        transparent 280deg,
+        rgba(0, 200, 255, 0.12) 300deg,
+        rgba(0, 240, 255, 0.22) 330deg,
+        transparent 360deg
+      );
+      animation: bluelaser-spin 14s linear infinite;
+    }
+    .bluelaser-vignette {
+      position: absolute;
+      inset: 0;
+      box-shadow:
+        inset 0 0 80px rgba(0, 40, 100, 0.45),
+        inset 0 0 24px rgba(0, 180, 255, 0.08);
+      animation: vignette-pulse 4s ease-in-out infinite;
+    }
+    @keyframes bluelaser-flow {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    @keyframes edge-pulse {
+      0%, 100% { filter: brightness(0.95) drop-shadow(0 0 6px rgba(0, 180, 255, 0.25)); }
+      50% { filter: brightness(1.08) drop-shadow(0 0 14px rgba(0, 220, 255, 0.5)); }
+    }
+    @keyframes bluelaser-spin {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes vignette-pulse {
+      0%, 100% { opacity: 0.9; }
+      50% { opacity: 1; }
+    }
+
+    /* Live shell */
+    .shell {
+      position: relative;
+      z-index: 60;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      pointer-events: auto;
+    }
+
+    /* Time zone command bar */
+    .tz-bar {
+      background: linear-gradient(180deg, var(--navy-mid) 0%, rgba(10, 22, 40, 0.98) 100%);
+      border-bottom: 1px solid rgba(232, 197, 71, 0.35);
+      padding: 0.65rem clamp(0.5rem, 2vw, 1rem);
+    }
+    .tz-bar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem 0.75rem;
+    }
+    @media (min-width: 640px) {
+      .tz-bar-inner { grid-template-columns: repeat(6, 1fr); gap: 0.35rem; }
+    }
+    .tz-cell {
+      text-align: center;
+      padding: 0.35rem 0.25rem;
+      background: rgba(0, 30, 60, 0.45);
+      border: 1px solid rgba(232, 197, 71, 0.2);
+      border-radius: 8px;
+      min-width: 0;
+    }
+    .tz-city {
+      display: block;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .tz-time {
+      font-family: ui-monospace, 'Cascadia Code', monospace;
+      font-size: clamp(0.75rem, 2.5vw, 0.9rem);
+      font-weight: 700;
+      color: var(--gold-bright);
+      margin-top: 0.15rem;
+    }
+
+    /* Ticker */
+    .ticker-outer {
+      background: #050d18;
+      border-bottom: 2px solid rgba(0, 180, 255, 0.35);
+      overflow: hidden;
+      padding: 0.45rem 0;
+    }
+    .ticker-label {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 0.75rem 0.25rem;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--blue-laser);
+    }
+    .ticker-track {
+      display: flex;
+      width: max-content;
+      animation: ticker-scroll 48s linear infinite;
+    }
+    .ticker-track:hover { animation-play-state: paused; }
+    @keyframes ticker-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .ticker-inner {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+      padding: 0 1rem;
+      white-space: nowrap;
+    }
+    .tick-item {
+      font-family: ui-monospace, monospace;
+      font-size: clamp(0.7rem, 2.2vw, 0.82rem);
+      color: var(--text);
+    }
+    .tick-item strong { color: var(--gold); font-weight: 700; }
+    .tick-item .live-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: var(--emerald);
+      border-radius: 50%;
+      margin-right: 6px;
+      animation: live-blink 1.2s ease-in-out infinite;
+    }
+    @keyframes live-blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: clamp(1rem, 4vw, 1.75rem) 1rem;
+      border-bottom: 2px solid rgba(232, 197, 71, 0.4);
+      background: linear-gradient(180deg, rgba(13, 33, 55, 0.95) 0%, transparent 100%);
+    }
+    .header .logo-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 0.5rem;
+    }
+    .header .logo-wrap img { width: clamp(48px, 12vw, 64px); height: auto; }
+    .header h1 {
+      margin: 0;
+      font-size: clamp(1rem, 4.2vw, 1.65rem);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      line-height: 1.25;
+    }
+    .impact-tag {
+      margin-top: 0.5rem;
+      font-size: clamp(0.65rem, 2vw, 0.85rem);
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: var(--gold);
+    }
+    .nav-dash { margin-top: 0.75rem; }
+    .nav-dash a {
+      color: var(--emerald);
+      font-size: 0.85rem;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(0, 255, 136, 0.35);
+    }
+    .nav-dash a:hover { color: var(--text); border-bottom-color: var(--text); }
+
+    .container {
+      flex: 1;
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: clamp(0.75rem, 3vw, 1.25rem);
+      padding-bottom: 2rem;
+    }
+
+    /* Live data stream panels */
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--emerald);
+      margin-bottom: 0.5rem;
+    }
+    .live-badge::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--emerald);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--emerald);
+      animation: live-blink 1s ease-in-out infinite;
+    }
+
+    .sfp-card {
+      position: relative;
+      background: var(--navy-card);
+      border: 1px solid rgba(232, 197, 71, 0.45);
+      border-radius: 12px;
+      padding: clamp(1rem, 3vw, 1.35rem);
+      margin-bottom: 1.25rem;
+      overflow: hidden;
+      box-shadow: 0 0 0 1px rgba(0, 180, 255, 0.12), inset 0 0 40px rgba(0, 40, 80, 0.35);
+    }
+    .sfp-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 180, 255, 0.03) 2px,
+        rgba(0, 180, 255, 0.03) 4px
+      );
+      pointer-events: none;
+      animation: scan-drift 12s linear infinite;
+    }
+    @keyframes scan-drift {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(8px); }
+    }
+    .sfp-card h3 {
+      position: relative;
+      margin: 0 0 0.5rem;
+      font-size: clamp(0.95rem, 3vw, 1.1rem);
+      letter-spacing: 0.06em;
+    }
+    .sfp-card .table-wrap { position: relative; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    table.data-stream {
+      width: 100%;
+      border-collapse: collapse;
+      color: var(--text);
+    }
+    table.data-stream th,
+    table.data-stream td {
+      padding: 0.65rem 0.5rem;
+      border-bottom: 1px solid rgba(232, 197, 71, 0.2);
+      font-size: clamp(0.78rem, 2.2vw, 0.9rem);
+    }
+    table.data-stream th {
+      color: var(--gold-dim);
+      text-transform: uppercase;
+      font-size: 0.68rem;
+      letter-spacing: 0.05em;
+    }
+    table.data-stream .mono {
+      font-family: ui-monospace, monospace;
+      font-variant-numeric: tabular-nums;
+    }
+    table.data-stream .highlight {
+      color: var(--emerald);
+      font-weight: 700;
+      text-shadow: 0 0 12px rgba(0, 255, 136, 0.35);
+    }
+    table.data-stream tr.total-row td {
+      border-top: 2px solid var(--gold);
+      font-weight: 800;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    @media (min-width: 600px) {
+      .grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    .card {
+      position: relative;
+      background: linear-gradient(145deg, rgba(16, 42, 69, 0.95), rgba(8, 24, 44, 0.98));
+      padding: 1.1rem;
+      border: 1px solid rgba(232, 197, 71, 0.4);
+      border-radius: 12px;
+      box-shadow: inset 0 0 30px rgba(0, 100, 200, 0.12);
+      overflow: hidden;
+    }
+    .card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--blue-laser-soft), transparent);
+      animation: card-pulse 3s ease-in-out infinite;
+    }
+    @keyframes card-pulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+    .metric-title {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+    .metric-value {
+      font-family: ui-monospace, monospace;
+      font-size: clamp(1.35rem, 5vw, 1.85rem);
+      font-weight: 800;
+      margin: 0.4rem 0;
+      color: var(--emerald);
+      text-shadow: 0 0 20px rgba(0, 255, 136, 0.25);
+    }
+    .metric-value .flicker {
+      animation: value-flicker 4s ease-in-out infinite;
+    }
+    @keyframes value-flicker {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.92; }
+    }
+    .card p {
+      margin: 0;
+      font-size: 0.8rem;
+      color: var(--text);
+      line-height: 1.45;
+    }
+
+    /* 8R nodal chart */
+    .paradigm-section {
+      margin-top: 1.75rem;
+      padding: 1.25rem;
+      background: rgba(5, 15, 28, 0.65);
+      border: 1px solid rgba(0, 180, 255, 0.25);
+      border-radius: 16px;
+    }
+    .paradigm-section h3 {
+      margin: 0 0 1rem;
+      font-size: clamp(0.9rem, 2.8vw, 1.05rem);
+      text-align: center;
+      letter-spacing: 0.08em;
+    }
+    .r8-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem;
+      max-width: 520px;
+      margin: 0 auto 1rem;
+    }
+    @media (max-width: 380px) {
+      .r8-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    .r8-node {
+      position: relative;
+      aspect-ratio: 1;
+      max-height: 76px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.15rem;
+      padding: 0.35rem;
+      background: linear-gradient(180deg, rgba(0, 60, 120, 0.35), rgba(10, 30, 55, 0.9));
+      border: 1px solid rgba(232, 197, 71, 0.35);
+      border-radius: 12px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    }
+    .r8-node:hover,
+    .r8-node:focus-visible {
+      transform: scale(1.04);
+      border-color: var(--blue-laser);
+      box-shadow: 0 0 20px rgba(0, 180, 255, 0.35);
+      outline: none;
+    }
+    .r8-node .d-badge {
+      font-size: 0.6rem;
+      font-weight: 800;
+      color: var(--blue-laser);
+      letter-spacing: 0.05em;
+    }
+    .r8-node .r-name {
+      font-size: clamp(0.55rem, 1.8vw, 0.68rem);
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.15;
+      color: var(--gold-bright);
+    }
+
+    .roadmap {
+      margin-top: 1rem;
+      border-left: 3px solid var(--gold-dim);
+      padding-left: 1rem;
+    }
+    .roadmap h4 {
+      margin: 0 0 0.75rem;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+    .step {
+      margin-bottom: 0.65rem;
+      position: relative;
+      font-size: 0.82rem;
+      color: var(--text);
+    }
+    .step::before {
+      content: '●';
+      position: absolute;
+      left: -1.1rem;
+      color: var(--gold);
+      font-size: 0.75rem;
+    }
+
+    /* Executive CTA — secured shimmer */
+    .cta-wrap {
+      display: flex;
+      justify-content: center;
+      margin: 2rem 0 1rem;
+      padding: 0 0.5rem;
+    }
+    .btn-gateway {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 52px;
+      padding: 0.9rem 2rem;
+      max-width: 340px;
+      width: 100%;
+      background: linear-gradient(135deg, var(--gold) 0%, #f5e6a8 45%, var(--gold-dim) 100%);
+      background-size: 200% 200%;
+      color: var(--navy-deep);
+      text-align: center;
+      text-decoration: none;
+      font-weight: 900;
+      font-size: clamp(0.8rem, 2.5vw, 0.95rem);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border-radius: 999px;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      box-shadow:
+        0 4px 24px rgba(232, 197, 71, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.45);
+      overflow: hidden;
+      animation: btn-shimmer 3.5s ease-in-out infinite;
+    }
+    .btn-gateway::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(
+        105deg,
+        transparent 0%,
+        transparent 40%,
+        rgba(255, 255, 255, 0.55) 50%,
+        transparent 60%,
+        transparent 100%
+      );
+      background-size: 200% 100%;
+      animation: shine-sweep 2.8s ease-in-out infinite;
+    }
+    .btn-gateway span { position: relative; z-index: 1; }
+    .btn-gateway:hover { filter: brightness(1.05); transform: scale(1.02); }
+    @keyframes btn-shimmer {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    @keyframes shine-sweep {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    footer {
+      text-align: center;
+      padding: 1.5rem 1rem 2rem;
+      font-size: clamp(0.72rem, 2vw, 0.82rem);
+      color: var(--gold-dim);
+      border-top: 1px solid rgba(232, 197, 71, 0.2);
+      line-height: 1.65;
+    }
+    footer a {
+      color: var(--gold-bright);
+      text-decoration: none;
+    }
+    footer a:hover { text-decoration: underline; }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: rgba(5, 12, 24, 0.82);
+      backdrop-filter: blur(6px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s, visibility 0.25s;
+    }
+    .modal-backdrop.is-open {
+      display: flex;
+      opacity: 1;
+      visibility: visible;
+    }
+    .modal-panel {
+      width: 100%;
+      max-width: 420px;
+      max-height: min(80dvh, 520px);
+      overflow-y: auto;
+      background: linear-gradient(180deg, var(--navy-mid), var(--navy-deep));
+      border: 2px solid var(--gold-dim);
+      border-radius: 16px;
+      padding: 1.25rem 1.35rem;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), 0 0 40px rgba(0, 180, 255, 0.15);
+      transform: scale(0.94);
+      transition: transform 0.25s ease;
+    }
+    .modal-backdrop.is-open .modal-panel { transform: scale(1); }
+    .modal-panel h4 {
+      margin: 0 0 0.65rem;
+      font-size: 1.05rem;
+      color: var(--gold-bright);
+      letter-spacing: 0.02em;
+    }
+    .modal-panel p {
+      margin: 0;
+      font-size: 0.92rem;
+      line-height: 1.55;
+      color: var(--text);
+    }
+    .modal-close {
+      margin-top: 1rem;
+      width: 100%;
+      padding: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-radius: 10px;
+      border: 1px solid rgba(232, 197, 71, 0.45);
+      background: rgba(0, 60, 120, 0.4);
+      color: var(--gold);
+      cursor: pointer;
+    }
+    .modal-close:hover { background: rgba(0, 100, 180, 0.45); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .bluelaser-scan,
+      .bluelaser-edge,
+      .bluelaser-vignette,
+      .ticker-track,
+      .btn-gateway,
+      .btn-gateway::before,
+      .sfp-card::before {
+        animation: none !important;
+      }
+      .ticker-track {
+        flex-wrap: wrap;
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        animation: none;
+        transform: none;
+      }
+      .ticker-inner { flex-wrap: wrap; white-space: normal; justify-content: center; gap: 0.75rem 1.5rem; }
+      .metric-value .flicker { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bluelaser-stack" aria-hidden="true">
+    <div class="bluelaser-scan"></div>
+    <div class="bluelaser-edge"></div>
+    <div class="bluelaser-vignette"></div>
+  </div>
+
+  <div class="shell">
+    <div class="tz-bar">
+      <div class="tz-bar-inner" id="tzBar" aria-live="polite"></div>
+    </div>
+
+    <div class="ticker-outer">
+      <div class="ticker-label">Live markets · GCSLC feed</div>
+      <div class="ticker-track" id="tickerTrack">
+        <div class="ticker-inner" id="tickerA"></div>
+        <div class="ticker-inner" id="tickerB" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <header class="header">
+      <div class="logo-wrap">
+        <img src="assets/kgec_eagle.svg" width="56" height="40" alt="GCSLC emblem">
+      </div>
+      <h1>Galadiman Ruwa Center (GCSLC) LTD/GTE</h1>
+      <div class="impact-tag">ARCHITECTING NATIONAL ASSET REVITALIZATION: NIGERIA &amp; AFRICA TO THE GLOBAL SOUTH</div>
+      <p class="nav-dash"><a href="app.html">Open NRRFC coal reserves dashboard</a></p>
+    </header>
+
+    <main class="container">
+      <section class="sfp-card" aria-labelledby="sfp-heading">
+        <span class="live-badge">Stream</span>
+        <h3 id="sfp-heading">SUPERIOR FINANCIAL PERFORMANCE (SFP)</h3>
+        <div class="table-wrap">
+          <table class="data-stream">
+            <thead>
+              <tr>
+                <th>Revenue Stream</th>
+                <th>Target (Monthly)</th>
+                <th>Strategic Context</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Coal-to-Syngas</td>
+                <td class="mono" data-sfp="syngas">$22.4M</td>
+                <td>Diesel Displacement Arbitrage</td>
+              </tr>
+              <tr>
+                <td>Germanium (10x Recovery)</td>
+                <td class="mono highlight" data-sfp="ge">$18.2M</td>
+                <td>Strategic Mineral Multiplier</td>
+              </tr>
+              <tr>
+                <td>Ammonia/Silicon</td>
+                <td class="mono" data-sfp="nh3">$9.5M</td>
+                <td>Chemical Derivative Integration</td>
+              </tr>
+              <tr class="total-row">
+                <td><strong>TOTAL REVENUE</strong></td>
+                <td class="mono highlight" style="font-size: 1.1em;" id="sfpTotal">$50.1M</td>
+                <td><strong>Zenith Phase Target</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <div class="grid">
+        <div class="card">
+          <span class="live-badge">Live</span>
+          <div class="metric-title">National Debt Clearance Status</div>
+          <div id="debt-coverage" class="metric-value"><span class="flicker" id="debtCovVal">189%</span></div>
+          <p>Coverage of ₦50T liability via 10% Big Tech CAPEX capture.</p>
+        </div>
+        <div class="card">
+          <span class="live-badge">Live</span>
+          <div class="metric-title">Sovereign Surplus Potential</div>
+          <div class="metric-value"><span class="flicker" id="surplusVal">+₦44.5T</span></div>
+          <p>Net position after total domestic debt liquidation.</p>
+        </div>
+      </div>
+
+      <section class="paradigm-section" aria-labelledby="paradigm-heading">
+        <h3 id="paradigm-heading">8R Stealth Paradigm Convergence</h3>
+        <div class="r8-grid" id="r8Grid" role="group" aria-label="Eight strategic determinants"></div>
+        <div class="roadmap">
+          <h4>SSMV activation timeline</h4>
+          <div class="step"><strong>RESET:</strong> Institutional identity &amp; environment purge.</div>
+          <div class="step"><strong>RESEARCH:</strong> Nodal asset discovery &amp; Germanium validation.</div>
+          <div class="step"><strong>RESTRUCTURE:</strong> SSMV incorporation &amp; gateway security.</div>
+          <div class="step"><strong>REVITALIZE:</strong> National revenue strike &amp; SFP delivery.</div>
+        </div>
+      </section>
+
+      <div class="cta-wrap">
+        <a href="mailto:info@galadimanruwacenter.org?subject=Executive%20Access%20Request%20%E2%80%94%20GCSLC%20Sovereign%20Gateway" class="btn-gateway" id="execBtn"><span>Request Executive Access</span></a>
+      </div>
+    </main>
+
+    <footer>
+      <p>
+        <a href="mailto:info@galadimanruwacenter.org">info@galadimanruwacenter.org</a>
+        &nbsp;·&nbsp;
+        <a href="mailto:gcslc.research@gmail.com">gcslc.research@gmail.com</a>
+      </p>
+      <p>+234 809 911 1515 · © 2026 GCSLC LTD/GTE · Proprietary sovereign framework</p>
+    </footer>
+  </div>
+
+  <div class="modal-backdrop" id="rModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-panel">
+      <h4 id="modalTitle"></h4>
+      <p id="modalBody"></p>
+      <button type="button" class="modal-close" id="modalClose">Dismiss</button>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var FX_USD_NGN = 1350;
+
+      var zones = [
+        { id: 'Abuja', tz: 'Africa/Lagos' },
+        { id: 'London', tz: 'Europe/London' },
+        { id: 'New York', tz: 'America/New_York' },
+        { id: 'Singapore', tz: 'Asia/Singapore' },
+        { id: 'Dubai', tz: 'Asia/Dubai' },
+        { id: 'Johannesburg', tz: 'Africa/Johannesburg' }
+      ];
+
+      function pad(n) { return n < 10 ? '0' + n : String(n); }
+
+      function renderClocks() {
+        var el = document.getElementById('tzBar');
+        var now = new Date();
+        el.innerHTML = zones.map(function (z) {
+          var parts = new Intl.DateTimeFormat('en-GB', {
+            timeZone: z.tz,
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+          }).formatToParts(now);
+          var H = '', M = '', S = '';
+          parts.forEach(function (p) {
+            if (p.type === 'hour') H = p.value;
+            if (p.type === 'minute') M = p.value;
+            if (p.type === 'second') S = p.value;
+          });
+          return (
+            '<div class="tz-cell">' +
+              '<span class="tz-city">' + z.id + '</span>' +
+              '<span class="tz-time">' + H + ':' + M + ':' + S + '</span>' +
+            '</div>'
+          );
+        }).join('');
+      }
+
+      /* Simulated market data — micro-jitter for broadcast feel */
+      var market = {
+        rawCoal: 112.4,
+        cokingCoal: 178.2,
+        syngas: 0.42,
+        ammonia: 428,
+        germanium: 8597,
+        diamonds: 94.2,
+        gbpUsd: 1.268,
+        eurUsd: 1.084
+      };
+
+      function jitter(obj, key, pct) {
+        var v = obj[key];
+        var d = v * pct * (Math.random() - 0.5) * 2;
+        obj[key] = Math.max(0.0001, v + d);
+      }
+
+      function fmtUsd(v, dec) {
+        if (dec == null) dec = v >= 100 ? 1 : 2;
+        return '$' + v.toFixed(dec);
+      }
+
+      function buildTickerHtml() {
+        var ngnPerGbp = FX_USD_NGN * market.gbpUsd;
+        var ngnPerEur = FX_USD_NGN * market.eurUsd;
+        return (
+          '<span class="tick-item"><span class="live-dot"></span><strong>Raw Coal</strong> ' + fmtUsd(market.rawCoal, 2) + '/t</span>' +
+          '<span class="tick-item"><strong>Coking Coal</strong> ' + fmtUsd(market.cokingCoal, 1) + '/t</span>' +
+          '<span class="tick-item"><strong>Syngas</strong> ' + fmtUsd(market.syngas, 3) + '/m³</span>' +
+          '<span class="tick-item"><strong>Ammonia</strong> ' + fmtUsd(market.ammonia, 0) + '/MT</span>' +
+          '<span class="tick-item"><strong>Germanium</strong> ' + fmtUsd(market.germanium, 0) + '/kg</span>' +
+          '<span class="tick-item"><strong>Industrial Diamonds</strong> ' + fmtUsd(market.diamonds, 2) + '/ct bench</span>' +
+          '<span class="tick-item"><strong>USD/NGN</strong> ' + FX_USD_NGN.toFixed(0) + ' (2026 ref)</span>' +
+          '<span class="tick-item"><strong>GBP/NGN</strong> ' + ngnPerGbp.toFixed(2) + '</span>' +
+          '<span class="tick-item"><strong>EUR/NGN</strong> ' + ngnPerEur.toFixed(2) + '</span>'
+        );
+      }
+
+      function updateTicker() {
+        jitter(market, 'rawCoal', 0.004);
+        jitter(market, 'cokingCoal', 0.004);
+        jitter(market, 'syngas', 0.006);
+        jitter(market, 'ammonia', 0.003);
+        jitter(market, 'germanium', 0.002);
+        jitter(market, 'diamonds', 0.005);
+        jitter(market, 'gbpUsd', 0.0008);
+        jitter(market, 'eurUsd', 0.0008);
+        var html = buildTickerHtml();
+        document.getElementById('tickerA').innerHTML = html;
+        document.getElementById('tickerB').innerHTML = html;
+      }
+
+      /* Optional: light API nudge for GBP/EUR (no CORS on many free APIs — fallback stays simulated) */
+      function tryFetchRates() {
+        fetch('https://open.er-api.com/v6/latest/USD')
+          .then(function (r) { return r.json(); })
+          .then(function (j) {
+            if (j && j.rates && j.rates.GBP && j.rates.EUR) {
+              market.gbpUsd = 1 / j.rates.GBP;
+              market.eurUsd = 1 / j.rates.EUR;
+            }
+          })
+          .catch(function () { /* simulated */ });
+      }
+
+      var determinants = [
+        {
+          d: 'D1',
+          name: 'Reset',
+          title: 'D2: Reset – Institutional Realignment & Operational Environment Clearance.',
+          body: 'Clear the operational environment and realign institutions so downstream Research and Restructure phases execute on a single sovereign mandate.'
+        },
+        {
+          d: 'D2',
+          name: 'Research',
+          title: 'D2 — Research',
+          body: 'Nodal asset discovery, Germanium pathway validation, and feedstock intelligence — evidence-grade baselines for sovereign strike planning.'
+        },
+        {
+          d: 'D3',
+          name: 'Restructure',
+          title: 'D3 — Restructure',
+          body: 'SSMV incorporation, capital stack alignment, and gateway security — legal and operational architecture for irreversible execution.'
+        },
+        {
+          d: 'D4',
+          name: 'Revitalize',
+          title: 'D4 — Revitalize',
+          body: 'National revenue strike and SFP delivery — Zenith-phase throughput with measurable yield to treasury and partners.'
+        },
+        {
+          d: 'D5',
+          name: 'Resuscitate',
+          title: 'D5 — Resuscitate',
+          body: 'Moribund asset recovery and legacy liability neutralization — turning stranded capacity into fungible sovereign optionality.'
+        },
+        {
+          d: 'D6',
+          name: 'Re-engineer',
+          title: 'D6 — Re-engineer',
+          body: 'Process chemistry, syngas yield optimization, and derivative chain integration — engineering margin where others see cost.'
+        },
+        {
+          d: 'D7',
+          name: 'Refine',
+          title: 'D7 — Refine',
+          body: 'Governance, reporting, and sovereign-grade compliance — audit trails and disclosure that survive external scrutiny.'
+        },
+        {
+          d: 'D8',
+          name: 'Retain',
+          title: 'D8 — Retain',
+          body: 'Knowledge sovereignty and long-cycle institutional memory — talent, playbooks, and IP held inside the mission perimeter.'
+        }
+      ];
+
+      function buildR8() {
+        var grid = document.getElementById('r8Grid');
+        grid.innerHTML = determinants.map(function (item, i) {
+          return (
+            '<button type="button" class="r8-node" data-idx="' + i + '" aria-label="' + item.title + ' — open definition">' +
+              '<span class="d-badge">' + item.d + '</span>' +
+              '<span class="r-name">' + item.name + '</span>' +
+            '</button>'
+          );
+        }).join('');
+
+        var hoverFine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+        grid.querySelectorAll('.r8-node').forEach(function (btn) {
+          var hoverT;
+
+          function openFromIdx() {
+            var idx = parseInt(btn.getAttribute('data-idx'), 10);
+            openModal(determinants[idx]);
+          }
+
+          btn.addEventListener('click', openFromIdx);
+          btn.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              openFromIdx();
+            }
+          });
+
+          if (hoverFine) {
+            btn.addEventListener('mouseenter', function () {
+              clearTimeout(hoverT);
+              hoverT = setTimeout(openFromIdx, 420);
+            });
+            btn.addEventListener('mouseleave', function () {
+              clearTimeout(hoverT);
+            });
+          }
+        });
+      }
+
+      var modal = document.getElementById('rModal');
+      var modalTitle = document.getElementById('modalTitle');
+      var modalBody = document.getElementById('modalBody');
+
+      function openModal(item) {
+        modalTitle.textContent = item.title;
+        modalBody.textContent = item.body;
+        modal.classList.add('is-open');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        document.getElementById('modalClose').focus();
+      }
+
+      function closeModal() {
+        modal.classList.remove('is-open');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+
+      document.getElementById('modalClose').addEventListener('click', closeModal);
+      modal.addEventListener('click', function (e) {
+        if (e.target === modal) closeModal();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !modal.hidden) closeModal();
+      });
+
+      /* SFP row micro-animation (±0.1M scale) */
+      var sfpBase = { syngas: 22.4, ge: 18.2, nh3: 9.5 };
+
+      function updateSfpDisplay() {
+        var js = jitterVal(sfpBase.syngas, 0.08);
+        var jg = jitterVal(sfpBase.ge, 0.08);
+        var jn = jitterVal(sfpBase.nh3, 0.08);
+        document.querySelector('[data-sfp="syngas"]').textContent = '$' + js.toFixed(1) + 'M';
+        document.querySelector('[data-sfp="ge"]').textContent = '$' + jg.toFixed(1) + 'M';
+        document.querySelector('[data-sfp="nh3"]').textContent = '$' + jn.toFixed(1) + 'M';
+        var total = js + jg + jn;
+        document.getElementById('sfpTotal').textContent = '$' + total.toFixed(1) + 'M';
+      }
+
+      function jitterVal(base, span) {
+        return Math.max(0, base + (Math.random() - 0.5) * span);
+      }
+
+      function updateDebtCards() {
+        var cov = 189 + (Math.random() - 0.5) * 0.4;
+        document.getElementById('debtCovVal').textContent = cov.toFixed(1) + '%';
+        var surplus = 44.5 + (Math.random() - 0.5) * 0.15;
+        document.getElementById('surplusVal').textContent = '+₦' + surplus.toFixed(2) + 'T';
+      }
+
+      renderClocks();
+      setInterval(renderClocks, 1000);
+
+      updateTicker();
+      setInterval(updateTicker, 4000);
+      tryFetchRates();
+
+      buildR8();
+
+      updateSfpDisplay();
+      setInterval(updateSfpDisplay, 5000);
+      updateDebtCards();
+      setInterval(updateDebtCards, 6000);
+    })();
+  </script>
+</body>
+</html>
