@@ -908,6 +908,101 @@
     .dash-links { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; align-items: center; justify-content: center; }
     .ultimatum-corner { z-index: 1500; }
 
+    /* AWC / K-GEC Sovereign OS — session tier strip + 30m lock (sync with sovereign-mirror) */
+    .sovereign-tier-bar {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0.4rem 0.75rem 0.5rem;
+      text-align: center;
+      font-size: clamp(0.55rem, 1.5vw, 0.68rem);
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(232, 238, 244, 0.92);
+      border-bottom: 1px solid rgba(0, 229, 255, 0.2);
+      background: linear-gradient(90deg, rgba(0, 28, 48, 0.55), rgba(32, 24, 8, 0.4), rgba(0, 28, 48, 0.55));
+      background-size: 200% 100%;
+      animation: session-tier-shimmer 4s ease-in-out infinite;
+    }
+    @keyframes session-tier-shimmer {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    .sovereign-tier-bar-kicker { display: block; font-size: 0.52rem; letter-spacing: 0.14em; color: var(--gold-dim); margin-bottom: 0.2rem; }
+    .sovereign-tier-bar-text { display: block; color: rgba(232, 238, 244, 0.95); }
+    .sovereign-tier-bar-sub {
+      display: block;
+      margin-top: 0.25rem;
+      font-size: clamp(0.52rem, 1.4vw, 0.62rem);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: none;
+      color: #00e5ff;
+    }
+    .sovereign-app-layer { min-height: 100dvh; }
+    html.sovereign-access-expired .sovereign-app-layer {
+      filter: blur(24px) saturate(0.7);
+      pointer-events: none;
+      user-select: none;
+      transition: filter 0.65s ease;
+    }
+    html.sovereign-access-expired body { overflow: hidden; }
+    .sovereign-tier-modal {
+      position: fixed; inset: 0; z-index: 50000;
+      display: none; align-items: center; justify-content: center; padding: 1.5rem;
+      background: rgba(2, 8, 14, 0.5);
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    }
+    .sovereign-tier-modal.is-open { display: flex; }
+    .sovereign-tier-modal-panel {
+      max-width: 440px; padding: 1.65rem 1.5rem; border-radius: 14px;
+      border: 2px solid rgba(232, 197, 71, 0.5);
+      background: linear-gradient(155deg, rgba(18, 40, 62, 0.98) 0%, rgba(4, 14, 26, 0.99) 45%, rgba(12, 28, 48, 0.98) 100%);
+      box-shadow: 0 0 50px rgba(0, 229, 255, 0.2), 0 0 80px rgba(232, 197, 71, 0.12), inset 0 0 48px rgba(26, 39, 68, 0.35);
+      text-align: center;
+    }
+    .sovereign-tier-modal-panel h2 {
+      margin: 0 0 0.75rem;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.88rem, 2.6vw, 1.05rem);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      line-height: 1.45;
+      background: linear-gradient(135deg, #fff0a3 0%, #e8c547 35%, #1a2744 70%, #6b8cc4 100%);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: goldman-sheen 7s ease-in-out infinite;
+    }
+    .sovereign-tier-modal-seal {
+      margin-top: 1rem;
+      display: inline-block;
+      padding: 0.25rem 0.65rem;
+      font-family: ui-monospace, monospace;
+      font-weight: 800;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--gold-bright);
+      border: 1px solid rgba(232, 197, 71, 0.45);
+      border-radius: 6px;
+    }
+    .footer-signature-row-app {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+      gap: 0.75rem 1rem; margin: 0.75rem 0 0;
+    }
+    .footer-seal-app {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 0.15rem 0.45rem;
+      font-family: ui-monospace, monospace;
+      font-weight: 800;
+      font-size: 0.58rem;
+      letter-spacing: 0.12em;
+      color: var(--gold-bright);
+      border: 1px solid rgba(232, 197, 71, 0.4);
+      border-radius: 4px;
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .bluelaser-scan, .bluelaser-edge, .satellite-scanlines, .ticker-track, .tz-cell, .wow-spine-sub, .corridor-pulse-row td, .footer-signature-metallic { animation: none !important; }
       .tz-cell { background-position: 0% 0%, 0% 40%; }
@@ -917,6 +1012,7 @@
   </style>
 </head>
 <body>
+  <div class="sovereign-app-layer">
   <div class="bluelaser-stack" aria-hidden="true">
     <div class="bluelaser-scan"></div>
     <div class="bluelaser-edge"></div>
@@ -934,6 +1030,11 @@
         <div class="ticker-inner" id="tickerA"></div>
         <div class="ticker-inner" id="tickerB" aria-hidden="true"></div>
       </div>
+    </div>
+    <div class="sovereign-tier-bar" role="status" aria-live="polite">
+      <span class="sovereign-tier-bar-kicker">AWC / K-GEC Sovereign OS</span>
+      <span class="sovereign-tier-bar-text">Access Tier 1 (15m) | Extension Tier 2 (15m)</span>
+      <span class="sovereign-tier-bar-sub"><span class="sovereign-tier-which">Tier 1 active</span> · <span class="sovereign-tier-remaining">30:00</span> remaining</span>
     </div>
   <div class="container">
     <div class="watermark-ribbon" aria-hidden="true"></div>
@@ -1212,7 +1313,11 @@
       <p class="footer-statement">The Galadiman Ruwa Center (GCSLC) presents the NRRFC—a clinical strike against economic inertia. By capturing 10% of Global Big Tech CAPEX (₦945T at March 2026 FX), we achieve 18.9× coverage (1,890% of face) of Nigeria’s ₦50T domestic debt, proving that sovereign re-engineering is the only path to the Zenith.</p>
       <p class="footer-brand">Galadiman Ruwa Center for Strategic Leadership and Communication — <span class="gcslc">GCSLC</span></p>
       <p class="footer-tagline">GCSLC Sovereign · NRRFC · 2026 FX: ₦1,350 = $1</p>
-      <p class="footer-signature-metallic">Dr. Sa'ad Jaafaru</p>
+      <div class="footer-signature-row-app">
+        <span class="footer-seal-app" aria-hidden="true">LW15954</span>
+        <p class="footer-signature-metallic">Dr. Sa'ad Jaafaru</p>
+        <span class="footer-seal-app" aria-hidden="true">LW15954</span>
+      </div>
       <p class="footer-tagline" style="margin-top:0.25rem;">Chairman &amp; Founder, GCSLC</p>
       <p class="footer-ip">Copyright · Proprietary framework · IP LW15954</p>
     </footer>
@@ -1231,6 +1336,14 @@
       </div>
     </div>
   </div>
+  </div>
+  </div>
+
+  <div id="sovereignTierExpiredModal" class="sovereign-tier-modal" role="alertdialog" aria-modal="true" aria-labelledby="sovereignTierExpiredTitle" aria-hidden="true">
+    <div class="sovereign-tier-modal-panel">
+      <h2 id="sovereignTierExpiredTitle">Access Expired. Contact Dr. Sa'ad for Tier 3 Authorization.</h2>
+      <span class="sovereign-tier-modal-seal" aria-hidden="true">LW15954</span>
+    </div>
   </div>
 
   <div class="modal-backdrop-app" id="arbModal" role="dialog" aria-modal="true" aria-labelledby="arbModalTitle" aria-hidden="true">
@@ -1265,6 +1378,7 @@
     </div>
   </div>
 
+  <script src="assets/sovereign-tier-session.js"></script>
   <script>
     (function () {
       const lastUpdatedEl = document.getElementById('last-updated');
@@ -1651,11 +1765,11 @@
     // —— Copyright / anti-copy (blocks casual screenshot & copy; modals remain usable) ——
     (function () {
       document.addEventListener('contextmenu', function (e) {
-        if (e.target.closest && e.target.closest('.modal-backdrop-app.is-open')) return;
+        if (e.target.closest && (e.target.closest('.modal-backdrop-app.is-open') || e.target.closest('.sovereign-tier-modal.is-open'))) return;
         e.preventDefault();
       });
       document.addEventListener('copy', function (e) {
-        if (e.target.closest && e.target.closest('.modal-backdrop-app.is-open')) return;
+        if (e.target.closest && (e.target.closest('.modal-backdrop-app.is-open') || e.target.closest('.sovereign-tier-modal.is-open'))) return;
         e.preventDefault();
       });
       document.addEventListener('keydown', function (e) {
@@ -1670,7 +1784,7 @@
     // —— Global Pulse (clocks + material ticker) + 8R Matrix typewriter (unified with sovereign-gateway) ——
     (function () {
       var zones = [
-        { city: 'Zaria', tag: 'Local', tz: 'Africa/Lagos' },
+        { city: 'Abuja', tag: 'Local', tz: 'Africa/Lagos' },
         { city: 'London', tag: 'LSE', tz: 'Europe/London' },
         { city: 'New York', tag: 'NYSE', tz: 'America/New_York' },
         { city: 'Dubai', tag: 'Commodities', tz: 'Asia/Dubai' },

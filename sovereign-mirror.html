@@ -33,9 +33,9 @@
       -webkit-user-select: none;
       user-select: none;
     }
-    input, textarea, select, button[type="submit"] { -webkit-user-select: text; user-select: text; }
+    input, textarea, select, button[type="submit"], .cc-combobox input { -webkit-user-select: text; user-select: text; }
 
-    /* —— CNN Bluelaser frame —— */
+    /* —— Bluelaser frame —— */
     .bluelaser-stack {
       position: fixed;
       inset: 0;
@@ -174,12 +174,121 @@
       max-width: 36rem;
       margin: 0 auto;
     }
+    .hero .gcslc-identity.hero-title-os {
+      text-transform: none;
+      letter-spacing: 0.04em;
+      line-height: 1.35;
+      max-width: 42rem;
+      font-size: clamp(0.78rem, 2.85vw, 1.22rem);
+    }
     .hero-sub {
       margin: 0.65rem auto 0;
       max-width: 28rem;
       font-size: clamp(0.68rem, 1.8vw, 0.82rem);
       color: rgba(232, 238, 244, 0.88);
       line-height: 1.45;
+    }
+    .hero-kicker {
+      margin: 0.45rem auto 0;
+      text-align: center;
+      font-size: clamp(0.55rem, 1.5vw, 0.65rem);
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+    }
+
+    .session-bar {
+      max-width: 52rem;
+      margin: 0.75rem auto 0;
+      padding: 0.5rem 0.85rem;
+      text-align: center;
+      font-size: clamp(0.58rem, 1.5vw, 0.68rem);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(232, 238, 244, 0.92);
+      border: 1px solid rgba(0, 229, 255, 0.28);
+      border-radius: 8px;
+      background: linear-gradient(90deg, rgba(0, 40, 70, 0.5), rgba(40, 30, 10, 0.45), rgba(0, 40, 70, 0.5));
+      background-size: 200% 100%;
+      animation: session-shimmer 4s ease-in-out infinite;
+      box-shadow: inset 0 0 20px rgba(0, 229, 255, 0.08);
+    }
+    .session-bar-tiers { display: block; }
+    .session-bar-sub {
+      display: block;
+      margin-top: 0.4rem;
+      font-size: clamp(0.55rem, 1.4vw, 0.64rem);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: none;
+      color: rgba(0, 229, 255, 0.92);
+    }
+
+    /* Sovereign OS: shared blur layer + Tier 3 expiry modal */
+    .sovereign-app-layer { min-height: 100dvh; }
+    html.sovereign-access-expired .sovereign-app-layer {
+      filter: blur(24px) saturate(0.7);
+      pointer-events: none;
+      user-select: none;
+      transition: filter 0.65s ease;
+    }
+    html.sovereign-access-expired body { overflow: hidden; }
+    .sovereign-tier-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 100000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      background: rgba(2, 8, 14, 0.5);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+    .sovereign-tier-modal.is-open { display: flex; }
+    .sovereign-tier-modal-panel {
+      max-width: 440px;
+      padding: 1.65rem 1.5rem;
+      border-radius: 14px;
+      border: 2px solid rgba(232, 197, 71, 0.5);
+      background: linear-gradient(155deg, rgba(18, 40, 62, 0.98) 0%, rgba(4, 14, 26, 0.99) 45%, rgba(12, 28, 48, 0.98) 100%);
+      box-shadow:
+        0 0 50px rgba(0, 229, 255, 0.2),
+        0 0 80px rgba(232, 197, 71, 0.12),
+        inset 0 0 48px rgba(26, 39, 68, 0.35);
+      text-align: center;
+    }
+    .sovereign-tier-modal-panel h2 {
+      margin: 0 0 0.75rem;
+      font-family: 'Goldman', 'Segoe UI', sans-serif;
+      font-size: clamp(0.88rem, 2.6vw, 1.05rem);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      line-height: 1.45;
+      background: linear-gradient(135deg, #fff0a3 0%, #e8c547 35%, #1a2744 70%, #6b8cc4 100%);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: goldman-sheen 6s ease-in-out infinite;
+    }
+    .sovereign-tier-modal-seal {
+      margin-top: 1rem;
+      display: inline-block;
+      padding: 0.25rem 0.65rem;
+      font-family: ui-monospace, monospace;
+      font-weight: 800;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--gold-bright);
+      border: 1px solid rgba(232, 197, 71, 0.45);
+      border-radius: 6px;
+    }
+    @keyframes session-shimmer {
+      0%, 100% { background-position: 0% 50%; filter: brightness(1); }
+      50% { background-position: 100% 50%; filter: brightness(1.08); box-shadow: inset 0 0 28px rgba(232, 197, 71, 0.12); }
     }
 
     /* Analogue clocks — sequential zoom entry / exit */
@@ -207,6 +316,7 @@
     }
     .analog-wrap {
       --delay: 0s;
+      --i: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -218,6 +328,7 @@
       animation: clock-zoom-out 0.8s cubic-bezier(0.55, 0, 0.2, 1) both;
       animation-delay: var(--exit-delay);
     }
+    .mirror-stage.mirror-exit .clock-svg { animation: none !important; }
     @keyframes clock-zoom-in {
       from { transform: scale(0.38); opacity: 0; filter: blur(5px); }
       to { transform: scale(1); opacity: 1; filter: blur(0); }
@@ -230,7 +341,19 @@
       width: 100%;
       max-width: 104px;
       height: auto;
-      filter: drop-shadow(0 0 8px rgba(0, 229, 255, 0.2));
+      transform-origin: 50px 50px;
+      animation: clock-laser-pulse 6s cubic-bezier(0.45, 0, 0.2, 1) infinite;
+      animation-delay: calc(var(--i) * 1s);
+    }
+    @keyframes clock-laser-pulse {
+      0%, 6%, 100% {
+        transform: scale(1) rotate(0deg);
+        filter: drop-shadow(0 0 6px rgba(0, 229, 255, 0.22)) drop-shadow(0 0 4px rgba(232, 197, 71, 0.14));
+      }
+      3% {
+        transform: scale(1.14) rotate(0deg);
+        filter: drop-shadow(0 0 22px rgba(0, 229, 255, 0.88)) drop-shadow(0 0 28px rgba(232, 197, 71, 0.62)) drop-shadow(0 0 14px rgba(255, 248, 220, 0.45));
+      }
     }
     .clock-face { fill: rgba(4, 14, 28, 0.85); stroke: rgba(232, 197, 71, 0.35); stroke-width: 1.2; }
     .clock-tick { stroke: rgba(232, 197, 71, 0.35); stroke-width: 0.8; }
@@ -248,9 +371,189 @@
       text-align: center;
     }
 
+    .form-deck {
+      position: relative;
+      max-width: 1100px;
+      margin: 1.25rem auto 0;
+      padding: 0 0.75rem 1.5rem;
+      min-height: min(420px, 52vh);
+    }
+    .form-deck-bg {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      min-height: min(400px, 50vh);
+      align-items: stretch;
+    }
+    @media (max-width: 860px) {
+      .form-deck-bg { grid-template-columns: 1fr; min-height: auto; }
+    }
+    .deck-placeholder {
+      position: relative;
+      border-radius: 10px;
+      border: 1px dashed rgba(232, 197, 71, 0.35);
+      background: linear-gradient(165deg, rgba(8, 24, 44, 0.65), rgba(4, 14, 26, 0.55));
+      overflow: hidden;
+      min-height: 200px;
+    }
+    .deck-placeholder::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 80%, rgba(0, 229, 255, 0.06), transparent 55%);
+      pointer-events: none;
+    }
+    .deck-humanoid {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0.75rem;
+    }
+    .humanoid-img-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 140px;
+    }
+    .humanoid-img-wrap img {
+      max-height: min(240px, 38vh);
+      min-height: 140px;
+      width: 100%;
+      max-width: 280px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.25));
+    }
+    .humanoid-fallback {
+      font-size: 0.68rem;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      text-align: center;
+      padding: 1rem;
+      line-height: 1.4;
+    }
+    .speech-bubble.quote-goldman,
+    .quote-goldman {
+      font-family: 'Goldman', 'Segoe UI', sans-serif;
+      font-weight: 700;
+    }
+    .speech-bubble {
+      position: relative;
+      margin: 0.35rem auto 0.65rem;
+      max-width: 18rem;
+      padding: 0.65rem 0.85rem;
+      font-family: 'Goldman', 'Segoe UI', sans-serif;
+      font-size: clamp(0.62rem, 1.65vw, 0.74rem);
+      font-weight: 700;
+      line-height: 1.45;
+      letter-spacing: 0.04em;
+      text-transform: none;
+      color: rgba(232, 238, 244, 0.95);
+      background: linear-gradient(145deg, rgba(12, 36, 58, 0.95), rgba(4, 12, 22, 0.92));
+      border: 1px solid rgba(0, 229, 255, 0.35);
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35), 0 0 20px rgba(0, 229, 255, 0.08);
+      animation: float-bubble 5s ease-in-out infinite;
+    }
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 8px solid rgba(12, 36, 58, 0.95);
+    }
+    @keyframes float-bubble {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    .deck-datacenter {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem;
+    }
+    .dc-img-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 140px;
+    }
+    .dc-img-wrap img {
+      max-width: 100%;
+      max-height: min(260px, 40vh);
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 229, 255, 0.22);
+      filter: drop-shadow(0 0 14px rgba(0, 229, 255, 0.15));
+    }
+    .dc-fallback {
+      display: none;
+      font-size: 0.68rem;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      text-align: center;
+      padding: 1rem;
+      line-height: 1.4;
+    }
+    .dc-placeholder-inner {
+      width: 100%;
+      max-width: 220px;
+      aspect-ratio: 4/3;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 229, 255, 0.2);
+      background:
+        repeating-linear-gradient(0deg, transparent, transparent 8px, rgba(0, 229, 255, 0.04) 8px, rgba(0, 229, 255, 0.04) 9px),
+        linear-gradient(180deg, rgba(4, 20, 40, 0.9), rgba(2, 8, 14, 0.95));
+      animation: dc-flicker 3s ease-in-out infinite;
+    }
+    @keyframes dc-flicker {
+      0%, 100% { opacity: 0.92; box-shadow: inset 0 0 30px rgba(0, 229, 255, 0.15); }
+      50% { opacity: 1; box-shadow: inset 0 0 45px rgba(0, 229, 255, 0.22); }
+    }
+    .deck-label {
+      margin-top: 0.5rem;
+      font-size: 0.55rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      text-align: center;
+    }
+    .form-deck-overlay {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: min(100% - 1.5rem, 440px);
+      z-index: 2;
+      pointer-events: none;
+    }
+    .form-deck-overlay .form-panel {
+      pointer-events: auto;
+    }
+    @media (max-width: 860px) {
+      .form-deck { min-height: auto; }
+      .form-deck-overlay {
+        position: relative;
+        left: auto;
+        top: auto;
+        transform: none;
+        width: 100%;
+        margin: 1rem auto 0;
+      }
+    }
+
     .form-panel {
       max-width: 420px;
-      margin: 1.25rem auto 0;
+      margin: 0 auto;
       padding: 1.25rem 1.15rem;
       background: rgba(8, 28, 48, 0.55);
       border: 1px solid rgba(0, 229, 255, 0.22);
@@ -292,6 +595,47 @@
       border-color: rgba(232, 197, 71, 0.55);
       box-shadow: 0 0 0 2px rgba(0, 229, 255, 0.12);
     }
+    .wa-row {
+      display: flex;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+      align-items: stretch;
+    }
+    .cc-combobox {
+      position: relative;
+      flex: 0 0 min(42%, 160px);
+      min-width: 120px;
+    }
+    .cc-combobox input { font-size: 0.78rem; }
+    .cc-list {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 100%;
+      margin: 2px 0 0;
+      padding: 0.25rem 0;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 100;
+      list-style: none;
+      background: rgba(4, 14, 26, 0.98);
+      border: 1px solid rgba(0, 229, 255, 0.35);
+      border-radius: 8px;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+      display: none;
+    }
+    .cc-list.is-open { display: block; }
+    .cc-list li {
+      padding: 0.4rem 0.6rem;
+      font-size: 0.75rem;
+      color: var(--text);
+      cursor: pointer;
+    }
+    .cc-list li:hover, .cc-list li.focused {
+      background: rgba(0, 229, 255, 0.12);
+      color: var(--gold-bright);
+    }
+    .wa-row .wa-phone { flex: 1; min-width: 120px; }
     .btn-submit {
       width: 100%;
       margin-top: 0.25rem;
@@ -347,14 +691,18 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
+      width: 100%;
     }
     .nav-back {
-      display: inline-block;
-      margin: 0 0 1rem;
+      display: block;
+      margin: 0 auto 1rem;
       font-size: 0.75rem;
       color: var(--cyan);
       text-decoration: none;
       border-bottom: 1px solid rgba(0, 229, 255, 0.35);
+      text-align: center;
+      width: fit-content;
     }
     .nav-back:hover { color: var(--gold-bright); }
     .footer-auth-stack {
@@ -362,13 +710,38 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 0.65rem;
       width: 100%;
-      max-width: 28rem;
+      max-width: 36rem;
       margin: 0 auto;
+    }
+    .footer-signature-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem 1.1rem;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .footer-seal {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.2rem 0.5rem;
+      font-family: ui-monospace, monospace;
+      font-weight: 800;
+      font-size: clamp(0.55rem, 1.8vw, 0.68rem);
+      letter-spacing: 0.15em;
+      color: var(--gold-bright);
+      border: 1px solid rgba(232, 197, 71, 0.45);
+      border-radius: 4px;
+      background: rgba(0, 30, 50, 0.5);
+      flex-shrink: 0;
     }
     .signature-metallic {
       margin: 0;
+      flex: 0 1 auto;
       font-family: 'Great Vibes', cursive;
       font-size: clamp(1.4rem, 4.5vw, 1.95rem);
       background: linear-gradient(90deg, #e8c547, #fff8dc, #b8942a);
@@ -388,11 +761,12 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .bluelaser-edge, .bluelaser-scan, .satellite-scanlines, .gcslc-identity, .lw-shield-seal, .analog-wrap, .btn-submit {
+      .bluelaser-edge, .bluelaser-scan, .satellite-scanlines, .gcslc-identity, .lw-shield-seal, .analog-wrap, .btn-submit, .clock-svg, .session-bar, .speech-bubble, .dc-placeholder-inner {
         animation: none !important;
       }
       .btn-submit { background-position: 50% 50%; }
       .analog-wrap { opacity: 1; transform: none; }
+      .speech-bubble { transform: none; }
     }
   </style>
 </head>
@@ -400,6 +774,7 @@
   <!-- Verification codes held for future validation (not exposed in UI): $8053$ $8054$ -->
   <span id="verification-hold" hidden data-reserved="true" aria-hidden="true"></span>
 
+  <div class="sovereign-app-layer">
   <div class="bluelaser-stack" aria-hidden="true">
     <div class="bluelaser-scan"></div>
     <div class="bluelaser-edge"></div>
@@ -416,46 +791,95 @@
     </div>
 
     <header class="hero">
-      <h1 class="gcslc-identity">Galadiman Ruwa Center for Strategic Leadership and Communication · GCSLC LTD/GTE</h1>
-      <p class="hero-sub">Sovereign Mirror — executive intake. Secured terminal. CNN-class live frame.</p>
+      <h1 class="gcslc-identity hero-title-os">Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE</h1>
+      <p class="hero-sub">Sovereign Mirror — executive intake. Secured terminal.</p>
+      <p class="hero-kicker">AWC / K-GEC Sovereign OS</p>
+      <p class="session-bar" role="status">
+        <span class="session-bar-tiers">Access Tier 1 (15m) | Extension Tier 2 (15m)</span>
+        <span class="session-bar-sub"><span class="sovereign-tier-which">Tier 1 active</span> · <span class="sovereign-tier-remaining">30:00</span> remaining</span>
+      </p>
     </header>
 
     <div class="mirror-stage clocks-stage" id="mirrorStage">
-      <p class="clocks-label">Global pulse · analogue · six zones</p>
+      <p class="clocks-label">Global pulse · analogue · Abuja · London · New York · Dubai · Singapore · Beijing</p>
       <div class="clocks-grid" id="clocksGrid" role="group" aria-label="World clocks"></div>
     </div>
 
-    <form class="form-panel" id="mirrorForm" autocomplete="on" novalidate>
-      <h2>Organization intake</h2>
-      <div class="form-row">
-        <label for="orgName">Organization</label>
-        <input type="text" id="orgName" name="organization" required placeholder="Legal entity or institution" maxlength="200">
+    <section class="form-deck" aria-label="Organization intake with corridor backdrop">
+      <div class="form-deck-bg">
+        <div class="deck-placeholder deck-humanoid">
+          <span class="deck-label">Coal · left flank</span>
+          <div class="speech-bubble quote-goldman">
+            Thank you for stopping by. I need energy to thrive, function, and augment human productivity. Come in to decode.
+          </div>
+          <div class="humanoid-img-wrap">
+            <img src="assets/Coal 1.png" alt="Coal" width="220" height="260" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <p class="humanoid-fallback" style="display:none;">Placeholder — add <code>assets/Coal 1.png</code></p>
+          </div>
+        </div>
+        <div class="deck-placeholder deck-datacenter">
+          <span class="deck-label">Data center · right flank</span>
+          <div class="dc-img-wrap">
+            <img src="assets/Data 1.png" alt="Data center" width="280" height="200" onerror="var w=this.parentNode; this.style.display='none'; w.querySelector('.dc-fallback').style.display='block'; w.querySelector('.dc-placeholder-inner').style.display='block';">
+            <p class="dc-fallback" style="display:none;">Placeholder — add <code>assets/Data 1.png</code></p>
+            <div class="dc-placeholder-inner" aria-hidden="true" style="display:none"></div>
+          </div>
+        </div>
       </div>
-      <div class="form-row">
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" required placeholder="principal@organization.org" maxlength="120">
+      <div class="form-deck-overlay">
+        <form class="form-panel" id="mirrorForm" autocomplete="on" novalidate>
+          <h2>Organization intake</h2>
+          <div class="form-row">
+            <label for="orgName">Organization</label>
+            <input type="text" id="orgName" name="organization" required placeholder="Legal entity or institution" maxlength="200">
+          </div>
+          <div class="form-row">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required placeholder="principal@organization.org" maxlength="120">
+          </div>
+          <div class="form-row">
+            <label for="ccSearch">WhatsApp Contact (Optional)</label>
+            <div class="wa-row">
+              <div class="cc-combobox">
+                <input type="text" id="ccSearch" name="country_code_search" placeholder="Search country or +code" autocomplete="off" aria-autocomplete="list" aria-controls="ccList" aria-expanded="false" title="Search country dial code">
+                <input type="hidden" id="ccDial" name="country_dial" value="+234">
+                <ul id="ccList" class="cc-list" role="listbox" aria-label="Country dial codes"></ul>
+              </div>
+              <input type="tel" class="wa-phone" id="whatsapp" name="whatsapp" placeholder="Phone number (digits)" maxlength="24">
+            </div>
+          </div>
+          <button type="submit" class="btn-submit">Transmit credentials</button>
+          <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+        </form>
       </div>
-      <div class="form-row">
-        <label for="whatsapp">WhatsApp</label>
-        <input type="tel" id="whatsapp" name="whatsapp" required placeholder="+234 … or international" maxlength="32">
-      </div>
-      <button type="submit" class="btn-submit">Transmit credentials</button>
-      <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
-    </form>
+    </section>
 
     <footer class="mirror-footer">
       <a class="nav-back" href="sovereign-gateway.html">← Sovereign Gateway</a>
       <div class="footer-auth-stack">
-        <p class="signature-metallic">Dr. Sa’ad Jaafaru</p>
+        <div class="footer-signature-row">
+          <span class="footer-seal" aria-hidden="true">LW15954</span>
+          <p class="signature-metallic">Dr. Sa’ad Jaafaru</p>
+          <span class="footer-seal" aria-hidden="true">LW15954</span>
+        </div>
         <p class="footer-lw">© GCSLC · IP LW15954 · Proprietary copyright</p>
       </div>
     </footer>
   </div>
+  </div>
 
+  <div id="sovereignTierExpiredModal" class="sovereign-tier-modal" role="alertdialog" aria-modal="true" aria-labelledby="sovereignTierExpiredTitle" aria-hidden="true">
+    <div class="sovereign-tier-modal-panel">
+      <h2 id="sovereignTierExpiredTitle">Access Expired. Contact Dr. Sa'ad for Tier 3 Authorization.</h2>
+      <span class="sovereign-tier-modal-seal" aria-hidden="true">LW15954</span>
+    </div>
+  </div>
+
+  <script src="assets/sovereign-tier-session.js"></script>
   <script>
     (function () {
       var zones = [
-        { city: 'Zaria', tz: 'Africa/Lagos' },
+        { city: 'Abuja', tz: 'Africa/Lagos' },
         { city: 'London', tz: 'Europe/London' },
         { city: 'New York', tz: 'America/New_York' },
         { city: 'Dubai', tz: 'Asia/Dubai' },
@@ -467,8 +891,9 @@
 
       function clockMarkup(city, idx) {
         var delay = (idx * 0.14).toFixed(2) + 's';
+        var exitDelay = ((zones.length - 1 - idx) * 0.1).toFixed(2) + 's';
         return (
-          '<div class="analog-wrap" style="--delay:' + delay + ';--exit-delay:' + ((5 - idx) * 0.1).toFixed(2) + 's" data-tz="' + zones[idx].tz + '">' +
+          '<div class="analog-wrap" style="--delay:' + delay + ';--exit-delay:' + exitDelay + ';--i:' + idx + '" data-tz="' + zones[idx].tz + '">' +
             '<svg class="clock-svg" viewBox="0 0 100 100" aria-hidden="true">' +
               '<circle class="clock-face" cx="50" cy="50" r="48"/>' +
               '<g class="ticks"></g>' +
@@ -533,14 +958,21 @@
       var status = document.getElementById('formStatus');
       form.addEventListener('submit', function (e) {
         e.preventDefault();
-        if (!form.organization.value.trim() || !form.email.value.trim() || !form.whatsapp.value.trim()) {
-          status.textContent = 'Complete all fields.';
+        if (!form.organization.value.trim() || !form.email.value.trim()) {
+          status.textContent = 'Organization and email are required.';
+          return;
+        }
+        var waDigits = (form.whatsapp && form.whatsapp.value) ? form.whatsapp.value.replace(/\D/g, '') : '';
+        var dialEl = document.getElementById('ccDial');
+        var dial = dialEl ? dialEl.value.trim() : '';
+        if (waDigits && (waDigits.length < 6 || !dial)) {
+          status.textContent = 'If providing WhatsApp, select a country code and enter at least 6 digits.';
           return;
         }
         status.textContent = '';
         stage.classList.add('mirror-exit');
         setTimeout(function () {
-          status.textContent = 'Transmission queued — executive desk will confirm via WhatsApp.';
+          status.textContent = 'Transmission queued — executive desk will confirm.';
           stage.classList.remove('mirror-exit');
         }, 1400);
       });
@@ -549,12 +981,150 @@
     /* Reserved verification pair (do not wire to UI until authorized): $8053$ $8054$ */
 
     (function () {
+      var DIAL_CODES = [];
+      var FALLBACK = [
+        { name: 'Nigeria', code: '+234' },
+        { name: 'United States', code: '+1' },
+        { name: 'United Kingdom', code: '+44' },
+        { name: 'United Arab Emirates', code: '+971' },
+        { name: 'Singapore', code: '+65' },
+        { name: 'China', code: '+86' }
+      ];
+      var ccSearch = document.getElementById('ccSearch');
+      var ccDial = document.getElementById('ccDial');
+      var ccList = document.getElementById('ccList');
+      var combo = document.querySelector('.cc-combobox');
+      if (!ccSearch || !ccDial || !ccList || !combo) return;
+
+      var focusedIdx = -1;
+      var closeTimer = null;
+
+      function formatEntry(e) {
+        return e.name + ' (' + e.code + ')';
+      }
+
+      function findByCode(code) {
+        for (var i = 0; i < DIAL_CODES.length; i++) {
+          if (DIAL_CODES[i].code === code) return DIAL_CODES[i];
+        }
+        return null;
+      }
+
+      function renderList(filter) {
+        var q = (filter || '').trim().toLowerCase();
+        ccList.innerHTML = '';
+        focusedIdx = -1;
+        for (var i = 0; i < DIAL_CODES.length; i++) {
+          var e = DIAL_CODES[i];
+          var hay = (e.name + ' ' + e.code).toLowerCase();
+          if (!q || hay.indexOf(q) !== -1) {
+            var li = document.createElement('li');
+            li.setAttribute('role', 'option');
+            li.setAttribute('data-code', e.code);
+            li.setAttribute('data-name', e.name);
+            li.textContent = formatEntry(e);
+            ccList.appendChild(li);
+          }
+        }
+      }
+
+      function openList() {
+        ccList.classList.add('is-open');
+        ccSearch.setAttribute('aria-expanded', 'true');
+      }
+
+      function closeList() {
+        ccList.classList.remove('is-open');
+        ccSearch.setAttribute('aria-expanded', 'false');
+        focusedIdx = -1;
+        ccList.querySelectorAll('li.focused').forEach(function (el) { el.classList.remove('focused'); });
+      }
+
+      function selectFromLi(li) {
+        if (!li) return;
+        var code = li.getAttribute('data-code');
+        var name = li.getAttribute('data-name');
+        ccDial.value = code;
+        ccSearch.value = name + ' (' + code + ')';
+        closeList();
+      }
+
+      function initCombobox() {
+        var def = findByCode('+234') || DIAL_CODES[0];
+        if (def) {
+          ccDial.value = def.code;
+          ccSearch.value = formatEntry(def);
+        }
+        renderList('');
+      }
+
+      ccSearch.addEventListener('focus', function () {
+        renderList(ccSearch.value);
+        openList();
+      });
+
+      ccSearch.addEventListener('input', function () {
+        renderList(ccSearch.value);
+        openList();
+      });
+
+      ccSearch.addEventListener('keydown', function (ev) {
+        var items = ccList.querySelectorAll('li');
+        if (ev.key === 'ArrowDown') {
+          ev.preventDefault();
+          focusedIdx = Math.min(focusedIdx + 1, items.length - 1);
+          items.forEach(function (el, i) { el.classList.toggle('focused', i === focusedIdx); });
+        } else if (ev.key === 'ArrowUp') {
+          ev.preventDefault();
+          focusedIdx = Math.max(focusedIdx - 1, 0);
+          items.forEach(function (el, i) { el.classList.toggle('focused', i === focusedIdx); });
+        } else if (ev.key === 'Enter' && ccList.classList.contains('is-open') && focusedIdx >= 0 && items[focusedIdx]) {
+          ev.preventDefault();
+          selectFromLi(items[focusedIdx]);
+        } else if (ev.key === 'Escape') {
+          closeList();
+        }
+      });
+
+      ccList.addEventListener('mousedown', function (e) {
+        var li = e.target.closest('li');
+        if (li) {
+          e.preventDefault();
+          selectFromLi(li);
+        }
+      });
+
+      ccSearch.addEventListener('blur', function () {
+        clearTimeout(closeTimer);
+        closeTimer = setTimeout(closeList, 200);
+      });
+
+      document.addEventListener('mousedown', function (e) {
+        if (!combo.contains(e.target)) closeList();
+      });
+
+      fetch('assets/dial-codes.json')
+        .then(function (r) {
+          if (!r.ok) throw new Error('bad');
+          return r.json();
+        })
+        .then(function (data) {
+          DIAL_CODES = data;
+          initCombobox();
+        })
+        .catch(function () {
+          DIAL_CODES = FALLBACK.slice();
+          initCombobox();
+        });
+    })();
+
+    (function () {
       document.addEventListener('contextmenu', function (e) {
-        if (e.target.closest && (e.target.closest('input') || e.target.closest('textarea'))) return;
+        if (e.target.closest && (e.target.closest('input') || e.target.closest('textarea') || e.target.closest('.cc-combobox') || e.target.closest('.sovereign-tier-modal.is-open'))) return;
         e.preventDefault();
       });
       document.addEventListener('copy', function (e) {
-        if (e.target.closest && (e.target.closest('input') || e.target.closest('textarea'))) return;
+        if (e.target.closest && (e.target.closest('input') || e.target.closest('textarea') || e.target.closest('.cc-combobox') || e.target.closest('.sovereign-tier-modal.is-open'))) return;
         e.preventDefault();
       });
       document.addEventListener('keydown', function (e) {
