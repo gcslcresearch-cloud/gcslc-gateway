@@ -104,13 +104,15 @@ GEOLOGY = {
 def calculate_gcslc_equity(state: str) -> dict[str, float | str]:
     """
     Value-Added Derivative Strike (VADS) — GCSLC equity lens with 9.6× multiplier.
-    Visualizes sovereign uplift index for the selected strike zone.
+    Returns numeric parameters for sidebar text + bar visualization (institutional chart spec).
     """
     mt = STATE_RESERVE_MT.get(state, RESERVES_MT / 13)
     share = mt / max(RESERVES_MT, 1e-6)
-    # Uplift index: multiplier × reserve share (normalized institutional signal)
     uplift = WEALTH_MULTIPLIER_9_6 * (0.85 + 0.3 * share)
     strike_code = f"VADS-GCSLC-{state[:3].upper()}-9.6X"
+    # Bar fill: reserve-weighted 9.6× lens (0–100% for SVG/CSS bar)
+    bar_pct = min(100.0, 15.0 + share * WEALTH_MULTIPLIER_9_6 * 42.0)
+    raw_lane_pct = min(100.0, 100.0 / WEALTH_MULTIPLIER_9_6)
     return {
         "strike_code": strike_code,
         "multiplier": WEALTH_MULTIPLIER_9_6,
@@ -118,7 +120,36 @@ def calculate_gcslc_equity(state: str) -> dict[str, float | str]:
         "reserve_share_pct": round(100.0 * share, 2),
         "equity_uplift_index": round(uplift, 3),
         "implied_cycle_signal_b": round(LEAKAGE_ANCHOR_B * share * WEALTH_MULTIPLIER_9_6 / 9.6, 3),
+        "bar_pct": round(bar_pct, 1),
+        "raw_lane_pct": round(raw_lane_pct, 1),
     }
+
+
+def _vads_multiplier_visual_html(v: dict[str, float | str]) -> str:
+    """SVG + HTML bars: raw throughput lane vs 9.6× GCSLC lens (navy / radiant gold #FFD700)."""
+    bp = float(v["bar_pct"])
+    rp = float(v["raw_lane_pct"])
+    return f"""
+<div class="vg-viz-wrap">
+  <p class="vg-viz-title">9.6× MULTIPLIER LENS (SELECTED STATE)</p>
+  <div class="vg-viz-row">
+    <span class="vg-viz-label">Baseline</span>
+    <div class="vg-viz-track"><div class="vg-viz-fill vg-viz-slate" style="width:{rp}%;"></div></div>
+    <span class="vg-viz-val">1.0×</span>
+  </div>
+  <div class="vg-viz-row">
+    <span class="vg-viz-label">GCSLC VADS</span>
+    <div class="vg-viz-track"><div class="vg-viz-fill vg-viz-gold" style="width:{bp}%;"></div></div>
+    <span class="vg-viz-val">{v["multiplier"]}×</span>
+  </div>
+  <svg class="vg-viz-spark" viewBox="0 0 120 36" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <line x1="8" y1="28" x2="112" y2="28" stroke="#C8D0D8" stroke-width="0.6" opacity="0.5"/>
+    <rect x="8" y="18" width="{rp}" height="8" fill="#C8D0D8" opacity="0.55" rx="1"/>
+    <rect x="8" y="6" width="{min(bp, 104.0)}" height="8" fill="#FFD700" opacity="0.9" rx="1"/>
+    <text x="8" y="14" fill="#FFD700" font-size="7" font-family="Goldman, sans-serif">9.6× uplift</text>
+  </svg>
+</div>
+"""
 
 
 def _fragment_supported() -> bool:
@@ -315,6 +346,74 @@ st.markdown(
     border-radius: 8px;
     background: rgba(0,26,51,0.65);
   }}
+  @keyframes vg-bar-shimmer {{
+    0% {{ opacity: 0.82; filter: brightness(1); }}
+    50% {{ opacity: 1; filter: brightness(1.12); }}
+    100% {{ opacity: 0.82; filter: brightness(1); }}
+  }}
+  .vg-viz-wrap {{
+    margin-top: 0.45rem;
+    padding: 0.4rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255,215,0,0.35);
+    background: rgba(0,20,45,0.92);
+    font-family: 'Goldman', system-ui, sans-serif !important;
+  }}
+  .vg-viz-title {{
+    color: {GOLD};
+    font-size: 0.58rem;
+    letter-spacing: 0.06em;
+    margin: 0 0 0.35rem 0;
+    text-align: center;
+    animation: vg-bar-shimmer 14s ease-in-out infinite;
+  }}
+  .vg-viz-row {{
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-bottom: 0.28rem;
+  }}
+  .vg-viz-label {{
+    flex: 0 0 4.2rem;
+    color: {TEXT_SLATE};
+    font-size: 0.52rem;
+  }}
+  .vg-viz-track {{
+    flex: 1;
+    height: 8px;
+    background: rgba(0,31,63,0.9);
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid rgba(255,215,0,0.2);
+  }}
+  .vg-viz-fill {{
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.6s ease-out;
+  }}
+  .vg-viz-slate {{
+    background: linear-gradient(90deg, {SLATE_SILVER}, rgba(200,208,216,0.5));
+  }}
+  .vg-viz-gold {{
+    background: linear-gradient(90deg, #FFD700, rgba(255,215,0,0.55));
+    animation: vg-bar-shimmer 12s ease-in-out infinite;
+  }}
+  .vg-viz-val {{
+    flex: 0 0 2.2rem;
+    text-align: right;
+    color: {GOLD};
+    font-size: 0.55rem;
+    font-weight: 700;
+  }}
+  .vg-viz-spark {{
+    width: 100%;
+    height: auto;
+    margin-top: 0.2rem;
+    display: block;
+  }}
+  .vg-auth-stack {{
+    animation: vg-sovereign-ignite 18s ease-in-out infinite;
+  }}
   .vg-leak-wrap {{
     position: relative;
     min-height: 108px;
@@ -477,13 +576,14 @@ with st.sidebar:
         vads = calculate_gcslc_equity(sk)
         st.markdown(
             f"""<div class="vg-vads">
-<strong>Value-Added Derivative Strike (VADS)</strong><br/>
+<strong>calculate_gcslc_equity()</strong> — Value-Added Derivative Strike (VADS)<br/>
 Code: {vads["strike_code"]}<br/>
 9.6× multiplier · Reserve share {vads["reserve_share_pct"]}% ({vads["state_mt"]} Mt)<br/>
 Equity uplift index: {vads["equity_uplift_index"]} · Cycle signal: ${vads["implied_cycle_signal_b"]} B
 </div>""",
             unsafe_allow_html=True,
         )
+        st.markdown(_vads_multiplier_visual_html(vads), unsafe_allow_html=True)
         if st.button("Clear selection", key="clear_sel"):
             st.session_state.selected_state = None
             st.rerun()
@@ -517,14 +617,19 @@ with st.container():
                 f'<p class="vg-body" style="color:{GOLD};font-weight:700;">ACTION ALERT: 1,199 MW sovereign AI DC potential</p>',
                 unsafe_allow_html=True,
             )
-        st.markdown('<p class="vg-section-label">13-STATE GEOPOLITICAL GRID</p>', unsafe_allow_html=True)
+        st.markdown(
+            '<p class="vg-section-label">13-STATE GRID (12 ROW SLOTS + EDO ANCHOR)</p>',
+            unsafe_allow_html=True,
+        )
+        # 4 row containers: 3×4 nodes + 1 anchor (Edo) — 13 clickable sovereignties
         for r in range(4):
-            ncols = 4 if r < 3 else 1
-            chunk = STATES_13[r * 4 : r * 4 + ncols]
-            cols = st.columns(ncols)
-            for i, st_name in enumerate(chunk):
-                with cols[i]:
-                    if st.button(st_name, key=f"s13_r{r}_c{i}", use_container_width=True):
-                        st.session_state.selected_state = st_name
+            with st.container():
+                ncols = 4 if r < 3 else 1
+                chunk = STATES_13[r * 4 : r * 4 + ncols]
+                cols = st.columns(ncols)
+                for i, st_name in enumerate(chunk):
+                    with cols[i]:
+                        if st.button(st_name, key=f"s13_r{r}_c{i}", use_container_width=True):
+                            st.session_state.selected_state = st_name
 
 st.caption("NRRFC Sovereign Vanguard · Node 8855 · GCSLC LTD/GTE")
