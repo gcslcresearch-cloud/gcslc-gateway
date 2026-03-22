@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#061018">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&amp;family=Great+Vibes&amp;display=swap" rel="stylesheet">
   <title>GCSLC Sovereign Gateway | Live Command Center</title>
   <meta name="description" content="Galadiman Ruwa Center (GCSLC) — CNN-style live command center: Global Pulse, 8R Prism Vault, SFP stream.">
   <style>
@@ -35,6 +38,70 @@
       color: var(--gold);
       overflow-x: hidden;
       padding: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0) env(safe-area-inset-bottom, 0) env(safe-area-inset-left, 0);
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    input, textarea, a[href^="mailto"] { -webkit-user-select: text; user-select: text; }
+    .modal-backdrop.is-open .matrix-vault,
+    .modal-backdrop.is-open .matrix-vault * {
+      -webkit-user-select: text;
+      user-select: text;
+    }
+    .wm-gcslc {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 15;
+      pointer-events: none;
+      font-weight: 800;
+      letter-spacing: 0.35em;
+      font-size: clamp(3.5rem, 28vw, 14rem);
+      color: rgba(232, 197, 71, 0.4);
+      white-space: nowrap;
+    }
+    .ip-shield-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 14;
+      pointer-events: none;
+      background: repeating-linear-gradient(-18deg, transparent 0, transparent 120px, rgba(232, 197, 71, 0.02) 120px, rgba(232, 197, 71, 0.02) 121px);
+    }
+    .goldman-head {
+      font-family: 'Goldman', 'Segoe UI', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #fff0a3 0%, #e8c547 35%, #1a2744 75%, #4a6fa5 100%);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: goldman-sheen 7s ease-in-out infinite;
+    }
+    @keyframes goldman-sheen {
+      0%, 100% { background-position: 0% 40%; }
+      50% { background-position: 100% 60%; }
+    }
+    .wow-spine-sub {
+      margin: 0.5rem auto 0;
+      max-width: 48rem;
+      font-size: clamp(0.72rem, 2.1vw, 0.88rem);
+      font-weight: 600;
+      line-height: 1.45;
+      text-align: center;
+      color: rgba(232, 238, 244, 0.9);
+      text-shadow: 0 0 18px rgba(0, 229, 255, 0.15);
+    }
+    .footer-signature-metallic {
+      margin: 1rem 0 0;
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(1.35rem, 4vw, 1.85rem);
+      background: linear-gradient(90deg, #e8c547, #fff8dc, #b8942a);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      filter: drop-shadow(0 0 10px rgba(232, 197, 71, 0.4));
     }
 
     /* —— Bluelaser: cyan ↔ gold gradient border pulse (viewport) —— */
@@ -148,6 +215,11 @@
       border: 1px solid rgba(0, 229, 255, 0.2);
       border-radius: 10px;
       min-width: 0;
+      animation: tz-shimmer-border 4s ease-in-out infinite;
+    }
+    @keyframes tz-shimmer-border {
+      0%, 100% { box-shadow: 0 0 0 1px rgba(0, 229, 255, 0.25), inset 0 0 12px rgba(232, 197, 71, 0.06); }
+      50% { box-shadow: 0 0 14px rgba(0, 229, 255, 0.35), 0 0 4px rgba(232, 197, 71, 0.35), inset 0 0 16px rgba(232, 197, 71, 0.1); }
     }
     .tz-city {
       display: block;
@@ -195,7 +267,7 @@
     .ticker-track {
       display: flex;
       width: max-content;
-      animation: ticker-scroll 14s linear infinite;
+      animation: ticker-scroll 52s linear infinite;
     }
     .ticker-track:hover { animation-play-state: paused; }
     @keyframes ticker-scroll {
@@ -237,13 +309,7 @@
     }
     .header .logo-wrap { display: flex; justify-content: center; margin-bottom: 0.45rem; }
     .header .logo-wrap img { width: clamp(48px, 11vw, 62px); height: auto; }
-    .header h1 {
-      margin: 0;
-      font-size: clamp(0.95rem, 4vw, 1.55rem);
-      letter-spacing: 0.03em;
-      text-transform: uppercase;
-      line-height: 1.22;
-    }
+    .header h1.goldman-head { margin: 0; font-size: clamp(0.95rem, 4vw, 1.55rem); line-height: 1.22; }
     .impact-tag {
       margin-top: 0.45rem;
       font-size: clamp(0.62rem, 1.9vw, 0.82rem);
@@ -437,16 +503,10 @@
       border: 1px solid rgba(0, 229, 255, 0.22);
       border-radius: 18px;
     }
-    .paradigm-section h3 {
+    .paradigm-section h3.goldman-head {
       margin: 0 0 0.85rem;
       font-size: clamp(0.88rem, 2.6vw, 1.02rem);
       text-align: center;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      background: linear-gradient(90deg, var(--cyan), var(--gold));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
     }
     .r8-grid {
       display: grid;
@@ -698,14 +758,17 @@
       .bluelaser-edge,
       .satellite-scanlines,
       .ticker-track,
+      .tz-cell,
       .btn-gateway,
       .btn-gateway::before,
       .sfp-card.glass-panel::before,
       .r8-node::before,
       .card.glass-metric::after,
-      .live-num {
+      .live-num,
+      .goldman-head {
         animation: none !important;
       }
+      .goldman-head { background-position: 0% 40%; }
       .ticker-track {
         flex-wrap: wrap;
         width: 100%;
@@ -724,6 +787,8 @@
     <div class="bluelaser-vignette"></div>
   </div>
   <div class="satellite-scanlines" aria-hidden="true"></div>
+  <div class="wm-gcslc" aria-hidden="true">GCSLC</div>
+  <div class="ip-shield-overlay" aria-hidden="true"></div>
 
   <div class="shell">
     <div class="tz-bar">
@@ -731,7 +796,7 @@
     </div>
 
     <div class="ticker-outer">
-      <div class="ticker-label">Material pulse · live-simulated</div>
+      <div class="ticker-label">Material pulse · March 2026 · Germanium $8,597/kg</div>
       <div class="ticker-track" id="tickerTrack">
         <div class="ticker-inner" id="tickerA"></div>
         <div class="ticker-inner" id="tickerB" aria-hidden="true"></div>
@@ -742,7 +807,8 @@
       <div class="logo-wrap">
         <img src="assets/kgec_eagle.svg" width="56" height="40" alt="GCSLC emblem">
       </div>
-      <h1>Galadiman Ruwa Center (GCSLC) LTD/GTE</h1>
+      <h1 class="goldman-head">Galadiman Ruwa Center (GCSLC) LTD/GTE</h1>
+      <p class="wow-spine-sub">Everything is powered by the 8R Stealth Paradigm Convergence; The AZK Spine governing the National Coal Corridor.</p>
       <div class="impact-tag">ARCHITECTING NATIONAL ASSET REVITALIZATION: NIGERIA &amp; AFRICA TO THE GLOBAL SOUTH</div>
       <p class="nav-dash"><a href="app.html">Open NRRFC coal reserves dashboard</a></p>
     </header>
@@ -750,7 +816,7 @@
     <main class="container">
       <section class="sfp-card glass-panel" aria-labelledby="sfp-heading">
         <span class="live-badge">Live stream</span>
-        <h3 id="sfp-heading">SUPERIOR FINANCIAL PERFORMANCE (SFP)</h3>
+        <h3 id="sfp-heading" class="goldman-head">SUPERIOR FINANCIAL PERFORMANCE (SFP)</h3>
         <div class="table-wrap">
           <table class="data-stream">
             <thead>
@@ -802,7 +868,7 @@
       </div>
 
       <section class="paradigm-section" aria-labelledby="paradigm-heading">
-        <h3 id="paradigm-heading">8R Shimmering Prism Vault</h3>
+        <h3 id="paradigm-heading" class="goldman-head">8R Shimmering Prism Vault</h3>
         <div class="r8-grid" id="r8Grid" role="group" aria-label="Eight strategic determinants D1 through D8"></div>
         <div class="roadmap">
           <h4>SSMV activation timeline</h4>
@@ -825,6 +891,7 @@
         <a href="mailto:gcslc.research@gmail.com">gcslc.research@gmail.com</a>
       </p>
       <p>+234 809 911 1515 · © 2026 GCSLC LTD/GTE · Proprietary sovereign framework</p>
+      <p class="footer-signature-metallic">Dr. Sa'ad Jaafaru</p>
     </footer>
   </div>
 
@@ -844,7 +911,7 @@
         { city: 'New York', tag: 'NYSE', tz: 'America/New_York' },
         { city: 'Dubai', tag: 'Commodities', tz: 'Asia/Dubai' },
         { city: 'Singapore', tag: 'Arbitrage', tz: 'Asia/Singapore' },
-        { city: 'Tokyo', tag: 'Technology', tz: 'Asia/Tokyo' }
+        { city: 'Beijing', tag: 'Technology', tz: 'Asia/Shanghai' }
       ];
 
       function renderClocks() {
@@ -1064,6 +1131,24 @@
       setInterval(updateSfpDisplay, 5000);
       updateDebtCards();
       setInterval(updateDebtCards, 6000);
+    })();
+
+    (function () {
+      document.addEventListener('contextmenu', function (e) {
+        if (e.target.closest && e.target.closest('#rModal.is-open')) return;
+        e.preventDefault();
+      });
+      document.addEventListener('copy', function (e) {
+        if (e.target.closest && e.target.closest('#rModal.is-open')) return;
+        e.preventDefault();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.target.closest && (e.target.closest('input') || e.target.closest('textarea'))) return;
+        if (e.key === 'PrintScreen') {
+          document.body.style.filter = 'blur(6px)';
+          setTimeout(function () { document.body.style.filter = ''; }, 400);
+        }
+      });
     })();
   </script>
 </body>

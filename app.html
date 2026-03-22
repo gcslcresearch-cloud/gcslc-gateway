@@ -4,6 +4,9 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050a15">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&amp;family=Great+Vibes&amp;display=swap" rel="stylesheet">
   <title>GCSLC Sovereign · NRRFC — Nigeria Coal Reserves &amp; NRRF Dashboard</title>
   <meta name="application-name" content="GCSLC Sovereign · NRRFC">
   <meta name="description" content="GCSLC Sovereign: Nigeria Coal Reserves, debt-swap (10% Big Tech Capex vs domestic debt), coal-to-syngas vs diesel. NRRFC 2026.">
@@ -32,6 +35,17 @@
       color: white;
       min-height: 100vh;
       line-height: 1.5;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    input, textarea, select {
+      -webkit-user-select: text;
+      user-select: text;
+    }
+    .modal-backdrop-app.is-open .modal-panel-app,
+    .modal-backdrop-app.is-open .modal-panel-app * {
+      -webkit-user-select: text;
+      user-select: text;
     }
     .container {
       max-width: 1200px;
@@ -403,7 +417,7 @@
       bottom: 0;
       z-index: 0;
       pointer-events: none;
-      opacity: 0.15;
+      opacity: 0.4;
       background: repeating-linear-gradient(
         0deg,
         transparent 0,
@@ -417,12 +431,74 @@
       position: absolute;
       left: 50%;
       top: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 2.2rem;
+      transform: translate(-50%, -50%) scale(1);
+      font-size: clamp(3.5rem, 28vw, 14rem);
       font-weight: 800;
-      letter-spacing: 0.4em;
+      letter-spacing: 0.35em;
       color: var(--gold-dim);
-      opacity: 0.15;
+      opacity: 0.4;
+      white-space: nowrap;
+    }
+    /* Copyright / screenshot deterrence layer */
+    .ip-shield-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 25;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        -18deg,
+        transparent 0,
+        transparent 120px,
+        rgba(212, 175, 55, 0.02) 120px,
+        rgba(212, 175, 55, 0.02) 121px
+      );
+    }
+
+    /* Goldman metallic headers */
+    .goldman-head {
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #f0c14b 0%, #fff8e8 25%, #D4AF37 50%, #1a2744 85%, #4a6fa5 100%);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: goldman-sheen 7s ease-in-out infinite;
+    }
+    @keyframes goldman-sheen {
+      0%, 100% { background-position: 0% 40%; }
+      50% { background-position: 100% 60%; }
+    }
+    .wow-spine-sub {
+      margin: 0.5rem 0 0;
+      font-size: clamp(0.72rem, 2.2vw, 0.92rem);
+      font-weight: 600;
+      line-height: 1.45;
+      text-align: center;
+      max-width: 52rem;
+      margin-left: auto;
+      margin-right: auto;
+      color: rgba(232, 238, 244, 0.92);
+      text-shadow: 0 0 20px rgba(212, 175, 55, 0.25);
+      animation: spine-sub-pulse 5s ease-in-out infinite;
+    }
+    @keyframes spine-sub-pulse {
+      0%, 100% { opacity: 0.88; }
+      50% { opacity: 1; }
+    }
+    .footer-signature-metallic {
+      margin: 1.35rem 0 0;
+      text-align: center;
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(1.35rem, 4vw, 1.85rem);
+      font-weight: 400;
+      background: linear-gradient(90deg, #e8c547, #fff8dc, #D4AF37, #8a7340);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.45));
     }
     .kwas-kwas-shimmer-bar {
       background: var(--navy-surface) !important;
@@ -461,13 +537,13 @@
     .table-wrap.glassmorphism td { border-color: var(--navy-border); }
     .kpi.glassmorphism { border-radius: 10px; border-color: var(--navy-border); }
 
-    /* Falcon over Nigeria map */
+    /* Falcon over Nigeria map + AZK Sovereign Spine + Corridor nodes */
     .falcon-map-wrap {
       position: relative;
-      min-height: 200px;
+      min-height: 220px;
       margin-bottom: 1rem;
       border-radius: 12px;
-      overflow: hidden;
+      overflow: visible;
     }
     .nigeria-map-svg {
       position: absolute;
@@ -475,9 +551,49 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      opacity: 0.4;
+      opacity: 0.55;
     }
-    .nigeria-map-svg .nigeria-outline { width: 140px; height: auto; }
+    .nigeria-map-svg .nigeria-chart { width: 168px; height: auto; max-height: 200px; }
+    .sovereign-spine {
+      fill: none;
+      stroke: url(#spineGoldGrad);
+      stroke-width: 3.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 0 6px rgba(240, 193, 75, 0.9)) drop-shadow(0 0 14px rgba(212, 175, 55, 0.55));
+      animation: spine-glow 3.2s ease-in-out infinite;
+    }
+    @keyframes spine-glow {
+      0%, 100% { stroke-opacity: 0.95; filter: drop-shadow(0 0 4px rgba(240, 193, 75, 0.8)); }
+      50% { stroke-opacity: 1; filter: drop-shadow(0 0 12px rgba(255, 248, 220, 0.85)); }
+    }
+    .corridor-node {
+      fill: rgba(5, 10, 22, 0.9);
+      stroke: var(--gold-bright);
+      stroke-width: 1.8;
+      animation: corridor-pulse 2.1s ease-in-out infinite;
+    }
+    .corridor-node:nth-of-type(1) { animation-delay: 0s; }
+    .corridor-node:nth-of-type(2) { animation-delay: 0.25s; }
+    .corridor-node:nth-of-type(3) { animation-delay: 0.5s; }
+    .corridor-node:nth-of-type(4) { animation-delay: 0.75s; }
+    .corridor-node:nth-of-type(5) { animation-delay: 1s; }
+    @keyframes corridor-pulse {
+      0%, 100% { opacity: 0.75; stroke-width: 1.4; }
+      50% { opacity: 1; stroke-width: 2.6; filter: drop-shadow(0 0 6px var(--gold-bright)); }
+    }
+    .spine-label {
+      position: absolute;
+      top: 0.35rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.58rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--gold);
+      z-index: 4;
+      text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+    }
     .falcon-sprite {
       position: absolute;
       width: 32px;
@@ -664,13 +780,19 @@
     .tz-cell {
       text-align: center; padding: 0.35rem 0.15rem; background: rgba(0, 40, 70, 0.35);
       border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 10px; min-width: 0;
+      position: relative;
+      animation: tz-shimmer-border 4s ease-in-out infinite;
+    }
+    @keyframes tz-shimmer-border {
+      0%, 100% { box-shadow: 0 0 0 1px rgba(0, 229, 255, 0.25), inset 0 0 12px rgba(212, 175, 55, 0.06); }
+      50% { box-shadow: 0 0 14px rgba(0, 229, 255, 0.35), 0 0 4px rgba(240, 193, 75, 0.35), inset 0 0 16px rgba(212, 175, 55, 0.12); }
     }
     .tz-city { display: block; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: var(--gold-bright); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .tz-tag { display: block; font-size: 0.52rem; color: var(--muted); margin-top: 0.08rem; }
     .tz-time { font-family: ui-monospace, monospace; font-size: clamp(0.68rem, 2.2vw, 0.85rem); font-weight: 700; color: #00e5ff; margin-top: 0.15rem; text-shadow: 0 0 10px rgba(0, 229, 255, 0.35); }
     .ticker-outer { background: #030a12; border-bottom: 2px solid rgba(0, 229, 255, 0.32); overflow: hidden; padding: 0.35rem 0; }
     .ticker-label { max-width: 1200px; margin: 0 auto; padding: 0 0.65rem 0.15rem; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--gold-dim); }
-    .ticker-track { display: flex; width: max-content; animation: cmd-ticker-scroll 16s linear infinite; }
+    .ticker-track { display: flex; width: max-content; animation: cmd-ticker-scroll 52s linear infinite; }
     .ticker-track:hover { animation-play-state: paused; }
     @keyframes cmd-ticker-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
     .ticker-inner { display: flex; align-items: center; gap: 1.75rem; padding: 0 0.75rem; white-space: nowrap; }
@@ -714,6 +836,7 @@
     <div class="bluelaser-vignette"></div>
   </div>
   <div class="satellite-scanlines" aria-hidden="true"></div>
+  <div class="ip-shield-overlay" aria-hidden="true"></div>
   <div class="cmd-shell">
     <div class="tz-bar cmd-tz-bar">
       <div class="tz-bar-inner" id="tzBar" aria-live="polite"></div>
@@ -733,16 +856,17 @@
       <div class="gold-medallion kwas-kwas-shimmer-medallion" aria-hidden="true">
         <span class="medallion-inner">GCSLC</span>
       </div>
-      <h1 class="org-name kwas-kwas-shimmer">Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC) LTD/GTE</h1>
+      <h1 class="org-name goldman-head">Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC) LTD/GTE</h1>
       <p class="ngecc-brainbox kwas-kwas-shimmer">Nigerian Green Energy and Chemicals Corporation (NGECC) — Special Strategic Mission Vehicle (SSMV)</p>
+      <p class="wow-spine-sub">Everything is powered by the 8R Stealth Paradigm Convergence; The AZK Spine governing the National Coal Corridor.</p>
       <p class="falcon-welcome kwas-kwas-shimmer">Falcon-Class Sovereign Gateway: Seizing the 9.6× Wealth Multiplier</p>
       <p class="institutional-status kwas-kwas-shimmer">Institutional Status: CAC Name Reservation Approved (GCSLC LTD/GTE)</p>
     </header>
 
     <header class="dashboard-header">
-      <p class="institution-name">National Resources Revitalization Fusion Center <small>(NRRFC)</small></p>
-      <p class="paradigm-anchor">Powered by the 8R Stealth Paradigm Convergence and its Determinants</p>
-      <h2 class="section-heading kwas-kwas-shimmer">Nigeria Coal Reserves — Real-Time Dashboard</h2>
+      <p class="institution-name goldman-head">National Resources Revitalization Fusion Center <small>(NRRFC)</small></p>
+      <p class="paradigm-anchor">Spine &amp; Corridor duality · AZK institutional spine · Five-node coal corridor</p>
+      <h2 class="section-heading goldman-head">Nigeria Coal Reserves — Real-Time Dashboard</h2>
       <p class="subtitle">Galadiman Ruwa · GCSLC Sovereign · Energy solution for global AI data centers</p>
       <span class="badge">Power potential for AI DCs</span>
       <p class="subtitle" style="margin-top: 0.75rem;"><a href="sovereign-gateway.html" style="color: var(--gold-bright); font-weight: 600;">Sovereign Gateway — SFP &amp; SSMV timeline</a></p>
@@ -780,7 +904,7 @@
       </div>
     </div>
 
-    <div class="section-title kwas-kwas-shimmer">Reserves by state — 8R Stealth Paradigm Convergence</div>
+    <div class="section-title kwas-kwas-shimmer">Reserves by state — National Coal Corridor (live pulses: Enugu, Anambra, Kogi, Benue, Bauchi)</div>
     <!-- Sovereign Wealth Leakage: The Cost of Delay (Moribund counter) -->
     <div class="moribund-penalty glassmorphism engine-room-pulse">
       <div class="moribund-label">Sovereign Wealth Leakage: The Cost of Delay</div>
@@ -790,9 +914,32 @@
     <!-- Falcon map + Determinants sidebar + Market Strike Data -->
     <div class="falcon-convergence">
       <div class="falcon-map-wrap glassmorphism">
+        <span class="spine-label">Sovereign Spine · Abuja–Zaria–Kano (AZK)</span>
         <div class="nigeria-map-svg" aria-hidden="true">
-          <svg viewBox="0 0 200 240" class="nigeria-outline" xmlns="http://www.w3.org/2000/svg">
-            <path fill="none" stroke="var(--navy-border)" stroke-width="1.5" d="M100 20 L160 50 L180 100 L165 160 L120 220 L80 200 L40 150 L35 90 L60 40 Z"></path>
+          <svg viewBox="0 0 200 240" class="nigeria-chart" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="spineGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#fff8dc"/>
+                <stop offset="35%" stop-color="#f0c14b"/>
+                <stop offset="70%" stop-color="#D4AF37"/>
+                <stop offset="100%" stop-color="#8a7030"/>
+              </linearGradient>
+            </defs>
+            <path fill="rgba(10,18,37,0.35)" stroke="var(--navy-border)" stroke-width="1.2" d="M100 20 L160 50 L180 100 L165 160 L120 220 L80 200 L40 150 L35 90 L60 40 Z"></path>
+            <!-- AZK Sovereign Spine (metallic gold path) -->
+            <path class="sovereign-spine" d="M 102 98 L 108 72 L 114 52" />
+            <circle cx="102" cy="98" r="3" fill="#D4AF37" opacity="0.9" />
+            <text x="106" y="96" fill="#8fa3bf" font-size="6" font-family="system-ui,sans-serif">ABJ</text>
+            <circle cx="108" cy="72" r="2.5" fill="#D4AF37" opacity="0.85" />
+            <text x="110" y="70" fill="#8fa3bf" font-size="5.5" font-family="system-ui,sans-serif">ZAR</text>
+            <circle cx="114" cy="52" r="2.5" fill="#D4AF37" opacity="0.85" />
+            <text x="116" y="50" fill="#8fa3bf" font-size="5.5" font-family="system-ui,sans-serif">KN</text>
+            <!-- National Coal Corridor — five pulsing nodes (Ge / Si / syngas yields tied here, not AZK) -->
+            <circle class="corridor-node" cx="118" cy="142" r="4.5" />
+            <circle class="corridor-node" cx="98" cy="128" r="4.5" />
+            <circle class="corridor-node" cx="104" cy="108" r="4.5" />
+            <circle class="corridor-node" cx="112" cy="98" r="4.5" />
+            <circle class="corridor-node" cx="128" cy="82" r="4.5" />
           </svg>
         </div>
         <div class="falcon-data-bubble" id="falconBubble" style="left: 48%; top: 57%; transform: translate(0px, -100%);">
@@ -800,7 +947,7 @@
           <span class="bubble-value" id="falconBubbleValue">High-Value Feedstock Detected — Edo</span>
         </div>
         <div class="market-strike-data" id="marketStrikeData">
-          <span class="strike-label">March 2026 benchmarks</span>
+          <span class="strike-label">Corridor nodes · March 2026</span>
           <span class="strike-ge">Germanium: $8,597/kg</span>
           <span class="strike-fly">Coal Fly Ash: $148/MT</span>
           <span class="strike-si">Silicon: $1.81/kg</span>
@@ -908,10 +1055,11 @@
     <!-- NRRFC Value-Added Derivative Strike — GCSLC Sovereign -->
     <div class="widget-panel" id="derivativeStrikeWidget">
       <h2 class="kwas-kwas-shimmer">NRRFC Value-Added Derivative Strike — GCSLC Sovereign</h2>
-      <p class="fx-badge">March 2026 · Ge $8,597/kg · Fly ash $148/MT · Si $1.81/kg · NH₃ $430/MT · 80 g Ge/ton · 0.15 MT fly ash/MT coal · 2.608 kg Si/MT coal · 0.6 MT NH₃/MT coal · FX: ₦1,350 = $1</p>
+      <p class="fx-badge">March 2026 · Yields tied to National Coal Corridor only (Enugu, Anambra, Kogi, Benue, Bauchi) — not AZK spine institutions · Ge $8,597/kg · Fly ash $148/MT · Si $1.81/kg · NH₃ $430/MT · FX: ₦1,350 = $1</p>
       <div class="nrrf-inputs">
-        <label>Coal tonnage (MT) <input type="number" id="coalTonnageMt" value="10000" min="1" step="100"></label>
+        <label>Corridor coal throughput (MT) <input type="number" id="coalTonnageMt" value="10000" min="1" step="100" title="Throughput from the five corridor nodes"></label>
       </div>
+      <p class="fx-badge" style="margin-top:0.35rem;">Corridor proven base: 447.66 Mt (five nodes) · National total: 640.04 Mt — yields below are corridor-bound.</p>
       <div class="nrrf-grid">
         <div class="cell">
           <div class="label">Raw coal value (USD)</div>
@@ -938,7 +1086,7 @@
       <!-- Critical Mineral Yield -->
       <div class="critical-mineral-yield">
         <h3>Critical Mineral Yield</h3>
-        <p class="yield-formula">Total Revenue = Raw Coal + Ge + NH₃ + Fly Ash + Silicon (March 2026 prices: Ge $8,597/kg · Fly Ash $148/MT · Si $1.81/kg)</p>
+        <p class="yield-formula">Corridor-bound: Raw Coal + Ge + NH₃ + Fly Ash + Silicon — all quantities scale from corridor throughput (five nodes). AZK spine is governance only.</p>
         <table class="yield-table">
           <thead>
             <tr><th>Component</th><th>Quantity</th><th>Price</th><th>Revenue (USD)</th><th>Revenue (₦)</th></tr>
@@ -974,7 +1122,8 @@
       <p class="footer-statement">The Galadiman Ruwa Center (GCSLC) presents the NRRFC—a clinical strike against economic inertia. By capturing 10% of Global Big Tech CAPEX (₦945T at March 2026 FX), we achieve 18.9× coverage (1,890% of face) of Nigeria’s ₦50T domestic debt, proving that sovereign re-engineering is the only path to the Zenith.</p>
       <p class="footer-brand">Galadiman Ruwa Center for Strategic Leadership and Communication — <span class="gcslc">GCSLC</span></p>
       <p class="footer-tagline">GCSLC Sovereign · NRRFC · 2026 FX: ₦1,350 = $1</p>
-      <p class="footer-signature kwas-kwas-shimmer">Dr. Jaafaru Sa'ad — Chairman &amp; Founder, GCSLC</p>
+      <p class="footer-signature-metallic">Dr. Sa'ad Jaafaru</p>
+      <p class="footer-tagline" style="margin-top:0.25rem;">Chairman &amp; Founder, GCSLC</p>
     </footer>
     </div>
     <!-- Ultimatum: Falcon facing camera + speech bubble -->
@@ -1127,7 +1276,7 @@
       updateUtcClock();
     })();
 
-    // --- Animated Falcon: shuttle 13 states, trigger D1-D8, Market Strike Data (Ge $8,597/kg · NH3 $430/MT) ---
+    // --- Falcon: National Coal Corridor only (5 nodes) — Ge/Si/syngas yields; AZK spine is separate ---
     (function () {
       var wrap = document.querySelector('.falcon-map-wrap');
       var falcon = document.getElementById('falconSprite');
@@ -1135,21 +1284,13 @@
       var bubbleValue = document.getElementById('falconBubbleValue');
       if (!wrap || !falcon || !bubble) return;
       var statePositions = [
-        { left: 52, top: 58 },
-        { left: 58, top: 48 },
-        { left: 62, top: 52 },
-        { left: 68, top: 55 },
-        { left: 65, top: 42 },
-        { left: 48, top: 68 },
-        { left: 45, top: 62 },
-        { left: 48, top: 58 },
-        { left: 42, top: 65 },
-        { left: 38, top: 38 },
-        { left: 62, top: 48 },
-        { left: 52, top: 42 },
-        { left: 58, top: 55 }
+        { left: 59, top: 59 },
+        { left: 49, top: 53 },
+        { left: 52, top: 45 },
+        { left: 56, top: 41 },
+        { left: 64, top: 34 }
       ];
-      var stateNames = ['Enugu', 'Kogi', 'Benue', 'Gombe', 'Nasarawa', 'Delta', 'Imo', 'Anambra', 'Edo', 'Kebbi', 'Bauchi', 'Kwara', 'Plateau'];
+      var stateNames = ['Enugu', 'Anambra', 'Kogi', 'Benue', 'Bauchi'];
       var idx = 0;
       function triggerDeterminant(dNum) {
         for (var i = 1; i <= 8; i++) {
@@ -1166,12 +1307,12 @@
         bubble.style.left = (left + 6) + '%';
         bubble.style.top = (top - 8) + '%';
         bubble.style.transform = 'translate(0, -100%)';
-        bubbleValue.textContent = 'High-Value Feedstock Detected — ' + stateNames[idx];
+        bubbleValue.textContent = 'Corridor pulse — ' + stateNames[idx];
         bubble.classList.add('strike-pulse');
         setTimeout(function () { bubble.classList.remove('strike-pulse'); }, 400);
         var detIndex = (idx % 8) + 1;
         triggerDeterminant(detIndex);
-        idx = (idx + 1) % 13;
+        idx = (idx + 1) % 5;
       }
       place();
       setInterval(place, 2200);
@@ -1288,7 +1429,7 @@
       });
       updateNrrf();
 
-      // --- NRRFC Value-Added Derivative Strike (March 2026 benchmarks) ---
+      // --- NRRFC Value-Added Derivative Strike (March 2026) — throughput = National Coal Corridor (5 nodes) only ---
       var PRICE_GERMANIUM_KG = 8597;
       var PRICE_AMMONIA_MT = 430;
       var PRICE_COAL_MT = 110;
@@ -1382,6 +1523,25 @@
       updateDerivativeStrike();
     })();
 
+    // —— Copyright / anti-copy (blocks casual screenshot & copy; modal remains usable) ——
+    (function () {
+      document.addEventListener('contextmenu', function (e) {
+        if (e.target.closest && e.target.closest('.modal-backdrop-app.is-open')) return;
+        e.preventDefault();
+      });
+      document.addEventListener('copy', function (e) {
+        if (e.target.closest && e.target.closest('.modal-backdrop-app.is-open')) return;
+        e.preventDefault();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.target.closest && (e.target.closest('input') || e.target.closest('textarea'))) return;
+        if (e.key === 'PrintScreen') {
+          document.body.style.filter = 'blur(6px)';
+          setTimeout(function () { document.body.style.filter = ''; }, 400);
+        }
+      });
+    })();
+
     // —— Global Pulse (clocks + material ticker) + 8R Matrix typewriter (unified with sovereign-gateway) ——
     (function () {
       var zones = [
@@ -1390,7 +1550,7 @@
         { city: 'New York', tag: 'NYSE', tz: 'America/New_York' },
         { city: 'Dubai', tag: 'Commodities', tz: 'Asia/Dubai' },
         { city: 'Singapore', tag: 'Arbitrage', tz: 'Asia/Singapore' },
-        { city: 'Tokyo', tag: 'Technology', tz: 'Asia/Tokyo' }
+        { city: 'Beijing', tag: 'Technology', tz: 'Asia/Shanghai' }
       ];
       function renderClocks() {
         var el = document.getElementById('tzBar');
