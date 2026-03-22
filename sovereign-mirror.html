@@ -174,12 +174,16 @@
         transparent 330deg,
         transparent 360deg
       );
-      animation: lw-aura-spin 12s linear infinite;
+      animation: lw-aura-spin 12s linear infinite, lw-aura-shimmer 4.5s ease-in-out infinite;
       z-index: 0;
       filter: blur(0.5px);
     }
     @keyframes lw-aura-spin {
       to { transform: rotate(360deg); }
+    }
+    @keyframes lw-aura-shimmer {
+      0%, 100% { opacity: 0.82; filter: blur(0.5px) brightness(1); }
+      50% { opacity: 1; filter: blur(0.5px) brightness(1.35); }
     }
     .lw-shield-seal-wrap::after {
       content: '';
@@ -226,7 +230,7 @@
           inset 0 1px 0 rgba(255, 255, 255, 0.1);
       }
     }
-    /* Slow horizontal IP ticker (80s loop) */
+    /* Slow horizontal IP ticker (120s loop) */
     .ip-shield-ticker {
       width: 100%;
       max-width: min(920px, 100vw);
@@ -237,7 +241,7 @@
     .ip-shield-ticker-track {
       display: flex;
       width: max-content;
-      animation: ip-ticker-marquee 110s linear infinite;
+      animation: ip-ticker-marquee 120s linear infinite;
     }
     .ip-shield-ticker-text {
       flex-shrink: 0;
@@ -481,69 +485,43 @@
       text-align: center;
     }
 
-    /* Sovereign Portfolio — breathe & shimmer (5s) */
-    .sovereign-portfolio-widget {
-      max-width: 380px;
-      margin: 0.85rem auto 0.5rem;
-      padding: 0.85rem 1.15rem 1rem;
-      border-radius: 12px;
-      border: 1px solid rgba(232, 197, 71, 0.22);
-      background:
-        linear-gradient(135deg, rgba(255, 240, 163, 0.08) 0%, transparent 50%),
-        linear-gradient(165deg, rgba(8, 28, 48, 0.88), rgba(4, 14, 26, 0.92));
-      background-size: 200% 200%, 100% 100%;
-      box-shadow:
-        0 6px 28px rgba(0, 0, 0, 0.38),
-        0 0 0 1px rgba(232, 197, 71, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.06);
-      animation: portfolio-breathe 5s ease-in-out infinite;
+    /* Compact asset strip — breathing zoom */
+    .sovereign-asset-widget {
+      max-width: 280px;
+      margin: 0.65rem auto 0.45rem;
+      padding: 0.55rem 0.85rem 0.65rem;
+      border-radius: 10px;
+      border: 1px solid rgba(232, 197, 71, 0.28);
+      background: linear-gradient(160deg, rgba(10, 30, 52, 0.9), rgba(4, 14, 26, 0.94));
+      text-align: center;
+      animation: asset-widget-breathe 5s ease-in-out infinite;
     }
-    @keyframes portfolio-breathe {
+    @keyframes asset-widget-breathe {
       0%, 100% {
         transform: scale(1);
-        border-color: rgba(232, 197, 71, 0.2);
-        box-shadow:
-          0 6px 28px rgba(0, 0, 0, 0.38),
-          0 0 0 1px rgba(232, 197, 71, 0.06),
-          0 0 20px rgba(232, 197, 71, 0.06),
-          inset 0 1px 0 rgba(255, 255, 255, 0.05);
-        background-position: 0% 40%, 0 0;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35), 0 0 14px rgba(232, 197, 71, 0.08);
       }
       50% {
-        transform: scale(1.03);
-        border-color: rgba(232, 197, 71, 0.42);
-        box-shadow:
-          0 10px 38px rgba(0, 0, 0, 0.45),
-          0 0 0 1px rgba(0, 229, 255, 0.15),
-          0 0 32px rgba(232, 197, 71, 0.18),
-          inset 0 1px 0 rgba(255, 255, 255, 0.1);
-        background-position: 100% 60%, 0 0;
+        transform: scale(1.025);
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4), 0 0 22px rgba(232, 197, 71, 0.16);
       }
     }
-    .sovereign-portfolio-widget h3 {
-      margin: 0 0 0.65rem;
+    .sovereign-asset-widget-title {
+      margin: 0 0 0.35rem;
       font-family: 'Goldman', 'Segoe UI', sans-serif;
-      font-size: 0.72rem;
+      font-size: 0.58rem;
       font-weight: 700;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      text-align: center;
-      background: linear-gradient(135deg, #fff0a3 0%, #e8c547 40%, #4a6fa5 100%);
-      background-size: 200% 200%;
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      animation: goldman-sheen 6s ease-in-out infinite;
+      color: var(--gold-dim);
     }
-    .sovereign-portfolio-widget ul {
+    .sovereign-asset-widget-body {
       margin: 0;
-      padding: 0 0 0 1.1rem;
-      font-size: 0.72rem;
-      line-height: 1.65;
-      letter-spacing: 0.06em;
-      color: rgba(232, 238, 244, 0.9);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: rgba(232, 238, 244, 0.95);
     }
-    .sovereign-portfolio-widget li { margin-bottom: 0.2rem; }
 
     /* 3-column Sovereign Strike row */
     .form-deck {
@@ -951,14 +929,15 @@
       text-align: center;
       animation: signature-life 4s ease-in-out infinite;
     }
+    /* Dr. Sa’ad Jaafaru — metallic gold pulse every 4s */
     @keyframes signature-life {
       0%, 100% {
-        opacity: 0.62;
-        filter: drop-shadow(0 0 8px rgba(232, 197, 71, 0.35)) drop-shadow(0 0 2px rgba(255, 248, 220, 0.15));
+        opacity: 0.65;
+        filter: drop-shadow(0 0 6px rgba(232, 197, 71, 0.4)) drop-shadow(0 0 2px rgba(255, 248, 220, 0.2));
       }
       50% {
         opacity: 1;
-        filter: drop-shadow(0 0 20px rgba(232, 197, 71, 0.75)) drop-shadow(0 0 36px rgba(255, 248, 220, 0.35)) drop-shadow(0 0 4px rgba(232, 197, 71, 0.9));
+        filter: drop-shadow(0 0 22px rgba(232, 197, 71, 0.85)) drop-shadow(0 0 38px rgba(255, 248, 220, 0.45)) drop-shadow(0 0 6px rgba(184, 148, 42, 0.9));
       }
     }
     .footer-lw {
@@ -971,13 +950,13 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .bluelaser-edge, .bluelaser-scan, .satellite-scanlines, .gcslc-identity, .flank-head-goldman, .sovereign-portfolio-widget h3, .lw-shield-seal-wrap::before, .lw-shield-seal, .ip-shield-ticker-track, .analog-wrap, .btn-submit, .clock-svg, .session-bar, .speech-bubble, .dc-placeholder-inner, .sovereign-portfolio-widget, .signature-metallic {
+      .bluelaser-edge, .bluelaser-scan, .satellite-scanlines, .gcslc-identity, .flank-head-goldman, .lw-shield-seal-wrap::before, .lw-shield-seal, .ip-shield-ticker-track, .analog-wrap, .btn-submit, .clock-svg, .session-bar, .speech-bubble, .dc-placeholder-inner, .sovereign-asset-widget, .signature-metallic {
         animation: none !important;
       }
       .btn-submit { background-position: 50% 50%; }
       .analog-wrap { opacity: 1; transform: none; }
       .speech-bubble { transform: none; }
-      .sovereign-portfolio-widget { transform: none; }
+      .sovereign-asset-widget { transform: none; }
       .signature-metallic { opacity: 1; filter: drop-shadow(0 0 12px rgba(232, 197, 71, 0.5)); }
       .lw-shield-seal {
         box-shadow: 0 0 20px rgba(232, 197, 71, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.06);
@@ -1030,13 +1009,9 @@
       <div class="clocks-grid" id="clocksGrid" role="group" aria-label="World clocks"></div>
     </div>
 
-    <div class="sovereign-portfolio-widget" role="region" aria-label="Sovereign portfolio pillars">
-      <h3>Sovereign Portfolio</h3>
-      <ul>
-        <li>1. NRRFC</li>
-        <li>2. NWC / C&amp;D</li>
-        <li>3. AWC / K-GEC</li>
-      </ul>
+    <div class="sovereign-asset-widget" role="region" aria-label="Sovereign asset pillars">
+      <p class="sovereign-asset-widget-title">Sovereign Portfolio</p>
+      <p class="sovereign-asset-widget-body">NRRFC / NWC / AWC</p>
     </div>
 
     <section class="form-deck" aria-label="Sovereign strike — organization intake">
@@ -1080,7 +1055,7 @@
           </form>
         </div>
         <div class="strike-flank strike-flank--dc">
-          <p class="flank-head-goldman">Data Center</p>
+          <p class="flank-head-goldman">DATA CENTER</p>
           <div class="deck-placeholder deck-datacenter">
             <div class="dc-img-wrap">
               <img src="assets/Data 1.png" alt="Data center environment" width="280" height="200" onerror="var w=this.parentNode; this.style.display='none'; w.querySelector('.dc-fallback').style.display='block'; w.querySelector('.dc-placeholder-inner').style.display='block';">
@@ -1206,6 +1181,12 @@
         if (waDigits && (waDigits.length < 6 || !dial)) {
           status.textContent = 'If providing WhatsApp, select a country code and enter at least 6 digits.';
           return;
+        }
+        if (typeof window.resetSovereignSession === 'function') {
+          window.resetSovereignSession();
+        }
+        if (window.GCSLC_SOVEREIGN_SESSION && typeof window.GCSLC_SOVEREIGN_SESSION.armFreshThirtyMinuteSession === 'function') {
+          window.GCSLC_SOVEREIGN_SESSION.armFreshThirtyMinuteSession();
         }
         status.textContent = '';
         stage.classList.add('mirror-exit');
