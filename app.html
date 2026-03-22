@@ -844,6 +844,22 @@
       box-shadow: 0 0 40px rgba(0, 255, 100, 0.12), inset 0 0 50px rgba(0, 40, 30, 0.45);
     }
     .modal-panel-app h4 { margin: 0 0 0.65rem; font-family: ui-monospace, monospace; font-size: 0.98rem; color: #00ff9d; text-shadow: 0 0 12px rgba(0, 255, 157, 0.35); min-height: 1.35em; }
+    .modal-panel-app h4.goldman-head {
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif !important;
+      font-size: clamp(0.9rem, 2.8vw, 1.05rem) !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.06em !important;
+      text-transform: uppercase !important;
+      color: transparent !important;
+      -webkit-text-fill-color: transparent !important;
+      background: linear-gradient(135deg, #f0c14b 0%, #fff8e8 25%, #D4AF37 50%, #1a2744 85%, #4a6fa5 100%);
+      background-size: 200% 200%;
+      -webkit-background-clip: text !important;
+      background-clip: text !important;
+      animation: goldman-sheen 7s ease-in-out infinite;
+      text-shadow: none !important;
+      filter: drop-shadow(0 0 10px rgba(0, 255, 157, 0.22));
+    }
     .modal-panel-app #appModalBody { margin: 0; font-family: ui-monospace, monospace; font-size: 0.8rem; line-height: 1.6; color: rgba(180, 255, 210, 0.95); white-space: pre-wrap; min-height: 3.5em; }
     #appModalBody.cursor-blink::after { content: '▌'; color: #00ff9d; animation: cmd-cursor-blink 0.7s step-end infinite; }
     @keyframes cmd-cursor-blink { 50% { opacity: 0; } }
@@ -1219,7 +1235,7 @@
 
   <div class="modal-backdrop-app" id="arbModal" role="dialog" aria-modal="true" aria-labelledby="arbModalTitle" aria-hidden="true">
     <div class="modal-panel-app arb-calc-panel">
-      <h4 id="arbModalTitle" style="color:#00ff9d;font-family:ui-monospace,monospace;">Sovereign Arbitrage Calculator</h4>
+      <h4 id="arbModalTitle" class="goldman-head">Sovereign Arbitrage Calculator</h4>
       <p class="arb-lead">Enter CAPEX to visualize the <strong>9.6×</strong> wealth multiplier and sovereign de-risking of your AI supply chain via AZK-governed mineral derivatives.</p>
       <label class="arb-label" for="arbCapexInput">CAPEX (USD)</label>
       <input type="number" class="arb-input" id="arbCapexInput" value="1000000000" min="1000000" step="1000000" />
@@ -1243,7 +1259,7 @@
 
   <div class="modal-backdrop-app" id="appRModal" role="dialog" aria-modal="true" aria-labelledby="appModalTitle" aria-hidden="true">
     <div class="modal-panel-app">
-      <h4 id="appModalTitle"></h4>
+      <h4 id="appModalTitle" class="goldman-head"></h4>
       <p id="appModalBody"></p>
       <button type="button" class="modal-close-app" id="appModalClose">Dismiss</button>
     </div>
@@ -1659,7 +1675,7 @@
         { city: 'New York', tag: 'NYSE', tz: 'America/New_York' },
         { city: 'Dubai', tag: 'Commodities', tz: 'Asia/Dubai' },
         { city: 'Singapore', tag: 'Arbitrage', tz: 'Asia/Singapore' },
-        { city: 'Beijing', tag: 'Technology', tz: 'Asia/Shanghai' }
+        { city: 'Beijing', tag: 'Tech · CST (UTC+8)', tz: 'Asia/Shanghai' }
       ];
       function renderClocks() {
         var el = document.getElementById('tzBar');
@@ -1675,7 +1691,10 @@
             if (p.type === 'minute') M = p.value;
             if (p.type === 'second') S = p.value;
           });
-          return '<div class="tz-cell"><span class="tz-city">' + z.city + '</span><span class="tz-tag">' + z.tag + '</span><span class="tz-time">' + H + ':' + M + ':' + S + '</span></div>';
+          var syncTitle = z.tz === 'Asia/Shanghai'
+            ? ' title="Beijing sync · IANA Asia/Shanghai (China Standard Time)"'
+            : '';
+          return '<div class="tz-cell"' + syncTitle + '><span class="tz-city">' + z.city + '</span><span class="tz-tag">' + z.tag + '</span><span class="tz-time" data-tz="' + z.tz + '">' + H + ':' + M + ':' + S + '</span></div>';
         }).join('');
       }
       var mats = { germanium: 8597, siliconLb: 1.81, flyAsh: 148 };
@@ -1696,14 +1715,38 @@
         if (b) b.innerHTML = html;
       }
       var determinants8 = [
-        { title: 'D1: Refine', body: 'Continuous enhancement of operational detail.' },
-        { title: 'D2: Reset', body: 'Institutional environment clearance & operational purge.' },
-        { title: 'D3: Research', body: 'Evidence-grade discovery & logic validation.' },
-        { title: 'D4: Restructure', body: 'Legal and structural SSMV alignment.' },
-        { title: 'D5: Resuscitate', body: 'Recovery of moribund asset value.' },
-        { title: 'D6: Revitalize', body: 'Activation of sovereign revenue strikes.' },
-        { title: 'D7: Re-engineer', body: 'Technical overhaul for long-cycle growth.' },
-        { title: 'D8: Retain', body: 'Preservation of institutional knowledge & wealth.' }
+        {
+          title: 'D1 — REFINE',
+          body: 'MATRIX DETERMINANT D1 — REFINE\n\nDefinition: Continuous elevation of governance, operating cadence, and execution fidelity across NRRFC instruments. Refine locks KPIs, audit trails, and revision velocity so corridor throughput and AZK spine decisions are evidence-anchored—not narrative-driven.\n\nAuthority: Sets the measurement baseline before capital scale-up; reconciles book, physical, and market benchmarks for coal-derived stacks (Ge, Si, fly ash, syngas pathway).\n\n8R link: Feeds D2 (Reset) with a precise inventory of what must be cleared versus what must be preserved.'
+        },
+        {
+          title: 'D2 — RESET',
+          body: 'MATRIX DETERMINANT D2 — RESET\n\nDefinition: Institutional clearance—retiring obsolete mandates, conflicted workflows, and political drag that block sovereign execution. Reset is a controlled purge: remove friction without destroying institutional memory.\n\nAuthority: Authorizes environment sanitization for SSMV activation while preserving legal continuity and stakeholder trust.\n\n8R link: Enables D3 (Research) to run on clean rails and prevents “zombie processes” from contaminating derivative pricing.'
+        },
+        {
+          title: 'D3 — RESEARCH',
+          body: 'MATRIX DETERMINANT D3 — RESEARCH\n\nDefinition: Evidence-grade discovery—geology, chemistry, logistics, and offtake validation at corridor nodes (Enugu, Anambra, Kogi, Benue, Bauchi). Research converts reserves into bankable flows and derisks AI-adjacent mineral exposure.\n\nAuthority: Establishes reproducible assays, mass balances, and scenario bands for March 2026 valuation engines.\n\n8R link: Supplies the fact base required for D4 (Restructure) and D7 (Re-engineer) without speculative drift.'
+        },
+        {
+          title: 'D4 — RESTRUCTURE',
+          body: 'MATRIX DETERMINANT D4 — RESTRUCTURE\n\nDefinition: Legal and capital restructuring to align ownership, SPVs, offtake, and sovereign guarantees with the AZK spine and National Coal Corridor economics.\n\nAuthority: Maps entities, contracts, and risk partitions so derivative stacks are enforceable and auditable under Nigerian and partner frameworks.\n\n8R link: Creates the architecture that D5 (Resuscitate) and D6 (Revitalize) deploy into—without re-litigating structure mid-strike.'
+        },
+        {
+          title: 'D5 — RESUSCITATE',
+          body: 'MATRIX DETERMINANT D5 — RESUSCITATE\n\nDefinition: Recovery of moribund asset value—restart stranded logistics, upgrade capture yields, and restore operational tempo on corridor nodes before export narratives.\n\nAuthority: Targets idle or under-run capacity where Ge/Si/fly-ash recovery can compound without greenfield delay.\n\n8R link: Bridges research + structure into tangible throughput so D6 (Revitalize) can monetize.'
+        },
+        {
+          title: 'D6 — REVITALIZE',
+          body: 'MATRIX DETERMINANT D6 — REVITALIZE\n\nDefinition: Activation of sovereign revenue strikes—pricing discipline, offtake sequencing, and corridor pulses synchronized to live market benchmarks (e.g., Ge, Si lb, fly ash MT).\n\nAuthority: Converts engineering readiness into cashflow and proves the derivative multiplier against raw export parity.\n\n8R link: Feeds surplus logic that supports national balance-sheet engineering and the 9.6× wealth-multiplier narrative when paired with CAPEX discipline.'
+        },
+        {
+          title: 'D7 — RE-ENGINEER',
+          body: 'MATRIX DETERMINANT D7 — RE-ENGINEER\n\nDefinition: Technical overhaul—process control, digital twins, emissions profile, and recovery circuits tuned for long-cycle AI supply-chain de-risking via AZK-governed mineral derivatives.\n\nAuthority: Hardens plants and data pipelines so March 2026 valuations remain stable under stress tests.\n\n8R link: Institutionalizes improvements so D8 (Retain) captures know-how, not one-off heroics.'
+        },
+        {
+          title: 'D8 — RETAIN',
+          body: 'MATRIX DETERMINANT D8 — RETAIN\n\nDefinition: Preservation of institutional knowledge, contract memory, and sovereign wealth mechanics across electoral and market cycles.\n\nAuthority: Codifies playbooks, security posture (IP LW15954), and operator training so the 8R loop compounds instead of resetting.\n\n8R link: Closes the loop back to D1 (Refine) with a stronger evidence base—matrix continuity, not episodic consulting.'
+        }
       ];
       var appModal = document.getElementById('appRModal');
       var appModalTitle = document.getElementById('appModalTitle');
@@ -1734,7 +1777,7 @@
         } else {
           typeChar(item.title, 0, appModalTitle, 24, function () {
             appModalBody.classList.add('cursor-blink');
-            typeChar(item.body, 0, appModalBody, 10, function () {
+            typeChar(item.body, 0, appModalBody, 7, function () {
               appModalBody.classList.remove('cursor-blink');
               twCancel = null;
             });
@@ -1786,7 +1829,7 @@
       var execBtn = document.getElementById('execBtn');
       var inp = document.getElementById('arbCapexInput');
       var out = document.getElementById('arbTerminalUsd');
-      var MULT = 9.6;
+      var WEALTH_MULTIPLIER = 9.6;
       function fmtUsd(n) {
         if (!isFinite(n) || n < 0) return '—';
         if (n >= 1e12) return '$' + (n / 1e12).toFixed(2) + ' T';
@@ -1796,7 +1839,7 @@
       }
       function updateArb() {
         var c = parseFloat(inp && inp.value) || 0;
-        if (out) out.textContent = fmtUsd(c * MULT);
+        if (out) out.textContent = fmtUsd(c * WEALTH_MULTIPLIER);
       }
       function openArb() {
         if (!arb) return;
@@ -1812,7 +1855,13 @@
         arb.setAttribute('aria-hidden', 'true');
         document.body.style.overflow = '';
       }
-      if (execBtn) execBtn.addEventListener('click', openArb);
+      if (execBtn) {
+        execBtn.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          openArb();
+        });
+      }
       if (inp) inp.addEventListener('input', updateArb);
       var arbClose = document.getElementById('arbModalClose');
       if (arbClose) arbClose.addEventListener('click', closeArb);
