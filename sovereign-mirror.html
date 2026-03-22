@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#050a14">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&amp;family=Great+Vibes&amp;display=swap" rel="stylesheet">
+  <title>GCSLC Sovereign Mirror | Proprietary Terminal</title>
+  <!-- Verification tokens reserved for future use (do not remove): $8053$ $8054$ -->
+  <meta name="robots" content="noindex, nofollow">
+  <style>
+    :root {
+      --navy-deep: #050a14;
+      --navy-mid: #0a1628;
+      --gold: #e8c547;
+      --gold-dim: #b8942a;
+      --gold-bright: #fff0a3;
+      --cyan: #00e5ff;
+      --text: #e8eef4;
+      --muted: #8fa3bf;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      min-height: 100dvh;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: radial-gradient(ellipse 120% 90% at 50% -10%, #0f2844 0%, var(--navy-deep) 55%);
+      color: var(--gold);
+      overflow-x: hidden;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    input, textarea, select, button[type="submit"] { -webkit-user-select: text; user-select: text; }
+
+    /* —— CNN Bluelaser frame —— */
+    .bluelaser-stack {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .bluelaser-edge {
+      position: absolute;
+      inset: 0;
+      border: 3px solid transparent;
+      background:
+        linear-gradient(var(--navy-deep), var(--navy-deep)) padding-box,
+        linear-gradient(125deg, #00f0ff 0%, #0099cc 18%, #e8c547 42%, #fff8c4 55%, #00d4e8 78%, #00f0ff 100%) border-box;
+      background-size: 320% 320%;
+      animation: cyan-gold-pulse 5.5s ease-in-out infinite;
+      opacity: 0.92;
+    }
+    @keyframes cyan-gold-pulse {
+      0%, 100% { background-position: 0% 40%; filter: brightness(0.95) drop-shadow(0 0 8px rgba(0, 240, 255, 0.35)); }
+      50% { background-position: 100% 60%; filter: brightness(1.1) drop-shadow(0 0 18px rgba(232, 197, 71, 0.45)); }
+    }
+    .bluelaser-scan {
+      position: absolute;
+      inset: -45%;
+      background: conic-gradient(from 0deg at 50% 50%, transparent 0deg, transparent 265deg, rgba(0, 240, 255, 0.08) 295deg, rgba(232, 197, 71, 0.06) 320deg, transparent 360deg);
+      animation: bluelaser-spin 22s linear infinite;
+    }
+    .bluelaser-vignette {
+      position: absolute;
+      inset: 0;
+      box-shadow: inset 0 0 100px rgba(0, 20, 50, 0.55), inset 0 0 28px rgba(0, 200, 255, 0.06);
+    }
+    @keyframes bluelaser-spin { to { transform: rotate(360deg); } }
+
+    .satellite-scanlines {
+      position: fixed;
+      inset: 0;
+      z-index: 52;
+      pointer-events: none;
+      background: repeating-linear-gradient(0deg, transparent 0, transparent 3px, rgba(0, 255, 240, 0.04) 3px, rgba(0, 255, 240, 0.04) 4px);
+      background-size: 100% 7px;
+      animation: scanline-drift 7s linear infinite;
+      mix-blend-mode: screen;
+      opacity: 0.75;
+    }
+    @keyframes scanline-drift { 0% { background-position: 0 0; } 100% { background-position: 0 7px; } }
+
+    .wm-gcslc {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      z-index: 15;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      font-weight: 800;
+      letter-spacing: 0.35em;
+      font-size: clamp(3rem, 26vw, 12rem);
+      color: rgba(232, 197, 71, 0.4);
+      white-space: nowrap;
+    }
+    .ip-shield-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 14;
+      pointer-events: none;
+      background: repeating-linear-gradient(-18deg, transparent 0, transparent 120px, rgba(232, 197, 71, 0.02) 120px, rgba(232, 197, 71, 0.02) 121px);
+    }
+
+    /* Goldman metallic identity */
+    .gcslc-identity {
+      font-family: 'Goldman', 'Segoe UI', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      line-height: 1.25;
+      background: linear-gradient(135deg, #fff0a3 0%, #e8c547 32%, #1a2744 72%, #4a6fa5 100%);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: goldman-sheen 7s ease-in-out infinite;
+    }
+    @keyframes goldman-sheen {
+      0%, 100% { background-position: 0% 40%; }
+      50% { background-position: 100% 60%; }
+    }
+
+    .lw-shield-bar {
+      text-align: center;
+      padding: 0.55rem 1rem;
+      background: linear-gradient(180deg, rgba(8, 24, 44, 0.95), rgba(4, 12, 22, 0.92));
+      border-bottom: 1px solid rgba(0, 229, 255, 0.25);
+    }
+    .lw-shield-seal {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      font-family: ui-monospace, monospace;
+      font-weight: 800;
+      font-size: clamp(0.72rem, 2vw, 0.88rem);
+      letter-spacing: 0.28em;
+      color: var(--gold-bright);
+      text-shadow: 0 0 16px rgba(232, 197, 71, 0.45);
+      border: 1px solid rgba(232, 197, 71, 0.4);
+      border-radius: 6px;
+      animation: seal-pulse 2.5s ease-in-out infinite;
+    }
+    @keyframes seal-pulse {
+      0%, 100% { box-shadow: 0 0 12px rgba(232, 197, 71, 0.2); }
+      50% { box-shadow: 0 0 24px rgba(232, 197, 71, 0.4); }
+    }
+    .lw-shield-note {
+      margin: 0.35rem 0 0;
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .shell {
+      position: relative;
+      z-index: 60;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      pointer-events: auto;
+      padding-bottom: 2rem;
+    }
+
+    .hero {
+      text-align: center;
+      padding: clamp(1rem, 4vw, 1.75rem) 1rem 0.5rem;
+    }
+    .hero .gcslc-identity {
+      font-size: clamp(0.85rem, 3.2vw, 1.35rem);
+      max-width: 36rem;
+      margin: 0 auto;
+    }
+    .hero-sub {
+      margin: 0.65rem auto 0;
+      max-width: 28rem;
+      font-size: clamp(0.68rem, 1.8vw, 0.82rem);
+      color: rgba(232, 238, 244, 0.88);
+      line-height: 1.45;
+    }
+
+    /* Analogue clocks — sequential zoom entry / exit */
+    .clocks-stage {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 1rem 0.75rem;
+    }
+    .clocks-label {
+      text-align: center;
+      font-size: 0.58rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      margin-bottom: 0.75rem;
+    }
+    .clocks-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem 0.5rem;
+    }
+    @media (min-width: 720px) {
+      .clocks-grid { grid-template-columns: repeat(6, 1fr); gap: 0.5rem; }
+    }
+    .analog-wrap {
+      --delay: 0s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transform-origin: center center;
+      animation: clock-zoom-in 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation-delay: var(--delay);
+    }
+    .mirror-stage.mirror-exit .analog-wrap {
+      animation: clock-zoom-out 0.55s cubic-bezier(0.55, 0, 1, 0.45) both;
+      animation-delay: var(--exit-delay);
+    }
+    @keyframes clock-zoom-in {
+      from { transform: scale(0.35); opacity: 0; filter: blur(4px); }
+      to { transform: scale(1); opacity: 1; filter: blur(0); }
+    }
+    @keyframes clock-zoom-out {
+      from { transform: scale(1); opacity: 1; }
+      to { transform: scale(0.3); opacity: 0; filter: blur(3px); }
+    }
+    .clock-svg {
+      width: 100%;
+      max-width: 104px;
+      height: auto;
+      filter: drop-shadow(0 0 8px rgba(0, 229, 255, 0.2));
+    }
+    .clock-face { fill: rgba(4, 14, 28, 0.85); stroke: rgba(232, 197, 71, 0.35); stroke-width: 1.2; }
+    .clock-tick { stroke: rgba(232, 197, 71, 0.35); stroke-width: 0.8; }
+    .hand-hour, .hand-minute { stroke: var(--gold-bright); stroke-linecap: round; }
+    .hand-hour { stroke-width: 3; }
+    .hand-minute { stroke-width: 2; }
+    .hand-second { stroke: var(--cyan); stroke-width: 1; stroke-linecap: round; }
+    .clock-city {
+      margin-top: 0.35rem;
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      text-align: center;
+    }
+
+    .form-panel {
+      max-width: 420px;
+      margin: 1.25rem auto 0;
+      padding: 1.25rem 1.15rem;
+      background: rgba(8, 28, 48, 0.55);
+      border: 1px solid rgba(0, 229, 255, 0.22);
+      border-radius: 16px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+    .form-panel h2 {
+      margin: 0 0 1rem;
+      font-family: 'Goldman', sans-serif;
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-align: center;
+      color: var(--text);
+    }
+    .form-row { margin-bottom: 0.85rem; }
+    .form-row label {
+      display: block;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.35rem;
+    }
+    .form-row input {
+      width: 100%;
+      padding: 0.55rem 0.65rem;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 229, 255, 0.28);
+      background: rgba(2, 12, 24, 0.85);
+      color: var(--text);
+      font-size: 0.9rem;
+    }
+    .form-row input:focus {
+      outline: none;
+      border-color: rgba(232, 197, 71, 0.55);
+      box-shadow: 0 0 0 2px rgba(0, 229, 255, 0.12);
+    }
+    .btn-submit {
+      width: 100%;
+      margin-top: 0.25rem;
+      padding: 0.65rem;
+      font-family: 'Goldman', sans-serif;
+      font-weight: 700;
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--navy-deep);
+      background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(232, 197, 71, 0.3);
+    }
+    .btn-submit:hover { filter: brightness(1.05); }
+    .form-status {
+      margin-top: 0.75rem;
+      font-size: 0.72rem;
+      text-align: center;
+      color: var(--cyan);
+      min-height: 1.25em;
+    }
+
+    footer.mirror-footer {
+      margin-top: auto;
+      padding: 1.5rem 1rem 1rem;
+      text-align: center;
+      border-top: 1px solid rgba(232, 197, 71, 0.15);
+    }
+    .signature-metallic {
+      margin: 0.5rem 0 0;
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(1.4rem, 4.5vw, 1.95rem);
+      background: linear-gradient(90deg, #e8c547, #fff8dc, #b8942a);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      filter: drop-shadow(0 0 10px rgba(232, 197, 71, 0.4));
+    }
+    .footer-ip {
+      margin-top: 0.65rem;
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .nav-back {
+      display: inline-block;
+      margin-top: 0.75rem;
+      font-size: 0.75rem;
+      color: var(--cyan);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(0, 229, 255, 0.35);
+    }
+    .nav-back:hover { color: var(--gold-bright); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .bluelaser-edge, .bluelaser-scan, .satellite-scanlines, .gcslc-identity, .lw-shield-seal, .analog-wrap {
+        animation: none !important;
+      }
+      .analog-wrap { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Verification codes held for future validation (not exposed in UI): $8053$ $8054$ -->
+  <span id="verification-hold" hidden data-reserved="true" aria-hidden="true"></span>
+
+  <div class="bluelaser-stack" aria-hidden="true">
+    <div class="bluelaser-scan"></div>
+    <div class="bluelaser-edge"></div>
+    <div class="bluelaser-vignette"></div>
+  </div>
+  <div class="satellite-scanlines" aria-hidden="true"></div>
+  <div class="wm-gcslc" aria-hidden="true">GCSLC</div>
+  <div class="ip-shield-overlay" aria-hidden="true"></div>
+
+  <div class="shell">
+    <div class="lw-shield-bar">
+      <span class="lw-shield-seal">LW15954</span>
+      <p class="lw-shield-note">Copyright shield · Proprietary · Unauthorized capture prohibited</p>
+    </div>
+
+    <header class="hero">
+      <h1 class="gcslc-identity">Galadiman Ruwa Center for Strategic Leadership and Communication · GCSLC LTD/GTE</h1>
+      <p class="hero-sub">Sovereign Mirror — executive intake. Secured terminal. CNN-class live frame.</p>
+    </header>
+
+    <div class="mirror-stage clocks-stage" id="mirrorStage">
+      <p class="clocks-label">Global pulse · analogue · six zones</p>
+      <div class="clocks-grid" id="clocksGrid" role="group" aria-label="World clocks"></div>
+    </div>
+
+    <form class="form-panel" id="mirrorForm" autocomplete="on" novalidate>
+      <h2>Organization intake</h2>
+      <div class="form-row">
+        <label for="orgName">Organization</label>
+        <input type="text" id="orgName" name="organization" required placeholder="Legal entity or institution" maxlength="200">
+      </div>
+      <div class="form-row">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required placeholder="principal@organization.org" maxlength="120">
+      </div>
+      <div class="form-row">
+        <label for="whatsapp">WhatsApp</label>
+        <input type="tel" id="whatsapp" name="whatsapp" required placeholder="+234 … or international" maxlength="32">
+      </div>
+      <button type="submit" class="btn-submit">Transmit credentials</button>
+      <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+    </form>
+
+    <footer class="mirror-footer">
+      <a class="nav-back" href="sovereign-gateway.html">← Sovereign Gateway</a>
+      <p class="signature-metallic">Dr. Sa'ad Jaafaru</p>
+      <p class="footer-ip">© GCSLC · IP LW15954 · Proprietary Buyout-grade terminal</p>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      var zones = [
+        { city: 'Zaria', tz: 'Africa/Lagos' },
+        { city: 'London', tz: 'Europe/London' },
+        { city: 'New York', tz: 'America/New_York' },
+        { city: 'Dubai', tz: 'Asia/Dubai' },
+        { city: 'Singapore', tz: 'Asia/Singapore' },
+        { city: 'Beijing', tz: 'Asia/Shanghai' }
+      ];
+      var grid = document.getElementById('clocksGrid');
+      var stage = document.getElementById('mirrorStage');
+
+      function clockMarkup(city, idx) {
+        var delay = (idx * 0.12).toFixed(2) + 's';
+        return (
+          '<div class="analog-wrap" style="--delay:' + delay + ';--exit-delay:' + ((5 - idx) * 0.08).toFixed(2) + 's" data-tz="' + zones[idx].tz + '">' +
+            '<svg class="clock-svg" viewBox="0 0 100 100" aria-hidden="true">' +
+              '<circle class="clock-face" cx="50" cy="50" r="48"/>' +
+              '<g class="ticks"></g>' +
+              '<line class="hand-hour" x1="50" y1="50" x2="50" y2="32" transform="rotate(0 50 50)"/>' +
+              '<line class="hand-minute" x1="50" y1="50" x2="50" y2="22" transform="rotate(0 50 50)"/>' +
+              '<line class="hand-second" x1="50" y1="50" x2="50" y2="18" transform="rotate(0 50 50)"/>' +
+              '<circle cx="50" cy="50" r="2.5" fill="#e8c547"/>' +
+            '</svg>' +
+            '<span class="clock-city">' + city + '</span>' +
+          '</div>'
+        );
+      }
+
+      var tickGroupHtml = '';
+      for (var t = 0; t < 12; t++) {
+        var ang = (t * 30 - 90) * Math.PI / 180;
+        var x1 = 50 + 42 * Math.cos(ang);
+        var y1 = 50 + 42 * Math.sin(ang);
+        var x2 = 50 + 38 * Math.cos(ang);
+        var y2 = 50 + 38 * Math.sin(ang);
+        tickGroupHtml += '<line class="clock-tick" x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '"/>';
+      }
+
+      grid.innerHTML = zones.map(function (z, i) {
+        return clockMarkup(z.city, i).replace('<g class="ticks"></g>', '<g class="ticks">' + tickGroupHtml + '</g>');
+      }).join('');
+
+      function updateHands() {
+        var now = new Date();
+        grid.querySelectorAll('.analog-wrap').forEach(function (wrap) {
+          var tz = wrap.getAttribute('data-tz');
+          var fmt = new Intl.DateTimeFormat('en-GB', {
+            timeZone: tz,
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+            hour12: false
+          });
+          var parts = fmt.formatToParts(now);
+          var h24 = 0, M = 0, S = 0;
+          parts.forEach(function (p) {
+            if (p.type === 'hour') h24 = parseInt(p.value, 10);
+            if (p.type === 'minute') M = parseInt(p.value, 10);
+            if (p.type === 'second') S = parseInt(p.value, 10);
+          });
+          var H12 = h24 % 12;
+          var secA = S * 6;
+          var minA = M * 6 + S * 0.1;
+          var hourA = H12 * 30 + M * 0.5 + S * (1 / 120);
+          var hEl = wrap.querySelector('.hand-hour');
+          var mEl = wrap.querySelector('.hand-minute');
+          var sEl = wrap.querySelector('.hand-second');
+          if (hEl) hEl.setAttribute('transform', 'rotate(' + hourA + ' 50 50)');
+          if (mEl) mEl.setAttribute('transform', 'rotate(' + minA + ' 50 50)');
+          if (sEl) sEl.setAttribute('transform', 'rotate(' + secA + ' 50 50)');
+        });
+      }
+      updateHands();
+      setInterval(updateHands, 1000);
+
+      var form = document.getElementById('mirrorForm');
+      var status = document.getElementById('formStatus');
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (!form.organization.value.trim() || !form.email.value.trim() || !form.whatsapp.value.trim()) {
+          status.textContent = 'Complete all fields.';
+          return;
+        }
+        status.textContent = '';
+        stage.classList.add('mirror-exit');
+        setTimeout(function () {
+          status.textContent = 'Transmission queued — executive desk will confirm via WhatsApp.';
+          stage.classList.remove('mirror-exit');
+        }, 1200);
+      });
+    })();
+
+    /* Reserved verification pair (do not wire to UI until authorized): $8053$ $8054$ */
+
+    (function () {
+      document.addEventListener('contextmenu', function (e) {
+        if (e.target.closest && (e.target.closest('input') || e.target.closest('textarea'))) return;
+        e.preventDefault();
+      });
+      document.addEventListener('copy', function (e) {
+        if (e.target.closest && (e.target.closest('input') || e.target.closest('textarea'))) return;
+        e.preventDefault();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.target.closest && (e.target.closest('input') || e.target.closest('textarea'))) return;
+        if (e.key === 'PrintScreen') {
+          document.body.style.filter = 'blur(8px)';
+          setTimeout(function () { document.body.style.filter = ''; }, 450);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
