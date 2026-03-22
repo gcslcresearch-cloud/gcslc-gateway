@@ -1,6 +1,7 @@
 /**
  * GCSLC / AWC · K-GEC Sovereign OS — cumulative 30m session (Tier 1 + Tier 2).
- * Synchronized across sovereign-mirror.html and app.html via localStorage.
+ * STRIKE 1968v24: ?mode=chairman — no session timer interval, no expiry lock (unlimited for that load).
+ * Visitors: hard 30-minute cumulative limit from KEY_START; tick runs every 1s.
  */
 (function (global) {
   'use strict';
@@ -11,8 +12,22 @@
   var TOTAL_MS = 30 * 60 * 1000;
   var TIER1_MS = 15 * 60 * 1000;
 
+  function isChairmanMode() {
+    try {
+      return new URLSearchParams(global.location.search || '').get('mode') === 'chairman';
+    } catch (e) {
+      return false;
+    }
+  }
+
+  global.GCSLC_CHAIRMAN_IMMUNITY = isChairmanMode();
+
   function ts() {
     return Date.now();
+  }
+
+  function chairmanGuard() {
+    return global.GCSLC_CHAIRMAN_IMMUNITY === true;
   }
 
   /**
@@ -42,6 +57,7 @@
   }
 
   function isExpiredFlag() {
+    if (chairmanGuard()) return false;
     try {
       return localStorage.getItem(KEY_EXPIRED) === '1';
     } catch (e) {
@@ -50,12 +66,14 @@
   }
 
   function setExpiredFlag() {
+    if (chairmanGuard()) return;
     try {
       localStorage.setItem(KEY_EXPIRED, '1');
     } catch (e) {}
   }
 
   function ensureStart() {
+    if (chairmanGuard()) return;
     try {
       var s = localStorage.getItem(KEY_START);
       if (!s) {
@@ -65,6 +83,7 @@
   }
 
   function remainingMs() {
+    if (chairmanGuard()) return TOTAL_MS;
     if (isExpiredFlag()) return 0;
     ensureStart();
     var startT = 0;
@@ -85,6 +104,7 @@
   }
 
   function lockUi() {
+    if (chairmanGuard()) return;
     document.documentElement.classList.add('sovereign-access-expired');
     var modal = document.getElementById('sovereignTierExpiredModal');
     if (modal) {
@@ -106,11 +126,13 @@
   }
 
   function sovereignLogout() {
+    if (chairmanGuard()) return;
     setExpiredFlag();
     lockUi();
   }
 
   function tick() {
+    if (chairmanGuard()) return;
     if (isExpiredFlag()) {
       lockUi();
       return;
@@ -128,10 +150,8 @@
     for (var j = 0; j < tw.length; j++) tw[j].textContent = tierLabel;
   }
 
-  /**
-   * Login parity: reset storage, unlock UI if locked, start a fresh 30m window.
-   */
   function armFreshThirtyMinuteSession() {
+    if (chairmanGuard()) return;
     unlockUi();
     try {
       localStorage.setItem(KEY_START, String(ts()));
@@ -140,7 +160,35 @@
     tick();
   }
 
+  /** Visitor: clear session storage and reload (logout parity). */
+  function visitorSovereignLogout() {
+    if (chairmanGuard()) {
+      global.location.reload();
+      return;
+    }
+    resetSovereignSession();
+    unlockUi();
+    global.location.reload();
+  }
+
+  function initChairmanImmunity() {
+    document.documentElement.classList.add('gcslc-chairman-immunity');
+    try {
+      localStorage.removeItem(KEY_EXPIRED);
+    } catch (e) {}
+    unlockUi();
+    var els = document.querySelectorAll('.sovereign-tier-remaining');
+    var i;
+    for (i = 0; i < els.length; i++) els[i].textContent = '—';
+    var tw = document.querySelectorAll('.sovereign-tier-which');
+    for (i = 0; i < tw.length; i++) tw[i].textContent = 'Chairman immunity';
+  }
+
   function init() {
+    if (chairmanGuard()) {
+      initChairmanImmunity();
+      return;
+    }
     if (isExpiredFlag()) {
       lockUi();
       return;
@@ -168,6 +216,11 @@
       return formatMMSS(remainingMs());
     },
     lock: sovereignLogout,
-    armFreshThirtyMinuteSession: armFreshThirtyMinuteSession
+    armFreshThirtyMinuteSession: armFreshThirtyMinuteSession,
+    visitorLogout: visitorSovereignLogout,
+    unlockUi: unlockUi,
+    isChairmanMode: function () {
+      return chairmanGuard();
+    }
   };
 })(window);

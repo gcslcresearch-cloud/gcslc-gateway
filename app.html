@@ -13,6 +13,15 @@
   <meta name="author" content="National Resources Revitalization Fusion Center (NRRFC) · GCSLC Sovereign">
   <meta property="og:title" content="GCSLC Sovereign · NRRFC — Coal Reserves &amp; NRRF Dashboard">
   <meta property="og:description" content="GCSLC Sovereign: Nigeria Coal Reserves, debt-swap comparison, coal-to-syngas vs diesel — NRRFC 2026.">
+  <script>
+    (function () {
+      try {
+        if (new URLSearchParams(location.search).get('mode') === 'chairman') {
+          document.documentElement.classList.add('gcslc-chairman-immunity');
+        }
+      } catch (e) {}
+    })();
+  </script>
   <style>
     /* 8R Stealth palette: Uniform Deep Navy (#050a15) & Gold (#D4AF37) */
     :root {
@@ -910,7 +919,6 @@
 
     /* AWC / K-GEC Sovereign OS — session tier strip + 30m lock (sync with sovereign-mirror) */
     .sovereign-tier-bar {
-      max-width: 1200px;
       margin: 0 auto;
       padding: 0.4rem 0.75rem 0.5rem;
       text-align: center;
@@ -939,6 +947,41 @@
       text-transform: none;
       color: #00e5ff;
     }
+    .sovereign-tier-bar-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem 1rem;
+    }
+    .sovereign-tier-bar-copy { flex: 1 1 220px; min-width: 0; text-align: center; }
+    .btn-sovereign-logout {
+      appearance: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: clamp(0.55rem, 1.45vw, 0.68rem);
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold-bright);
+      padding: 0.38rem 0.95rem;
+      border-radius: 999px;
+      border: 2px solid rgba(232, 197, 71, 0.6);
+      background: linear-gradient(165deg, rgba(28, 48, 72, 0.95), rgba(8, 20, 38, 0.98));
+      box-shadow: 0 0 16px rgba(232, 197, 71, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      flex-shrink: 0;
+      transition: filter 0.2s ease, box-shadow 0.25s ease;
+    }
+    .btn-sovereign-logout:hover {
+      filter: brightness(1.08);
+      box-shadow: 0 0 22px rgba(255, 248, 220, 0.25), 0 0 36px rgba(232, 197, 71, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.09);
+    }
+    .btn-sovereign-logout:focus-visible {
+      outline: 2px solid rgba(0, 229, 255, 0.85);
+      outline-offset: 2px;
+    }
     .sovereign-app-layer { min-height: 100dvh; }
     html.sovereign-access-expired .sovereign-app-layer {
       filter: blur(24px) saturate(0.7);
@@ -954,6 +997,25 @@
       backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
     }
     .sovereign-tier-modal.is-open { display: flex; }
+    html.gcslc-chairman-immunity .sovereign-app-layer {
+      filter: none !important;
+      pointer-events: auto !important;
+      user-select: auto;
+    }
+    html.gcslc-chairman-immunity.sovereign-access-expired .sovereign-app-layer {
+      filter: none !important;
+      pointer-events: auto !important;
+      user-select: auto;
+    }
+    html.gcslc-chairman-immunity.sovereign-access-expired body,
+    html.gcslc-chairman-immunity body {
+      overflow-x: hidden;
+    }
+    html.gcslc-chairman-immunity #sovereignTierExpiredModal {
+      display: none !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
     .sovereign-tier-modal-panel {
       max-width: 440px; padding: 1.65rem 1.5rem; border-radius: 14px;
       border: 2px solid rgba(232, 197, 71, 0.5);
@@ -1032,9 +1094,14 @@
       </div>
     </div>
     <div class="sovereign-tier-bar" role="status" aria-live="polite">
-      <span class="sovereign-tier-bar-kicker">AWC / K-GEC Sovereign OS</span>
-      <span class="sovereign-tier-bar-text">Access Tier 1 (15m) | Extension Tier 2 (15m)</span>
-      <span class="sovereign-tier-bar-sub"><span class="sovereign-tier-which">Tier 1 active</span> · <span class="sovereign-tier-remaining">30:00</span> remaining</span>
+      <div class="sovereign-tier-bar-wrap">
+        <div class="sovereign-tier-bar-copy">
+          <span class="sovereign-tier-bar-kicker">AWC / K-GEC Sovereign OS</span>
+          <span class="sovereign-tier-bar-text">Access Tier 1 (15m) | Extension Tier 2 (15m)</span>
+          <span class="sovereign-tier-bar-sub"><span class="sovereign-tier-which">Tier 1 active</span> · <span class="sovereign-tier-remaining">30:00</span> remaining</span>
+        </div>
+        <button type="button" class="btn-sovereign-logout" id="sovereignLogoutBtn" title="Chairman: refresh page. Visitors: end sovereign session.">Sovereign Logout</button>
+      </div>
     </div>
   <div class="container">
     <div class="watermark-ribbon" aria-hidden="true"></div>
@@ -1379,6 +1446,20 @@
   </div>
 
   <script src="assets/sovereign-tier-session.js"></script>
+  <script>
+    (function () {
+      var lo = document.getElementById('sovereignLogoutBtn');
+      if (lo) {
+        lo.addEventListener('click', function () {
+          if (window.GCSLC_SOVEREIGN_SESSION && typeof window.GCSLC_SOVEREIGN_SESSION.visitorLogout === 'function') {
+            window.GCSLC_SOVEREIGN_SESSION.visitorLogout();
+          } else {
+            window.location.reload();
+          }
+        });
+      }
+    })();
+  </script>
   <script>
     (function () {
       const lastUpdatedEl = document.getElementById('last-updated');

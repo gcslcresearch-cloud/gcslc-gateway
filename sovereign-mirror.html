@@ -10,6 +10,15 @@
   <title>GCSLC Sovereign Mirror | Proprietary Terminal</title>
   <!-- Verification tokens reserved for future use (do not remove): $8053$ $8054$ -->
   <meta name="robots" content="noindex, nofollow">
+  <script>
+    (function () {
+      try {
+        if (new URLSearchParams(location.search).get('mode') === 'chairman') {
+          document.documentElement.classList.add('gcslc-chairman-immunity');
+        }
+      } catch (e) {}
+    })();
+  </script>
   <style>
     :root {
       --navy-deep: #050a14;
@@ -22,17 +31,6 @@
       --muted: #8fa3bf;
     }
     *, *::before, *::after { box-sizing: border-box; }
-    .visually-hidden {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
     html { -webkit-text-size-adjust: 100%; }
     body {
       margin: 0;
@@ -135,127 +133,34 @@
       50% { background-position: 100% 60%; }
     }
 
-    .lw-shield-bar {
-      text-align: center;
-      padding: 0.5rem 0 0.45rem;
-      background: linear-gradient(180deg, rgba(8, 24, 44, 0.97), rgba(4, 12, 22, 0.94));
-      border-bottom: 1px solid rgba(0, 229, 255, 0.25);
-      overflow: hidden;
-    }
-    .lw-shield-bar-inner {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0 0.5rem;
-    }
-    /* Rotating aura behind LW15954 capsule */
-    .lw-shield-seal-wrap {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 3px;
-      border-radius: 999px;
-    }
-    .lw-shield-seal-wrap::before {
-      content: '';
-      position: absolute;
-      inset: -4px;
-      border-radius: inherit;
-      background: conic-gradient(
-        from 0deg,
-        transparent 0deg,
-        rgba(232, 197, 71, 0.25) 45deg,
-        rgba(255, 248, 220, 0.75) 100deg,
-        rgba(232, 197, 71, 0.65) 160deg,
-        rgba(184, 148, 42, 0.45) 220deg,
-        rgba(0, 229, 255, 0.35) 280deg,
-        transparent 330deg,
-        transparent 360deg
-      );
-      animation: lw-aura-spin 12s linear infinite, lw-aura-shimmer 4.5s ease-in-out infinite;
-      z-index: 0;
-      filter: blur(0.5px);
-    }
-    @keyframes lw-aura-spin {
-      to { transform: rotate(360deg); }
-    }
-    @keyframes lw-aura-shimmer {
-      0%, 100% { opacity: 0.82; filter: blur(0.5px) brightness(1); }
-      50% { opacity: 1; filter: blur(0.5px) brightness(1.35); }
-    }
-    .lw-shield-seal-wrap::after {
-      content: '';
-      position: absolute;
-      inset: 2px;
-      border-radius: inherit;
-      background: linear-gradient(165deg, rgba(6, 18, 34, 0.98), rgba(2, 10, 20, 0.99));
-      z-index: 1;
-      box-shadow: inset 0 0 12px rgba(0, 229, 255, 0.08);
-    }
-    .lw-shield-seal {
-      position: relative;
-      z-index: 2;
-      display: inline-block;
-      padding: 0.32rem 1rem;
-      font-family: ui-monospace, monospace;
+    .btn-sovereign-logout {
+      appearance: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: clamp(0.58rem, 1.5vw, 0.72rem);
       font-weight: 800;
-      font-size: clamp(0.68rem, 1.9vw, 0.86rem);
-      letter-spacing: 0.32em;
-      color: var(--gold-bright);
-      text-shadow:
-        0 0 8px rgba(255, 248, 220, 0.5),
-        0 0 18px rgba(232, 197, 71, 0.65);
-      border: 2px solid rgba(232, 197, 71, 0.55);
-      border-radius: 999px;
-      background: rgba(0, 22, 42, 0.75);
-      box-shadow:
-        0 0 16px rgba(232, 197, 71, 0.35),
-        0 0 32px rgba(232, 197, 71, 0.12),
-        inset 0 1px 0 rgba(255, 255, 255, 0.08);
-      animation: lw-seal-gold-pulse 3.5s ease-in-out infinite;
-    }
-    @keyframes lw-seal-gold-pulse {
-      0%, 100% {
-        box-shadow:
-          0 0 14px rgba(232, 197, 71, 0.3),
-          0 0 28px rgba(232, 197, 71, 0.1),
-          inset 0 1px 0 rgba(255, 255, 255, 0.06);
-      }
-      50% {
-        box-shadow:
-          0 0 26px rgba(255, 248, 220, 0.45),
-          0 0 48px rgba(232, 197, 71, 0.28),
-          inset 0 1px 0 rgba(255, 255, 255, 0.1);
-      }
-    }
-    /* Slow horizontal IP ticker (120s loop) */
-    .ip-shield-ticker {
-      width: 100%;
-      max-width: min(920px, 100vw);
-      overflow: hidden;
-      mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-      -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-    }
-    .ip-shield-ticker-track {
-      display: flex;
-      width: max-content;
-      animation: ip-ticker-marquee 120s linear infinite;
-    }
-    .ip-shield-ticker-text {
-      flex-shrink: 0;
-      padding-right: 3rem;
-      font-size: clamp(0.55rem, 1.35vw, 0.65rem);
-      font-weight: 700;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: rgba(143, 163, 191, 0.92);
-      white-space: nowrap;
+      color: var(--gold-bright);
+      padding: 0.42rem 1.1rem;
+      border-radius: 999px;
+      border: 2px solid rgba(232, 197, 71, 0.65);
+      background: linear-gradient(165deg, rgba(28, 48, 72, 0.95), rgba(8, 20, 38, 0.98));
+      box-shadow:
+        0 0 18px rgba(232, 197, 71, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      transition: filter 0.2s ease, box-shadow 0.25s ease;
     }
-    @keyframes ip-ticker-marquee {
-      from { transform: translateX(0); }
-      to { transform: translateX(-50%); }
+    .btn-sovereign-logout:hover {
+      filter: brightness(1.08);
+      box-shadow:
+        0 0 26px rgba(255, 248, 220, 0.35),
+        0 0 40px rgba(232, 197, 71, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+    .btn-sovereign-logout:focus-visible {
+      outline: 2px solid rgba(0, 229, 255, 0.85);
+      outline-offset: 3px;
     }
 
     .shell {
@@ -284,23 +189,6 @@
       max-width: 42rem;
       font-size: clamp(0.78rem, 2.85vw, 1.22rem);
     }
-    .hero-sub {
-      margin: 0.65rem auto 0;
-      max-width: 28rem;
-      font-size: clamp(0.68rem, 1.8vw, 0.82rem);
-      color: rgba(232, 238, 244, 0.88);
-      line-height: 1.45;
-    }
-    .hero-kicker {
-      margin: 0.45rem auto 0;
-      text-align: center;
-      font-size: clamp(0.55rem, 1.5vw, 0.65rem);
-      font-weight: 800;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--gold-dim);
-    }
-
     .session-bar {
       max-width: 52rem;
       margin: 0.75rem auto 0;
@@ -317,6 +205,28 @@
       background-size: 200% 100%;
       animation: session-shimmer 4s ease-in-out infinite;
       box-shadow: inset 0 0 20px rgba(0, 229, 255, 0.08);
+    }
+    .session-bar--form {
+      margin: 0;
+      max-width: none;
+      width: 100%;
+      padding: 0.45rem 0.65rem;
+      font-size: clamp(0.52rem, 1.35vw, 0.62rem);
+    }
+    .form-sovereign-footer {
+      margin-top: 1rem;
+      padding-top: 0.85rem;
+      border-top: 1px solid rgba(0, 229, 255, 0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.65rem;
+      width: 100%;
+    }
+    .form-logout-wrap {
+      display: flex;
+      justify-content: center;
+      width: 100%;
     }
     .session-bar-tiers { display: block; }
     .session-bar-sub {
@@ -351,6 +261,26 @@
       -webkit-backdrop-filter: blur(6px);
     }
     .sovereign-tier-modal.is-open { display: flex; }
+    /* STRIKE 1968v23 — chairman immunity: no session blur / modal */
+    html.gcslc-chairman-immunity .sovereign-app-layer {
+      filter: none !important;
+      pointer-events: auto !important;
+      user-select: auto;
+    }
+    html.gcslc-chairman-immunity.sovereign-access-expired .sovereign-app-layer {
+      filter: none !important;
+      pointer-events: auto !important;
+      user-select: auto;
+    }
+    html.gcslc-chairman-immunity.sovereign-access-expired body,
+    html.gcslc-chairman-immunity body {
+      overflow-x: hidden;
+    }
+    html.gcslc-chairman-immunity #sovereignTierExpiredModal {
+      display: none !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
     .sovereign-tier-modal-panel {
       max-width: 440px;
       padding: 1.65rem 1.5rem;
@@ -403,19 +333,22 @@
       flex-direction: column;
       align-items: center;
     }
+    .clocks-pulse-header {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 0.65rem;
+    }
     .clocks-label {
       display: block;
-      width: 100%;
-      max-width: 28rem;
-      margin-left: auto;
-      margin-right: auto;
+      margin: 0;
       text-align: center;
       font-size: clamp(0.62rem, 1.8vw, 0.75rem);
       font-weight: 800;
       letter-spacing: 0.28em;
       text-transform: uppercase;
       color: var(--gold-bright);
-      margin-bottom: 0.75rem;
       font-family: 'Goldman', 'Segoe UI', sans-serif;
     }
     .clocks-grid {
@@ -487,39 +420,39 @@
 
     /* Compact asset strip — breathing zoom */
     .sovereign-asset-widget {
-      max-width: 280px;
-      margin: 0.65rem auto 0.45rem;
-      padding: 0.55rem 0.85rem 0.65rem;
-      border-radius: 10px;
-      border: 1px solid rgba(232, 197, 71, 0.28);
+      max-width: 240px;
+      margin: 0.55rem auto 0.4rem;
+      padding: 0.38rem 0.62rem 0.48rem;
+      border-radius: 8px;
+      border: 1px solid rgba(232, 197, 71, 0.32);
       background: linear-gradient(160deg, rgba(10, 30, 52, 0.9), rgba(4, 14, 26, 0.94));
       text-align: center;
-      animation: asset-widget-breathe 5s ease-in-out infinite;
+      animation: asset-widget-breathe 7.5s ease-in-out infinite;
     }
     @keyframes asset-widget-breathe {
       0%, 100% {
         transform: scale(1);
-        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35), 0 0 14px rgba(232, 197, 71, 0.08);
+        box-shadow: 0 3px 14px rgba(0, 0, 0, 0.32), 0 0 12px rgba(232, 197, 71, 0.07);
       }
       50% {
-        transform: scale(1.025);
-        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4), 0 0 22px rgba(232, 197, 71, 0.16);
+        transform: scale(1.015);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.38), 0 0 18px rgba(232, 197, 71, 0.14);
       }
     }
     .sovereign-asset-widget-title {
-      margin: 0 0 0.35rem;
+      margin: 0 0 0.22rem;
       font-family: 'Goldman', 'Segoe UI', sans-serif;
-      font-size: 0.58rem;
+      font-size: 0.52rem;
       font-weight: 700;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--gold-dim);
     }
     .sovereign-asset-widget-body {
       margin: 0;
-      font-size: 0.68rem;
+      font-size: 0.62rem;
       font-weight: 700;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.08em;
       color: rgba(232, 238, 244, 0.95);
     }
 
@@ -608,21 +541,30 @@
       justify-content: flex-start;
       padding: 0.75rem;
     }
-    .humanoid-img-wrap {
+    /* GWY + DATA CENTER — identical asset frame (220×260 logical, same viewport cap) */
+    .flank-asset-wrap {
       flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
       width: 100%;
       min-height: 140px;
+      height: min(260px, 38vh);
+      max-height: min(260px, 38vh);
     }
-    .humanoid-img-wrap img {
-      max-height: min(240px, 38vh);
-      min-height: 140px;
+    .flank-asset-wrap img {
+      display: block;
       width: 100%;
-      max-width: 280px;
+      max-width: 220px;
+      height: auto;
+      max-height: min(260px, 38vh);
+      aspect-ratio: 220 / 260;
       object-fit: contain;
-      filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.25));
+      border-radius: 8px;
+      border: 1px solid rgba(0, 229, 255, 0.22);
+      filter:
+        drop-shadow(0 0 10px rgba(212, 175, 55, 0.22))
+        drop-shadow(0 0 8px rgba(0, 229, 255, 0.12));
     }
     .humanoid-fallback {
       font-size: 0.68rem;
@@ -676,23 +618,6 @@
       justify-content: center;
       padding: 0.75rem;
     }
-    .dc-img-wrap {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      min-height: 140px;
-    }
-    .dc-img-wrap img {
-      max-width: 100%;
-      max-height: min(260px, 40vh);
-      width: auto;
-      object-fit: contain;
-      border-radius: 8px;
-      border: 1px solid rgba(0, 229, 255, 0.22);
-      filter: drop-shadow(0 0 14px rgba(0, 229, 255, 0.15));
-    }
     .dc-fallback {
       display: none;
       font-size: 0.68rem;
@@ -716,6 +641,18 @@
     @keyframes dc-flicker {
       0%, 100% { opacity: 0.92; box-shadow: inset 0 0 30px rgba(0, 229, 255, 0.15); }
       50% { opacity: 1; box-shadow: inset 0 0 45px rgba(0, 229, 255, 0.22); }
+    }
+    .dc-narrative-goldman {
+      margin: 0.65rem 0 0;
+      max-width: min(280px, 100%);
+      padding: 0 0.35rem;
+      font-family: 'Goldman', 'Segoe UI', sans-serif;
+      font-weight: 700;
+      font-size: clamp(0.58rem, 1.5vw, 0.7rem);
+      line-height: 1.5;
+      letter-spacing: 0.04em;
+      text-align: center;
+      color: rgba(232, 238, 244, 0.92);
     }
     .deck-label {
       margin-top: 0.5rem;
@@ -898,9 +835,14 @@
       flex-wrap: wrap;
       align-items: center;
       justify-content: center;
-      gap: 0.75rem 1.1rem;
       width: 100%;
       margin: 0 auto;
+    }
+    .footer-seal-centered {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      margin-top: 0.5rem;
     }
     .footer-seal {
       display: inline-flex;
@@ -927,17 +869,17 @@
       background-clip: text;
       color: transparent;
       text-align: center;
-      animation: signature-life 4s ease-in-out infinite;
+      animation: signature-life 5.5s ease-in-out infinite;
     }
-    /* Dr. Sa’ad Jaafaru — metallic gold pulse every 4s */
+    /* Dr. Sa’ad Jaafaru — soft gold pulse */
     @keyframes signature-life {
       0%, 100% {
-        opacity: 0.65;
-        filter: drop-shadow(0 0 6px rgba(232, 197, 71, 0.4)) drop-shadow(0 0 2px rgba(255, 248, 220, 0.2));
+        opacity: 0.72;
+        filter: drop-shadow(0 0 8px rgba(232, 197, 71, 0.35)) drop-shadow(0 0 3px rgba(255, 248, 220, 0.18));
       }
       50% {
         opacity: 1;
-        filter: drop-shadow(0 0 22px rgba(232, 197, 71, 0.85)) drop-shadow(0 0 38px rgba(255, 248, 220, 0.45)) drop-shadow(0 0 6px rgba(184, 148, 42, 0.9));
+        filter: drop-shadow(0 0 16px rgba(232, 197, 71, 0.55)) drop-shadow(0 0 28px rgba(255, 248, 220, 0.28)) drop-shadow(0 0 4px rgba(184, 148, 42, 0.5));
       }
     }
     .footer-lw {
@@ -950,7 +892,7 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .bluelaser-edge, .bluelaser-scan, .satellite-scanlines, .gcslc-identity, .flank-head-goldman, .lw-shield-seal-wrap::before, .lw-shield-seal, .ip-shield-ticker-track, .analog-wrap, .btn-submit, .clock-svg, .session-bar, .speech-bubble, .dc-placeholder-inner, .sovereign-asset-widget, .signature-metallic {
+      .bluelaser-edge, .bluelaser-scan, .satellite-scanlines, .gcslc-identity, .flank-head-goldman, .analog-wrap, .btn-submit, .clock-svg, .session-bar, .speech-bubble, .dc-placeholder-inner, .sovereign-asset-widget, .signature-metallic, .btn-sovereign-logout {
         animation: none !important;
       }
       .btn-submit { background-position: 50% 50%; }
@@ -958,9 +900,6 @@
       .speech-bubble { transform: none; }
       .sovereign-asset-widget { transform: none; }
       .signature-metallic { opacity: 1; filter: drop-shadow(0 0 12px rgba(232, 197, 71, 0.5)); }
-      .lw-shield-seal {
-        box-shadow: 0 0 20px rgba(232, 197, 71, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-      }
     }
   </style>
 </head>
@@ -979,33 +918,14 @@
   <div class="ip-shield-overlay" aria-hidden="true"></div>
 
   <div class="shell">
-    <div class="lw-shield-bar">
-      <p class="visually-hidden">Copyright shield. Proprietary. Unauthorized capture prohibited.</p>
-      <div class="lw-shield-bar-inner">
-        <div class="lw-shield-seal-wrap">
-          <span class="lw-shield-seal">LW15954</span>
-        </div>
-        <div class="ip-shield-ticker" aria-hidden="true">
-          <div class="ip-shield-ticker-track">
-            <span class="ip-shield-ticker-text">Copyright shield · Proprietary · Unauthorized capture prohibited · </span>
-            <span class="ip-shield-ticker-text">Copyright shield · Proprietary · Unauthorized capture prohibited · </span>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <header class="hero">
       <h1 class="gcslc-identity hero-title-os">Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE</h1>
-      <p class="hero-sub">Sovereign Mirror — executive intake. Secured terminal.</p>
-      <p class="hero-kicker">AWC / K-GEC Sovereign OS</p>
-      <p class="session-bar" role="status">
-        <span class="session-bar-tiers">Access Tier 1 (15m) | Extension Tier 2 (15m)</span>
-        <span class="session-bar-sub"><span class="sovereign-tier-which">Tier 1 active</span> · <span class="sovereign-tier-remaining">30:00</span> remaining</span>
-      </p>
     </header>
 
     <div class="mirror-stage clocks-stage" id="mirrorStage">
-      <p class="clocks-label">GLOBAL PULSE</p>
+      <div class="clocks-pulse-header">
+        <p class="clocks-label">GLOBAL PULSE</p>
+      </div>
       <div class="clocks-grid" id="clocksGrid" role="group" aria-label="World clocks"></div>
     </div>
 
@@ -1022,7 +942,7 @@
             <div class="speech-bubble quote-goldman">
               Thank you for stopping by. I need energy to thrive, function, and augment human productivity. Come in to decode.
             </div>
-            <div class="humanoid-img-wrap">
+            <div class="humanoid-img-wrap flank-asset-wrap">
               <img src="assets/Coal 1.png" alt="Rose gold humanoid with coal — GWY flank" width="220" height="260" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
               <p class="humanoid-fallback" style="display:none;">Placeholder — add <code>assets/Coal 1.png</code></p>
             </div>
@@ -1051,18 +971,28 @@
               </div>
             </div>
             <button type="submit" class="btn-submit">Transmit credentials</button>
+            <div class="form-sovereign-footer">
+              <p class="session-bar session-bar--form" role="status">
+                <span class="session-bar-tiers">Access Tier 1 (15m) | Extension Tier 2 (15m)</span>
+                <span class="session-bar-sub"><span class="sovereign-tier-which">Tier 1 active</span> · <span class="sovereign-tier-remaining">30:00</span> remaining</span>
+              </p>
+              <div class="form-logout-wrap">
+                <button type="button" class="btn-sovereign-logout" id="sovereignLogoutBtn" title="Chairman: refresh page. Visitors: end sovereign session.">Sovereign Logout</button>
+              </div>
+            </div>
             <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
           </form>
         </div>
         <div class="strike-flank strike-flank--dc">
           <p class="flank-head-goldman">DATA CENTER</p>
           <div class="deck-placeholder deck-datacenter">
-            <div class="dc-img-wrap">
-              <img src="assets/Data 1.png" alt="Data center environment" width="280" height="200" onerror="var w=this.parentNode; this.style.display='none'; w.querySelector('.dc-fallback').style.display='block'; w.querySelector('.dc-placeholder-inner').style.display='block';">
+            <div class="flank-asset-wrap">
+              <img src="assets/Data 1.png" alt="Data center environment" width="220" height="260" onerror="var w=this.parentNode; this.style.display='none'; w.querySelector('.dc-fallback').style.display='block'; w.querySelector('.dc-placeholder-inner').style.display='block';">
               <p class="dc-fallback" style="display:none;">Placeholder — add <code>assets/Data 1.png</code></p>
               <div class="dc-placeholder-inner" aria-hidden="true" style="display:none"></div>
             </div>
           </div>
+          <p class="dc-narrative-goldman">Energy powers data centers 24/7/365. AI and Robotics are dormant without Sovereign Energy. Come in to decode the fuel of the future.</p>
         </div>
       </div>
     </section>
@@ -1071,11 +1001,12 @@
       <a class="nav-back" href="sovereign-gateway.html">← Sovereign Gateway</a>
       <div class="footer-auth-stack">
         <div class="footer-signature-row">
-          <span class="footer-seal" aria-hidden="true">LW15954</span>
           <p class="signature-metallic">Dr. Sa’ad Jaafaru</p>
-          <span class="footer-seal" aria-hidden="true">LW15954</span>
         </div>
         <p class="footer-lw">© GCSLC · IP LW15954 · Proprietary copyright</p>
+        <div class="footer-seal-centered">
+          <span class="footer-seal">LW15954</span>
+        </div>
       </div>
     </footer>
   </div>
@@ -1089,6 +1020,20 @@
   </div>
 
   <script src="assets/sovereign-tier-session.js"></script>
+  <script>
+    (function () {
+      var lo = document.getElementById('sovereignLogoutBtn');
+      if (lo) {
+        lo.addEventListener('click', function () {
+          if (window.GCSLC_SOVEREIGN_SESSION && typeof window.GCSLC_SOVEREIGN_SESSION.visitorLogout === 'function') {
+            window.GCSLC_SOVEREIGN_SESSION.visitorLogout();
+          } else {
+            window.location.reload();
+          }
+        });
+      }
+    })();
+  </script>
   <script>
     (function () {
       var zones = [
@@ -1182,11 +1127,13 @@
           status.textContent = 'If providing WhatsApp, select a country code and enter at least 6 digits.';
           return;
         }
-        if (typeof window.resetSovereignSession === 'function') {
-          window.resetSovereignSession();
-        }
-        if (window.GCSLC_SOVEREIGN_SESSION && typeof window.GCSLC_SOVEREIGN_SESSION.armFreshThirtyMinuteSession === 'function') {
-          window.GCSLC_SOVEREIGN_SESSION.armFreshThirtyMinuteSession();
+        if (!window.GCSLC_CHAIRMAN_IMMUNITY) {
+          if (typeof window.resetSovereignSession === 'function') {
+            window.resetSovereignSession();
+          }
+          if (window.GCSLC_SOVEREIGN_SESSION && typeof window.GCSLC_SOVEREIGN_SESSION.armFreshThirtyMinuteSession === 'function') {
+            window.GCSLC_SOVEREIGN_SESSION.armFreshThirtyMinuteSession();
+          }
         }
         status.textContent = '';
         stage.classList.add('mirror-exit');
