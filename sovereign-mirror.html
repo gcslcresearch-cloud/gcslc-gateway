@@ -186,7 +186,7 @@
     .clocks-stage {
       max-width: 960px;
       margin: 0 auto;
-      padding: 1rem 0.75rem;
+      padding: calc(1rem + 40px) 0.75rem 1rem;
     }
     .clocks-label {
       text-align: center;
@@ -211,20 +211,20 @@
       flex-direction: column;
       align-items: center;
       transform-origin: center center;
-      animation: clock-zoom-in 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation: clock-zoom-in 0.8s cubic-bezier(0.33, 1, 0.32, 1) both;
       animation-delay: var(--delay);
     }
     .mirror-stage.mirror-exit .analog-wrap {
-      animation: clock-zoom-out 0.55s cubic-bezier(0.55, 0, 1, 0.45) both;
+      animation: clock-zoom-out 0.8s cubic-bezier(0.55, 0, 0.2, 1) both;
       animation-delay: var(--exit-delay);
     }
     @keyframes clock-zoom-in {
-      from { transform: scale(0.35); opacity: 0; filter: blur(4px); }
+      from { transform: scale(0.38); opacity: 0; filter: blur(5px); }
       to { transform: scale(1); opacity: 1; filter: blur(0); }
     }
     @keyframes clock-zoom-out {
       from { transform: scale(1); opacity: 1; }
-      to { transform: scale(0.3); opacity: 0; filter: blur(3px); }
+      to { transform: scale(0.32); opacity: 0; filter: blur(3px); }
     }
     .clock-svg {
       width: 100%;
@@ -295,20 +295,42 @@
     .btn-submit {
       width: 100%;
       margin-top: 0.25rem;
-      padding: 0.65rem;
+      padding: 0.7rem 0.85rem;
       font-family: 'Goldman', sans-serif;
       font-weight: 700;
       font-size: 0.75rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: var(--navy-deep);
-      background: linear-gradient(135deg, var(--gold-bright), var(--gold));
-      border: none;
+      color: #0a0f18;
+      border: 1px solid rgba(255, 248, 220, 0.45);
       border-radius: 10px;
       cursor: pointer;
-      box-shadow: 0 4px 20px rgba(232, 197, 71, 0.3);
+      background: linear-gradient(
+        145deg,
+        #fffef5 0%,
+        #fff0a3 12%,
+        #e8c547 38%,
+        #b8942a 58%,
+        #6b5a1e 82%,
+        #c9a227 100%
+      );
+      background-size: 220% 220%;
+      box-shadow:
+        inset 0 2px 0 rgba(255, 255, 255, 0.35),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.12),
+        0 4px 28px rgba(212, 175, 55, 0.45);
+      animation: btn-metallic-gold 5s ease-in-out infinite;
     }
-    .btn-submit:hover { filter: brightness(1.05); }
+    @keyframes btn-metallic-gold {
+      0%, 100% { background-position: 0% 45%; }
+      50% { background-position: 100% 55%; }
+    }
+    .btn-submit:hover {
+      filter: brightness(1.06);
+      box-shadow:
+        inset 0 2px 0 rgba(255, 255, 255, 0.42),
+        0 6px 32px rgba(232, 197, 71, 0.5);
+    }
     .form-status {
       margin-top: 0.75rem;
       font-size: 0.72rem;
@@ -319,12 +341,34 @@
 
     footer.mirror-footer {
       margin-top: auto;
-      padding: 1.5rem 1rem 1rem;
+      padding: 1.5rem 1rem 1.25rem;
       text-align: center;
       border-top: 1px solid rgba(232, 197, 71, 0.15);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .nav-back {
+      display: inline-block;
+      margin: 0 0 1rem;
+      font-size: 0.75rem;
+      color: var(--cyan);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(0, 229, 255, 0.35);
+    }
+    .nav-back:hover { color: var(--gold-bright); }
+    .footer-auth-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      max-width: 28rem;
+      margin: 0 auto;
     }
     .signature-metallic {
-      margin: 0.5rem 0 0;
+      margin: 0;
       font-family: 'Great Vibes', cursive;
       font-size: clamp(1.4rem, 4.5vw, 1.95rem);
       background: linear-gradient(90deg, #e8c547, #fff8dc, #b8942a);
@@ -332,28 +376,22 @@
       background-clip: text;
       color: transparent;
       filter: drop-shadow(0 0 10px rgba(232, 197, 71, 0.4));
+      text-align: center;
     }
-    .footer-ip {
-      margin-top: 0.65rem;
+    .footer-lw {
+      margin: 0;
       font-size: 0.58rem;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--muted);
+      text-align: center;
     }
-    .nav-back {
-      display: inline-block;
-      margin-top: 0.75rem;
-      font-size: 0.75rem;
-      color: var(--cyan);
-      text-decoration: none;
-      border-bottom: 1px solid rgba(0, 229, 255, 0.35);
-    }
-    .nav-back:hover { color: var(--gold-bright); }
 
     @media (prefers-reduced-motion: reduce) {
-      .bluelaser-edge, .bluelaser-scan, .satellite-scanlines, .gcslc-identity, .lw-shield-seal, .analog-wrap {
+      .bluelaser-edge, .bluelaser-scan, .satellite-scanlines, .gcslc-identity, .lw-shield-seal, .analog-wrap, .btn-submit {
         animation: none !important;
       }
+      .btn-submit { background-position: 50% 50%; }
       .analog-wrap { opacity: 1; transform: none; }
     }
   </style>
@@ -407,8 +445,10 @@
 
     <footer class="mirror-footer">
       <a class="nav-back" href="sovereign-gateway.html">← Sovereign Gateway</a>
-      <p class="signature-metallic">Dr. Sa'ad Jaafaru</p>
-      <p class="footer-ip">© GCSLC · IP LW15954 · Proprietary Buyout-grade terminal</p>
+      <div class="footer-auth-stack">
+        <p class="signature-metallic">Dr. Sa’ad Jaafaru</p>
+        <p class="footer-lw">© GCSLC · IP LW15954 · Proprietary copyright</p>
+      </div>
     </footer>
   </div>
 
@@ -426,9 +466,9 @@
       var stage = document.getElementById('mirrorStage');
 
       function clockMarkup(city, idx) {
-        var delay = (idx * 0.12).toFixed(2) + 's';
+        var delay = (idx * 0.14).toFixed(2) + 's';
         return (
-          '<div class="analog-wrap" style="--delay:' + delay + ';--exit-delay:' + ((5 - idx) * 0.08).toFixed(2) + 's" data-tz="' + zones[idx].tz + '">' +
+          '<div class="analog-wrap" style="--delay:' + delay + ';--exit-delay:' + ((5 - idx) * 0.1).toFixed(2) + 's" data-tz="' + zones[idx].tz + '">' +
             '<svg class="clock-svg" viewBox="0 0 100 100" aria-hidden="true">' +
               '<circle class="clock-face" cx="50" cy="50" r="48"/>' +
               '<g class="ticks"></g>' +
@@ -502,7 +542,7 @@
         setTimeout(function () {
           status.textContent = 'Transmission queued — executive desk will confirm via WhatsApp.';
           stage.classList.remove('mirror-exit');
-        }, 1200);
+        }, 1400);
       });
     })();
 
