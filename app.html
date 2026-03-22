@@ -2,7 +2,8 @@
 <!-- saved from url=(0030)http://localhost:8090/app.html -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#050a15">
   <title>GCSLC Sovereign · NRRFC — Nigeria Coal Reserves &amp; NRRF Dashboard</title>
   <meta name="application-name" content="GCSLC Sovereign · NRRFC">
   <meta name="description" content="GCSLC Sovereign: Nigeria Coal Reserves, debt-swap (10% Big Tech Capex vs domestic debt), coal-to-syngas vs diesel. NRRFC 2026.">
@@ -35,8 +36,8 @@
     .container {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 1.5rem;
-      padding-top: 160px;
+      padding: clamp(0.75rem, 2.5vw, 1.5rem);
+      padding-top: clamp(0.5rem, 2vw, 1rem);
       position: relative;
       background: #0a1225;
       border: 1px solid #D4AF37;
@@ -626,9 +627,104 @@
       0%, 100% { box-shadow: 0 0 24px rgba(212, 175, 55, 0.5), inset 0 2px 0 rgba(255,255,255,0.3); }
       50% { box-shadow: 0 0 36px rgba(212, 175, 55, 0.7), 0 0 12px rgba(255,255,255,0.2), inset 0 2px 0 rgba(255,255,255,0.4); }
     }
+
+    /* —— Live Command Center (unified with sovereign-gateway): bluelaser + Global Pulse —— */
+    .bluelaser-stack { position: fixed; inset: 0; z-index: 50; pointer-events: none; overflow: hidden; }
+    .bluelaser-edge {
+      position: absolute; inset: 0; border: 3px solid transparent;
+      background: linear-gradient(var(--navy-bg), var(--navy-bg)) padding-box,
+        linear-gradient(125deg, #00f0ff 0%, #0099cc 18%, #e8c547 42%, #fff8c4 55%, #00d4e8 78%, #00f0ff 100%) border-box;
+      background-size: 320% 320%; animation: cmd-cyan-gold-pulse 5.5s ease-in-out infinite; opacity: 0.9;
+    }
+    @keyframes cmd-cyan-gold-pulse {
+      0%, 100% { background-position: 0% 40%; filter: brightness(0.95) drop-shadow(0 0 8px rgba(0, 240, 255, 0.3)); }
+      50% { background-position: 100% 60%; filter: brightness(1.1) drop-shadow(0 0 16px rgba(232, 197, 71, 0.4)); }
+    }
+    .bluelaser-scan {
+      position: absolute; inset: -45%;
+      background: conic-gradient(from 0deg at 50% 50%, transparent 0deg, transparent 265deg, rgba(0, 240, 255, 0.1) 295deg, rgba(232, 197, 71, 0.08) 320deg, transparent 360deg);
+      animation: cmd-bluelaser-spin 18s linear infinite;
+    }
+    .bluelaser-vignette { position: absolute; inset: 0; box-shadow: inset 0 0 100px rgba(0, 20, 50, 0.5), inset 0 0 28px rgba(0, 200, 255, 0.06); }
+    @keyframes cmd-bluelaser-spin { to { transform: rotate(360deg); } }
+    .satellite-scanlines {
+      position: fixed; inset: 0; z-index: 52; pointer-events: none;
+      background: repeating-linear-gradient(0deg, transparent 0, transparent 3px, rgba(0, 255, 240, 0.045) 3px, rgba(0, 255, 240, 0.045) 4px);
+      background-size: 100% 7px; animation: cmd-scanline-drift 7s linear infinite; mix-blend-mode: screen; opacity: 0.82;
+    }
+    @keyframes cmd-scanline-drift { 0% { background-position: 0 0; } 100% { background-position: 0 7px; } }
+    .cmd-shell { position: relative; z-index: 60; min-height: 100vh; }
+    .tz-bar {
+      background: linear-gradient(180deg, rgba(12, 28, 45, 0.98) 0%, rgba(5, 12, 20, 0.99) 100%);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.35);
+      padding: 0.5rem clamp(0.4rem, 1.6vw, 0.9rem);
+    }
+    .tz-bar-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem 0.45rem; }
+    @media (min-width: 640px) { .tz-bar-inner { grid-template-columns: repeat(6, 1fr); } }
+    .tz-cell {
+      text-align: center; padding: 0.35rem 0.15rem; background: rgba(0, 40, 70, 0.35);
+      border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 10px; min-width: 0;
+    }
+    .tz-city { display: block; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: var(--gold-bright); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tz-tag { display: block; font-size: 0.52rem; color: var(--muted); margin-top: 0.08rem; }
+    .tz-time { font-family: ui-monospace, monospace; font-size: clamp(0.68rem, 2.2vw, 0.85rem); font-weight: 700; color: #00e5ff; margin-top: 0.15rem; text-shadow: 0 0 10px rgba(0, 229, 255, 0.35); }
+    .ticker-outer { background: #030a12; border-bottom: 2px solid rgba(0, 229, 255, 0.32); overflow: hidden; padding: 0.35rem 0; }
+    .ticker-label { max-width: 1200px; margin: 0 auto; padding: 0 0.65rem 0.15rem; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--gold-dim); }
+    .ticker-track { display: flex; width: max-content; animation: cmd-ticker-scroll 16s linear infinite; }
+    .ticker-track:hover { animation-play-state: paused; }
+    @keyframes cmd-ticker-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+    .ticker-inner { display: flex; align-items: center; gap: 1.75rem; padding: 0 0.75rem; white-space: nowrap; }
+    .tick-item { font-family: ui-monospace, monospace; font-size: clamp(0.65rem, 2vw, 0.78rem); color: var(--text); }
+    .tick-item strong { color: var(--gold); }
+    .tick-item .live-dot { display: inline-block; width: 5px; height: 5px; background: #00ff9d; border-radius: 50%; margin-right: 5px; animation: cmd-live-dot 0.9s ease-in-out infinite; }
+    @keyframes cmd-live-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+    .determinant { cursor: pointer; }
+    .determinant:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+    .market-strike-data .strike-fly { color: var(--gold-bright); font-weight: 600; font-size: 0.65rem; }
+    .market-strike-data .strike-si { color: var(--gold); font-weight: 600; font-size: 0.65rem; }
+
+    .modal-backdrop-app {
+      position: fixed; inset: 0; z-index: 4000; background: rgba(2, 8, 14, 0.88); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      display: none; align-items: center; justify-content: center; padding: 1rem; opacity: 0; visibility: hidden; transition: opacity 0.25s, visibility 0.25s;
+    }
+    .modal-backdrop-app.is-open { display: flex; opacity: 1; visibility: visible; }
+    .modal-panel-app {
+      width: 100%; max-width: 440px; max-height: min(82dvh, 520px); overflow-y: auto;
+      background: rgba(4, 12, 20, 0.94); border: 1px solid rgba(0, 255, 157, 0.35); border-radius: 14px; padding: 1.15rem 1.2rem;
+      box-shadow: 0 0 40px rgba(0, 255, 100, 0.12), inset 0 0 50px rgba(0, 40, 30, 0.45);
+    }
+    .modal-panel-app h4 { margin: 0 0 0.65rem; font-family: ui-monospace, monospace; font-size: 0.98rem; color: #00ff9d; text-shadow: 0 0 12px rgba(0, 255, 157, 0.35); min-height: 1.35em; }
+    .modal-panel-app #appModalBody { margin: 0; font-family: ui-monospace, monospace; font-size: 0.8rem; line-height: 1.6; color: rgba(180, 255, 210, 0.95); white-space: pre-wrap; min-height: 3.5em; }
+    #appModalBody.cursor-blink::after { content: '▌'; color: #00ff9d; animation: cmd-cursor-blink 0.7s step-end infinite; }
+    @keyframes cmd-cursor-blink { 50% { opacity: 0; } }
+    .modal-close-app { margin-top: 0.85rem; width: 100%; padding: 0.6rem; font-family: ui-monospace, monospace; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; border-radius: 10px; border: 1px solid rgba(0, 255, 157, 0.4); background: rgba(0, 40, 30, 0.55); color: #00ff9d; cursor: pointer; }
+    .ultimatum-corner { z-index: 1500; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .bluelaser-scan, .bluelaser-edge, .satellite-scanlines, .ticker-track { animation: none !important; }
+      .ticker-track { flex-wrap: wrap; width: 100%; max-width: 1200px; margin: 0 auto; transform: none; }
+      .ticker-inner { flex-wrap: wrap; white-space: normal; justify-content: center; gap: 0.5rem 1rem; }
+    }
   </style>
 </head>
 <body>
+  <div class="bluelaser-stack" aria-hidden="true">
+    <div class="bluelaser-scan"></div>
+    <div class="bluelaser-edge"></div>
+    <div class="bluelaser-vignette"></div>
+  </div>
+  <div class="satellite-scanlines" aria-hidden="true"></div>
+  <div class="cmd-shell">
+    <div class="tz-bar cmd-tz-bar">
+      <div class="tz-bar-inner" id="tzBar" aria-live="polite"></div>
+    </div>
+    <div class="ticker-outer cmd-ticker">
+      <div class="ticker-label">Material pulse · March 2026 benchmarks</div>
+      <div class="ticker-track" id="tickerTrack">
+        <div class="ticker-inner" id="tickerA"></div>
+        <div class="ticker-inner" id="tickerB" aria-hidden="true"></div>
+      </div>
+    </div>
   <div class="container">
     <div class="watermark-ribbon" aria-hidden="true"></div>
     <div class="main-data-area">
@@ -704,8 +800,10 @@
           <span class="bubble-value" id="falconBubbleValue">High-Value Feedstock Detected — Edo</span>
         </div>
         <div class="market-strike-data" id="marketStrikeData">
-          <span class="strike-label">Global demand at this state</span>
+          <span class="strike-label">March 2026 benchmarks</span>
           <span class="strike-ge">Germanium: $8,597/kg</span>
+          <span class="strike-fly">Coal Fly Ash: $148/MT</span>
+          <span class="strike-si">Silicon: $1.81/kg</span>
           <span class="strike-nh3">Ammonia: $430/MT</span>
         </div>
         <div class="falcon-sprite" id="falconSprite" aria-hidden="true" style="left: 42%; top: 65%; transform: translate(-50%, -50%);">
@@ -719,14 +817,14 @@
       </div>
       <aside class="determinants-sidebar glassmorphism" aria-label="8R Determinants">
         <div class="determinants-title kwas-kwas-shimmer">Determinants (8R)</div>
-        <div class="determinant triggered" id="detD1" data-d="1"><span class="det-badge">D1</span><span class="det-label">Trigger</span></div>
-        <div class="determinant" id="detD2" data-d="2"><span class="det-badge">D2</span><span class="det-label">Trigger</span></div>
-        <div class="determinant" id="detD3" data-d="3"><span class="det-badge">D3</span><span class="det-label">Trigger</span></div>
-        <div class="determinant" id="detD4" data-d="4"><span class="det-badge">D4</span><span class="det-label">Trigger</span></div>
-        <div class="determinant" id="detD5" data-d="5"><span class="det-badge">D5</span><span class="det-label">Trigger</span></div>
-        <div class="determinant" id="detD6" data-d="6"><span class="det-badge">D6</span><span class="det-label">Trigger</span></div>
-        <div class="determinant" id="detD7" data-d="7"><span class="det-badge">D7</span><span class="det-label">Trigger</span></div>
-        <div class="determinant" id="detD8" data-d="8"><span class="det-badge">D8</span><span class="det-label">Trigger</span></div>
+        <div class="determinant triggered" id="detD1" data-d="1" role="button" tabindex="0" data-det-idx="0"><span class="det-badge">D1</span><span class="det-label">Refine</span></div>
+        <div class="determinant" id="detD2" data-d="2" role="button" tabindex="0" data-det-idx="1"><span class="det-badge">D2</span><span class="det-label">Reset</span></div>
+        <div class="determinant" id="detD3" data-d="3" role="button" tabindex="0" data-det-idx="2"><span class="det-badge">D3</span><span class="det-label">Research</span></div>
+        <div class="determinant" id="detD4" data-d="4" role="button" tabindex="0" data-det-idx="3"><span class="det-badge">D4</span><span class="det-label">Restructure</span></div>
+        <div class="determinant" id="detD5" data-d="5" role="button" tabindex="0" data-det-idx="4"><span class="det-badge">D5</span><span class="det-label">Resuscitate</span></div>
+        <div class="determinant" id="detD6" data-d="6" role="button" tabindex="0" data-det-idx="5"><span class="det-badge">D6</span><span class="det-label">Revitalize</span></div>
+        <div class="determinant" id="detD7" data-d="7" role="button" tabindex="0" data-det-idx="6"><span class="det-badge">D7</span><span class="det-label">Re-engineer</span></div>
+        <div class="determinant" id="detD8" data-d="8" role="button" tabindex="0" data-det-idx="7"><span class="det-badge">D8</span><span class="det-label">Retain</span></div>
       </aside>
     </div>
     <div class="table-wrap glassmorphism">
@@ -769,7 +867,7 @@
         <div class="cell">
           <div class="label">Coverage (10% Capex ÷ debt)</div>
           <div class="value" id="debtCoverage">18.9×</div>
-          <div class="sub">10% Capex could cover domestic debt</div>
+          <div class="sub" id="debtCoveragePct">1,890% of ₦50T face · March 2026 FX</div>
         </div>
       </div>
     </div>
@@ -810,7 +908,7 @@
     <!-- NRRFC Value-Added Derivative Strike — GCSLC Sovereign -->
     <div class="widget-panel" id="derivativeStrikeWidget">
       <h2 class="kwas-kwas-shimmer">NRRFC Value-Added Derivative Strike — GCSLC Sovereign</h2>
-      <p class="fx-badge">Market prices Feb 2026 · Germanium (fly ash) 80 g/ton · Ammonia 0.6 MT per MT coal · FX: ₦1,350 = $1</p>
+      <p class="fx-badge">March 2026 · Ge $8,597/kg · Fly ash $148/MT · Si $1.81/kg · NH₃ $430/MT · 80 g Ge/ton · 0.15 MT fly ash/MT coal · 2.608 kg Si/MT coal · 0.6 MT NH₃/MT coal · FX: ₦1,350 = $1</p>
       <div class="nrrf-inputs">
         <label>Coal tonnage (MT) <input type="number" id="coalTonnageMt" value="10000" min="1" step="100"></label>
       </div>
@@ -840,12 +938,12 @@
       <!-- Critical Mineral Yield -->
       <div class="critical-mineral-yield">
         <h3>Critical Mineral Yield</h3>
-        <p class="yield-formula">Total Revenue = (Raw Coal MT × $110) + (Germanium KG × $8,597) + (Ammonia MT × $430)</p>
+        <p class="yield-formula">Total Revenue = Raw Coal + Ge + NH₃ + Fly Ash + Silicon (March 2026 prices: Ge $8,597/kg · Fly Ash $148/MT · Si $1.81/kg)</p>
         <table class="yield-table">
           <thead>
             <tr><th>Component</th><th>Quantity</th><th>Price</th><th>Revenue (USD)</th><th>Revenue (₦)</th></tr>
           </thead>
-          <tbody id="yieldTableBody"><tr><td>Raw Coal</td><td class="val">10,000 MT</td><td>$110</td><td class="val">$1.1 M</td><td class="val">₦1.49 B</td></tr><tr><td>Germanium (fly ash)</td><td class="val">800 KG</td><td>$8,597</td><td class="val">$6.9 M</td><td class="val">₦9.28 B</td></tr><tr><td>Ammonia</td><td class="val">6,000 MT</td><td>$430</td><td class="val">$2.6 M</td><td class="val">₦3.48 B</td></tr></tbody>
+          <tbody id="yieldTableBody"></tbody>
           <tbody><tr class="total-row">
             <td colspan="3">Total Revenue</td>
             <td id="yieldTotalUsd">$10.6 M</td>
@@ -873,7 +971,7 @@
     </div>
 
     <footer class="footer footer-corporate">
-      <p class="footer-statement">The Galadiman Ruwa Center (GCSLC) presents the NRRFC—a clinical strike against economic inertia. By capturing 10% of Global Big Tech CAPEX, we achieve 189% coverage of Nigeria’s domestic debt, proving that sovereign re-engineering is the only path to the Zenith.</p>
+      <p class="footer-statement">The Galadiman Ruwa Center (GCSLC) presents the NRRFC—a clinical strike against economic inertia. By capturing 10% of Global Big Tech CAPEX (₦945T at March 2026 FX), we achieve 18.9× coverage (1,890% of face) of Nigeria’s ₦50T domestic debt, proving that sovereign re-engineering is the only path to the Zenith.</p>
       <p class="footer-brand">Galadiman Ruwa Center for Strategic Leadership and Communication — <span class="gcslc">GCSLC</span></p>
       <p class="footer-tagline">GCSLC Sovereign · NRRFC · 2026 FX: ₦1,350 = $1</p>
       <p class="footer-signature kwas-kwas-shimmer">Dr. Jaafaru Sa'ad — Chairman &amp; Founder, GCSLC</p>
@@ -891,6 +989,15 @@
           <circle class="uf-eye" cx="34" cy="13" r="2" fill="var(--navy-bg)"></circle>
         </svg>
       </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="modal-backdrop-app" id="appRModal" role="dialog" aria-modal="true" aria-labelledby="appModalTitle" aria-hidden="true">
+    <div class="modal-panel-app">
+      <h4 id="appModalTitle"></h4>
+      <p id="appModalBody"></p>
+      <button type="button" class="modal-close-app" id="appModalClose">Dismiss</button>
     </div>
   </div>
 
@@ -1152,6 +1259,11 @@
       document.getElementById('ngnDebtNgn').textContent = formatMoneyNgn(debtNgn);
       document.getElementById('ngnDebtUsd').textContent = formatMoneyUsd(debtUsd);
       document.getElementById('debtCoverage').textContent = coverage.toFixed(1) + '×';
+      var coveragePctFace = (capexNgn / debtNgn) * 100;
+      var pctEl = document.getElementById('debtCoveragePct');
+      if (pctEl) {
+        pctEl.textContent = coveragePctFace.toLocaleString(undefined, { maximumFractionDigits: 0 }) + '% of ₦50T face · March 2026 FX';
+      }
 
       // NRRF: coal-to-syngas vs diesel
       function updateNrrf() {
@@ -1176,41 +1288,56 @@
       });
       updateNrrf();
 
-      // --- NRRFC Value-Added Derivative Strike (Feb 2026) ---
-      // Total Revenue = (Raw Coal MT * $110) + (Germanium KG * $8,597) + (Ammonia MT * $430)
-      var PRICE_GERMANIUM_KG = 8597;   // USD/kg
-      var PRICE_AMMONIA_MT = 430;      // USD/MT
-      var PRICE_COAL_MT = 110;         // USD/MT
-      var GE_YIELD_KG_PER_MT = 0.08;   // Conservative 80g/ton recovery from fly ash
-      var AMMONIA_YIELD_PER_MT = 0.6;  // MT ammonia per MT coal
+      // --- NRRFC Value-Added Derivative Strike (March 2026 benchmarks) ---
+      var PRICE_GERMANIUM_KG = 8597;
+      var PRICE_AMMONIA_MT = 430;
+      var PRICE_COAL_MT = 110;
+      var PRICE_FLY_ASH_MT = 148;
+      var PRICE_SILICON_KG = 1.81;
+      var GE_YIELD_KG_PER_MT = 0.08;
+      var AMMONIA_YIELD_PER_MT = 0.6;
+      var FLY_ASH_MT_PER_MT = 0.15;
+      var SILICON_KG_PER_MT = 2.60773;
 
       function calculateDerivatives(coal_tonnage_mt) {
         var raw_coal_mt = coal_tonnage_mt;
         var germanium_kg = coal_tonnage_mt * GE_YIELD_KG_PER_MT;
         var ammonia_mt = coal_tonnage_mt * AMMONIA_YIELD_PER_MT;
+        var fly_ash_mt = coal_tonnage_mt * FLY_ASH_MT_PER_MT;
+        var silicon_kg = coal_tonnage_mt * SILICON_KG_PER_MT;
 
         var raw_coal_revenue = raw_coal_mt * PRICE_COAL_MT;
         var germanium_revenue = germanium_kg * PRICE_GERMANIUM_KG;
         var ammonia_revenue = ammonia_mt * PRICE_AMMONIA_MT;
+        var fly_ash_revenue = fly_ash_mt * PRICE_FLY_ASH_MT;
+        var silicon_revenue = silicon_kg * PRICE_SILICON_KG;
 
         var raw_export_revenue = raw_coal_revenue;
-        var total_revenue = raw_coal_revenue + germanium_revenue + ammonia_revenue;
+        var total_revenue = raw_coal_revenue + germanium_revenue + ammonia_revenue + fly_ash_revenue + silicon_revenue;
+        var derivative_stack = germanium_revenue + ammonia_revenue + fly_ash_revenue + silicon_revenue;
         var multiplier = raw_export_revenue > 0 ? total_revenue / raw_export_revenue : 0;
 
         return {
           raw_coal_mt: raw_coal_mt,
           germanium_kg: germanium_kg,
           ammonia_mt: ammonia_mt,
+          fly_ash_mt: fly_ash_mt,
+          silicon_kg: silicon_kg,
           raw_coal_revenue: raw_coal_revenue,
           germanium_revenue: germanium_revenue,
           ammonia_revenue: ammonia_revenue,
+          fly_ash_revenue: fly_ash_revenue,
+          silicon_revenue: silicon_revenue,
+          derivative_stack: derivative_stack,
           raw_export_revenue: raw_export_revenue,
           total_revenue: total_revenue,
           multiplier: Math.round(multiplier * 100) / 100,
           yield_rows: [
             { label: 'Raw Coal', qty: raw_coal_mt, unit: 'MT', price: '$' + PRICE_COAL_MT, revenue: raw_coal_revenue },
             { label: 'Germanium (fly ash)', qty: germanium_kg, unit: 'KG', price: '$' + PRICE_GERMANIUM_KG.toLocaleString(), revenue: germanium_revenue },
-            { label: 'Ammonia', qty: ammonia_mt, unit: 'MT', price: '$' + PRICE_AMMONIA_MT, revenue: ammonia_revenue }
+            { label: 'Ammonia', qty: ammonia_mt, unit: 'MT', price: '$' + PRICE_AMMONIA_MT, revenue: ammonia_revenue },
+            { label: 'Coal Fly Ash', qty: fly_ash_mt, unit: 'MT', price: '$' + PRICE_FLY_ASH_MT, revenue: fly_ash_revenue },
+            { label: 'Silicon', qty: silicon_kg, unit: 'KG', price: '$' + PRICE_SILICON_KG, revenue: silicon_revenue }
           ]
         };
       }
@@ -1221,8 +1348,8 @@
 
         document.getElementById('rawCoalUsd').textContent = formatMoneyUsd(r.raw_export_revenue);
         document.getElementById('rawCoalNgn').textContent = formatMoneyNgn(r.raw_export_revenue * FX_2026);
-        document.getElementById('derivativeUsd').textContent = formatMoneyUsd(r.germanium_revenue + r.ammonia_revenue);
-        document.getElementById('derivativeNgn').textContent = formatMoneyNgn((r.germanium_revenue + r.ammonia_revenue) * FX_2026);
+        document.getElementById('derivativeUsd').textContent = formatMoneyUsd(r.derivative_stack);
+        document.getElementById('derivativeNgn').textContent = formatMoneyNgn(r.derivative_stack * FX_2026);
         document.getElementById('totalEquityUsd').textContent = formatMoneyUsd(r.total_revenue);
         document.getElementById('totalEquityNgn').textContent = formatMoneyNgn(r.total_revenue * FX_2026);
         document.getElementById('equityMultiplier').textContent = r.multiplier + '×';
@@ -1254,7 +1381,134 @@
       if (coalInput) coalInput.addEventListener('input', updateDerivativeStrike);
       updateDerivativeStrike();
     })();
+
+    // —— Global Pulse (clocks + material ticker) + 8R Matrix typewriter (unified with sovereign-gateway) ——
+    (function () {
+      var zones = [
+        { city: 'Zaria', tag: 'Local', tz: 'Africa/Lagos' },
+        { city: 'London', tag: 'LSE', tz: 'Europe/London' },
+        { city: 'New York', tag: 'NYSE', tz: 'America/New_York' },
+        { city: 'Dubai', tag: 'Commodities', tz: 'Asia/Dubai' },
+        { city: 'Singapore', tag: 'Arbitrage', tz: 'Asia/Singapore' },
+        { city: 'Tokyo', tag: 'Technology', tz: 'Asia/Tokyo' }
+      ];
+      function renderClocks() {
+        var el = document.getElementById('tzBar');
+        if (!el) return;
+        var now = new Date();
+        el.innerHTML = zones.map(function (z) {
+          var parts = new Intl.DateTimeFormat('en-GB', {
+            timeZone: z.tz, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+          }).formatToParts(now);
+          var H = '', M = '', S = '';
+          parts.forEach(function (p) {
+            if (p.type === 'hour') H = p.value;
+            if (p.type === 'minute') M = p.value;
+            if (p.type === 'second') S = p.value;
+          });
+          return '<div class="tz-cell"><span class="tz-city">' + z.city + '</span><span class="tz-tag">' + z.tag + '</span><span class="tz-time">' + H + ':' + M + ':' + S + '</span></div>';
+        }).join('');
+      }
+      var mats = { germanium: 8597, silicon: 1.81, flyAsh: 148, diamonds: 94.5 };
+      function jitterMats() {
+        mats.germanium = 8597 + (Math.random() - 0.5) * 8;
+        mats.silicon = 1.81 + (Math.random() - 0.5) * 0.02;
+        mats.flyAsh = 148 + (Math.random() - 0.5) * 0.8;
+        mats.diamonds = 94.5 + (Math.random() - 0.5) * 0.6;
+      }
+      function updateTicker() {
+        jitterMats();
+        var html = '<span class="tick-item"><span class="live-dot"></span><strong>Germanium</strong> $' + mats.germanium.toFixed(0) + '/kg</span>' +
+          '<span class="tick-item"><strong>Silicon</strong> $' + mats.silicon.toFixed(2) + '/kg</span>' +
+          '<span class="tick-item"><strong>Coal Fly Ash</strong> $' + mats.flyAsh.toFixed(0) + '/MT</span>' +
+          '<span class="tick-item"><strong>Industrial Diamonds</strong> $' + mats.diamonds.toFixed(1) + '/ct bench</span>' +
+          '<span class="tick-item"><strong>Germanium</strong> $' + mats.germanium.toFixed(0) + '/kg</span>' +
+          '<span class="tick-item"><strong>Silicon</strong> $' + mats.silicon.toFixed(2) + '/kg</span>' +
+          '<span class="tick-item"><strong>Coal Fly Ash</strong> $' + mats.flyAsh.toFixed(0) + '/MT</span>' +
+          '<span class="tick-item"><strong>Industrial Diamonds</strong> $' + mats.diamonds.toFixed(1) + '/ct bench</span>';
+        var a = document.getElementById('tickerA');
+        var b = document.getElementById('tickerB');
+        if (a) a.innerHTML = html;
+        if (b) b.innerHTML = html;
+      }
+      var determinants8 = [
+        { title: 'D1: Refine', body: 'Continuous enhancement of operational detail.' },
+        { title: 'D2: Reset', body: 'Institutional environment clearance & operational purge.' },
+        { title: 'D3: Research', body: 'Evidence-grade discovery & logic validation.' },
+        { title: 'D4: Restructure', body: 'Legal and structural SSMV alignment.' },
+        { title: 'D5: Resuscitate', body: 'Recovery of moribund asset value.' },
+        { title: 'D6: Revitalize', body: 'Activation of sovereign revenue strikes.' },
+        { title: 'D7: Re-engineer', body: 'Technical overhaul for long-cycle growth.' },
+        { title: 'D8: Retain', body: 'Preservation of institutional knowledge & wealth.' }
+      ];
+      var appModal = document.getElementById('appRModal');
+      var appModalTitle = document.getElementById('appModalTitle');
+      var appModalBody = document.getElementById('appModalBody');
+      var twCancel = null;
+      function openAppModal(item) {
+        if (twCancel) { twCancel(); twCancel = null; }
+        appModalTitle.textContent = '';
+        appModalBody.textContent = '';
+        appModalBody.classList.remove('cursor-blink');
+        appModal.classList.add('is-open');
+        appModal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        var cancelled = false;
+        twCancel = function () { cancelled = true; };
+        var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        function typeChar(str, i, el, delay, done) {
+          if (cancelled) return;
+          if (i < str.length) {
+            el.textContent += str.charAt(i);
+            setTimeout(function () { typeChar(str, i + 1, el, delay, done); }, delay);
+          } else if (done) done();
+        }
+        if (reduced) {
+          appModalTitle.textContent = item.title;
+          appModalBody.textContent = item.body;
+          twCancel = null;
+        } else {
+          typeChar(item.title, 0, appModalTitle, 24, function () {
+            appModalBody.classList.add('cursor-blink');
+            typeChar(item.body, 0, appModalBody, 10, function () {
+              appModalBody.classList.remove('cursor-blink');
+              twCancel = null;
+            });
+          });
+        }
+        document.getElementById('appModalClose').focus();
+      }
+      function closeAppModal() {
+        if (twCancel) { twCancel(); twCancel = null; }
+        appModal.classList.remove('is-open');
+        appModal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        appModalTitle.textContent = '';
+        appModalBody.textContent = '';
+        appModalBody.classList.remove('cursor-blink');
+      }
+      document.querySelectorAll('.determinant[data-det-idx]').forEach(function (node) {
+        function go() {
+          var i = parseInt(node.getAttribute('data-det-idx'), 10);
+          openAppModal(determinants8[i]);
+        }
+        node.addEventListener('click', go);
+        node.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); }
+        });
+      });
+      var appModalClose = document.getElementById('appModalClose');
+      if (appModalClose) appModalClose.addEventListener('click', closeAppModal);
+      if (appModal) appModal.addEventListener('click', function (e) { if (e.target === appModal) closeAppModal(); });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && appModal && appModal.classList.contains('is-open')) closeAppModal();
+      });
+      renderClocks();
+      setInterval(renderClocks, 1000);
+      updateTicker();
+      setInterval(updateTicker, 3000);
+    })();
   </script>
 
-
-</body></html>
+</body>
+</html>

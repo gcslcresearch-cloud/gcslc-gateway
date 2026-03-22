@@ -769,12 +769,12 @@
               <tr>
                 <td>Germanium (10x Recovery)</td>
                 <td class="mono live-num highlight" data-sfp="ge">$18.2M</td>
-                <td>Strategic Mineral Multiplier</td>
+                <td>$8,597/kg · March 2026</td>
               </tr>
               <tr>
-                <td>Ammonia/Silicon</td>
-                <td class="mono live-num" data-sfp="nh3">$9.5M</td>
-                <td>Chemical Derivative Integration</td>
+                <td>Fly Ash &amp; Silicon</td>
+                <td class="mono live-num" data-sfp="flysi">$9.5M</td>
+                <td>61.0k MT @ $148/MT + 260.8k kg @ $1.81/kg</td>
               </tr>
               <tr class="total-row">
                 <td><strong>TOTAL REVENUE</strong></td>
@@ -790,14 +790,14 @@
         <div class="card glass-metric">
           <span class="live-badge">Live</span>
           <div class="metric-title">National Debt Clearance Status</div>
-          <div class="metric-value live-num" id="debt-coverage"><span id="debtCovVal">189%</span></div>
-          <p>Coverage of ₦50T liability via 10% Big Tech CAPEX capture.</p>
+          <div class="metric-value live-num" id="debt-coverage"><span id="debtCovVal">18.9×</span></div>
+          <p id="debtCovSub">1,890% of ₦50T face · March 2026 FX · ₦945T deployable vs ₦50T domestic</p>
         </div>
         <div class="card glass-metric">
           <span class="live-badge">Live</span>
           <div class="metric-title">Sovereign Surplus Potential</div>
-          <div class="metric-value live-num" id="surplusVal">+₦44.5T</div>
-          <p>Net position after total domestic debt liquidation.</p>
+          <div class="metric-value live-num" id="surplusVal">+₦895.0T</div>
+          <p>Net deployable after ₦50T domestic debt retirement (₦945T − ₦50T) · March 2026 model</p>
         </div>
       </div>
 
@@ -883,14 +883,10 @@
       };
 
       function jitterMats() {
-        mats.germanium += (Math.random() - 0.5) * 12;
-        mats.silicon += (Math.random() - 0.5) * 0.04;
-        mats.flyAsh += (Math.random() - 0.5) * 1.2;
-        mats.diamonds += (Math.random() - 0.5) * 0.8;
-        mats.germanium = Math.max(8400, mats.germanium);
-        mats.silicon = Math.max(1.5, mats.silicon);
-        mats.flyAsh = Math.max(130, mats.flyAsh);
-        mats.diamonds = Math.max(85, mats.diamonds);
+        mats.germanium = 8597 + (Math.random() - 0.5) * 6;
+        mats.silicon = 1.81 + (Math.random() - 0.5) * 0.03;
+        mats.flyAsh = 148 + (Math.random() - 0.5) * 0.9;
+        mats.diamonds = 94.5 + (Math.random() - 0.5) * 0.8;
       }
 
       function buildTickerHtml() {
@@ -915,54 +911,14 @@
       }
 
       var determinants = [
-        {
-          d: 'D1',
-          name: 'Refine',
-          title: 'D1: Refine',
-          body: 'Sovereign-grade governance, disclosure, and reporting polish — audit-ready artifacts and compliance rails before capital touches the stack.'
-        },
-        {
-          d: 'D2',
-          name: 'Reset',
-          title: 'D2: Reset',
-          body: 'Institutional realignment and operational environment clearance — single mandate, unified threat model, zero legacy drag on execution.'
-        },
-        {
-          d: 'D3',
-          name: 'Research',
-          title: 'D3: Research',
-          body: 'Nodal asset discovery, Germanium pathway validation, and feedstock intelligence at evidence grade — no narrative without numbers.'
-        },
-        {
-          d: 'D4',
-          name: 'Restructure',
-          title: 'D4: Restructure',
-          body: 'SSMV incorporation, capital stack alignment, and gateway security architecture — legal and ops fused for irreversible deployment.'
-        },
-        {
-          d: 'D5',
-          name: 'Resuscitate',
-          title: 'D5: Resuscitate',
-          body: 'Moribund asset recovery and legacy liability neutralization — stranded capacity converted to fungible sovereign optionality.'
-        },
-        {
-          d: 'D6',
-          name: 'Revitalize',
-          title: 'D6: Revitalize',
-          body: 'National revenue strike and SFP delivery — Zenith-phase throughput with measurable yield to treasury and strategic partners.'
-        },
-        {
-          d: 'D7',
-          name: 'Re-engineer',
-          title: 'D7: Re-engineer',
-          body: 'Process chemistry, syngas yield, and derivative chain optimization — engineering margin where conventional models see only cost.'
-        },
-        {
-          d: 'D8',
-          name: 'Retain',
-          title: 'D8: Retain',
-          body: 'Knowledge sovereignty and long-cycle institutional memory — talent, playbooks, and IP retained inside the mission perimeter.'
-        }
+        { d: 'D1', name: 'Refine', title: 'D1: Refine', body: 'Continuous enhancement of operational detail.' },
+        { d: 'D2', name: 'Reset', title: 'D2: Reset', body: 'Institutional environment clearance & operational purge.' },
+        { d: 'D3', name: 'Research', title: 'D3: Research', body: 'Evidence-grade discovery & logic validation.' },
+        { d: 'D4', name: 'Restructure', title: 'D4: Restructure', body: 'Legal and structural SSMV alignment.' },
+        { d: 'D5', name: 'Resuscitate', title: 'D5: Resuscitate', body: 'Recovery of moribund asset value.' },
+        { d: 'D6', name: 'Revitalize', title: 'D6: Revitalize', body: 'Activation of sovereign revenue strikes.' },
+        { d: 'D7', name: 'Re-engineer', title: 'D7: Re-engineer', body: 'Technical overhaul for long-cycle growth.' },
+        { d: 'D8', name: 'Retain', title: 'D8: Retain', body: 'Preservation of institutional knowledge & wealth.' }
       ];
 
       var modal = document.getElementById('rModal');
@@ -1060,27 +1016,40 @@
         if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
       });
 
-      var sfpBase = { syngas: 22.4, ge: 18.2, nh3: 9.5 };
+      /* March 2026 Zenith SFP: Syngas $22.4M + Ge @ $8,597/kg + Fly Ash $148/MT & Si $1.81/kg → $50.1M */
+      var MARCH_2026 = { GE: 8597, FLY_MT: 148, SI: 1.81, ZENITH_FLY_MT: 61000, ZENITH_SI_KG: 260773, ZENITH_GE_KG: 2116.55 };
+      var sfpSyn = 22.4;
+      var sfpGeM = (MARCH_2026.ZENITH_GE_KG * MARCH_2026.GE) / 1e6;
+      var sfpFlySiM = (MARCH_2026.ZENITH_FLY_MT * MARCH_2026.FLY_MT + MARCH_2026.ZENITH_SI_KG * MARCH_2026.SI) / 1e6;
 
-      function jitterVal(base, span) {
-        return Math.max(0, base + (Math.random() - 0.5) * span);
+      function microJitter(x, w) {
+        return Math.max(0, x + (Math.random() - 0.5) * w);
       }
 
       function updateSfpDisplay() {
-        var js = jitterVal(sfpBase.syngas, 0.08);
-        var jg = jitterVal(sfpBase.ge, 0.08);
-        var jn = jitterVal(sfpBase.nh3, 0.08);
-        document.querySelector('[data-sfp="syngas"]').textContent = '$' + js.toFixed(1) + 'M';
-        document.querySelector('[data-sfp="ge"]').textContent = '$' + jg.toFixed(1) + 'M';
-        document.querySelector('[data-sfp="nh3"]').textContent = '$' + jn.toFixed(1) + 'M';
-        document.getElementById('sfpTotal').textContent = '$' + (js + jg + jn).toFixed(1) + 'M';
+        var w = 0.04;
+        var js = microJitter(sfpSyn, w);
+        var jg = microJitter(sfpGeM, w);
+        var jf = microJitter(sfpFlySiM, w);
+        document.querySelector('[data-sfp="syngas"]').textContent = '$' + js.toFixed(2) + 'M';
+        document.querySelector('[data-sfp="ge"]').textContent = '$' + jg.toFixed(2) + 'M';
+        document.querySelector('[data-sfp="flysi"]').textContent = '$' + jf.toFixed(2) + 'M';
+        document.getElementById('sfpTotal').textContent = '$' + (js + jg + jf).toFixed(1) + 'M';
       }
 
       function updateDebtCards() {
-        var cov = 189 + (Math.random() - 0.5) * 0.35;
-        document.getElementById('debtCovVal').textContent = cov.toFixed(1) + '%';
-        var surplus = 44.5 + (Math.random() - 0.5) * 0.12;
-        document.getElementById('surplusVal').textContent = '+₦' + surplus.toFixed(2) + 'T';
+        var FX = 1350;
+        var capexNgn = 700e9 * FX;
+        var debtNgn = 50e12;
+        var ratio = capexNgn / debtNgn;
+        var pctFace = ratio * 100;
+        document.getElementById('debtCovVal').textContent = ratio.toFixed(1) + '×';
+        var sub = document.getElementById('debtCovSub');
+        if (sub) {
+          sub.textContent = pctFace.toLocaleString(undefined, { maximumFractionDigits: 0 }) + '% of ₦50T face · March 2026 FX · ₦945T deployable vs ₦50T domestic';
+        }
+        var surplus = (capexNgn - debtNgn) / 1e12;
+        document.getElementById('surplusVal').textContent = '+₦' + surplus.toFixed(1) + 'T';
       }
 
       renderClocks();
