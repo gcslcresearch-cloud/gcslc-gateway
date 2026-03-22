@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&amp;family=Great+Vibes&amp;display=swap" rel="stylesheet">
-  <title>GCSLC Sovereign Gateway | Live Terminal</title>
-  <meta name="description" content="Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE — Live Terminal: Global Pulse, 8R Prism Vault, SFP stream.">
+  <title>GCSLC Sovereign Gateway | Proprietary Buyout Terminal</title>
+  <meta name="description" content="GCSLC Proprietary Buyout Terminal — LW15954 Copyright Shield, AZK Spine, 8R Prism Vault, SFP stream.">
   <style>
     :root {
       --navy-deep: #061018;
@@ -121,6 +121,156 @@
       text-transform: uppercase;
       color: var(--muted);
       margin-top: 0.75rem;
+    }
+    .footer-founder {
+      margin: 0.35rem 0 0;
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(143, 163, 191, 0.85);
+    }
+
+    /* —— Authenticity Shield (LW15954) — first impression on entry —— */
+    .auth-shield-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 10050;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      background: radial-gradient(ellipse 80% 70% at 50% 45%, rgba(8, 28, 48, 0.97) 0%, rgba(2, 6, 12, 0.98) 65%);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: opacity 0.75s ease, visibility 0.75s ease;
+    }
+    .auth-shield-overlay.auth-shield--dismissed {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .auth-shield-inner {
+      text-align: center;
+      max-width: 28rem;
+      padding: clamp(1.5rem, 5vw, 2.25rem) clamp(1.25rem, 4vw, 2rem);
+      border: 2px solid transparent;
+      border-radius: 20px;
+      background:
+        linear-gradient(165deg, rgba(6, 18, 32, 0.95), rgba(4, 12, 22, 0.98)) padding-box,
+        linear-gradient(125deg, #00f0ff, #e8c547, #fff8c4, #00d4e8) border-box;
+      background-size: 100% 100%, 280% 280%;
+      animation: shield-border-shimmer 4s ease-in-out infinite;
+      box-shadow:
+        0 0 60px rgba(0, 229, 255, 0.15),
+        0 0 100px rgba(232, 197, 71, 0.08),
+        inset 0 0 40px rgba(0, 40, 80, 0.35);
+    }
+    @keyframes shield-border-shimmer {
+      0%, 100% { background-position: 0% 0%, 0% 40%; }
+      50% { background-position: 0% 0%, 100% 55%; }
+    }
+    .auth-shield-seal {
+      display: inline-block;
+      padding: 0.45rem 1.15rem;
+      margin-bottom: 1rem;
+      font-family: ui-monospace, monospace;
+      font-weight: 800;
+      font-size: clamp(1.15rem, 4vw, 1.5rem);
+      letter-spacing: 0.35em;
+      color: var(--gold-bright);
+      text-shadow: 0 0 20px rgba(232, 197, 71, 0.6), 0 0 40px rgba(0, 229, 255, 0.25);
+      border: 1px solid rgba(232, 197, 71, 0.45);
+      border-radius: 8px;
+      background: linear-gradient(180deg, rgba(232, 197, 71, 0.12), rgba(0, 40, 60, 0.4));
+      animation: seal-shimmer 2.2s ease-in-out infinite;
+    }
+    @keyframes seal-shimmer {
+      0%, 100% { filter: brightness(1); box-shadow: 0 0 20px rgba(232, 197, 71, 0.25); }
+      50% { filter: brightness(1.15); box-shadow: 0 0 32px rgba(232, 197, 71, 0.45); }
+    }
+    .auth-shield-title {
+      margin: 0 0 0.5rem;
+      font-family: 'Goldman', 'Segoe UI', sans-serif;
+      font-size: clamp(0.78rem, 2.2vw, 0.95rem);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+    .auth-shield-sub {
+      margin: 0 0 1.25rem;
+      font-size: clamp(0.72rem, 1.9vw, 0.84rem);
+      line-height: 1.5;
+      color: var(--muted);
+    }
+    .auth-shield-dna {
+      margin: 0 0 1rem;
+      font-size: 0.65rem;
+      letter-spacing: 0.06em;
+      color: rgba(0, 229, 255, 0.75);
+      font-family: ui-monospace, monospace;
+    }
+    .auth-shield-enter {
+      padding: 0.65rem 1.5rem;
+      font-family: inherit;
+      font-weight: 800;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--navy-deep);
+      background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 0 4px 24px rgba(232, 197, 71, 0.35);
+    }
+    .auth-shield-enter:hover { filter: brightness(1.06); }
+    body.auth-shield-active { overflow: hidden; }
+
+    /* —— AZK Spine + corridor nodes (CNN-style strip) —— */
+    .spine-corridor-strip {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0.75rem clamp(0.65rem, 2.5vw, 1.15rem) 1rem;
+    }
+    .spine-strip-label {
+      text-align: center;
+      font-size: 0.58rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      margin-bottom: 0.45rem;
+    }
+    .spine-strip-svg {
+      display: block;
+      width: 100%;
+      max-width: 320px;
+      height: auto;
+      margin: 0 auto;
+    }
+    .spine-axis-glow {
+      filter: drop-shadow(0 0 8px rgba(232, 197, 71, 0.55)) drop-shadow(0 0 16px rgba(0, 229, 255, 0.25));
+    }
+    .corridor-node-glow {
+      animation: corridor-node-glow 2.1s ease-in-out infinite;
+    }
+    .corridor-node-glow:nth-of-type(1) { animation-delay: 0s; }
+    .corridor-node-glow:nth-of-type(2) { animation-delay: 0.35s; }
+    .corridor-node-glow:nth-of-type(3) { animation-delay: 0.7s; }
+    .corridor-node-glow:nth-of-type(4) { animation-delay: 1.05s; }
+    .corridor-node-glow:nth-of-type(5) { animation-delay: 1.4s; }
+    @keyframes corridor-node-glow {
+      0%, 100% { r: 5; opacity: 0.85; }
+      50% { r: 7; opacity: 1; }
+    }
+    .spine-dna-line {
+      text-align: center;
+      margin-top: 0.5rem;
+      font-size: 0.62rem;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      font-family: ui-monospace, monospace;
     }
 
     /* —— Bluelaser: cyan ↔ gold gradient border pulse (viewport) —— */
