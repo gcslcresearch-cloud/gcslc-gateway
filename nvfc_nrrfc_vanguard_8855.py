@@ -35,6 +35,11 @@ PARADIGM_LINE = (
     "National Resources Revitalization Fusion Center (NRRFC) — Powered by the 8R Stealth Paradigm Convergence and its Determinants"
 )
 
+# Title-case master brand (verify character-for-character); display uses ALL-CAPS h1 per sovereign directive
+MASTER_BRAND_TITLE = (
+    "Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC) LTD/GTE"
+)
+
 STATES_13 = (
     "Kogi",
     "Enugu",
@@ -180,9 +185,12 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Exact sovereign header (character-for-character per directive)
+# Sovereign header — Goldman only (non-serif); ALL CAPS display matches institutional lockup
+assert MASTER_BRAND_TITLE.upper() == (
+    "GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION (GCSLC) LTD/GTE"
+), "MASTER_BRAND_TITLE must match sovereign header character-for-character"
 st.markdown(
-    "<h1 style='text-align: center; color: #FFD700; font-family: Goldman, sans-serif;'>GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION (GCSLC) LTD/GTE</h1>",
+    "<h1 class='vg-master-h1' style='text-align:center;color:#FFD700;font-family:Goldman,sans-serif;font-weight:700;font-style:normal;font-synthesis:none;text-rendering:optimizeLegibility;'>GALADIMAN RUWA CENTER FOR STRATEGIC LEADERSHIP AND COMMUNICATION (GCSLC) LTD/GTE</h1>",
     unsafe_allow_html=True,
 )
 
@@ -213,6 +221,10 @@ st.markdown(
   @keyframes vg-sovereign-ignite {{
     0%, 100% {{ opacity: 0.7; }}
     50% {{ opacity: 0.95; }}
+  }}
+  @keyframes vg-h1-shimmer {{
+    0%, 100% {{ text-shadow: 0 0 10px rgba(255,215,0,0.22); filter: brightness(1); }}
+    50% {{ text-shadow: 0 0 20px rgba(255,215,0,0.42), 0 0 6px rgba(200,220,255,0.2); filter: brightness(1.06); }}
   }}
   .stApp {{
     background-color: {BG_NAVY} !important;
@@ -283,24 +295,63 @@ st.markdown(
     border-radius: 10px;
     box-shadow: 0 0 12px rgba(255, 215, 0, 0.18);
   }}
-  /* Samsung S24 Ultra landscape — scale full stack (header + NGECC + 13 grid) */
+  /* Samsung S24 Ultra landscape — flex-lock console + no page scroll */
   @media (max-height: 900px) and (orientation: landscape) {{
-    [data-testid="stMain"] .block-container {{ zoom: 0.82; }}
+    [data-testid="stAppViewContainer"] {{
+      display: flex !important;
+      flex-direction: row !important;
+      min-height: 100dvh !important;
+      max-height: 100dvh !important;
+      overflow: hidden !important;
+    }}
+    section[data-testid="stMain"] {{
+      flex: 1 1 auto !important;
+      min-width: 0 !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+      max-height: 100dvh !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }}
+    section[data-testid="stMain"] > div {{
+      flex: 1 1 auto !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }}
+    [data-testid="stMain"] .block-container,
+    section.main .block-container {{
+      flex: 1 1 auto !important;
+      min-height: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }}
+    [data-testid="stMain"] .block-container {{ zoom: 0.78; }}
+  }}
+  @media (max-height: 820px) and (orientation: landscape) {{
+    [data-testid="stMain"] .block-container {{ zoom: 0.72; }}
   }}
   @media (max-height: 720px) and (orientation: landscape) {{
-    [data-testid="stMain"] .block-container {{ zoom: 0.75; }}
+    [data-testid="stMain"] .block-container {{ zoom: 0.68; }}
   }}
   @media (max-height: 600px) and (orientation: landscape) {{
     [data-testid="stMain"] .block-container {{ zoom: 0.7; }}
   }}
-  @media (max-height: 480px) {{
-    [data-testid="stMain"] .block-container {{ zoom: 0.65; }}
+  @media (max-height: 520px) and (orientation: landscape) {{
+    [data-testid="stMain"] .block-container {{ zoom: 0.64; }}
   }}
-  h1 {{
+  @media (max-height: 480px) {{
+    [data-testid="stMain"] .block-container {{ zoom: 0.62; }}
+  }}
+  h1, h1.vg-master-h1 {{
     position: relative !important;
     z-index: 10050 !important;
-    margin: 0.2rem 0 0.35rem 0 !important;
-    text-shadow: 0 0 12px rgba(255,215,0,0.25);
+    margin: 0.15rem 0 0.28rem 0 !important;
+    font-family: 'Goldman', sans-serif !important;
+    font-style: normal !important;
+    font-weight: 700 !important;
+    animation: vg-h1-shimmer 16s ease-in-out infinite;
   }}
   .vg-auth-stack p {{
     font-family: 'Goldman', system-ui, sans-serif !important;
@@ -486,6 +537,11 @@ st.markdown(
   [data-testid="stSidebar"] {{
     background: rgba(0, 18, 40, 0.99) !important;
     border-right: 1px solid rgba(255,215,0,0.22) !important;
+    max-height: 100dvh !important;
+    overflow-y: auto !important;
+  }}
+  @media (max-height: 700px) and (orientation: landscape) {{
+    div[data-testid="stCaption"] {{ display: none !important; }}
   }}
   header[data-testid="stHeader"] {{
     background: rgba(0, 26, 51, 0.98) !important;
@@ -618,18 +674,33 @@ with st.container():
                 unsafe_allow_html=True,
             )
         st.markdown(
-            '<p class="vg-section-label">13-STATE GRID (12 ROW SLOTS + EDO ANCHOR)</p>',
+            '<p class="vg-section-label">13 STATES · 12 st.container() CELLS (BAUCHI+EDO PAIRED)</p>',
             unsafe_allow_html=True,
         )
-        # 4 row containers: 3×4 nodes + 1 anchor (Edo) — 13 clickable sovereignties
-        for r in range(4):
-            with st.container():
-                ncols = 4 if r < 3 else 1
-                chunk = STATES_13[r * 4 : r * 4 + ncols]
-                cols = st.columns(ncols)
-                for i, st_name in enumerate(chunk):
-                    with cols[i]:
-                        if st.button(st_name, key=f"s13_r{r}_c{i}", use_container_width=True):
+        # Exactly 12 Streamlit containers; 13 sovereign click targets
+        _r = 0
+        for chunk in (STATES_13[0:4], STATES_13[4:8]):
+            cols = st.columns(4)
+            for i, st_name in enumerate(chunk):
+                with cols[i]:
+                    with st.container():
+                        if st.button(st_name, key=f"s13_r{_r}_c{i}", use_container_width=True):
                             st.session_state.selected_state = st_name
+            _r += 1
+        cols = st.columns(4)
+        for i, st_name in enumerate(STATES_13[8:11]):
+            with cols[i]:
+                with st.container():
+                    if st.button(st_name, key=f"s13_r{_r}_c{i}", use_container_width=True):
+                        st.session_state.selected_state = st_name
+        _r += 1
+        with st.container():
+            b1, b2, _, _ = st.columns(4)
+            with b1:
+                if st.button("Bauchi", key=f"s13_r{_r}_c0", use_container_width=True):
+                    st.session_state.selected_state = "Bauchi"
+            with b2:
+                if st.button("Edo", key=f"s13_r{_r}_c1", use_container_width=True):
+                    st.session_state.selected_state = "Edo"
 
 st.caption("NRRFC Sovereign Vanguard · Node 8855 · GCSLC LTD/GTE")
