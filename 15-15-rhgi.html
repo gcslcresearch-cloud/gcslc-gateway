@@ -7,238 +7,255 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&amp;display=swap" rel="stylesheet">
-  <title>15/15 RHGI | Renewed Hope Grassroots Initiatives</title>
+  <title>15-15 RHGI | Sovereign Dashboard</title>
   <style>
     :root {
-      --navy-deep: #050a14;
-      --navy-mid: #0a1628;
-      --gold: #e8c547;
-      --gold-dim: #b8942a;
-      --gold-bright: #fff8dc;
-      --cyan: #00e5ff;
-      --laser-blue: #00d4ff;
-      --text: #e8eef4;
-      --muted: #8fa3bf;
+      --rhgi-navy-deep: #050a14;
+      --rhgi-gold: #e8c547;
+      --rhgi-gold-dim: #b8942a;
+      --rhgi-gold-bright: #fff8dc;
+      --rhgi-cyan: #00e5ff;
+      --rhgi-muted: #8fa3bf;
     }
-    *, *::before, *::after { box-sizing: border-box; }
+    .rhgi-page *, .rhgi-page *::before, .rhgi-page *::after { box-sizing: border-box; }
     html { -webkit-text-size-adjust: 100%; }
-    body {
+    body.rhgi-page {
       margin: 0;
       min-height: 100dvh;
       font-family: 'Segoe UI', system-ui, sans-serif;
-      color: var(--gold);
+      color: var(--rhgi-gold);
       overflow-x: hidden;
       -webkit-user-select: none;
       user-select: none;
-      background: var(--navy-deep);
+      background: var(--rhgi-navy-deep);
     }
 
-    /* High-velocity field — radial core + streak drift */
-    .velocity-field {
+    /* High-velocity field */
+    .rhgi-velocity-field {
       position: fixed;
       inset: 0;
       z-index: 0;
       pointer-events: none;
       background:
-        radial-gradient(ellipse 100% 80% at 50% 0%, #0f2844 0%, var(--navy-deep) 45%),
+        radial-gradient(ellipse 100% 80% at 50% 0%, #0f2844 0%, var(--rhgi-navy-deep) 45%),
         radial-gradient(ellipse 60% 50% at 80% 100%, rgba(0, 120, 200, 0.12) 0%, transparent 55%);
     }
-    .velocity-streaks {
+    .rhgi-velocity-streaks {
       position: fixed;
       inset: -20%;
       z-index: 1;
       pointer-events: none;
-      opacity: 0.35;
+      opacity: 0.38;
       background: repeating-linear-gradient(
         -28deg,
         transparent 0,
-        transparent 14px,
-        rgba(0, 240, 255, 0.06) 14px,
-        rgba(0, 240, 255, 0.06) 15px
+        transparent 0.625rem,
+        rgba(0, 240, 255, 0.07) 0.625rem,
+        rgba(0, 240, 255, 0.07) 0.6875rem
       );
       background-size: 200% 200%;
-      animation: velocity-pan 4.2s linear infinite;
+      animation: rhgi-velocity-pan 1.15s linear infinite;
     }
-    @keyframes velocity-pan {
+    @keyframes rhgi-velocity-pan {
       0% { transform: translate3d(0, 0, 0) skewX(-2deg); background-position: 0% 0%; }
-      100% { transform: translate3d(-4%, 2%, 0) skewX(-2deg); background-position: 100% 40%; }
+      100% { transform: translate3d(-5%, 2.5%, 0) skewX(-2deg); background-position: 100% 45%; }
     }
-    .velocity-pulse {
+    .rhgi-velocity-pulse {
       position: fixed;
       inset: 0;
       z-index: 2;
       pointer-events: none;
-      background: radial-gradient(circle at 50% 40%, rgba(0, 229, 255, 0.07) 0%, transparent 42%);
-      animation: velocity-breathe 5s ease-in-out infinite;
+      background: radial-gradient(circle at 50% 38%, rgba(0, 229, 255, 0.08) 0%, transparent 42%);
+      animation: rhgi-velocity-breathe 1.4s ease-in-out infinite;
     }
-    @keyframes velocity-breathe {
-      0%, 100% { opacity: 0.65; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.02); }
+    @keyframes rhgi-velocity-breathe {
+      0%, 100% { opacity: 0.7; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.015); }
     }
 
-    /* Bluelaser frame — Sovereign Mirror */
-    .bluelaser-stack {
+    /* AKZ Spine */
+    .rhgi-akz-spine {
+      position: fixed;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      overflow: visible;
+    }
+    .rhgi-akz-spine svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .rhgi-akz-path-core {
+      fill: none;
+      stroke: url(#rhgiAkzSpineGrad);
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: url(#rhgiAkzGlow);
+      opacity: 0.55;
+      animation: rhgi-akz-spine-pulse 0.95s ease-in-out infinite;
+    }
+    .rhgi-akz-path-veil {
+      fill: none;
+      stroke: rgba(0, 229, 255, 0.22);
+      stroke-width: 0.5rem;
+      stroke-linecap: round;
+      opacity: 0.35;
+      filter: blur(6px);
+    }
+    @keyframes rhgi-akz-spine-pulse {
+      0%, 100% { opacity: 0.45; filter: url(#rhgiAkzGlow) brightness(1); }
+      50% { opacity: 0.72; filter: url(#rhgiAkzGlow) brightness(1.15); }
+    }
+
+    /* Bluelaser frame */
+    .rhgi-bluelaser-stack {
       position: fixed;
       inset: 0;
       z-index: 50;
       pointer-events: none;
       overflow: hidden;
     }
-    .bluelaser-edge {
+    .rhgi-bluelaser-edge {
       position: absolute;
       inset: 0;
-      border: 3px solid transparent;
+      border: 0.1875rem solid transparent;
       background:
-        linear-gradient(var(--navy-deep), var(--navy-deep)) padding-box,
+        linear-gradient(var(--rhgi-navy-deep), var(--rhgi-navy-deep)) padding-box,
         linear-gradient(125deg, #00f0ff 0%, #0099cc 18%, #e8c547 42%, #fff8c4 55%, #00d4e8 78%, #00f0ff 100%) border-box;
       background-size: 320% 320%;
-      animation: cyan-gold-pulse 5.5s ease-in-out infinite;
+      animation: rhgi-cyan-gold-pulse 0.85s ease-in-out infinite;
       opacity: 0.92;
     }
-    @keyframes cyan-gold-pulse {
-      0%, 100% { background-position: 0% 40%; filter: brightness(0.95) drop-shadow(0 0 8px rgba(0, 240, 255, 0.35)); }
-      50% { background-position: 100% 60%; filter: brightness(1.1) drop-shadow(0 0 18px rgba(232, 197, 71, 0.45)); }
+    @keyframes rhgi-cyan-gold-pulse {
+      0%, 100% { background-position: 0% 40%; filter: brightness(0.95) drop-shadow(0 0 0.5rem rgba(0, 240, 255, 0.35)); }
+      50% { background-position: 100% 60%; filter: brightness(1.12) drop-shadow(0 0 1.125rem rgba(232, 197, 71, 0.45)); }
     }
-    .bluelaser-scan {
+    .rhgi-bluelaser-scan {
       position: absolute;
       inset: -45%;
       background: conic-gradient(from 0deg at 50% 50%, transparent 0deg, transparent 265deg, rgba(0, 240, 255, 0.08) 295deg, rgba(232, 197, 71, 0.06) 320deg, transparent 360deg);
-      animation: bluelaser-spin 22s linear infinite;
+      animation: rhgi-bluelaser-spin 8s linear infinite;
     }
-    .bluelaser-vignette {
+    .rhgi-bluelaser-vignette {
       position: absolute;
       inset: 0;
-      box-shadow: inset 0 0 100px rgba(0, 20, 50, 0.55), inset 0 0 28px rgba(0, 200, 255, 0.06);
+      box-shadow: inset 0 0 6.25rem rgba(0, 20, 50, 0.55), inset 0 0 1.75rem rgba(0, 200, 255, 0.06);
     }
-    @keyframes bluelaser-spin { to { transform: rotate(360deg); } }
+    @keyframes rhgi-bluelaser-spin { to { transform: rotate(360deg); } }
 
-    .satellite-scanlines {
+    .rhgi-satellite-scanlines {
       position: fixed;
       inset: 0;
       z-index: 52;
       pointer-events: none;
-      background: repeating-linear-gradient(0deg, transparent 0, transparent 3px, rgba(0, 255, 240, 0.04) 3px, rgba(0, 255, 240, 0.04) 4px);
-      background-size: 100% 7px;
-      animation: scanline-drift 7s linear infinite;
+      background: repeating-linear-gradient(0deg, transparent 0, transparent 0.1875rem, rgba(0, 255, 240, 0.045) 0.1875rem, rgba(0, 255, 240, 0.045) 0.25rem);
+      background-size: 100% 0.4375rem;
+      animation: rhgi-scanline-drift 2.4s linear infinite;
       mix-blend-mode: screen;
-      opacity: 0.75;
+      opacity: 0.72;
     }
-    @keyframes scanline-drift { 0% { background-position: 0 0; } 100% { background-position: 0 7px; } }
+    @keyframes rhgi-scanline-drift { 0% { background-position: 0 0; } 100% { background-position: 0 0.4375rem; } }
 
-    /* Prism-frame — metallic navy (Sovereign Mirror) */
-    @keyframes prism-frame-power {
+    @keyframes rhgi-prism-frame-power {
       0%, 100% {
         border-color: rgba(28, 52, 88, 0.98);
         box-shadow:
-          0 8px 36px rgba(0, 0, 0, 0.34),
+          0 0.5rem 2.25rem rgba(0, 0, 0, 0.34),
           inset 0 1px 0 rgba(255, 255, 255, 0.05),
-          0 0 14px rgba(0, 110, 190, 0.26),
-          0 0 36px rgba(6, 18, 36, 0.55),
-          inset 0 0 26px rgba(4, 12, 26, 0.52);
+          0 0 0.875rem rgba(0, 110, 190, 0.26),
+          0 0 2.25rem rgba(6, 18, 36, 0.55),
+          inset 0 0 1.625rem rgba(4, 12, 26, 0.52);
       }
-      17% {
+      33% {
         border-color: rgba(0, 229, 255, 0.72);
         box-shadow:
-          0 8px 36px rgba(0, 0, 0, 0.34),
+          0 0.5rem 2.25rem rgba(0, 0, 0, 0.34),
           inset 0 1px 0 rgba(255, 255, 255, 0.06),
-          0 0 24px rgba(0, 229, 255, 0.4),
-          0 0 48px rgba(20, 60, 100, 0.38),
-          inset 0 0 22px rgba(0, 229, 255, 0.09);
+          0 0 1.5rem rgba(0, 229, 255, 0.4),
+          0 0 3rem rgba(20, 60, 100, 0.38),
+          inset 0 0 1.375rem rgba(0, 229, 255, 0.09);
       }
-      34% {
-        border-color: rgba(40, 72, 118, 0.96);
-        box-shadow:
-          0 8px 36px rgba(0, 0, 0, 0.34),
-          inset 0 1px 0 rgba(255, 255, 255, 0.05),
-          0 0 16px rgba(70, 130, 200, 0.2),
-          0 0 38px rgba(8, 22, 42, 0.52),
-          inset 0 0 28px rgba(5, 14, 30, 0.58);
-      }
-      52% {
+      66% {
         border-color: rgba(0, 200, 240, 0.55);
         box-shadow:
-          0 8px 36px rgba(0, 0, 0, 0.34),
+          0 0.5rem 2.25rem rgba(0, 0, 0, 0.34),
           inset 0 1px 0 rgba(255, 255, 255, 0.05),
-          0 0 28px rgba(0, 229, 255, 0.34),
-          0 0 56px rgba(18, 48, 82, 0.32),
-          inset 0 0 18px rgba(0, 229, 255, 0.06);
-      }
-      71% {
-        border-color: rgba(24, 44, 72, 0.98);
-        box-shadow:
-          0 8px 36px rgba(0, 0, 0, 0.34),
-          inset 0 1px 0 rgba(255, 255, 255, 0.05),
-          0 0 12px rgba(0, 80, 150, 0.22),
-          0 0 32px rgba(4, 12, 24, 0.62),
-          inset 0 0 30px rgba(2, 8, 18, 0.58);
+          0 0 1.75rem rgba(0, 229, 255, 0.34),
+          0 0 3.5rem rgba(18, 48, 82, 0.32),
+          inset 0 0 1.125rem rgba(0, 229, 255, 0.06);
       }
     }
-    .prism-frame {
+    .rhgi-prism-frame {
       border: 2px solid rgba(30, 54, 88, 0.98);
-      animation: prism-frame-power 2.75s ease-in-out infinite;
+      animation: rhgi-prism-frame-power 0.75s ease-in-out infinite;
     }
 
-    .shell {
+    .rhgi-shell {
       position: relative;
       z-index: 60;
       min-height: 100dvh;
-      padding: clamp(0.85rem, 2.5vw, 1.35rem) clamp(0.65rem, 2vw, 1.25rem) 1.5rem;
+      padding: clamp(0.85rem, 2.5vw, 1.35rem) clamp(0.65rem, 2vw, 1.25rem) max(1rem, env(safe-area-inset-bottom));
       pointer-events: auto;
     }
 
-    /* Apex — clinical symmetry: ticker | hero | clocks */
-    .apex {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(280px, min(560px, 92vw)) minmax(0, 1fr);
-      gap: clamp(0.5rem, 2vw, 1.25rem);
-      align-items: start;
+    /* Flex-column dashboard — mobile-first */
+    .rhgi-dashboard {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: clamp(0.75rem, 3vw, 1.35rem);
+      width: min(100%, 80rem);
+      margin-inline: auto;
+    }
+
+    .rhgi-ticker-section,
+    .rhgi-brand-section,
+    .rhgi-victory-section,
+    .rhgi-pulse-section {
       width: 100%;
-      max-width: 1280px;
-      margin: 0 auto;
-    }
-    .apex-ticker {
-      justify-self: start;
-      min-width: 0;
-    }
-    .apex-hero {
-      justify-self: center;
-      text-align: center;
-      width: 100%;
-      max-width: 42rem;
-    }
-    .apex-clocks {
-      justify-self: end;
       min-width: 0;
     }
 
-    /* Gold metallic sweep — title */
+    .rhgi-brand-section {
+      text-align: center;
+    }
+
+    .rhgi-ticker-section {
+      align-self: center;
+      width: min(100%, 36rem);
+    }
+
+    /* Title + subtitle */
     .rhgi-title {
       margin: 0;
       font-family: 'Goldman', 'Segoe UI', sans-serif;
       font-weight: 700;
-      font-size: clamp(0.72rem, 2.2vw, 1.05rem);
-      letter-spacing: 0.05em;
-      line-height: 1.35;
-      background: linear-gradient(135deg, #fff0a3 0%, #e8c547 32%, #1a2744 72%, #4a6fa5 100%);
-      background-size: 200% 200%;
+      font-size: clamp(1.75rem, 5.5vw + 0.5rem, 2.75rem);
+      letter-spacing: 0.08em;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #fff0a3 0%, #e8c547 28%, #c9a227 55%, #fff8dc 78%, #e8c547 100%);
+      background-size: 220% 220%;
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      animation: goldman-sheen 7s ease-in-out infinite;
+      animation: rhgi-goldman-sheen 0.9s ease-in-out infinite;
     }
-    @keyframes goldman-sheen {
+    @keyframes rhgi-goldman-sheen {
       0%, 100% { background-position: 0% 40%; }
       50% { background-position: 100% 60%; }
     }
 
     .rhgi-sub {
-      margin: 0.55rem auto 0;
-      max-width: 38rem;
+      margin: clamp(0.4rem, 1.5vw, 0.55rem) auto 0;
+      max-width: min(100%, 38rem);
+      padding-inline: clamp(0.25rem, 2vw, 0.5rem);
       font-family: 'Goldman', 'Segoe UI', sans-serif;
       font-weight: 700;
-      font-size: clamp(0.58rem, 1.45vw, 0.72rem);
-      letter-spacing: 0.04em;
-      line-height: 1.5;
+      font-size: clamp(0.55rem, 1.2vw + 0.35rem, 0.75rem);
+      letter-spacing: 0.03em;
+      line-height: 1.55;
       background: linear-gradient(
         118deg,
         rgba(0, 200, 230, 0.85) 0%,
@@ -247,285 +264,343 @@
         #00c8e8 72%,
         rgba(0, 229, 255, 0.9) 100%
       );
-      background-size: 220% 200%;
+      background-size: 240% 200%;
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      animation: cyan-shimmer 5s ease-in-out infinite;
+      animation: rhgi-cyan-shimmer 0.65s ease-in-out infinite;
     }
-    @keyframes cyan-shimmer {
+    @keyframes rhgi-cyan-shimmer {
       0%, 100% { background-position: 0% 50%; filter: brightness(1); }
-      50% { background-position: 100% 50%; filter: brightness(1.12); }
+      50% { background-position: 100% 50%; filter: brightness(1.1); }
     }
 
-    /* 2027 ticker — top-left */
-    .election-ticker {
-      border-radius: 10px;
-      padding: 0.5rem 0.65rem 0.55rem;
+    /* Countdown ticker */
+    .rhgi-election-ticker {
+      border-radius: 0.625rem;
+      padding: clamp(0.45rem, 2vw, 0.55rem) clamp(0.5rem, 2.5vw, 0.65rem);
       background: linear-gradient(165deg, rgba(6, 18, 36, 0.92), rgba(2, 10, 22, 0.96));
       border: 1px solid rgba(0, 229, 255, 0.22);
       box-shadow:
-        inset 0 0 22px rgba(0, 229, 255, 0.05),
-        0 0 14px rgba(0, 0, 0, 0.4);
+        inset 0 0 1.375rem rgba(0, 229, 255, 0.05),
+        0 0 0.875rem rgba(0, 0, 0, 0.4);
     }
-    .election-ticker-label {
+    .rhgi-election-ticker-label {
       margin: 0 0 0.35rem;
       font-family: 'Goldman', 'Segoe UI', sans-serif;
-      font-size: clamp(0.48rem, 1.1vw, 0.55rem);
+      font-size: clamp(0.48rem, 0.9vw + 0.3rem, 0.58rem);
       font-weight: 700;
-      letter-spacing: 0.2em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
       color: rgba(255, 248, 220, 0.88);
     }
-    .election-ticker-grid {
+    .rhgi-election-ticker-grid {
       display: grid;
-      grid-template-columns: repeat(6, auto);
-      gap: 0.2rem 0.35rem;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 0.2rem clamp(0.25rem, 1.5vw, 0.35rem);
       align-items: end;
-      justify-content: start;
+      width: 100%;
     }
-    .election-ticker-grid .seg-val {
+    .rhgi-seg-val {
       font-family: ui-monospace, 'Cascadia Code', monospace;
       font-weight: 800;
-      font-size: clamp(0.72rem, 1.65vw, 0.88rem);
-      color: var(--gold-bright);
-      text-shadow: 0 0 12px rgba(232, 197, 71, 0.35);
-      min-width: 1.65em;
+      font-size: clamp(0.7rem, 2.8vw + 0.2rem, 0.95rem);
+      color: var(--rhgi-gold-bright);
+      text-shadow: 0 0 0.75rem rgba(232, 197, 71, 0.35);
       text-align: center;
       font-variant-numeric: tabular-nums;
     }
-    .election-ticker-grid .seg-lab {
-      font-size: clamp(0.42rem, 0.95vw, 0.48rem);
-      letter-spacing: 0.12em;
+    .rhgi-seg-lab {
+      font-size: clamp(0.4rem, 1.8vw + 0.15rem, 0.5rem);
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: var(--muted);
+      color: var(--rhgi-muted);
       text-align: center;
       grid-row: 2;
     }
 
-    /* Victory Validator — progress + FCT diamond */
-    .validator {
-      margin: clamp(0.85rem, 2.2vw, 1.25rem) auto 0;
-      width: 100%;
-      max-width: min(520px, 94vw);
+    /* Victory Arc — touch-friendly */
+    .rhgi-victory-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    .validator-label {
-      margin: 0 0 0.45rem;
+    .rhgi-gatekeeper-label {
+      margin: 0;
       font-family: 'Goldman', 'Segoe UI', sans-serif;
-      font-size: clamp(0.5rem, 1.2vw, 0.6rem);
+      font-size: clamp(0.48rem, 1vw + 0.3rem, 0.6rem);
       font-weight: 700;
-      letter-spacing: 0.26em;
+      letter-spacing: 0.24em;
       text-transform: uppercase;
-      color: rgba(255, 248, 220, 0.92);
+      color: rgba(255, 248, 220, 0.94);
     }
-    .validator-caption {
-      margin: 0.4rem 0 0;
-      font-size: clamp(0.48rem, 1.15vw, 0.55rem);
-      letter-spacing: 0.1em;
-      color: var(--muted);
+    .rhgi-victory-arc-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: center;
+      gap: clamp(0.5rem, 3vw, 0.85rem);
+      width: min(100%, 40rem);
     }
-    .validator-track-row {
+    .rhgi-victory-touch {
+      position: relative;
       display: flex;
       align-items: center;
-      gap: 0.65rem;
+      justify-content: center;
+      width: min(92vw, 24rem);
+      max-width: 100%;
+      min-height: 44px;
+      padding: clamp(0.35rem, 2vw, 0.6rem);
+      margin: 0;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      border-radius: 0.75rem;
+      transition: transform 0.12s ease, filter 0.12s ease;
+    }
+    .rhgi-victory-touch:active {
+      transform: scale(0.985);
+      filter: brightness(1.08);
+    }
+    .rhgi-victory-touch:focus-visible {
+      outline: 2px solid rgba(0, 229, 255, 0.85);
+      outline-offset: 4px;
+    }
+    .rhgi-victory-arc-svg-wrap {
       width: 100%;
+      max-width: 100%;
     }
-    .progress-outer {
-      flex: 1;
-      min-width: 0;
-      height: 14px;
-      border-radius: 999px;
-      padding: 2px;
-      background: linear-gradient(180deg, rgba(8, 22, 42, 0.95), rgba(4, 12, 26, 0.98));
-      border: 1px solid rgba(0, 229, 255, 0.25);
-      box-shadow:
-        inset 0 0 16px rgba(0, 0, 0, 0.5),
-        0 0 18px rgba(0, 80, 140, 0.2);
+    .rhgi-victory-arc-svg-wrap svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      filter: drop-shadow(0 0 0.75rem rgba(0, 80, 140, 0.35));
     }
-    .progress-inner {
-      height: 100%;
-      width: 66.666%;
-      border-radius: inherit;
-      background: linear-gradient(
-        90deg,
-        rgba(0, 100, 160, 0.4) 0%,
-        rgba(0, 229, 255, 0.55) 35%,
-        rgba(232, 197, 71, 0.75) 72%,
-        rgba(255, 248, 220, 0.95) 100%
-      );
-      background-size: 160% 100%;
-      animation: progress-sheen 4s ease-in-out infinite;
-      box-shadow:
-        0 0 14px rgba(0, 229, 255, 0.35),
-        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    .rhgi-arc-track-bg {
+      fill: none;
+      stroke: url(#rhgiArcMetalGrad);
+      stroke-width: 16;
+      stroke-linecap: round;
+      opacity: 0.88;
     }
-    @keyframes progress-sheen {
-      0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
+    .rhgi-arc-track {
+      fill: none;
+      stroke: rgba(12, 24, 44, 0.98);
+      stroke-width: 12;
+      stroke-linecap: round;
     }
-    .progress-readout {
-      margin-top: 0.35rem;
+    .rhgi-arc-progress {
+      fill: none;
+      stroke: url(#rhgiArcProgGrad);
+      stroke-width: 14;
+      stroke-linecap: round;
+      animation: rhgi-arc-sheen 0.7s ease-in-out infinite;
+    }
+    @keyframes rhgi-arc-sheen {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.12); }
+    }
+    .rhgi-arc-readout {
+      margin: 0;
       font-family: 'Goldman', 'Segoe UI', sans-serif;
-      font-size: clamp(0.52rem, 1.2vw, 0.62rem);
+      font-size: clamp(0.5rem, 1vw + 0.35rem, 0.65rem);
       font-weight: 700;
-      letter-spacing: 0.14em;
-      color: rgba(232, 238, 244, 0.95);
+      letter-spacing: 0.1em;
+      color: rgba(232, 238, 244, 0.92);
+      text-align: center;
+    }
+    .rhgi-arc-caption {
+      margin: 0;
+      font-size: clamp(0.45rem, 0.9vw + 0.25rem, 0.55rem);
+      letter-spacing: 0.06em;
+      color: var(--rhgi-muted);
+      max-width: min(100%, 22rem);
+      text-align: center;
+      line-height: 1.45;
+      padding-inline: 0.25rem;
     }
 
-    /* FCT — pulsing gold diamond */
-    .fct-diamond-wrap {
+    /* FCT diamond */
+    .rhgi-fct-diamond-wrap {
       flex-shrink: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 0.2rem;
+      gap: 0.25rem;
+      padding-bottom: 0.25rem;
     }
-    .fct-diamond {
-      width: 28px;
-      height: 28px;
+    .rhgi-fct-diamond {
+      width: clamp(2rem, 8vw, 2.25rem);
+      height: clamp(2rem, 8vw, 2.25rem);
       display: flex;
       align-items: center;
       justify-content: center;
-      filter: drop-shadow(0 0 8px rgba(232, 197, 71, 0.45));
-      animation: diamond-pulse 2s ease-in-out infinite;
+      animation: rhgi-diamond-pulse 0.55s ease-in-out infinite;
     }
-    .fct-diamond svg {
+    .rhgi-fct-diamond svg {
       width: 100%;
       height: 100%;
       overflow: visible;
     }
-    .fct-diamond .d-shape {
-      fill: url(#goldDiamondGrad);
-      stroke: rgba(255, 248, 220, 0.85);
-      stroke-width: 0.6;
+    .rhgi-fct-diamond .rhgi-d-shape {
+      fill: url(#rhgiGoldDiamondGrad);
+      stroke: rgba(255, 248, 220, 0.75);
+      stroke-width: 0.55;
     }
-    @keyframes diamond-pulse {
-      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 6px rgba(232, 197, 71, 0.4)); }
-      50% { transform: scale(1.08); filter: drop-shadow(0 0 16px rgba(255, 248, 220, 0.55)); }
+    .rhgi-fct-diamond:not(.rhgi-fct-locked) {
+      filter: drop-shadow(0 0 0.375rem rgba(0, 229, 255, 0.35));
+      animation: rhgi-diamond-pulse-cyan 0.55s ease-in-out infinite;
     }
-    .fct-tag {
-      font-size: clamp(0.42rem, 0.95vw, 0.48rem);
+    .rhgi-fct-diamond:not(.rhgi-fct-locked) .rhgi-d-shape {
+      fill: url(#rhgiCyanDiamondGrad);
+      stroke: rgba(0, 229, 255, 0.65);
+    }
+    @keyframes rhgi-diamond-pulse {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0.5rem rgba(232, 197, 71, 0.55)) drop-shadow(0 0 1.25rem rgba(255, 220, 120, 0.45)); }
+      50% { transform: scale(1.1); filter: drop-shadow(0 0 1.125rem rgba(255, 248, 220, 0.65)) drop-shadow(0 0 2rem rgba(232, 197, 71, 0.5)); }
+    }
+    @keyframes rhgi-diamond-pulse-cyan {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+    }
+    .rhgi-fct-diamond.rhgi-fct-locked {
+      animation: rhgi-diamond-pulse 0.55s ease-in-out infinite;
+    }
+    .rhgi-fct-tag {
+      font-size: clamp(0.4rem, 1.8vw + 0.15rem, 0.5rem);
       font-weight: 800;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: var(--gold-dim);
+      color: var(--rhgi-gold-dim);
+    }
+    .rhgi-fct-diamond-wrap:has(.rhgi-fct-locked) .rhgi-fct-tag {
+      color: rgba(255, 248, 220, 0.95);
+    }
+    .rhgi-fct-lock-label {
+      font-size: clamp(0.36rem, 1.6vw + 0.1rem, 0.45rem);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(232, 197, 71, 0.85);
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: opacity 0.35s ease, max-height 0.35s ease;
+    }
+    .rhgi-fct-diamond-wrap:has(.rhgi-fct-locked) .rhgi-fct-lock-label {
+      opacity: 1;
+      max-height: 2rem;
     }
 
-    /* Global Pulse — clocks top-right */
-    .global-pulse-label {
-      margin: 0 0 0.4rem;
-      text-align: right;
+    /* Global Pulse — grid: 1 col phone, 2×2 narrow tablet, 4 col laptop */
+    .rhgi-global-pulse-label {
+      margin: 0 0 clamp(0.35rem, 2vw, 0.5rem);
+      text-align: center;
       font-family: 'Goldman', 'Segoe UI', sans-serif;
-      font-size: clamp(0.48rem, 1.1vw, 0.55rem);
+      font-size: clamp(0.48rem, 0.9vw + 0.3rem, 0.58rem);
       font-weight: 700;
-      letter-spacing: 0.24em;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--gold-bright);
+      color: var(--rhgi-gold-bright);
     }
-    .clocks-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.45rem 0.4rem;
-      justify-content: flex-end;
+    .rhgi-clocks-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: clamp(0.65rem, 3vw, 1rem);
+      width: 100%;
+      justify-items: center;
     }
-    .analog-wrap {
-      --i: 0;
+    @media (min-width: 26rem) {
+      .rhgi-clocks-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        max-width: min(100%, 28rem);
+        margin-inline: auto;
+      }
+    }
+    @media (min-width: 60rem) {
+      .rhgi-clocks-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        max-width: 100%;
+      }
+      .rhgi-global-pulse-label {
+        text-align: right;
+      }
+      .rhgi-pulse-section {
+        align-self: stretch;
+      }
+    }
+
+    .rhgi-analog-wrap {
+      --rhgi-i: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
+      width: 100%;
+      max-width: 8rem;
     }
-    .analog-clock-frame {
+    .rhgi-analog-clock-frame {
       position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
       border-radius: 50%;
-      padding: 3px;
-      background: linear-gradient(135deg, rgba(232, 197, 71, 0.45), rgba(5, 10, 20, 0.88), rgba(0, 229, 255, 0.32), rgba(232, 197, 71, 0.45));
-      background-size: 240% 240%;
+      padding: 0.1875rem;
+      width: min(100%, 5.5rem);
+      aspect-ratio: 1;
+      background: linear-gradient(145deg, rgba(18, 36, 62, 0.95), rgba(6, 14, 28, 0.98), rgba(28, 48, 78, 0.9), rgba(8, 18, 36, 0.96));
+      background-size: 200% 200%;
+      border: 1px solid rgba(40, 72, 118, 0.85);
       box-shadow:
-        0 0 0 1px rgba(232, 197, 71, 0.3),
-        0 0 14px rgba(232, 197, 71, 0.18),
-        inset 0 0 18px rgba(0, 229, 255, 0.07);
-      animation: clock-ring-shimmer 6s ease-in-out infinite;
-      animation-delay: calc(var(--i) * 0.85s);
+        0 0 0 1px rgba(0, 229, 255, 0.12),
+        inset 0 0 1.375rem rgba(0, 0, 0, 0.55),
+        0 0 0.875rem rgba(0, 60, 120, 0.25);
+      animation: rhgi-navy-frame-shimmer 0.8s ease-in-out infinite;
+      animation-delay: calc(var(--rhgi-i) * 0.12s);
     }
-    @keyframes clock-ring-shimmer {
-      0%, 100% {
-        background-position: 0% 40%;
-        filter: brightness(1);
-      }
-      50% {
-        background-position: 100% 58%;
-        filter: brightness(1.06);
-      }
+    @keyframes rhgi-navy-frame-shimmer {
+      0%, 100% { background-position: 0% 40%; filter: brightness(1); border-color: rgba(40, 72, 118, 0.85); }
+      50% { background-position: 100% 58%; filter: brightness(1.06); border-color: rgba(0, 160, 220, 0.45); }
     }
-    .clock-svg {
-      width: 100%;
-      max-width: 72px;
+    .rhgi-clock-svg {
+      width: 85%;
       height: auto;
+      max-width: 100%;
       transform-origin: 50px 50px;
     }
-    .clock-face { fill: rgba(4, 14, 28, 0.88); stroke: rgba(232, 197, 71, 0.32); stroke-width: 1.2; }
-    .clock-tick { stroke: rgba(232, 197, 71, 0.32); stroke-width: 0.8; }
-    /* Blue laser hands */
-    .hand-hour, .hand-minute, .hand-second {
+    .rhgi-clock-face { fill: rgba(4, 14, 28, 0.92); stroke: rgba(40, 72, 118, 0.65); stroke-width: 1.2; }
+    .rhgi-clock-tick { stroke: rgba(100, 140, 190, 0.45); stroke-width: 0.8; }
+    .rhgi-hand-hour, .rhgi-hand-minute, .rhgi-hand-second {
       stroke-linecap: round;
-      filter: drop-shadow(0 0 4px rgba(0, 212, 255, 0.85)) drop-shadow(0 0 8px rgba(0, 180, 255, 0.45));
+      filter: drop-shadow(0 0 0.25rem rgba(0, 212, 255, 0.85)) drop-shadow(0 0 0.5rem rgba(0, 180, 255, 0.45));
     }
-    .hand-hour {
-      stroke: #00f0ff;
-      stroke-width: 3;
-    }
-    .hand-minute {
-      stroke: #4df0ff;
-      stroke-width: 2;
-    }
-    .hand-second {
-      stroke: #00b4ff;
-      stroke-width: 1;
-    }
-    .clock-hub {
+    .rhgi-hand-hour { stroke: #00f0ff; stroke-width: 3; }
+    .rhgi-hand-minute { stroke: #4df0ff; stroke-width: 2; }
+    .rhgi-hand-second { stroke: #00b4ff; stroke-width: 1; }
+    .rhgi-clock-hub {
       fill: #00e5ff;
-      filter: drop-shadow(0 0 4px rgba(0, 229, 255, 0.9));
+      filter: drop-shadow(0 0 0.25rem rgba(0, 229, 255, 0.9));
     }
-    .clock-city {
+    .rhgi-clock-city {
       margin-top: 0.28rem;
-      font-size: 0.5rem;
+      font-size: clamp(0.45rem, 1.8vw + 0.1rem, 0.55rem);
       font-weight: 700;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
-      color: var(--gold-dim);
+      color: var(--rhgi-gold-dim);
       text-align: center;
-      max-width: 76px;
+      width: 100%;
     }
 
-    .content-prism {
-      border-radius: 12px;
-      padding: clamp(0.75rem, 2vw, 1rem);
-      background: linear-gradient(165deg, rgba(5, 12, 26, 0.55), rgba(4, 10, 22, 0.4));
-      max-width: 1280px;
-      margin: 0 auto;
-    }
-
-    @media (max-width: 900px) {
-      .apex {
-        grid-template-columns: 1fr;
-        justify-items: center;
-      }
-      .apex-ticker,
-      .apex-clocks {
-        justify-self: center;
-        width: 100%;
-        max-width: 28rem;
-      }
-      .global-pulse-label { text-align: center; }
-      .clocks-row { justify-content: center; }
+    .rhgi-content-prism {
+      border-radius: 0.75rem;
+      padding: clamp(0.65rem, 2.5vw, 1rem);
+      background: linear-gradient(165deg, rgba(5, 12, 26, 0.58), rgba(4, 10, 22, 0.42));
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .velocity-streaks, .velocity-pulse, .bluelaser-edge, .bluelaser-scan, .satellite-scanlines,
-      .prism-frame, .rhgi-title, .rhgi-sub, .progress-inner, .analog-clock-frame, .fct-diamond {
+      .rhgi-velocity-streaks, .rhgi-velocity-pulse, .rhgi-bluelaser-edge, .rhgi-bluelaser-scan, .rhgi-satellite-scanlines,
+      .rhgi-prism-frame, .rhgi-title, .rhgi-sub, .rhgi-analog-clock-frame, .rhgi-fct-diamond, .rhgi-arc-progress, .rhgi-akz-path-core {
         animation: none !important;
       }
       .rhgi-title {
@@ -533,90 +608,145 @@
         -webkit-background-clip: text;
         background-clip: text;
       }
-      .rhgi-sub { color: var(--cyan); background: none; -webkit-background-clip: border-box; background-clip: border-box; }
+      .rhgi-sub { color: var(--rhgi-cyan); background: none; -webkit-background-clip: border-box; background-clip: border-box; }
     }
   </style>
 </head>
-<body>
-  <div class="velocity-field" aria-hidden="true"></div>
-  <div class="velocity-streaks" aria-hidden="true"></div>
-  <div class="velocity-pulse" aria-hidden="true"></div>
+<body class="rhgi-page">
+  <div class="rhgi-velocity-field" aria-hidden="true"></div>
+  <div class="rhgi-velocity-streaks" aria-hidden="true"></div>
+  <div class="rhgi-velocity-pulse" aria-hidden="true"></div>
 
-  <div class="bluelaser-stack" aria-hidden="true">
-    <div class="bluelaser-scan"></div>
-    <div class="bluelaser-edge"></div>
-    <div class="bluelaser-vignette"></div>
+  <div class="rhgi-akz-spine" aria-hidden="true">
+    <svg viewBox="0 0 400 220" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <linearGradient id="rhgiAkzSpineGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="rgba(0, 229, 255, 0.15)"/>
+          <stop offset="45%" stop-color="rgba(232, 197, 71, 0.55)"/>
+          <stop offset="100%" stop-color="rgba(0, 200, 255, 0.35)"/>
+        </linearGradient>
+        <filter id="rhgiAkzGlow" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="2.2" result="b"/>
+          <feMerge>
+            <feMergeNode in="b"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+      <path class="rhgi-akz-path-veil" d="M 210 168 C 175 130 155 105 128 88 C 108 76 95 58 88 38"/>
+      <path class="rhgi-akz-path-core" d="M 210 168 C 175 130 155 105 128 88 C 108 76 95 58 88 38"/>
+    </svg>
   </div>
-  <div class="satellite-scanlines" aria-hidden="true"></div>
 
-  <div class="shell">
-    <div class="content-prism prism-frame">
-      <div class="apex">
-        <div class="apex-ticker">
-          <div class="election-ticker" role="timer" aria-live="polite" aria-label="Countdown to 2027 Presidential Election">
-            <p class="election-ticker-label">2027 Presidential Election</p>
-            <div class="election-ticker-grid">
-              <span class="seg-val" id="cd-mo">00</span>
-              <span class="seg-val" id="cd-wk">00</span>
-              <span class="seg-val" id="cd-d">00</span>
-              <span class="seg-val" id="cd-h">00</span>
-              <span class="seg-val" id="cd-m">00</span>
-              <span class="seg-val" id="cd-s">00</span>
-              <span class="seg-lab">Mo</span>
-              <span class="seg-lab">Wk</span>
-              <span class="seg-lab">Day</span>
-              <span class="seg-lab">Hr</span>
-              <span class="seg-lab">Min</span>
-              <span class="seg-lab">Sec</span>
+  <div class="rhgi-bluelaser-stack" aria-hidden="true">
+    <div class="rhgi-bluelaser-scan"></div>
+    <div class="rhgi-bluelaser-edge"></div>
+    <div class="rhgi-bluelaser-vignette"></div>
+  </div>
+  <div class="rhgi-satellite-scanlines" aria-hidden="true"></div>
+
+  <div class="rhgi-shell">
+    <div class="rhgi-content-prism rhgi-prism-frame">
+      <div class="rhgi-dashboard">
+        <section class="rhgi-ticker-section">
+          <div class="rhgi-election-ticker" role="timer" aria-live="polite" aria-label="Countdown to 16 January 2027">
+            <p class="rhgi-election-ticker-label">2027 countdown · 16 Jan · Africa/Lagos</p>
+            <div class="rhgi-election-ticker-grid">
+              <span class="rhgi-seg-val" id="rhgi-cd-mo">00</span>
+              <span class="rhgi-seg-val" id="rhgi-cd-wk">00</span>
+              <span class="rhgi-seg-val" id="rhgi-cd-d">00</span>
+              <span class="rhgi-seg-val" id="rhgi-cd-h">00</span>
+              <span class="rhgi-seg-val" id="rhgi-cd-m">00</span>
+              <span class="rhgi-seg-val" id="rhgi-cd-s">00</span>
+              <span class="rhgi-seg-lab">Mo</span>
+              <span class="rhgi-seg-lab">Wk</span>
+              <span class="rhgi-seg-lab">Day</span>
+              <span class="rhgi-seg-lab">Hr</span>
+              <span class="rhgi-seg-lab">Min</span>
+              <span class="rhgi-seg-lab">Sec</span>
             </div>
           </div>
-        </div>
+        </section>
 
-        <div class="apex-hero">
-          <h1 class="rhgi-title">15/15 Renewed Hope Grassroots Initiatives (15/15 RHGI)</h1>
-          <p class="rhgi-sub">Powered by 8R Stealth Paradigm Convergence and its Determinants</p>
+        <section class="rhgi-brand-section">
+          <h1 class="rhgi-title">15-15</h1>
+          <p class="rhgi-sub">RHGI | Powered by 8R Stealth Paradigm Convergence</p>
+        </section>
 
-          <div class="validator">
-            <p class="validator-label">Victory Validator</p>
-            <div class="validator-track-row">
-              <div style="flex:1;min-width:0">
-                <div class="progress-outer" role="progressbar" aria-valuemin="0" aria-valuemax="36" aria-valuenow="24" aria-label="States toward two-thirds requirement">
-                  <div class="progress-inner"></div>
-                </div>
-                <p class="progress-readout">Constitutional 2/3rds · States 24 / 36</p>
+        <section class="rhgi-victory-section" aria-labelledby="rhgi-gatekeeper-heading">
+          <h2 id="rhgi-gatekeeper-heading" class="rhgi-gatekeeper-label">Constitutional Gatekeeper</h2>
+          <div class="rhgi-victory-arc-row">
+            <button type="button" class="rhgi-victory-touch" aria-label="Victory Arc: 24 of 36 states toward two-thirds, plus FCT">
+              <span class="rhgi-victory-arc-svg-wrap">
+                <svg viewBox="0 0 240 130" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="rhgiArcMetalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#1c3458"/>
+                      <stop offset="50%" stop-color="#0c1c34"/>
+                      <stop offset="100%" stop-color="#284878"/>
+                    </linearGradient>
+                    <linearGradient id="rhgiArcProgGrad" x1="0%" y1="50%" x2="100%" y2="50%">
+                      <stop offset="0%" stop-color="#0099cc"/>
+                      <stop offset="35%" stop-color="#00f0ff"/>
+                      <stop offset="70%" stop-color="#e8c547"/>
+                      <stop offset="100%" stop-color="#fff8dc"/>
+                    </linearGradient>
+                    <linearGradient id="rhgiGoldDiamondGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#fff8dc"/>
+                      <stop offset="40%" stop-color="#e8c547"/>
+                      <stop offset="100%" stop-color="#8a7020"/>
+                    </linearGradient>
+                    <linearGradient id="rhgiCyanDiamondGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#0a2844"/>
+                      <stop offset="50%" stop-color="#00c8e8"/>
+                      <stop offset="100%" stop-color="#004060"/>
+                    </linearGradient>
+                  </defs>
+                  <path class="rhgi-arc-track-bg" d="M 36 102 A 84 84 0 0 1 204 102" />
+                  <path class="rhgi-arc-track" d="M 38 102 A 82 82 0 0 1 202 102" />
+                  <path
+                    class="rhgi-arc-progress"
+                    d="M 38 102 A 82 82 0 0 1 202 102"
+                    pathLength="100"
+                    stroke-dasharray="66.6667 100"
+                  />
+                </svg>
+              </span>
+            </button>
+            <div class="rhgi-fct-diamond-wrap">
+              <div class="rhgi-fct-diamond rhgi-fct-locked" id="rhgi-fctDiamond" aria-hidden="true">
+                <svg viewBox="0 0 32 32" aria-hidden="true">
+                  <polygon class="rhgi-d-shape" points="16,4 28,16 16,28 4,16"/>
+                </svg>
               </div>
-              <div class="fct-diamond-wrap" title="Federal Capital Territory — distinct constitutional role">
-                <div class="fct-diamond" aria-hidden="true">
-                  <svg viewBox="0 0 32 32" width="32" height="32">
-                    <defs>
-                      <linearGradient id="goldDiamondGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#fff8dc"/>
-                        <stop offset="40%" stop-color="#e8c547"/>
-                        <stop offset="100%" stop-color="#8a7020"/>
-                      </linearGradient>
-                    </defs>
-                    <polygon class="d-shape" points="16,4 28,16 16,28 4,16"/>
-                  </svg>
-                </div>
-                <span class="fct-tag">FCT</span>
-              </div>
+              <span class="rhgi-fct-tag">FCT · Abuja</span>
+              <span class="rhgi-fct-lock-label">25% threshold · Locked</span>
             </div>
-            <p class="validator-caption">Federal Capital Territory (Abuja) — unique legal status alongside state tally</p>
           </div>
-        </div>
+          <p class="rhgi-arc-readout">Victory Arc · States 24 / 36 · + FCT</p>
+          <p class="rhgi-arc-caption">Semi-circular gauge toward constitutional two-thirds (36 states) with Federal Capital Territory as distinct anchor.</p>
+        </section>
 
-        <div class="apex-clocks">
-          <p class="global-pulse-label">Global Pulse</p>
-          <div class="clocks-row" id="clocksRow" role="group" aria-label="World clocks"></div>
-        </div>
+        <section class="rhgi-pulse-section">
+          <p class="rhgi-global-pulse-label">Global Pulse</p>
+          <div class="rhgi-clocks-grid" id="rhgi-clocksRow" role="group" aria-label="World clocks"></div>
+        </section>
       </div>
     </div>
   </div>
 
   <script>
     (function () {
-      /* Nigeria 2027 general election — opening of polls (Africa/Lagos). Adjust if INEC publishes a different datetime. */
-      var ELECTION_TARGET = new Date('2027-02-27T08:00:00+01:00');
+      var STATE_NOW = 24;
+      var STATE_MAX = 36;
+      var THRESHOLD = 0.25;
+      var ELECTION_TARGET = new Date('2027-01-16T00:00:00+01:00');
+
+      var diamond = document.getElementById('rhgi-fctDiamond');
+      var ratio = STATE_NOW / STATE_MAX;
+      if (diamond) {
+        diamond.classList.toggle('rhgi-fct-locked', ratio >= THRESHOLD);
+      }
 
       function pad2(n) { return String(n).padStart(2, '0'); }
 
@@ -653,16 +783,16 @@
 
       function tickCountdown() {
         var p = countdownParts(ELECTION_TARGET);
-        var el = function (id) { return document.getElementById(id); };
-        el('cd-mo').textContent = pad2(Math.min(p.months, 99));
-        el('cd-wk').textContent = pad2(Math.min(p.weeks, 99));
-        el('cd-d').textContent = pad2(Math.min(p.days, 99));
-        el('cd-h').textContent = pad2(Math.min(p.hours, 99));
-        el('cd-m').textContent = pad2(Math.min(p.mins, 99));
-        el('cd-s').textContent = pad2(Math.min(p.secs, 99));
+        function el(id) { return document.getElementById(id); }
+        el('rhgi-cd-mo').textContent = pad2(Math.min(p.months, 99));
+        el('rhgi-cd-wk').textContent = pad2(Math.min(p.weeks, 99));
+        el('rhgi-cd-d').textContent = pad2(Math.min(p.days, 99));
+        el('rhgi-cd-h').textContent = pad2(Math.min(p.hours, 99));
+        el('rhgi-cd-m').textContent = pad2(Math.min(p.mins, 99));
+        el('rhgi-cd-s').textContent = pad2(Math.min(p.secs, 99));
       }
       tickCountdown();
-      setInterval(tickCountdown, 1000);
+      setInterval(tickCountdown, 250);
 
       var zones = [
         { city: 'Abuja', tz: 'Africa/Lagos' },
@@ -679,35 +809,35 @@
           var y1 = 50 + 42 * Math.sin(ang);
           var x2 = 50 + 38 * Math.cos(ang);
           var y2 = 50 + 38 * Math.sin(ang);
-          html += '<line class="clock-tick" x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '"/>';
+          html += '<line class="rhgi-clock-tick" x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '"/>';
         }
         return html;
       }
 
       function clockMarkup(idx) {
         return (
-          '<div class="analog-wrap" style="--i:' + idx + '" data-tz="' + zones[idx].tz + '">' +
-            '<div class="analog-clock-frame">' +
-            '<svg class="clock-svg" viewBox="0 0 100 100" aria-hidden="true">' +
-              '<circle class="clock-face" cx="50" cy="50" r="48"/>' +
-              '<g class="ticks">' + tickGroupHtml() + '</g>' +
-              '<line class="hand-hour" x1="50" y1="50" x2="50" y2="32" transform="rotate(0 50 50)"/>' +
-              '<line class="hand-minute" x1="50" y1="50" x2="50" y2="22" transform="rotate(0 50 50)"/>' +
-              '<line class="hand-second" x1="50" y1="50" x2="50" y2="18" transform="rotate(0 50 50)"/>' +
-              '<circle class="clock-hub" cx="50" cy="50" r="2.5"/>' +
+          '<div class="rhgi-analog-wrap" style="--rhgi-i:' + idx + '" data-tz="' + zones[idx].tz + '">' +
+            '<div class="rhgi-analog-clock-frame">' +
+            '<svg class="rhgi-clock-svg" viewBox="0 0 100 100" aria-hidden="true">' +
+              '<circle class="rhgi-clock-face" cx="50" cy="50" r="48"/>' +
+              '<g class="rhgi-ticks">' + tickGroupHtml() + '</g>' +
+              '<line class="rhgi-hand-hour" x1="50" y1="50" x2="50" y2="32" transform="rotate(0 50 50)"/>' +
+              '<line class="rhgi-hand-minute" x1="50" y1="50" x2="50" y2="22" transform="rotate(0 50 50)"/>' +
+              '<line class="rhgi-hand-second" x1="50" y1="50" x2="50" y2="18" transform="rotate(0 50 50)"/>' +
+              '<circle class="rhgi-clock-hub" cx="50" cy="50" r="2.5"/>' +
             '</svg>' +
             '</div>' +
-            '<span class="clock-city">' + zones[idx].city + '</span>' +
+            '<span class="rhgi-clock-city">' + zones[idx].city + '</span>' +
           '</div>'
         );
       }
 
-      var row = document.getElementById('clocksRow');
+      var row = document.getElementById('rhgi-clocksRow');
       row.innerHTML = zones.map(function (_, i) { return clockMarkup(i); }).join('');
 
       function updateHands() {
         var now = new Date();
-        row.querySelectorAll('.analog-wrap').forEach(function (wrap) {
+        row.querySelectorAll('.rhgi-analog-wrap').forEach(function (wrap) {
           var tz = wrap.getAttribute('data-tz');
           var fmt = new Intl.DateTimeFormat('en-GB', {
             timeZone: tz,
@@ -717,26 +847,26 @@
             hour12: false
           });
           var parts = fmt.formatToParts(now);
-          var h24 = 0, M = 0, S = 0;
+          var h24 = 0, Mi = 0, S = 0;
           parts.forEach(function (p) {
             if (p.type === 'hour') h24 = parseInt(p.value, 10);
-            if (p.type === 'minute') M = parseInt(p.value, 10);
+            if (p.type === 'minute') Mi = parseInt(p.value, 10);
             if (p.type === 'second') S = parseInt(p.value, 10);
           });
           var H12 = h24 % 12;
           var secA = S * 6;
-          var minA = M * 6 + S * 0.1;
-          var hourA = H12 * 30 + M * 0.5 + S * (1 / 120);
-          var hEl = wrap.querySelector('.hand-hour');
-          var mEl = wrap.querySelector('.hand-minute');
-          var sEl = wrap.querySelector('.hand-second');
+          var minA = Mi * 6 + S * 0.1;
+          var hourA = H12 * 30 + Mi * 0.5 + S * (1 / 120);
+          var hEl = wrap.querySelector('.rhgi-hand-hour');
+          var mEl = wrap.querySelector('.rhgi-hand-minute');
+          var sEl = wrap.querySelector('.rhgi-hand-second');
           if (hEl) hEl.setAttribute('transform', 'rotate(' + hourA + ' 50 50)');
           if (mEl) mEl.setAttribute('transform', 'rotate(' + minA + ' 50 50)');
           if (sEl) sEl.setAttribute('transform', 'rotate(' + secA + ' 50 50)');
         });
       }
       updateHands();
-      setInterval(updateHands, 1000);
+      setInterval(updateHands, 250);
     })();
   </script>
 </body>
