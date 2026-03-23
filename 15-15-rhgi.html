@@ -106,6 +106,18 @@
       0%, 100% { opacity: 0.45; filter: url(#rhgiAkzGlow) brightness(1); }
       50% { opacity: 0.68; filter: url(#rhgiAkzGlow) brightness(1.08); }
     }
+    /* High winning margin (>50% growth vs 2023): diamond sparkle on AKZ spine */
+    @keyframes rhgi-akz-diamond-sparkle {
+      0%, 86%, 100% { opacity: 0.55; filter: url(#rhgiAkzGlow) brightness(1); stroke-width: 2.2; }
+      90%, 93% { opacity: 0.92; filter: url(#rhgiAkzGlow) brightness(1.35) drop-shadow(0 0 0.45rem rgba(255, 248, 220, 0.55)); stroke-width: 2.6; }
+    }
+    .rhgi-akz-spine.rhgi-akz-spine--sparkle .rhgi-akz-path-core {
+      animation: rhgi-akz-diamond-sparkle 5s ease-in-out infinite;
+    }
+    .rhgi-akz-spine.rhgi-akz-spine--sparkle .rhgi-akz-path-veil {
+      opacity: 0.48;
+      filter: blur(5px);
+    }
 
     .rhgi-bluelaser-stack {
       position: fixed;
@@ -155,9 +167,9 @@
     }
     @keyframes rhgi-scanline-drift { 0% { background-position: 0 0; } 100% { background-position: 0 0.4375rem; } }
 
-    /* Prism-frame — silky slow metallic navy shimmer */
+    /* Prism-frame — silky slow metallic navy + diamond sparkle every 5s */
     @keyframes rhgi-prism-frame-power {
-      0%, 100% {
+      0%, 86%, 100% {
         border-color: rgba(32, 56, 92, 0.96);
         box-shadow:
           0 0.5rem 2.25rem rgba(0, 0, 0, 0.32),
@@ -166,14 +178,24 @@
           0 0 2rem rgba(8, 22, 42, 0.5),
           inset 0 0 1.5rem rgba(4, 12, 26, 0.5);
       }
-      50% {
-        border-color: rgba(0, 195, 235, 0.55);
+      43% {
+        border-color: rgba(0, 195, 235, 0.48);
         box-shadow:
           0 0.5rem 2.25rem rgba(0, 0, 0, 0.32),
           inset 0 1px 0 rgba(255, 255, 255, 0.06),
-          0 0 1.25rem rgba(0, 200, 230, 0.28),
-          0 0 2.75rem rgba(20, 55, 95, 0.35),
-          inset 0 0 1.25rem rgba(0, 180, 220, 0.07);
+          0 0 1.1rem rgba(0, 200, 230, 0.24),
+          0 0 2.5rem rgba(20, 55, 95, 0.32),
+          inset 0 0 1.2rem rgba(0, 180, 220, 0.06);
+      }
+      90%, 92% {
+        border-color: rgba(255, 248, 220, 0.42);
+        box-shadow:
+          0 0.5rem 2.25rem rgba(0, 0, 0, 0.32),
+          inset 0 1px 0 rgba(255, 255, 255, 0.12),
+          0 0 1.5rem rgba(232, 197, 71, 0.35),
+          0 0 2.5rem rgba(255, 255, 255, 0.18),
+          0 0 0.35rem rgba(255, 248, 220, 0.55),
+          inset 0 0 1.75rem rgba(232, 197, 71, 0.12);
       }
     }
     .rhgi-prism-frame {
@@ -678,6 +700,68 @@
       padding: clamp(0.5rem, 2vw, 0.75rem);
       background: linear-gradient(165deg, rgba(4, 14, 30, 0.85), rgba(2, 10, 22, 0.72));
     }
+    .rhgi-nw-margin {
+      margin: 0 0 clamp(0.45rem, 2vw, 0.65rem);
+      padding: clamp(0.35rem, 1.5vw, 0.5rem) clamp(0.25rem, 1.5vw, 0.45rem);
+      border-radius: 0.45rem;
+      border: 1px solid rgba(232, 197, 71, 0.22);
+      background: rgba(2, 10, 22, 0.55);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.28rem;
+      min-width: 0;
+    }
+    .rhgi-nw-margin-label {
+      font-family: 'Goldman', 'Segoe UI', sans-serif;
+      font-size: clamp(0.42rem, 1.1vw + 0.18rem, 0.52rem);
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(143, 163, 191, 0.95);
+      text-align: center;
+    }
+    .rhgi-nw-margin-delta {
+      margin: 0;
+      max-width: 100%;
+      font-family: 'Goldman', 'Segoe UI', sans-serif;
+      font-weight: 700;
+      font-size: clamp(0.62rem, 2.85vw + 0.22rem, 0.82rem);
+      letter-spacing: 0.03em;
+      line-height: 1.28;
+      text-align: center;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      hyphens: manual;
+      background: linear-gradient(
+        118deg,
+        #6a5518 0%,
+        #e8c547 22%,
+        #fff8dc 42%,
+        #e8c547 58%,
+        #fff8e8 78%,
+        #c9a227 100%
+      );
+      background-size: 260% 120%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: rhgi-nw-margin-shimmer 4.2s ease-in-out infinite;
+    }
+    @keyframes rhgi-nw-margin-shimmer {
+      0%, 100% { background-position: 8% 50%; filter: brightness(1); }
+      50% { background-position: 92% 50%; filter: brightness(1.06); }
+    }
+    .rhgi-nw-margin-dtl {
+      margin: 0;
+      font-size: clamp(0.4rem, 1.15vw + 0.12rem, 0.48rem);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: rgba(143, 163, 191, 0.88);
+      text-align: center;
+      line-height: 1.35;
+      max-width: min(100%, 22rem);
+    }
     .rhgi-deep-head {
       margin: 0 0 0.5rem;
       font-family: 'Goldman', 'Segoe UI', sans-serif;
@@ -709,6 +793,15 @@
       align-items: center;
       justify-content: center;
       min-height: 8rem;
+      transition: filter 0.6s ease;
+    }
+    .rhgi-deep-powerline.rhgi-deep-powerline--synced .rhgi-deep-pl-core {
+      stroke-width: 3.2;
+      filter: url(#rhgiPowerLineFilter) drop-shadow(0 0 0.65rem rgba(232, 197, 71, 0.85)) drop-shadow(0 0 1.25rem rgba(255, 248, 220, 0.45));
+    }
+    .rhgi-deep-powerline.rhgi-deep-powerline--synced .rhgi-deep-pl-node {
+      fill: rgba(255, 248, 220, 0.65);
+      stroke: #fff8dc;
     }
     @media (min-width: 48rem) {
       .rhgi-deep-powerline {
@@ -759,8 +852,8 @@
     }
 
     .rhgi-deep-matrix-wrap {
-      --rhgi-bar-h: 0.35rem;
-      --rhgi-bar-h-proj: 0.42rem;
+      --rhgi-bar-h: 0.38rem;
+      --rhgi-bar-h-proj: 0.57rem;
       min-width: 0;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
@@ -768,7 +861,7 @@
     .rhgi-matrix-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: clamp(0.42rem, 1.1vw + 0.12rem, 0.52rem);
+      font-size: clamp(0.55rem, 2.65vw + 0.2rem, 0.75rem);
     }
     .rhgi-matrix-table th,
     .rhgi-matrix-table td {
@@ -799,9 +892,9 @@
       margin-bottom: 0;
     }
     .rhgi-matrix-party-lab {
-      flex: 0 0 1.85rem;
+      flex: 0 0 2.35rem;
       font-weight: 700;
-      font-size: 0.85em;
+      font-size: 0.82em;
       color: var(--rhgi-muted);
     }
     .rhgi-matrix-bar-track {
@@ -822,8 +915,8 @@
     }
     .rhgi-bar-apc-b { background: linear-gradient(90deg, #1a4d32, #2a6b45); }
     .rhgi-bar-pdp-b { background: linear-gradient(90deg, #1f5538, #347a52); }
+    .rhgi-bar-nnpp-b { background: linear-gradient(90deg, #1a5c48, #2d7a62); }
     .rhgi-bar-lp-b { background: linear-gradient(90deg, #245d3e, #3d8860); }
-    .rhgi-bar-adc-b { background: linear-gradient(90deg, #2a6544, #4a9670); }
     .rhgi-matrix-bar--proj {
       background: linear-gradient(105deg, #0f2844 0%, #1a3a5c 25%, #e8c547 55%, #fff8dc 72%, #1e3a5a 100%);
       background-size: 220% 100%;
@@ -882,7 +975,7 @@
       gap: 0.25rem;
       padding: 0.28rem 0;
       border-bottom: 1px solid rgba(40, 72, 118, 0.35);
-      font-size: clamp(0.4rem, 1vw + 0.1rem, 0.48rem);
+      font-size: clamp(0.44rem, 1.15vw + 0.12rem, 0.52rem);
       font-weight: 700;
       letter-spacing: 0.04em;
       color: rgba(232, 238, 244, 0.9);
@@ -916,6 +1009,10 @@
       color: rgba(232, 238, 244, 0.88);
     }
 
+    .rhgi-pulse-section {
+      margin-top: clamp(0.35rem, 2.5vw, 0.85rem);
+      padding-top: clamp(0.15rem, 1vw, 0.35rem);
+    }
     .rhgi-global-pulse-label {
       margin: 0 0 clamp(0.35rem, 2vw, 0.5rem);
       text-align: center;
@@ -1029,6 +1126,8 @@
       }
       .rhgi-conversion-ticker-track { transform: translateX(0) !important; }
       .rhgi-deep-lga-track { transform: translateY(0) !important; }
+      .rhgi-nw-margin-delta { animation: none !important; background: linear-gradient(118deg, #e8c547, #fff8dc); -webkit-background-clip: text; background-clip: text; filter: none; }
+      .rhgi-akz-spine.rhgi-akz-spine--sparkle .rhgi-akz-path-core { animation: none !important; }
       .rhgi-title {
         background: linear-gradient(135deg, #fff8e8 0%, #e8c547 40%, #1a3a5c 100%);
         -webkit-background-clip: text;
@@ -1043,7 +1142,7 @@
   <div class="rhgi-velocity-streaks" aria-hidden="true"></div>
   <div class="rhgi-velocity-pulse" aria-hidden="true"></div>
 
-  <div class="rhgi-akz-spine" aria-hidden="true">
+  <div class="rhgi-akz-spine" id="rhgi-akz-spine" aria-hidden="true">
     <svg viewBox="0 0 400 220" preserveAspectRatio="xMidYMid slice">
       <defs>
         <linearGradient id="rhgiAkzSpineGrad" x1="0%" y1="100%" x2="100%" y2="0%">
@@ -1102,7 +1201,7 @@
         <section class="rhgi-victory-section" aria-labelledby="rhgi-gatekeeper-heading">
           <h2 id="rhgi-gatekeeper-heading" class="rhgi-gatekeeper-label">Constitutional Gatekeeper</h2>
           <div class="rhgi-victory-arc-row">
-            <button type="button" class="rhgi-victory-touch" aria-label="Victory Arc: 24 of 36 states toward two-thirds, plus FCT">
+            <button type="button" class="rhgi-victory-touch" id="rhgi-victory-btn" aria-label="Victory Arc: 24 of 37 units toward two-thirds, plus FCT">
               <span class="rhgi-victory-arc-svg-wrap">
                 <svg viewBox="0 0 240 130" aria-hidden="true">
                   <defs>
@@ -1131,10 +1230,11 @@
                   <path class="rhgi-arc-track-bg" d="M 36 102 A 84 84 0 0 1 204 102" />
                   <path class="rhgi-arc-track" d="M 38 102 A 82 82 0 0 1 202 102" />
                   <path
+                    id="rhgi-arc-progress-path"
                     class="rhgi-arc-progress"
                     d="M 38 102 A 82 82 0 0 1 202 102"
                     pathLength="100"
-                    stroke-dasharray="66.6667 100"
+                    stroke-dasharray="43.2432 100"
                   />
                 </svg>
               </span>
@@ -1149,7 +1249,7 @@
               <span class="rhgi-fct-lock-label">25% threshold · Locked</span>
             </div>
           </div>
-          <p class="rhgi-arc-readout">Victory Arc · States 24 / 36 · + FCT</p>
+          <p class="rhgi-arc-readout" id="rhgi-arc-readout">Victory Arc · States 24 / 37 · + FCT</p>
           <p class="rhgi-arc-caption">Semi-circular gauge toward constitutional two-thirds (36 states) with Federal Capital Territory as distinct anchor.</p>
         </section>
 
@@ -1191,8 +1291,13 @@
 
                 <div class="rhgi-corridor-deep rhgi-prism-frame" aria-labelledby="rhgi-deep-heading">
                   <h3 id="rhgi-deep-heading" class="rhgi-deep-head">Northwest Tactical Spine · Corridor Deep-Dive</h3>
+                  <div class="rhgi-nw-margin" id="rhgi-nw-margin" aria-live="polite">
+                    <span class="rhgi-nw-margin-label">Winning Margin</span>
+                    <p class="rhgi-nw-margin-delta" id="rhgi-nw-margin-delta">+0.0% Growth Over 2023 Base</p>
+                    <p class="rhgi-nw-margin-dtl" id="rhgi-nw-margin-dtl">Δ +0.0 pts vs 2023 APC base (NW LGA-weighted)</p>
+                  </div>
                   <div class="rhgi-deep-layout">
-                    <div class="rhgi-deep-powerline" aria-hidden="true">
+                    <div class="rhgi-deep-powerline" id="rhgi-deep-powerline" aria-hidden="true">
                       <svg viewBox="0 0 80 220" preserveAspectRatio="xMidYMid meet">
                         <defs>
                           <linearGradient id="rhgiPowerLineGold" x1="0%" y1="100%" x2="0%" y2="0%">
@@ -1221,122 +1326,17 @@
                       </div>
                     </div>
 
+                    <!-- 2023 baseline: INEC-declared presidential % (Kano Stears/Wiki; Kaduna/Katsina from vote aggregates; Sokoto Stears; Kebbi/Jigawa/Zamfara from INEC state summaries — verify against official gazette) -->
                     <div class="rhgi-deep-matrix-wrap">
                       <table class="rhgi-matrix-table">
                         <thead>
                           <tr>
                             <th scope="col">State</th>
-                            <th scope="col">2023 Baseline</th>
-                            <th scope="col">15-15 Projection</th>
+                            <th scope="col">2023 Baseline (APC · PDP · NNPP · LP)</th>
+                            <th scope="col">15-15 Projected Yield</th>
                           </tr>
                         </thead>
-                        <tbody>
-                          <tr>
-                            <td class="rhgi-matrix-state">Kano</td>
-                            <td>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-apc-b" style="width:42%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">PDP</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-pdp-b" style="width:28%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">LP</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-lp-b" style="width:8%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">ADC</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-adc-b" style="width:4%"></div></div></div>
-                            </td>
-                            <td>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:48%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">PDP</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:22%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">LP</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:10%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">ADC</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:5%"></div></div></div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="rhgi-matrix-state">Kaduna</td>
-                            <td>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-apc-b" style="width:38%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">PDP</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-pdp-b" style="width:32%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">LP</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-lp-b" style="width:10%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">ADC</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-adc-b" style="width:5%"></div></div></div>
-                            </td>
-                            <td>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:44%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">PDP</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:26%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">LP</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:12%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">ADC</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:6%"></div></div></div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="rhgi-matrix-state">Katsina</td>
-                            <td>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-apc-b" style="width:45%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">PDP</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-pdp-b" style="width:26%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">LP</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-lp-b" style="width:6%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">ADC</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-adc-b" style="width:3%"></div></div></div>
-                            </td>
-                            <td>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:51%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">PDP</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:21%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">LP</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:8%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">ADC</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:4%"></div></div></div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="rhgi-matrix-state">Sokoto</td>
-                            <td>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-apc-b" style="width:40%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">PDP</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-pdp-b" style="width:30%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">LP</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-lp-b" style="width:7%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">ADC</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-adc-b" style="width:4%"></div></div></div>
-                            </td>
-                            <td>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:46%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">PDP</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:24%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">LP</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:9%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">ADC</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:5%"></div></div></div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="rhgi-matrix-state">Kebbi</td>
-                            <td>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-apc-b" style="width:41%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">PDP</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-pdp-b" style="width:29%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">LP</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-lp-b" style="width:6%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">ADC</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-adc-b" style="width:4%"></div></div></div>
-                            </td>
-                            <td>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:47%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">PDP</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:23%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">LP</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:8%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">ADC</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:5%"></div></div></div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="rhgi-matrix-state">Zamfara</td>
-                            <td>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-apc-b" style="width:39%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">PDP</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-pdp-b" style="width:31%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">LP</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-lp-b" style="width:7%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">ADC</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-adc-b" style="width:5%"></div></div></div>
-                            </td>
-                            <td>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:45%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">PDP</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:25%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">LP</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:9%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">ADC</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:6%"></div></div></div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="rhgi-matrix-state">Jigawa</td>
-                            <td>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-apc-b" style="width:43%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">PDP</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-pdp-b" style="width:27%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">LP</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-lp-b" style="width:7%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">ADC</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-adc-b" style="width:4%"></div></div></div>
-                            </td>
-                            <td>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:49%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">PDP</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:22%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">LP</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:9%"></div></div></div>
-                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">ADC</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:5%"></div></div></div>
-                            </td>
-                          </tr>
-                        </tbody>
+                        <tbody id="rhgi-matrix-tbody"></tbody>
                       </table>
                     </div>
 
@@ -1344,30 +1344,8 @@
                       <div class="rhgi-deep-lga-label">182 LGA LIVE FEED</div>
                       <div class="rhgi-deep-lga-scroller" role="region" aria-label="Local government area mobilization status">
                         <div class="rhgi-deep-lga-track">
-                          <ul class="rhgi-deep-lga-list" id="rhgi-lgaListA">
-                            <li class="rhgi-deep-lga-item"><span>Zaria City</span><span class="rhgi-lga-status rhgi-lga-status--secured">Secured</span></li>
-                            <li class="rhgi-deep-lga-item"><span>Kano Municipal</span><span class="rhgi-lga-status rhgi-lga-status--mobilizing">Mobilizing</span></li>
-                            <li class="rhgi-deep-lga-item"><span>Sokoto North</span><span class="rhgi-lga-status rhgi-lga-status--secured">Secured</span></li>
-                            <li class="rhgi-deep-lga-item"><span>Kaduna South</span><span class="rhgi-lga-status rhgi-lga-status--mobilizing">Mobilizing</span></li>
-                            <li class="rhgi-deep-lga-item"><span>Katsina LGA</span><span class="rhgi-lga-status rhgi-lga-status--secured">Secured</span></li>
-                            <li class="rhgi-deep-lga-item"><span>Kebbi Argungu</span><span class="rhgi-lga-status rhgi-lga-status--mobilizing">Mobilizing</span></li>
-                            <li class="rhgi-deep-lga-item"><span>Zamfara Gusau</span><span class="rhgi-lga-status rhgi-lga-status--secured">Secured</span></li>
-                            <li class="rhgi-deep-lga-item"><span>Jigawa Dutse</span><span class="rhgi-lga-status rhgi-lga-status--mobilizing">Mobilizing</span></li>
-                            <li class="rhgi-deep-lga-item"><span>Sabon Gari</span><span class="rhgi-lga-status rhgi-lga-status--secured">Secured</span></li>
-                            <li class="rhgi-deep-lga-item"><span>Funtua</span><span class="rhgi-lga-status rhgi-lga-status--mobilizing">Mobilizing</span></li>
-                          </ul>
-                          <ul class="rhgi-deep-lga-list" id="rhgi-lgaListB" aria-hidden="true">
-                            <li class="rhgi-deep-lga-item"><span>Zaria City</span><span class="rhgi-lga-status rhgi-lga-status--secured">Secured</span></li>
-                            <li class="rhgi-deep-lga-item"><span>Kano Municipal</span><span class="rhgi-lga-status rhgi-lga-status--mobilizing">Mobilizing</span></li>
-                            <li class="rhgi-deep-lga-item"><span>Sokoto North</span><span class="rhgi-lga-status rhgi-lga-status--secured">Secured</span></li>
-                            <li class="rhgi-deep-lga-item"><span>Kaduna South</span><span class="rhgi-lga-status rhgi-lga-status--mobilizing">Mobilizing</span></li>
-                            <li class="rhgi-deep-lga-item"><span>Katsina LGA</span><span class="rhgi-lga-status rhgi-lga-status--secured">Secured</span></li>
-                            <li class="rhgi-deep-lga-item"><span>Kebbi Argungu</span><span class="rhgi-lga-status rhgi-lga-status--mobilizing">Mobilizing</span></li>
-                            <li class="rhgi-deep-lga-item"><span>Zamfara Gusau</span><span class="rhgi-lga-status rhgi-lga-status--secured">Secured</span></li>
-                            <li class="rhgi-deep-lga-item"><span>Jigawa Dutse</span><span class="rhgi-lga-status rhgi-lga-status--mobilizing">Mobilizing</span></li>
-                            <li class="rhgi-deep-lga-item"><span>Sabon Gari</span><span class="rhgi-lga-status rhgi-lga-status--secured">Secured</span></li>
-                            <li class="rhgi-deep-lga-item"><span>Funtua</span><span class="rhgi-lga-status rhgi-lga-status--mobilizing">Mobilizing</span></li>
-                          </ul>
+                          <ul class="rhgi-deep-lga-list" id="rhgi-lgaListA"></ul>
+                          <ul class="rhgi-deep-lga-list" id="rhgi-lgaListB" aria-hidden="true"></ul>
                         </div>
                       </div>
                     </div>
@@ -1570,6 +1548,193 @@
       }
       updateHands();
       setInterval(updateHands, 250);
+
+      /* —— 15-15-DEPLOY-09: NW matrix + LGA feed + AKZ spine sync —— */
+      var MOBILIZATION = 0.088;
+      var CONVERTS_PER_UNIT = 15;
+      var NW_LGA_TOTAL = 182;
+
+      var NW_2023 = [
+        { name: 'Kano', lgas: 44, apc: 31.5, pdp: 7.3, nnpp: 58.4, lp: 2.8 },
+        { name: 'Kaduna', lgas: 23, apc: 29.78, pdp: 41.33, nnpp: 6.93, lp: 21.96 },
+        { name: 'Katsina', lgas: 34, apc: 46.06, pdp: 46.71, nnpp: 6.62, lp: 0.61 },
+        { name: 'Sokoto', lgas: 23, apc: 53.3, pdp: 43.28, nnpp: 0.26, lp: 1.79 },
+        { name: 'Kebbi', lgas: 21, apc: 47.5, pdp: 41.0, nnpp: 4.5, lp: 7.0 },
+        { name: 'Zamfara', lgas: 14, apc: 54.5, pdp: 38.5, nnpp: 2.0, lp: 5.0 },
+        { name: 'Jigawa', lgas: 27, apc: 46.5, pdp: 40.0, nnpp: 7.0, lp: 6.5 }
+      ];
+
+      var PARTY_ROWS = [
+        { key: 'apc', lab: 'APC', cls: 'rhgi-bar-apc-b' },
+        { key: 'pdp', lab: 'PDP', cls: 'rhgi-bar-pdp-b' },
+        { key: 'nnpp', lab: 'NNPP', cls: 'rhgi-bar-nnpp-b' },
+        { key: 'lp', lab: 'LP', cls: 'rhgi-bar-lp-b' }
+      ];
+
+      function scaleLgaFor182(n) {
+        return Math.max(1, Math.round((n * NW_LGA_TOTAL) / 186));
+      }
+
+      /* Projected yield: 2023 base × (1 + (LGAs × 15 × mobilization) / 100) — caps at 100% width */
+      function projectedWidthPct(basePct, lgaCount) {
+        var factor = 1 + (lgaCount * CONVERTS_PER_UNIT * MOBILIZATION) / 100;
+        return Math.min(100, basePct * factor);
+      }
+
+      function nwWeightedApc() {
+        var totalL = 0;
+        var baseW = 0;
+        var projW = 0;
+        for (var i = 0; i < NW_2023.length; i++) {
+          var st = NW_2023[i];
+          var w = st.lgas;
+          var lc = scaleLgaFor182(st.lgas);
+          var proj = projectedWidthPct(st.apc, lc);
+          totalL += w;
+          baseW += st.apc * w;
+          projW += proj * w;
+        }
+        return { base: baseW / totalL, proj: projW / totalL };
+      }
+
+      var ARC_DASH_MAX = 66.6667;
+      var STATE_PROGRESS_FRAC = 24 / 37;
+
+      function updateNwMarginSync() {
+        var m = nwWeightedApc();
+        var marginPts = m.proj - m.base;
+        var growthPct = m.base > 0 ? (marginPts / m.base) * 100 : 0;
+        var nwFactor = m.base > 0 ? m.proj / m.base : 1;
+        var dashLen = Math.min(ARC_DASH_MAX, STATE_PROGRESS_FRAC * ARC_DASH_MAX * nwFactor);
+
+        var deltaEl = document.getElementById('rhgi-nw-margin-delta');
+        var dtlEl = document.getElementById('rhgi-nw-margin-dtl');
+        var arcPath = document.getElementById('rhgi-arc-progress-path');
+        var akz = document.getElementById('rhgi-akz-spine');
+        var victoryBtn = document.getElementById('rhgi-victory-btn');
+
+        var sign = growthPct >= 0 ? '+' : '';
+        if (deltaEl) {
+          deltaEl.textContent = sign + growthPct.toFixed(1) + '% Growth Over 2023 Base';
+          deltaEl.setAttribute(
+            'title',
+            'Winning margin: ' + marginPts.toFixed(2) + ' pts (15-15 APC projection − 2023 APC), NW LGA-weighted'
+          );
+        }
+        var ps = marginPts >= 0 ? '+' : '';
+        if (dtlEl) {
+          dtlEl.textContent = 'Δ ' + ps + marginPts.toFixed(1) + ' pts vs 2023 APC base (NW LGA-weighted)';
+        }
+        if (arcPath) arcPath.setAttribute('stroke-dasharray', dashLen + ' 100');
+        if (akz) akz.classList.toggle('rhgi-akz-spine--sparkle', growthPct > 50);
+        if (victoryBtn) {
+          victoryBtn.setAttribute(
+            'aria-label',
+            'Victory Arc: 24 of 37 units; Northwest APC yield multiplier ' + nwFactor.toFixed(2) + 'x versus 2023 base'
+          );
+        }
+      }
+
+      function renderMatrix() {
+        var tbody = document.getElementById('rhgi-matrix-tbody');
+        if (!tbody) return;
+        var html = '';
+        for (var s = 0; s < NW_2023.length; s++) {
+          var st = NW_2023[s];
+          var lc = scaleLgaFor182(st.lgas);
+          var baseline = '';
+          var proj = '';
+          for (var p = 0; p < PARTY_ROWS.length; p++) {
+            var pr = PARTY_ROWS[p];
+            var b = st[pr.key];
+            var bw = Math.round(b * 10) / 10;
+            var pw = Math.round(projectedWidthPct(b, lc) * 10) / 10;
+            baseline +=
+              '<div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">' + pr.lab + '</span>' +
+              '<div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar ' + pr.cls + '" style="width:' + bw + '%" title="' + st.name + ' 2023 ' + pr.lab + ' ' + bw + '%"></div></div></div>';
+            proj +=
+              '<div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">' + pr.lab + '</span>' +
+              '<div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:' + pw + '%" title="15-15 projected ' + pr.lab + ' ' + pw + '% (2023 base × (1 + (LGAs×' + CONVERTS_PER_UNIT + '×' + MOBILIZATION + ')÷100))"></div></div></div>';
+          }
+          html += '<tr><td class="rhgi-matrix-state">' + st.name + '</td><td>' + baseline + '</td><td>' + proj + '</td></tr>';
+        }
+        tbody.innerHTML = html;
+      }
+      renderMatrix();
+      updateNwMarginSync();
+
+      var NW_LGA_NAMES = [
+        'Sabon Gari', 'Funtua', 'Birnin Kebbi', 'Gusau', 'Kano Municipal', 'Zaria', 'Dala', 'Fagge', 'Gwale', 'Kumbotso', 'Nasarawa', 'Tarauni', 'Wudil', 'Dawakin Kudu', 'Gaya', 'Rano', 'Minjibir', 'Bebeji', 'Bunkure', 'Ajingi', 'Gwarzo', 'Kabo', 'Dawakin Tofa', 'Tofa', 'Rimin Gado', 'Tundun Wada', 'Sumaila', 'Takai', 'Albasu', 'Warawa', 'Kunchi', 'Tsanyawa', 'Garun Mallam', 'Madobi',
+        'Kaduna North', 'Kaduna South', 'Igabi', 'Chikun', 'Kajuru', 'Kachia', 'Kagarko', 'Jaba', 'Zangon Kataf', 'Kaura', 'Sanga', 'Jema\'a',
+        'Anka', 'Bakura', 'Birnin Magaji', 'Bukkuyum', 'Gummi', 'Kaura Namoda', 'Maradun', 'Maru', 'Shinkafi', 'Talata Mafara', 'Tsafe', 'Zurmi',
+        'Daura', 'Mani', 'Danja', 'Dandume', 'Mai\'adua', 'Sandamu', 'Zango', 'Kankara', 'Malumfashi', 'Faskari', 'Sabuwa', 'Kankia', 'Musawa', 'Matazu', 'Batagarawa', 'Charanchi', 'Rimi', 'Safana', 'Kurfi', 'Bindawa', 'Dutsi', 'Mashi', 'Ingawa', 'Kaita', 'Jibia',
+        'Sokoto North', 'Sokoto South', 'Wurno', 'Rabah', 'Binji', 'Silame', 'Gudu', 'Sabon Birni', 'Tangaza', 'Tureta', 'Dange Shuni', 'Goronyo', 'Gwadabawa', 'Illela', 'Kebbe', 'Kware', 'Shagari',
+        'Argungu', 'Jega', 'Kalgo', 'Koko / Besse', 'Zuru', 'Yauri', 'Suru', 'Danko Wasagu', 'Bagudo', 'Bunza', 'Fakai', 'Gwandu', 'Maiyama', 'Ngaski', 'Wasagu / Danko',
+        'Dutse', 'Hadejia', 'Gumel', 'Birnin Kudu', 'Kazaure', 'Ringim', 'Birniwa', 'Garki', 'Guri', 'Jahun', 'Kafin Hausa', 'Kaugama', 'Kiri Kasama', 'Maigatari', 'Malam Madori', 'Miga', 'Yankwashi', 'Auyo', 'Babura', 'Gagarawa', 'Gwiwa', 'Kiyawa', 'Sule Tankarkar', 'Taura', 'Abuja Municipal'
+      ];
+
+      function shuffle(arr) {
+        var a = arr.slice();
+        for (var i = a.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var t = a[i];
+          a[i] = a[j];
+          a[j] = t;
+        }
+        return a;
+      }
+
+      function buildLgaFeed() {
+        var names = shuffle(NW_LGA_NAMES);
+        var n = names.length;
+        var securedCount = Math.round(n * 0.6);
+        var out = [];
+        for (var i = 0; i < n; i++) {
+          out.push({ name: names[i], secured: i < securedCount });
+        }
+        return shuffle(out);
+      }
+
+      function feedItemHtml(item) {
+        var st = item.secured ? 'secured' : 'mobilizing';
+        var lab = item.secured ? 'Secured' : 'Mobilizing';
+        return (
+          '<li class="rhgi-deep-lga-item" data-lga="' + item.name.replace(/"/g, '&quot;') + '" data-status="' + st + '">' +
+          '<span>' + item.name + '</span>' +
+          '<span class="rhgi-lga-status rhgi-lga-status--' + st + '">' + lab + '</span></li>'
+        );
+      }
+
+      function akzAnchorsSecured(feed) {
+        function securedMatch(pred) {
+          for (var i = 0; i < feed.length; i++) {
+            if (feed[i].secured && pred(feed[i].name)) return true;
+          }
+          return false;
+        }
+        var kano = securedMatch(function (n) { return n.indexOf('Kano Municipal') >= 0; });
+        var zaria = securedMatch(function (n) { return n.indexOf('Zaria') >= 0; });
+        var abuja = securedMatch(function (n) {
+          return n.indexOf('Abuja Municipal') >= 0 || n.indexOf('AMAC') >= 0;
+        });
+        return kano && zaria && abuja;
+      }
+
+      function renderLgaFeed() {
+        var listA = document.getElementById('rhgi-lgaListA');
+        var listB = document.getElementById('rhgi-lgaListB');
+        var powerline = document.getElementById('rhgi-deep-powerline');
+        if (!listA || !listB) return;
+        var feed = buildLgaFeed();
+        var html = feed.map(feedItemHtml).join('');
+        listA.innerHTML = html;
+        listB.innerHTML = html;
+        if (powerline) {
+          powerline.classList.toggle('rhgi-deep-powerline--synced', akzAnchorsSecured(feed));
+        }
+      }
+      renderLgaFeed();
+      setInterval(renderLgaFeed, 45000);
     })();
   </script>
 </body>
