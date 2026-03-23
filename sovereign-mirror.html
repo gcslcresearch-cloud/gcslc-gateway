@@ -507,13 +507,14 @@
     .sovereign-strike-row {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(260px, min(440px, 92vw)) minmax(0, 1fr);
-      align-items: start;
+      align-items: center;
       gap: clamp(0.65rem, 2vw, 1.75rem);
       width: 100%;
     }
     .strike-flank {
       min-width: 0;
-      max-width: min(300px, 100%);
+      max-width: min(280px, 100%);
+      width: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -526,9 +527,10 @@
     }
     .strike-center {
       justify-self: center;
+      align-self: center;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
+      align-items: center;
       width: 100%;
       max-width: min(440px, 100%);
       padding: 0 0.25rem;
@@ -536,6 +538,7 @@
     .flank-head-goldman {
       margin: 0 0 0.5rem;
       width: 100%;
+      max-width: 280px;
       text-align: center;
       font-family: 'Goldman', 'Segoe UI', sans-serif;
       font-weight: 700;
@@ -662,34 +665,58 @@
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-4px); }
     }
-    /* DC narrative — same shell as GWY speech-bubble + living metallic gold shimmer */
-    .speech-bubble--dc-exec {
+    /* Diamond Symmetry — GWY + DATA CENTER narratives share shell + high-velocity metallic shimmer */
+    .speech-bubble--diamond-narrative {
       max-width: 100%;
+      width: 100%;
       font-size: clamp(0.56rem, 1.42vw, 0.68rem);
       line-height: 1.42;
+      animation: float-bubble 5s ease-in-out infinite, diamond-bubble-pulse 7s ease-in-out infinite;
+    }
+    @keyframes diamond-bubble-pulse {
+      0%, 100% {
+        box-shadow:
+          0 4px 24px rgba(0, 0, 0, 0.35),
+          0 0 20px rgba(0, 229, 255, 0.08),
+          inset 0 0 22px rgba(5, 10, 20, 0.35);
+        border-color: rgba(0, 229, 255, 0.32);
+      }
+      50% {
+        box-shadow:
+          0 4px 30px rgba(0, 0, 0, 0.42),
+          0 0 28px rgba(232, 197, 71, 0.14),
+          inset 0 0 28px rgba(26, 39, 68, 0.28);
+        border-color: rgba(232, 197, 71, 0.42);
+      }
     }
     .exec-insight-shimmer {
       display: inline;
       background: linear-gradient(
-        110deg,
-        #c9a227 0%,
-        #fff8dc 14%,
-        #e8c547 28%,
-        #fffef5 42%,
-        #b8942a 55%,
-        #4a6fa5 68%,
+        118deg,
+        #050a14 0%,
+        #0a1628 6%,
+        #1a2744 12%,
+        #e8c547 20%,
+        #fffef5 28%,
+        #c9a227 36%,
+        #ffffff 44%,
+        #2c5282 50%,
+        #fff8dc 58%,
+        #b8942a 66%,
+        #0a1628 74%,
         #fff0a3 82%,
-        #e8c547 100%
+        #e8c547 90%,
+        #1a2744 100%
       );
-      background-size: 260% 260%;
+      background-size: 280% 280%;
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      animation: exec-insight-shimmer 9s ease-in-out infinite;
+      animation: exec-insight-shimmer 7.5s ease-in-out infinite;
     }
     @keyframes exec-insight-shimmer {
-      0%, 100% { background-position: 0% 45%; filter: brightness(1); }
-      50% { background-position: 100% 55%; filter: brightness(1.12); }
+      0%, 100% { background-position: 0% 42%; filter: brightness(1) saturate(1.02); }
+      50% { background-position: 100% 58%; filter: brightness(1.14) saturate(1.05); }
     }
     .deck-datacenter {
       display: flex;
@@ -969,6 +996,10 @@
       .speech-bubble { transform: none; }
       .sovereign-spine-widget { filter: none; }
       .exec-insight-shimmer { filter: none; opacity: 1; color: rgba(232, 238, 244, 0.95); background: none; -webkit-background-clip: border-box; background-clip: border-box; }
+      .speech-bubble--diamond-narrative {
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35), 0 0 20px rgba(0, 229, 255, 0.08);
+        border-color: rgba(0, 229, 255, 0.32);
+      }
       .signature-metallic { opacity: 1; filter: drop-shadow(0 0 12px rgba(232, 197, 71, 0.5)); }
     }
   </style>
@@ -1009,8 +1040,8 @@
         <div class="strike-flank strike-flank--gwy">
           <p class="flank-head-goldman">GWY</p>
           <div class="deck-placeholder deck-humanoid">
-            <div class="speech-bubble quote-goldman">
-              Thank you for stopping by. I need energy to thrive, function, and augment human productivity. Come in to decode.
+            <div class="speech-bubble speech-bubble--diamond-narrative quote-goldman">
+              <span class="exec-insight-shimmer">Thank you for stopping by. I need energy to thrive, function and augment human productivity. Come in to decode.</span>
             </div>
             <div class="humanoid-img-wrap flank-asset-wrap">
               <img src="assets/Coal 1.png" alt="Rose gold humanoid with coal — GWY flank" width="220" height="260" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -1056,7 +1087,7 @@
         <div class="strike-flank strike-flank--dc">
           <p class="flank-head-goldman">DATA CENTER</p>
           <div class="deck-placeholder deck-datacenter">
-            <div class="speech-bubble speech-bubble--dc-exec quote-goldman">
+            <div class="speech-bubble speech-bubble--diamond-narrative quote-goldman">
               <span class="exec-insight-shimmer">Energy powers data centers 24/7/365. AI and Robotics are dormant without Sovereign Energy. Come in to decode the fuel of the future.</span>
             </div>
             <div class="flank-asset-wrap">
