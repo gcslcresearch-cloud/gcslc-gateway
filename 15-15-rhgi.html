@@ -30,7 +30,6 @@
       background: var(--rhgi-navy-deep);
     }
 
-    /* High-velocity field */
     .rhgi-velocity-field {
       position: fixed;
       inset: 0;
@@ -54,7 +53,7 @@
         rgba(0, 240, 255, 0.07) 0.6875rem
       );
       background-size: 200% 200%;
-      animation: rhgi-velocity-pan 1.15s linear infinite;
+      animation: rhgi-velocity-pan 5.5s linear infinite;
     }
     @keyframes rhgi-velocity-pan {
       0% { transform: translate3d(0, 0, 0) skewX(-2deg); background-position: 0% 0%; }
@@ -66,14 +65,13 @@
       z-index: 2;
       pointer-events: none;
       background: radial-gradient(circle at 50% 38%, rgba(0, 229, 255, 0.08) 0%, transparent 42%);
-      animation: rhgi-velocity-breathe 1.4s ease-in-out infinite;
+      animation: rhgi-velocity-breathe 5s ease-in-out infinite;
     }
     @keyframes rhgi-velocity-breathe {
       0%, 100% { opacity: 0.7; transform: scale(1); }
       50% { opacity: 1; transform: scale(1.015); }
     }
 
-    /* AKZ Spine */
     .rhgi-akz-spine {
       position: fixed;
       inset: 0;
@@ -94,7 +92,7 @@
       stroke-linejoin: round;
       filter: url(#rhgiAkzGlow);
       opacity: 0.55;
-      animation: rhgi-akz-spine-pulse 0.95s ease-in-out infinite;
+      animation: rhgi-akz-spine-pulse 4.5s ease-in-out infinite;
     }
     .rhgi-akz-path-veil {
       fill: none;
@@ -106,10 +104,9 @@
     }
     @keyframes rhgi-akz-spine-pulse {
       0%, 100% { opacity: 0.45; filter: url(#rhgiAkzGlow) brightness(1); }
-      50% { opacity: 0.72; filter: url(#rhgiAkzGlow) brightness(1.15); }
+      50% { opacity: 0.68; filter: url(#rhgiAkzGlow) brightness(1.08); }
     }
 
-    /* Bluelaser frame */
     .rhgi-bluelaser-stack {
       position: fixed;
       inset: 0;
@@ -125,18 +122,18 @@
         linear-gradient(var(--rhgi-navy-deep), var(--rhgi-navy-deep)) padding-box,
         linear-gradient(125deg, #00f0ff 0%, #0099cc 18%, #e8c547 42%, #fff8c4 55%, #00d4e8 78%, #00f0ff 100%) border-box;
       background-size: 320% 320%;
-      animation: rhgi-cyan-gold-pulse 0.85s ease-in-out infinite;
+      animation: rhgi-cyan-gold-pulse 5.5s ease-in-out infinite;
       opacity: 0.92;
     }
     @keyframes rhgi-cyan-gold-pulse {
-      0%, 100% { background-position: 0% 40%; filter: brightness(0.95) drop-shadow(0 0 0.5rem rgba(0, 240, 255, 0.35)); }
-      50% { background-position: 100% 60%; filter: brightness(1.12) drop-shadow(0 0 1.125rem rgba(232, 197, 71, 0.45)); }
+      0%, 100% { background-position: 0% 42%; filter: brightness(0.97) drop-shadow(0 0 0.5rem rgba(0, 240, 255, 0.28)); }
+      50% { background-position: 100% 58%; filter: brightness(1.06) drop-shadow(0 0 1rem rgba(232, 197, 71, 0.35)); }
     }
     .rhgi-bluelaser-scan {
       position: absolute;
       inset: -45%;
       background: conic-gradient(from 0deg at 50% 50%, transparent 0deg, transparent 265deg, rgba(0, 240, 255, 0.08) 295deg, rgba(232, 197, 71, 0.06) 320deg, transparent 360deg);
-      animation: rhgi-bluelaser-spin 8s linear infinite;
+      animation: rhgi-bluelaser-spin 48s linear infinite;
     }
     .rhgi-bluelaser-vignette {
       position: absolute;
@@ -152,44 +149,36 @@
       pointer-events: none;
       background: repeating-linear-gradient(0deg, transparent 0, transparent 0.1875rem, rgba(0, 255, 240, 0.045) 0.1875rem, rgba(0, 255, 240, 0.045) 0.25rem);
       background-size: 100% 0.4375rem;
-      animation: rhgi-scanline-drift 2.4s linear infinite;
+      animation: rhgi-scanline-drift 6s linear infinite;
       mix-blend-mode: screen;
       opacity: 0.72;
     }
     @keyframes rhgi-scanline-drift { 0% { background-position: 0 0; } 100% { background-position: 0 0.4375rem; } }
 
+    /* Prism-frame — silky slow metallic navy shimmer */
     @keyframes rhgi-prism-frame-power {
       0%, 100% {
-        border-color: rgba(28, 52, 88, 0.98);
+        border-color: rgba(32, 56, 92, 0.96);
         box-shadow:
-          0 0.5rem 2.25rem rgba(0, 0, 0, 0.34),
-          inset 0 1px 0 rgba(255, 255, 255, 0.05),
-          0 0 0.875rem rgba(0, 110, 190, 0.26),
-          0 0 2.25rem rgba(6, 18, 36, 0.55),
-          inset 0 0 1.625rem rgba(4, 12, 26, 0.52);
+          0 0.5rem 2.25rem rgba(0, 0, 0, 0.32),
+          inset 0 1px 0 rgba(255, 255, 255, 0.04),
+          0 0 0.75rem rgba(0, 90, 150, 0.22),
+          0 0 2rem rgba(8, 22, 42, 0.5),
+          inset 0 0 1.5rem rgba(4, 12, 26, 0.5);
       }
-      33% {
-        border-color: rgba(0, 229, 255, 0.72);
+      50% {
+        border-color: rgba(0, 195, 235, 0.55);
         box-shadow:
-          0 0.5rem 2.25rem rgba(0, 0, 0, 0.34),
+          0 0.5rem 2.25rem rgba(0, 0, 0, 0.32),
           inset 0 1px 0 rgba(255, 255, 255, 0.06),
-          0 0 1.5rem rgba(0, 229, 255, 0.4),
-          0 0 3rem rgba(20, 60, 100, 0.38),
-          inset 0 0 1.375rem rgba(0, 229, 255, 0.09);
-      }
-      66% {
-        border-color: rgba(0, 200, 240, 0.55);
-        box-shadow:
-          0 0.5rem 2.25rem rgba(0, 0, 0, 0.34),
-          inset 0 1px 0 rgba(255, 255, 255, 0.05),
-          0 0 1.75rem rgba(0, 229, 255, 0.34),
-          0 0 3.5rem rgba(18, 48, 82, 0.32),
-          inset 0 0 1.125rem rgba(0, 229, 255, 0.06);
+          0 0 1.25rem rgba(0, 200, 230, 0.28),
+          0 0 2.75rem rgba(20, 55, 95, 0.35),
+          inset 0 0 1.25rem rgba(0, 180, 220, 0.07);
       }
     }
     .rhgi-prism-frame {
-      border: 2px solid rgba(30, 54, 88, 0.98);
-      animation: rhgi-prism-frame-power 0.75s ease-in-out infinite;
+      border: 2px solid rgba(30, 54, 88, 0.96);
+      animation: rhgi-prism-frame-power 5s ease-in-out infinite;
     }
 
     .rhgi-shell {
@@ -200,12 +189,11 @@
       pointer-events: auto;
     }
 
-    /* Flex-column dashboard — mobile-first */
     .rhgi-dashboard {
       display: flex;
       flex-direction: column;
       align-items: stretch;
-      gap: clamp(0.75rem, 3vw, 1.35rem);
+      gap: clamp(0.65rem, 2.5vw, 1.15rem);
       width: min(100%, 80rem);
       margin-inline: auto;
     }
@@ -213,6 +201,7 @@
     .rhgi-ticker-section,
     .rhgi-brand-section,
     .rhgi-victory-section,
+    .rhgi-hub-section,
     .rhgi-pulse-section {
       width: 100%;
       min-width: 0;
@@ -227,35 +216,50 @@
       width: min(100%, 36rem);
     }
 
-    /* Title + subtitle */
+    /* Title — gold / white / navy metallic shimmer */
     .rhgi-title {
       margin: 0;
       font-family: 'Goldman', 'Segoe UI', sans-serif;
       font-weight: 700;
-      font-size: clamp(1.75rem, 5.5vw + 0.5rem, 2.75rem);
-      letter-spacing: 0.08em;
-      line-height: 1.1;
-      background: linear-gradient(135deg, #fff0a3 0%, #e8c547 28%, #c9a227 55%, #fff8dc 78%, #e8c547 100%);
-      background-size: 220% 220%;
+      font-size: clamp(0.88rem, 2.4vw + 0.45rem, 1.55rem);
+      letter-spacing: 0.04em;
+      line-height: 1.22;
+      max-width: min(100%, 38rem);
+      margin-inline: auto;
+      padding-inline: clamp(0.25rem, 2vw, 0.75rem);
+      background: linear-gradient(
+        128deg,
+        #0d1a2e 0%,
+        #1a3a5c 12%,
+        #fff8e8 22%,
+        #e8c547 38%,
+        #f5f0e6 48%,
+        #1e3a5a 58%,
+        #e8c547 68%,
+        #ffffff 78%,
+        #0f2844 92%,
+        #e8c547 100%
+      );
+      background-size: 280% 280%;
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      animation: rhgi-goldman-sheen 0.9s ease-in-out infinite;
+      animation: rhgi-title-metallic 6.5s ease-in-out infinite;
     }
-    @keyframes rhgi-goldman-sheen {
-      0%, 100% { background-position: 0% 40%; }
-      50% { background-position: 100% 60%; }
+    @keyframes rhgi-title-metallic {
+      0%, 100% { background-position: 12% 45%; filter: brightness(1.02); }
+      50% { background-position: 88% 55%; filter: brightness(1.08); }
     }
 
     .rhgi-sub {
       margin: clamp(0.4rem, 1.5vw, 0.55rem) auto 0;
-      max-width: min(100%, 38rem);
+      max-width: min(100%, 36rem);
       padding-inline: clamp(0.25rem, 2vw, 0.5rem);
       font-family: 'Goldman', 'Segoe UI', sans-serif;
       font-weight: 700;
-      font-size: clamp(0.55rem, 1.2vw + 0.35rem, 0.75rem);
-      letter-spacing: 0.03em;
-      line-height: 1.55;
+      font-size: clamp(0.52rem, 1.1vw + 0.35rem, 0.72rem);
+      letter-spacing: 0.04em;
+      line-height: 1.5;
       background: linear-gradient(
         118deg,
         rgba(0, 200, 230, 0.85) 0%,
@@ -268,14 +272,13 @@
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      animation: rhgi-cyan-shimmer 0.65s ease-in-out infinite;
+      animation: rhgi-cyan-shimmer 4s ease-in-out infinite;
     }
     @keyframes rhgi-cyan-shimmer {
       0%, 100% { background-position: 0% 50%; filter: brightness(1); }
-      50% { background-position: 100% 50%; filter: brightness(1.1); }
+      50% { background-position: 100% 50%; filter: brightness(1.06); }
     }
 
-    /* Countdown ticker */
     .rhgi-election-ticker {
       border-radius: 0.625rem;
       padding: clamp(0.45rem, 2vw, 0.55rem) clamp(0.5rem, 2.5vw, 0.65rem);
@@ -319,7 +322,6 @@
       grid-row: 2;
     }
 
-    /* Victory Arc — touch-friendly */
     .rhgi-victory-section {
       display: flex;
       flex-direction: column;
@@ -350,7 +352,7 @@
       width: min(92vw, 24rem);
       max-width: 100%;
       min-height: 44px;
-      padding: clamp(0.35rem, 2vw, 0.6rem);
+      padding: clamp(0.25rem, 1.5vw, 0.45rem);
       margin: 0;
       border: none;
       background: transparent;
@@ -368,9 +370,12 @@
       outline: 2px solid rgba(0, 229, 255, 0.85);
       outline-offset: 4px;
     }
+    /* Victory Arc −15% vertical footprint */
     .rhgi-victory-arc-svg-wrap {
       width: 100%;
       max-width: 100%;
+      transform: scaleY(0.85);
+      transform-origin: center bottom;
     }
     .rhgi-victory-arc-svg-wrap svg {
       width: 100%;
@@ -396,11 +401,11 @@
       stroke: url(#rhgiArcProgGrad);
       stroke-width: 14;
       stroke-linecap: round;
-      animation: rhgi-arc-sheen 0.7s ease-in-out infinite;
+      animation: rhgi-arc-sheen 4s ease-in-out infinite;
     }
     @keyframes rhgi-arc-sheen {
       0%, 100% { filter: brightness(1); }
-      50% { filter: brightness(1.12); }
+      50% { filter: brightness(1.08); }
     }
     .rhgi-arc-readout {
       margin: 0;
@@ -422,7 +427,6 @@
       padding-inline: 0.25rem;
     }
 
-    /* FCT diamond */
     .rhgi-fct-diamond-wrap {
       flex-shrink: 0;
       display: flex;
@@ -430,6 +434,8 @@
       align-items: center;
       gap: 0.25rem;
       padding-bottom: 0.25rem;
+      transform: scaleY(0.85);
+      transform-origin: center bottom;
     }
     .rhgi-fct-diamond {
       width: clamp(2rem, 8vw, 2.25rem);
@@ -437,7 +443,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      animation: rhgi-diamond-pulse 0.55s ease-in-out infinite;
+      animation: rhgi-diamond-pulse 3.5s ease-in-out infinite;
     }
     .rhgi-fct-diamond svg {
       width: 100%;
@@ -451,7 +457,7 @@
     }
     .rhgi-fct-diamond:not(.rhgi-fct-locked) {
       filter: drop-shadow(0 0 0.375rem rgba(0, 229, 255, 0.35));
-      animation: rhgi-diamond-pulse-cyan 0.55s ease-in-out infinite;
+      animation: rhgi-diamond-pulse-cyan 3.5s ease-in-out infinite;
     }
     .rhgi-fct-diamond:not(.rhgi-fct-locked) .rhgi-d-shape {
       fill: url(#rhgiCyanDiamondGrad);
@@ -459,14 +465,14 @@
     }
     @keyframes rhgi-diamond-pulse {
       0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0.5rem rgba(232, 197, 71, 0.55)) drop-shadow(0 0 1.25rem rgba(255, 220, 120, 0.45)); }
-      50% { transform: scale(1.1); filter: drop-shadow(0 0 1.125rem rgba(255, 248, 220, 0.65)) drop-shadow(0 0 2rem rgba(232, 197, 71, 0.5)); }
+      50% { transform: scale(1.08); filter: drop-shadow(0 0 1.125rem rgba(255, 248, 220, 0.65)) drop-shadow(0 0 2rem rgba(232, 197, 71, 0.5)); }
     }
     @keyframes rhgi-diamond-pulse-cyan {
       0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.06); }
+      50% { transform: scale(1.05); }
     }
     .rhgi-fct-diamond.rhgi-fct-locked {
-      animation: rhgi-diamond-pulse 0.55s ease-in-out infinite;
+      animation: rhgi-diamond-pulse 3.5s ease-in-out infinite;
     }
     .rhgi-fct-tag {
       font-size: clamp(0.4rem, 1.8vw + 0.15rem, 0.5rem);
@@ -486,14 +492,185 @@
       opacity: 0;
       max-height: 0;
       overflow: hidden;
-      transition: opacity 0.35s ease, max-height 0.35s ease;
+      transition: opacity 0.45s ease, max-height 0.45s ease;
     }
     .rhgi-fct-diamond-wrap:has(.rhgi-fct-locked) .rhgi-fct-lock-label {
       opacity: 1;
       max-height: 2rem;
     }
 
-    /* Global Pulse — grid: 1 col phone, 2×2 narrow tablet, 4 col laptop */
+    /* —— National Mobilization Hub —— */
+    .rhgi-hub-section-title {
+      margin: 0 0 0.4rem;
+      font-family: 'Goldman', 'Segoe UI', sans-serif;
+      font-size: clamp(0.48rem, 1vw + 0.28rem, 0.58rem);
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255, 248, 220, 0.92);
+      text-align: center;
+    }
+    .rhgi-hub {
+      border-radius: 0.75rem;
+      padding: clamp(0.55rem, 2.2vw, 0.85rem);
+      background: linear-gradient(165deg, rgba(5, 14, 28, 0.72), rgba(3, 10, 22, 0.55));
+    }
+    .rhgi-hub-inner {
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      gap: clamp(0.5rem, 2.5vw, 1rem);
+      min-width: 0;
+    }
+    .rhgi-hub-pillar-col {
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+      min-width: min(18vw, 4.5rem);
+    }
+    .rhgi-20m-pillar-wrap {
+      position: relative;
+      width: clamp(2.75rem, 12vw, 3.75rem);
+      height: clamp(9rem, 38vw, 12.5rem);
+      flex-shrink: 0;
+    }
+    .rhgi-20m-pillar-wrap svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .rhgi-20m-label {
+      font-family: 'Goldman', 'Segoe UI', sans-serif;
+      font-size: clamp(0.42rem, 1.5vw + 0.12rem, 0.52rem);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(232, 197, 71, 0.9);
+      text-align: center;
+      max-width: 5rem;
+      line-height: 1.3;
+    }
+    .rhgi-20m-readout {
+      font-family: ui-monospace, monospace;
+      font-size: clamp(0.48rem, 1.4vw + 0.15rem, 0.58rem);
+      font-weight: 800;
+      color: var(--rhgi-gold-bright);
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+    .rhgi-hub-main {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(0.45rem, 2vw, 0.65rem);
+    }
+    .rhgi-corridor-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: clamp(0.35rem, 1.8vw, 0.5rem);
+      width: 100%;
+    }
+    @media (min-width: 40rem) {
+      .rhgi-corridor-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+    .rhgi-corridor-btn {
+      appearance: none;
+      margin: 0;
+      padding: clamp(0.45rem, 1.8vw, 0.55rem) clamp(0.35rem, 1.2vw, 0.5rem);
+      font-family: 'Goldman', 'Segoe UI', sans-serif;
+      font-weight: 700;
+      font-size: clamp(0.48rem, 1.2vw + 0.2rem, 0.62rem);
+      letter-spacing: 0.06em;
+      text-align: center;
+      color: rgba(255, 248, 220, 0.92);
+      border-radius: 0.5rem;
+      border: 1px solid rgba(40, 72, 118, 0.85);
+      background: linear-gradient(165deg, rgba(18, 36, 58, 0.95), rgba(6, 14, 28, 0.98));
+      background-size: 200% 200%;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        0 0 0.5rem rgba(0, 40, 80, 0.35);
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      transition: border-color 0.35s ease, box-shadow 0.35s ease, filter 0.35s ease;
+      animation: rhgi-corridor-metallic 5.5s ease-in-out infinite;
+    }
+    @keyframes rhgi-corridor-metallic {
+      0%, 100% { background-position: 0% 40%; filter: brightness(1); }
+      50% { background-position: 100% 55%; filter: brightness(1.05); }
+    }
+    .rhgi-corridor-btn:hover {
+      border-color: rgba(0, 200, 230, 0.45);
+    }
+    .rhgi-corridor-btn.rhgi-corridor-btn--active {
+      border-color: rgba(232, 197, 71, 0.65);
+      box-shadow:
+        0 0 1rem rgba(232, 197, 71, 0.25),
+        inset 0 0 1.25rem rgba(0, 200, 255, 0.08);
+      color: #fff8dc;
+    }
+    .rhgi-corridor-btn:focus-visible {
+      outline: 2px solid rgba(0, 229, 255, 0.85);
+      outline-offset: 2px;
+    }
+
+    .rhgi-conversion-ticker {
+      width: 100%;
+      overflow: hidden;
+      border-radius: 0.45rem;
+      border: 1px solid rgba(0, 229, 255, 0.18);
+      background: linear-gradient(180deg, rgba(4, 16, 32, 0.92), rgba(2, 10, 22, 0.96));
+      padding: 0.35rem 0;
+    }
+    .rhgi-conversion-ticker-label {
+      display: block;
+      padding: 0 0.65rem 0.25rem;
+      font-family: 'Goldman', 'Segoe UI', sans-serif;
+      font-size: clamp(0.4rem, 1vw + 0.15rem, 0.48rem);
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(0, 229, 255, 0.75);
+    }
+    .rhgi-conversion-ticker-inner {
+      overflow: hidden;
+      mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+    }
+    .rhgi-conversion-ticker-track {
+      display: inline-flex;
+      width: max-content;
+      white-space: nowrap;
+      animation: rhgi-conversion-drift 22s linear infinite;
+    }
+    @keyframes rhgi-conversion-drift {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    .rhgi-conversion-ticker-text {
+      flex-shrink: 0;
+      padding: 0 1.5rem 0 0.65rem;
+      font-family: 'Goldman', 'Segoe UI', sans-serif;
+      font-weight: 700;
+      font-size: clamp(0.48rem, 1.1vw + 0.18rem, 0.62rem);
+      letter-spacing: 0.1em;
+      background: linear-gradient(90deg, #5a6a7a, #e8eef4, #00e5ff, #e8c547, #5a6a7a);
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: rhgi-ticker-shimmer 4s ease-in-out infinite;
+    }
+    @keyframes rhgi-ticker-shimmer {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
     .rhgi-global-pulse-label {
       margin: 0 0 clamp(0.35rem, 2vw, 0.5rem);
       text-align: center;
@@ -555,12 +732,12 @@
         0 0 0 1px rgba(0, 229, 255, 0.12),
         inset 0 0 1.375rem rgba(0, 0, 0, 0.55),
         0 0 0.875rem rgba(0, 60, 120, 0.25);
-      animation: rhgi-navy-frame-shimmer 0.8s ease-in-out infinite;
-      animation-delay: calc(var(--rhgi-i) * 0.12s);
+      animation: rhgi-navy-frame-shimmer 4.5s ease-in-out infinite;
+      animation-delay: calc(var(--rhgi-i) * 0.15s);
     }
     @keyframes rhgi-navy-frame-shimmer {
       0%, 100% { background-position: 0% 40%; filter: brightness(1); border-color: rgba(40, 72, 118, 0.85); }
-      50% { background-position: 100% 58%; filter: brightness(1.06); border-color: rgba(0, 160, 220, 0.45); }
+      50% { background-position: 100% 58%; filter: brightness(1.04); border-color: rgba(0, 160, 220, 0.4); }
     }
     .rhgi-clock-svg {
       width: 85%;
@@ -600,11 +777,13 @@
 
     @media (prefers-reduced-motion: reduce) {
       .rhgi-velocity-streaks, .rhgi-velocity-pulse, .rhgi-bluelaser-edge, .rhgi-bluelaser-scan, .rhgi-satellite-scanlines,
-      .rhgi-prism-frame, .rhgi-title, .rhgi-sub, .rhgi-analog-clock-frame, .rhgi-fct-diamond, .rhgi-arc-progress, .rhgi-akz-path-core {
+      .rhgi-prism-frame, .rhgi-hub, .rhgi-title, .rhgi-sub, .rhgi-analog-clock-frame, .rhgi-fct-diamond, .rhgi-arc-progress, .rhgi-akz-path-core,
+      .rhgi-conversion-ticker-track, .rhgi-corridor-btn, .rhgi-conversion-ticker-text {
         animation: none !important;
       }
+      .rhgi-conversion-ticker-track { transform: translateX(0) !important; }
       .rhgi-title {
-        background: linear-gradient(135deg, #fff0a3 0%, #e8c547 50%, #b8942a 100%);
+        background: linear-gradient(135deg, #fff8e8 0%, #e8c547 40%, #1a3a5c 100%);
         -webkit-background-clip: text;
         background-clip: text;
       }
@@ -669,8 +848,8 @@
         </section>
 
         <section class="rhgi-brand-section">
-          <h1 class="rhgi-title">15-15</h1>
-          <p class="rhgi-sub">RHGI | Powered by 8R Stealth Paradigm Convergence</p>
+          <h1 class="rhgi-title">Renewed Hope Grassroots Initiatives</h1>
+          <p class="rhgi-sub">Powered by 8R Stealth Paradigm Convergence</p>
         </section>
 
         <section class="rhgi-victory-section" aria-labelledby="rhgi-gatekeeper-heading">
@@ -727,6 +906,55 @@
           <p class="rhgi-arc-caption">Semi-circular gauge toward constitutional two-thirds (36 states) with Federal Capital Territory as distinct anchor.</p>
         </section>
 
+        <section class="rhgi-hub-section" aria-labelledby="rhgi-hub-heading">
+          <h2 id="rhgi-hub-heading" class="rhgi-hub-section-title">National Mobilization Hub</h2>
+          <div class="rhgi-hub rhgi-prism-frame">
+            <div class="rhgi-hub-inner">
+              <div class="rhgi-hub-pillar-col">
+                <div class="rhgi-20m-pillar-wrap" id="rhgi-20mPillar" role="img" aria-label="National vote progress toward 20 million seven hundred nine thousand six hundred sixty-eight">
+                  <svg viewBox="0 0 80 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                    <defs>
+                      <linearGradient id="rhgiPillarFillGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+                        <stop offset="0%" stop-color="#0c1c34"/>
+                        <stop offset="40%" stop-color="#0099cc"/>
+                        <stop offset="75%" stop-color="#e8c547"/>
+                        <stop offset="100%" stop-color="#fff8dc"/>
+                      </linearGradient>
+                      <linearGradient id="rhgiPillarTrackGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#1c3458"/>
+                        <stop offset="100%" stop-color="#0a1828"/>
+                      </linearGradient>
+                    </defs>
+                    <rect x="12" y="8" width="56" height="176" rx="10" fill="url(#rhgiPillarTrackGrad)" opacity="0.95"/>
+                    <rect id="rhgi-pillar-fill" x="16" y="180" width="48" height="0" rx="8" fill="url(#rhgiPillarFillGrad)"/>
+                  </svg>
+                </div>
+                <span class="rhgi-20m-label">Target 20.7M pillar</span>
+                <span class="rhgi-20m-readout" id="rhgi-20m-readout">0 / 20,709,668</span>
+              </div>
+              <div class="rhgi-hub-main">
+                <div class="rhgi-corridor-grid" role="group" aria-label="Geopolitical corridor selector">
+                  <button type="button" class="rhgi-corridor-btn" data-rhgi-corridor="nw">Northwest</button>
+                  <button type="button" class="rhgi-corridor-btn" data-rhgi-corridor="ne">Northeast</button>
+                  <button type="button" class="rhgi-corridor-btn" data-rhgi-corridor="nc">North Central</button>
+                  <button type="button" class="rhgi-corridor-btn" data-rhgi-corridor="sw">Southwest</button>
+                  <button type="button" class="rhgi-corridor-btn" data-rhgi-corridor="ss">South-South</button>
+                  <button type="button" class="rhgi-corridor-btn" data-rhgi-corridor="se">Southeast</button>
+                </div>
+                <div class="rhgi-conversion-ticker" role="region" aria-label="Canvasser check-ins">
+                  <span class="rhgi-conversion-ticker-label">Canvasser Check-ins</span>
+                  <div class="rhgi-conversion-ticker-inner">
+                    <div class="rhgi-conversion-ticker-track" id="rhgi-conversionTrack">
+                      <span class="rhgi-conversion-ticker-text" id="rhgi-conversionLineA"></span>
+                      <span class="rhgi-conversion-ticker-text" id="rhgi-conversionLineB" aria-hidden="true"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section class="rhgi-pulse-section">
           <p class="rhgi-global-pulse-label">Global Pulse</p>
           <div class="rhgi-clocks-grid" id="rhgi-clocksRow" role="group" aria-label="World clocks"></div>
@@ -741,12 +969,53 @@
       var STATE_MAX = 36;
       var THRESHOLD = 0.25;
       var ELECTION_TARGET = new Date('2027-01-16T00:00:00+01:00');
+      var NATIONAL_TARGET = 20709668;
+      var NATIONAL_CURRENT = 7245000;
 
       var diamond = document.getElementById('rhgi-fctDiamond');
       var ratio = STATE_NOW / STATE_MAX;
       if (diamond) {
         diamond.classList.toggle('rhgi-fct-locked', ratio >= THRESHOLD);
       }
+
+      var pillarFill = document.getElementById('rhgi-pillar-fill');
+      var readout20 = document.getElementById('rhgi-20m-readout');
+      function updatePillar() {
+        var pct = Math.min(100, Math.max(0, (NATIONAL_CURRENT / NATIONAL_TARGET) * 100));
+        var maxH = 168;
+        var h = maxH * (pct / 100);
+        var y = 12 + (maxH - h);
+        if (pillarFill) {
+          pillarFill.setAttribute('y', String(y));
+          pillarFill.setAttribute('height', String(Math.max(0, h)));
+        }
+        if (readout20) {
+          readout20.textContent =
+            NATIONAL_CURRENT.toLocaleString('en-NG') + ' / ' + NATIONAL_TARGET.toLocaleString('en-NG');
+        }
+      }
+      updatePillar();
+
+      document.querySelectorAll('.rhgi-corridor-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          document.querySelectorAll('.rhgi-corridor-btn').forEach(function (b) {
+            b.classList.remove('rhgi-corridor-btn--active');
+          });
+          btn.classList.add('rhgi-corridor-btn--active');
+        });
+      });
+
+      var convA = document.getElementById('rhgi-conversionLineA');
+      var convB = document.getElementById('rhgi-conversionLineB');
+      var checkInBase = 18420;
+      function tickConversion() {
+        var n = checkInBase + Math.floor(Math.random() * 12);
+        var line = 'LIVE · Canvasser check-ins · ' + n.toLocaleString('en-NG') + ' sessions · sync OK · ';
+        if (convA) convA.textContent = line;
+        if (convB) convB.textContent = line;
+      }
+      tickConversion();
+      setInterval(tickConversion, 4000);
 
       function pad2(n) { return String(n).padStart(2, '0'); }
 
