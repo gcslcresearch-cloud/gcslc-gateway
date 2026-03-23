@@ -181,7 +181,7 @@
     var i;
     for (i = 0; i < els.length; i++) els[i].textContent = '—';
     var tw = document.querySelectorAll('.sovereign-tier-which');
-    for (i = 0; i < tw.length; i++) tw[i].textContent = 'Chairman immunity';
+    for (i = 0; i < tw.length; i++) tw[i].textContent = 'Extended session';
   }
 
   function init() {

@@ -532,6 +532,29 @@
       0% { background-position: 0% center; }
       100% { background-position: 200% center; }
     }
+    /* STRIKE 1968v34 — AKZ spine narrative: high-velocity gold / cyan */
+    .akz-spine-narrative {
+      background: linear-gradient(
+        90deg,
+        #00f0ff 0%,
+        #e8c547 14%,
+        #fff8dc 28%,
+        #00e5ff 42%,
+        #D4AF37 56%,
+        #7ee8ff 70%,
+        #fff0a3 84%,
+        #00f0ff 100%
+      );
+      background-size: 400% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: akz-spine-velocity 1.1s linear infinite;
+    }
+    @keyframes akz-spine-velocity {
+      0% { background-position: 0% center; }
+      100% { background-position: 400% center; }
+    }
     .footer-signature {
       margin: 1.5rem 0 0;
       text-align: right;
@@ -1066,7 +1089,12 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .bluelaser-scan, .bluelaser-edge, .satellite-scanlines, .ticker-track, .tz-cell, .wow-spine-sub, .corridor-pulse-row td, .footer-signature-metallic { animation: none !important; }
+      .bluelaser-scan, .bluelaser-edge, .satellite-scanlines, .ticker-track, .tz-cell, .wow-spine-sub, .corridor-pulse-row td, .footer-signature-metallic, .akz-spine-narrative { animation: none !important; }
+      .akz-spine-narrative {
+        background: none !important;
+        -webkit-text-fill-color: var(--gold-bright);
+        color: var(--gold-bright);
+      }
       .tz-cell { background-position: 0% 0%, 0% 40%; }
       .ticker-track { flex-wrap: wrap; width: 100%; max-width: 1200px; margin: 0 auto; transform: none; }
       .ticker-inner { flex-wrap: wrap; white-space: normal; justify-content: center; gap: 0.5rem 1rem; }
@@ -1221,7 +1249,7 @@
         </div>
       </div>
       <aside class="determinants-sidebar glassmorphism" aria-label="8R Determinants">
-        <div class="determinants-title kwas-kwas-shimmer">Determinants (8R)</div>
+        <div class="determinants-title"><span class="kwas-kwas-shimmer">Determinants (8R)</span><span class="akz-spine-narrative"> — Abuja-Zaria-Kano (AKZ) the spine governing National Coal Corridor.</span></div>
         <div class="determinant triggered" id="detD1" data-d="1" role="button" tabindex="0" data-det-idx="0"><span class="det-badge">D1</span><span class="det-label">Refine</span></div>
         <div class="determinant" id="detD2" data-d="2" role="button" tabindex="0" data-det-idx="1"><span class="det-badge">D2</span><span class="det-label">Reset</span></div>
         <div class="determinant" id="detD3" data-d="3" role="button" tabindex="0" data-det-idx="2"><span class="det-badge">D3</span><span class="det-label">Research</span></div>
