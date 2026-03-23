@@ -42,7 +42,8 @@
       -webkit-user-select: none;
       user-select: none;
     }
-    input, textarea, select, button[type="submit"], .cc-combobox input { -webkit-user-select: text; user-select: text; }
+    input, textarea, select, button[type="submit"], .cc-combobox input,
+    .form-executive-support a[href^="mailto"] { -webkit-user-select: text; user-select: text; }
 
     /* —— Bluelaser frame —— */
     .bluelaser-stack {
@@ -222,6 +223,44 @@
       align-items: center;
       gap: 0.65rem;
       width: 100%;
+    }
+    .form-executive-support {
+      width: 100%;
+      text-align: center;
+      padding: 0.5rem 0.45rem 0.55rem;
+      border-radius: 10px;
+      border: 1px solid rgba(0, 229, 255, 0.22);
+      background: linear-gradient(165deg, rgba(6, 20, 38, 0.75), rgba(4, 12, 22, 0.85));
+      box-shadow: inset 0 0 20px rgba(0, 229, 255, 0.04);
+    }
+    .form-executive-support h3 {
+      margin: 0 0 0.4rem;
+      font-family: 'Goldman', 'Segoe UI', sans-serif;
+      font-size: 0.56rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+    }
+    .form-executive-support-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.32rem;
+      align-items: center;
+    }
+    .form-executive-support a {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: rgba(0, 229, 255, 0.95);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(0, 229, 255, 0.28);
+      padding-bottom: 1px;
+      max-width: 100%;
+      word-break: break-all;
+    }
+    .form-executive-support a:hover {
+      color: var(--gold-bright);
+      border-bottom-color: rgba(232, 197, 71, 0.45);
     }
     .form-logout-wrap {
       display: flex;
@@ -563,10 +602,62 @@
       .strike-flank--dc { justify-self: center; max-width: 100%; width: 100%; }
       .strike-center { order: -1; max-width: 440px; }
     }
+    /* Prism-Strike — 2px live power-field frame (GWY, form, DATA CENTER) */
+    @keyframes prism-frame-power {
+      0%, 100% {
+        border-color: rgba(28, 52, 88, 0.98);
+        box-shadow:
+          0 8px 36px rgba(0, 0, 0, 0.34),
+          inset 0 1px 0 rgba(255, 255, 255, 0.05),
+          0 0 14px rgba(0, 110, 190, 0.26),
+          0 0 36px rgba(6, 18, 36, 0.55),
+          inset 0 0 26px rgba(4, 12, 26, 0.52);
+      }
+      17% {
+        border-color: rgba(0, 229, 255, 0.72);
+        box-shadow:
+          0 8px 36px rgba(0, 0, 0, 0.34),
+          inset 0 1px 0 rgba(255, 255, 255, 0.06),
+          0 0 24px rgba(0, 229, 255, 0.4),
+          0 0 48px rgba(20, 60, 100, 0.38),
+          inset 0 0 22px rgba(0, 229, 255, 0.09);
+      }
+      34% {
+        border-color: rgba(40, 72, 118, 0.96);
+        box-shadow:
+          0 8px 36px rgba(0, 0, 0, 0.34),
+          inset 0 1px 0 rgba(255, 255, 255, 0.05),
+          0 0 16px rgba(70, 130, 200, 0.2),
+          0 0 38px rgba(8, 22, 42, 0.52),
+          inset 0 0 28px rgba(5, 14, 30, 0.58);
+      }
+      52% {
+        border-color: rgba(0, 200, 240, 0.55);
+        box-shadow:
+          0 8px 36px rgba(0, 0, 0, 0.34),
+          inset 0 1px 0 rgba(255, 255, 255, 0.05),
+          0 0 28px rgba(0, 229, 255, 0.34),
+          0 0 56px rgba(18, 48, 82, 0.32),
+          inset 0 0 18px rgba(0, 229, 255, 0.06);
+      }
+      71% {
+        border-color: rgba(24, 44, 72, 0.98);
+        box-shadow:
+          0 8px 36px rgba(0, 0, 0, 0.34),
+          inset 0 1px 0 rgba(255, 255, 255, 0.05),
+          0 0 12px rgba(0, 80, 150, 0.22),
+          0 0 32px rgba(4, 12, 24, 0.62),
+          inset 0 0 30px rgba(2, 8, 18, 0.58);
+      }
+    }
+    .prism-frame {
+      border: 2px solid rgba(30, 54, 88, 0.98);
+      border-style: solid;
+      animation: prism-frame-power 2.75s ease-in-out infinite;
+    }
     .deck-placeholder {
       position: relative;
       border-radius: 10px;
-      border: 1px dashed rgba(232, 197, 71, 0.35);
       background: linear-gradient(165deg, rgba(8, 24, 44, 0.65), rgba(4, 14, 26, 0.55));
       overflow: hidden;
       width: 100%;
@@ -690,7 +781,11 @@
       }
     }
     .exec-insight-shimmer {
-      display: inline;
+      display: inline-block;
+      width: 100%;
+      text-align: center;
+      vertical-align: top;
+      box-sizing: border-box;
       background: linear-gradient(
         118deg,
         #050a14 0%,
@@ -767,11 +862,9 @@
       margin: 0 auto;
       padding: 1.25rem 1.15rem;
       background: rgba(8, 28, 48, 0.55);
-      border: 1px solid rgba(0, 229, 255, 0.22);
       border-radius: 16px;
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);
     }
     .form-panel h2 {
       margin: 0 0 1rem;
@@ -988,8 +1081,16 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .bluelaser-edge, .bluelaser-scan, .satellite-scanlines, .gcslc-identity, .flank-head-goldman, .analog-wrap, .btn-submit, .clock-svg, .session-bar, .speech-bubble, .dc-placeholder-inner, .sovereign-spine-widget, .analog-clock-frame, .signature-metallic, .btn-sovereign-logout, .exec-insight-shimmer {
+      .bluelaser-edge, .bluelaser-scan, .satellite-scanlines, .gcslc-identity, .flank-head-goldman, .analog-wrap, .btn-submit, .clock-svg, .session-bar, .speech-bubble, .dc-placeholder-inner, .sovereign-spine-widget, .analog-clock-frame, .signature-metallic, .btn-sovereign-logout, .exec-insight-shimmer, .prism-frame {
         animation: none !important;
+      }
+      .prism-frame {
+        border-color: rgba(32, 56, 90, 0.96);
+        box-shadow:
+          0 8px 36px rgba(0, 0, 0, 0.34),
+          inset 0 1px 0 rgba(255, 255, 255, 0.05),
+          0 0 18px rgba(0, 120, 200, 0.22),
+          inset 0 0 24px rgba(4, 12, 26, 0.5);
       }
       .btn-submit { background-position: 50% 50%; }
       .analog-wrap { opacity: 1; transform: none; }
@@ -1039,7 +1140,7 @@
       <div class="sovereign-strike-row">
         <div class="strike-flank strike-flank--gwy">
           <p class="flank-head-goldman">GWY</p>
-          <div class="deck-placeholder deck-humanoid">
+          <div class="deck-placeholder deck-humanoid prism-frame">
             <div class="speech-bubble speech-bubble--diamond-narrative quote-goldman">
               <span class="exec-insight-shimmer">Thank you for stopping by. I need energy to thrive, function and augment human productivity. Come in to decode.</span>
             </div>
@@ -1050,7 +1151,7 @@
           </div>
         </div>
         <div class="strike-center">
-          <form class="form-panel" id="mirrorForm" autocomplete="on" novalidate>
+          <form class="form-panel prism-frame" id="mirrorForm" autocomplete="on" novalidate>
             <h2>Organization intake</h2>
             <div class="form-row">
               <label for="orgName">Organization</label>
@@ -1077,6 +1178,13 @@
                 <span class="session-bar-tiers">Access Tier 1 (15m) | Extension Tier 2 (15m)</span>
                 <span class="session-bar-sub"><span class="sovereign-tier-which">Tier 1 active</span> · <span class="sovereign-tier-remaining">30:00</span> remaining</span>
               </p>
+              <div class="form-executive-support" aria-label="Executive support contacts">
+                <h3>Executive support</h3>
+                <div class="form-executive-support-links">
+                  <a href="mailto:info@galadimanruwacenter.org?subject=Executive%20Support%20%E2%80%94%20GCSLC%20Sovereign%20Mirror">info@galadimanruwacenter.org</a>
+                  <a href="mailto:gcslc.research@gmail.com?subject=Executive%20Support%20%E2%80%94%20GCSLC%20Sovereign%20Mirror">gcslc.research@gmail.com</a>
+                </div>
+              </div>
               <div class="form-logout-wrap">
                 <button type="button" class="btn-sovereign-logout" id="sovereignLogoutBtn" title="Chairman: refresh page. Visitors: end sovereign session.">Sovereign Logout</button>
               </div>
@@ -1086,7 +1194,7 @@
         </div>
         <div class="strike-flank strike-flank--dc">
           <p class="flank-head-goldman">DATA CENTER</p>
-          <div class="deck-placeholder deck-datacenter">
+          <div class="deck-placeholder deck-datacenter prism-frame">
             <div class="speech-bubble speech-bubble--diamond-narrative quote-goldman">
               <span class="exec-insight-shimmer">Energy powers data centers 24/7/365. AI and Robotics are dormant without Sovereign Energy. Come in to decode the fuel of the future.</span>
             </div>
