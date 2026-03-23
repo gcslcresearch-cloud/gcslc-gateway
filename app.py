@@ -30,9 +30,6 @@ import time
 import random
 from datetime import datetime, timezone
 
-SERVER_HOST = "0.0.0.0"
-SERVER_PORT = 2027
-
 # Baseline data — 640.04 Mt, 1,199 MW, 13 states
 BASELINE_RESERVES = 640.04
 BASELINE_POWER = 1199
@@ -166,4 +163,7 @@ with gr.Blocks(css=CSS, title="GCSLC NRRFC Fusion Center") as demo:
     demo.load(get_leak_md, None, leak_md, every=60)
 
 if __name__ == "__main__":
-    demo.launch(server_name=SERVER_HOST, server_port=SERVER_PORT, share=False)
+    try:
+        demo.launch(server_name="0.0.0.0", server_port=7860, share=False)
+    except OSError:
+        demo.launch(server_name="0.0.0.0", server_port=0, share=False)
