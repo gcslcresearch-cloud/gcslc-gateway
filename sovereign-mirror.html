@@ -34,7 +34,8 @@
       user-select: none;
     }
     input, textarea, select, button[type="submit"], .cc-combobox input,
-    .form-executive-support a[href^="mailto"] { -webkit-user-select: text; user-select: text; }
+    .form-executive-support a[href^="mailto"],
+    .form-executive-support a[href^="https://wa.me"] { -webkit-user-select: text; user-select: text; }
 
     /* —— Bluelaser frame —— */
     .bluelaser-stack {
@@ -412,6 +413,10 @@
       text-transform: none;
       color: rgba(0, 229, 255, 0.92);
     }
+    /* Clean intake: hide tier / chairman remaining line */
+    .form-sovereign-footer .session-bar-sub {
+      display: none !important;
+    }
 
     /* Sovereign OS: shared blur layer + Tier 3 expiry modal */
     .sovereign-app-layer { min-height: 100dvh; }
@@ -683,11 +688,68 @@
       justify-self: center;
       align-self: center;
       display: flex;
-      justify-content: center;
-      align-items: center;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: stretch;
+      gap: 0.75rem;
       width: 100%;
       max-width: min(440px, 100%);
       padding: 0 0.25rem;
+    }
+    /* IP Shield ticker — replaces static LW15954 seal; full center column width */
+    .ip-shield-ticker {
+      width: 100%;
+      padding: 0.42rem 0;
+      border-radius: 8px;
+      border: 1px solid rgba(232, 197, 71, 0.32);
+      background: linear-gradient(180deg, rgba(4, 18, 36, 0.92), rgba(2, 10, 22, 0.96));
+      box-shadow:
+        inset 0 0 22px rgba(0, 229, 255, 0.05),
+        0 0 12px rgba(212, 175, 55, 0.1);
+      overflow: hidden;
+    }
+    .ip-shield-ticker-inner {
+      width: 100%;
+      overflow: hidden;
+      mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+    }
+    .ip-shield-ticker-track {
+      display: inline-flex;
+      width: max-content;
+      white-space: nowrap;
+      animation: ip-shield-ticker-drift 120s linear infinite;
+    }
+    @keyframes ip-shield-ticker-drift {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    .ip-shield-ticker-text {
+      flex-shrink: 0;
+      padding-right: 2.5rem;
+      font-family: 'Goldman', 'Segoe UI', sans-serif;
+      font-weight: 700;
+      font-size: clamp(0.55rem, 1.35vw, 0.68rem);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      background: linear-gradient(
+        105deg,
+        #5a4a2a 0%,
+        #fff8dc 16%,
+        #e8c547 30%,
+        #00e5ff 46%,
+        #fff0a3 58%,
+        #b8942a 74%,
+        #00f0ff 100%
+      );
+      background-size: 220% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: ip-shield-metallic-sheen 14s ease-in-out infinite;
+    }
+    @keyframes ip-shield-metallic-sheen {
+      0%, 100% { background-position: 0% 50%; filter: drop-shadow(0 0 5px rgba(232, 197, 71, 0.32)); }
+      50% { background-position: 100% 50%; filter: drop-shadow(0 0 9px rgba(0, 229, 255, 0.22)); }
     }
     .flank-head-goldman {
       margin: 0 0 0.5rem;
@@ -1142,27 +1204,6 @@
       width: 100%;
       margin: 0 auto;
     }
-    .footer-seal-centered {
-      display: flex;
-      justify-content: center;
-      width: 100%;
-      margin-top: 0.5rem;
-    }
-    .footer-seal {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.2rem 0.5rem;
-      font-family: ui-monospace, monospace;
-      font-weight: 800;
-      font-size: clamp(0.55rem, 1.8vw, 0.68rem);
-      letter-spacing: 0.15em;
-      color: var(--gold-bright);
-      border: 1px solid rgba(232, 197, 71, 0.45);
-      border-radius: 4px;
-      background: rgba(0, 30, 50, 0.5);
-      flex-shrink: 0;
-    }
     .signature-metallic {
       margin: 0;
       flex: 0 1 auto;
@@ -1208,6 +1249,7 @@
       border-top: 1px solid rgba(0, 229, 255, 0.12);
     }
     .mirror-social-link {
+      position: relative;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -1218,17 +1260,47 @@
       background: linear-gradient(165deg, rgba(12, 28, 48, 0.92), rgba(4, 14, 26, 0.96));
       color: var(--gold-bright);
       text-decoration: none;
+      overflow: hidden;
       animation: mirror-social-gold-pulse 2s ease-in-out infinite;
       transition: border-color 0.25s ease, box-shadow 0.28s ease, color 0.2s ease;
+    }
+    .mirror-social-link::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(
+        115deg,
+        transparent 0%,
+        rgba(255, 248, 220, 0.14) 35%,
+        rgba(232, 197, 71, 0.22) 50%,
+        rgba(255, 248, 220, 0.12) 65%,
+        transparent 100%
+      );
+      background-size: 220% 100%;
+      animation: mirror-social-gold-shimmer 3.2s ease-in-out infinite;
+      pointer-events: none;
+      opacity: 0.85;
     }
     .mirror-social-link:focus-visible {
       outline: 2px solid rgba(0, 229, 255, 0.85);
       outline-offset: 3px;
     }
     .mirror-social-link svg {
+      position: relative;
+      z-index: 1;
       width: 1.1rem;
       height: 1.1rem;
       fill: currentColor;
+      animation: mirror-social-icon-glow 2s ease-in-out infinite;
+    }
+    @keyframes mirror-social-gold-shimmer {
+      0%, 100% { background-position: 0% 50%; filter: brightness(1); }
+      50% { background-position: 100% 50%; filter: brightness(1.12); }
+    }
+    @keyframes mirror-social-icon-glow {
+      0%, 100% { filter: drop-shadow(0 0 2px rgba(232, 197, 71, 0.35)); }
+      50% { filter: drop-shadow(0 0 6px rgba(255, 248, 220, 0.45)) drop-shadow(0 0 3px rgba(232, 197, 71, 0.28)); }
     }
     @keyframes mirror-social-gold-pulse {
       0%, 100% {
@@ -1254,11 +1326,22 @@
         0 0 22px rgba(0, 229, 255, 0.2),
         inset 0 0 20px rgba(4, 12, 28, 0.88);
     }
+    .mirror-social-link:hover::before {
+      animation: none;
+      opacity: 0.35;
+    }
+    .mirror-social-link:hover svg {
+      animation: none;
+      filter: drop-shadow(0 0 12px rgba(0, 229, 255, 0.35));
+    }
 
     @media (prefers-reduced-motion: reduce) {
-      .bluelaser-edge, .bluelaser-scan, .satellite-scanlines, .gcslc-identity, .flank-head-goldman, .analog-wrap, .btn-submit, .clock-svg, .session-bar, .speech-bubble, .dc-placeholder-inner, .sovereign-spine-widget, .analog-clock-frame, .signature-metallic, .btn-sovereign-logout, .exec-insight-shimmer, .prism-frame, .mirror-social-link {
+      .bluelaser-edge, .bluelaser-scan, .satellite-scanlines, .gcslc-identity, .flank-head-goldman, .analog-wrap, .btn-submit, .clock-svg, .session-bar, .speech-bubble, .dc-placeholder-inner, .sovereign-spine-widget, .analog-clock-frame, .signature-metallic, .btn-sovereign-logout, .exec-insight-shimmer, .prism-frame, .mirror-social-link, .mirror-social-link svg, .ip-shield-ticker-track, .ip-shield-ticker-text {
         animation: none !important;
       }
+      .ip-shield-ticker-track { transform: translateX(0) !important; }
+      .ip-shield-ticker-text { background-position: 50% 50%; }
+      .mirror-social-link::before { animation: none !important; opacity: 0.5; }
       .prism-frame {
         border-color: rgba(32, 56, 90, 0.96);
         box-shadow:
@@ -1393,6 +1476,7 @@
                 <div class="form-executive-support-links">
                   <a href="mailto:info@galadimanruwacenter.org?subject=Executive%20Support%20%E2%80%94%20GCSLC%20Sovereign%20Mirror">info@galadimanruwacenter.org</a>
                   <a href="mailto:gcslc.research@gmail.com?subject=Executive%20Support%20%E2%80%94%20GCSLC%20Sovereign%20Mirror">gcslc.research@gmail.com</a>
+                  <a href="https://wa.me/2348099111515" target="_blank" rel="noopener noreferrer">WhatsApp: +234 809 911 1515</a>
                 </div>
               </div>
               <div class="form-logout-wrap">
@@ -1401,6 +1485,14 @@
             </div>
             <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
           </form>
+          <div class="ip-shield-ticker" role="region" aria-label="GCSLC sovereign IP shield">
+            <div class="ip-shield-ticker-inner">
+              <div class="ip-shield-ticker-track">
+                <span class="ip-shield-ticker-text">GCSLC SOVEREIGN IP SHIELD • PROPRIETARY ASSET REVITALIZATION • LW15954 • UNAUTHORIZED CAPTURE PROHIBITED • NRRFC/NWC/AWC LIVE TERMINAL • </span>
+                <span class="ip-shield-ticker-text" aria-hidden="true">GCSLC SOVEREIGN IP SHIELD • PROPRIETARY ASSET REVITALIZATION • LW15954 • UNAUTHORIZED CAPTURE PROHIBITED • NRRFC/NWC/AWC LIVE TERMINAL • </span>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="strike-flank strike-flank--dc">
           <p class="flank-head-goldman">DATA CENTER</p>
@@ -1425,9 +1517,6 @@
           <p class="signature-metallic">Dr. Sa’ad Jaafaru</p>
         </div>
         <p class="footer-lw">© GCSLC · IP LW15954 · Proprietary copyright</p>
-        <div class="footer-seal-centered">
-          <span class="footer-seal">LW15954</span>
-        </div>
       </div>
       <div class="mirror-footer-socials" aria-label="Social links">
         <a class="mirror-social-link" href="https://www.linkedin.com/in/dr-saad-jaafaru" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
