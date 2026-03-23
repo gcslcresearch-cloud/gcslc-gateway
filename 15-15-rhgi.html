@@ -671,6 +671,251 @@
       50% { background-position: 100% 50%; }
     }
 
+    /* —— Widget 2: Northwest Corridor Deep-Dive —— */
+    .rhgi-corridor-deep {
+      margin-top: clamp(0.35rem, 1.5vw, 0.5rem);
+      border-radius: 0.75rem;
+      padding: clamp(0.5rem, 2vw, 0.75rem);
+      background: linear-gradient(165deg, rgba(4, 14, 30, 0.85), rgba(2, 10, 22, 0.72));
+    }
+    .rhgi-deep-head {
+      margin: 0 0 0.5rem;
+      font-family: 'Goldman', 'Segoe UI', sans-serif;
+      font-size: clamp(0.48rem, 1vw + 0.25rem, 0.58rem);
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255, 248, 220, 0.94);
+      text-align: center;
+    }
+    .rhgi-deep-layout {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: clamp(0.65rem, 2.5vw, 1rem);
+      min-width: 0;
+    }
+    @media (min-width: 48rem) {
+      .rhgi-deep-layout {
+        display: grid;
+        grid-template-columns: minmax(3.5rem, 4.5rem) minmax(0, 1fr) minmax(11rem, 15rem);
+        align-items: stretch;
+        gap: clamp(0.5rem, 2vw, 0.85rem);
+      }
+    }
+    .rhgi-deep-powerline {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 8rem;
+    }
+    @media (min-width: 48rem) {
+      .rhgi-deep-powerline {
+        min-height: auto;
+        align-self: stretch;
+      }
+    }
+    .rhgi-deep-powerline svg {
+      width: clamp(3rem, 10vw, 4rem);
+      height: clamp(10rem, 42vw, 14rem);
+      max-height: 16rem;
+      overflow: visible;
+    }
+    .rhgi-deep-pl-core {
+      fill: none;
+      stroke: url(#rhgiPowerLineGold);
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      filter: url(#rhgiPowerLineFilter);
+      animation: rhgi-powerline-gold 4s ease-in-out infinite;
+    }
+    .rhgi-deep-pl-node {
+      fill: rgba(232, 197, 71, 0.35);
+      stroke: rgba(255, 248, 220, 0.85);
+      stroke-width: 1.2;
+      animation: rhgi-powerline-node 4s ease-in-out infinite;
+    }
+    @keyframes rhgi-powerline-gold {
+      0%, 100% { stroke-opacity: 0.88; filter: url(#rhgiPowerLineFilter) brightness(1); }
+      50% { stroke-opacity: 1; filter: url(#rhgiPowerLineFilter) brightness(1.12); }
+    }
+    @keyframes rhgi-powerline-node {
+      0%, 100% { fill: rgba(232, 197, 71, 0.35); }
+      50% { fill: rgba(255, 248, 220, 0.55); }
+    }
+    .rhgi-deep-powerline-legend {
+      margin-top: 0.35rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      font-size: clamp(0.38rem, 1.2vw + 0.1rem, 0.46rem);
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(232, 197, 71, 0.85);
+      text-align: center;
+      line-height: 1.25;
+    }
+
+    .rhgi-deep-matrix-wrap {
+      --rhgi-bar-h: 0.35rem;
+      --rhgi-bar-h-proj: 0.42rem;
+      min-width: 0;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .rhgi-matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: clamp(0.42rem, 1.1vw + 0.12rem, 0.52rem);
+    }
+    .rhgi-matrix-table th,
+    .rhgi-matrix-table td {
+      padding: 0.28rem 0.35rem;
+      border-bottom: 1px solid rgba(0, 229, 255, 0.12);
+      vertical-align: top;
+    }
+    .rhgi-matrix-table thead th {
+      font-family: 'Goldman', 'Segoe UI', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255, 248, 220, 0.92);
+      background: rgba(4, 18, 36, 0.65);
+    }
+    .rhgi-matrix-table .rhgi-matrix-state {
+      font-weight: 800;
+      color: rgba(232, 238, 244, 0.95);
+      white-space: nowrap;
+    }
+    .rhgi-matrix-party-row {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      margin-bottom: 0.2rem;
+    }
+    .rhgi-matrix-party-row:last-child {
+      margin-bottom: 0;
+    }
+    .rhgi-matrix-party-lab {
+      flex: 0 0 1.85rem;
+      font-weight: 700;
+      font-size: 0.85em;
+      color: var(--rhgi-muted);
+    }
+    .rhgi-matrix-bar-track {
+      flex: 1;
+      min-width: 0;
+      height: var(--rhgi-bar-h, 0.35rem);
+      border-radius: 0.2rem;
+      background: rgba(0, 0, 0, 0.35);
+      overflow: hidden;
+    }
+    .rhgi-matrix-bar-track--proj {
+      height: var(--rhgi-bar-h-proj, 0.42rem);
+    }
+    .rhgi-matrix-bar {
+      height: 100%;
+      border-radius: 0.15rem;
+      min-width: 2px;
+    }
+    .rhgi-bar-apc-b { background: linear-gradient(90deg, #1a4d32, #2a6b45); }
+    .rhgi-bar-pdp-b { background: linear-gradient(90deg, #1f5538, #347a52); }
+    .rhgi-bar-lp-b { background: linear-gradient(90deg, #245d3e, #3d8860); }
+    .rhgi-bar-adc-b { background: linear-gradient(90deg, #2a6544, #4a9670); }
+    .rhgi-matrix-bar--proj {
+      background: linear-gradient(105deg, #0f2844 0%, #1a3a5c 25%, #e8c547 55%, #fff8dc 72%, #1e3a5a 100%);
+      background-size: 220% 100%;
+      animation: rhgi-proj-bar-shimmer 5s ease-in-out infinite;
+    }
+    @keyframes rhgi-proj-bar-shimmer {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .rhgi-deep-lga {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      border-radius: 0.5rem;
+      border: 1px solid rgba(232, 197, 71, 0.22);
+      background: rgba(2, 10, 22, 0.75);
+      overflow: hidden;
+    }
+    .rhgi-deep-lga-label {
+      flex-shrink: 0;
+      padding: 0.4rem 0.5rem;
+      font-family: 'Goldman', 'Segoe UI', sans-serif;
+      font-size: clamp(0.42rem, 1vw + 0.12rem, 0.5rem);
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-align: center;
+      color: rgba(232, 197, 71, 0.95);
+      border-bottom: 1px solid rgba(0, 229, 255, 0.15);
+      background: rgba(8, 22, 42, 0.6);
+    }
+    .rhgi-deep-lga-scroller {
+      position: relative;
+      height: clamp(10rem, 38vw, 14rem);
+      max-height: 16rem;
+      overflow: hidden;
+      mask-image: linear-gradient(180deg, transparent, #000 6%, #000 94%, transparent);
+    }
+    .rhgi-deep-lga-track {
+      animation: rhgi-lga-scroll 48s linear infinite;
+    }
+    @keyframes rhgi-lga-scroll {
+      from { transform: translateY(0); }
+      to { transform: translateY(-50%); }
+    }
+    .rhgi-deep-lga-list {
+      margin: 0;
+      padding: 0.35rem 0.5rem 0.5rem;
+      list-style: none;
+    }
+    .rhgi-deep-lga-item {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.25rem;
+      padding: 0.28rem 0;
+      border-bottom: 1px solid rgba(40, 72, 118, 0.35);
+      font-size: clamp(0.4rem, 1vw + 0.1rem, 0.48rem);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: rgba(232, 238, 244, 0.9);
+    }
+    .rhgi-deep-lga-item:last-child {
+      border-bottom: none;
+    }
+    .rhgi-lga-status {
+      font-size: 0.85em;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .rhgi-lga-status--secured {
+      color: #e8c547;
+      text-shadow: 0 0 0.5rem rgba(232, 197, 71, 0.45);
+    }
+    .rhgi-lga-status--mobilizing {
+      color: #3a6a9a;
+      text-shadow: 0 0 0.35rem rgba(0, 120, 200, 0.35);
+    }
+    .rhgi-deep-footer {
+      margin: 0.55rem 0 0;
+      padding-top: 0.45rem;
+      border-top: 1px solid rgba(0, 229, 255, 0.14);
+      font-family: 'Goldman', 'Segoe UI', sans-serif;
+      font-size: clamp(0.4rem, 0.95vw + 0.1rem, 0.5rem);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      line-height: 1.45;
+      text-align: center;
+      color: rgba(232, 238, 244, 0.88);
+    }
+
     .rhgi-global-pulse-label {
       margin: 0 0 clamp(0.35rem, 2vw, 0.5rem);
       text-align: center;
@@ -777,11 +1022,13 @@
 
     @media (prefers-reduced-motion: reduce) {
       .rhgi-velocity-streaks, .rhgi-velocity-pulse, .rhgi-bluelaser-edge, .rhgi-bluelaser-scan, .rhgi-satellite-scanlines,
-      .rhgi-prism-frame, .rhgi-hub, .rhgi-title, .rhgi-sub, .rhgi-analog-clock-frame, .rhgi-fct-diamond, .rhgi-arc-progress, .rhgi-akz-path-core,
-      .rhgi-conversion-ticker-track, .rhgi-corridor-btn, .rhgi-conversion-ticker-text {
+      .rhgi-prism-frame, .rhgi-hub, .rhgi-corridor-deep, .rhgi-title, .rhgi-sub, .rhgi-analog-clock-frame, .rhgi-fct-diamond, .rhgi-arc-progress, .rhgi-akz-path-core,
+      .rhgi-conversion-ticker-track, .rhgi-corridor-btn, .rhgi-conversion-ticker-text,
+      .rhgi-deep-lga-track, .rhgi-deep-pl-core, .rhgi-deep-pl-node, .rhgi-matrix-bar--proj {
         animation: none !important;
       }
       .rhgi-conversion-ticker-track { transform: translateX(0) !important; }
+      .rhgi-deep-lga-track { transform: translateY(0) !important; }
       .rhgi-title {
         background: linear-gradient(135deg, #fff8e8 0%, #e8c547 40%, #1a3a5c 100%);
         -webkit-background-clip: text;
@@ -941,6 +1188,193 @@
                   <button type="button" class="rhgi-corridor-btn" data-rhgi-corridor="ss">South-South</button>
                   <button type="button" class="rhgi-corridor-btn" data-rhgi-corridor="se">Southeast</button>
                 </div>
+
+                <div class="rhgi-corridor-deep rhgi-prism-frame" aria-labelledby="rhgi-deep-heading">
+                  <h3 id="rhgi-deep-heading" class="rhgi-deep-head">Northwest Tactical Spine · Corridor Deep-Dive</h3>
+                  <div class="rhgi-deep-layout">
+                    <div class="rhgi-deep-powerline" aria-hidden="true">
+                      <svg viewBox="0 0 80 220" preserveAspectRatio="xMidYMid meet">
+                        <defs>
+                          <linearGradient id="rhgiPowerLineGold" x1="0%" y1="100%" x2="0%" y2="0%">
+                            <stop offset="0%" stop-color="#8a7020"/>
+                            <stop offset="35%" stop-color="#e8c547"/>
+                            <stop offset="65%" stop-color="#fff8dc"/>
+                            <stop offset="100%" stop-color="#c9a227"/>
+                          </linearGradient>
+                          <filter id="rhgiPowerLineFilter" x="-30%" y="-30%" width="160%" height="160%">
+                            <feGaussianBlur in="SourceGraphic" stdDeviation="1.2" result="blur"/>
+                            <feMerge>
+                              <feMergeNode in="blur"/>
+                              <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                          </filter>
+                        </defs>
+                        <line class="rhgi-deep-pl-core" x1="40" y1="188" x2="40" y2="28"/>
+                        <circle class="rhgi-deep-pl-node" cx="40" cy="188" r="5"/>
+                        <circle class="rhgi-deep-pl-node" cx="40" cy="108" r="4.5"/>
+                        <circle class="rhgi-deep-pl-node" cx="40" cy="28" r="5"/>
+                      </svg>
+                      <div class="rhgi-deep-powerline-legend">
+                        <span>Kano</span>
+                        <span>Zaria</span>
+                        <span>Abuja</span>
+                      </div>
+                    </div>
+
+                    <div class="rhgi-deep-matrix-wrap">
+                      <table class="rhgi-matrix-table">
+                        <thead>
+                          <tr>
+                            <th scope="col">State</th>
+                            <th scope="col">2023 Baseline</th>
+                            <th scope="col">15-15 Projection</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td class="rhgi-matrix-state">Kano</td>
+                            <td>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-apc-b" style="width:42%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">PDP</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-pdp-b" style="width:28%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">LP</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-lp-b" style="width:8%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">ADC</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-adc-b" style="width:4%"></div></div></div>
+                            </td>
+                            <td>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:48%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">PDP</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:22%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">LP</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:10%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">ADC</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:5%"></div></div></div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="rhgi-matrix-state">Kaduna</td>
+                            <td>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-apc-b" style="width:38%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">PDP</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-pdp-b" style="width:32%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">LP</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-lp-b" style="width:10%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">ADC</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-adc-b" style="width:5%"></div></div></div>
+                            </td>
+                            <td>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:44%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">PDP</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:26%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">LP</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:12%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">ADC</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:6%"></div></div></div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="rhgi-matrix-state">Katsina</td>
+                            <td>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-apc-b" style="width:45%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">PDP</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-pdp-b" style="width:26%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">LP</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-lp-b" style="width:6%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">ADC</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-adc-b" style="width:3%"></div></div></div>
+                            </td>
+                            <td>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:51%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">PDP</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:21%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">LP</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:8%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">ADC</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:4%"></div></div></div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="rhgi-matrix-state">Sokoto</td>
+                            <td>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-apc-b" style="width:40%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">PDP</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-pdp-b" style="width:30%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">LP</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-lp-b" style="width:7%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">ADC</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-adc-b" style="width:4%"></div></div></div>
+                            </td>
+                            <td>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:46%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">PDP</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:24%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">LP</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:9%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">ADC</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:5%"></div></div></div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="rhgi-matrix-state">Kebbi</td>
+                            <td>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-apc-b" style="width:41%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">PDP</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-pdp-b" style="width:29%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">LP</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-lp-b" style="width:6%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">ADC</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-adc-b" style="width:4%"></div></div></div>
+                            </td>
+                            <td>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:47%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">PDP</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:23%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">LP</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:8%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">ADC</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:5%"></div></div></div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="rhgi-matrix-state">Zamfara</td>
+                            <td>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-apc-b" style="width:39%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">PDP</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-pdp-b" style="width:31%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">LP</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-lp-b" style="width:7%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">ADC</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-adc-b" style="width:5%"></div></div></div>
+                            </td>
+                            <td>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:45%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">PDP</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:25%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">LP</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:9%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">ADC</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:6%"></div></div></div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="rhgi-matrix-state">Jigawa</td>
+                            <td>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-apc-b" style="width:43%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">PDP</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-pdp-b" style="width:27%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">LP</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-lp-b" style="width:7%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">ADC</span><div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-adc-b" style="width:4%"></div></div></div>
+                            </td>
+                            <td>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:49%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">PDP</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:22%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">LP</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:9%"></div></div></div>
+                              <div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">ADC</span><div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:5%"></div></div></div>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div class="rhgi-deep-lga">
+                      <div class="rhgi-deep-lga-label">182 LGA LIVE FEED</div>
+                      <div class="rhgi-deep-lga-scroller" role="region" aria-label="Local government area mobilization status">
+                        <div class="rhgi-deep-lga-track">
+                          <ul class="rhgi-deep-lga-list" id="rhgi-lgaListA">
+                            <li class="rhgi-deep-lga-item"><span>Zaria City</span><span class="rhgi-lga-status rhgi-lga-status--secured">Secured</span></li>
+                            <li class="rhgi-deep-lga-item"><span>Kano Municipal</span><span class="rhgi-lga-status rhgi-lga-status--mobilizing">Mobilizing</span></li>
+                            <li class="rhgi-deep-lga-item"><span>Sokoto North</span><span class="rhgi-lga-status rhgi-lga-status--secured">Secured</span></li>
+                            <li class="rhgi-deep-lga-item"><span>Kaduna South</span><span class="rhgi-lga-status rhgi-lga-status--mobilizing">Mobilizing</span></li>
+                            <li class="rhgi-deep-lga-item"><span>Katsina LGA</span><span class="rhgi-lga-status rhgi-lga-status--secured">Secured</span></li>
+                            <li class="rhgi-deep-lga-item"><span>Kebbi Argungu</span><span class="rhgi-lga-status rhgi-lga-status--mobilizing">Mobilizing</span></li>
+                            <li class="rhgi-deep-lga-item"><span>Zamfara Gusau</span><span class="rhgi-lga-status rhgi-lga-status--secured">Secured</span></li>
+                            <li class="rhgi-deep-lga-item"><span>Jigawa Dutse</span><span class="rhgi-lga-status rhgi-lga-status--mobilizing">Mobilizing</span></li>
+                            <li class="rhgi-deep-lga-item"><span>Sabon Gari</span><span class="rhgi-lga-status rhgi-lga-status--secured">Secured</span></li>
+                            <li class="rhgi-deep-lga-item"><span>Funtua</span><span class="rhgi-lga-status rhgi-lga-status--mobilizing">Mobilizing</span></li>
+                          </ul>
+                          <ul class="rhgi-deep-lga-list" id="rhgi-lgaListB" aria-hidden="true">
+                            <li class="rhgi-deep-lga-item"><span>Zaria City</span><span class="rhgi-lga-status rhgi-lga-status--secured">Secured</span></li>
+                            <li class="rhgi-deep-lga-item"><span>Kano Municipal</span><span class="rhgi-lga-status rhgi-lga-status--mobilizing">Mobilizing</span></li>
+                            <li class="rhgi-deep-lga-item"><span>Sokoto North</span><span class="rhgi-lga-status rhgi-lga-status--secured">Secured</span></li>
+                            <li class="rhgi-deep-lga-item"><span>Kaduna South</span><span class="rhgi-lga-status rhgi-lga-status--mobilizing">Mobilizing</span></li>
+                            <li class="rhgi-deep-lga-item"><span>Katsina LGA</span><span class="rhgi-lga-status rhgi-lga-status--secured">Secured</span></li>
+                            <li class="rhgi-deep-lga-item"><span>Kebbi Argungu</span><span class="rhgi-lga-status rhgi-lga-status--mobilizing">Mobilizing</span></li>
+                            <li class="rhgi-deep-lga-item"><span>Zamfara Gusau</span><span class="rhgi-lga-status rhgi-lga-status--secured">Secured</span></li>
+                            <li class="rhgi-deep-lga-item"><span>Jigawa Dutse</span><span class="rhgi-lga-status rhgi-lga-status--mobilizing">Mobilizing</span></li>
+                            <li class="rhgi-deep-lga-item"><span>Sabon Gari</span><span class="rhgi-lga-status rhgi-lga-status--secured">Secured</span></li>
+                            <li class="rhgi-deep-lga-item"><span>Funtua</span><span class="rhgi-lga-status rhgi-lga-status--mobilizing">Mobilizing</span></li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="rhgi-deep-footer">NW Projected Yield: 7,094,880 | Confidence Interval: 98% (8R Validated)</p>
+                </div>
+
                 <div class="rhgi-conversion-ticker" role="region" aria-label="Canvasser check-ins">
                   <span class="rhgi-conversion-ticker-label">Canvasser Check-ins</span>
                   <div class="rhgi-conversion-ticker-inner">
