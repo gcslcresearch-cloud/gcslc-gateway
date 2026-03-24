@@ -17,6 +17,8 @@ if "corridor_zone" not in st.session_state:
     st.session_state.corridor_zone = None
 if "r8_note" not in st.session_state:
     st.session_state.r8_note = ""
+if "_prev_corridor_state_key" not in st.session_state:
+    st.session_state._prev_corridor_state_key = None
 
 # RHGI-GOLDMAN palette (mirrors :root CSS variables).
 METALLIC_GOLD = "#D4AF37"
@@ -26,7 +28,6 @@ GOLD = METALLIC_GOLD
 NAVY = NAVY_CSS
 # Prism Navy canvas + plot wells (Goldman corridor-27).
 PRISM_NAVY = "#000080"
-PRISM_NAVY_PLOT = "#0a0a5c"
 CANVASSER_BUDGET_ANCHOR_NGN = 30_000
 # RHGI TOTAL RESTORE-30 — Sovereign Budget Engine (personnel lines per mandate brief).
 SOVEREIGN_CANVASSERS_LINE = 144_000
@@ -34,8 +35,6 @@ SOVEREIGN_EDAY_STAFF_LINE = 144_000
 SOVEREIGN_UNIT_NGN = 30_000
 SOVEREIGN_MISC_PCT = 0.15
 SOVEREIGN_CONTINGENCY_PCT = 0.10
-# National mandate seal (strike brief headline — Feb 2027 envelope).
-SOVEREIGN_BUDGET_MANDATE_NGN = 108_960_000_000
 # Deep Navy → metallic gold — 774 LGA winning-margin map.
 DEEP_NAVY_SAFE = "#152a45"
 METALLIC_GOLD_TARGET = METALLIC_GOLD
@@ -67,6 +66,11 @@ EIGHT_R_DETERMINANTS = [
 
 def _gold_heading(text: str) -> None:
     st.markdown(f'<p class="rhgi-gold-heading">{text}</p>', unsafe_allow_html=True)
+
+
+def _rose_heading(text: str) -> None:
+    """Corridor section titles — Rose Gold (#B76E79)."""
+    st.markdown(f'<p class="rhgi-rose-heading">{html.escape(text)}</p>', unsafe_allow_html=True)
 
 
 def sovereign_budget_engine_breakdown() -> tuple[int, int, int]:
@@ -292,23 +296,26 @@ st.markdown(
     .stMetric [data-testid="stMetricLabel"] { color: var(--metallic-gold) !important; }
     .stAlert { background: rgba(0,0,128,0.55) !important; border: 1px solid rgba(212,175,55,0.35) !important; }
     .stInfo { color: var(--stark-white) !important; }
+    [data-testid="stAlert"] { color: #B76E79 !important; font-family: 'Goldman', sans-serif !important; }
     a, a:visited { color: var(--rose-gold) !important; }
     a:hover { color: var(--metallic-gold) !important; }
     iframe { background: #000080 !important; }
     .stApp {
-      background-color: var(--navy) !important;
-      background-image: radial-gradient(ellipse at 20% 0%, rgba(212,175,55,0.08) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 100%, rgba(183,110,121,0.06) 0%, transparent 45%) !important;
+      background-color: #000080 !important;
+      background-image: none !important;
       color: var(--stark-white) !important;
       font-family: 'Goldman', sans-serif !important;
       user-select: none;
       -webkit-user-select: none;
     }
+    .stApp h1, .stApp h2, .stApp h3, .stApp h4,
+    [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3,
+    [data-testid="stHeader"] { font-family: 'Goldman', sans-serif !important; }
     .stApp *:not(svg):not(path):not(circle):not(rect):not(line):not(polyline):not(polygon) {
       font-family: 'Goldman', sans-serif !important;
     }
     [data-testid="stSidebar"] {
-      background: linear-gradient(180deg, #000080 0%, #05054a 100%) !important;
+      background: #000080 !important;
     }
     [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p,
     [data-testid="stSidebar"] label { color: var(--stark-white) !important; }
@@ -401,7 +408,7 @@ st.markdown(
       margin-bottom: 22px;
       letter-spacing: 0.03em;
     }
-    .rhgi-wm-root { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; opacity: 0.45; }
+    .rhgi-wm-root { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; opacity: 0.4; }
     .rhgi-wm-inner {
       position: absolute; width: 260%; height: 260%; left: -80%; top: -80%;
       display: flex; flex-wrap: wrap; align-content: flex-start; gap: 2.2rem 3.2rem;
@@ -438,7 +445,7 @@ st.markdown(
       opacity: 0.92;
     }
     button, input, textarea, [data-testid="stMarkdownContainer"], .stMarkdown { user-select: text !important; -webkit-user-select: text !important; }
-    /* Corridor + column buttons: metallic gold baseline */
+    /* Column buttons default: metallic gold */
     div[data-testid="column"] button[kind="secondary"],
     div[data-testid="column"] button[kind="primary"] {
       position: relative !important;
@@ -456,6 +463,15 @@ st.markdown(
     /* 8R belt (8 columns): Rose Gold + metallic sweep 3s + pulse */
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)) button[kind="secondary"],
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)) button[kind="primary"] {
+      color: var(--rose-gold) !important;
+      border: 1px solid rgba(183, 110, 121, 0.65) !important;
+      background: linear-gradient(155deg, rgba(0,0,128,0.45) 0%, #0b1024 55%, rgba(183,110,121,0.18) 100%) !important;
+      background-size: 220% 100% !important;
+      animation: r8WidgetPulse 2s ease-in-out infinite, r8ShimmerSweep 3s linear infinite !important;
+    }
+    /* 6-column corridor belt: Rose Gold + shimmer (must follow generic column rule) */
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)):not(:has(> div:nth-child(7))) button[kind="secondary"],
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)):not(:has(> div:nth-child(7))) button[kind="primary"] {
       color: var(--rose-gold) !important;
       border: 1px solid rgba(183, 110, 121, 0.65) !important;
       background: linear-gradient(155deg, rgba(0,0,128,0.45) 0%, #0b1024 55%, rgba(183,110,121,0.18) 100%) !important;
@@ -526,8 +542,8 @@ st.markdown(
       font-weight: 800;
       letter-spacing: 0.28em;
       text-transform: uppercase;
-      color: #e8ecff;
-      text-shadow: 0 0 14px rgba(212,175,55,0.55), 0 0 28px rgba(0,0,128,0.55);
+      color: #B76E79 !important;
+      text-shadow: 0 0 14px rgba(183,110,121,0.55), 0 0 28px rgba(0,0,128,0.55);
       margin: 8px 0 6px 0;
     }
     .rhgi-mandate-secured {
@@ -568,7 +584,17 @@ st.markdown(
       100% { transform: translateX(-50%); }
     }
     .rhgi-gold-heading { color: var(--metallic-gold) !important; font-weight: 800 !important; font-size: 1.38rem !important;
-      margin: 0.5rem 0 0.35rem 0; text-shadow: 0 0 12px rgba(212,175,55,0.45); letter-spacing: 0.02em; }
+      margin: 0.5rem 0 0.35rem 0; text-shadow: 0 0 12px rgba(212,175,55,0.45); letter-spacing: 0.02em; font-family: 'Goldman', sans-serif !important; }
+    .rhgi-rose-heading {
+      color: #B76E79 !important;
+      font-weight: 800 !important;
+      font-size: 1.38rem !important;
+      margin: 0.5rem 0 0.35rem 0;
+      line-height: 1.35;
+      letter-spacing: 0.08em;
+      text-shadow: 0 0 14px rgba(183, 110, 121, 0.45);
+      font-family: 'Goldman', sans-serif !important;
+    }
     .stApp h1 { color: var(--metallic-gold) !important; font-weight: 800 !important; text-shadow: 0 0 14px rgba(212,175,55,0.4); }
     .rhgi-corridor-table { width: 100%; border-collapse: collapse; font-size: 1.14rem; line-height: 1.55; }
     .rhgi-corridor-table th {
@@ -587,7 +613,7 @@ st.markdown(
       font-size: 1.1rem !important;
       font-weight: 600;
     }
-    .rhgi-corridor-table tr:nth-child(even) td { background: rgba(14, 23, 51, 0.45); }
+    .rhgi-corridor-table tr:nth-child(even) td { background: rgba(0, 0, 128, 0.35); }
     [data-testid="stCaption"] { color: var(--rose-gold) !important; font-family: 'Goldman', sans-serif !important; }
     [data-testid="stSelectbox"] label { color: var(--rose-gold) !important; font-family: 'Goldman', sans-serif !important; }
     [data-baseweb="select"] { font-family: 'Goldman', sans-serif !important; }
@@ -607,7 +633,7 @@ st.markdown(
       50% { background-position: 100% center; filter: brightness(1.08); }
     }
     .rhgi-sovereign-budget-inner {
-      background: linear-gradient(180deg, rgba(0,0,128,0.97), rgba(5,5,74,0.92));
+      background: #000080;
       border-radius: 13px;
       padding: 18px 22px;
       text-align: center;
@@ -734,7 +760,7 @@ if constitutional_ok:
     st.markdown(
         "<div class='rhgi-mandate-secured'><span class='rhgi-glow' style='font-size:1.35rem;font-weight:800;'>"
         "CONSTITUTIONAL MANDATE: SECURED</span><br>"
-        "<small style='color:#c8d4f8;'>Legal Gatekeeper — ≥24 of 36 states at ≥25% APC and FCT ≥25%</small></div>",
+        "<small style='color:#ffffff;'>Legal Gatekeeper — ≥24 of 36 states at ≥25% APC and FCT ≥25%</small></div>",
         unsafe_allow_html=True,
     )
 
@@ -751,7 +777,7 @@ fig_zone = px.bar(
 )
 fig_zone.update_layout(
     paper_bgcolor=PRISM_NAVY,
-    plot_bgcolor=PRISM_NAVY_PLOT,
+    plot_bgcolor=PRISM_NAVY,
     font_color="#ffffff",
     xaxis_title="Zone",
     yaxis_title="Winning Margin (APC vs nearest rival)",
@@ -759,7 +785,7 @@ fig_zone.update_layout(
 fig_zone.update_traces(marker=dict(color=GOLD))
 st.plotly_chart(fig_zone, use_container_width=True)
 
-_gold_heading("Corridor nodes — drill-down (774 LGAs)")
+_rose_heading("Corridor nodes — drill-down (774 LGAs)")
 st.caption(
     "Choose a corridor, then a state. Canvasser budget = ₦30,000 × canvasser headcount per LGA. "
     "Velocity % = (2027 APC − 2023 APC) ÷ 2023 APC × 100. Large LGA roll-ups scroll slowly; hover to pause."
@@ -771,13 +797,14 @@ for _ci, (_abbr, _zname) in enumerate(CORRIDOR_NODES):
         if st.button(f"{_abbr} · {_nlg}", key=f"cor_btn_{_abbr}", use_container_width=True):
             st.session_state.corridor_zone = _zname
 if st.session_state.corridor_zone is None:
+    st.session_state._prev_corridor_state_key = None
     st.markdown(
         '<p class="rhgi-creed" style="margin-top:8px;">Select a corridor widget (NW · NE · NC · SW · SS · SE) to begin.</p>',
         unsafe_allow_html=True,
     )
 else:
     st.markdown(
-        f'<p class="rhgi-gold-heading" style="font-size:1.1rem;">Active corridor: '
+        f'<p class="rhgi-rose-heading" style="font-size:1.12rem;margin-top:6px;">Active corridor · '
         f'<span style="color:#ffffff;">{html.escape(st.session_state.corridor_zone)}</span></p>',
         unsafe_allow_html=True,
     )
@@ -788,6 +815,9 @@ else:
         index=0,
         key=f"state_drill_{st.session_state.corridor_zone}",
     )
+    _corridor_state_key = f"{st.session_state.corridor_zone}|{_sel_state}"
+    _state_just_changed = st.session_state._prev_corridor_state_key != _corridor_state_key
+    st.session_state._prev_corridor_state_key = _corridor_state_key
     _mat = build_state_lga_matrix_df(dff, _sel_state)
     _rows_html = []
     for _, _r in _mat.iterrows():
@@ -816,10 +846,13 @@ else:
             f"{_thead_html}<tbody>{_tbody}</tbody></table></div>"
         )
     else:
-        _roll_sec = max(90.0, min(520.0, _nrows * 2.75))
+        _roll_sec = max(220.0, min(680.0, _nrows * 6.5))
+        if _state_just_changed:
+            _roll_sec = max(_roll_sec, 400.0)
+        _roll_nonce = abs(hash(_corridor_state_key)) % 1_000_000
         _tbl = (
-            f'<div class="rhgi-lga-scroll-outer"><div class="rhgi-lga-marquee" '
-            f'style="animation-duration:{_roll_sec:.0f}s;">'
+            f'<div class="rhgi-lga-scroll-outer" data-roll-key="{_roll_nonce}">'
+            f'<div class="rhgi-lga-marquee" style="animation-duration:{_roll_sec:.0f}s;animation-name:rhgiSlowRoll;">'
             f'<table class="rhgi-corridor-table">{_thead_html}<tbody>{_tbody}</tbody></table>'
             f'<table class="rhgi-corridor-table">{_thead_html}<tbody>{_tbody}</tbody></table>'
             f"</div></div>"
@@ -827,18 +860,16 @@ else:
     st.markdown(_tbl, unsafe_allow_html=True)
 
 _sb_base, _sb_after_misc, _sb_line_total = sovereign_budget_engine_breakdown()
-_sb_mandate_bn = SOVEREIGN_BUDGET_MANDATE_NGN / 1e9
 _sb_line_bn = _sb_line_total / 1e9
 st.markdown(
     f"""
     <div class="rhgi-sovereign-budget">
       <div class="rhgi-sovereign-budget-inner">
         <h3>Sovereign Budget Engine</h3>
-        <p class="rhgi-sovereign-mandate">₦{_sb_mandate_bn:,.2f} billion</p>
+        <p class="rhgi-sovereign-mandate">₦{_sb_line_total:,}</p>
         <p class="rhgi-sovereign-detail">
           (144,000 canvassers + 144,000 E-day staff) × ₦30,000 → ₦{_sb_base/1e9:.2f}B;
-          +15% misc → ₦{_sb_after_misc/1e9:.2f}B; +10% contingency → <b>₦{_sb_line_bn:.2f}B</b> (personnel line model).
-          <span style="color:#D4AF37;font-weight:700;"> National mandate seal (RHGI · Feb 2027): ₦{_sb_mandate_bn:,.2f}B.</span>
+          +15% misc → ₦{_sb_after_misc/1e9:.2f}B; +10% contingency → <b>₦{_sb_line_bn:.2f} billion</b> total.
         </p>
       </div>
     </div>
@@ -874,7 +905,7 @@ fig_lga.update_traces(marker=dict(size=8, opacity=0.8))
 fig_lga.update_layout(
     paper_bgcolor=PRISM_NAVY,
     plot_bgcolor=PRISM_NAVY,
-    font_color="#dbe2ff",
+    font_color="#ffffff",
     margin=dict(l=0, r=0, t=48, b=0),
     coloraxis_colorbar=dict(title="Winning margin"),
 )
@@ -900,7 +931,7 @@ fig_scatter = px.scatter_mapbox(
 fig_scatter.update_layout(
     paper_bgcolor=PRISM_NAVY,
     plot_bgcolor=PRISM_NAVY,
-    font_color="#dbe2ff",
+    font_color="#ffffff",
     margin=dict(l=0, r=0, t=40, b=0),
 )
 st.plotly_chart(fig_scatter, use_container_width=True)
@@ -933,8 +964,8 @@ fig_party = px.bar(
 )
 fig_party.update_layout(
     paper_bgcolor=PRISM_NAVY,
-    plot_bgcolor=PRISM_NAVY_PLOT,
-    font_color="#dbe2ff",
+    plot_bgcolor=PRISM_NAVY,
+    font_color="#ffffff",
 )
 st.plotly_chart(fig_party, use_container_width=True)
 
