@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&amp;display=swap" rel="stylesheet">
   <title>15-15 RHGI | Sovereign Dashboard</title>
   <style>
-/* RHGI-HOMECOMING-45 — self-contained: prism-frame · kinetic LGA · live clocks · 774@240s · GPU translateZ(0) */
+/* RHGI-IGNITION-47 — prism · kinetic LGA · live clocks · 774@240s · GPU translateZ(0) */
     :root {
       --rhgi-navy-deep: #050a14;
       --rhgi-gold: #e8c547;
@@ -1176,6 +1176,15 @@
         transform: scaleX(var(--rhgi-bar-sx, 1)) translateZ(0);
       }
     }
+    /* RHGI-IGNITION-47: smooth winning-margin bar fill (all six corridor matrices) */
+    @keyframes rhgi-ignition47-bar-fill {
+      from {
+        transform: scaleX(0) translateZ(0);
+      }
+      to {
+        transform: scaleX(var(--rhgi-bar-sx, 1)) translateZ(0);
+      }
+    }
     .rhgi-page .rhgi-slc-budget .rhgi-v33-anchor {
       font-weight: 800;
       letter-spacing: 0.04em;
@@ -1267,10 +1276,20 @@
       color: #3a6a9a;
       text-shadow: 0 0 0.35rem rgba(0, 120, 200, 0.35);
     }
-    /* KINETIC-DUBAI-36: LGA uplink breathe (Secured / Mobilizing) — REANIMATE re-enables */
-    @keyframes rhgi-k36-lga-breathe {
-      0%, 100% { opacity: 0.7; }
-      50% { opacity: 1; }
+    /* RHGI-IGNITION-47: Secured / Mobilizing — subtle gold glow pulse (3s cadence) */
+    @keyframes rhgi-ignition47-lga-status-glow {
+      0%, 100% {
+        opacity: 0.9;
+        filter: drop-shadow(0 0 0.25rem rgba(232, 197, 71, 0.35));
+        text-shadow: 0 0 0.45rem rgba(232, 197, 71, 0.4);
+      }
+      50% {
+        opacity: 1;
+        filter: drop-shadow(0 0 0.65rem rgba(232, 197, 71, 0.75));
+        text-shadow:
+          0 0 0.85rem rgba(232, 197, 71, 0.95),
+          0 0 1.35rem rgba(255, 224, 140, 0.55);
+      }
     }
     /* SOVEREIGN-REBIRTH-41: staggered vertical scan on LGA names */
     @keyframes rhgi-lga-name-scan {
@@ -1458,8 +1477,18 @@
       width: max-content;
       white-space: nowrap;
       animation: rhgi-footer774-drift var(--rhgi-footer774-duration, 240s) linear infinite;
+      animation-play-state: running;
       transform: translateZ(0);
       will-change: transform;
+    }
+    /* RHGI-IGNITION-47: national 774 feed — R→L glide, 240s, always running */
+    .rhgi-footer-774-track.rhgi-ignition47-footer-track,
+    #rhgi-footer774Track.rhgi-ignition47-footer-track {
+      animation-name: rhgi-footer774-drift;
+      animation-duration: var(--rhgi-footer774-duration, 240s);
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      animation-play-state: running;
     }
     @keyframes rhgi-footer774-drift {
       from { transform: translateX(0); }
@@ -1494,7 +1523,7 @@
     .rhgi-shell {
       background: transparent !important;
     }
-    /* RHGI-HOMECOMING-45: prism stack — gold/silver gradient border + glass (must not flatten to solid rgba) */
+    /* RHGI-IGNITION-47: prism stack — gold/silver gradient border + glass (must not flatten to solid rgba) */
     .rhgi-page .rhgi-content-prism.rhgi-prism-frame,
     .rhgi-page .rhgi-hub.rhgi-prism-frame,
     .rhgi-page .rhgi-election-ticker.rhgi-prism-frame,
@@ -1588,32 +1617,34 @@
       animation: rhgi-r1-margin-delta-sovereign-ss 3.8s ease-in-out infinite !important;
       will-change: transform !important;
     }
-    /* 774 glide — translateX only, 240s (FULL-VELOCITY-33) */
+    /* 774 glide — translateX only, 240s (RHGI-IGNITION-47: running) */
     .rhgi-page .rhgi-footer-774-track {
       animation: rhgi-footer774-drift var(--rhgi-footer774-duration, 240s) linear infinite !important;
+      animation-play-state: running !important;
       transform: translateZ(0) !important;
       will-change: transform !important;
     }
-    /* Winning margin bars — scaleX reveal (all corridors); stagger inherits --row-index from tr */
+    /* RHGI-IGNITION-47: winning margin bars — smooth fill (all corridors); stagger via --row-index */
     .rhgi-page .rhgi-matrix-row .rhgi-bar-fill.rhgi-bar-apc-b {
-      animation: rhgi-v33-bar-reveal 0.88s cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
-      animation-delay: calc(var(--row-index) * 0.09s) !important;
+      animation: rhgi-ignition47-bar-fill 1.75s cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
+      animation-delay: calc(var(--row-index) * 0.1s) !important;
       will-change: transform !important;
     }
     .rhgi-page .rhgi-matrix-row .rhgi-proj-fill.rhgi-matrix-bar--proj {
       animation:
-        rhgi-v33-bar-reveal 0.88s cubic-bezier(0.22, 1, 0.36, 1) forwards,
+        rhgi-ignition47-bar-fill 1.75s cubic-bezier(0.22, 1, 0.36, 1) forwards,
         rhgi-proj-bar-shimmer 5s ease-in-out infinite !important;
       animation-delay:
-        calc(var(--row-index) * 0.09s),
-        calc(var(--row-index) * 0.09s + 0.88s) !important;
+        calc(var(--row-index) * 0.1s),
+        calc(var(--row-index) * 0.1s + 1.75s) !important;
       will-change: transform !important;
     }
-    /* KINETIC-DUBAI-36: LGA Live Feed — Secured / Mobilizing uplink pulse (3s) */
+    /* RHGI-IGNITION-47: LGA side-feed labels — gold glow pulse (3s) */
+    .rhgi-page .rhgi-deep-lga .rhgi-lga-status.rhgi-ignition47-lga-status,
     .rhgi-page .rhgi-deep-lga .rhgi-lga-status--secured,
     .rhgi-page .rhgi-deep-lga .rhgi-lga-status--mobilizing {
-      animation: rhgi-k36-lga-breathe 3s ease-in-out infinite !important;
-      will-change: opacity !important;
+      animation: rhgi-ignition47-lga-status-glow 3s ease-in-out infinite !important;
+      will-change: opacity, filter, text-shadow !important;
     }
     /* SOVEREIGN-REBIRTH-41: LGA list vertical scroll + staggered name scan */
     .rhgi-page .rhgi-deep-lga-track {
@@ -1817,7 +1848,7 @@
             </div>
             <h1 class="rhgi-title rhgi-title--rhgi-full">Renewed Hope Grassroots Initiatives 15/15 Model (RHGI)</h1>
             <p class="rhgi-sub rhgi-r31-seal-sub">
-              RHGI Sovereign Seal · 15/15 Model · 8R Stealth Paradigm Convergence
+              RHGI Sovereign Seal / 15-15 Model
             </p>
           </div>
         </section>
@@ -2193,7 +2224,7 @@
         <div class="rhgi-footer-774 rhgi-r41-gpu rhgi-prism-frame rhgi-prism-frame--compact" role="region" aria-label="774 local government areas national mobilization feed">
           <p class="rhgi-footer-774-label">774 LGA national feed · 240s translateX glide</p>
           <div class="rhgi-footer-774-inner">
-            <div class="rhgi-footer-774-track" id="rhgi-footer774Track">
+            <div class="rhgi-footer-774-track rhgi-ignition47-footer-track" id="rhgi-footer774Track">
               <span class="rhgi-footer-774-text" id="rhgi-footer774A"></span>
               <span class="rhgi-footer-774-text" id="rhgi-footer774B" aria-hidden="true"></span>
             </div>
@@ -2206,7 +2237,7 @@
   <p class="rhgi-r43-watermark" aria-hidden="true">Architect: Dr. Sa&rsquo;ad Jaafaru</p>
 
   <script>
-/* RHGI-HOMECOMING-45 — live clocks · kinetic LGA · matrices · 774 footer (all inline) */
+/* RHGI-IGNITION-47 — live clocks · kinetic LGA · matrices · 774 footer (all inline) */
     (function () {
       var STATE_NOW = 24;
       var STATE_MAX = 36;
@@ -2441,8 +2472,15 @@
           if (sEl) sEl.setAttribute('transform', 'rotate(' + secondDeg + ' 50 50)');
         });
       }
-      tickChromeClockHands();
+      function rhgiIgnition47TickClocks() {
+        tickChromeClockHands();
+      }
+      rhgiIgnition47TickClocks();
       setInterval(tickChromeClockHands, 1000);
+      if (typeof requestAnimationFrame === 'function') {
+        requestAnimationFrame(rhgiIgnition47TickClocks);
+      }
+      window.addEventListener('load', rhgiIgnition47TickClocks);
 
       /* —— 15-15-DEPLOY-12: tri-corridor APC + Model 15-15 (Kano anchor multiplier) —— */
       var KANO_APC_2023 = 517341;
@@ -2916,6 +2954,9 @@
       }
       var RHGI_ALL_LGA_774 = rhgiBuildAllLga774();
 
+      renderFooter774Ticker();
+      rhgiIgnition47FooterKick();
+
       function renderFooter774Ticker() {
         var pool = RHGI_ALL_LGA_774;
         var line = pool.join(' · ');
@@ -2923,6 +2964,13 @@
         var fb = document.getElementById('rhgi-footer774B');
         if (fa) fa.textContent = line;
         if (fb) fb.textContent = line;
+      }
+
+      function rhgiIgnition47FooterKick() {
+        var tr = document.getElementById('rhgi-footer774Track');
+        if (!tr) return;
+        tr.classList.add('rhgi-ignition47-footer-track');
+        void tr.offsetWidth;
       }
 
       /* Kinetic LGA pulse: CSS vertical marquee (rhgi-lga-scroll) + staggered rhgi-lga-name scan (--rhgi-idx) */
@@ -2947,7 +2995,7 @@
           '">' +
           item.name +
           '</span>' +
-          '<span class="rhgi-lga-status rhgi-lga-status--' + st + '">' + lab + '</span></li>'
+          '<span class="rhgi-lga-status rhgi-ignition47-lga-status rhgi-lga-status--' + st + '">' + lab + '</span></li>'
         );
       }
 
@@ -2991,7 +3039,6 @@
         renderLgaFeed('rhgi-nc-lgaListA', 'rhgi-nc-lgaListB', null, NC_LGA_NAMES);
         renderLgaFeed('rhgi-ss-lgaListA', 'rhgi-ss-lgaListB', null, SS_LGA_NAMES);
         renderLgaFeed('rhgi-se-lgaListA', 'rhgi-se-lgaListB', null, SE_LGA_NAMES);
-        renderFooter774Ticker();
       }
       renderAllLgaFeeds();
     })();
