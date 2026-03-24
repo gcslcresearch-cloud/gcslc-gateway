@@ -9,6 +9,9 @@
   var RHGI_TACTICAL_WARDS = 144000;
   var RHGI_MANDATE_VOTES = 39790350;
   var RHGI_GLOBAL_FUND_NGN = 60840000000;
+  var RHGI_STATE_NOW = 24;
+  var RHGI_STATE_MAX = 36;
+  var RHGI_ELECTION_TARGET = new Date("2027-01-16T00:00:00+01:00");
 
   var zones = [
     { city: "Abuja", tz: "Africa/Lagos" },
@@ -211,13 +214,54 @@
     pulseTimer = setInterval(updateSovereignClocks, 1000);
   }
 
+  function updateCountdown() {
+    var now = new Date();
+    var diffMs = RHGI_ELECTION_TARGET.getTime() - now.getTime();
+    if (diffMs < 0) {
+      diffMs = 0;
+    }
+    var totalSec = Math.floor(diffMs / 1000);
+    var daysTotal = Math.floor(totalSec / 86400);
+    var months = Math.floor(daysTotal / 30);
+    var days = daysTotal % 30;
+    var hours = Math.floor((totalSec % 86400) / 3600);
+    var seconds = totalSec % 60;
+
+    var monthsEl = document.getElementById("rhgi-cd-months");
+    var daysEl = document.getElementById("rhgi-cd-days");
+    var hoursEl = document.getElementById("rhgi-cd-hours");
+    var secondsEl = document.getElementById("rhgi-cd-seconds");
+
+    if (monthsEl) monthsEl.textContent = String(months).padStart(2, "0");
+    if (daysEl) daysEl.textContent = String(days).padStart(2, "0");
+    if (hoursEl) hoursEl.textContent = String(hours).padStart(2, "0");
+    if (secondsEl) secondsEl.textContent = String(seconds).padStart(2, "0");
+  }
+
+  function initConstitutionalGauge() {
+    var fill = document.getElementById("rhgi-gaugeFill");
+    var diamond = document.getElementById("rhgi-abujaDiamond");
+    var ratio = (RHGI_STATE_NOW / RHGI_STATE_MAX) * 100;
+    if (fill) {
+      requestAnimationFrame(function () {
+        fill.style.width = ratio + "%";
+      });
+    }
+    if (diamond) {
+      diamond.style.opacity = RHGI_STATE_NOW / RHGI_STATE_MAX >= 0.25 ? "1" : "0.45";
+    }
+  }
+
   function onReady() {
     lockDataAnchor();
+    initConstitutionalGauge();
+    updateCountdown();
     buildRegionalWidgets();
     buildTicker774();
     renderClockFaces();
     updateSovereignClocks();
     startPulseInterval();
+    setInterval(updateCountdown, 1000);
   }
 
   if (document.readyState === "loading") {
