@@ -1034,6 +1034,64 @@
       50% { background-position: 100% 50%; }
     }
 
+    /* —— 15-15-RESTORATION-30: Northwest high-velocity — scaleX bars (no width animation) —— */
+    #rhgi-widget-nw.rhgi-r30-nw-widget {
+      transform: translateZ(0);
+      will-change: transform, opacity;
+    }
+    #rhgi-widget-nw .rhgi-r30-bar-fill {
+      width: 100% !important;
+      min-width: 0;
+      transform-origin: 0 50%;
+      transform: scaleX(var(--rhgi-bar-sx, 1));
+    }
+    @keyframes rhgi-r30-nw-row-enter {
+      from {
+        opacity: 0;
+        transform: translateY(0.35rem);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .rhgi-page #rhgi-widget-nw .rhgi-r30-nw-matrix-row {
+      animation: rhgi-r30-nw-row-enter 0.55s ease forwards !important;
+      animation-delay: calc(var(--row-index) * 0.1s) !important;
+      transition-delay: calc(var(--row-index) * 0.1s);
+    }
+    @keyframes rhgi-r30-nw-margin-pulse {
+      0%, 100% {
+        filter: brightness(1) saturate(1);
+        opacity: 0.94;
+      }
+      50% {
+        filter: brightness(1.1) saturate(1.06);
+        opacity: 1;
+      }
+    }
+    .rhgi-page #rhgi-widget-nw .rhgi-r30-nw-proj-bar.rhgi-matrix-bar--proj {
+      animation: rhgi-r30-nw-margin-pulse 3.2s ease-in-out infinite !important;
+      background-size: 220% 100% !important;
+    }
+    .rhgi-page .rhgi-slc-budget .rhgi-r30-anchor {
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      animation: none !important;
+    }
+    .rhgi-page .rhgi-slc-budget .rhgi-r30-anchor-total {
+      font-weight: 900;
+      display: inline-block;
+      margin-inline: auto;
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.5rem;
+      box-shadow:
+        0 0 0.55rem rgba(232, 197, 71, 0.28),
+        0 0 1.5rem rgba(232, 197, 71, 0.12),
+        inset 0 0 0.45rem rgba(232, 197, 71, 0.08);
+      animation: none !important;
+    }
+
     .rhgi-deep-lga {
       display: flex;
       flex-direction: column;
@@ -1372,9 +1430,15 @@
     .rhgi-deep-lga-scroller {
       overflow-y: auto !important;
     }
-    .rhgi-matrix-bar--proj,
-    .rhgi-bar-apc-b {
+    .rhgi-matrix-bar--proj:not(.rhgi-r30-nw-proj-bar),
+    .rhgi-bar-apc-b:not(.rhgi-r30-bar-fill) {
       background: #2d5a42 !important;
+    }
+    .rhgi-page #rhgi-widget-nw .rhgi-r30-bar-fill.rhgi-bar-apc-b {
+      background: linear-gradient(90deg, #1a4d32, #2a6b45) !important;
+    }
+    .rhgi-page #rhgi-widget-nw .rhgi-r30-nw-proj-bar.rhgi-matrix-bar--proj {
+      background: linear-gradient(105deg, #0f2844 0%, #1a3a5c 25%, #e8c547 55%, #fff8dc 72%, #1e3a5a 100%) !important;
     }
     .rhgi-fct-strategic-lock {
       background: var(--rhgi-chrome-glass) !important;
@@ -1445,27 +1509,6 @@
     .rhgi-page .rhgi-chrome-sync-pulse .rhgi-chrome-hand-second {
       transform-origin: 50px 50px;
       animation: rhgi-chrome-hand-second 60s steps(60, end) infinite !important;
-    }
-    @keyframes rhgi-chrome-budget-glow-pulse {
-      0%, 100% {
-        box-shadow:
-          0 0 0.5rem rgba(232, 197, 71, 0.2),
-          0 0 1.35rem rgba(232, 197, 71, 0.09),
-          inset 0 0 0.45rem rgba(232, 197, 71, 0.07);
-      }
-      50% {
-        box-shadow:
-          0 0 0.85rem rgba(232, 197, 71, 0.38),
-          0 0 2.1rem rgba(232, 197, 71, 0.16),
-          inset 0 0 0.6rem rgba(232, 197, 71, 0.11);
-      }
-    }
-    .rhgi-page .rhgi-chrome-budget-glow {
-      display: inline-block;
-      margin-inline: auto;
-      padding: 0.35rem 0.75rem;
-      border-radius: 0.5rem;
-      animation: rhgi-chrome-budget-glow-pulse 10s ease-in-out infinite !important;
     }
     .rhgi-slc-budget {
       width: 100%;
@@ -1661,9 +1704,9 @@
           <h2 id="rhgi-hub-heading" class="rhgi-hub-section-title">Sovereign Logistics Command</h2>
           <div class="rhgi-hub rhgi-prism-frame">
             <div class="rhgi-slc-budget" id="rhgi-slc-budget">
-              <p class="rhgi-slc-formula">Total Budget = (144,000 Tactical Wards × 15 Canvassers) × ₦20,000</p>
-              <p class="rhgi-slc-total rhgi-chrome-budget-glow" id="rhgi-slc-total">—</p>
-              <p class="rhgi-slc-determinant">Determinant 3 · 144,000 Tactical Wards</p>
+              <p class="rhgi-slc-formula rhgi-r30-anchor">Total Budget = (144,000 Tactical Wards × 15 Canvassers) × ₦20,000</p>
+              <p class="rhgi-slc-total rhgi-r30-anchor rhgi-r30-anchor-total" id="rhgi-slc-total">—</p>
+              <p class="rhgi-slc-determinant rhgi-r30-anchor">Determinant 3 · 144,000 Tactical Wards</p>
               <table class="rhgi-slc-budget-table">
                 <thead>
                   <tr>
@@ -1705,7 +1748,7 @@
                 </div>
 
                 <div class="rhgi-corridor-widgets-stack">
-                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-prism-frame" id="rhgi-widget-nw" aria-labelledby="rhgi-deep-heading">
+                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-prism-frame rhgi-r30-nw-widget" id="rhgi-widget-nw" aria-labelledby="rhgi-deep-heading">
                     <h3 id="rhgi-deep-heading" class="rhgi-deep-head">Northwest Tactical Spine · Widget 1</h3>
                     <div class="rhgi-nw-margin" id="rhgi-nw-margin" aria-live="polite">
                       <span class="rhgi-nw-margin-label">Winning Margin</span>
@@ -2442,41 +2485,81 @@
           }
         }
         var html = '';
+        var isNw = tbodyId === 'rhgi-matrix-tbody';
         for (var s = 0; s < rows.length; s++) {
           var st = rows[s];
           var bw = (st.apcVotes / mb) * 100;
           var pw = (st.projVotes / mp) * 100;
           var bv = st.apcVotes.toLocaleString('en-NG');
           var pv = st.projVotes.toLocaleString('en-NG');
-          var baseline =
-            '<div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span>' +
-            '<span class="rhgi-matrix-vote-num">' +
-            bv +
-            '</span>' +
-            '<div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-apc-b" style="width:' +
-            bw +
-            '%" title="' +
-            st.name +
-            ' 2023 APC ' +
-            bv +
-            ' votes"></div></div></div>';
+          var sxB = bw / 100;
+          var sxP = pw / 100;
           var projTitle =
             (projVoteTitlePrefix || '15-15 Model APC') +
             ' ' +
             pv +
             ' votes · ' +
             (projExtraTitle || 'Kano anchor multiplier');
-          var proj =
-            '<div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span>' +
-            '<span class="rhgi-matrix-vote-num">' +
-            pv +
-            '</span>' +
-            '<div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:' +
-            pw +
-            '%" title="' +
-            projTitle +
-            '"></div></div></div>';
-          html += '<tr><td class="rhgi-matrix-state">' + st.name + '</td><td>' + baseline + '</td><td>' + proj + '</td></tr>';
+          var baseline;
+          var proj;
+          if (isNw) {
+            baseline =
+              '<div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span>' +
+              '<span class="rhgi-matrix-vote-num">' +
+              bv +
+              '</span>' +
+              '<div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-apc-b rhgi-r30-bar-fill" style="--rhgi-bar-sx:' +
+              sxB +
+              '" title="' +
+              st.name +
+              ' 2023 APC ' +
+              bv +
+              ' votes"></div></div></div>';
+            proj =
+              '<div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span>' +
+              '<span class="rhgi-matrix-vote-num">' +
+              pv +
+              '</span>' +
+              '<div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj rhgi-r30-nw-proj-bar" style="--rhgi-bar-sx:' +
+              sxP +
+              '" title="' +
+              projTitle +
+              '"></div></div></div>';
+            html +=
+              '<tr class="rhgi-r30-nw-matrix-row" style="--row-index:' +
+              s +
+              '"><td class="rhgi-matrix-state">' +
+              st.name +
+              '</td><td>' +
+              baseline +
+              '</td><td>' +
+              proj +
+              '</td></tr>';
+          } else {
+            baseline =
+              '<div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span>' +
+              '<span class="rhgi-matrix-vote-num">' +
+              bv +
+              '</span>' +
+              '<div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-apc-b" style="width:' +
+              bw +
+              '%" title="' +
+              st.name +
+              ' 2023 APC ' +
+              bv +
+              ' votes"></div></div></div>';
+            proj =
+              '<div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span>' +
+              '<span class="rhgi-matrix-vote-num">' +
+              pv +
+              '</span>' +
+              '<div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:' +
+              pw +
+              '%" title="' +
+              projTitle +
+              '"></div></div></div>';
+            html += '<tr><td class="rhgi-matrix-state">' + st.name + '</td><td>' + baseline + '</td><td>' + proj + '</td></tr>';
+          }
         }
         tbody.innerHTML = html;
       }
