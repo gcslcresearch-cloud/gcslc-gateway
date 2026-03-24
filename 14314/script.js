@@ -7,11 +7,18 @@
   "use strict";
 
   var RHGI_TACTICAL_WARDS = 144000;
-  var RHGI_MANDATE_VOTES = 39790350;
+  var RHGI_MANDATE_VOTES = 20709668;
   var RHGI_GLOBAL_FUND_NGN = 60840000000;
-  var RHGI_STATE_NOW = 24;
-  var RHGI_STATE_MAX = 36;
+  var RHGI_STATE_NOW = 18;
+  var RHGI_STATE_MAX = 24;
+  var RHGI_VICTORY_REQUIREMENT = 37;
   var RHGI_ELECTION_TARGET = new Date("2027-01-16T00:00:00+01:00");
+  var big4Matrix = [
+    { key: "lagos", base2023: 18, target2027: 44 },
+    { key: "kano", base2023: 22, target2027: 47 },
+    { key: "rivers", base2023: 16, target2027: 39 },
+    { key: "fct", base2023: 20, target2027: 45 }
+  ];
 
   var zones = [
     { city: "Abuja", tz: "Africa/Lagos" },
@@ -159,6 +166,8 @@
       "</strong> votes</p>" +
       "<p>Global operational fund <strong>₦" +
       RHGI_GLOBAL_FUND_NGN.toLocaleString("en-NG") +
+      "</strong> · national vote target <strong>" +
+      RHGI_MANDATE_VOTES.toLocaleString("en-NG") +
       "</strong></p>";
   }
 
@@ -239,22 +248,69 @@
   }
 
   function initConstitutionalGauge() {
-    var fill = document.getElementById("rhgi-gaugeFill");
+    var arc = document.getElementById("rhgi-gaugeArc");
     var diamond = document.getElementById("rhgi-abujaDiamond");
-    var ratio = (RHGI_STATE_NOW / RHGI_STATE_MAX) * 100;
-    if (fill) {
-      requestAnimationFrame(function () {
-        fill.style.width = ratio + "%";
-      });
+    var validator = document.getElementById("rhgi-validatorText");
+    var projected = RHGI_STATE_NOW / RHGI_STATE_MAX >= 0.75;
+    var arcDeg = Math.round((RHGI_STATE_NOW / RHGI_VICTORY_REQUIREMENT) * 300);
+    if (arc) {
+      arc.style.setProperty("--arc-degree", arcDeg + "deg");
     }
     if (diamond) {
-      diamond.style.opacity = RHGI_STATE_NOW / RHGI_STATE_MAX >= 0.25 ? "1" : "0.45";
+      diamond.classList.toggle("is-solid", projected);
+      diamond.style.opacity = projected ? "1" : "0.45";
+    }
+    if (validator) {
+      validator.textContent =
+        "Constitutional Status: [" +
+        RHGI_STATE_NOW +
+        "/" +
+        RHGI_STATE_MAX +
+        " States Secured] | FCT: " +
+        (projected ? "VALIDATED" : "PENDING");
+    }
+  }
+
+  function initBig4Matrix() {
+    big4Matrix.forEach(function (m) {
+      var b23 = document.getElementById("rhgi-" + m.key + "-2023");
+      var b27 = document.getElementById("rhgi-" + m.key + "-2027");
+      var meta = document.getElementById("rhgi-" + m.key + "-meta");
+      var gap = document.getElementById("rhgi-" + m.key + "-gap");
+      var growth = Math.round(((m.target2027 - m.base2023) / m.base2023) * 100);
+      if (b23) {
+        requestAnimationFrame(function () {
+          b23.style.width = m.base2023 + "%";
+        });
+      }
+      if (b27) {
+        requestAnimationFrame(function () {
+          b27.style.width = m.target2027 + "%";
+        });
+      }
+      if (meta) {
+        meta.textContent = "2023: " + m.base2023 + "% | 2027: " + m.target2027 + "%";
+      }
+      if (gap) {
+        gap.textContent = "+" + growth + "% to Victory";
+      }
+    });
+
+    var fctDiamond = document.getElementById("rhgi-matrixAbujaDiamond");
+    var fctData = big4Matrix.find(function (m) {
+      return m.key === "fct";
+    });
+    if (fctDiamond && fctData) {
+      var thresholdProjected = fctData.target2027 >= 25;
+      fctDiamond.classList.toggle("is-solid", thresholdProjected);
+      fctDiamond.style.opacity = thresholdProjected ? "1" : "0.45";
     }
   }
 
   function onReady() {
     lockDataAnchor();
     initConstitutionalGauge();
+    initBig4Matrix();
     updateCountdown();
     buildRegionalWidgets();
     buildTicker774();

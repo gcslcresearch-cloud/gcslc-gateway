@@ -91,9 +91,13 @@ body {
 .rhgi-dna-line {
   margin: 0.35rem 0 0.7rem;
   text-align: center;
-  color: rgba(232, 238, 244, 0.9);
+  color: #f1cb68;
   font-size: clamp(0.52rem, 0.8vw + 0.24rem, 0.68rem);
   letter-spacing: 0.06em;
+  text-shadow:
+    0 0 0.2rem rgba(241, 203, 104, 0.7),
+    0 0 0.7rem rgba(241, 203, 104, 0.45);
+  animation: rhgi-gold-flicker 1200ms linear infinite;
 }
 
 .rhgi-countdown {
@@ -161,20 +165,42 @@ body {
   text-transform: uppercase;
 }
 
-.rhgi-gauge-track {
-  height: 0.5rem;
-  border-radius: 999px;
-  border: 1px solid rgba(212, 175, 55, 0.28);
-  background: rgba(5, 11, 21, 0.92);
-  overflow: hidden;
+.rhgi-arc-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.3rem;
 }
 
-.rhgi-gauge-fill {
-  width: 0;
-  height: 100%;
-  background: linear-gradient(90deg, #0fd7ff 0%, #f5ca59 100%);
-  box-shadow: 0 0 0.6rem rgba(245, 202, 89, 0.5);
-  transition: width 700ms ease;
+.rhgi-gauge-arc {
+  --arc-degree: 233deg;
+  width: clamp(7rem, 22vw, 10rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  position: relative;
+  background:
+    conic-gradient(from 210deg, #f3ce69 0deg var(--arc-degree), rgba(26, 42, 70, 0.2) var(--arc-degree) 300deg, transparent 300deg 360deg);
+  filter: drop-shadow(0 0 0.5rem rgba(241, 203, 104, 0.35));
+}
+
+.rhgi-gauge-arc::before {
+  content: "";
+  position: absolute;
+  inset: 0.9rem;
+  border-radius: 50%;
+  background: #060b14;
+  border: 1px solid rgba(212, 175, 55, 0.22);
+}
+
+.rhgi-gauge-core {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: clamp(0.7rem, 1.2vw + 0.38rem, 1.05rem);
+  letter-spacing: 0.08em;
+  color: #f3ce69;
+  z-index: 1;
+  text-shadow: 0 0 0.5rem rgba(241, 203, 104, 0.5);
 }
 
 .rhgi-diamond-row {
@@ -193,6 +219,10 @@ body {
   box-shadow: 0 0 0.55rem rgba(240, 196, 77, 0.85);
   animation: rhgi-diamond-beat 1s ease-in-out infinite;
 }
+.rhgi-diamond-pulse.is-solid {
+  background: #ffd873;
+  box-shadow: 0 0 0.75rem rgba(255, 216, 115, 0.98);
+}
 
 @keyframes rhgi-diamond-beat {
   0%, 100% { transform: rotate(45deg) scale(1); }
@@ -203,6 +233,119 @@ body {
   font-size: clamp(0.46rem, 0.65vw + 0.16rem, 0.56rem);
   letter-spacing: 0.1em;
   color: rgba(232, 238, 244, 0.86);
+}
+
+.rhgi-validator-text {
+  margin: 0.45rem 0 0;
+  text-align: center;
+  font-size: clamp(0.48rem, 0.72vw + 0.15rem, 0.6rem);
+  letter-spacing: 0.08em;
+  color: rgba(232, 238, 244, 0.94);
+}
+
+/* Big 4 Performance Matrix */
+.rhgi-matrix {
+  margin-top: 0.7rem;
+  padding: 0.65rem;
+}
+
+.rhgi-matrix-heading {
+  margin: 0 0 0.55rem;
+  text-align: center;
+  font-size: clamp(0.54rem, 0.8vw + 0.2rem, 0.66rem);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #f0d69a;
+}
+
+.rhgi-matrix-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.45rem;
+}
+
+@media (min-width: 44rem) {
+  .rhgi-matrix-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.rhgi-matrix-col {
+  border: 1px solid rgba(182, 196, 215, 0.35);
+  border-radius: 0.55rem;
+  padding: 0.45rem;
+  background:
+    linear-gradient(160deg, rgba(170, 186, 210, 0.18), rgba(20, 34, 54, 0.58)),
+    rgba(7, 14, 26, 0.76);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.rhgi-matrix-col-title {
+  margin: 0 0 0.35rem;
+  text-align: center;
+  font-size: clamp(0.52rem, 0.74vw + 0.18rem, 0.62rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #dce8fa;
+}
+
+.rhgi-matrix-fct-head {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+}
+
+.rhgi-matrix-diamond {
+  width: 0.46rem;
+  height: 0.46rem;
+}
+
+.rhgi-matrix-barset {
+  display: grid;
+  gap: 0.24rem;
+}
+
+.rhgi-matrix-rail {
+  height: 0.38rem;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid rgba(182, 196, 215, 0.35);
+  background: rgba(5, 11, 21, 0.92);
+}
+
+.rhgi-matrix-fill {
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  transition: width 900ms cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translate3d(0, 0, 0);
+}
+
+.rhgi-matrix-fill-2023 {
+  background: linear-gradient(90deg, rgba(126, 158, 200, 0.95), rgba(185, 206, 232, 0.95));
+}
+
+.rhgi-matrix-fill-2027 {
+  background: linear-gradient(90deg, #d9b34e, #f2d98f);
+}
+
+.rhgi-matrix-meta {
+  margin: 0.34rem 0 0.1rem;
+  text-align: center;
+  font-size: clamp(0.42rem, 0.64vw + 0.14rem, 0.52rem);
+  color: rgba(224, 234, 246, 0.88);
+}
+
+.rhgi-matrix-gap {
+  margin: 0;
+  text-align: center;
+  font-size: clamp(0.46rem, 0.66vw + 0.16rem, 0.56rem);
+  letter-spacing: 0.07em;
+  color: #f2cf71;
+  text-shadow: 0 0 0.45rem rgba(242, 207, 113, 0.38);
+  animation: rhgi-gold-flicker 1500ms linear infinite;
 }
 
 /* Data anchor — 144k · mandate · budget */

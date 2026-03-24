@@ -79,6 +79,18 @@
 
     .request-card {
       padding: 12px;
+      transition: transform 280ms ease, opacity 280ms ease, border-color 280ms ease;
+    }
+    .request-card.is-granted {
+      border-color: rgba(125, 208, 129, 0.9);
+    }
+    .request-card.is-denied {
+      border-color: rgba(142, 29, 40, 0.95);
+    }
+    .request-card.is-exit {
+      opacity: 0;
+      transform: translateY(-8px) scale(0.98);
+      pointer-events: none;
     }
 
     .meta {
@@ -94,6 +106,15 @@
       grid-template-columns: 1fr 1fr;
       gap: 8px;
     }
+    .status-note {
+      margin: 8px 0 0;
+      font-size: 0.66rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .status-note.granted { color: #7dd081; }
+    .status-note.denied { color: #d77b84; }
 
     .btn {
       border-radius: 10px;
@@ -234,9 +255,28 @@
           el.textContent = formatter(tz).format(now);
         });
       }
+      function wireActions() {
+        document.querySelectorAll(".request-card").forEach(function (card) {
+          card.querySelectorAll(".btn").forEach(function (btn) {
+            btn.addEventListener("click", function () {
+              var action = btn.classList.contains("btn-grant") ? "granted" : "denied";
+              card.classList.add(action === "granted" ? "is-granted" : "is-denied");
+              var note = document.createElement("p");
+              note.className = "status-note " + action;
+              note.textContent = action === "granted" ? "Access granted for 30 minutes" : "Access denied";
+              card.appendChild(note);
+              card.classList.add("is-exit");
+              setTimeout(function () {
+                card.remove();
+              }, 300);
+            }, { once: true });
+          });
+        });
+      }
       document.addEventListener("DOMContentLoaded", function () {
         tick();
         setInterval(tick, 1000);
+        wireActions();
       });
     })();
   </script>
