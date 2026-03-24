@@ -737,6 +737,34 @@
       min-width: 0;
       margin-top: clamp(0.35rem, 1.5vw, 0.5rem);
     }
+
+    /* —— 15-15-FULL-RESTORATION-32: trim + sovereign scroll + GPU layers —— */
+    .rhgi-hub.rhgi-r32-sovereign-shell,
+    .rhgi-pulse-section.rhgi-r32-sovereign-shell {
+      transform: translateZ(0);
+      backface-visibility: hidden;
+    }
+    .rhgi-corridor-widget.rhgi-r32-sovereign-widget {
+      transform: translateZ(0);
+      backface-visibility: hidden;
+      max-height: min(72vh, 48rem);
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(232, 197, 71, 0.55) rgba(4, 12, 22, 0.65);
+    }
+    .rhgi-corridor-widget.rhgi-r32-sovereign-widget.rhgi-r32-sovereign-scroll::-webkit-scrollbar {
+      width: 7px;
+    }
+    .rhgi-corridor-widget.rhgi-r32-sovereign-widget.rhgi-r32-sovereign-scroll::-webkit-scrollbar-track {
+      background: rgba(4, 14, 28, 0.9);
+      border-radius: 4px;
+    }
+    .rhgi-corridor-widget.rhgi-r32-sovereign-widget.rhgi-r32-sovereign-scroll::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, rgba(232, 197, 71, 0.55), rgba(0, 100, 160, 0.45));
+      border-radius: 4px;
+    }
     .rhgi-victory-section,
     .rhgi-hub-section {
       width: 100%;
@@ -1098,6 +1126,7 @@
       font-weight: 800;
       letter-spacing: 0.04em;
       animation: none !important;
+      filter: drop-shadow(0 0 0.35rem rgba(232, 197, 71, 0.38)) drop-shadow(0 0 0.85rem rgba(232, 197, 71, 0.16));
     }
     .rhgi-page .rhgi-slc-budget .rhgi-r30-anchor-total {
       font-weight: 900;
@@ -1105,11 +1134,12 @@
       margin-inline: auto;
       padding: 0.35rem 0.75rem;
       border-radius: 0.5rem;
-      box-shadow:
-        0 0 0.55rem rgba(232, 197, 71, 0.28),
-        0 0 1.5rem rgba(232, 197, 71, 0.12),
-        inset 0 0 0.45rem rgba(232, 197, 71, 0.08);
+      box-shadow: none;
       animation: none !important;
+      filter: drop-shadow(0 0 0.45rem rgba(232, 197, 71, 0.48)) drop-shadow(0 0 1.1rem rgba(232, 197, 71, 0.22));
+    }
+    .rhgi-page .rhgi-slc-budget .rhgi-r32-canvasser-anchor {
+      filter: drop-shadow(0 0 0.32rem rgba(232, 197, 71, 0.35)) drop-shadow(0 0 0.75rem rgba(232, 197, 71, 0.14));
     }
 
     .rhgi-deep-lga {
@@ -1579,6 +1609,15 @@
       text-align: center;
       color: rgba(143, 163, 191, 0.95);
     }
+    .rhgi-slc-force-line {
+      margin: 0 0 0.5rem;
+      font-size: clamp(0.4rem, 1vw + 0.1rem, 0.52rem);
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-align: center;
+      color: rgba(232, 238, 244, 0.94);
+      line-height: 1.4;
+    }
     .rhgi-slc-budget-table {
       width: 100%;
       border-collapse: collapse;
@@ -1763,11 +1802,12 @@
 
         <section class="rhgi-hub-section" aria-labelledby="rhgi-hub-heading">
           <h2 id="rhgi-hub-heading" class="rhgi-hub-section-title">Sovereign Logistics Command</h2>
-          <div class="rhgi-hub rhgi-prism-frame">
+          <div class="rhgi-hub rhgi-prism-frame rhgi-r32-sovereign-shell">
             <div class="rhgi-slc-budget" id="rhgi-slc-budget">
               <p class="rhgi-slc-formula rhgi-r30-anchor">Total Budget = (144,000 Tactical Wards × 15 Canvassers) × ₦20,000</p>
               <p class="rhgi-slc-total rhgi-r30-anchor rhgi-r30-anchor-total" id="rhgi-slc-total">—</p>
               <p class="rhgi-slc-determinant rhgi-r30-anchor">Determinant 3 · 144,000 Tactical Wards</p>
+              <p class="rhgi-slc-force-line rhgi-r30-anchor rhgi-r32-canvasser-anchor" id="rhgi-slc-force">—</p>
               <table class="rhgi-slc-budget-table">
                 <thead>
                   <tr>
@@ -1809,7 +1849,7 @@
                 </div>
 
                 <div class="rhgi-corridor-widgets-stack">
-                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-prism-frame rhgi-r30-nw-widget rhgi-r31-nw-gpu-lock" id="rhgi-widget-nw" aria-labelledby="rhgi-deep-heading">
+                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-prism-frame rhgi-r30-nw-widget rhgi-r31-nw-gpu-lock rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-nw" aria-labelledby="rhgi-deep-heading">
                     <h3 id="rhgi-deep-heading" class="rhgi-deep-head">Northwest Tactical Spine · Widget 1</h3>
                     <div class="rhgi-nw-margin" id="rhgi-nw-margin" aria-live="polite">
                       <span class="rhgi-nw-margin-label">Winning Margin</span>
@@ -1872,7 +1912,7 @@
                     <p class="rhgi-deep-footer" id="rhgi-deep-footer">NW Projected Yield: — | Confidence Interval: 98% (8R Validated)</p>
                   </div>
 
-                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-prism-frame rhgi-deep-layout--compact" id="rhgi-widget-sw" aria-labelledby="rhgi-sw-heading">
+                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-prism-frame rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-sw" aria-labelledby="rhgi-sw-heading">
                     <h3 id="rhgi-sw-heading" class="rhgi-deep-head">Southwest Corridor · Widget 2</h3>
                     <div class="rhgi-nw-margin" id="rhgi-sw-margin" aria-live="polite">
                       <span class="rhgi-nw-margin-label">Winning Margin</span>
@@ -1905,7 +1945,7 @@
                     <p class="rhgi-deep-footer" id="rhgi-sw-footer">SW Projected Yield: — | Confidence Interval: 98% (8R Validated)</p>
                   </div>
 
-                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-prism-frame rhgi-deep-layout--compact" id="rhgi-widget-ne" aria-labelledby="rhgi-ne-heading">
+                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-prism-frame rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-ne" aria-labelledby="rhgi-ne-heading">
                     <h3 id="rhgi-ne-heading" class="rhgi-deep-head">Northeast Corridor · Widget 3</h3>
                     <div class="rhgi-nw-margin" id="rhgi-ne-margin" aria-live="polite">
                       <span class="rhgi-nw-margin-label">Winning Margin</span>
@@ -1938,12 +1978,12 @@
                     <p class="rhgi-deep-footer" id="rhgi-ne-footer">NE Projected Yield: — | Confidence Interval: 98% (8R Validated)</p>
                   </div>
 
-                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-prism-frame rhgi-deep-layout--compact" id="rhgi-widget-nc" aria-labelledby="rhgi-nc-heading">
-                    <h3 id="rhgi-nc-heading" class="rhgi-deep-head">North Central Corridor · Widget 4</h3>
+                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-prism-frame rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-nc" aria-labelledby="rhgi-nc-heading">
+                    <h3 id="rhgi-nc-heading" class="rhgi-deep-head">North Central · FCT 25% Strategic Lock · Widget 4</h3>
                     <div class="rhgi-nw-margin" id="rhgi-nc-margin" aria-live="polite">
                       <span class="rhgi-nw-margin-label">Winning Margin</span>
                       <p class="rhgi-nw-margin-delta" id="rhgi-nc-margin-delta">—</p>
-                      <p class="rhgi-nw-margin-dtl" id="rhgi-nc-margin-dtl">NC APC vs 2023 base · Model 15-15</p>
+                      <p class="rhgi-nw-margin-dtl" id="rhgi-nc-margin-dtl">NC APC vs 2023 base · FCT 25% strategic lock · Model 15-15</p>
                     </div>
                     <div class="rhgi-deep-layout">
                       <div class="rhgi-deep-matrix-wrap">
@@ -1971,7 +2011,7 @@
                     <p class="rhgi-deep-footer" id="rhgi-nc-footer">NC Projected Yield: — | Confidence Interval: 98% (8R Validated)</p>
                   </div>
 
-                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-prism-frame rhgi-deep-layout--compact" id="rhgi-widget-ss" aria-labelledby="rhgi-ss2-heading">
+                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-prism-frame rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-ss" aria-labelledby="rhgi-ss2-heading">
                     <h3 id="rhgi-ss2-heading" class="rhgi-deep-head">South-South Corridor · Widget 5</h3>
                     <div class="rhgi-nw-margin" id="rhgi-ss-margin" aria-live="polite">
                       <span class="rhgi-nw-margin-label">Winning Margin</span>
@@ -2004,7 +2044,7 @@
                     <p class="rhgi-deep-footer" id="rhgi-ss-footer">SS Projected Yield: — | Confidence Interval: 98% (8R Validated)</p>
                   </div>
 
-                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-prism-frame rhgi-deep-layout--compact" id="rhgi-widget-se" aria-labelledby="rhgi-se2-heading">
+                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-prism-frame rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-se" aria-labelledby="rhgi-se2-heading">
                     <h3 id="rhgi-se2-heading" class="rhgi-deep-head">Southeast Corridor · Widget 6</h3>
                     <div class="rhgi-nw-margin rhgi-se-strategic-lock-static" id="rhgi-se-margin" aria-live="polite">
                       <span class="rhgi-nw-margin-label">Strategic 25% Threshold Secure</span>
@@ -2052,9 +2092,14 @@
           </div>
         </section>
 
-        <section class="rhgi-pulse-section rhgi-r1-global-pulse rhgi-chrome-sync-pulse">
+        <section class="rhgi-pulse-section rhgi-r1-global-pulse rhgi-chrome-sync-pulse rhgi-r32-sovereign-shell">
           <p class="rhgi-global-pulse-label">Global Pulse</p>
-          <div class="rhgi-clocks-grid" id="rhgi-clocksRow" role="group" aria-label="World clocks"></div>
+          <div
+            class="rhgi-clocks-grid"
+            id="rhgi-clocksRow"
+            role="group"
+            aria-label="World clocks · Zaria · London · New York · Riyadh · steps(60) hands"
+          ></div>
         </section>
 
         <div class="rhgi-footer-774 rhgi-prism-frame" role="region" aria-label="774 local government areas national mobilization feed">
@@ -2096,10 +2141,17 @@
       var pillarFill = document.getElementById('rhgi-pillar-fill');
       var readout20 = document.getElementById('rhgi-20m-readout');
       var slcTotalEl = document.getElementById('rhgi-slc-total');
+      var slcForceEl = document.getElementById('rhgi-slc-force');
       function updateSovereignLogisticsDisplay() {
         if (slcTotalEl) {
           slcTotalEl.textContent =
             '₦' + RHGI_BUDGET_TOTAL_NGN.toLocaleString('en-NG') + ' (global total)';
+        }
+        if (slcForceEl) {
+          var canvasserForce = RHGI_TACTICAL_WARDS * RHGI_CANVASSERS_PER_WARD;
+          slcForceEl.textContent =
+            (canvasserForce / 1000000).toFixed(2) +
+            'M Canvasser Force · 144,000 Wards × 15';
         }
       }
       function updatePillar() {
@@ -2203,11 +2255,12 @@
       tickCountdown();
       setInterval(tickCountdown, 1000);
 
+      /* FULL-RESTORATION-32: global timeline — Zaria (NG) · London · New York · Riyadh — steps(60) hands */
       var zones = [
-        { city: 'Abuja', tz: 'Africa/Lagos' },
+        { city: 'Zaria', tz: 'Africa/Lagos' },
         { city: 'London', tz: 'Europe/London' },
-        { city: 'Dubai', tz: 'Asia/Dubai' },
-        { city: 'New York', tz: 'America/New_York' }
+        { city: 'New York', tz: 'America/New_York' },
+        { city: 'Riyadh', tz: 'Asia/Riyadh' }
       ];
 
       function tickGroupHtml() {
@@ -2459,7 +2512,7 @@
               vt.base.toLocaleString('en-NG') +
               ' → ' +
               vt.proj.toLocaleString('en-NG') +
-              ' · Model 15-15 (Kano anchor 1,938,480 · ' +
+              ' · FCT 25% strategic lock · Model 15-15 (Kano anchor 1,938,480 · ' +
               NC_LGA_COUNT +
               ' LGAs)';
           } else {
