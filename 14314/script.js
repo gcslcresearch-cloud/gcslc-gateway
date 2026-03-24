@@ -94,7 +94,7 @@
     return { h24: h24, Mi: Mi, Se: Se };
   }
 
-  function updateGlobalPulseClocks() {
+  function updateSovereignClocks() {
     var row = document.getElementById("rhgi-clocksRow");
     if (!row) {
       return;
@@ -132,7 +132,7 @@
         return clockMarkup(i);
       })
       .join("");
-    updateGlobalPulseClocks();
+    updateSovereignClocks();
   }
 
   function lockDataAnchor() {
@@ -174,14 +174,14 @@
     if (pulseTimer !== null) {
       return;
     }
-    pulseTimer = setInterval(updateGlobalPulseClocks, 1000);
+    pulseTimer = setInterval(updateSovereignClocks, 1000);
   }
 
   function onReady() {
     lockDataAnchor();
     buildTicker774();
     renderClockFaces();
-    updateGlobalPulseClocks();
+    updateSovereignClocks();
     startPulseInterval();
   }
 
