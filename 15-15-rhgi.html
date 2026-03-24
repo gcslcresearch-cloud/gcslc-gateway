@@ -39,7 +39,7 @@
       /* LGA ticker + AKZ spine: shared 40s loop (DEPLOY-12 moderate glide) */
       --rhgi-lga-scroll-duration: 40s;
       --rhgi-akz-spine-period: 40s;
-      --rhgi-footer774-duration: 280s;
+      --rhgi-footer774-duration: 240s;
     }
 
     .rhgi-velocity-field {
@@ -179,42 +179,19 @@
     }
     @keyframes rhgi-scanline-drift { 0% { background-position: 0 0; } 100% { background-position: 0 0.4375rem; } }
 
-    /* Prism-frame — silky slow metallic navy + diamond sparkle every 5s */
-    @keyframes rhgi-prism-frame-power {
-      0%, 86%, 100% {
-        border-color: rgba(32, 56, 92, 0.96);
-        box-shadow:
-          0 0.5rem 2.25rem rgba(0, 0, 0, 0.32),
-          inset 0 1px 0 rgba(255, 255, 255, 0.04),
-          0 0 0.75rem rgba(0, 90, 150, 0.22),
-          0 0 2rem rgba(8, 22, 42, 0.5),
-          inset 0 0 1.5rem rgba(4, 12, 26, 0.5);
-      }
-      43% {
-        border-color: rgba(0, 195, 235, 0.48);
-        box-shadow:
-          0 0.5rem 2.25rem rgba(0, 0, 0, 0.32),
-          inset 0 1px 0 rgba(255, 255, 255, 0.06),
-          0 0 1.1rem rgba(0, 200, 230, 0.24),
-          0 0 2.5rem rgba(20, 55, 95, 0.32),
-          inset 0 0 1.2rem rgba(0, 180, 220, 0.06);
-      }
-      90%, 92% {
-        border-color: rgba(255, 248, 220, 0.42);
-        box-shadow:
-          0 0.5rem 2.25rem rgba(0, 0, 0, 0.32),
-          inset 0 1px 0 rgba(255, 255, 255, 0.12),
-          0 0 1.5rem rgba(232, 197, 71, 0.35),
-          0 0 2.5rem rgba(255, 255, 255, 0.18),
-          0 0 0.35rem rgba(255, 248, 220, 0.55),
-          inset 0 0 1.75rem rgba(232, 197, 71, 0.12);
-      }
-    }
-    .rhgi-prism-frame {
-      border: 2px solid rgba(30, 54, 88, 0.96);
-      animation: rhgi-prism-frame-power 5s ease-in-out infinite;
+    /* —— 15-15-FULL-VELOCITY-33: flat frames (prism stripped) —— */
+    .rhgi-v33-shell {
+      border: 1px solid #d4af37;
+      border-radius: 0.75rem;
+      background: #0a0e1a;
       transform: translateZ(0);
-      will-change: opacity, transform;
+      backface-visibility: hidden;
+    }
+    .rhgi-v33-widget {
+      border: 1px solid #1a2542;
+      border-radius: 0.65rem;
+      background: #0a0e1a;
+      transform: translateZ(0);
       backface-visibility: hidden;
     }
 
@@ -281,18 +258,21 @@
       max-width: min(100%, 42rem);
       margin-inline: auto;
       padding-inline: clamp(0.25rem, 2vw, 0.85rem);
+      /* Gold–silver metallic shimmer (FULL-VELOCITY-33) */
       background: linear-gradient(
-        122deg,
+        118deg,
         #050a14 0%,
-        #0f2844 8%,
-        #fff8e8 18%,
-        #e8c547 32%,
-        #ffffff 42%,
-        #1a3a5c 52%,
-        #e8c547 62%,
-        #f5f0e6 72%,
-        #0d1a2e 86%,
-        #e8c547 100%
+        #1a2542 6%,
+        #c0c4cc 14%,
+        #e8c547 24%,
+        #f8f6f2 34%,
+        #d4af37 44%,
+        #a8a9ad 52%,
+        #fff8e8 62%,
+        #e8c547 72%,
+        #8a9098 82%,
+        #0d1a2e 92%,
+        #d4af37 100%
       );
       background-size: 320% 300%;
       -webkit-background-clip: text;
@@ -1079,19 +1059,20 @@
       50% { background-position: 100% 50%; }
     }
 
-    /* —— 15-15-RESTORATION-30: Northwest high-velocity — scaleX bars (no width animation) —— */
+    /* —— FULL-VELOCITY-33: all six corridors — scaleX winning margin bars (GPU) —— */
     #rhgi-widget-nw.rhgi-r30-nw-widget.rhgi-r31-nw-gpu-lock {
       transform: translateZ(0);
       will-change: transform, opacity;
     }
-    #rhgi-widget-nw .rhgi-r30-bar-fill {
+    .rhgi-v33-bar-fill,
+    .rhgi-v33-proj-bar {
       width: 100% !important;
       min-width: 0;
       transform-origin: 0 50%;
       transform: scaleX(var(--rhgi-bar-sx, 1));
       will-change: transform;
     }
-    @keyframes rhgi-r30-nw-row-enter {
+    @keyframes rhgi-v33-row-enter {
       from {
         opacity: 0;
         transform: translateY(0.35rem);
@@ -1101,34 +1082,27 @@
         transform: translateY(0);
       }
     }
-    .rhgi-page #rhgi-widget-nw .rhgi-r30-nw-matrix-row {
-      animation: rhgi-r30-nw-row-enter 0.55s ease forwards !important;
+    .rhgi-page .rhgi-v33-matrix-row {
+      animation: rhgi-v33-row-enter 0.55s ease forwards !important;
       animation-delay: calc(var(--row-index) * 0.1s) !important;
       transition-delay: calc(var(--row-index) * 0.1s);
       will-change: transform, opacity !important;
     }
-    @keyframes rhgi-r30-nw-margin-pulse {
-      0%, 100% {
-        filter: brightness(1) saturate(1);
-        opacity: 0.94;
+    @keyframes rhgi-v33-bar-reveal {
+      from {
+        transform: scaleX(0) translateZ(0);
       }
-      50% {
-        filter: brightness(1.1) saturate(1.06);
-        opacity: 1;
+      to {
+        transform: scaleX(var(--rhgi-bar-sx, 1)) translateZ(0);
       }
     }
-    .rhgi-page #rhgi-widget-nw .rhgi-r30-nw-proj-bar.rhgi-matrix-bar--proj {
-      animation: rhgi-r30-nw-margin-pulse 3.2s ease-in-out infinite !important;
-      background-size: 220% 100% !important;
-      will-change: transform, opacity !important;
-    }
-    .rhgi-page .rhgi-slc-budget .rhgi-r30-anchor {
+    .rhgi-page .rhgi-slc-budget .rhgi-v33-anchor {
       font-weight: 800;
       letter-spacing: 0.04em;
       animation: none !important;
       filter: drop-shadow(0 0 0.35rem rgba(232, 197, 71, 0.38)) drop-shadow(0 0 0.85rem rgba(232, 197, 71, 0.16));
     }
-    .rhgi-page .rhgi-slc-budget .rhgi-r30-anchor-total {
+    .rhgi-page .rhgi-slc-budget .rhgi-v33-anchor-total {
       font-weight: 900;
       display: inline-block;
       margin-inline: auto;
@@ -1138,7 +1112,7 @@
       animation: none !important;
       filter: drop-shadow(0 0 0.45rem rgba(232, 197, 71, 0.48)) drop-shadow(0 0 1.1rem rgba(232, 197, 71, 0.22));
     }
-    .rhgi-page .rhgi-slc-budget .rhgi-r32-canvasser-anchor {
+    .rhgi-page .rhgi-slc-budget .rhgi-v33-canvasser-anchor {
       filter: drop-shadow(0 0 0.32rem rgba(232, 197, 71, 0.35)) drop-shadow(0 0 0.75rem rgba(232, 197, 71, 0.14));
     }
 
@@ -1334,7 +1308,8 @@
     .rhgi-content-prism {
       border-radius: 0.75rem;
       padding: clamp(0.65rem, 2.5vw, 1rem);
-      background: linear-gradient(165deg, rgba(5, 12, 26, 0.58), rgba(4, 10, 22, 0.42));
+      background: #0a0e1a;
+      box-shadow: none;
     }
 
     /* Full-width 774 LGA national footer ticker */
@@ -1344,9 +1319,9 @@
       margin-top: clamp(0.5rem, 2vw, 0.85rem);
       padding: clamp(0.45rem, 1.8vw, 0.6rem) clamp(0.35rem, 1.5vw, 0.5rem);
       border-radius: 0.5rem;
-      background: linear-gradient(180deg, rgba(4, 14, 30, 0.95), rgba(2, 8, 18, 0.98));
-      border: 1px solid rgba(232, 197, 71, 0.22);
-      box-shadow: inset 0 0 1.25rem rgba(0, 229, 255, 0.06);
+      background: #0a0e1a;
+      border: 1px solid #1a2542;
+      box-shadow: none;
       transform: translateZ(0);
       will-change: transform;
     }
@@ -1370,7 +1345,7 @@
       display: inline-flex;
       width: max-content;
       white-space: nowrap;
-      animation: rhgi-footer774-drift var(--rhgi-footer774-duration, 280s) linear infinite;
+      animation: rhgi-footer774-drift var(--rhgi-footer774-duration, 240s) linear infinite;
       transform: translateZ(0);
       will-change: transform;
     }
@@ -1400,38 +1375,28 @@
       display: none !important;
     }
     body.rhgi-page {
-      background: linear-gradient(165deg, #050a14 0%, #0a0e1a 42%, #101a2e 100%) !important;
+      background: #0a0e1a !important;
       --rhgi-navy-deep: #0a0e1a;
-      --rhgi-chrome-glass: rgba(10, 14, 26, 0.9);
+      --rhgi-chrome-glass: #0a0e1a;
     }
     .rhgi-shell {
       background: transparent !important;
     }
     .rhgi-content-prism {
-      background: var(--rhgi-chrome-glass) !important;
-      box-shadow: inset 0 0 1.25rem rgba(0, 60, 120, 0.06) !important;
-    }
-    .rhgi-prism-frame {
-      animation: none !important;
-      border: 2px solid rgba(32, 56, 92, 0.96) !important;
-      box-shadow:
-        0 0.5rem 2.25rem rgba(0, 0, 0, 0.32),
-        inset 0 1px 0 rgba(255, 255, 255, 0.04),
-        0 0 0.75rem rgba(0, 90, 150, 0.22) !important;
+      background: #0a0e1a !important;
+      box-shadow: none !important;
     }
     .rhgi-hub,
     .rhgi-corridor-deep,
     .rhgi-corridor-widget,
     .rhgi-election-ticker {
-      background: var(--rhgi-chrome-glass) !important;
-      box-shadow:
-        inset 0 0 1.375rem rgba(0, 229, 255, 0.05),
-        0 0 0.875rem rgba(0, 0, 0, 0.4) !important;
+      background: #0a0e1a !important;
+      box-shadow: none !important;
     }
     .rhgi-footer-774 {
-      background: var(--rhgi-chrome-glass) !important;
-      border: 1px solid rgba(232, 197, 71, 0.22) !important;
-      box-shadow: inset 0 0 1.25rem rgba(0, 229, 255, 0.06) !important;
+      background: #0a0e1a !important;
+      border: 1px solid #1a2542 !important;
+      box-shadow: none !important;
     }
     .rhgi-conversion-ticker-track,
     .rhgi-deep-lga-track {
@@ -1444,25 +1409,25 @@
     .rhgi-deep-lga-scroller {
       overflow-y: auto !important;
     }
-    .rhgi-matrix-bar--proj:not(.rhgi-r30-nw-proj-bar),
-    .rhgi-bar-apc-b:not(.rhgi-r30-bar-fill) {
+    .rhgi-matrix-bar--proj:not(.rhgi-v33-proj-bar),
+    .rhgi-bar-apc-b:not(.rhgi-v33-bar-fill) {
       background: #2d5a42 !important;
     }
-    .rhgi-page #rhgi-widget-nw .rhgi-r30-bar-fill.rhgi-bar-apc-b {
+    .rhgi-page .rhgi-v33-bar-fill.rhgi-bar-apc-b {
       background: linear-gradient(90deg, #1a4d32, #2a6b45) !important;
     }
-    .rhgi-page #rhgi-widget-nw .rhgi-r30-nw-proj-bar.rhgi-matrix-bar--proj {
+    .rhgi-page .rhgi-v33-proj-bar.rhgi-matrix-bar--proj {
       background: linear-gradient(105deg, #0f2844 0%, #1a3a5c 25%, #e8c547 55%, #fff8dc 72%, #1e3a5a 100%) !important;
     }
     .rhgi-fct-strategic-lock {
-      background: var(--rhgi-chrome-glass) !important;
-      border: 1px solid rgba(232, 197, 71, 0.55) !important;
+      background: #0a0e1a !important;
+      border: 1px solid #d4af37 !important;
       border-radius: 0.5rem;
       padding: 0.35rem 0.5rem;
     }
     .rhgi-se-strategic-lock-static {
-      background: var(--rhgi-chrome-glass) !important;
-      border: 1px solid rgba(232, 197, 71, 0.45) !important;
+      background: #0a0e1a !important;
+      border: 1px solid #1a2542 !important;
     }
     /* Default: freeze CSS animation (flicker shield); explicit exceptions follow */
     .rhgi-page,
@@ -1523,10 +1488,25 @@
       animation: rhgi-r1-margin-delta-sovereign-ss 3.8s ease-in-out infinite !important;
       will-change: transform !important;
     }
-    /* 774 glide — translateX only, 280s stately drift (REANIMATE-STEP-1) */
+    /* 774 glide — translateX only, 240s (FULL-VELOCITY-33) */
     .rhgi-page .rhgi-footer-774-track {
-      animation: rhgi-footer774-drift var(--rhgi-footer774-duration, 280s) linear infinite !important;
+      animation: rhgi-footer774-drift var(--rhgi-footer774-duration, 240s) linear infinite !important;
       transform: translateZ(0) !important;
+      will-change: transform !important;
+    }
+    /* Winning margin bars — scaleX reveal (all corridors); stagger inherits --row-index from tr */
+    .rhgi-page .rhgi-v33-matrix-row .rhgi-v33-bar-fill.rhgi-bar-apc-b {
+      animation: rhgi-v33-bar-reveal 0.88s cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
+      animation-delay: calc(var(--row-index) * 0.09s) !important;
+      will-change: transform !important;
+    }
+    .rhgi-page .rhgi-v33-matrix-row .rhgi-v33-proj-bar.rhgi-matrix-bar--proj {
+      animation:
+        rhgi-v33-bar-reveal 0.88s cubic-bezier(0.22, 1, 0.36, 1) forwards,
+        rhgi-proj-bar-shimmer 5s ease-in-out infinite !important;
+      animation-delay:
+        calc(var(--row-index) * 0.09s),
+        calc(var(--row-index) * 0.09s + 0.88s) !important;
       will-change: transform !important;
     }
     @keyframes rhgi-r1-cd-pulse {
@@ -1539,79 +1519,60 @@
     }
     .rhgi-page .rhgi-r1-global-pulse .rhgi-analog-clock-frame {
       animation: none !important;
-      background: linear-gradient(145deg, rgba(18, 36, 62, 0.95), rgba(6, 14, 28, 0.98), rgba(28, 48, 78, 0.9), rgba(8, 18, 36, 0.96)) !important;
-      background-size: 100% 100% !important;
+      background: #0a0e1a !important;
+      border: 1px solid #1a2542 !important;
+      box-shadow: none !important;
     }
-    /* —— 15-15-CHROME-SYNC-29: mechanical hands — steps(60) — GPU-friendly —— */
-    @keyframes rhgi-chrome-hand-second {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-    @keyframes rhgi-chrome-hand-minute {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-    @keyframes rhgi-chrome-hand-hour {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-    .rhgi-page .rhgi-chrome-sync-pulse .rhgi-chrome-hand-hour {
-      transform-origin: 50px 50px;
-      animation: rhgi-chrome-hand-hour 43200s steps(60, end) infinite !important;
-      will-change: transform !important;
-    }
-    .rhgi-page .rhgi-chrome-sync-pulse .rhgi-chrome-hand-minute {
-      transform-origin: 50px 50px;
-      animation: rhgi-chrome-hand-minute 3600s steps(60, end) infinite !important;
-      will-change: transform !important;
-    }
+    /* FULL-VELOCITY-33: hands driven by JS rotate() — no CSS clock animation */
+    .rhgi-page .rhgi-chrome-sync-pulse .rhgi-chrome-hand-hour,
+    .rhgi-page .rhgi-chrome-sync-pulse .rhgi-chrome-hand-minute,
     .rhgi-page .rhgi-chrome-sync-pulse .rhgi-chrome-hand-second {
       transform-origin: 50px 50px;
-      animation: rhgi-chrome-hand-second 60s steps(60, end) infinite !important;
+      animation: none !important;
       will-change: transform !important;
     }
     .rhgi-slc-budget {
       width: 100%;
       margin-bottom: clamp(0.5rem, 2vw, 0.75rem);
-      padding: clamp(0.45rem, 2vw, 0.65rem);
-      border: 1px solid rgba(232, 197, 71, 0.35);
+      padding: clamp(0.55rem, 2.2vw, 0.85rem);
+      border: 1px solid #d4af37;
       border-radius: 0.5rem;
-      background: var(--rhgi-chrome-glass) !important;
+      background: #0a0e1a !important;
       position: relative;
       z-index: 1;
       isolation: isolate;
     }
     .rhgi-slc-formula {
-      margin: 0 0 0.35rem;
+      margin: 0 0 0.4rem;
       font-family: 'Goldman', 'Segoe UI', sans-serif;
-      font-size: clamp(0.42rem, 1vw + 0.12rem, 0.55rem);
+      font-size: clamp(0.58rem, 1.35vw + 0.22rem, 0.88rem);
       font-weight: 700;
-      letter-spacing: 0.06em;
-      color: rgba(232, 238, 244, 0.92);
-      line-height: 1.45;
+      letter-spacing: 0.05em;
+      color: rgba(232, 238, 244, 0.96);
+      line-height: 1.4;
       text-align: center;
     }
     .rhgi-slc-total {
-      margin: 0 0 0.4rem;
+      margin: 0 0 0.45rem;
       font-family: ui-monospace, monospace;
-      font-size: clamp(0.72rem, 2.5vw + 0.2rem, 0.95rem);
+      font-size: clamp(1.05rem, 4vw + 0.35rem, 1.55rem);
       font-weight: 800;
       text-align: center;
       color: #e8c547;
       font-variant-numeric: tabular-nums;
     }
     .rhgi-slc-determinant {
-      margin: 0 0 0.45rem;
-      font-size: clamp(0.4rem, 0.95vw + 0.1rem, 0.5rem);
+      margin: 0 0 0.5rem;
+      font-size: clamp(0.48rem, 1.05vw + 0.12rem, 0.62rem);
       font-weight: 700;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       text-align: center;
       color: rgba(143, 163, 191, 0.95);
     }
     .rhgi-slc-force-line {
-      margin: 0 0 0.5rem;
-      font-size: clamp(0.4rem, 1vw + 0.1rem, 0.52rem);
+      margin: 0 0 0.55rem;
+      font-size: clamp(0.46rem, 1.05vw + 0.12rem, 0.6rem);
       font-weight: 700;
       letter-spacing: 0.1em;
       text-align: center;
@@ -1676,7 +1637,7 @@
   <div class="rhgi-satellite-scanlines rhgi-emergency-hide" aria-hidden="true"></div>
 
   <div class="rhgi-shell rhgi-mechanism-gpu-scope">
-    <div class="rhgi-content-prism rhgi-prism-frame">
+    <div class="rhgi-content-prism rhgi-v33-shell">
       <div class="rhgi-dashboard">
         <section class="rhgi-ticker-section">
           <div class="rhgi-election-ticker" role="timer" aria-live="polite" aria-label="Countdown to 16 January 2027">
@@ -1802,12 +1763,12 @@
 
         <section class="rhgi-hub-section" aria-labelledby="rhgi-hub-heading">
           <h2 id="rhgi-hub-heading" class="rhgi-hub-section-title">Sovereign Logistics Command</h2>
-          <div class="rhgi-hub rhgi-prism-frame rhgi-r32-sovereign-shell">
+          <div class="rhgi-hub rhgi-v33-shell rhgi-r32-sovereign-shell">
             <div class="rhgi-slc-budget" id="rhgi-slc-budget">
-              <p class="rhgi-slc-formula rhgi-r30-anchor">Total Budget = (144,000 Tactical Wards × 15 Canvassers) × ₦20,000</p>
-              <p class="rhgi-slc-total rhgi-r30-anchor rhgi-r30-anchor-total" id="rhgi-slc-total">—</p>
-              <p class="rhgi-slc-determinant rhgi-r30-anchor">Determinant 3 · 144,000 Tactical Wards</p>
-              <p class="rhgi-slc-force-line rhgi-r30-anchor rhgi-r32-canvasser-anchor" id="rhgi-slc-force">—</p>
+              <p class="rhgi-slc-formula rhgi-v33-anchor">Total Budget = (144,000 Tactical Wards × 15 Canvassers) × ₦20,000</p>
+              <p class="rhgi-slc-total rhgi-v33-anchor rhgi-v33-anchor-total" id="rhgi-slc-total">—</p>
+              <p class="rhgi-slc-determinant rhgi-v33-anchor">Determinant 3 · 144,000 Tactical Wards</p>
+              <p class="rhgi-slc-force-line rhgi-v33-anchor rhgi-v33-canvasser-anchor" id="rhgi-slc-force">—</p>
               <table class="rhgi-slc-budget-table">
                 <thead>
                   <tr>
@@ -1849,7 +1810,7 @@
                 </div>
 
                 <div class="rhgi-corridor-widgets-stack">
-                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-prism-frame rhgi-r30-nw-widget rhgi-r31-nw-gpu-lock rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-nw" aria-labelledby="rhgi-deep-heading">
+                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-v33-widget rhgi-r30-nw-widget rhgi-r31-nw-gpu-lock rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-nw" aria-labelledby="rhgi-deep-heading">
                     <h3 id="rhgi-deep-heading" class="rhgi-deep-head">Northwest Tactical Spine · Widget 1</h3>
                     <div class="rhgi-nw-margin" id="rhgi-nw-margin" aria-live="polite">
                       <span class="rhgi-nw-margin-label">Winning Margin</span>
@@ -1912,7 +1873,7 @@
                     <p class="rhgi-deep-footer" id="rhgi-deep-footer">NW Projected Yield: — | Confidence Interval: 98% (8R Validated)</p>
                   </div>
 
-                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-prism-frame rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-sw" aria-labelledby="rhgi-sw-heading">
+                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-v33-widget rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-sw" aria-labelledby="rhgi-sw-heading">
                     <h3 id="rhgi-sw-heading" class="rhgi-deep-head">Southwest Corridor · Widget 2</h3>
                     <div class="rhgi-nw-margin" id="rhgi-sw-margin" aria-live="polite">
                       <span class="rhgi-nw-margin-label">Winning Margin</span>
@@ -1945,7 +1906,7 @@
                     <p class="rhgi-deep-footer" id="rhgi-sw-footer">SW Projected Yield: — | Confidence Interval: 98% (8R Validated)</p>
                   </div>
 
-                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-prism-frame rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-ne" aria-labelledby="rhgi-ne-heading">
+                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-v33-widget rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-ne" aria-labelledby="rhgi-ne-heading">
                     <h3 id="rhgi-ne-heading" class="rhgi-deep-head">Northeast Corridor · Widget 3</h3>
                     <div class="rhgi-nw-margin" id="rhgi-ne-margin" aria-live="polite">
                       <span class="rhgi-nw-margin-label">Winning Margin</span>
@@ -1978,7 +1939,7 @@
                     <p class="rhgi-deep-footer" id="rhgi-ne-footer">NE Projected Yield: — | Confidence Interval: 98% (8R Validated)</p>
                   </div>
 
-                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-prism-frame rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-nc" aria-labelledby="rhgi-nc-heading">
+                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-v33-widget rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-nc" aria-labelledby="rhgi-nc-heading">
                     <h3 id="rhgi-nc-heading" class="rhgi-deep-head">North Central · FCT 25% Strategic Lock · Widget 4</h3>
                     <div class="rhgi-nw-margin" id="rhgi-nc-margin" aria-live="polite">
                       <span class="rhgi-nw-margin-label">Winning Margin</span>
@@ -2011,7 +1972,7 @@
                     <p class="rhgi-deep-footer" id="rhgi-nc-footer">NC Projected Yield: — | Confidence Interval: 98% (8R Validated)</p>
                   </div>
 
-                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-prism-frame rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-ss" aria-labelledby="rhgi-ss2-heading">
+                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-v33-widget rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-ss" aria-labelledby="rhgi-ss2-heading">
                     <h3 id="rhgi-ss2-heading" class="rhgi-deep-head">South-South Corridor · Widget 5</h3>
                     <div class="rhgi-nw-margin" id="rhgi-ss-margin" aria-live="polite">
                       <span class="rhgi-nw-margin-label">Winning Margin</span>
@@ -2044,7 +2005,7 @@
                     <p class="rhgi-deep-footer" id="rhgi-ss-footer">SS Projected Yield: — | Confidence Interval: 98% (8R Validated)</p>
                   </div>
 
-                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-prism-frame rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-se" aria-labelledby="rhgi-se2-heading">
+                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-v33-widget rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-se" aria-labelledby="rhgi-se2-heading">
                     <h3 id="rhgi-se2-heading" class="rhgi-deep-head">Southeast Corridor · Widget 6</h3>
                     <div class="rhgi-nw-margin rhgi-se-strategic-lock-static" id="rhgi-se-margin" aria-live="polite">
                       <span class="rhgi-nw-margin-label">Strategic 25% Threshold Secure</span>
@@ -2098,12 +2059,12 @@
             class="rhgi-clocks-grid"
             id="rhgi-clocksRow"
             role="group"
-            aria-label="World clocks · Zaria · London · New York · Riyadh · steps(60) hands"
+            aria-label="World clocks · Zaria · London · New York · Riyadh · smooth rotate hands"
           ></div>
         </section>
 
-        <div class="rhgi-footer-774 rhgi-prism-frame" role="region" aria-label="774 local government areas national mobilization feed">
-          <p class="rhgi-footer-774-label">774 LGA national feed · 280s translateX glide (stately)</p>
+        <div class="rhgi-footer-774 rhgi-v33-widget" role="region" aria-label="774 local government areas national mobilization feed">
+          <p class="rhgi-footer-774-label">774 LGA national feed · 240s translateX glide</p>
           <div class="rhgi-footer-774-inner">
             <div class="rhgi-footer-774-track" id="rhgi-footer774Track">
               <span class="rhgi-footer-774-text" id="rhgi-footer774A"></span>
@@ -2255,7 +2216,7 @@
       tickCountdown();
       setInterval(tickCountdown, 1000);
 
-      /* FULL-RESTORATION-32: global timeline — Zaria (NG) · London · New York · Riyadh — steps(60) hands */
+      /* FULL-VELOCITY-33: Zaria · London · New York · Riyadh — rAF rotate() hands */
       var zones = [
         { city: 'Zaria', tz: 'Africa/Lagos' },
         { city: 'London', tz: 'Europe/London' },
@@ -2297,42 +2258,58 @@
       var row = document.getElementById('rhgi-clocksRow');
       row.innerHTML = zones.map(function (_, i) { return clockMarkup(i); }).join('');
 
-      /* CHROME-SYNC-29: hands driven by CSS steps(60) + one-shot animation-delay per TZ */
-      function syncChromeClockHands() {
+      var rhgiClockFracOk = false;
+      try {
+        new Intl.DateTimeFormat('en-GB', {
+          timeZone: 'Africa/Lagos',
+          fractionalSecondDigits: 3
+        }).formatToParts(new Date());
+        rhgiClockFracOk = true;
+      } catch (eFrac) {
+        rhgiClockFracOk = false;
+      }
+
+      function clockPartsForTZ(tz, now) {
+        var opts = {
+          timeZone: tz,
+          hour: 'numeric',
+          minute: 'numeric',
+          second: 'numeric',
+          hour12: false
+        };
+        if (rhgiClockFracOk) opts.fractionalSecondDigits = 3;
+        var fmt = new Intl.DateTimeFormat('en-GB', opts);
+        var parts = fmt.formatToParts(now);
+        var h24 = 0;
+        var Mi = 0;
+        var Se = 0;
+        parts.forEach(function (p) {
+          if (p.type === 'hour') h24 = parseInt(p.value, 10);
+          if (p.type === 'minute') Mi = parseInt(p.value, 10);
+          if (p.type === 'second') Se = parseFloat(p.value);
+        });
+        return { h24: h24, Mi: Mi, Se: Se };
+      }
+
+      function tickChromeClockHands() {
+        var now = new Date();
         row.querySelectorAll('.rhgi-analog-wrap').forEach(function (wrap) {
           var tz = wrap.getAttribute('data-tz');
-          var now = new Date();
-          var fmt = new Intl.DateTimeFormat('en-GB', {
-            timeZone: tz,
-            hour: 'numeric',
-            minute: 'numeric',
-            second: 'numeric',
-            hour12: false
-          });
-          var parts = fmt.formatToParts(now);
-          var h24 = 0;
-          var Mi = 0;
-          var S = 0;
-          parts.forEach(function (p) {
-            if (p.type === 'hour') h24 = parseInt(p.value, 10);
-            if (p.type === 'minute') Mi = parseInt(p.value, 10);
-            if (p.type === 'second') S = parseInt(p.value, 10);
-          });
-          var H12 = h24 % 12;
-          var secIn12h = H12 * 3600 + Mi * 60 + S;
-          var secInHour = Mi * 60 + S;
+          var t = clockPartsForTZ(tz, now);
+          var h12 = t.h24 % 12;
+          var hourDeg = (h12 + t.Mi / 60 + t.Se / 3600) * 30 - 90;
+          var minuteDeg = (t.Mi + t.Se / 60) * 6 - 90;
+          var secondDeg = t.Se * 6 - 90;
           var hEl = wrap.querySelector('.rhgi-chrome-hand-hour');
           var mEl = wrap.querySelector('.rhgi-chrome-hand-minute');
           var sEl = wrap.querySelector('.rhgi-chrome-hand-second');
-          if (hEl) hEl.style.animationDelay = -secIn12h + 's';
-          if (mEl) mEl.style.animationDelay = -secInHour + 's';
-          if (sEl) sEl.style.animationDelay = -S + 's';
+          if (hEl) hEl.setAttribute('transform', 'rotate(' + hourDeg + ' 50 50)');
+          if (mEl) mEl.setAttribute('transform', 'rotate(' + minuteDeg + ' 50 50)');
+          if (sEl) sEl.setAttribute('transform', 'rotate(' + secondDeg + ' 50 50)');
         });
+        requestAnimationFrame(tickChromeClockHands);
       }
-      syncChromeClockHands();
-      document.addEventListener('visibilitychange', function () {
-        if (!document.hidden) syncChromeClockHands();
-      });
+      requestAnimationFrame(tickChromeClockHands);
 
       /* —— 15-15-DEPLOY-12: tri-corridor APC + Model 15-15 (Kano anchor multiplier) —— */
       var KANO_APC_2023 = 517341;
@@ -2600,7 +2577,6 @@
           }
         }
         var html = '';
-        var isNw = tbodyId === 'rhgi-matrix-tbody';
         for (var s = 0; s < rows.length; s++) {
           var st = rows[s];
           var bw = (st.apcVotes / mb) * 100;
@@ -2615,66 +2591,38 @@
             pv +
             ' votes · ' +
             (projExtraTitle || 'Kano anchor multiplier');
-          var baseline;
-          var proj;
-          if (isNw) {
-            baseline =
-              '<div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span>' +
-              '<span class="rhgi-matrix-vote-num">' +
-              bv +
-              '</span>' +
-              '<div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-apc-b rhgi-r30-bar-fill" style="--rhgi-bar-sx:' +
-              sxB +
-              '" title="' +
-              st.name +
-              ' 2023 APC ' +
-              bv +
-              ' votes"></div></div></div>';
-            proj =
-              '<div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span>' +
-              '<span class="rhgi-matrix-vote-num">' +
-              pv +
-              '</span>' +
-              '<div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj rhgi-r30-nw-proj-bar" style="--rhgi-bar-sx:' +
-              sxP +
-              '" title="' +
-              projTitle +
-              '"></div></div></div>';
-            html +=
-              '<tr class="rhgi-r30-nw-matrix-row" style="--row-index:' +
-              s +
-              '"><td class="rhgi-matrix-state">' +
-              st.name +
-              '</td><td>' +
-              baseline +
-              '</td><td>' +
-              proj +
-              '</td></tr>';
-          } else {
-            baseline =
-              '<div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span>' +
-              '<span class="rhgi-matrix-vote-num">' +
-              bv +
-              '</span>' +
-              '<div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-apc-b" style="width:' +
-              bw +
-              '%" title="' +
-              st.name +
-              ' 2023 APC ' +
-              bv +
-              ' votes"></div></div></div>';
-            proj =
-              '<div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span>' +
-              '<span class="rhgi-matrix-vote-num">' +
-              pv +
-              '</span>' +
-              '<div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:' +
-              pw +
-              '%" title="' +
-              projTitle +
-              '"></div></div></div>';
-            html += '<tr><td class="rhgi-matrix-state">' + st.name + '</td><td>' + baseline + '</td><td>' + proj + '</td></tr>';
-          }
+          var baseline =
+            '<div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span>' +
+            '<span class="rhgi-matrix-vote-num">' +
+            bv +
+            '</span>' +
+            '<div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-apc-b rhgi-v33-bar-fill" style="--rhgi-bar-sx:' +
+            sxB +
+            '" title="' +
+            st.name +
+            ' 2023 APC ' +
+            bv +
+            ' votes"></div></div></div>';
+          var proj =
+            '<div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span>' +
+            '<span class="rhgi-matrix-vote-num">' +
+            pv +
+            '</span>' +
+            '<div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj rhgi-v33-proj-bar" style="--rhgi-bar-sx:' +
+            sxP +
+            '" title="' +
+            projTitle +
+            '"></div></div></div>';
+          html +=
+            '<tr class="rhgi-v33-matrix-row" style="--row-index:' +
+            s +
+            '"><td class="rhgi-matrix-state">' +
+            st.name +
+            '</td><td>' +
+            baseline +
+            '</td><td>' +
+            proj +
+            '</td></tr>';
         }
         tbody.innerHTML = html;
       }
