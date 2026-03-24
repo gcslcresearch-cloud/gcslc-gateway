@@ -14,10 +14,9 @@ NAVY = "#1A237E"
 # Prism-Frame Navy (dashboard canvas + plot wells).
 PRISM_NAVY = "#0b1024"
 PRISM_NAVY_PLOT = "#0e1733"
-# Deep Navy / Metallic Gold / Crimson — 774 LGA margin zones (map markers).
+# Deep Navy → metallic gold — 774 LGA winning-margin map.
 DEEP_NAVY_SAFE = "#152a45"
 METALLIC_GOLD_TARGET = "#FFD700"
-CRIMSON_OPPOSITION = "#C41E3A"
 # 20.7M national vote mandate anchor (fixed reference).
 NATIONAL_VOTE_TARGET = 20_709_668
 
@@ -303,48 +302,40 @@ fig_zone.update_layout(
     xaxis_title="Zone",
     yaxis_title="Winning Margin (APC vs nearest rival)",
 )
-fig_zone.update_traces(marker=dict(color=GOLD, line=dict(color=GOLD, width=0)))
+fig_zone.update_traces(marker=dict(color=GOLD))
 st.plotly_chart(fig_zone, use_container_width=True)
 
-st.subheader("774 LGA heatmap — winning margin zones (turnout-adjusted)")
+st.subheader("774 LGA heatmap — winning margin (rugged)")
 lga_map_df = build_lga_heatmap_df(dff)
-zone_colors = {
-    "Safe APC": DEEP_NAVY_SAFE,
-    "Target": METALLIC_GOLD_TARGET,
-    "Opposition Stronghold": CRIMSON_OPPOSITION,
-}
+lga_map_df["winning_margin"] = pd.to_numeric(lga_map_df["winning_margin"], errors="coerce")
+lga_map_df = lga_map_df.dropna(subset=["lat", "lon", "winning_margin"])
+wm = lga_map_df["winning_margin"].astype(float)
+wm_min = float(wm.min()) if len(wm) else 0.0
+wm_max = float(wm.max()) if len(wm) else 1.0
+if wm_min == wm_max:
+    wm_max = wm_min + 1.0
 fig_lga = px.scatter_mapbox(
     lga_map_df,
     lat="lat",
     lon="lon",
-    color="margin_zone",
-    color_discrete_map=zone_colors,
-    category_orders={
-        "margin_zone": ["Safe APC", "Target", "Opposition Stronghold"],
-    },
+    color="winning_margin",
+    color_continuous_scale=[DEEP_NAVY_SAFE, "#2a4d7a", "#6b8fc9", METALLIC_GOLD_TARGET],
+    range_color=(wm_min, wm_max),
     hover_name="lga",
-    hover_data={
-        "state": True,
-        "zone": True,
-        "winning_margin": ":,.0f",
-        "projected_total": ":,.0f",
-        "lat": False,
-        "lon": False,
-        "margin_zone": True,
-    },
+    hover_data=["state", "zone", "margin_zone", "projected_total"],
     mapbox_style="carto-darkmatter",
     zoom=4.9,
     center={"lat": 9.082, "lon": 8.6753},
     template="plotly_dark",
-    title="Deep Navy = Safe APC · Metallic Gold = Target · Crimson = Opposition stronghold",
+    title="774 LGAs — winning margin (deep navy → metallic gold)",
 )
-fig_lga.update_traces(marker=dict(size=7, opacity=0.88))
+fig_lga.update_traces(marker=dict(size=8, opacity=0.8))
 fig_lga.update_layout(
     paper_bgcolor=PRISM_NAVY,
     plot_bgcolor=PRISM_NAVY,
     font_color="#dbe2ff",
     margin=dict(l=0, r=0, t=48, b=0),
-    legend_title_text="Winning margin zone",
+    coloraxis_colorbar=dict(title="Winning margin"),
 )
 st.plotly_chart(fig_lga, use_container_width=True)
 
@@ -371,8 +362,6 @@ fig_scatter.update_layout(
     font_color="#dbe2ff",
     margin=dict(l=0, r=0, t=40, b=0),
 )
-# Strike priority encoded as navy → metallic gold on Prism-Frame canvas.
-fig_scatter.update_traces(marker=dict(line=dict(width=0.4, color="rgba(255,215,0,0.35)")))
 st.plotly_chart(fig_scatter, use_container_width=True)
 
 st.subheader("2023 vs 2027 Party Totals")
