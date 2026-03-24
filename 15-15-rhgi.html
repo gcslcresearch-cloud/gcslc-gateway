@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&amp;display=swap" rel="stylesheet">
   <title>15-15 RHGI | Sovereign Dashboard</title>
   <style>
-/* RHGI-FORCE-IGNITION-51 — rhgi-glide footer · updateClocks · secured uplink · GPU translateZ(0) */
+/* RHGI-IGNITION-52 — rhgi-glide triple ticker · updateSovereignClocks · secured gold pulse · GPU translate3d */
     :root {
       --rhgi-navy-deep: #050a14;
       --rhgi-gold: #e8c547;
@@ -1376,21 +1376,24 @@
       color: #3a6a9a;
       text-shadow: 0 0 0.35rem rgba(0, 120, 200, 0.35);
     }
-    /* RHGI-FORCE-IGNITION-51: SECURED uplink glow — 2s cadence, GPU transform */
-    @keyframes rhgi-force51-secured-uplink {
+    /* RHGI-IGNITION-52: SECURED — gold shadow pulse every 2s (GPU-safe translate3d) */
+    @keyframes rhgi-ignition52-secured-gold {
       0%, 100% {
-        opacity: 0.9;
-        transform: translateZ(0) scale(1);
-        filter: drop-shadow(0 0 0.28rem rgba(232, 197, 71, 0.45));
-        text-shadow: 0 0 0.45rem rgba(232, 197, 71, 0.42);
+        opacity: 0.92;
+        transform: translate3d(0, 0, 0) scale(1);
+        filter: drop-shadow(0 0 0.32rem rgba(232, 197, 71, 0.5));
+        text-shadow:
+          0 0 0.4rem rgba(232, 197, 71, 0.45),
+          0 0 0.65rem rgba(212, 175, 55, 0.35);
       }
       50% {
         opacity: 1;
-        transform: translateZ(0) scale(1.035);
-        filter: drop-shadow(0 0 0.75rem rgba(232, 197, 71, 0.92));
+        transform: translate3d(0, 0, 0) scale(1.04);
+        filter: drop-shadow(0 0 0.85rem rgba(232, 197, 71, 0.95)) drop-shadow(0 0 1.2rem rgba(255, 220, 140, 0.5));
         text-shadow:
-          0 0 0.95rem rgba(232, 197, 71, 1),
-          0 0 1.5rem rgba(255, 224, 140, 0.55);
+          0 0 1rem rgba(232, 197, 71, 1),
+          0 0 1.65rem rgba(255, 224, 140, 0.65),
+          0 0 2.25rem rgba(212, 175, 55, 0.4);
       }
     }
     /* SOVEREIGN-REBIRTH-41: staggered vertical scan on LGA names */
@@ -1557,7 +1560,7 @@
       background: #0a0e1a;
       border: 1px solid #d4af37;
       box-shadow: none;
-      transform: translateZ(0);
+      transform: translate3d(0, 0, 0);
       backface-visibility: hidden;
       will-change: transform;
     }
@@ -1581,11 +1584,12 @@
     .rhgi-footer-774-inner {
       overflow: hidden;
       width: 100%;
-      transform: translateZ(0);
+      transform: translate3d(0, 0, 0);
+      will-change: transform;
       backface-visibility: hidden;
       mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
     }
-    /* 774 LGA footer — RHGI-FORCE-IGNITION-51: rhgi-glide 240s linear infinite (hard-running) */
+    /* RHGI-IGNITION-52: Triple-Ignition — 774 LGA National Feed (linear infinite, track always running) */
     .rhgi-footer-774-track,
     .rhgi-footer-774-track.rhgi-force51-glide-track,
     #rhgi-footer774Track.rhgi-force51-glide-track {
@@ -1594,17 +1598,17 @@
       white-space: nowrap;
       animation: rhgi-glide var(--rhgi-footer774-duration, 240s) linear infinite !important;
       animation-play-state: running !important;
-      transform: translate3d(0, 0, 0);
-      will-change: transform;
+      transform: translate3d(0, 0, 0) !important;
+      will-change: transform !important;
       backface-visibility: hidden;
     }
     @keyframes rhgi-glide {
-      0% { transform: translate3d(0, 0, 0); }
-      100% { transform: translate3d(-50%, 0, 0); }
+      from { transform: translate3d(0, 0, 0); }
+      to { transform: translate3d(-50%, 0, 0); }
     }
     .rhgi-footer-774-text {
       flex-shrink: 0;
-      transform: translateZ(0);
+      transform: translate3d(0, 0, 0);
       will-change: transform;
       padding: 0.35rem 1.25rem 0.35rem 0.65rem;
       font-family: 'Goldman', 'Segoe UI', sans-serif;
@@ -1740,7 +1744,7 @@
       animation: rhgi-r1-margin-delta-sovereign-ss 3.8s ease-in-out infinite !important;
       will-change: transform !important;
     }
-    /* 774 glide — RHGI-FORCE-IGNITION-51 */
+    /* RHGI-IGNITION-52: page-scope footer track — must stay running */
     .rhgi-page .rhgi-footer-774-track {
       animation: rhgi-glide var(--rhgi-footer774-duration, 240s) linear infinite !important;
       animation-play-state: running !important;
@@ -1771,9 +1775,8 @@
       0%, 100% { opacity: 0.88; transform: translateZ(0); }
       50% { opacity: 1; transform: translateZ(0); }
     }
-    /* SECURED — live uplink glow every 2s */
-    .rhgi-page .rhgi-deep-lga .rhgi-lga-status--secured.rhgi-force51-secured {
-      animation: rhgi-force51-secured-uplink 2s ease-in-out infinite !important;
+    .rhgi-page .rhgi-deep-lga .rhgi-lga-status--secured.rhgi-ignition52-secured {
+      animation: rhgi-ignition52-secured-gold 2s ease-in-out infinite !important;
       will-change: transform, opacity, filter, text-shadow !important;
     }
     /* SOVEREIGN-REBIRTH-41: LGA list vertical scroll + staggered name scan */
@@ -2372,7 +2375,7 @@
   <p class="rhgi-force51-watermark" aria-hidden="true">Architect: Dr. Sa&rsquo;ad Jaafaru</p>
 
   <script>
-/* RHGI-FORCE-IGNITION-51 — updateClocks · rhgi-glide · secured uplink (all inline) */
+/* RHGI-IGNITION-52 — updateSovereignClocks · triple ignition · rhgi-glide (all inline) */
     (function () {
       var STATE_NOW = 24;
       var STATE_MAX = 36;
@@ -2590,7 +2593,7 @@
         return { h24: h24, Mi: Mi, Se: Se };
       }
 
-      function updateClocks() {
+      function updateSovereignClocks() {
         var now = new Date();
         row.querySelectorAll('.rhgi-analog-wrap').forEach(function (wrap) {
           var tz = wrap.getAttribute('data-tz');
@@ -2607,24 +2610,43 @@
           if (sEl) sEl.setAttribute('transform', 'rotate(' + secondDeg + ' 50 50)');
         });
       }
-      updateClocks();
-      var rhgiForce51ClockTimer = null;
-      window.onload = function () {
-        updateClocks();
-        if (rhgiForce51ClockTimer !== null) {
-          clearInterval(rhgiForce51ClockTimer);
+      updateSovereignClocks();
+      var rhgiIgnition52ClockTimer = null;
+      function rhgiIgnition52EnsureClockInterval() {
+        if (rhgiIgnition52ClockTimer !== null) {
+          return;
         }
-        rhgiForce51ClockTimer = setInterval(updateClocks, 1000);
+        rhgiIgnition52ClockTimer = setInterval(updateSovereignClocks, 1000);
+      }
+      function rhgiIgnition52KickFooterGlide() {
         var tr = document.getElementById('rhgi-footer774Track');
-        if (tr) {
-          tr.style.animation = 'none';
-          void tr.offsetWidth;
-          tr.style.removeProperty('animation');
-          tr.classList.remove('rhgi-force51-glide-track');
-          void tr.offsetWidth;
-          tr.classList.add('rhgi-force51-glide-track');
+        if (!tr) {
+          return;
         }
+        tr.style.animation = 'none';
+        void tr.offsetWidth;
+        tr.style.removeProperty('animation');
+        tr.classList.remove('rhgi-force51-glide-track');
+        void tr.offsetWidth;
+        tr.classList.add('rhgi-force51-glide-track');
+      }
+      function rhgiIgnition52OnDomReady() {
+        updateSovereignClocks();
+        rhgiIgnition52EnsureClockInterval();
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', rhgiIgnition52OnDomReady);
+      } else {
+        rhgiIgnition52OnDomReady();
+      }
+      window.onload = function () {
+        updateSovereignClocks();
+        rhgiIgnition52EnsureClockInterval();
+        rhgiIgnition52KickFooterGlide();
       };
+      setTimeout(function () {
+        updateSovereignClocks();
+      }, 100);
 
       /* —— 15-15-DEPLOY-12: tri-corridor APC + Model 15-15 (Kano anchor multiplier) —— */
       var KANO_APC_2023 = 517341;
@@ -3145,7 +3167,7 @@
       var RHGI_ALL_LGA_774 = rhgiBuildAllLga774();
 
       renderFooter774Ticker();
-      rhgiForce51FooterKick();
+      rhgiIgnition52FooterKick();
 
       function renderFooter774Ticker() {
         var pool = RHGI_ALL_LGA_774;
@@ -3156,7 +3178,7 @@
         if (fb) fb.textContent = line;
       }
 
-      function rhgiForce51FooterKick() {
+      function rhgiIgnition52FooterKick() {
         var tr = document.getElementById('rhgi-footer774Track');
         if (!tr) return;
         tr.classList.add('rhgi-force51-glide-track');
@@ -3187,7 +3209,7 @@
           '</span>' +
           '<span class="rhgi-lga-status rhgi-lga-status--' +
           st +
-          (st === 'secured' ? ' rhgi-force51-secured' : '') +
+          (st === 'secured' ? ' rhgi-ignition52-secured' : '') +
           '">' +
           lab +
           '</span></li>'
