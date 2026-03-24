@@ -179,18 +179,35 @@
     }
     @keyframes rhgi-scanline-drift { 0% { background-position: 0 0; } 100% { background-position: 0 0.4375rem; } }
 
-    /* —— 15-15-FULL-VELOCITY-33: flat frames (prism stripped) —— */
+    /* —— 15-15-SOVEREIGN-REBIRTH-41: shell + footer solid; corridors use glass prism —— */
     .rhgi-v33-shell {
-      border: 1px solid #d4af37;
+      border: 1px solid rgba(212, 175, 55, 0.45);
       border-radius: 0.75rem;
       background: #0a0e1a;
       transform: translateZ(0);
       backface-visibility: hidden;
     }
     .rhgi-v33-widget {
-      border: 1px solid #d4af37;
+      border: 1px solid rgba(212, 175, 55, 0.35);
       border-radius: 0.65rem;
       background: #0a0e1a;
+      transform: translateZ(0);
+      backface-visibility: hidden;
+    }
+    /* Glass-morphism prism — regional corridor widgets only */
+    .rhgi-corridor-widget.rhgi-r41-prism-region {
+      background: rgba(10, 14, 26, 0.52);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      box-shadow:
+        inset 0 0 1.25rem rgba(0, 229, 255, 0.07),
+        0 0 0.85rem rgba(0, 0, 0, 0.28);
+      transform: translateZ(0);
+      backface-visibility: hidden;
+    }
+    /* GPU layer for primary widgets (MacBook Pro) */
+    .rhgi-r41-gpu {
       transform: translateZ(0);
       backface-visibility: hidden;
     }
@@ -248,14 +265,37 @@
     }
 
     /* Title — full RHGI · Gold–White–Navy metallic fusion */
+    .rhgi-title-r41-line {
+      display: block;
+      margin-top: 0.28rem;
+      font-size: 0.88em;
+      letter-spacing: 0.04em;
+    }
+    .rhgi-r41-watermark {
+      position: fixed;
+      bottom: max(0.45rem, env(safe-area-inset-bottom));
+      right: max(0.55rem, env(safe-area-inset-right));
+      z-index: 120;
+      margin: 0;
+      max-width: min(90vw, 18rem);
+      font-family: 'Goldman', 'Segoe UI', sans-serif;
+      font-size: clamp(0.36rem, 0.85vw + 0.1rem, 0.48rem);
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-align: right;
+      color: rgba(212, 175, 55, 0.38);
+      pointer-events: none;
+      user-select: none;
+    }
     .rhgi-title.rhgi-title--rhgi-full {
       margin: 0;
       font-family: 'Goldman', 'Segoe UI', sans-serif;
       font-weight: 700;
-      font-size: clamp(0.92rem, 2.55vw + 0.48rem, 1.65rem);
+      font-size: clamp(0.82rem, 2.35vw + 0.42rem, 1.45rem);
       letter-spacing: 0.035em;
-      line-height: 1.2;
-      max-width: min(100%, 42rem);
+      line-height: 1.22;
+      max-width: min(100%, 44rem);
       margin-inline: auto;
       padding-inline: clamp(0.25rem, 2vw, 0.85rem);
       /* Gold–silver metallic shimmer (FULL-VELOCITY-33) */
@@ -1192,6 +1232,18 @@
       0%, 100% { opacity: 0.7; }
       50% { opacity: 1; }
     }
+    /* SOVEREIGN-REBIRTH-41: staggered vertical scan on LGA names */
+    @keyframes rhgi-r41-lga-name-scan {
+      0%, 100% {
+        opacity: 0.72;
+        filter: brightness(1);
+      }
+      50% {
+        opacity: 1;
+        filter: brightness(1.14);
+        text-shadow: 0 0 0.55rem rgba(0, 200, 255, 0.38);
+      }
+    }
     .rhgi-deep-footer {
       margin: 0.55rem 0 0;
       padding-top: 0.45rem;
@@ -1403,19 +1455,30 @@
       box-shadow: none !important;
     }
     .rhgi-hub,
-    .rhgi-corridor-deep,
-    .rhgi-corridor-widget,
     .rhgi-election-ticker {
       background: #0a0e1a !important;
       box-shadow: none !important;
     }
-    .rhgi-footer-774 {
+    .rhgi-corridor-widget:not(.rhgi-r41-prism-region),
+    .rhgi-corridor-deep:not(.rhgi-r41-prism-region) {
       background: #0a0e1a !important;
-      border: 1px solid #d4af37 !important;
       box-shadow: none !important;
     }
-    .rhgi-conversion-ticker-track,
-    .rhgi-deep-lga-track {
+    .rhgi-page .rhgi-corridor-widget.rhgi-r41-prism-region {
+      background: rgba(10, 14, 26, 0.52) !important;
+      backdrop-filter: blur(12px) !important;
+      -webkit-backdrop-filter: blur(12px) !important;
+      border: 1px solid rgba(212, 175, 55, 0.3) !important;
+      box-shadow:
+        inset 0 0 1.25rem rgba(0, 229, 255, 0.07),
+        0 0 0.85rem rgba(0, 0, 0, 0.28) !important;
+    }
+    .rhgi-footer-774 {
+      background: #0a0e1a !important;
+      border: 1px solid rgba(212, 175, 55, 0.4) !important;
+      box-shadow: none !important;
+    }
+    .rhgi-conversion-ticker-track {
       transform: none !important;
       animation: none !important;
     }
@@ -1530,6 +1593,22 @@
     .rhgi-page .rhgi-deep-lga .rhgi-lga-status--mobilizing {
       animation: rhgi-k36-lga-breathe 3s ease-in-out infinite !important;
       will-change: opacity !important;
+    }
+    /* SOVEREIGN-REBIRTH-41: LGA list vertical scroll + staggered name scan */
+    .rhgi-page .rhgi-deep-lga-track {
+      animation: rhgi-lga-scroll var(--rhgi-lga-scroll-duration, 40s) linear infinite !important;
+      transform: translateZ(0) !important;
+      will-change: opacity, transform !important;
+    }
+    .rhgi-page .rhgi-deep-lga-item .rhgi-r41-lga-name {
+      animation: rhgi-r41-lga-name-scan 2.8s ease-in-out infinite !important;
+      animation-delay: calc(var(--rhgi-name-index, 0) * 0.11s) !important;
+      will-change: opacity, filter !important;
+    }
+    /* Smooth scaleX on matrix bars (post-reveal updates) */
+    .rhgi-page .rhgi-v33-bar-fill,
+    .rhgi-page .rhgi-v33-proj-bar {
+      transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1) !important;
     }
     @keyframes rhgi-r1-cd-pulse {
       0%, 100% { opacity: 1; }
@@ -1658,10 +1737,10 @@
   </div>
   <div class="rhgi-satellite-scanlines rhgi-emergency-hide" aria-hidden="true"></div>
 
-  <div class="rhgi-shell rhgi-mechanism-gpu-scope">
-    <div class="rhgi-content-prism rhgi-v33-shell">
+  <div class="rhgi-shell rhgi-mechanism-gpu-scope rhgi-r41-gpu">
+    <div class="rhgi-content-prism rhgi-v33-shell rhgi-r41-gpu">
       <div class="rhgi-dashboard">
-        <section class="rhgi-ticker-section">
+        <section class="rhgi-ticker-section rhgi-r41-gpu">
           <div class="rhgi-election-ticker" role="timer" aria-live="polite" aria-label="Countdown to 16 January 2027">
             <p class="rhgi-election-ticker-label">2027 countdown · 16 Jan · Africa/Lagos</p>
             <div class="rhgi-election-ticker-grid">
@@ -1684,7 +1763,7 @@
         <section class="rhgi-brand-section">
           <div class="rhgi-r31-brand-identity">
             <div class="rhgi-r31-sovereign-seal" aria-hidden="true">
-              <svg viewBox="0 0 80 80" role="img" aria-label="GCSLC Sovereign Seal">
+              <svg viewBox="0 0 80 80" role="img" aria-label="RHGI Sovereign Seal">
                 <defs>
                   <linearGradient id="rhgiR31SealRing" x1="0%" y1="0%" x2="100%" y2="100%">
                     <stop offset="0%" stop-color="#1a3a5c"/>
@@ -1707,12 +1786,15 @@
                   font-size="9"
                   font-family="Goldman, Segoe UI, sans-serif"
                   font-weight="700"
-                >GCSLC</text>
+                >RHGI</text>
               </svg>
             </div>
-            <h1 class="rhgi-title rhgi-title--rhgi-full">Renewed Hope Grassroots Initiatives</h1>
+            <h1 class="rhgi-title rhgi-title--rhgi-full">
+              Renewed Hope Grassroots Initiatives
+              <span class="rhgi-title-r41-line">15/15 Model (RHGI)</span>
+            </h1>
             <p class="rhgi-sub rhgi-r31-seal-sub">
-              GCSLC Sovereign Seal · Powered by 8R Stealth Paradigm Convergence
+              RHGI Sovereign Seal · 15/15 Model · 8R Stealth Paradigm Convergence
             </p>
           </div>
         </section>
@@ -1785,9 +1867,9 @@
 
         <section class="rhgi-hub-section" aria-labelledby="rhgi-hub-heading">
           <h2 id="rhgi-hub-heading" class="rhgi-hub-section-title">Sovereign Logistics Command</h2>
-          <div class="rhgi-hub rhgi-v33-shell rhgi-r32-sovereign-shell">
-            <div class="rhgi-slc-budget" id="rhgi-slc-budget">
-              <p class="rhgi-slc-formula rhgi-v33-anchor">144,000 Tactical Wards · ₦60.84B Global Fund · Sovereign anchor</p>
+          <div class="rhgi-hub rhgi-v33-shell rhgi-r32-sovereign-shell rhgi-r41-gpu">
+            <div class="rhgi-slc-budget rhgi-r41-gpu" id="rhgi-slc-budget">
+              <p class="rhgi-slc-formula rhgi-v33-anchor" id="rhgi-slc-formula-mandate">144,000 Tactical Wards · mandate target 39,790,350 votes</p>
               <p class="rhgi-slc-total rhgi-v33-anchor rhgi-v33-anchor-total" id="rhgi-slc-total">—</p>
               <p class="rhgi-slc-determinant rhgi-v33-anchor">Determinant 3 · 144,000 Tactical Wards</p>
               <p class="rhgi-slc-force-line rhgi-v33-anchor rhgi-v33-canvasser-anchor" id="rhgi-slc-force">—</p>
@@ -1832,7 +1914,7 @@
                 </div>
 
                 <div class="rhgi-corridor-widgets-stack">
-                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-v33-widget rhgi-r30-nw-widget rhgi-r31-nw-gpu-lock rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-nw" aria-labelledby="rhgi-deep-heading">
+                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-v33-widget rhgi-r41-prism-region rhgi-r41-gpu rhgi-r30-nw-widget rhgi-r31-nw-gpu-lock rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-nw" aria-labelledby="rhgi-deep-heading">
                     <h3 id="rhgi-deep-heading" class="rhgi-deep-head">Northwest Tactical Spine · Widget 1</h3>
                     <div class="rhgi-nw-margin" id="rhgi-nw-margin" aria-live="polite">
                       <span class="rhgi-nw-margin-label">Winning Margin</span>
@@ -1895,7 +1977,7 @@
                     <p class="rhgi-deep-footer" id="rhgi-deep-footer">NW Projected Yield: — | Confidence Interval: 98% (8R Validated)</p>
                   </div>
 
-                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-v33-widget rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-sw" aria-labelledby="rhgi-sw-heading">
+                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-v33-widget rhgi-r41-prism-region rhgi-r41-gpu rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-sw" aria-labelledby="rhgi-sw-heading">
                     <h3 id="rhgi-sw-heading" class="rhgi-deep-head">Southwest Corridor · Widget 2</h3>
                     <div class="rhgi-nw-margin" id="rhgi-sw-margin" aria-live="polite">
                       <span class="rhgi-nw-margin-label">Winning Margin</span>
@@ -1928,7 +2010,7 @@
                     <p class="rhgi-deep-footer" id="rhgi-sw-footer">SW Projected Yield: — | Confidence Interval: 98% (8R Validated)</p>
                   </div>
 
-                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-v33-widget rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-ne" aria-labelledby="rhgi-ne-heading">
+                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-v33-widget rhgi-r41-prism-region rhgi-r41-gpu rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-ne" aria-labelledby="rhgi-ne-heading">
                     <h3 id="rhgi-ne-heading" class="rhgi-deep-head">Northeast Corridor · Widget 3</h3>
                     <div class="rhgi-nw-margin" id="rhgi-ne-margin" aria-live="polite">
                       <span class="rhgi-nw-margin-label">Winning Margin</span>
@@ -1961,7 +2043,7 @@
                     <p class="rhgi-deep-footer" id="rhgi-ne-footer">NE Projected Yield: — | Confidence Interval: 98% (8R Validated)</p>
                   </div>
 
-                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-v33-widget rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-nc" aria-labelledby="rhgi-nc-heading">
+                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-v33-widget rhgi-r41-prism-region rhgi-r41-gpu rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-nc" aria-labelledby="rhgi-nc-heading">
                     <h3 id="rhgi-nc-heading" class="rhgi-deep-head">North Central · FCT 25% Strategic Lock · Widget 4</h3>
                     <div class="rhgi-nw-margin" id="rhgi-nc-margin" aria-live="polite">
                       <span class="rhgi-nw-margin-label">Winning Margin</span>
@@ -1994,7 +2076,7 @@
                     <p class="rhgi-deep-footer" id="rhgi-nc-footer">NC Projected Yield: — | Confidence Interval: 98% (8R Validated)</p>
                   </div>
 
-                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-v33-widget rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-ss" aria-labelledby="rhgi-ss2-heading">
+                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-v33-widget rhgi-r41-prism-region rhgi-r41-gpu rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-ss" aria-labelledby="rhgi-ss2-heading">
                     <h3 id="rhgi-ss2-heading" class="rhgi-deep-head">South-South Corridor · Widget 5</h3>
                     <div class="rhgi-nw-margin" id="rhgi-ss-margin" aria-live="polite">
                       <span class="rhgi-nw-margin-label">Winning Margin</span>
@@ -2027,7 +2109,7 @@
                     <p class="rhgi-deep-footer" id="rhgi-ss-footer">SS Projected Yield: — | Confidence Interval: 98% (8R Validated)</p>
                   </div>
 
-                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-v33-widget rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-se" aria-labelledby="rhgi-se2-heading">
+                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-v33-widget rhgi-r41-prism-region rhgi-r41-gpu rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-se" aria-labelledby="rhgi-se2-heading">
                     <h3 id="rhgi-se2-heading" class="rhgi-deep-head">Southeast Corridor · Widget 6</h3>
                     <div class="rhgi-nw-margin rhgi-se-strategic-lock-static" id="rhgi-se-margin" aria-live="polite">
                       <span class="rhgi-nw-margin-label">Strategic 25% Threshold Secure</span>
@@ -2075,17 +2157,17 @@
           </div>
         </section>
 
-        <section class="rhgi-pulse-section rhgi-r1-global-pulse rhgi-chrome-sync-pulse rhgi-r32-sovereign-shell">
+        <section class="rhgi-pulse-section rhgi-r1-global-pulse rhgi-chrome-sync-pulse rhgi-r32-sovereign-shell rhgi-r41-gpu">
           <p class="rhgi-global-pulse-label">Global Pulse</p>
           <div
             class="rhgi-clocks-grid"
             id="rhgi-clocksRow"
             role="group"
-            aria-label="World clocks · Zaria · London · New York · Dubai UTC+4 · live interval sync"
+            aria-label="World clocks · Zaria · London · Dubai UTC+4 · New York · live interval sync"
           ></div>
         </section>
 
-        <div class="rhgi-footer-774 rhgi-v33-widget" role="region" aria-label="774 local government areas national mobilization feed">
+        <div class="rhgi-footer-774 rhgi-v33-widget rhgi-r41-gpu" role="region" aria-label="774 local government areas national mobilization feed">
           <p class="rhgi-footer-774-label">774 LGA national feed · 240s translateX glide</p>
           <div class="rhgi-footer-774-inner">
             <div class="rhgi-footer-774-track" id="rhgi-footer774Track">
@@ -2098,15 +2180,18 @@
     </div>
   </div>
 
+  <p class="rhgi-r41-watermark" aria-hidden="true">Architect: Dr. Sa&rsquo;ad Jaafaru</p>
+
   <script>
     (function () {
       var STATE_NOW = 24;
       var STATE_MAX = 36;
       var THRESHOLD = 0.25;
       var ELECTION_TARGET = new Date('2027-01-16T00:00:00+01:00');
-      /* Determinant 3 · 144,000 tactical wards · KINETIC-DUBAI-36 global fund anchor */
+      /* SOVEREIGN-REBIRTH-41: 144k wards · 39.7M mandate · ₦60,840,000,000 operational fund */
       var RHGI_TACTICAL_WARDS = 144000;
       var RHGI_CANVASSERS_PER_WARD = 15;
+      var RHGI_MANDATE_VOTES = 39790350;
       var RHGI_UNIT_NGN = 20000;
       var RHGI_BUDGET_AIRTIME_NGN = 5000;
       var RHGI_BUDGET_LOGISTICS_NGN = 15000;
@@ -2125,9 +2210,19 @@
       var readout20 = document.getElementById('rhgi-20m-readout');
       var slcTotalEl = document.getElementById('rhgi-slc-total');
       var slcForceEl = document.getElementById('rhgi-slc-force');
+      var slcFormulaMandateEl = document.getElementById('rhgi-slc-formula-mandate');
       function updateSovereignLogisticsDisplay() {
+        if (slcFormulaMandateEl) {
+          slcFormulaMandateEl.textContent =
+            '144,000 Tactical Wards · mandate target ' +
+            RHGI_MANDATE_VOTES.toLocaleString('en-NG') +
+            ' votes';
+        }
         if (slcTotalEl) {
-          slcTotalEl.textContent = '₦60.84B Global Fund';
+          slcTotalEl.textContent =
+            '₦' +
+            RHGI_GLOBAL_FUND_NGN.toLocaleString('en-NG') +
+            ' Global Operational Fund';
         }
         if (slcForceEl) {
           var canvasserForce = RHGI_TACTICAL_WARDS * RHGI_CANVASSERS_PER_WARD;
@@ -2237,12 +2332,12 @@
       tickCountdown();
       setInterval(tickCountdown, 1000);
 
-      /* KINETIC-DUBAI-36: Zaria · London · New York · Dubai (Asia/Dubai, UTC+4) — setInterval + rotate */
+      /* SOVEREIGN-REBIRTH-41: Zaria · London · Dubai · New York — setInterval + rotate */
       var zones = [
         { city: 'Zaria', tz: 'Africa/Lagos' },
         { city: 'London', tz: 'Europe/London' },
-        { city: 'New York', tz: 'America/New_York' },
-        { city: 'Dubai', tz: 'Asia/Dubai' }
+        { city: 'Dubai', tz: 'Asia/Dubai' },
+        { city: 'New York', tz: 'America/New_York' }
       ];
 
       function tickGroupHtml() {
@@ -2814,12 +2909,16 @@
         return shuffle(out);
       }
 
-      function feedItemHtml(item) {
+      function feedItemHtml(item, rowIdx) {
         var st = item.secured ? 'secured' : 'mobilizing';
         var lab = item.secured ? 'Secured' : 'Mobilizing';
         return (
           '<li class="rhgi-deep-lga-item" data-lga="' + item.name.replace(/"/g, '&quot;') + '" data-status="' + st + '">' +
-          '<span>' + item.name + '</span>' +
+          '<span class="rhgi-r41-lga-name" style="--rhgi-name-index:' +
+          rowIdx +
+          '">' +
+          item.name +
+          '</span>' +
           '<span class="rhgi-lga-status rhgi-lga-status--' + st + '">' + lab + '</span></li>'
         );
       }
@@ -2844,7 +2943,9 @@
         var listB = document.getElementById(listBId);
         if (!listA || !listB) return;
         var feed = buildLgaFeedFrom(namePool);
-        var html = feed.map(feedItemHtml).join('');
+        var html = feed.map(function (item, idx) {
+          return feedItemHtml(item, idx);
+        }).join('');
         listA.innerHTML = html;
         listB.innerHTML = html;
         if (powerlineId) {
