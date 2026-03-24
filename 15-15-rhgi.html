@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&amp;display=swap" rel="stylesheet">
   <title>15-15 RHGI | Sovereign Dashboard</title>
   <style>
-/* RHGI-CONSTITUTIONAL-SENTINEL-50 — FCT §134 · NC sentinel · prism · clocks · 774 ticker · GPU */
+/* RHGI-FORCE-IGNITION-51 — rhgi-glide footer · updateClocks · secured uplink · GPU translateZ(0) */
     :root {
       --rhgi-navy-deep: #050a14;
       --rhgi-gold: #e8c547;
@@ -1376,19 +1376,21 @@
       color: #3a6a9a;
       text-shadow: 0 0 0.35rem rgba(0, 120, 200, 0.35);
     }
-    /* RHGI-IGNITION-47: Secured / Mobilizing — subtle gold glow pulse (3s cadence) */
-    @keyframes rhgi-ignition47-lga-status-glow {
+    /* RHGI-FORCE-IGNITION-51: SECURED uplink glow — 2s cadence, GPU transform */
+    @keyframes rhgi-force51-secured-uplink {
       0%, 100% {
         opacity: 0.9;
-        filter: drop-shadow(0 0 0.25rem rgba(232, 197, 71, 0.35));
-        text-shadow: 0 0 0.45rem rgba(232, 197, 71, 0.4);
+        transform: translateZ(0) scale(1);
+        filter: drop-shadow(0 0 0.28rem rgba(232, 197, 71, 0.45));
+        text-shadow: 0 0 0.45rem rgba(232, 197, 71, 0.42);
       }
       50% {
         opacity: 1;
-        filter: drop-shadow(0 0 0.65rem rgba(232, 197, 71, 0.75));
+        transform: translateZ(0) scale(1.035);
+        filter: drop-shadow(0 0 0.75rem rgba(232, 197, 71, 0.92));
         text-shadow:
-          0 0 0.85rem rgba(232, 197, 71, 0.95),
-          0 0 1.35rem rgba(255, 224, 140, 0.55);
+          0 0 0.95rem rgba(232, 197, 71, 1),
+          0 0 1.5rem rgba(255, 224, 140, 0.55);
       }
     }
     /* SOVEREIGN-REBIRTH-41: staggered vertical scan on LGA names */
@@ -1583,26 +1585,20 @@
       backface-visibility: hidden;
       mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
     }
-    /* Linear infinite R→L glide — starts automatically with page paint (duplicated text spans = -50% loop) */
+    /* 774 LGA footer — RHGI-FORCE-IGNITION-51: rhgi-glide 240s linear infinite (hard-running) */
     .rhgi-footer-774-track,
-    .rhgi-footer-774-track.rhgi-hard49-footer-ticker,
-    #rhgi-footer774Track.rhgi-hard49-footer-ticker {
+    .rhgi-footer-774-track.rhgi-force51-glide-track,
+    #rhgi-footer774Track.rhgi-force51-glide-track {
       display: inline-flex;
       width: max-content;
       white-space: nowrap;
-      animation-name: rhgi-hard49-footer-ticker;
-      animation-duration: var(--rhgi-footer774-duration, 240s);
-      animation-timing-function: linear;
-      animation-iteration-count: infinite;
-      animation-direction: normal;
-      animation-fill-mode: none;
-      animation-play-state: running;
-      animation-delay: 0s;
+      animation: rhgi-glide var(--rhgi-footer774-duration, 240s) linear infinite !important;
+      animation-play-state: running !important;
       transform: translate3d(0, 0, 0);
       will-change: transform;
       backface-visibility: hidden;
     }
-    @keyframes rhgi-hard49-footer-ticker {
+    @keyframes rhgi-glide {
       0% { transform: translate3d(0, 0, 0); }
       100% { transform: translate3d(-50%, 0, 0); }
     }
@@ -1626,6 +1622,25 @@
     /* —— 15-15-FORCE-RESTORATION-43: sanctioned motion + prism overrides (replaces flat static) —— */
     .rhgi-emergency-hide {
       display: none !important;
+    }
+    .rhgi-force51-watermark {
+      position: fixed;
+      bottom: max(0.45rem, env(safe-area-inset-bottom));
+      right: max(0.55rem, env(safe-area-inset-right));
+      z-index: 120;
+      margin: 0;
+      max-width: min(90vw, 18rem);
+      font-family: 'Goldman', 'Segoe UI', sans-serif;
+      font-size: clamp(0.36rem, 0.85vw + 0.1rem, 0.48rem);
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-align: right;
+      color: rgba(212, 175, 55, 0.4);
+      pointer-events: none;
+      user-select: none;
+      transform: translateZ(0);
+      backface-visibility: hidden;
     }
     body.rhgi-page {
       background: #0a0e1a !important;
@@ -1725,12 +1740,9 @@
       animation: rhgi-r1-margin-delta-sovereign-ss 3.8s ease-in-out infinite !important;
       will-change: transform !important;
     }
-    /* 774 glide — RHGI-HARD-IGNITION-49: linear infinite, always running */
+    /* 774 glide — RHGI-FORCE-IGNITION-51 */
     .rhgi-page .rhgi-footer-774-track {
-      animation-name: rhgi-hard49-footer-ticker !important;
-      animation-duration: var(--rhgi-footer774-duration, 240s) !important;
-      animation-timing-function: linear !important;
-      animation-iteration-count: infinite !important;
+      animation: rhgi-glide var(--rhgi-footer774-duration, 240s) linear infinite !important;
       animation-play-state: running !important;
       transform: translate3d(0, 0, 0) !important;
       will-change: transform !important;
@@ -1750,12 +1762,19 @@
         calc(var(--row-index) * 0.1s + 2.5s) !important;
       will-change: transform !important;
     }
-    /* RHGI-IGNITION-47: LGA side-feed labels — gold glow pulse (3s) */
-    .rhgi-page .rhgi-deep-lga .rhgi-lga-status.rhgi-ignition47-lga-status,
-    .rhgi-page .rhgi-deep-lga .rhgi-lga-status--secured,
+    /* Mobilizing — subtle pulse (distinct from SECURED 2s uplink) */
     .rhgi-page .rhgi-deep-lga .rhgi-lga-status--mobilizing {
-      animation: rhgi-ignition47-lga-status-glow 3s ease-in-out infinite !important;
-      will-change: opacity, filter, text-shadow !important;
+      animation: rhgi-force51-mobilizing-soft 4s ease-in-out infinite !important;
+      will-change: opacity, filter, transform !important;
+    }
+    @keyframes rhgi-force51-mobilizing-soft {
+      0%, 100% { opacity: 0.88; transform: translateZ(0); }
+      50% { opacity: 1; transform: translateZ(0); }
+    }
+    /* SECURED — live uplink glow every 2s */
+    .rhgi-page .rhgi-deep-lga .rhgi-lga-status--secured.rhgi-force51-secured {
+      animation: rhgi-force51-secured-uplink 2s ease-in-out infinite !important;
+      will-change: transform, opacity, filter, text-shadow !important;
     }
     /* SOVEREIGN-REBIRTH-41: LGA list vertical scroll + staggered name scan */
     .rhgi-page .rhgi-deep-lga-track {
@@ -2340,7 +2359,7 @@
         <div class="rhgi-footer-774 rhgi-r41-gpu rhgi-prism-frame rhgi-prism-frame--compact" role="region" aria-label="774 local government areas national mobilization feed">
           <p class="rhgi-footer-774-label">774 LGA national feed · 240s translateX glide</p>
           <div class="rhgi-footer-774-inner">
-            <div class="rhgi-footer-774-track rhgi-hard49-footer-ticker" id="rhgi-footer774Track">
+            <div class="rhgi-footer-774-track rhgi-force51-glide-track" id="rhgi-footer774Track">
               <span class="rhgi-footer-774-text" id="rhgi-footer774A"></span>
               <span class="rhgi-footer-774-text" id="rhgi-footer774B" aria-hidden="true"></span>
             </div>
@@ -2350,8 +2369,10 @@
     </div>
   </div>
 
+  <p class="rhgi-force51-watermark" aria-hidden="true">Architect: Dr. Sa&rsquo;ad Jaafaru</p>
+
   <script>
-/* RHGI-CONSTITUTIONAL-SENTINEL-50 — live clocks · kinetic LGA · matrices · 774 ticker (all inline) */
+/* RHGI-FORCE-IGNITION-51 — updateClocks · rhgi-glide · secured uplink (all inline) */
     (function () {
       var STATE_NOW = 24;
       var STATE_MAX = 36;
@@ -2569,7 +2590,7 @@
         return { h24: h24, Mi: Mi, Se: Se };
       }
 
-      function tickChromeClockHands() {
+      function updateClocks() {
         var now = new Date();
         row.querySelectorAll('.rhgi-analog-wrap').forEach(function (wrap) {
           var tz = wrap.getAttribute('data-tz');
@@ -2586,24 +2607,24 @@
           if (sEl) sEl.setAttribute('transform', 'rotate(' + secondDeg + ' 50 50)');
         });
       }
-      tickChromeClockHands();
-      /* Dubai (UTC+4) + all zones: second hand advances every 1000ms */
-      setInterval(tickChromeClockHands, 1000);
-      function rhgiSentinel50MotionKick() {
-        tickChromeClockHands();
+      updateClocks();
+      var rhgiForce51ClockTimer = null;
+      window.onload = function () {
+        updateClocks();
+        if (rhgiForce51ClockTimer !== null) {
+          clearInterval(rhgiForce51ClockTimer);
+        }
+        rhgiForce51ClockTimer = setInterval(updateClocks, 1000);
         var tr = document.getElementById('rhgi-footer774Track');
         if (tr) {
           tr.style.animation = 'none';
           void tr.offsetWidth;
           tr.style.removeProperty('animation');
-          tr.classList.remove('rhgi-hard49-footer-ticker');
+          tr.classList.remove('rhgi-force51-glide-track');
           void tr.offsetWidth;
-          tr.classList.add('rhgi-hard49-footer-ticker');
+          tr.classList.add('rhgi-force51-glide-track');
         }
-      }
-      window.addEventListener('load', function rhgiSentinel50OnLoad() {
-        rhgiSentinel50MotionKick();
-      });
+      };
 
       /* —— 15-15-DEPLOY-12: tri-corridor APC + Model 15-15 (Kano anchor multiplier) —— */
       var KANO_APC_2023 = 517341;
@@ -3124,7 +3145,7 @@
       var RHGI_ALL_LGA_774 = rhgiBuildAllLga774();
 
       renderFooter774Ticker();
-      rhgiSentinel50FooterKick();
+      rhgiForce51FooterKick();
 
       function renderFooter774Ticker() {
         var pool = RHGI_ALL_LGA_774;
@@ -3135,10 +3156,10 @@
         if (fb) fb.textContent = line;
       }
 
-      function rhgiSentinel50FooterKick() {
+      function rhgiForce51FooterKick() {
         var tr = document.getElementById('rhgi-footer774Track');
         if (!tr) return;
-        tr.classList.add('rhgi-hard49-footer-ticker');
+        tr.classList.add('rhgi-force51-glide-track');
         void tr.offsetWidth;
       }
 
@@ -3164,7 +3185,12 @@
           '">' +
           item.name +
           '</span>' +
-          '<span class="rhgi-lga-status rhgi-ignition47-lga-status rhgi-lga-status--' + st + '">' + lab + '</span></li>'
+          '<span class="rhgi-lga-status rhgi-lga-status--' +
+          st +
+          (st === 'secured' ? ' rhgi-force51-secured' : '') +
+          '">' +
+          lab +
+          '</span></li>'
         );
       }
 
