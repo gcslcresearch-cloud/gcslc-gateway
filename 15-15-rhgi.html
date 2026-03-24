@@ -188,7 +188,7 @@
       backface-visibility: hidden;
     }
     .rhgi-v33-widget {
-      border: 1px solid #1a2542;
+      border: 1px solid #d4af37;
       border-radius: 0.65rem;
       background: #0a0e1a;
       transform: translateZ(0);
@@ -1187,6 +1187,11 @@
       color: #3a6a9a;
       text-shadow: 0 0 0.35rem rgba(0, 120, 200, 0.35);
     }
+    /* KINETIC-DUBAI-36: LGA uplink breathe (Secured / Mobilizing) — REANIMATE re-enables */
+    @keyframes rhgi-k36-lga-breathe {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
     .rhgi-deep-footer {
       margin: 0.55rem 0 0;
       padding-top: 0.45rem;
@@ -1304,6 +1309,17 @@
       text-align: center;
       width: 100%;
     }
+    .rhgi-clock-tz-note {
+      display: block;
+      margin-top: 0.1rem;
+      font-size: clamp(0.34rem, 1.2vw + 0.08rem, 0.42rem);
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(212, 175, 55, 0.72);
+      text-align: center;
+      width: 100%;
+    }
 
     .rhgi-content-prism {
       border-radius: 0.75rem;
@@ -1320,7 +1336,7 @@
       padding: clamp(0.45rem, 1.8vw, 0.6rem) clamp(0.35rem, 1.5vw, 0.5rem);
       border-radius: 0.5rem;
       background: #0a0e1a;
-      border: 1px solid #1a2542;
+      border: 1px solid #d4af37;
       box-shadow: none;
       transform: translateZ(0);
       will-change: transform;
@@ -1395,7 +1411,7 @@
     }
     .rhgi-footer-774 {
       background: #0a0e1a !important;
-      border: 1px solid #1a2542 !important;
+      border: 1px solid #d4af37 !important;
       box-shadow: none !important;
     }
     .rhgi-conversion-ticker-track,
@@ -1427,7 +1443,7 @@
     }
     .rhgi-se-strategic-lock-static {
       background: #0a0e1a !important;
-      border: 1px solid #1a2542 !important;
+      border: 1px solid #d4af37 !important;
     }
     /* Default: freeze CSS animation (flicker shield); explicit exceptions follow */
     .rhgi-page,
@@ -1509,6 +1525,12 @@
         calc(var(--row-index) * 0.09s + 0.88s) !important;
       will-change: transform !important;
     }
+    /* KINETIC-DUBAI-36: LGA Live Feed — Secured / Mobilizing uplink pulse (3s) */
+    .rhgi-page .rhgi-deep-lga .rhgi-lga-status--secured,
+    .rhgi-page .rhgi-deep-lga .rhgi-lga-status--mobilizing {
+      animation: rhgi-k36-lga-breathe 3s ease-in-out infinite !important;
+      will-change: opacity !important;
+    }
     @keyframes rhgi-r1-cd-pulse {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.9; }
@@ -1520,10 +1542,10 @@
     .rhgi-page .rhgi-r1-global-pulse .rhgi-analog-clock-frame {
       animation: none !important;
       background: #0a0e1a !important;
-      border: 1px solid #1a2542 !important;
+      border: 1px solid #d4af37 !important;
       box-shadow: none !important;
     }
-    /* FULL-VELOCITY-33: hands driven by JS rotate() — no CSS clock animation */
+    /* KINETIC-DUBAI-36: hands via setInterval + SVG rotate — no CSS clock animation */
     .rhgi-page .rhgi-chrome-sync-pulse .rhgi-chrome-hand-hour,
     .rhgi-page .rhgi-chrome-sync-pulse .rhgi-chrome-hand-minute,
     .rhgi-page .rhgi-chrome-sync-pulse .rhgi-chrome-hand-second {
@@ -1765,7 +1787,7 @@
           <h2 id="rhgi-hub-heading" class="rhgi-hub-section-title">Sovereign Logistics Command</h2>
           <div class="rhgi-hub rhgi-v33-shell rhgi-r32-sovereign-shell">
             <div class="rhgi-slc-budget" id="rhgi-slc-budget">
-              <p class="rhgi-slc-formula rhgi-v33-anchor">Total Budget = (144,000 Tactical Wards × 15 Canvassers) × ₦20,000</p>
+              <p class="rhgi-slc-formula rhgi-v33-anchor">144,000 Tactical Wards · ₦60.84B Global Fund · Sovereign anchor</p>
               <p class="rhgi-slc-total rhgi-v33-anchor rhgi-v33-anchor-total" id="rhgi-slc-total">—</p>
               <p class="rhgi-slc-determinant rhgi-v33-anchor">Determinant 3 · 144,000 Tactical Wards</p>
               <p class="rhgi-slc-force-line rhgi-v33-anchor rhgi-v33-canvasser-anchor" id="rhgi-slc-force">—</p>
@@ -2059,7 +2081,7 @@
             class="rhgi-clocks-grid"
             id="rhgi-clocksRow"
             role="group"
-            aria-label="World clocks · Zaria · London · New York · Riyadh · smooth rotate hands"
+            aria-label="World clocks · Zaria · London · New York · Dubai UTC+4 · live interval sync"
           ></div>
         </section>
 
@@ -2082,14 +2104,14 @@
       var STATE_MAX = 36;
       var THRESHOLD = 0.25;
       var ELECTION_TARGET = new Date('2027-01-16T00:00:00+01:00');
-      /* Determinant 3 · 144,000 tactical wards; 20k multiplier engine */
+      /* Determinant 3 · 144,000 tactical wards · KINETIC-DUBAI-36 global fund anchor */
       var RHGI_TACTICAL_WARDS = 144000;
       var RHGI_CANVASSERS_PER_WARD = 15;
       var RHGI_UNIT_NGN = 20000;
       var RHGI_BUDGET_AIRTIME_NGN = 5000;
       var RHGI_BUDGET_LOGISTICS_NGN = 15000;
-      var RHGI_BUDGET_TOTAL_NGN =
-        RHGI_TACTICAL_WARDS * RHGI_CANVASSERS_PER_WARD * RHGI_UNIT_NGN;
+      var RHGI_GLOBAL_FUND_NGN = 60840000000;
+      var RHGI_BUDGET_TOTAL_NGN = RHGI_GLOBAL_FUND_NGN;
       var NATIONAL_TARGET = RHGI_BUDGET_TOTAL_NGN;
       var NATIONAL_CURRENT = 8600000000;
 
@@ -2105,8 +2127,7 @@
       var slcForceEl = document.getElementById('rhgi-slc-force');
       function updateSovereignLogisticsDisplay() {
         if (slcTotalEl) {
-          slcTotalEl.textContent =
-            '₦' + RHGI_BUDGET_TOTAL_NGN.toLocaleString('en-NG') + ' (global total)';
+          slcTotalEl.textContent = '₦60.84B Global Fund';
         }
         if (slcForceEl) {
           var canvasserForce = RHGI_TACTICAL_WARDS * RHGI_CANVASSERS_PER_WARD;
@@ -2216,12 +2237,12 @@
       tickCountdown();
       setInterval(tickCountdown, 1000);
 
-      /* FULL-VELOCITY-33: Zaria · London · New York · Riyadh — rAF rotate() hands */
+      /* KINETIC-DUBAI-36: Zaria · London · New York · Dubai (Asia/Dubai, UTC+4) — setInterval + rotate */
       var zones = [
         { city: 'Zaria', tz: 'Africa/Lagos' },
         { city: 'London', tz: 'Europe/London' },
         { city: 'New York', tz: 'America/New_York' },
-        { city: 'Riyadh', tz: 'Asia/Riyadh' }
+        { city: 'Dubai', tz: 'Asia/Dubai' }
       ];
 
       function tickGroupHtml() {
@@ -2251,6 +2272,9 @@
             '</svg>' +
             '</div>' +
             '<span class="rhgi-clock-city">' + zones[idx].city + '</span>' +
+            (zones[idx].tz === 'Asia/Dubai'
+              ? '<span class="rhgi-clock-tz-note">UTC+4</span>'
+              : '') +
           '</div>'
         );
       }
@@ -2258,27 +2282,14 @@
       var row = document.getElementById('rhgi-clocksRow');
       row.innerHTML = zones.map(function (_, i) { return clockMarkup(i); }).join('');
 
-      var rhgiClockFracOk = false;
-      try {
-        new Intl.DateTimeFormat('en-GB', {
-          timeZone: 'Africa/Lagos',
-          fractionalSecondDigits: 3
-        }).formatToParts(new Date());
-        rhgiClockFracOk = true;
-      } catch (eFrac) {
-        rhgiClockFracOk = false;
-      }
-
       function clockPartsForTZ(tz, now) {
-        var opts = {
+        var fmt = new Intl.DateTimeFormat('en-GB', {
           timeZone: tz,
           hour: 'numeric',
           minute: 'numeric',
           second: 'numeric',
           hour12: false
-        };
-        if (rhgiClockFracOk) opts.fractionalSecondDigits = 3;
-        var fmt = new Intl.DateTimeFormat('en-GB', opts);
+        });
         var parts = fmt.formatToParts(now);
         var h24 = 0;
         var Mi = 0;
@@ -2286,7 +2297,7 @@
         parts.forEach(function (p) {
           if (p.type === 'hour') h24 = parseInt(p.value, 10);
           if (p.type === 'minute') Mi = parseInt(p.value, 10);
-          if (p.type === 'second') Se = parseFloat(p.value);
+          if (p.type === 'second') Se = parseInt(p.value, 10);
         });
         return { h24: h24, Mi: Mi, Se: Se };
       }
@@ -2307,9 +2318,9 @@
           if (mEl) mEl.setAttribute('transform', 'rotate(' + minuteDeg + ' 50 50)');
           if (sEl) sEl.setAttribute('transform', 'rotate(' + secondDeg + ' 50 50)');
         });
-        requestAnimationFrame(tickChromeClockHands);
       }
-      requestAnimationFrame(tickChromeClockHands);
+      tickChromeClockHands();
+      setInterval(tickChromeClockHands, 1000);
 
       /* —— 15-15-DEPLOY-12: tri-corridor APC + Model 15-15 (Kano anchor multiplier) —— */
       var KANO_APC_2023 = 517341;
