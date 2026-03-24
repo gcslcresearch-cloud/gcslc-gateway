@@ -28,6 +28,14 @@ NAVY = NAVY_CSS
 PRISM_NAVY = "#000080"
 PRISM_NAVY_PLOT = "#0a0a5c"
 CANVASSER_BUDGET_ANCHOR_NGN = 30_000
+# RHGI TOTAL RESTORE-30 — Sovereign Budget Engine (personnel lines per mandate brief).
+SOVEREIGN_CANVASSERS_LINE = 144_000
+SOVEREIGN_EDAY_STAFF_LINE = 144_000
+SOVEREIGN_UNIT_NGN = 30_000
+SOVEREIGN_MISC_PCT = 0.15
+SOVEREIGN_CONTINGENCY_PCT = 0.10
+# National mandate seal (strike brief headline — Feb 2027 envelope).
+SOVEREIGN_BUDGET_MANDATE_NGN = 108_960_000_000
 # Deep Navy → metallic gold — 774 LGA winning-margin map.
 DEEP_NAVY_SAFE = "#152a45"
 METALLIC_GOLD_TARGET = METALLIC_GOLD
@@ -59,6 +67,14 @@ EIGHT_R_DETERMINANTS = [
 
 def _gold_heading(text: str) -> None:
     st.markdown(f'<p class="rhgi-gold-heading">{text}</p>', unsafe_allow_html=True)
+
+
+def sovereign_budget_engine_breakdown() -> tuple[int, int, int]:
+    """(144k + 144k) × ₦30k + 15% misc + 10% contingency → returns (base, after_misc, total) in ₦."""
+    base = (SOVEREIGN_CANVASSERS_LINE + SOVEREIGN_EDAY_STAFF_LINE) * SOVEREIGN_UNIT_NGN
+    after_misc = round(base * (1.0 + SOVEREIGN_MISC_PCT))
+    total = round(after_misc * (1.0 + SOVEREIGN_CONTINGENCY_PCT))
+    return base, after_misc, total
 
 
 def _format_election_countdown(now: datetime) -> str:
@@ -255,6 +271,30 @@ st.markdown(
       --navy: #000080;
       --stark-white: #ffffff;
     }
+    /* Anti-Blue Strike — strip default Streamlit / BaseWeb blues */
+    html, body { background: #000080 !important; }
+    [data-testid="stAppViewContainer"], [data-testid="stAppViewContainer"] > .main {
+      background: #000080 !important;
+    }
+    [data-testid="stHeader"], header[data-testid="stHeader"] {
+      background: rgba(0, 0, 128, 0.97) !important;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.25) !important;
+    }
+    [data-testid="stDecoration"] { background: #000080 !important; }
+    [data-testid="stToolbar"] { background: transparent !important; }
+    [data-testid="stSidebarNav"] { background: transparent !important; }
+    div[data-testid="stVerticalBlockBorderWrapper"] { border-color: rgba(212,175,55,0.2) !important; }
+    [data-baseweb="slider"] [role="slider"] { background: var(--metallic-gold) !important; }
+    [data-baseweb="slider"] [data-testid="stThumbValue"] { color: var(--rose-gold) !important; }
+    [data-baseweb="slider"] [style*="background"] { background: rgba(0,0,128,0.6) !important; }
+    .stMetric { background: rgba(0,0,128,0.35) !important; border: 1px solid rgba(212,175,55,0.25) !important; border-radius: 10px !important; }
+    .stMetric [data-testid="stMetricValue"] { color: var(--stark-white) !important; }
+    .stMetric [data-testid="stMetricLabel"] { color: var(--metallic-gold) !important; }
+    .stAlert { background: rgba(0,0,128,0.55) !important; border: 1px solid rgba(212,175,55,0.35) !important; }
+    .stInfo { color: var(--stark-white) !important; }
+    a, a:visited { color: var(--rose-gold) !important; }
+    a:hover { color: var(--metallic-gold) !important; }
+    iframe { background: #000080 !important; }
     .stApp {
       background-color: var(--navy) !important;
       background-image: radial-gradient(ellipse at 20% 0%, rgba(212,175,55,0.08) 0%, transparent 50%),
@@ -263,6 +303,9 @@ st.markdown(
       font-family: 'Goldman', sans-serif !important;
       user-select: none;
       -webkit-user-select: none;
+    }
+    .stApp *:not(svg):not(path):not(circle):not(rect):not(line):not(polyline):not(polygon) {
+      font-family: 'Goldman', sans-serif !important;
     }
     [data-testid="stSidebar"] {
       background: linear-gradient(180deg, #000080 0%, #05054a 100%) !important;
@@ -275,6 +318,11 @@ st.markdown(
       z-index: 2 !important;
       font-family: 'Goldman', sans-serif !important;
       color: var(--stark-white) !important;
+      background: #000080 !important;
+    }
+    section.main [data-testid="stMarkdownContainer"] {
+      background-color: #000080 !important;
+      border-radius: 10px;
     }
     div[data-testid="stAppViewContainer"] > section.main { position: relative; z-index: 1; }
     .rhgi-brand-title {
@@ -390,6 +438,7 @@ st.markdown(
       opacity: 0.92;
     }
     button, input, textarea, [data-testid="stMarkdownContainer"], .stMarkdown { user-select: text !important; -webkit-user-select: text !important; }
+    /* Corridor + column buttons: metallic gold baseline */
     div[data-testid="column"] button[kind="secondary"],
     div[data-testid="column"] button[kind="primary"] {
       position: relative !important;
@@ -402,7 +451,20 @@ st.markdown(
       border: 1px solid rgba(212, 175, 55, 0.55) !important;
       background: linear-gradient(155deg, rgba(0,0,128,0.45) 0%, #0b1024 55%, rgba(183,110,121,0.12) 100%) !important;
       background-size: 220% 100% !important;
-      animation: r8MetalPulse 2.6s ease-in-out infinite, r8ShimmerSweep 2.8s linear infinite;
+      animation: r8MetalPulse 2.6s ease-in-out infinite;
+    }
+    /* 8R belt (8 columns): Rose Gold + metallic sweep 3s + pulse */
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)) button[kind="secondary"],
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)) button[kind="primary"] {
+      color: var(--rose-gold) !important;
+      border: 1px solid rgba(183, 110, 121, 0.65) !important;
+      background: linear-gradient(155deg, rgba(0,0,128,0.45) 0%, #0b1024 55%, rgba(183,110,121,0.18) 100%) !important;
+      background-size: 220% 100% !important;
+      animation: r8WidgetPulse 2s ease-in-out infinite, r8ShimmerSweep 3s linear infinite !important;
+    }
+    @keyframes r8WidgetPulse {
+      0%, 100% { box-shadow: 0 0 8px rgba(183,110,121,0.4); transform: scale(1); }
+      50% { box-shadow: 0 0 22px rgba(212,175,55,0.5); transform: scale(1.02); }
     }
     @keyframes r8MetalPulse {
       0%, 100% { box-shadow: 0 0 10px rgba(183,110,121,0.35); }
@@ -510,23 +572,70 @@ st.markdown(
     .stApp h1 { color: var(--metallic-gold) !important; font-weight: 800 !important; text-shadow: 0 0 14px rgba(212,175,55,0.4); }
     .rhgi-corridor-table { width: 100%; border-collapse: collapse; font-size: 1.14rem; line-height: 1.55; }
     .rhgi-corridor-table th {
+      font-family: 'Goldman', sans-serif !important;
       color: var(--metallic-gold) !important; font-weight: 800 !important;
       text-align: left; padding: 14px 16px;
       background: rgba(0, 0, 128, 0.45);
       border-bottom: 2px solid rgba(212, 175, 55, 0.5);
-      text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+      text-shadow: 0 0 10px rgba(212, 175, 55, 0.55), 0 0 22px rgba(212, 175, 55, 0.25);
       font-size: 1.12rem !important;
     }
     .rhgi-corridor-table td {
+      font-family: 'Goldman', sans-serif !important;
       color: #ffffff !important; padding: 12px 16px;
       border-bottom: 1px solid rgba(212, 175, 55, 0.15);
       font-size: 1.1rem !important;
-      font-weight: 500;
+      font-weight: 600;
     }
     .rhgi-corridor-table tr:nth-child(even) td { background: rgba(14, 23, 51, 0.45); }
     [data-testid="stCaption"] { color: var(--rose-gold) !important; font-family: 'Goldman', sans-serif !important; }
     [data-testid="stSelectbox"] label { color: var(--rose-gold) !important; font-family: 'Goldman', sans-serif !important; }
     [data-baseweb="select"] { font-family: 'Goldman', sans-serif !important; }
+    .rhgi-sovereign-budget {
+      margin: 22px 0 8px 0;
+      padding: 4px;
+      border-radius: 16px;
+      background: linear-gradient(120deg,
+        rgba(212,175,55,0.95) 0%, rgba(255,248,220,0.55) 25%, rgba(212,175,55,0.85) 50%,
+        rgba(183,110,121,0.45) 75%, rgba(212,175,55,0.95) 100%);
+      background-size: 280% 100%;
+      animation: sovereignFrameShimmer 4s ease-in-out infinite;
+      box-shadow: 0 0 28px rgba(212, 175, 55, 0.35);
+    }
+    @keyframes sovereignFrameShimmer {
+      0%, 100% { background-position: 0% center; filter: brightness(1); }
+      50% { background-position: 100% center; filter: brightness(1.08); }
+    }
+    .rhgi-sovereign-budget-inner {
+      background: linear-gradient(180deg, rgba(0,0,128,0.97), rgba(5,5,74,0.92));
+      border-radius: 13px;
+      padding: 18px 22px;
+      text-align: center;
+    }
+    .rhgi-sovereign-budget-inner h3 {
+      font-family: 'Goldman', sans-serif !important;
+      color: var(--metallic-gold) !important;
+      margin: 0 0 10px 0;
+      font-size: 1.25rem;
+      letter-spacing: 0.06em;
+      text-shadow: 0 0 14px rgba(212,175,55,0.5);
+    }
+    .rhgi-sovereign-mandate {
+      font-family: 'Goldman', sans-serif !important;
+      font-size: clamp(1.5rem, 4vw, 2.1rem);
+      font-weight: 800;
+      color: var(--metallic-gold) !important;
+      margin: 0 0 8px 0;
+      text-shadow: 0 0 20px rgba(212,175,55,0.65);
+      animation: rhgiGoldmanShimmer 3.5s ease-in-out infinite;
+    }
+    .rhgi-sovereign-detail {
+      font-family: 'Goldman', sans-serif !important;
+      color: var(--stark-white) !important;
+      font-size: 0.95rem;
+      margin: 4px 0;
+      line-height: 1.45;
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -600,7 +709,7 @@ c1, c2, c3 = st.columns(3)
 _pulse_cls = "rhgi-kpi rhgi-abuja-strobe" if abuja_strobe else "rhgi-kpi"
 c1.markdown(
     f"<div class='{_pulse_cls}'><b>Abuja Pulse (UTC+1)</b><br><span class='rhgi-glow'>{abuja_now.strftime('%I:%M:%S %p WAT')}</span>"
-    f"<br><small style='color:#aab8e0'>FCT APC (proj): {fct_pct:.2f}%</small></div>",
+    f"<br><small style='color:#ffffff;font-weight:600;'>FCT APC (proj): {fct_pct:.2f}%</small></div>",
     unsafe_allow_html=True,
 )
 c2.markdown(
@@ -643,7 +752,7 @@ fig_zone = px.bar(
 fig_zone.update_layout(
     paper_bgcolor=PRISM_NAVY,
     plot_bgcolor=PRISM_NAVY_PLOT,
-    font_color="#dbe2ff",
+    font_color="#ffffff",
     xaxis_title="Zone",
     yaxis_title="Winning Margin (APC vs nearest rival)",
 )
@@ -716,6 +825,26 @@ else:
             f"</div></div>"
         )
     st.markdown(_tbl, unsafe_allow_html=True)
+
+_sb_base, _sb_after_misc, _sb_line_total = sovereign_budget_engine_breakdown()
+_sb_mandate_bn = SOVEREIGN_BUDGET_MANDATE_NGN / 1e9
+_sb_line_bn = _sb_line_total / 1e9
+st.markdown(
+    f"""
+    <div class="rhgi-sovereign-budget">
+      <div class="rhgi-sovereign-budget-inner">
+        <h3>Sovereign Budget Engine</h3>
+        <p class="rhgi-sovereign-mandate">₦{_sb_mandate_bn:,.2f} billion</p>
+        <p class="rhgi-sovereign-detail">
+          (144,000 canvassers + 144,000 E-day staff) × ₦30,000 → ₦{_sb_base/1e9:.2f}B;
+          +15% misc → ₦{_sb_after_misc/1e9:.2f}B; +10% contingency → <b>₦{_sb_line_bn:.2f}B</b> (personnel line model).
+          <span style="color:#D4AF37;font-weight:700;"> National mandate seal (RHGI · Feb 2027): ₦{_sb_mandate_bn:,.2f}B.</span>
+        </p>
+      </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 _gold_heading("774 LGA heatmap — winning margin (rugged)")
 lga_map_df = build_lga_heatmap_df(dff)
