@@ -18,14 +18,18 @@ if "corridor_zone" not in st.session_state:
 if "r8_note" not in st.session_state:
     st.session_state.r8_note = ""
 
-GOLD = "#FFD700"
-NAVY = "#1A237E"
+# RHGI-GOLDMAN palette (mirrors :root CSS variables).
+METALLIC_GOLD = "#D4AF37"
+ROSE_GOLD = "#B76E79"
+NAVY_CSS = "#000080"
+GOLD = METALLIC_GOLD
+NAVY = NAVY_CSS
 # Prism-Frame Navy (dashboard canvas + plot wells).
 PRISM_NAVY = "#0b1024"
 PRISM_NAVY_PLOT = "#0e1733"
 # Deep Navy → metallic gold — 774 LGA winning-margin map.
 DEEP_NAVY_SAFE = "#152a45"
-METALLIC_GOLD_TARGET = "#FFD700"
+METALLIC_GOLD_TARGET = METALLIC_GOLD
 # 20.7M national vote mandate anchor (fixed reference).
 NATIONAL_VOTE_TARGET = 20_709_668
 # Drill-down order: abbrev → full zone name (matches dff["zone"]).
@@ -230,123 +234,167 @@ lagos_tz = _LAGOS_TZ
 st.markdown(
     """
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&display=swap');
-    .stApp { background-color: #0b1024 !important; color: #fafafa !important; }
-    .block-container { font-size: 1.08rem; position: relative; z-index: 2 !important; }
+    @import url('https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap');
+    :root {
+      --metallic-gold: #D4AF37;
+      --rose-gold: #B76E79;
+      --navy: #000080;
+    }
+    .stApp {
+      background-color: #0b1024 !important;
+      color: #ffffff !important;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .block-container { font-size: 1.1rem; position: relative; z-index: 2 !important; }
     div[data-testid="stAppViewContainer"] > section.main { position: relative; z-index: 1; }
     .rhgi-brand-title {
-      font-family: 'Cormorant Garamond', 'Times New Roman', Georgia, serif;
-      font-size: clamp(1.75rem, 4vw, 2.45rem);
+      font-family: 'Goldman', system-ui, sans-serif !important;
+      font-size: clamp(1.85rem, 4.2vw, 2.65rem);
       font-weight: 700;
-      letter-spacing: 0.03em;
-      background: linear-gradient(110deg, #fff8e0 0%, #FFD700 32%, #fffacd 52%, #FFD700 78%, #ffe566 100%);
-      background-size: 220% auto;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      animation: rhgiTitleShimmer 5s ease-in-out infinite;
+      letter-spacing: 0.06em;
+      color: var(--metallic-gold) !important;
+      -webkit-text-fill-color: var(--metallic-gold);
+      text-shadow:
+        0 0 20px rgba(212, 175, 55, 0.55),
+        0 0 40px rgba(183, 110, 121, 0.35);
       text-align: center;
-      margin: 0.25rem 0 0.5rem 0;
+      margin: 0.35rem 0 0.65rem 0;
+      line-height: 1.2;
+      animation: rhgiGoldmanShimmer 3.5s ease-in-out infinite;
     }
-    @keyframes rhgiTitleShimmer {
-      0%, 100% { background-position: 0% center; }
-      50% { background-position: 100% center; }
+    @keyframes rhgiGoldmanShimmer {
+      0%, 100% { filter: brightness(1) drop-shadow(0 0 8px rgba(212,175,55,0.4)); }
+      50% { filter: brightness(1.12) drop-shadow(0 0 22px rgba(212,175,55,0.75)); }
     }
-    .rhgi-emblem-wrap { text-align: center; margin: 4px 0 8px 0; }
+    .rhgi-emblem-wrap { text-align: center; margin: 8px 0 12px 0; transform: scale(1.05); }
     .rhgi-emblem {
-      width: 112px; height: 112px; margin: 0 auto;
+      width: 128px; height: 128px; margin: 0 auto;
       border-radius: 50%;
-      border: 3px solid #FFD700;
+      border: 4px solid var(--metallic-gold);
       display: flex; align-items: center; justify-content: center;
-      font-family: 'Cormorant Garamond', serif;
-      font-weight: 800;
-      font-size: 1.75rem;
-      color: #FFD700;
-      text-shadow: 0 0 16px rgba(255,215,0,0.95);
-      box-shadow: 0 0 32px rgba(255,215,0,0.4), inset 0 0 24px rgba(255,215,0,0.15);
-      animation: emblemGoldPulse 2.6s ease-in-out infinite;
+      font-family: 'Goldman', sans-serif;
+      font-weight: 700;
+      font-size: 2rem;
+      letter-spacing: 0.08em;
+      color: var(--metallic-gold);
+      text-shadow: 0 0 18px rgba(212, 175, 55, 0.95), 0 0 36px rgba(183, 110, 121, 0.45);
+      box-shadow:
+        0 0 36px rgba(212, 175, 55, 0.45),
+        inset 0 0 28px rgba(212, 175, 55, 0.18);
+      animation: emblemGoldPulse 2.8s ease-in-out infinite;
     }
     @keyframes emblemGoldPulse {
-      0%, 100% { filter: brightness(1); box-shadow: 0 0 24px rgba(255,215,0,0.35); }
-      50% { filter: brightness(1.18); box-shadow: 0 0 44px rgba(255,215,0,0.65); }
+      0%, 100% { filter: brightness(1); box-shadow: 0 0 28px rgba(212,175,55,0.4); }
+      50% { filter: brightness(1.15); box-shadow: 0 0 52px rgba(212,175,55,0.7); }
     }
     .rhgi-countdown-meter {
       text-align: center;
-      font-size: clamp(1.15rem, 3.2vw, 1.45rem);
+      font-size: clamp(1.2rem, 3.4vw, 1.5rem);
       font-weight: 800;
       color: #ffffff !important;
-      margin: 6px 0 14px 0;
-      letter-spacing: 0.06em;
-      text-shadow: 0 0 14px rgba(255,215,0,0.5);
+      margin: 8px 0 16px 0;
+      letter-spacing: 0.07em;
+      text-shadow: 0 0 16px rgba(212, 175, 55, 0.55);
     }
     .rhgi-creed {
-      font-size: clamp(1.05rem, 2.8vw, 1.18rem);
-      line-height: 1.6;
-      color: #f5f7ff !important;
-      max-width: 980px;
-      margin: 0 auto 14px auto;
+      font-size: clamp(1.08rem, 2.9vw, 1.22rem);
+      line-height: 1.65;
+      color: #ffffff !important;
+      max-width: 1000px;
+      margin: 0 auto 16px auto;
       text-align: center;
       font-weight: 500;
     }
     .rhgi-signature {
-      font-size: clamp(0.95rem, 2.5vw, 1.05rem);
-      color: #FFD700 !important;
+      font-size: clamp(0.98rem, 2.6vw, 1.08rem);
+      color: var(--metallic-gold) !important;
       font-weight: 700;
       text-align: center;
-      margin-bottom: 20px;
-      letter-spacing: 0.02em;
+      margin-bottom: 22px;
+      letter-spacing: 0.03em;
     }
-    .rhgi-wm-root { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; opacity: 0.48; }
+    .rhgi-wm-root { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; opacity: 0.45; }
     .rhgi-wm-inner {
-      position: absolute; width: 240%; height: 240%; left: -70%; top: -70%;
-      display: flex; flex-wrap: wrap; align-content: flex-start; gap: 2.5rem 3.5rem;
-      transform: rotate(-16deg);
-      animation: wmBubbleDrift 95s linear infinite;
+      position: absolute; width: 260%; height: 260%; left: -80%; top: -80%;
+      display: flex; flex-wrap: wrap; align-content: flex-start; gap: 2.2rem 3.2rem;
+      transform: rotate(-14deg);
+      animation: wmBubbleDrift 110s ease-in-out infinite;
     }
     .rhgi-wm-cell {
-      font-size: clamp(2.2rem, 7vw, 3.6rem);
+      font-size: clamp(2rem, 6.5vw, 3.4rem);
       font-weight: 900;
-      color: rgba(255, 215, 0, 0.42);
+      color: rgba(212, 175, 55, 0.5);
       user-select: none;
+      animation: wmCellBubble 8s ease-in-out infinite;
+    }
+    .rhgi-wm-cell:nth-child(3n) { animation-delay: 0s; }
+    .rhgi-wm-cell:nth-child(3n+1) { animation-delay: 2s; }
+    .rhgi-wm-cell:nth-child(3n+2) { animation-delay: 4s; }
+    @keyframes wmCellBubble {
+      0%, 100% { transform: translateY(0) scale(1); opacity: 0.85; }
+      50% { transform: translateY(-12px) scale(1.04); opacity: 1; }
     }
     @keyframes wmBubbleDrift {
-      0% { transform: rotate(-16deg) translate(0, 0); }
-      50% { transform: rotate(-16deg) translate(-48px, -72px); }
-      100% { transform: rotate(-16deg) translate(0, 0); }
+      0% { transform: rotate(-14deg) translate(0, 0); }
+      33% { transform: rotate(-14deg) translate(-36px, -48px); }
+      66% { transform: rotate(-14deg) translate(24px, -80px); }
+      100% { transform: rotate(-14deg) translate(0, 0); }
     }
     .rhgi-capture-shield {
       position: fixed; inset: 0; pointer-events: none; z-index: 9999;
-      background: repeating-linear-gradient(
-        -4deg,
-        rgba(255,255,255,0.028) 0px,
-        rgba(255,255,255,0.028) 1px,
-        transparent 1px,
-        transparent 16px
-      );
-      mix-blend-mode: overlay;
+      background:
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0px, transparent 1px, transparent 12px),
+        repeating-linear-gradient(90deg, rgba(0,0,128,0.06) 0px, transparent 1px, transparent 14px),
+        radial-gradient(ellipse at 30% 20%, rgba(212,175,55,0.04) 0%, transparent 55%);
+      mix-blend-mode: soft-light;
+      opacity: 0.92;
     }
-    .stApp { user-select: none; -webkit-user-select: none; }
     button, input, textarea, [data-testid="stMarkdownContainer"], .stMarkdown { user-select: text !important; -webkit-user-select: text !important; }
     div[data-testid="column"] button[kind="secondary"],
     div[data-testid="column"] button[kind="primary"] {
-      font-size: 1.05rem !important;
+      position: relative !important;
+      overflow: hidden !important;
+      font-size: 1.06rem !important;
       font-weight: 700 !important;
-      padding-top: 0.65rem !important;
-      padding-bottom: 0.65rem !important;
-      background: linear-gradient(160deg, #121c3a 0%, #0b1024 100%) !important;
-      color: #FFD700 !important;
-      border: 1px solid rgba(255,215,0,0.5) !important;
-      animation: r8MetalPulse 2.4s ease-in-out infinite;
+      padding-top: 0.68rem !important;
+      padding-bottom: 0.68rem !important;
+      color: var(--metallic-gold) !important;
+      border: 1px solid rgba(212, 175, 55, 0.55) !important;
+      background: linear-gradient(155deg, rgba(0,0,128,0.45) 0%, #0b1024 55%, rgba(183,110,121,0.12) 100%) !important;
+      background-size: 220% 100% !important;
+      animation: r8MetalPulse 2.6s ease-in-out infinite, r8ShimmerSweep 2.8s linear infinite;
     }
     @keyframes r8MetalPulse {
-      0%, 100% { box-shadow: 0 0 8px rgba(255,215,0,0.25); }
-      50% { box-shadow: 0 0 22px rgba(255,215,0,0.55); }
+      0%, 100% { box-shadow: 0 0 10px rgba(212,175,55,0.3); }
+      50% { box-shadow: 0 0 26px rgba(212,175,55,0.6); }
+    }
+    @keyframes r8ShimmerSweep {
+      0% { background-position: 200% center; }
+      100% { background-position: -200% center; }
+    }
+    .rhgi-lga-scroll-outer {
+      overflow: hidden;
+      max-height: 58vh;
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      border-radius: 14px;
+      background: rgba(0, 0, 128, 0.22);
+    }
+    .rhgi-lga-marquee {
+      display: flex;
+      flex-direction: column;
+      animation: rhgiSlowRoll 140s linear infinite;
+    }
+    .rhgi-lga-marquee:hover { animation-play-state: paused; }
+    @keyframes rhgiSlowRoll {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-50%); }
     }
     .rhgi-lga-scroll {
       max-height: 58vh;
       overflow-y: auto;
       scroll-behavior: smooth;
-      border: 1px solid rgba(255,215,0,0.35);
+      border: 1px solid rgba(212, 175, 55, 0.35);
       border-radius: 12px;
       background: rgba(8, 12, 28, 0.65);
     }
@@ -356,7 +404,7 @@ st.markdown(
       0%,100% { box-shadow: 0 0 0 rgba(255,0,0,0); }
       50% { box-shadow: 0 0 20px rgba(255,0,0,0.8); }
     }
-    .rhgi-glow { color:#FFD700; text-shadow: 0 0 10px rgba(255,215,0,0.6); }
+    .rhgi-glow { color: var(--metallic-gold); text-shadow: 0 0 12px rgba(212,175,55,0.65); }
     .rhgi-gauge { font-size: 1.1rem; letter-spacing: 0.03em; }
     .rhgi-abuja-strobe {
       border: 2px solid rgba(220, 40, 40, 0.95) !important;
@@ -372,7 +420,7 @@ st.markdown(
       letter-spacing: 0.28em;
       text-transform: uppercase;
       color: #e8ecff;
-      text-shadow: 0 0 14px rgba(255,215,0,0.55), 0 0 28px rgba(26,35,126,0.9);
+      text-shadow: 0 0 14px rgba(212,175,55,0.55), 0 0 28px rgba(0,0,128,0.55);
       margin: 8px 0 6px 0;
     }
     .rhgi-mandate-secured {
@@ -380,21 +428,21 @@ st.markdown(
       padding: 14px 18px;
       margin: 12px 0 16px 0;
       border-radius: 12px;
-      border: 3px solid #FFD700;
+      border: 3px solid var(--metallic-gold);
       background: linear-gradient(180deg, rgba(11,16,36,0.95), rgba(26,35,126,0.35));
       animation: mandateGoldPulse 1.4s ease-in-out infinite;
     }
     @keyframes mandateGoldPulse {
-      0%, 100% { box-shadow: 0 0 6px rgba(255, 215, 0, 0.45), inset 0 0 20px rgba(255,215,0,0.08); }
-      50% { box-shadow: 0 0 26px rgba(255, 215, 0, 0.95), inset 0 0 28px rgba(255,215,0,0.15); }
+      0%, 100% { box-shadow: 0 0 6px rgba(212, 175, 55, 0.45), inset 0 0 20px rgba(212,175,55,0.08); }
+      50% { box-shadow: 0 0 26px rgba(212, 175, 55, 0.95), inset 0 0 28px rgba(212,175,55,0.15); }
     }
     .rhgi-ticker-wrap {
       position: relative;
       overflow: hidden;
       width: 100%;
       background: #0b1024;
-      border-top: 1px solid rgba(255,215,0,0.35);
-      border-bottom: 1px solid rgba(255,215,0,0.35);
+      border-top: 1px solid rgba(212,175,55,0.4);
+      border-bottom: 1px solid rgba(212,175,55,0.4);
       margin-top: 18px;
     }
     .rhgi-ticker {
@@ -402,30 +450,33 @@ st.markdown(
       white-space: nowrap;
       padding: 10px 0;
       animation: tickerScroll 42s linear infinite;
-      color: #FFD700;
+      color: var(--metallic-gold);
       font-weight: 600;
       letter-spacing: 0.04em;
-      text-shadow: 0 0 8px rgba(255,215,0,0.45);
+      text-shadow: 0 0 8px rgba(212,175,55,0.5);
     }
     .rhgi-ticker span { padding-right: 4rem; }
     @keyframes tickerScroll {
       0% { transform: translateX(0); }
       100% { transform: translateX(-50%); }
     }
-    .rhgi-gold-heading { color: #FFD700 !important; font-weight: 800 !important; font-size: 1.35rem !important;
-      margin: 0.5rem 0 0.35rem 0; text-shadow: 0 0 10px rgba(255,215,0,0.4); letter-spacing: 0.02em; }
-    .stApp h1 { color: #FFD700 !important; font-weight: 800 !important; text-shadow: 0 0 14px rgba(255,215,0,0.35); }
+    .rhgi-gold-heading { color: var(--metallic-gold) !important; font-weight: 800 !important; font-size: 1.38rem !important;
+      margin: 0.5rem 0 0.35rem 0; text-shadow: 0 0 12px rgba(212,175,55,0.45); letter-spacing: 0.02em; }
+    .stApp h1 { color: var(--metallic-gold) !important; font-weight: 800 !important; text-shadow: 0 0 14px rgba(212,175,55,0.4); }
     .rhgi-corridor-table { width: 100%; border-collapse: collapse; font-size: 1.14rem; line-height: 1.55; }
     .rhgi-corridor-table th {
-      color: #FFD700 !important; font-weight: 800 !important;
-      text-align: left; padding: 12px 14px;
-      background: rgba(26, 35, 126, 0.55);
-      border-bottom: 2px solid rgba(255, 215, 0, 0.45);
-      text-shadow: 0 0 6px rgba(255, 215, 0, 0.35);
+      color: var(--metallic-gold) !important; font-weight: 800 !important;
+      text-align: left; padding: 14px 16px;
+      background: rgba(0, 0, 128, 0.45);
+      border-bottom: 2px solid rgba(212, 175, 55, 0.5);
+      text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+      font-size: 1.12rem !important;
     }
     .rhgi-corridor-table td {
-      color: #e8ecff !important; padding: 10px 14px;
-      border-bottom: 1px solid rgba(255, 215, 0, 0.12);
+      color: #ffffff !important; padding: 12px 16px;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+      font-size: 1.1rem !important;
+      font-weight: 500;
     }
     .rhgi-corridor-table tr:nth-child(even) td { background: rgba(14, 23, 51, 0.45); }
     </style>
@@ -552,7 +603,8 @@ st.plotly_chart(fig_zone, use_container_width=True)
 
 _gold_heading("Corridor nodes — drill-down (774 LGAs)")
 st.caption(
-    "Choose a corridor, then a state. Velocity % = (2027 APC − 2023 APC) ÷ 2023 APC × 100."
+    "Choose a corridor, then a state. Velocity % = (2027 APC − 2023 APC) ÷ 2023 APC × 100. "
+    "Large LGA roll-ups auto-scroll slowly; hover the list to pause."
 )
 _cor_cols = st.columns(6)
 for _ci, (_abbr, _zname) in enumerate(CORRIDOR_NODES):
@@ -590,14 +642,28 @@ else:
             f"<td>{_r['Acceptance Velocity (%)']:.2f}</td>"
             "</tr>"
         )
-    _tbl = (
-        "<div class='rhgi-lga-scroll'><table class='rhgi-corridor-table'><thead><tr>"
+    _tbody = "".join(_rows_html)
+    _thead_html = (
+        "<thead><tr>"
         "<th>LGA Name</th><th>2023 Actual APC</th><th>2027 Sovereign Projection</th>"
         "<th>Velocity %</th>"
-        "</tr></thead><tbody>"
-        + "".join(_rows_html)
-        + "</tbody></table></div>"
+        "</tr></thead>"
     )
+    _nrows = len(_mat)
+    if _nrows <= 4:
+        _tbl = (
+            '<div class="rhgi-lga-scroll"><table class="rhgi-corridor-table">'
+            f"{_thead_html}<tbody>{_tbody}</tbody></table></div>"
+        )
+    else:
+        _roll_sec = max(90.0, min(520.0, _nrows * 2.75))
+        _tbl = (
+            f'<div class="rhgi-lga-scroll-outer"><div class="rhgi-lga-marquee" '
+            f'style="animation-duration:{_roll_sec:.0f}s;">'
+            f'<table class="rhgi-corridor-table">{_thead_html}<tbody>{_tbody}</tbody></table>'
+            f'<table class="rhgi-corridor-table"><tbody>{_tbody}</tbody></table>'
+            f"</div></div>"
+        )
     st.markdown(_tbl, unsafe_allow_html=True)
 
 _gold_heading("774 LGA heatmap — winning margin (rugged)")
