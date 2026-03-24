@@ -39,7 +39,7 @@
       /* LGA ticker + AKZ spine: shared 40s loop (DEPLOY-12 moderate glide) */
       --rhgi-lga-scroll-duration: 40s;
       --rhgi-akz-spine-period: 40s;
-      --rhgi-footer774-duration: 260s;
+      --rhgi-footer774-duration: 280s;
     }
 
     .rhgi-velocity-field {
@@ -1077,6 +1077,7 @@
       animation: rhgi-r30-nw-row-enter 0.55s ease forwards !important;
       animation-delay: calc(var(--row-index) * 0.1s) !important;
       transition-delay: calc(var(--row-index) * 0.1s);
+      will-change: transform, opacity !important;
     }
     @keyframes rhgi-r30-nw-margin-pulse {
       0%, 100% {
@@ -1091,6 +1092,7 @@
     .rhgi-page #rhgi-widget-nw .rhgi-r30-nw-proj-bar.rhgi-matrix-bar--proj {
       animation: rhgi-r30-nw-margin-pulse 3.2s ease-in-out infinite !important;
       background-size: 220% 100% !important;
+      will-change: transform, opacity !important;
     }
     .rhgi-page .rhgi-slc-budget .rhgi-r30-anchor {
       font-weight: 800;
@@ -1338,7 +1340,7 @@
       display: inline-flex;
       width: max-content;
       white-space: nowrap;
-      animation: rhgi-footer774-drift var(--rhgi-footer774-duration, 260s) linear infinite;
+      animation: rhgi-footer774-drift var(--rhgi-footer774-duration, 280s) linear infinite;
       transform: translateZ(0);
       will-change: transform;
     }
@@ -1363,14 +1365,14 @@
       font-weight: 600;
     }
 
-    /* —— 15-15-REANIMATE-STEP-1 + CHROME-SYNC-29 + REANIMATE-NORTHWEST-31 —— */
+    /* —— 15-15-REANIMATE-STEP-1 (hardware-safe glass + sanctioned motion) —— */
     .rhgi-emergency-hide {
       display: none !important;
     }
     body.rhgi-page {
       background: linear-gradient(165deg, #050a14 0%, #0a0e1a 42%, #101a2e 100%) !important;
       --rhgi-navy-deep: #0a0e1a;
-      --rhgi-chrome-glass: rgba(10, 14, 26, 0.85);
+      --rhgi-chrome-glass: rgba(10, 14, 26, 0.9);
     }
     .rhgi-shell {
       background: transparent !important;
@@ -1440,30 +1442,25 @@
       animation: none !important;
       transition: none !important;
     }
-    /* —— 15-15-REANIMATE-NORTHWEST-31: metallic title + navy seal line (exceptions) —— */
-    @keyframes rhgi-r31-navy-seal-glow {
-      0%, 100% {
-        background-position: 0% 50%;
-        filter: drop-shadow(0 0 0.35rem rgba(40, 90, 140, 0.5)) drop-shadow(0 0 0.85rem rgba(8, 22, 48, 0.55));
-      }
-      50% {
-        background-position: 100% 50%;
-        filter: drop-shadow(0 0 0.55rem rgba(100, 160, 220, 0.5)) drop-shadow(0 0 1.05rem rgba(12, 32, 64, 0.5));
-      }
+    /* REANIMATE-STEP-1: identity exceptions — metallic title + seal/sub breathe (transform-only motion) */
+    @keyframes rhgi-r1-breathe-seal {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.04); }
     }
-    @keyframes rhgi-r31-seal-mark-pulse {
-      0%, 100% {
-        filter: drop-shadow(0 0 0.4rem rgba(50, 110, 180, 0.4));
-      }
-      50% {
-        filter: drop-shadow(0 0 0.8rem rgba(120, 180, 255, 0.48));
-      }
+    @keyframes rhgi-r1-breathe-sub {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.018); }
     }
     .rhgi-page .rhgi-title.rhgi-title--rhgi-full {
       background-size: 320% 300% !important;
       animation: rhgi-title-metallic 6.5s ease-in-out infinite !important;
+      will-change: background-position, filter !important;
     }
     .rhgi-page .rhgi-sub.rhgi-r31-seal-sub {
+      display: inline-block;
+      max-width: min(100%, 40rem);
+      margin-inline: auto;
+      transform-origin: center;
       background: linear-gradient(
         118deg,
         #040a12 0%,
@@ -1473,25 +1470,32 @@
         #060a10 100%
       ) !important;
       background-size: 240% 200% !important;
+      background-position: 50% 50%;
       -webkit-background-clip: text !important;
       background-clip: text !important;
       color: transparent !important;
-      animation: rhgi-r31-navy-seal-glow 4.5s ease-in-out infinite !important;
+      filter: drop-shadow(0 0 0.35rem rgba(40, 90, 140, 0.45)) drop-shadow(0 0 0.75rem rgba(8, 22, 48, 0.4));
+      animation: rhgi-r1-breathe-sub 5.5s ease-in-out infinite !important;
+      will-change: transform !important;
     }
     .rhgi-page .rhgi-r31-sovereign-seal {
-      animation: rhgi-r31-seal-mark-pulse 5s ease-in-out infinite !important;
+      transform-origin: center;
+      animation: rhgi-r1-breathe-seal 6s ease-in-out infinite !important;
+      will-change: transform !important;
     }
     /* Sovereign shimmer — Winning Margin Delta only */
     .rhgi-page .rhgi-nw-margin-delta::after,
     .rhgi-page .rhgi-ss-growth-shimmer.rhgi-nw-margin-delta::after {
       animation: rhgi-r1-margin-delta-sovereign 4.2s ease-in-out infinite !important;
+      will-change: transform !important;
     }
     .rhgi-page .rhgi-ss-growth-shimmer.rhgi-nw-margin-delta::after {
       animation: rhgi-r1-margin-delta-sovereign-ss 3.8s ease-in-out infinite !important;
+      will-change: transform !important;
     }
-    /* 774 glide — translateX only, 260s stately drift (REANIMATE-NORTHWEST-31) */
+    /* 774 glide — translateX only, 280s stately drift (REANIMATE-STEP-1) */
     .rhgi-page .rhgi-footer-774-track {
-      animation: rhgi-footer774-drift var(--rhgi-footer774-duration, 260s) linear infinite !important;
+      animation: rhgi-footer774-drift var(--rhgi-footer774-duration, 280s) linear infinite !important;
       transform: translateZ(0) !important;
       will-change: transform !important;
     }
@@ -1524,14 +1528,17 @@
     .rhgi-page .rhgi-chrome-sync-pulse .rhgi-chrome-hand-hour {
       transform-origin: 50px 50px;
       animation: rhgi-chrome-hand-hour 43200s steps(60, end) infinite !important;
+      will-change: transform !important;
     }
     .rhgi-page .rhgi-chrome-sync-pulse .rhgi-chrome-hand-minute {
       transform-origin: 50px 50px;
       animation: rhgi-chrome-hand-minute 3600s steps(60, end) infinite !important;
+      will-change: transform !important;
     }
     .rhgi-page .rhgi-chrome-sync-pulse .rhgi-chrome-hand-second {
       transform-origin: 50px 50px;
       animation: rhgi-chrome-hand-second 60s steps(60, end) infinite !important;
+      will-change: transform !important;
     }
     .rhgi-slc-budget {
       width: 100%;
@@ -2051,7 +2058,7 @@
         </section>
 
         <div class="rhgi-footer-774 rhgi-prism-frame" role="region" aria-label="774 local government areas national mobilization feed">
-          <p class="rhgi-footer-774-label">774 LGA national feed · 260s translateX glide (stately)</p>
+          <p class="rhgi-footer-774-label">774 LGA national feed · 280s translateX glide (stately)</p>
           <div class="rhgi-footer-774-inner">
             <div class="rhgi-footer-774-track" id="rhgi-footer774Track">
               <span class="rhgi-footer-774-text" id="rhgi-footer774A"></span>
@@ -2289,6 +2296,7 @@
       /* South-South: +210% growth factor on projected APC (1 + 2.10) */
       var SS_GROWTH_210 = 3.1;
 
+      /* Northwest Tactical Spine — seven states (scaleX matrix bars, rhgi-matrix-tbody) */
       var NW_2023 = [
         { name: 'Kano', apcVotes: 517341 },
         { name: 'Kaduna', apcVotes: 399293 },
