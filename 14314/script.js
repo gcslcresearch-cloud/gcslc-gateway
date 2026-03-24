@@ -13,6 +13,7 @@
   var RHGI_STATE_MAX = 24;
   var RHGI_VICTORY_REQUIREMENT = 37;
   var RHGI_ELECTION_TARGET = new Date("2027-01-16T00:00:00+01:00");
+  var RHGI_PROJECTION_TARGET = 39700000;
   var big4Matrix = [
     { key: "lagos", base2023: 18, target2027: 44 },
     { key: "kano", base2023: 22, target2027: 47 },
@@ -21,18 +22,18 @@
   ];
 
   var zones = [
-    { city: "Abuja", tz: "Africa/Lagos" },
-    { city: "London", tz: "Europe/London" },
-    { city: "Dubai", tz: "Asia/Dubai" },
-    { city: "New York", tz: "America/New_York" }
+    { city: "Abuja", offset: 1 },
+    { city: "London", offset: 0 },
+    { city: "Dubai", offset: 4 },
+    { city: "New York", offset: -4 }
   ];
-  var regionalWidgets = [
-    { key: "nw", label: "Northwest", progress: 82, lgas: 186 },
-    { key: "ne", label: "Northeast", progress: 77, lgas: 112 },
-    { key: "nc", label: "Northcentral", progress: 80, lgas: 120 },
-    { key: "sw", label: "Southwest", progress: 86, lgas: 137 },
-    { key: "se", label: "Southeast", progress: 79, lgas: 95 },
-    { key: "ss", label: "Southsouth", progress: 81, lgas: 124 }
+  var corridorMatrix = [
+    { key: "nw", label: "Northwest", budget: "₦17.38B", baseline: { APC: 46, ADC: 16, PDP: 22, LP: 10 }, projection: { APC: 66, ADC: 24, PDP: 28, LP: 16 } },
+    { key: "ne", label: "Northeast", budget: "₦10.45B", baseline: { APC: 43, ADC: 14, PDP: 24, LP: 9 }, projection: { APC: 63, ADC: 22, PDP: 31, LP: 14 } },
+    { key: "nc", label: "Northcentral", budget: "₦11.22B", baseline: { APC: 34, ADC: 13, PDP: 27, LP: 16 }, projection: { APC: 57, ADC: 20, PDP: 33, LP: 21 } },
+    { key: "sw", label: "Southwest", budget: "₦12.84B", baseline: { APC: 38, ADC: 15, PDP: 18, LP: 27 }, projection: { APC: 61, ADC: 23, PDP: 24, LP: 34 } },
+    { key: "se", label: "Southeast", budget: "₦8.91B", baseline: { APC: 12, ADC: 10, PDP: 31, LP: 41 }, projection: { APC: 29, ADC: 18, PDP: 38, LP: 48 } },
+    { key: "ss", label: "Southsouth", budget: "₦10.00B", baseline: { APC: 19, ADC: 11, PDP: 36, LP: 24 }, projection: { APC: 36, ADC: 17, PDP: 42, LP: 31 } }
   ];
 
   function tickGroupHtml() {
@@ -60,12 +61,12 @@
 
   function clockMarkup(idx) {
     var dubaiNote =
-      zones[idx].tz === "Asia/Dubai"
+      zones[idx].offset === 4
         ? '<span class="rhgi-clock-tz">UTC+4</span>'
         : "";
     return (
       '<div class="rhgi-clock-wrap" data-tz="' +
-      zones[idx].tz +
+      zones[idx].offset +
       '">' +
       '<div class="rhgi-clock-face-wrap">' +
       '<svg class="rhgi-clock-svg" viewBox="0 0 100 100" aria-hidden="true">' +
@@ -86,30 +87,9 @@
     );
   }
 
-  function clockPartsForTZ(tz, now) {
-    var fmt = new Intl.DateTimeFormat("en-GB", {
-      timeZone: tz,
-      hour: "numeric",
-      minute: "numeric",
-      second: "numeric",
-      hour12: false
-    });
-    var parts = fmt.formatToParts(now);
-    var h24 = 0;
-    var Mi = 0;
-    var Se = 0;
-    parts.forEach(function (p) {
-      if (p.type === "hour") {
-        h24 = parseInt(p.value, 10);
-      }
-      if (p.type === "minute") {
-        Mi = parseInt(p.value, 10);
-      }
-      if (p.type === "second") {
-        Se = parseInt(p.value, 10);
-      }
-    });
-    return { h24: h24, Mi: Mi, Se: Se };
+  function clockPartsForOffset(offsetHours, nowUtcMs) {
+    var local = new Date(nowUtcMs + offsetHours * 3600000);
+    return { h24: local.getUTCHours(), Mi: local.getUTCMinutes(), Se: local.getUTCSeconds() };
   }
 
   function updateSovereignClocks() {
@@ -117,10 +97,10 @@
     if (!row) {
       return;
     }
-    var now = new Date();
+    var nowUtcMs = Date.now();
     row.querySelectorAll(".rhgi-clock-wrap").forEach(function (wrap) {
-      var tz = wrap.getAttribute("data-tz");
-      var t = clockPartsForTZ(tz, now);
+      var offset = parseInt(wrap.getAttribute("data-tz"), 10);
+      var t = clockPartsForOffset(offset, nowUtcMs);
       var h12 = t.h24 % 12;
       var hourDeg = (h12 + t.Mi / 60 + t.Se / 3600) * 30 - 90;
       var minuteDeg = (t.Mi + t.Se / 60) * 6 - 90;
@@ -188,39 +168,85 @@
     }
   }
 
-  function buildRegionalWidgets() {
-    regionalWidgets.forEach(function (w) {
-      var bar = document.getElementById("rhgi-bar-" + w.key);
-      var a = document.getElementById("rhgi-lineA-" + w.key);
-      var b = document.getElementById("rhgi-lineB-" + w.key);
-      var line =
-        w.label +
-        " · " +
-        w.lgas +
-        " LGAs · progress " +
-        w.progress +
-        "% · ward relay synced";
-      if (bar) {
-        requestAnimationFrame(function () {
-          bar.style.width = w.progress + "%";
-        });
-      }
-      if (a) {
-        a.textContent = line;
-      }
-      if (b) {
-        b.textContent = line;
-      }
+  function renderCorridorMatrix() {
+    var host = document.getElementById("rhgi-corridorGrid");
+    if (!host) {
+      return;
+    }
+    host.innerHTML = corridorMatrix
+      .map(function (c) {
+        var parties = ["APC", "ADC", "PDP", "LP"];
+        var rows = parties
+          .map(function (p) {
+            return (
+              '<div class="rhgi-corridor-row">' +
+              '<p class="rhgi-corridor-party"><span>' +
+              p +
+              '</span><span>' +
+              c.baseline[p] +
+              "% | " +
+              c.projection[p] +
+              "%</span></p>" +
+              '<div class="rhgi-corridor-bars">' +
+              '<div class="rhgi-corridor-rail"><div class="rhgi-corridor-fill rhgi-corridor-fill-base" data-w="' +
+              c.baseline[p] +
+              '"></div></div>' +
+              '<div class="rhgi-corridor-rail"><div class="rhgi-corridor-fill rhgi-corridor-fill-proj" data-w="' +
+              c.projection[p] +
+              '"></div></div>' +
+              "</div></div>"
+            );
+          })
+          .join("");
+        return (
+          '<article class="rhgi-corridor-widget prism-frame rhgi-prism-frame">' +
+          '<p class="rhgi-corridor-title">' +
+          c.label +
+          " Corridor</p>" +
+          rows +
+          '<p class="rhgi-corridor-note">Total Region Budget: <strong>' +
+          c.budget +
+          "</strong></p>" +
+          '<p class="rhgi-corridor-note">2027 Projection Node: <strong>' +
+          RHGI_PROJECTION_TARGET.toLocaleString("en-NG") +
+          "</strong></p>" +
+          '<p class="rhgi-corridor-ratio">1 Unit Commander → 15 Canvassers → 225 Voters</p>' +
+          "</article>"
+        );
+      })
+      .join("");
+
+    host.querySelectorAll(".rhgi-corridor-fill").forEach(function (el) {
+      var w = el.getAttribute("data-w");
+      requestAnimationFrame(function () {
+        el.style.width = w + "%";
+      });
     });
   }
 
   var pulseTimer = null;
+  var countdownTimer = null;
 
   function startPulseInterval() {
     if (pulseTimer !== null) {
       return;
     }
-    pulseTimer = setInterval(updateSovereignClocks, 1000);
+    (function tickClock() {
+      updateSovereignClocks();
+      var delay = 1000 - (Date.now() % 1000);
+      pulseTimer = setTimeout(tickClock, delay);
+    })();
+  }
+
+  function startCountdownInterval() {
+    if (countdownTimer !== null) {
+      return;
+    }
+    (function tickCountdown() {
+      updateCountdown();
+      var delay = 1000 - (Date.now() % 1000);
+      countdownTimer = setTimeout(tickCountdown, delay);
+    })();
   }
 
   function updateCountdown() {
@@ -311,13 +337,11 @@
     lockDataAnchor();
     initConstitutionalGauge();
     initBig4Matrix();
-    updateCountdown();
-    buildRegionalWidgets();
+    renderCorridorMatrix();
     buildTicker774();
     renderClockFaces();
-    updateSovereignClocks();
     startPulseInterval();
-    setInterval(updateCountdown, 1000);
+    startCountdownInterval();
   }
 
   if (document.readyState === "loading") {
