@@ -10,6 +10,11 @@ st.set_page_config(page_title="RHGI 774 Scientific Engine", layout="wide")
 
 GOLD = "#FFD700"
 NAVY = "#1A237E"
+# Prism-Frame Navy (dashboard canvas + plot wells).
+PRISM_NAVY = "#0b1024"
+PRISM_NAVY_PLOT = "#0e1733"
+# 20.7M national vote mandate anchor (fixed reference).
+NATIONAL_VOTE_TARGET = 20_709_668
 
 
 @st.cache_data(show_spinner=False)
@@ -54,6 +59,16 @@ def apply_turnout_lift(df: pd.DataFrame, lift_pct: int) -> pd.DataFrame:
     return out
 
 
+def fct_apc_percent(dff: pd.DataFrame) -> float:
+    m = dff["state"] == "FCT"
+    if not m.any():
+        return 0.0
+    tot = dff.loc[m, "projected_total"].sum()
+    if tot <= 0:
+        return 0.0
+    return 100.0 * dff.loc[m, "apc_2027"].sum() / tot
+
+
 def constitutional_sentinel(dff: pd.DataFrame) -> tuple[int, bool, bool]:
     state_projection = (
         dff.groupby("state", as_index=False)[["apc_2027", "projected_total"]]
@@ -88,7 +103,7 @@ lagos_tz = pytz.timezone("Africa/Lagos")
 st.markdown(
     """
     <style>
-    .rhgi-kpi {padding: 10px 12px; border-radius: 10px; border:1px solid #334; background:#0b1024;}
+    .rhgi-kpi {padding: 10px 12px; border-radius: 10px; border:1px solid rgba(26,35,126,0.55); background:#0b1024;}
     .rhgi-pulse-red { animation: pulseRed 1s ease-in-out infinite; }
     @keyframes pulseRed {
       0%,100% { box-shadow: 0 0 0 rgba(255,0,0,0); }
@@ -96,6 +111,14 @@ st.markdown(
     }
     .rhgi-glow { color:#FFD700; text-shadow: 0 0 10px rgba(255,215,0,0.6); }
     .rhgi-gauge { font-size: 1.1rem; letter-spacing: 0.03em; }
+    .rhgi-abuja-strobe {
+      border: 2px solid rgba(220, 40, 40, 0.95) !important;
+      animation: diamondStrobe 0.85s ease-in-out infinite;
+    }
+    @keyframes diamondStrobe {
+      0%, 100% { box-shadow: 0 0 4px rgba(255, 0, 0, 0.35); }
+      50% { box-shadow: 0 0 22px rgba(255, 0, 0, 0.95); }
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -116,18 +139,31 @@ with st.sidebar:
         help="Σ over LGAs: (Registered Voters × PVC Collection Rate) − 2023 Actual Votes.",
     )
     st.caption("PVC & turnout rates are forensic anchors per LGA in data_engine.")
+    projected_national = int(df[["apc_2027", "pdp_2027", "lp_2027", "adc_2027"]].sum().sum())
+    st.metric(
+        "National anchor (2027 base)",
+        f"{NATIONAL_VOTE_TARGET:,}",
+        delta=f"Base projection {projected_national:,}",
+        help="Mandate reference total; live yield updates with turnout lift.",
+    )
 
 dff = apply_turnout_lift(df, turnout_lift)
 states_25, fct_validated, constitutional_ok = constitutional_sentinel(dff)
+fct_pct = fct_apc_percent(dff)
+projected_yield = int(dff["projected_total"].sum())
+remittance_gap = NATIONAL_VOTE_TARGET - projected_yield
+abuja_strobe = fct_pct < 25.0
 total_winning_margin = float(dff["winning_margin"].sum())
 
 abuja_now = datetime.now(lagos_tz)
 
 st.title("RHGI 774 Scientific Engine")
 c1, c2, c3 = st.columns(3)
-# Abuja Pulse lead (UTC+1 forced via pytz Africa/Lagos).
+# Abuja Pulse lead (UTC+1); Diamond Strobe when FCT projected APC < 25%.
+_pulse_cls = "rhgi-kpi rhgi-abuja-strobe" if abuja_strobe else "rhgi-kpi"
 c1.markdown(
-    f"<div class='rhgi-kpi'><b>Abuja Pulse (UTC+1)</b><br><span class='rhgi-glow'>{abuja_now.strftime('%I:%M:%S %p WAT')}</span></div>",
+    f"<div class='{_pulse_cls}'><b>Abuja Pulse (UTC+1)</b><br><span class='rhgi-glow'>{abuja_now.strftime('%I:%M:%S %p WAT')}</span>"
+    f"<br><small style='color:#aab8e0'>FCT APC (proj): {fct_pct:.2f}%</small></div>",
     unsafe_allow_html=True,
 )
 c2.markdown(
@@ -138,6 +174,13 @@ c2.markdown(
 c3.markdown(
     f"<div class='rhgi-kpi'><b>Winning Margin (live)</b><br><span class='rhgi-glow'>{total_winning_margin:,.0f}</span><br>"
     f"Turnout lift +{turnout_lift}%</div>",
+    unsafe_allow_html=True,
+)
+
+st.markdown(
+    f"<div class='rhgi-kpi' style='margin-bottom:12px;'><b>20.7M mandate anchor</b> — Target: <span class='rhgi-glow'>{NATIONAL_VOTE_TARGET:,}</span> · "
+    f"Projected yield: <span class='rhgi-glow'>{projected_yield:,}</span> · "
+    f"<b>Remittance gap:</b> <span class='rhgi-glow'>{remittance_gap:,}</span></div>",
     unsafe_allow_html=True,
 )
 
@@ -153,12 +196,13 @@ fig_zone = px.bar(
     template="plotly_dark",
 )
 fig_zone.update_layout(
-    paper_bgcolor="#0a0f22",
-    plot_bgcolor="#0a0f22",
+    paper_bgcolor=PRISM_NAVY,
+    plot_bgcolor=PRISM_NAVY_PLOT,
     font_color="#dbe2ff",
     xaxis_title="Zone",
     yaxis_title="Winning Margin (APC vs nearest rival)",
 )
+fig_zone.update_traces(marker=dict(color=GOLD, line=dict(color=GOLD, width=0)))
 st.plotly_chart(fig_zone, use_container_width=True)
 
 st.subheader("Turnout heatmap — Nigeria (strike priority)")
@@ -179,10 +223,13 @@ fig_scatter = px.scatter_mapbox(
     title="High PVC + low 2023 turnout → metallic gold (high-priority strike zones)",
 )
 fig_scatter.update_layout(
-    paper_bgcolor="#0a0f22",
+    paper_bgcolor=PRISM_NAVY,
+    plot_bgcolor=PRISM_NAVY,
     font_color="#dbe2ff",
     margin=dict(l=0, r=0, t=40, b=0),
 )
+# Strike priority encoded as navy → metallic gold on Prism-Frame canvas.
+fig_scatter.update_traces(marker=dict(line=dict(width=0.4, color="rgba(255,215,0,0.35)")))
 st.plotly_chart(fig_scatter, use_container_width=True)
 
 st.subheader("2023 vs 2027 Party Totals")
@@ -212,8 +259,8 @@ fig_party = px.bar(
     template="plotly_dark",
 )
 fig_party.update_layout(
-    paper_bgcolor="#0a0f22",
-    plot_bgcolor="#0a0f22",
+    paper_bgcolor=PRISM_NAVY,
+    plot_bgcolor=PRISM_NAVY_PLOT,
     font_color="#dbe2ff",
 )
 st.plotly_chart(fig_party, use_container_width=True)

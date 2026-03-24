@@ -139,6 +139,17 @@ ZONE_BY_STATE = {
 }
 
 # Zone-level 2023 baseline shares (forensic anchor for APC/PDP/LP/ADC).
+# Explicit 2023 PVC collection & turnout baselines for FCT LGAs (source uses
+# "Municipal Area Council" for AMAC).
+FCT_LGA_FORENSIC_BASELINE: Dict[str, tuple[float, float]] = {
+    "Abaji": (0.742, 0.362),
+    "Bwari": (0.781, 0.405),
+    "Gwagwalada": (0.818, 0.438),
+    "Kuje": (0.756, 0.391),
+    "Kwali": (0.708, 0.348),
+    "Municipal Area Council": (0.865, 0.472),  # AMAC
+}
+
 ZONE_BASELINE_SHARES = {
     "North West": {"APC": 0.47, "PDP": 0.24, "LP": 0.07, "ADC": 0.05},
     "North East": {"APC": 0.44, "PDP": 0.27, "LP": 0.08, "ADC": 0.06},
@@ -236,6 +247,9 @@ def build_records() -> List[LGARecord]:
         pvc_pct = _stable_rand(key + ":pvc", int(pvc_lo * 100), int(pvc_hi * 100)) / 100.0
         turn_lo, turn_hi = (0.22, 0.48) if zone in ("South East", "South South") else (0.28, 0.55)
         turnout_pct = _stable_rand(key + ":to", int(turn_lo * 100), int(turn_hi * 100)) / 100.0
+
+        if state == "FCT" and lga_name in FCT_LGA_FORENSIC_BASELINE:
+            pvc_pct, turnout_pct = FCT_LGA_FORENSIC_BASELINE[lga_name]
 
         records.append(
             LGARecord(
