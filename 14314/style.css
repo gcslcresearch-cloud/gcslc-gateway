@@ -136,6 +136,63 @@ body {
   color: rgba(232, 238, 244, 0.92);
 }
 
+/* Regional widgets — NW NE NC SW SE SS */
+.rhgi-regional-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.7rem;
+  margin-bottom: 1.2rem;
+}
+
+@media (min-width: 42rem) {
+  .rhgi-regional-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 66rem) {
+  .rhgi-regional-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.rhgi-regional-widget {
+  padding: 0.6rem;
+}
+
+.rhgi-regional-title {
+  margin: 0 0 0.45rem;
+  text-align: center;
+  font-size: clamp(0.5rem, 0.95vw + 0.22rem, 0.63rem);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #fff8dc;
+}
+
+.rhgi-progress-shell {
+  height: 0.44rem;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(6, 14, 26, 0.9);
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  margin-bottom: 0.45rem;
+}
+
+.rhgi-progress-bar {
+  width: 0;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #00e5ff, #e8c547);
+  box-shadow: 0 0 0.6rem rgba(0, 229, 255, 0.45);
+  transition: width 900ms ease;
+  transform: translate3d(0, 0, 0);
+}
+
+.rhgi-widget-ticker-inner {
+  border-radius: 0.35rem;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
 /* Global Pulse — clocks */
 .rhgi-pulse-label {
   margin: 0 0 0.65rem;

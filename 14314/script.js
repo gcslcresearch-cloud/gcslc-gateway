@@ -16,6 +16,14 @@
     { city: "Dubai", tz: "Asia/Dubai" },
     { city: "New York", tz: "America/New_York" }
   ];
+  var regionalWidgets = [
+    { key: "nw", label: "Northwest", progress: 82, lgas: 186 },
+    { key: "ne", label: "Northeast", progress: 77, lgas: 112 },
+    { key: "nc", label: "Northcentral", progress: 80, lgas: 120 },
+    { key: "sw", label: "Southwest", progress: 86, lgas: 137 },
+    { key: "se", label: "Southeast", progress: 79, lgas: 95 },
+    { key: "ss", label: "Southsouth", progress: 81, lgas: 124 }
+  ];
 
   function tickGroupHtml() {
     var html = "";
@@ -168,24 +176,30 @@
     }
   }
 
-  function buildRegionalTicker() {
-    var notes = [
-      "Northwest corridor · booth sync active",
-      "Northcentral command grid · voter path validated",
-      "Northeast relay clusters · turnout pressure rising",
-      "Southwest cells · conversion chain stabilized",
-      "Southsouth coastal lines · mobilization locked",
-      "Southeast nodes · compliance heartbeat online"
-    ];
-    var line = notes.join(" · ");
-    var a = document.getElementById("rhgi-regionalLineA");
-    var b = document.getElementById("rhgi-regionalLineB");
-    if (a) {
-      a.textContent = line;
-    }
-    if (b) {
-      b.textContent = line;
-    }
+  function buildRegionalWidgets() {
+    regionalWidgets.forEach(function (w) {
+      var bar = document.getElementById("rhgi-bar-" + w.key);
+      var a = document.getElementById("rhgi-lineA-" + w.key);
+      var b = document.getElementById("rhgi-lineB-" + w.key);
+      var line =
+        w.label +
+        " · " +
+        w.lgas +
+        " LGAs · progress " +
+        w.progress +
+        "% · ward relay synced";
+      if (bar) {
+        requestAnimationFrame(function () {
+          bar.style.width = w.progress + "%";
+        });
+      }
+      if (a) {
+        a.textContent = line;
+      }
+      if (b) {
+        b.textContent = line;
+      }
+    });
   }
 
   var pulseTimer = null;
@@ -199,7 +213,7 @@
 
   function onReady() {
     lockDataAnchor();
-    buildRegionalTicker();
+    buildRegionalWidgets();
     buildTicker774();
     renderClockFaces();
     updateSovereignClocks();
