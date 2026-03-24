@@ -1,5 +1,5 @@
 /**
- * RHGI-14314-MIGRATION-53 — Global Pulse clocks (Zaria · London · Dubai UTC+4 · New York)
+ * RHGI-14314-MIGRATION-53 — Global Pulse clocks (Abuja · London · Dubai UTC+4 · New York)
  * Data anchor: 144,000 wards · 39,790,350 votes · ₦60,840,000,000
  */
 
@@ -11,7 +11,7 @@
   var RHGI_GLOBAL_FUND_NGN = 60840000000;
 
   var zones = [
-    { city: "Zaria", tz: "Africa/Lagos" },
+    { city: "Abuja", tz: "Africa/Lagos" },
     { city: "London", tz: "Europe/London" },
     { city: "Dubai", tz: "Asia/Dubai" },
     { city: "New York", tz: "America/New_York" }
@@ -168,6 +168,26 @@
     }
   }
 
+  function buildRegionalTicker() {
+    var notes = [
+      "Northwest corridor · booth sync active",
+      "Northcentral command grid · voter path validated",
+      "Northeast relay clusters · turnout pressure rising",
+      "Southwest cells · conversion chain stabilized",
+      "Southsouth coastal lines · mobilization locked",
+      "Southeast nodes · compliance heartbeat online"
+    ];
+    var line = notes.join(" · ");
+    var a = document.getElementById("rhgi-regionalLineA");
+    var b = document.getElementById("rhgi-regionalLineB");
+    if (a) {
+      a.textContent = line;
+    }
+    if (b) {
+      b.textContent = line;
+    }
+  }
+
   var pulseTimer = null;
 
   function startPulseInterval() {
@@ -179,6 +199,7 @@
 
   function onReady() {
     lockDataAnchor();
+    buildRegionalTicker();
     buildTicker774();
     renderClockFaces();
     updateSovereignClocks();
