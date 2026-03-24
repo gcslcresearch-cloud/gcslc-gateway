@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&amp;display=swap" rel="stylesheet">
   <title>15-15 RHGI | Sovereign Dashboard</title>
   <style>
-/* RHGI-HARD-IGNITION-49 — prism · kinetic LGA · clocks · 774 ticker · GPU translateZ(0) */
+/* RHGI-CONSTITUTIONAL-SENTINEL-50 — FCT §134 · NC sentinel · prism · clocks · 774 ticker · GPU */
     :root {
       --rhgi-navy-deep: #050a14;
       --rhgi-gold: #e8c547;
@@ -1063,6 +1063,123 @@
       color: rgba(232, 238, 244, 0.95);
       white-space: nowrap;
     }
+    /* RHGI-CONSTITUTIONAL-SENTINEL-50 — FCT · Section 134 · NC matrix + margin strip */
+    .rhgi-sentinel50-nc-fct {
+      white-space: normal !important;
+      vertical-align: middle;
+    }
+    .rhgi-sentinel50-fct-row td {
+      border-bottom: 1px solid rgba(232, 197, 71, 0.42);
+    }
+    .rhgi-sentinel50-fct-row .rhgi-matrix-state {
+      background: linear-gradient(100deg, rgba(232, 197, 71, 0.12), transparent 62%);
+    }
+    .rhgi-sentinel50-fct-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+    }
+    .rhgi-sentinel50-shield {
+      width: clamp(1.45rem, 4.5vw, 1.95rem);
+      height: auto;
+      flex-shrink: 0;
+      filter: drop-shadow(0 0 0.35rem rgba(232, 197, 71, 0.75)) drop-shadow(0 0 0.85rem rgba(232, 197, 71, 0.4));
+      animation: rhgi-sentinel50-shield-glow 2.8s ease-in-out infinite;
+      transform: translateZ(0);
+    }
+    @keyframes rhgi-sentinel50-shield-glow {
+      0%, 100% {
+        filter: drop-shadow(0 0 0.35rem rgba(232, 197, 71, 0.65)) drop-shadow(0 0 0.65rem rgba(232, 197, 71, 0.35));
+      }
+      50% {
+        filter: drop-shadow(0 0 0.85rem rgba(255, 224, 140, 0.9)) drop-shadow(0 0 1.35rem rgba(232, 197, 71, 0.55));
+      }
+    }
+    .rhgi-sentinel50-fct-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+      min-width: 0;
+    }
+    .rhgi-sentinel50-fct-title {
+      font-weight: 900;
+      font-size: clamp(0.48rem, 1.05vw + 0.12rem, 0.62rem);
+      letter-spacing: 0.03em;
+      line-height: 1.25;
+      color: rgba(255, 248, 220, 0.98);
+      text-shadow: 0 0 0.45rem rgba(232, 197, 71, 0.4);
+    }
+    .rhgi-sentinel50-fct-meta {
+      font-size: clamp(0.34rem, 0.8vw + 0.06rem, 0.44rem);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(232, 197, 71, 0.88);
+    }
+    .rhgi-sentinel50-fct-proj-shell {
+      position: relative;
+      flex: 1 1 100%;
+      min-width: 0;
+    }
+    .rhgi-sentinel50-fct-threshold-line {
+      position: absolute;
+      left: 25%;
+      top: -0.08rem;
+      bottom: -0.08rem;
+      width: 2px;
+      margin-left: -1px;
+      border-radius: 1px;
+      background: linear-gradient(180deg, #fff8dc, #e8c547);
+      box-shadow: 0 0 10px rgba(232, 197, 71, 0.95);
+      z-index: 4;
+      pointer-events: none;
+    }
+    .rhgi-sentinel50-fct-proj-track {
+      position: relative;
+      z-index: 1;
+      box-shadow: inset 0 0 0 1px rgba(232, 197, 71, 0.4);
+    }
+    .rhgi-page .rhgi-matrix-row .rhgi-proj-fill.rhgi-sentinel50-fct-proj-bar {
+      box-shadow: 0 0 0.75rem rgba(232, 197, 71, 0.5);
+    }
+    .rhgi-sentinel50-nc-winbar {
+      margin: 0.38rem 0 0.28rem;
+      transform: translateZ(0);
+    }
+    .rhgi-sentinel50-nc-winbar-track {
+      height: 0.4rem;
+      border-radius: 0.22rem;
+      background: rgba(0, 0, 0, 0.42);
+      overflow: hidden;
+      position: relative;
+      box-shadow: inset 0 0 0 1px rgba(232, 197, 71, 0.25);
+    }
+    .rhgi-sentinel50-nc-winbar-fct {
+      height: 100%;
+      width: 25%;
+      border-radius: 0.15rem;
+      background: linear-gradient(90deg, #a67c00, #e8c547 55%, #fff8dc);
+      box-shadow: 0 0 0.85rem rgba(232, 197, 71, 0.7);
+      animation: rhgi-sentinel50-nc-winbar-pulse 2.6s ease-in-out infinite;
+    }
+    @keyframes rhgi-sentinel50-nc-winbar-pulse {
+      0%, 100% { opacity: 0.88; filter: brightness(1); }
+      50% { opacity: 1; filter: brightness(1.08); }
+    }
+    .rhgi-sentinel50-nc-winbar-caption {
+      display: block;
+      margin-top: 0.22rem;
+      font-size: clamp(0.32rem, 0.75vw + 0.08rem, 0.42rem);
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(232, 197, 71, 0.82);
+    }
+    .rhgi-page .rhgi-nw-margin-delta.rhgi-sentinel50-nc-delta--lit {
+      color: rgba(255, 248, 220, 0.98) !important;
+      text-shadow: 0 0 0.55rem rgba(232, 197, 71, 0.45);
+    }
     .rhgi-matrix-party-row {
       display: flex;
       flex-wrap: wrap;
@@ -1811,6 +1928,7 @@
           </div>
         </section>
 
+        <!-- Identity lock: RHGI H1 + Architect sub-line (RHGI-CONSTITUTIONAL-SENTINEL-50) -->
         <section class="rhgi-brand-section">
           <div class="rhgi-r31-brand-identity">
             <div class="rhgi-r31-sovereign-seal" aria-hidden="true">
@@ -2091,9 +2209,15 @@
 
                   <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-r41-gpu rhgi-prism-frame rhgi-prism-frame--compact rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-nc" aria-labelledby="rhgi-nc-heading">
                     <h3 id="rhgi-nc-heading" class="rhgi-deep-head">North Central · FCT 25% Strategic Lock · Widget 4</h3>
-                    <div class="rhgi-nw-margin" id="rhgi-nc-margin" aria-live="polite">
+                    <div class="rhgi-nw-margin rhgi-sentinel50-nc-margin" id="rhgi-nc-margin" aria-live="polite">
                       <span class="rhgi-nw-margin-label">Winning Margin</span>
-                      <p class="rhgi-nw-margin-delta" id="rhgi-nc-margin-delta">—</p>
+                      <p class="rhgi-nw-margin-delta rhgi-sentinel50-nc-delta" id="rhgi-nc-margin-delta">—</p>
+                      <div class="rhgi-sentinel50-nc-winbar" id="rhgi-sentinel50-nc-winbar" role="img" aria-label="FCT Section 134: 25 percent threshold contribution (2027 cycle)">
+                        <div class="rhgi-sentinel50-nc-winbar-track">
+                          <div class="rhgi-sentinel50-nc-winbar-fct"></div>
+                        </div>
+                        <span class="rhgi-sentinel50-nc-winbar-caption">FCT §134 · 25% threshold · 2027 cycle</span>
+                      </div>
                       <p class="rhgi-nw-margin-dtl" id="rhgi-nc-margin-dtl">NC APC vs 2023 base · FCT 25% strategic lock · Model 15-15</p>
                     </div>
                     <div class="rhgi-deep-layout">
@@ -2227,7 +2351,7 @@
   </div>
 
   <script>
-/* RHGI-HARD-IGNITION-49 — live clocks · kinetic LGA · matrices · 774 ticker (all inline) */
+/* RHGI-CONSTITUTIONAL-SENTINEL-50 — live clocks · kinetic LGA · matrices · 774 ticker (all inline) */
     (function () {
       var STATE_NOW = 24;
       var STATE_MAX = 36;
@@ -2465,8 +2589,20 @@
       tickChromeClockHands();
       /* Dubai (UTC+4) + all zones: second hand advances every 1000ms */
       setInterval(tickChromeClockHands, 1000);
-      window.addEventListener('load', function rhgiHard49ClockOnLoad() {
+      function rhgiSentinel50MotionKick() {
         tickChromeClockHands();
+        var tr = document.getElementById('rhgi-footer774Track');
+        if (tr) {
+          tr.style.animation = 'none';
+          void tr.offsetWidth;
+          tr.style.removeProperty('animation');
+          tr.classList.remove('rhgi-hard49-footer-ticker');
+          void tr.offsetWidth;
+          tr.classList.add('rhgi-hard49-footer-ticker');
+        }
+      }
+      window.addEventListener('load', function rhgiSentinel50OnLoad() {
+        rhgiSentinel50MotionKick();
       });
 
       /* —— 15-15-DEPLOY-12: tri-corridor APC + Model 15-15 (Kano anchor multiplier) —— */
@@ -2515,15 +2651,21 @@
         { name: 'Gombe', apcVotes: 146977 }
       ];
 
-      /* North Central + FCT — 2023 APC (state aggregates, verify in gazette) */
+      /* North Central + FCT — 2023 APC (FCT first: Section 134 sentinel · 25% threshold 2027) */
       var NC_2023 = [
+        {
+          name: 'FCT',
+          label: 'FCT (Section 134 Sentinel)',
+          apcVotes: 108000,
+          rhgiSentinel134: true,
+          rhgiFctTarget2027: 25
+        },
         { name: 'Benue', apcVotes: 312000 },
         { name: 'Kogi', apcVotes: 401000 },
         { name: 'Kwara', apcVotes: 363000 },
         { name: 'Nasarawa', apcVotes: 289000 },
         { name: 'Niger', apcVotes: 446000 },
-        { name: 'Plateau', apcVotes: 481000 },
-        { name: 'FCT', apcVotes: 108000 }
+        { name: 'Plateau', apcVotes: 481000 }
       ];
 
       /* South-South — 2023 APC (state aggregates) */
@@ -2604,6 +2746,9 @@
             regionLabel +
               ' · Model 15-15 APC projection vs 2023 APC vote base (constitutional arc uses six-corridor aggregate)'
           );
+          if (idPrefix === 'nc') {
+            deltaEl.classList.add('rhgi-sentinel50-nc-delta--lit');
+          }
         }
         if (dtlEl) {
           if (idPrefix === 'ne') {
@@ -2647,7 +2792,7 @@
               vt.base.toLocaleString('en-NG') +
               ' → ' +
               vt.proj.toLocaleString('en-NG') +
-              ' · FCT 25% strategic lock · Model 15-15 (Kano anchor 1,938,480 · ' +
+              ' · FCT §134 sentinel · 25% threshold target (2027) · Model 15-15 (Kano anchor 1,938,480 · ' +
               NC_LGA_COUNT +
               ' LGAs)';
           } else {
@@ -2737,6 +2882,7 @@
         var html = '';
         for (var s = 0; s < rows.length; s++) {
           var st = rows[s];
+          var stateLabel = st.label || st.name;
           var bw = (st.apcVotes / mb) * 100;
           var pw = (st.projVotes / mp) * 100;
           var bv = st.apcVotes.toLocaleString('en-NG');
@@ -2761,22 +2907,58 @@
             ' 2023 APC ' +
             bv +
             ' votes"></div></div></div>';
+          var projTrackInner =
+            '<div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj' +
+            (st.rhgiSentinel134 ? ' rhgi-sentinel50-fct-proj-track' : '') +
+            '"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj rhgi-proj-fill' +
+            (st.rhgiSentinel134 ? ' rhgi-sentinel50-fct-proj-bar' : '') +
+            '" style="--rhgi-bar-sx:' +
+            sxP +
+            '" title="' +
+            projTitle +
+            (st.rhgiSentinel134 ? ' · FCT §134 · 25% threshold (2027)' : '') +
+            '"></div></div>';
           var proj =
             '<div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span>' +
             '<span class="rhgi-matrix-vote-num">' +
             pv +
             '</span>' +
-            '<div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj rhgi-proj-fill" style="--rhgi-bar-sx:' +
-            sxP +
-            '" title="' +
-            projTitle +
-            '"></div></div></div>';
+            (st.rhgiSentinel134
+              ? '<div class="rhgi-sentinel50-fct-proj-shell">' +
+                '<span class="rhgi-sentinel50-fct-threshold-line" title="Section 134 · 25% constitutional threshold (2027)"></span>' +
+                projTrackInner +
+                '</div>'
+              : projTrackInner) +
+            '</div>';
+          var stateCell;
+          if (st.rhgiSentinel134) {
+            stateCell =
+              '<td class="rhgi-matrix-state rhgi-sentinel50-nc-fct">' +
+              '<span class="rhgi-sentinel50-fct-wrap">' +
+              '<svg class="rhgi-sentinel50-shield" viewBox="0 0 32 32" aria-hidden="true" focusable="false">' +
+              '<defs>' +
+              '<linearGradient id="rhgiSentinel50ShieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">' +
+              '<stop offset="0%" stop-color="#fff8dc"/><stop offset="40%" stop-color="#e8c547"/><stop offset="100%" stop-color="#8a7020"/>' +
+              '</linearGradient></defs>' +
+              '<path d="M16 2 L28 8.2 V17.2 C28 23.8 21.5 29.2 16 30 C10.5 29.2 4 23.8 4 17.2 V8.2 L16 2Z" fill="url(#rhgiSentinel50ShieldGrad)"/>' +
+              '</svg>' +
+              '<span class="rhgi-sentinel50-fct-copy">' +
+              '<span class="rhgi-sentinel50-fct-title">' +
+              stateLabel +
+              '</span>' +
+              '<span class="rhgi-sentinel50-fct-meta">2027 cycle · 25% threshold target</span>' +
+              '</span></span></td>';
+          } else {
+            stateCell = '<td class="rhgi-matrix-state">' + stateLabel + '</td>';
+          }
           html +=
-            '<tr class="rhgi-matrix-row" style="--row-index:' +
+            '<tr class="rhgi-matrix-row' +
+            (st.rhgiSentinel134 ? ' rhgi-sentinel50-fct-row' : '') +
+            '" style="--row-index:' +
             s +
-            '"><td class="rhgi-matrix-state">' +
-            st.name +
-            '</td><td>' +
+            '">' +
+            stateCell +
+            '<td>' +
             baseline +
             '</td><td>' +
             proj +
@@ -2942,7 +3124,7 @@
       var RHGI_ALL_LGA_774 = rhgiBuildAllLga774();
 
       renderFooter774Ticker();
-      rhgiIgnition47FooterKick();
+      rhgiSentinel50FooterKick();
 
       function renderFooter774Ticker() {
         var pool = RHGI_ALL_LGA_774;
@@ -2953,7 +3135,7 @@
         if (fb) fb.textContent = line;
       }
 
-      function rhgiIgnition47FooterKick() {
+      function rhgiSentinel50FooterKick() {
         var tr = document.getElementById('rhgi-footer774Track');
         if (!tr) return;
         tr.classList.add('rhgi-hard49-footer-ticker');
