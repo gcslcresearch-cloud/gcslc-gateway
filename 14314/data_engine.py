@@ -57,6 +57,47 @@ STATE_CODE_TO_STATE = {
     "ZA": "Zamfara",
 }
 
+# Approximate centroids for Plotly map scatter (Nigeria).
+STATE_COORDS: Dict[str, tuple[float, float]] = {
+    "Abia": (5.532, 7.482),
+    "Adamawa": (9.326, 12.398),
+    "Akwa Ibom": (4.905, 7.853),
+    "Anambra": (6.210, 7.074),
+    "Bauchi": (10.310, 9.843),
+    "Bayelsa": (4.771, 6.070),
+    "Benue": (7.190, 8.129),
+    "Borno": (11.833, 13.151),
+    "Cross River": (5.870, 8.598),
+    "Delta": (5.500, 5.748),
+    "Ebonyi": (6.325, 8.113),
+    "Edo": (6.335, 5.603),
+    "Ekiti": (7.623, 5.221),
+    "Enugu": (6.441, 7.498),
+    "FCT": (9.076, 7.398),
+    "Gombe": (10.290, 11.171),
+    "Imo": (5.492, 7.026),
+    "Jigawa": (12.228, 9.561),
+    "Kaduna": (10.510, 7.417),
+    "Kano": (12.002, 8.592),
+    "Katsina": (12.985, 7.601),
+    "Kebbi": (12.450, 4.199),
+    "Kogi": (7.800, 6.739),
+    "Kwara": (8.494, 4.542),
+    "Lagos": (6.524, 3.379),
+    "Nasarawa": (8.499, 8.516),
+    "Niger": (9.930, 5.598),
+    "Ogun": (7.147, 3.361),
+    "Ondo": (7.257, 5.205),
+    "Osun": (7.587, 4.562),
+    "Oyo": (7.377, 3.947),
+    "Plateau": (9.896, 8.858),
+    "Rivers": (4.815, 7.050),
+    "Sokoto": (13.005, 5.247),
+    "Taraba": (8.890, 11.360),
+    "Yobe": (12.293, 11.439),
+    "Zamfara": (12.122, 6.066),
+}
+
 ZONE_BY_STATE = {
     "Abia": "South East",
     "Anambra": "South East",
@@ -124,6 +165,10 @@ class LGARecord:
     canvasser_ratio: float
     unit_commanders: int
     canvassers: int
+    # Logical: PVC_Collection_Rate — fraction 0–1 (PVC collected / registered).
+    pvc_collection_rate: float
+    # Logical: 2023_Turnout_Rate — fraction 0–1 (2023 votes cast ÷ registered).
+    turnout_2023_rate: float
 
 
 def fetch_lga_list() -> List[dict]:
@@ -186,6 +231,12 @@ def build_records() -> List[LGARecord]:
         canvassers = max(1, int(commanders * (12 + _stable_rand(key + ":r", 0, 8) / 2)))
         ratio = canvassers / commanders
 
+        # PVC collection & 2023 turnout (deterministic, zone-tilted).
+        pvc_lo, pvc_hi = (0.62, 0.94) if zone in ("South West", "South East") else (0.48, 0.88)
+        pvc_pct = _stable_rand(key + ":pvc", int(pvc_lo * 100), int(pvc_hi * 100)) / 100.0
+        turn_lo, turn_hi = (0.22, 0.48) if zone in ("South East", "South South") else (0.28, 0.55)
+        turnout_pct = _stable_rand(key + ":to", int(turn_lo * 100), int(turn_hi * 100)) / 100.0
+
         records.append(
             LGARecord(
                 zone=zone,
@@ -202,6 +253,8 @@ def build_records() -> List[LGARecord]:
                 canvasser_ratio=ratio,
                 unit_commanders=commanders,
                 canvassers=canvassers,
+                pvc_collection_rate=round(pvc_pct, 4),
+                turnout_2023_rate=round(turnout_pct, 4),
             )
         )
     return records
@@ -227,6 +280,7 @@ def build_zone_catalog(records: List[LGARecord]) -> Dict[str, List[dict]]:
 
 
 def records_as_dicts(records: List[LGARecord]) -> List[dict]:
+    """Serializes records; `pvc_collection_rate` & `turnout_2023_rate` map to PVC / 2023 turnout."""
     return [r.__dict__.copy() for r in records]
 
 

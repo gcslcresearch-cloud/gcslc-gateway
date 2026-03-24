@@ -4,7 +4,7 @@ import pytz
 import streamlit as st
 from datetime import datetime
 
-from data_engine import ALL_LGA_RECORDS, records_as_dicts
+from data_engine import ALL_LGA_RECORDS, STATE_COORDS, records_as_dicts
 
 st.set_page_config(page_title="RHGI 774 Scientific Engine", layout="wide")
 
@@ -15,30 +15,75 @@ NAVY = "#1A237E"
 @st.cache_data(show_spinner=False)
 def load_df() -> pd.DataFrame:
     df = pd.DataFrame(records_as_dicts(ALL_LGA_RECORDS))
+    df["actual_2023"] = (
+        df["apc_2023"] + df["pdp_2023"] + df["lp_2023"] + df["adc_2023"]
+    )
+    df["registered_voters"] = (
+        df["actual_2023"] / df["turnout_2023_rate"].replace(0, 1e-9)
+    ).round().astype(int)
+    # Sovereign yield gap per LGA: (Registered × PVC rate) − 2023 actual votes.
+    df["sovereign_yield_gap"] = (
+        df["registered_voters"] * df["pvc_collection_rate"] - df["actual_2023"]
+    )
     df["winner_2023"] = df[["apc_2023", "pdp_2023", "lp_2023", "adc_2023"]].max(axis=1)
     df["winner_2027"] = df[["apc_2027", "pdp_2027", "lp_2027", "adc_2027"]].max(axis=1)
-    df["winning_margin"] = df["apc_2027"] - df[["pdp_2027", "lp_2027", "adc_2027"]].max(axis=1)
     df["projected_total"] = df[["apc_2027", "pdp_2027", "lp_2027", "adc_2027"]].sum(axis=1)
-    df["apc_share_2027"] = (df["apc_2027"] / df["projected_total"]) * 100
+    df["winning_margin"] = df["apc_2027"] - df[["pdp_2027", "lp_2027", "adc_2027"]].max(
+        axis=1
+    )
+    df["apc_share_2027"] = (df["apc_2027"] / df["projected_total"].replace(0, 1)) * 100
     df["red_zone"] = df["canvasser_ratio"] < 16.0
+    # Strike priority: high PVC + low 2023 turnout → high-priority strike zones.
+    df["strike_priority"] = df["pvc_collection_rate"] * (1.0 - df["turnout_2023_rate"])
     return df
 
 
+def apply_turnout_lift(df: pd.DataFrame, lift_pct: int) -> pd.DataFrame:
+    """Scale 2027 vote totals by scientific turnout lift (1%–15%)."""
+    m = 1.0 + float(lift_pct) / 100.0
+    out = df.copy()
+    for c in ["apc_2027", "pdp_2027", "lp_2027", "adc_2027"]:
+        out[c] = (out[c] * m).round().astype(int)
+    out["projected_total"] = out[["apc_2027", "pdp_2027", "lp_2027", "adc_2027"]].sum(
+        axis=1
+    )
+    out["winning_margin"] = out["apc_2027"] - out[["pdp_2027", "lp_2027", "adc_2027"]].max(
+        axis=1
+    )
+    out["apc_share_2027"] = (out["apc_2027"] / out["projected_total"].replace(0, 1)) * 100
+    return out
+
+
+def constitutional_sentinel(dff: pd.DataFrame) -> tuple[int, bool, bool]:
+    state_projection = (
+        dff.groupby("state", as_index=False)[["apc_2027", "projected_total"]]
+        .sum()
+        .assign(
+            apc_pct=lambda x: (x["apc_2027"] / x["projected_total"].replace(0, 1)) * 100
+        )
+    )
+    states_25 = int((state_projection["apc_pct"] >= 25).sum())
+    fct = state_projection.loc[state_projection["state"] == "FCT", "apc_pct"]
+    fct_validated = bool(fct.ge(25).any()) if len(fct) else False
+    constitutional_ok = states_25 >= 24 and fct_validated
+    return states_25, fct_validated, constitutional_ok
+
+
+def build_state_heatmap_df(dff: pd.DataFrame) -> pd.DataFrame:
+    g = dff.groupby("state", as_index=False).agg(
+        strike_priority=("strike_priority", "mean"),
+        pvc_collection_rate=("pvc_collection_rate", "mean"),
+        turnout_2023_rate=("turnout_2023_rate", "mean"),
+    )
+    g["lat"] = g["state"].map(lambda s: STATE_COORDS.get(s, (9.0, 8.0))[0])
+    g["lon"] = g["state"].map(lambda s: STATE_COORDS.get(s, (9.0, 8.0))[1])
+    return g
+
+
 df = load_df()
+sovereign_total = float(df["sovereign_yield_gap"].sum())
 
 lagos_tz = pytz.timezone("Africa/Lagos")
-abuja_now = datetime.now(lagos_tz)
-
-state_projection = (
-    df.groupby("state", as_index=False)[["apc_2027", "projected_total"]]
-    .sum()
-    .assign(apc_pct=lambda x: (x["apc_2027"] / x["projected_total"]) * 100)
-)
-states_25 = (state_projection["apc_pct"] >= 25).sum()
-fct_validated = bool(
-    state_projection.loc[state_projection["state"] == "FCT", "apc_pct"].ge(25).any()
-)
-constitutional_ok = states_25 >= 24 and fct_validated
 
 st.markdown(
     """
@@ -50,29 +95,55 @@ st.markdown(
       50% { box-shadow: 0 0 20px rgba(255,0,0,0.8); }
     }
     .rhgi-glow { color:#FFD700; text-shadow: 0 0 10px rgba(255,215,0,0.6); }
+    .rhgi-gauge { font-size: 1.1rem; letter-spacing: 0.03em; }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
+with st.sidebar:
+    st.header("Scientific controls")
+    turnout_lift = st.slider(
+        "Scientific turnout lift (%)",
+        min_value=1,
+        max_value=15,
+        value=5,
+        help="Increases projected 2027 vote totals across all parties proportionally.",
+    )
+    st.metric(
+        "Sovereign Voter Yield",
+        f"{sovereign_total:,.0f}",
+        help="Σ over LGAs: (Registered Voters × PVC Collection Rate) − 2023 Actual Votes.",
+    )
+    st.caption("PVC & turnout rates are forensic anchors per LGA in data_engine.")
+
+dff = apply_turnout_lift(df, turnout_lift)
+states_25, fct_validated, constitutional_ok = constitutional_sentinel(dff)
+total_winning_margin = float(dff["winning_margin"].sum())
+
+abuja_now = datetime.now(lagos_tz)
+
 st.title("RHGI 774 Scientific Engine")
 c1, c2, c3 = st.columns(3)
+# Abuja Pulse lead (UTC+1 forced via pytz Africa/Lagos).
 c1.markdown(
     f"<div class='rhgi-kpi'><b>Abuja Pulse (UTC+1)</b><br><span class='rhgi-glow'>{abuja_now.strftime('%I:%M:%S %p WAT')}</span></div>",
     unsafe_allow_html=True,
 )
 c2.markdown(
-    f"<div class='rhgi-kpi'><b>Constitutional Sentinel</b><br>{states_25}/37 states at 25% APC threshold</div>",
+    f"<div class='rhgi-kpi'><b>24/37 Constitutional Gauge</b><br><span class='rhgi-gauge'>{states_25} / 37 states at ≥25% APC</span><br>"
+    f"FCT: {'VALIDATED' if fct_validated else 'PENDING'} | {'PASS' if constitutional_ok else 'WATCH'}</div>",
     unsafe_allow_html=True,
 )
 c3.markdown(
-    f"<div class='rhgi-kpi'><b>FCT (Abuja)</b><br>{'VALIDATED' if fct_validated else 'PENDING'} | {'PASS' if constitutional_ok else 'WATCH'}</div>",
+    f"<div class='rhgi-kpi'><b>Winning Margin (live)</b><br><span class='rhgi-glow'>{total_winning_margin:,.0f}</span><br>"
+    f"Turnout lift +{turnout_lift}%</div>",
     unsafe_allow_html=True,
 )
 
-st.subheader("Winning Margin by Geopolitical Zone")
+st.subheader("Winning Margin by Geopolitical Zone (turnout-adjusted)")
 zone_margin = (
-    df.groupby("zone", as_index=False)["winning_margin"].sum().sort_values("winning_margin")
+    dff.groupby("zone", as_index=False)["winning_margin"].sum().sort_values("winning_margin")
 )
 fig_zone = px.bar(
     zone_margin,
@@ -90,6 +161,30 @@ fig_zone.update_layout(
 )
 st.plotly_chart(fig_zone, use_container_width=True)
 
+st.subheader("Turnout heatmap — Nigeria (strike priority)")
+state_hm = build_state_heatmap_df(dff)
+fig_scatter = px.scatter_mapbox(
+    state_hm,
+    lat="lat",
+    lon="lon",
+    color="strike_priority",
+    size="strike_priority",
+    hover_name="state",
+    hover_data=["pvc_collection_rate", "turnout_2023_rate"],
+    color_continuous_scale=[NAVY, "#2a4d8c", GOLD],
+    mapbox_style="open-street-map",
+    zoom=4.85,
+    center={"lat": 9.082, "lon": 8.6753},
+    template="plotly_dark",
+    title="High PVC + low 2023 turnout → metallic gold (high-priority strike zones)",
+)
+fig_scatter.update_layout(
+    paper_bgcolor="#0a0f22",
+    font_color="#dbe2ff",
+    margin=dict(l=0, r=0, t=40, b=0),
+)
+st.plotly_chart(fig_scatter, use_container_width=True)
+
 st.subheader("2023 vs 2027 Party Totals")
 party_totals = pd.DataFrame(
     {
@@ -100,10 +195,10 @@ party_totals = pd.DataFrame(
             df["pdp_2023"].sum(),
             df["lp_2023"].sum(),
             df["adc_2023"].sum(),
-            df["apc_2027"].sum(),
-            df["pdp_2027"].sum(),
-            df["lp_2027"].sum(),
-            df["adc_2027"].sum(),
+            dff["apc_2027"].sum(),
+            dff["pdp_2027"].sum(),
+            dff["lp_2027"].sum(),
+            dff["adc_2027"].sum(),
         ],
     }
 )
@@ -113,7 +208,7 @@ fig_party = px.bar(
     y="Votes",
     color="Year",
     barmode="group",
-    color_discrete_map={"2023": "#1A237E", "2027": "#FFD700"},
+    color_discrete_map={"2023": NAVY, "2027": GOLD},
     template="plotly_dark",
 )
 fig_party.update_layout(
@@ -124,11 +219,13 @@ fig_party.update_layout(
 st.plotly_chart(fig_party, use_container_width=True)
 
 st.subheader("LGA Tactical Sheet (Logistics Alert)")
-view = df[
+view = dff[
     [
         "zone",
         "state",
         "lga",
+        "pvc_collection_rate",
+        "turnout_2023_rate",
         "apc_2023",
         "pdp_2023",
         "lp_2023",
@@ -145,6 +242,8 @@ view = df[
 
 view["winning_margin"] = view["winning_margin"].map(lambda x: f"{x:,.0f}")
 view["canvasser_ratio"] = view["canvasser_ratio"].map(lambda x: f"{x:.2f}")
+view["pvc_collection_rate"] = view["pvc_collection_rate"].map(lambda x: f"{x:.2%}")
+view["turnout_2023_rate"] = view["turnout_2023_rate"].map(lambda x: f"{x:.2%}")
 
 rows = []
 for _, r in view.iterrows():
@@ -152,6 +251,7 @@ for _, r in view.iterrows():
     rows.append(
         f"<tr class='{css}'>"
         f"<td>{r['zone']}</td><td>{r['state']}</td><td>{r['lga']}</td>"
+        f"<td>{r['pvc_collection_rate']}</td><td>{r['turnout_2023_rate']}</td>"
         f"<td>{r['apc_2023']}</td><td>{r['pdp_2023']}</td><td>{r['lp_2023']}</td><td>{r['adc_2023']}</td>"
         f"<td>{r['apc_2027']}</td><td>{r['pdp_2027']}</td><td>{r['lp_2027']}</td><td>{r['adc_2027']}</td>"
         f"<td class='rhgi-glow'>{r['winning_margin']}</td><td>{r['canvasser_ratio']}</td>"
@@ -161,13 +261,16 @@ for _, r in view.iterrows():
 table_html = (
     "<table><thead><tr>"
     "<th>Zone</th><th>State</th><th>LGA</th>"
+    "<th>PVC %</th><th>Turnout '23</th>"
     "<th>APC23</th><th>PDP23</th><th>LP23</th><th>ADC23</th>"
     "<th>APC27</th><th>PDP27</th><th>LP27</th><th>ADC27</th>"
     "<th>Winning Margin</th><th>Canvasser Ratio</th>"
     "</tr></thead><tbody>"
-    + "".join(rows[:200])  # keep page responsive
+    + "".join(rows[:200])
     + "</tbody></table>"
 )
 st.markdown(table_html, unsafe_allow_html=True)
-st.caption("Showing first 200 LGAs for UI speed. Red pulsing rows indicate canvasser ratio below 1:16.")
-
+st.caption(
+    "Showing first 200 LGAs. Red pulsing rows: canvasser ratio below 1:16. "
+    "Move the sidebar slider to watch winning margin and constitutional gauge update."
+)
