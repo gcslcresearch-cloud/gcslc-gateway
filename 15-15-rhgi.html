@@ -28,9 +28,9 @@
       -webkit-user-select: none;
       user-select: none;
       background: var(--rhgi-navy-deep);
-      /* LGA ticker + AKZ spine: shared period (60% slower ticker vs legacy 48s → 120s) */
-      --rhgi-lga-scroll-duration: 120s;
-      --rhgi-akz-spine-period: 120s;
+      /* LGA ticker + AKZ spine: shared 40s loop (DEPLOY-12 moderate glide) */
+      --rhgi-lga-scroll-duration: 40s;
+      --rhgi-akz-spine-period: 40s;
     }
 
     .rhgi-velocity-field {
@@ -95,7 +95,7 @@
       stroke-linejoin: round;
       filter: url(#rhgiAkzGlow);
       opacity: 0.55;
-      animation: rhgi-akz-spine-pulse var(--rhgi-akz-spine-period, 120s) ease-in-out infinite;
+      animation: rhgi-akz-spine-pulse var(--rhgi-akz-spine-period, 40s) ease-in-out infinite;
     }
     .rhgi-akz-path-veil {
       fill: none;
@@ -109,13 +109,13 @@
       0%, 100% { opacity: 0.45; filter: url(#rhgiAkzGlow) brightness(1); }
       50% { opacity: 0.68; filter: url(#rhgiAkzGlow) brightness(1.08); }
     }
-    /* High winning margin: stronger gold pulse — same 120s cadence as LGA feed */
+    /* High winning margin: stronger gold pulse — same 40s cadence as LGA feed */
     @keyframes rhgi-akz-diamond-sparkle {
       0%, 100% { opacity: 0.52; filter: url(#rhgiAkzGlow) brightness(1); stroke-width: 2.2; }
       48%, 52% { opacity: 0.82; filter: url(#rhgiAkzGlow) brightness(1.22) drop-shadow(0 0 0.5rem rgba(232, 197, 71, 0.45)); stroke-width: 2.5; }
     }
     .rhgi-akz-spine.rhgi-akz-spine--sparkle .rhgi-akz-path-core {
-      animation: rhgi-akz-diamond-sparkle var(--rhgi-akz-spine-period, 120s) ease-in-out infinite;
+      animation: rhgi-akz-diamond-sparkle var(--rhgi-akz-spine-period, 40s) ease-in-out infinite;
     }
     .rhgi-akz-spine.rhgi-akz-spine--sparkle .rhgi-akz-path-veil {
       opacity: 0.48;
@@ -204,6 +204,8 @@
     .rhgi-prism-frame {
       border: 2px solid rgba(30, 54, 88, 0.96);
       animation: rhgi-prism-frame-power 5s ease-in-out infinite;
+      will-change: transform, opacity;
+      backface-visibility: hidden;
     }
 
     .rhgi-shell {
@@ -696,9 +698,22 @@
       50% { background-position: 100% 50%; }
     }
 
-    /* —— Widget 2: Northwest Corridor Deep-Dive —— */
-    .rhgi-corridor-deep {
+    /* —— Corridor widgets (NW / SW / NE) —— */
+    .rhgi-corridor-widgets-stack {
+      display: flex;
+      flex-direction: column;
+      gap: clamp(0.65rem, 2.5vw, 1rem);
+      width: 100%;
+      min-width: 0;
       margin-top: clamp(0.35rem, 1.5vw, 0.5rem);
+    }
+    .rhgi-victory-section,
+    .rhgi-hub-section {
+      width: 100%;
+      min-width: 0;
+    }
+    .rhgi-corridor-deep {
+      margin-top: 0;
       border-radius: 0.75rem;
       padding: clamp(0.5rem, 2vw, 0.75rem);
       background: linear-gradient(165deg, rgba(4, 14, 30, 0.85), rgba(2, 10, 22, 0.72));
@@ -788,6 +803,9 @@
         grid-template-columns: minmax(3.5rem, 4.5rem) minmax(0, 1fr) minmax(11rem, 15rem);
         align-items: stretch;
         gap: clamp(0.5rem, 2vw, 0.85rem);
+      }
+      .rhgi-deep-layout--compact .rhgi-deep-layout {
+        grid-template-columns: minmax(0, 1fr) minmax(11rem, 15rem);
       }
     }
     .rhgi-deep-powerline {
@@ -973,7 +991,7 @@
       mask-image: linear-gradient(180deg, transparent, #000 6%, #000 94%, transparent);
     }
     .rhgi-deep-lga-track {
-      animation: rhgi-lga-scroll var(--rhgi-lga-scroll-duration, 120s) linear infinite;
+      animation: rhgi-lga-scroll var(--rhgi-lga-scroll-duration, 40s) linear infinite;
     }
     @keyframes rhgi-lga-scroll {
       from { transform: translateY(0); }
@@ -1093,6 +1111,8 @@
         0 0 0.875rem rgba(0, 60, 120, 0.25);
       animation: rhgi-navy-frame-shimmer 4.5s ease-in-out infinite;
       animation-delay: calc(var(--rhgi-i) * 0.15s);
+      will-change: transform, opacity;
+      backface-visibility: hidden;
     }
     @keyframes rhgi-navy-frame-shimmer {
       0%, 100% { background-position: 0% 40%; filter: brightness(1); border-color: rgba(40, 72, 118, 0.85); }
@@ -1136,7 +1156,7 @@
 
     @media (prefers-reduced-motion: reduce) {
       .rhgi-velocity-streaks, .rhgi-velocity-pulse, .rhgi-bluelaser-edge, .rhgi-bluelaser-scan, .rhgi-satellite-scanlines,
-      .rhgi-prism-frame, .rhgi-hub, .rhgi-corridor-deep, .rhgi-title, .rhgi-sub, .rhgi-analog-clock-frame, .rhgi-fct-diamond, .rhgi-arc-progress, .rhgi-akz-path-core,
+      .rhgi-prism-frame, .rhgi-hub, .rhgi-corridor-deep, .rhgi-corridor-widget, .rhgi-title, .rhgi-sub, .rhgi-analog-clock-frame, .rhgi-fct-diamond, .rhgi-arc-progress, .rhgi-akz-path-core,
       .rhgi-conversion-ticker-track, .rhgi-corridor-btn, .rhgi-conversion-ticker-text,
       .rhgi-deep-lga-track, .rhgi-deep-pl-core, .rhgi-deep-pl-node, .rhgi-matrix-bar--proj {
         animation: none !important;
@@ -1306,68 +1326,135 @@
                   <button type="button" class="rhgi-corridor-btn" data-rhgi-corridor="se">Southeast</button>
                 </div>
 
-                <div class="rhgi-corridor-deep rhgi-prism-frame" aria-labelledby="rhgi-deep-heading">
-                  <h3 id="rhgi-deep-heading" class="rhgi-deep-head">Northwest Tactical Spine · Corridor Deep-Dive</h3>
-                  <div class="rhgi-nw-margin" id="rhgi-nw-margin" aria-live="polite">
-                    <span class="rhgi-nw-margin-label">Winning Margin</span>
-                    <p class="rhgi-nw-margin-delta" id="rhgi-nw-margin-delta">+145.8% Growth Over 2023 Base</p>
-                    <p class="rhgi-nw-margin-dtl" id="rhgi-nw-margin-dtl">NW APC total 2,652,235 → 9,937,940 · Model 15-15 (Kano 1,938,480 anchor)</p>
-                  </div>
-                  <div class="rhgi-deep-layout">
-                    <div class="rhgi-deep-powerline" id="rhgi-deep-powerline" aria-hidden="true">
-                      <svg viewBox="0 0 80 220" preserveAspectRatio="xMidYMid meet">
-                        <defs>
-                          <linearGradient id="rhgiPowerLineGold" x1="0%" y1="100%" x2="0%" y2="0%">
-                            <stop offset="0%" stop-color="#8a7020"/>
-                            <stop offset="35%" stop-color="#e8c547"/>
-                            <stop offset="65%" stop-color="#fff8dc"/>
-                            <stop offset="100%" stop-color="#c9a227"/>
-                          </linearGradient>
-                          <filter id="rhgiPowerLineFilter" x="-30%" y="-30%" width="160%" height="160%">
-                            <feGaussianBlur in="SourceGraphic" stdDeviation="1.2" result="blur"/>
-                            <feMerge>
-                              <feMergeNode in="blur"/>
-                              <feMergeNode in="SourceGraphic"/>
-                            </feMerge>
-                          </filter>
-                        </defs>
-                        <line class="rhgi-deep-pl-core" x1="40" y1="188" x2="40" y2="28"/>
-                        <circle class="rhgi-deep-pl-node" cx="40" cy="188" r="5"/>
-                        <circle class="rhgi-deep-pl-node" cx="40" cy="108" r="4.5"/>
-                        <circle class="rhgi-deep-pl-node" cx="40" cy="28" r="5"/>
-                      </svg>
-                      <div class="rhgi-deep-powerline-legend">
-                        <span>Kano</span>
-                        <span>Zaria</span>
-                        <span>Abuja</span>
+                <div class="rhgi-corridor-widgets-stack">
+                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-prism-frame" id="rhgi-widget-nw" aria-labelledby="rhgi-deep-heading">
+                    <h3 id="rhgi-deep-heading" class="rhgi-deep-head">Northwest Tactical Spine · Widget 1</h3>
+                    <div class="rhgi-nw-margin" id="rhgi-nw-margin" aria-live="polite">
+                      <span class="rhgi-nw-margin-label">Winning Margin</span>
+                      <p class="rhgi-nw-margin-delta" id="rhgi-nw-margin-delta">—</p>
+                      <p class="rhgi-nw-margin-dtl" id="rhgi-nw-margin-dtl">NW APC vs 2023 base · Model 15-15</p>
+                    </div>
+                    <div class="rhgi-deep-layout">
+                      <div class="rhgi-deep-powerline" id="rhgi-deep-powerline" aria-hidden="true">
+                        <svg viewBox="0 0 80 220" preserveAspectRatio="xMidYMid meet">
+                          <defs>
+                            <linearGradient id="rhgiPowerLineGold" x1="0%" y1="100%" x2="0%" y2="0%">
+                              <stop offset="0%" stop-color="#8a7020"/>
+                              <stop offset="35%" stop-color="#e8c547"/>
+                              <stop offset="65%" stop-color="#fff8dc"/>
+                              <stop offset="100%" stop-color="#c9a227"/>
+                            </linearGradient>
+                            <filter id="rhgiPowerLineFilter" x="-30%" y="-30%" width="160%" height="160%">
+                              <feGaussianBlur in="SourceGraphic" stdDeviation="1.2" result="blur"/>
+                              <feMerge>
+                                <feMergeNode in="blur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                              </feMerge>
+                            </filter>
+                          </defs>
+                          <line class="rhgi-deep-pl-core" x1="40" y1="188" x2="40" y2="28"/>
+                          <circle class="rhgi-deep-pl-node" cx="40" cy="188" r="5"/>
+                          <circle class="rhgi-deep-pl-node" cx="40" cy="108" r="4.5"/>
+                          <circle class="rhgi-deep-pl-node" cx="40" cy="28" r="5"/>
+                        </svg>
+                        <div class="rhgi-deep-powerline-legend">
+                          <span>Kano</span>
+                          <span>Zaria</span>
+                          <span>Abuja</span>
+                        </div>
                       </div>
-                    </div>
 
-                    <!-- DEPLOY-11: 2023 APC votes forensic baseline; Model 15-15 yield (Kano anchor 1,938,480) -->
-                    <div class="rhgi-deep-matrix-wrap">
-                      <table class="rhgi-matrix-table">
-                        <thead>
-                          <tr>
-                            <th scope="col">State</th>
-                            <th scope="col">2023 APC (votes)</th>
-                            <th scope="col">15-15 Model APC (votes)</th>
-                          </tr>
-                        </thead>
-                        <tbody id="rhgi-matrix-tbody"></tbody>
-                      </table>
-                    </div>
+                      <div class="rhgi-deep-matrix-wrap">
+                        <table class="rhgi-matrix-table">
+                          <thead>
+                            <tr>
+                              <th scope="col">State</th>
+                              <th scope="col">2023 APC (votes)</th>
+                              <th scope="col">15-15 Model APC (votes)</th>
+                            </tr>
+                          </thead>
+                          <tbody id="rhgi-matrix-tbody"></tbody>
+                        </table>
+                      </div>
 
-                    <div class="rhgi-deep-lga">
-                      <div class="rhgi-deep-lga-label">182 LGA LIVE FEED</div>
-                      <div class="rhgi-deep-lga-scroller" role="region" aria-label="Local government area mobilization status">
-                        <div class="rhgi-deep-lga-track">
-                          <ul class="rhgi-deep-lga-list" id="rhgi-lgaListA"></ul>
-                          <ul class="rhgi-deep-lga-list" id="rhgi-lgaListB" aria-hidden="true"></ul>
+                      <div class="rhgi-deep-lga">
+                        <div class="rhgi-deep-lga-label">182 LGA LIVE FEED</div>
+                        <div class="rhgi-deep-lga-scroller" role="region" aria-label="Northwest local government area mobilization status">
+                          <div class="rhgi-deep-lga-track">
+                            <ul class="rhgi-deep-lga-list" id="rhgi-lgaListA"></ul>
+                            <ul class="rhgi-deep-lga-list" id="rhgi-lgaListB" aria-hidden="true"></ul>
+                          </div>
                         </div>
                       </div>
                     </div>
+                    <p class="rhgi-deep-footer" id="rhgi-deep-footer">NW Projected Yield: — | Confidence Interval: 98% (8R Validated)</p>
                   </div>
-                  <p class="rhgi-deep-footer" id="rhgi-deep-footer">NW Projected Yield: 9,937,940 | Confidence Interval: 98% (8R Validated)</p>
+
+                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-prism-frame rhgi-deep-layout--compact" id="rhgi-widget-sw" aria-labelledby="rhgi-sw-heading">
+                    <h3 id="rhgi-sw-heading" class="rhgi-deep-head">Southwest Corridor · Widget 3</h3>
+                    <div class="rhgi-nw-margin" id="rhgi-sw-margin" aria-live="polite">
+                      <span class="rhgi-nw-margin-label">Winning Margin</span>
+                      <p class="rhgi-nw-margin-delta" id="rhgi-sw-margin-delta">—</p>
+                      <p class="rhgi-nw-margin-dtl" id="rhgi-sw-margin-dtl">SW APC vs 2023 base · Model 15-15</p>
+                    </div>
+                    <div class="rhgi-deep-layout">
+                      <div class="rhgi-deep-matrix-wrap">
+                        <table class="rhgi-matrix-table">
+                          <thead>
+                            <tr>
+                              <th scope="col">State</th>
+                              <th scope="col">2023 APC (votes)</th>
+                              <th scope="col">15-15 Model APC (votes)</th>
+                            </tr>
+                          </thead>
+                          <tbody id="rhgi-sw-matrix-tbody"></tbody>
+                        </table>
+                      </div>
+                      <div class="rhgi-deep-lga">
+                        <div class="rhgi-deep-lga-label">SW LGA LIVE FEED</div>
+                        <div class="rhgi-deep-lga-scroller" role="region" aria-label="Southwest local government area mobilization status">
+                          <div class="rhgi-deep-lga-track">
+                            <ul class="rhgi-deep-lga-list" id="rhgi-sw-lgaListA"></ul>
+                            <ul class="rhgi-deep-lga-list" id="rhgi-sw-lgaListB" aria-hidden="true"></ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <p class="rhgi-deep-footer" id="rhgi-sw-footer">SW Projected Yield: — | Confidence Interval: 98% (8R Validated)</p>
+                  </div>
+
+                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-prism-frame rhgi-deep-layout--compact" id="rhgi-widget-ne" aria-labelledby="rhgi-ne-heading">
+                    <h3 id="rhgi-ne-heading" class="rhgi-deep-head">Northeast Corridor · Widget 4</h3>
+                    <div class="rhgi-nw-margin" id="rhgi-ne-margin" aria-live="polite">
+                      <span class="rhgi-nw-margin-label">Winning Margin</span>
+                      <p class="rhgi-nw-margin-delta" id="rhgi-ne-margin-delta">—</p>
+                      <p class="rhgi-nw-margin-dtl" id="rhgi-ne-margin-dtl">NE APC vs 2023 base · Stealth Paradigm 15-15</p>
+                    </div>
+                    <div class="rhgi-deep-layout">
+                      <div class="rhgi-deep-matrix-wrap">
+                        <table class="rhgi-matrix-table">
+                          <thead>
+                            <tr>
+                              <th scope="col">State</th>
+                              <th scope="col">2023 APC (votes)</th>
+                              <th scope="col">15-15 Model APC (votes)</th>
+                            </tr>
+                          </thead>
+                          <tbody id="rhgi-ne-matrix-tbody"></tbody>
+                        </table>
+                      </div>
+                      <div class="rhgi-deep-lga">
+                        <div class="rhgi-deep-lga-label">NE LGA LIVE FEED</div>
+                        <div class="rhgi-deep-lga-scroller" role="region" aria-label="Northeast local government area mobilization status">
+                          <div class="rhgi-deep-lga-track">
+                            <ul class="rhgi-deep-lga-list" id="rhgi-ne-lgaListA"></ul>
+                            <ul class="rhgi-deep-lga-list" id="rhgi-ne-lgaListB" aria-hidden="true"></ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <p class="rhgi-deep-footer" id="rhgi-ne-footer">NE Projected Yield: — | Confidence Interval: 98% (8R Validated)</p>
+                  </div>
                 </div>
 
                 <div class="rhgi-conversion-ticker" role="region" aria-label="Canvasser check-ins">
@@ -1431,6 +1518,13 @@
             b.classList.remove('rhgi-corridor-btn--active');
           });
           btn.classList.add('rhgi-corridor-btn--active');
+          var corridorMap = { nw: 'rhgi-widget-nw', sw: 'rhgi-widget-sw', ne: 'rhgi-widget-ne' };
+          var key = btn.getAttribute('data-rhgi-corridor');
+          var targetId = corridorMap[key];
+          if (targetId) {
+            var targetEl = document.getElementById(targetId);
+            if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
         });
       });
 
@@ -1566,92 +1660,151 @@
       updateHands();
       setInterval(updateHands, 250);
 
-      /* —— 15-15-DEPLOY-11: forensic APC votes + Model 15-15 yield (Kano anchor) —— */
+      /* —— 15-15-DEPLOY-12: tri-corridor APC + Model 15-15 (Kano anchor multiplier) —— */
       var KANO_APC_2023 = 517341;
       var KANO_PROJ_15 = 1938480;
+      var MODEL_MULT = KANO_PROJ_15 / KANO_APC_2023;
 
       var NW_2023 = [
-        { name: 'Kano', lgas: 44, apcVotes: 517341 },
-        { name: 'Kaduna', lgas: 23, apcVotes: 399293 },
-        { name: 'Katsina', lgas: 34, apcVotes: 482283 },
-        { name: 'Jigawa', lgas: 27, apcVotes: 421390 },
-        { name: 'Sokoto', lgas: 23, apcVotes: 285444 },
-        { name: 'Kebbi', lgas: 21, apcVotes: 248088 },
-        { name: 'Zamfara', lgas: 14, apcVotes: 298396 }
+        { name: 'Kano', apcVotes: 517341 },
+        { name: 'Kaduna', apcVotes: 399293 },
+        { name: 'Katsina', apcVotes: 482283 },
+        { name: 'Jigawa', apcVotes: 421390 },
+        { name: 'Sokoto', apcVotes: 285444 },
+        { name: 'Kebbi', apcVotes: 248088 },
+        { name: 'Zamfara', apcVotes: 298396 }
       ];
 
-      for (var si = 0; si < NW_2023.length; si++) {
-        var row = NW_2023[si];
-        row.projVotes =
-          row.name === 'Kano' ? KANO_PROJ_15 : Math.round((row.apcVotes * KANO_PROJ_15) / KANO_APC_2023);
+      /* 2023 SW APC (Legit.ng / BBC state aggregates) */
+      var SW_2023 = [
+        { name: 'Lagos', apcVotes: 572606 },
+        { name: 'Oyo', apcVotes: 449884 },
+        { name: 'Ogun', apcVotes: 341554 },
+        { name: 'Osun', apcVotes: 343945 },
+        { name: 'Ondo', apcVotes: 369924 },
+        { name: 'Ekiti', apcVotes: 201494 }
+      ];
+
+      /* 2023 NE APC (INEC / Stears / Punch — verify in gazette) */
+      var NE_2023 = [
+        { name: 'Borno', apcVotes: 252282 },
+        { name: 'Bauchi', apcVotes: 316694 },
+        { name: 'Yobe', apcVotes: 151459 },
+        { name: 'Adamawa', apcVotes: 182881 },
+        { name: 'Taraba', apcVotes: 69472 },
+        { name: 'Gombe', apcVotes: 146977 }
+      ];
+
+      function applyProjVotes(rows) {
+        for (var i = 0; i < rows.length; i++) {
+          var r = rows[i];
+          if (r.name === 'Kano' && rows === NW_2023) {
+            r.projVotes = KANO_PROJ_15;
+          } else {
+            r.projVotes = Math.round(r.apcVotes * MODEL_MULT);
+          }
+        }
+      }
+      applyProjVotes(NW_2023);
+      applyProjVotes(SW_2023);
+      applyProjVotes(NE_2023);
+
+      function regionTotals(rows) {
+        var b = 0;
+        var p = 0;
+        for (var i = 0; i < rows.length; i++) {
+          b += rows[i].apcVotes;
+          p += rows[i].projVotes;
+        }
+        return { base: b, proj: p };
       }
 
       function nwVoteTotals() {
-        var sb = 0;
-        var sp = 0;
-        for (var i = 0; i < NW_2023.length; i++) {
-          sb += NW_2023[i].apcVotes;
-          sp += NW_2023[i].projVotes;
-        }
-        return { base: sb, proj: sp };
+        return regionTotals(NW_2023);
       }
 
       var ARC_DASH_MAX = 66.6667;
       var STATE_PROGRESS_FRAC = 24 / 37;
 
-      function updateNwMarginSync() {
-        var vt = nwVoteTotals();
-        var nwFactor = vt.base > 0 ? vt.proj / vt.base : 1;
-        var dashLen = Math.min(ARC_DASH_MAX, STATE_PROGRESS_FRAC * ARC_DASH_MAX * nwFactor);
-
-        var deltaEl = document.getElementById('rhgi-nw-margin-delta');
-        var dtlEl = document.getElementById('rhgi-nw-margin-dtl');
-        var arcPath = document.getElementById('rhgi-arc-progress-path');
-        var akz = document.getElementById('rhgi-akz-spine');
-        var victoryBtn = document.getElementById('rhgi-victory-btn');
-        var footerEl = document.getElementById('rhgi-deep-footer');
-
+      function updateRegionMargin(regionLabel, idPrefix, vt, footerEl) {
+        var g = vt.base > 0 ? ((vt.proj - vt.base) / vt.base) * 100 : 0;
+        var sign = g >= 0 ? '+' : '';
+        var deltaEl = document.getElementById('rhgi-' + idPrefix + '-margin-delta');
+        var dtlEl = document.getElementById('rhgi-' + idPrefix + '-margin-dtl');
         if (deltaEl) {
-          deltaEl.textContent = '+145.8% Growth Over 2023 Base';
+          deltaEl.textContent = sign + g.toFixed(1) + '% Growth Over 2023 Base';
           deltaEl.setAttribute(
             'title',
-            'Forensic locked display · NW Model 15-15 vs 2023 APC vote base (constitutional arc uses aggregate yield multiplier)'
+            regionLabel + ' · Model 15-15 APC projection vs 2023 APC vote base (constitutional arc uses tri-corridor aggregate)'
           );
         }
         if (dtlEl) {
           dtlEl.textContent =
-            'NW APC total ' +
+            regionLabel +
+            ' APC total ' +
             vt.base.toLocaleString('en-NG') +
             ' → ' +
             vt.proj.toLocaleString('en-NG') +
-            ' · Model 15-15 (Kano 1,938,480 anchor)';
-        }
-        if (arcPath) arcPath.setAttribute('stroke-dasharray', dashLen + ' 100');
-        if (akz) akz.classList.toggle('rhgi-akz-spine--sparkle', true);
-        if (victoryBtn) {
-          victoryBtn.setAttribute(
-            'aria-label',
-            'Victory Arc: 24 of 37 units; Northwest APC yield multiplier ' + nwFactor.toFixed(2) + 'x versus 2023 vote base'
-          );
+            ' · Model 15-15 (Kano anchor 1,938,480)';
         }
         if (footerEl) {
           footerEl.textContent =
-            'NW Projected Yield: ' +
+            regionLabel +
+            ' Projected Yield: ' +
             vt.proj.toLocaleString('en-NG') +
             ' | Confidence Interval: 98% (8R Validated)';
         }
       }
 
-      function renderMatrix() {
-        var tbody = document.getElementById('rhgi-matrix-tbody');
+      function updateConstitutionalSync() {
+        var nw = nwVoteTotals();
+        var sw = regionTotals(SW_2023);
+        var ne = regionTotals(NE_2023);
+        var totalB = nw.base + sw.base + ne.base;
+        var totalP = nw.proj + sw.proj + ne.proj;
+        var nwFactor = totalB > 0 ? totalP / totalB : 1;
+        var dashLen = Math.min(ARC_DASH_MAX, STATE_PROGRESS_FRAC * ARC_DASH_MAX * nwFactor);
+        var growthPct = totalB > 0 ? ((totalP - totalB) / totalB) * 100 : 0;
+
+        updateRegionMargin('NW', 'nw', nw, document.getElementById('rhgi-deep-footer'));
+        updateRegionMargin('SW', 'sw', sw, document.getElementById('rhgi-sw-footer'));
+        updateRegionMargin('NE', 'ne', ne, document.getElementById('rhgi-ne-footer'));
+
+        var arcPath = document.getElementById('rhgi-arc-progress-path');
+        var akz = document.getElementById('rhgi-akz-spine');
+        var victoryBtn = document.getElementById('rhgi-victory-btn');
+        if (arcPath) arcPath.setAttribute('stroke-dasharray', dashLen + ' 100');
+        if (akz) akz.classList.toggle('rhgi-akz-spine--sparkle', growthPct > 50);
+        if (victoryBtn) {
+          victoryBtn.setAttribute(
+            'aria-label',
+            'Victory Arc: 24 of 37 units; tri-corridor APC yield multiplier ' + nwFactor.toFixed(2) + 'x versus 2023 vote base'
+          );
+        }
+      }
+
+      function renderMatrixGeneric(tbodyId, rows, maxB, maxP, projExtraTitle) {
+        var tbody = document.getElementById(tbodyId);
         if (!tbody) return;
-        var maxB = KANO_APC_2023;
-        var maxP = KANO_PROJ_15;
+        var mb = maxB;
+        var mp = maxP;
+        if (mb == null) {
+          mb = 0;
+          for (var x = 0; x < rows.length; x++) {
+            if (rows[x].apcVotes > mb) mb = rows[x].apcVotes;
+          }
+        }
+        if (mp == null) {
+          mp = 0;
+          for (var y = 0; y < rows.length; y++) {
+            if (rows[y].projVotes > mp) mp = rows[y].projVotes;
+          }
+        }
         var html = '';
-        for (var s = 0; s < NW_2023.length; s++) {
-          var st = NW_2023[s];
-          var bw = (st.apcVotes / maxB) * 100;
-          var pw = (st.projVotes / maxP) * 100;
+        for (var s = 0; s < rows.length; s++) {
+          var st = rows[s];
+          var bw = (st.apcVotes / mb) * 100;
+          var pw = (st.projVotes / mp) * 100;
           var bv = st.apcVotes.toLocaleString('en-NG');
           var pv = st.projVotes.toLocaleString('en-NG');
           var baseline =
@@ -1666,6 +1819,11 @@
             ' 2023 APC ' +
             bv +
             ' votes"></div></div></div>';
+          var projTitle =
+            '15-15 Model APC ' +
+            pv +
+            ' votes · ' +
+            (projExtraTitle || 'Kano anchor multiplier');
           var proj =
             '<div class="rhgi-matrix-party-row"><span class="rhgi-matrix-party-lab">APC</span>' +
             '<span class="rhgi-matrix-vote-num">' +
@@ -1673,15 +1831,33 @@
             '</span>' +
             '<div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj" style="width:' +
             pw +
-            '%" title="15-15 Model APC ' +
-            pv +
-            ' votes (Kano anchor ratio)"></div></div></div>';
+            '%" title="' +
+            projTitle +
+            '"></div></div></div>';
           html += '<tr><td class="rhgi-matrix-state">' + st.name + '</td><td>' + baseline + '</td><td>' + proj + '</td></tr>';
         }
         tbody.innerHTML = html;
       }
-      renderMatrix();
-      updateNwMarginSync();
+
+      function renderAllMatrices() {
+        renderMatrixGeneric('rhgi-matrix-tbody', NW_2023, KANO_APC_2023, KANO_PROJ_15, '');
+        renderMatrixGeneric(
+          'rhgi-sw-matrix-tbody',
+          SW_2023,
+          null,
+          null,
+          '15/15 multiplier'
+        );
+        renderMatrixGeneric(
+          'rhgi-ne-matrix-tbody',
+          NE_2023,
+          null,
+          null,
+          'Stealth Paradigm 15-15'
+        );
+      }
+      renderAllMatrices();
+      updateConstitutionalSync();
 
       var NW_LGA_NAMES = [
         'Sabon Gari', 'Funtua', 'Birnin Kebbi', 'Gusau', 'Kano Municipal', 'Zaria', 'Dala', 'Fagge', 'Gwale', 'Kumbotso', 'Nasarawa', 'Tarauni', 'Wudil', 'Dawakin Kudu', 'Gaya', 'Rano', 'Minjibir', 'Bebeji', 'Bunkure', 'Ajingi', 'Gwarzo', 'Kabo', 'Dawakin Tofa', 'Tofa', 'Rimin Gado', 'Tundun Wada', 'Sumaila', 'Takai', 'Albasu', 'Warawa', 'Kunchi', 'Tsanyawa', 'Garun Mallam', 'Madobi',
@@ -1704,8 +1880,16 @@
         return a;
       }
 
-      function buildLgaFeed() {
-        var names = shuffle(NW_LGA_NAMES);
+      var SW_LGA_NAMES = [
+        'Ikeja', 'Lagos Island', 'Eti-Osa', 'Badagry', 'Ikorodu', 'Surulere', 'Mushin', 'Oshodi-Isolo', 'Alimosho', 'Abeokuta North', 'Abeokuta South', 'Ijebu Ode', 'Ibadan North', 'Ibadan South-West', 'Ogbomoso', 'Oyo East', 'Osogbo', 'Olorunda', 'Ife Central', 'Akure South', 'Ondo West', 'Okitipupa', 'Ikare', 'Ado Ekiti', 'Ikere', 'Ido-Osi', 'Moba', 'Ijero'
+      ];
+
+      var NE_LGA_NAMES = [
+        'Maiduguri', 'Jere', 'Bama', 'Bauchi', 'Toro', 'Ningi', 'Damaturu', 'Yunusari', 'Potiskum', 'Yola North', 'Yola South', 'Mayo Belwa', 'Jalingo', 'Lau', 'Wukari', 'Gashaka', 'Gombe', 'Akko', 'Billiri', 'Kaltungo', 'Yamaltu Deba', 'Kumo', 'Funakaye', 'Karu', 'Numan'
+      ];
+
+      function buildLgaFeedFrom(namePool) {
+        var names = shuffle(namePool);
         var n = names.length;
         var securedCount = Math.round(n * 0.6);
         var out = [];
@@ -1740,21 +1924,29 @@
         return kano && zaria && abuja;
       }
 
-      function renderLgaFeed() {
-        var listA = document.getElementById('rhgi-lgaListA');
-        var listB = document.getElementById('rhgi-lgaListB');
-        var powerline = document.getElementById('rhgi-deep-powerline');
+      function renderLgaFeed(listAId, listBId, powerlineId, namePool) {
+        var listA = document.getElementById(listAId);
+        var listB = document.getElementById(listBId);
         if (!listA || !listB) return;
-        var feed = buildLgaFeed();
+        var feed = buildLgaFeedFrom(namePool);
         var html = feed.map(feedItemHtml).join('');
         listA.innerHTML = html;
         listB.innerHTML = html;
-        if (powerline) {
-          powerline.classList.toggle('rhgi-deep-powerline--synced', akzAnchorsSecured(feed));
+        if (powerlineId) {
+          var powerline = document.getElementById(powerlineId);
+          if (powerline) {
+            powerline.classList.toggle('rhgi-deep-powerline--synced', akzAnchorsSecured(feed));
+          }
         }
       }
-      renderLgaFeed();
-      setInterval(renderLgaFeed, 45000);
+
+      function renderAllLgaFeeds() {
+        renderLgaFeed('rhgi-lgaListA', 'rhgi-lgaListB', 'rhgi-deep-powerline', NW_LGA_NAMES);
+        renderLgaFeed('rhgi-sw-lgaListA', 'rhgi-sw-lgaListB', null, SW_LGA_NAMES);
+        renderLgaFeed('rhgi-ne-lgaListA', 'rhgi-ne-lgaListB', null, NE_LGA_NAMES);
+      }
+      renderAllLgaFeeds();
+      setInterval(renderAllLgaFeeds, 45000);
     })();
   </script>
 </body>
