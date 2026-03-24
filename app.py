@@ -163,7 +163,9 @@ with gr.Blocks(css=CSS, title="GCSLC NRRFC Fusion Center") as demo:
     demo.load(get_leak_md, None, leak_md, every=60)
 
 if __name__ == "__main__":
-    try:
-        demo.launch(server_name="0.0.0.0", server_port=7860, share=False)
-    except OSError:
-        demo.launch(server_name="0.0.0.0", server_port=0, share=False)
+    demo.launch(
+        server_name="127.0.0.1",
+        server_port=7860,
+        share=False,
+        prevent_thread_lock=True,
+    )
