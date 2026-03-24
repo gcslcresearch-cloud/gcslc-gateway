@@ -764,6 +764,8 @@
       word-wrap: break-word;
       overflow-wrap: break-word;
       hyphens: manual;
+      position: relative;
+      overflow: hidden;
       background: linear-gradient(
         118deg,
         #6a5518 0%,
@@ -773,13 +775,38 @@
         #fff8e8 78%,
         #c9a227 100%
       );
-      background-size: 260% 120%;
+      background-size: 100% 100%;
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      animation: rhgi-nw-margin-shimmer 4.2s ease-in-out infinite;
     }
-    /* South-South: +210% growth strategic shimmer (123 LGAs) */
+    /* Sovereign shimmer: sweep uses transform + opacity (GPU); text gradient stays static */
+    .rhgi-nw-margin-delta::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 52%;
+      height: 100%;
+      background: linear-gradient(
+        105deg,
+        transparent 0%,
+        rgba(255, 248, 220, 0.14) 44%,
+        rgba(255, 255, 255, 0.26) 50%,
+        rgba(255, 248, 220, 0.14) 56%,
+        transparent 100%
+      );
+      transform: translateX(-120%);
+      pointer-events: none;
+      mix-blend-mode: soft-light;
+      animation: rhgi-r1-margin-delta-sovereign 4.2s ease-in-out infinite;
+      will-change: transform, opacity;
+    }
+    @keyframes rhgi-r1-margin-delta-sovereign {
+      0%, 100% { transform: translateX(-120%); opacity: 0.62; }
+      50% { transform: translateX(220%); opacity: 1; }
+    }
+    /* South-South: +210% growth corridor (123 LGAs) */
     .rhgi-ss-growth-shimmer.rhgi-nw-margin-delta {
       background: linear-gradient(
         118deg,
@@ -791,16 +818,27 @@
         #e8c547 78%,
         #1a3a5c 100%
       );
-      background-size: 320% 140%;
-      animation: rhgi-ss-growth-shimmer-210 3.8s ease-in-out infinite;
+      background-size: 100% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
     }
-    @keyframes rhgi-ss-growth-shimmer-210 {
-      0%, 100% { background-position: 6% 50%; filter: brightness(1); }
-      50% { background-position: 94% 50%; filter: brightness(1.12); }
+    .rhgi-ss-growth-shimmer.rhgi-nw-margin-delta::after {
+      background: linear-gradient(
+        105deg,
+        transparent 0%,
+        rgba(0, 229, 255, 0.12) 38%,
+        rgba(255, 248, 220, 0.28) 50%,
+        rgba(46, 139, 87, 0.18) 62%,
+        transparent 100%
+      );
+      mix-blend-mode: plus-lighter;
+      animation-name: rhgi-r1-margin-delta-sovereign-ss;
+      animation-duration: 3.8s;
     }
-    @keyframes rhgi-nw-margin-shimmer {
-      0%, 100% { background-position: 8% 50%; filter: brightness(1); }
-      50% { background-position: 92% 50%; filter: brightness(1.06); }
+    @keyframes rhgi-r1-margin-delta-sovereign-ss {
+      0%, 100% { transform: translateX(-120%); opacity: 0.58; }
+      50% { transform: translateX(220%); opacity: 0.98; }
     }
     .rhgi-nw-margin-dtl {
       margin: 0;
@@ -1245,65 +1283,86 @@
       font-weight: 600;
     }
 
-    /* —— EMERGENCY-STABILITY-26: visual lockdown — no CSS animation; solid Deep Navy; no gradient motion —— */
+    /* —— 15-15-REANIMATE-STEP-1: static navy/gold panels; sanctioned motion only —— */
     .rhgi-emergency-hide {
       display: none !important;
     }
-    .rhgi-page,
-    .rhgi-page *,
-    .rhgi-page *::before,
-    .rhgi-page *::after {
-      animation: none !important;
-      transition: none !important;
-    }
     body.rhgi-page {
-      background: #0a0e1a !important;
+      background: linear-gradient(165deg, #050a14 0%, #0a0e1a 42%, #101a2e 100%) !important;
       --rhgi-navy-deep: #0a0e1a;
     }
-    .rhgi-shell,
-    .rhgi-content-prism,
-    .rhgi-prism-frame,
+    .rhgi-shell {
+      background: transparent !important;
+    }
+    .rhgi-content-prism {
+      background: linear-gradient(165deg, rgba(5, 12, 26, 0.58), rgba(4, 10, 22, 0.42)) !important;
+      box-shadow: inset 0 0 1.25rem rgba(0, 60, 120, 0.06) !important;
+    }
+    .rhgi-prism-frame {
+      animation: none !important;
+      border: 2px solid rgba(32, 56, 92, 0.96) !important;
+      box-shadow:
+        0 0.5rem 2.25rem rgba(0, 0, 0, 0.32),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04),
+        0 0 0.75rem rgba(0, 90, 150, 0.22) !important;
+    }
     .rhgi-hub,
     .rhgi-corridor-deep,
     .rhgi-corridor-widget,
-    .rhgi-election-ticker,
-    .rhgi-footer-774,
-    .rhgi-velocity-field,
-    .rhgi-velocity-streaks,
-    .rhgi-velocity-pulse {
-      background: #0a0e1a !important;
-      background-image: none !important;
-      box-shadow: none !important;
+    .rhgi-election-ticker {
+      background: linear-gradient(165deg, rgba(6, 18, 36, 0.92), rgba(2, 10, 22, 0.96)) !important;
+      box-shadow:
+        inset 0 0 1.375rem rgba(0, 229, 255, 0.05),
+        0 0 0.875rem rgba(0, 0, 0, 0.4) !important;
+    }
+    .rhgi-footer-774 {
+      background: linear-gradient(180deg, rgba(4, 14, 30, 0.95), rgba(2, 8, 18, 0.98)) !important;
+      border: 1px solid rgba(232, 197, 71, 0.22) !important;
+      box-shadow: inset 0 0 1.25rem rgba(0, 229, 255, 0.06) !important;
     }
     .rhgi-title.rhgi-title--rhgi-full {
-      color: #e8c547 !important;
-      background: none !important;
-      -webkit-background-clip: border-box !important;
-      background-clip: border-box !important;
-      filter: none !important;
+      background: linear-gradient(
+        122deg,
+        #050a14 0%,
+        #0f2844 8%,
+        #fff8e8 18%,
+        #e8c547 32%,
+        #ffffff 42%,
+        #1a3a5c 52%,
+        #e8c547 62%,
+        #f5f0e6 72%,
+        #0d1a2e 86%,
+        #e8c547 100%
+      ) !important;
+      background-size: 100% 100% !important;
+      -webkit-background-clip: text !important;
+      background-clip: text !important;
+      color: transparent !important;
+      animation: none !important;
+      filter: drop-shadow(0 0.06rem 0.35rem rgba(8, 22, 42, 0.45)) !important;
     }
     .rhgi-sub {
-      color: #8fa3bf !important;
-      background: none !important;
-      -webkit-background-clip: border-box !important;
-      background-clip: border-box !important;
-    }
-    .rhgi-nw-margin-delta,
-    .rhgi-ss-growth-shimmer.rhgi-nw-margin-delta {
-      color: #e8c547 !important;
-      background: none !important;
-      -webkit-background-clip: border-box !important;
-      background-clip: border-box !important;
-      text-shadow: none !important;
+      background: linear-gradient(
+        118deg,
+        rgba(0, 200, 230, 0.85) 0%,
+        #00f0ff 22%,
+        #a8f8ff 48%,
+        #00c8e8 72%,
+        rgba(0, 229, 255, 0.9) 100%
+      ) !important;
+      background-size: 100% 100% !important;
+      -webkit-background-clip: text !important;
+      background-clip: text !important;
+      color: transparent !important;
+      animation: none !important;
     }
     .rhgi-conversion-ticker-track,
-    .rhgi-deep-lga-track,
-    .rhgi-footer-774-track {
+    .rhgi-deep-lga-track {
       transform: none !important;
       animation: none !important;
     }
     .rhgi-footer-774-inner {
-      mask-image: none !important;
+      mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent) !important;
     }
     .rhgi-deep-lga-scroller {
       overflow-y: auto !important;
@@ -1313,14 +1372,54 @@
       background: #2d5a42 !important;
     }
     .rhgi-fct-strategic-lock {
-      background: #0a0e1a !important;
+      background: linear-gradient(165deg, rgba(5, 12, 26, 0.95), rgba(4, 10, 22, 0.92)) !important;
       border: 1px solid rgba(232, 197, 71, 0.55) !important;
       border-radius: 0.5rem;
       padding: 0.35rem 0.5rem;
     }
     .rhgi-se-strategic-lock-static {
-      background: #0a0e1a !important;
+      background: linear-gradient(165deg, rgba(5, 12, 26, 0.95), rgba(4, 10, 22, 0.92)) !important;
       border: 1px solid rgba(232, 197, 71, 0.45) !important;
+    }
+    /* Default: freeze CSS animation (flicker shield); explicit exceptions follow */
+    .rhgi-page,
+    .rhgi-page *,
+    .rhgi-page *::before,
+    .rhgi-page *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+    /* Sovereign shimmer — Winning Margin Delta only */
+    .rhgi-page .rhgi-nw-margin-delta::after,
+    .rhgi-page .rhgi-ss-growth-shimmer.rhgi-nw-margin-delta::after {
+      animation: rhgi-r1-margin-delta-sovereign 4.2s ease-in-out infinite !important;
+    }
+    .rhgi-page .rhgi-ss-growth-shimmer.rhgi-nw-margin-delta::after {
+      animation: rhgi-r1-margin-delta-sovereign-ss 3.8s ease-in-out infinite !important;
+    }
+    /* 774 glide — translateX only, 240s clinical drift */
+    .rhgi-page .rhgi-footer-774-track {
+      animation: rhgi-footer774-drift var(--rhgi-footer774-duration, 240s) linear infinite !important;
+      transform: translateZ(0) !important;
+      will-change: transform, opacity !important;
+    }
+    @keyframes rhgi-r1-cd-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.9; }
+    }
+    .rhgi-page .rhgi-election-ticker .rhgi-seg-val {
+      animation: rhgi-r1-cd-pulse 1s step-end infinite !important;
+      will-change: opacity !important;
+    }
+    .rhgi-page .rhgi-r1-global-pulse .rhgi-analog-clock-frame {
+      animation: none !important;
+      background: linear-gradient(145deg, rgba(18, 36, 62, 0.95), rgba(6, 14, 28, 0.98), rgba(28, 48, 78, 0.9), rgba(8, 18, 36, 0.96)) !important;
+      background-size: 100% 100% !important;
+    }
+    .rhgi-page .rhgi-r1-global-pulse .rhgi-hand-hour,
+    .rhgi-page .rhgi-r1-global-pulse .rhgi-hand-minute,
+    .rhgi-page .rhgi-r1-global-pulse .rhgi-hand-second {
+      transition: transform 1s step-end !important;
     }
     .rhgi-slc-budget {
       width: 100%;
@@ -1328,7 +1427,10 @@
       padding: clamp(0.45rem, 2vw, 0.65rem);
       border: 1px solid rgba(232, 197, 71, 0.35);
       border-radius: 0.5rem;
-      background: #0a0e1a !important;
+      background: linear-gradient(180deg, rgba(6, 14, 28, 0.98), rgba(4, 10, 22, 0.96)) !important;
+      position: relative;
+      z-index: 1;
+      isolation: isolate;
     }
     .rhgi-slc-formula {
       margin: 0 0 0.35rem;
@@ -1723,7 +1825,7 @@
                     <h3 id="rhgi-ss2-heading" class="rhgi-deep-head">South-South Corridor · Widget 5</h3>
                     <div class="rhgi-nw-margin" id="rhgi-ss-margin" aria-live="polite">
                       <span class="rhgi-nw-margin-label">Winning Margin</span>
-                      <p class="rhgi-nw-margin-delta" id="rhgi-ss-margin-delta">—</p>
+                      <p class="rhgi-nw-margin-delta rhgi-ss-growth-shimmer" id="rhgi-ss-margin-delta">—</p>
                       <p class="rhgi-nw-margin-dtl" id="rhgi-ss-margin-dtl">SS APC vs 2023 base · +210% growth corridor · 123 LGAs</p>
                     </div>
                     <div class="rhgi-deep-layout">
@@ -1800,13 +1902,13 @@
           </div>
         </section>
 
-        <section class="rhgi-pulse-section">
+        <section class="rhgi-pulse-section rhgi-r1-global-pulse">
           <p class="rhgi-global-pulse-label">Global Pulse</p>
           <div class="rhgi-clocks-grid" id="rhgi-clocksRow" role="group" aria-label="World clocks"></div>
         </section>
 
         <div class="rhgi-footer-774 rhgi-prism-frame" role="region" aria-label="774 local government areas national mobilization feed">
-          <p class="rhgi-footer-774-label">774 LGA national feed · moderate glide</p>
+          <p class="rhgi-footer-774-label">774 LGA national feed · 240s translateX glide</p>
           <div class="rhgi-footer-774-inner">
             <div class="rhgi-footer-774-track" id="rhgi-footer774Track">
               <span class="rhgi-footer-774-text" id="rhgi-footer774A"></span>
@@ -1949,7 +2051,7 @@
         el('rhgi-cd-s').textContent = pad2(Math.min(p.secs, 99));
       }
       tickCountdown();
-      setInterval(tickCountdown, 250);
+      setInterval(tickCountdown, 1000);
 
       var zones = [
         { city: 'Abuja', tz: 'Africa/Lagos' },
