@@ -15,19 +15,18 @@ st.set_page_config(
 )
 if "corridor_zone" not in st.session_state:
     st.session_state.corridor_zone = None
-if "r8_note" not in st.session_state:
-    st.session_state.r8_note = ""
 if "_prev_corridor_state_key" not in st.session_state:
     st.session_state._prev_corridor_state_key = None
 
 # RHGI-GOLDMAN palette (mirrors :root CSS variables).
 METALLIC_GOLD = "#D4AF37"
 ROSE_GOLD = "#B76E79"
-NAVY_CSS = "#000080"
+NAVY_CSS = "#000033"
 GOLD = METALLIC_GOLD
 NAVY = NAVY_CSS
-# Prism Navy canvas + plot wells (Goldman corridor-27).
-PRISM_NAVY = "#000080"
+# Deep Prism Navy (video match — RHGI ABSOLUTE RESTORE-39).
+PRISM_NAVY = "#000033"
+PLOTLY_FONT = dict(family="Goldman, sans-serif", color="#ffffff", size=13)
 CANVASSER_BUDGET_ANCHOR_NGN = 30_000
 # RHGI TOTAL RESTORE-30 — Sovereign Budget Engine (personnel lines per mandate brief).
 SOVEREIGN_CANVASSERS_LINE = 144_000
@@ -35,6 +34,8 @@ SOVEREIGN_EDAY_STAFF_LINE = 144_000
 SOVEREIGN_UNIT_NGN = 30_000
 SOVEREIGN_MISC_PCT = 0.15
 SOVEREIGN_CONTINGENCY_PCT = 0.10
+# RHGI video brief — sovereign headline (₦108.96B); line-model arithmetic shown in UI.
+SOVEREIGN_BUDGET_MANDATE_NGN = 108_960_000_000
 # Deep Navy → metallic gold — 774 LGA winning-margin map.
 DEEP_NAVY_SAFE = "#152a45"
 METALLIC_GOLD_TARGET = METALLIC_GOLD
@@ -69,8 +70,8 @@ def _gold_heading(text: str) -> None:
 
 
 def _rose_heading(text: str) -> None:
-    """Corridor section titles — Rose Gold (#B76E79)."""
-    st.markdown(f'<p class="rhgi-rose-heading">{html.escape(text)}</p>', unsafe_allow_html=True)
+    """Corridor section titles — Yellow Gold (strict video / COMPLIANCE-45)."""
+    st.markdown(f'<p class="rhgi-corridor-gold-heading">{html.escape(text)}</p>', unsafe_allow_html=True)
 
 
 def sovereign_budget_engine_breakdown() -> tuple[int, int, int]:
@@ -272,36 +273,70 @@ st.markdown(
     :root {
       --metallic-gold: #D4AF37;
       --rose-gold: #B76E79;
-      --navy: #000080;
+      --navy: #000033;
       --stark-white: #ffffff;
     }
     /* Anti-Blue Strike — strip default Streamlit / BaseWeb blues */
-    html, body { background: #000080 !important; }
+    html, body { background: #000033 !important; }
     [data-testid="stAppViewContainer"], [data-testid="stAppViewContainer"] > .main {
-      background: #000080 !important;
+      background: #000033 !important;
     }
     [data-testid="stHeader"], header[data-testid="stHeader"] {
-      background: rgba(0, 0, 128, 0.97) !important;
+      background: rgba(0, 0, 51, 0.97) !important;
       border-bottom: 1px solid rgba(212, 175, 55, 0.25) !important;
     }
-    [data-testid="stDecoration"] { background: #000080 !important; }
+    [data-testid="stDecoration"] { background: #000033 !important; }
     [data-testid="stToolbar"] { background: transparent !important; }
     [data-testid="stSidebarNav"] { background: transparent !important; }
     div[data-testid="stVerticalBlockBorderWrapper"] { border-color: rgba(212,175,55,0.2) !important; }
     [data-baseweb="slider"] [role="slider"] { background: var(--metallic-gold) !important; }
-    [data-baseweb="slider"] [data-testid="stThumbValue"] { color: var(--rose-gold) !important; }
-    [data-baseweb="slider"] [style*="background"] { background: rgba(0,0,128,0.6) !important; }
-    .stMetric { background: rgba(0,0,128,0.35) !important; border: 1px solid rgba(212,175,55,0.25) !important; border-radius: 10px !important; }
+    [data-baseweb="slider"] [data-testid="stThumbValue"] { color: var(--metallic-gold) !important; }
+    [data-baseweb="slider"] [style*="background"] { background: rgba(0,0,51,0.6) !important; }
+    [data-testid="stSlider"], [data-testid="stSlider"] > label,
+    [data-testid="stSlider"] + div { background: transparent !important; }
+    .stMetric, [data-testid="stMetricContainer"], [data-testid="stMetricContainer"] > div {
+      background: rgba(0,0,51,0.55) !important;
+      background-image: none !important;
+      border: 1px solid rgba(212,175,55,0.3) !important;
+      border-radius: 10px !important;
+      box-shadow: none !important;
+    }
     .stMetric [data-testid="stMetricValue"] { color: var(--stark-white) !important; }
     .stMetric [data-testid="stMetricLabel"] { color: var(--metallic-gold) !important; }
-    .stAlert { background: rgba(0,0,128,0.55) !important; border: 1px solid rgba(212,175,55,0.35) !important; }
+    [data-testid="stMetricDelta"] { color: var(--metallic-gold) !important; }
+    .stAlert, [data-testid="stNotification"], [data-testid="stAlert"] {
+      background: rgba(0,0,51,0.65) !important;
+      background-image: none !important;
+      border: 1px solid rgba(212,175,55,0.35) !important;
+      box-shadow: none !important;
+    }
     .stInfo { color: var(--stark-white) !important; }
-    [data-testid="stAlert"] { color: #B76E79 !important; font-family: 'Goldman', sans-serif !important; }
-    a, a:visited { color: var(--rose-gold) !important; }
+    [data-testid="stAlert"] { color: var(--stark-white) !important; font-family: 'Goldman', sans-serif !important; }
+    a, a:visited { color: var(--metallic-gold) !important; }
     a:hover { color: var(--metallic-gold) !important; }
-    iframe { background: #000080 !important; }
+    iframe { background: #000033 !important; }
+    /* Kill residual Streamlit / BaseWeb light surfaces */
+    [data-testid="stVerticalBlock"] > div,
+    [data-testid="stVerticalBlockBorderWrapper"] > div { background-color: transparent !important; }
+    div[data-baseweb="select"] > div,
+    [data-baseweb="popover"],
+    ul[data-testid="stSelectboxVirtualDropdown"],
+    [data-baseweb="menu"] { background-color: #000033 !important; color: var(--stark-white) !important; }
+    [data-baseweb="menu"] li { font-family: 'Goldman', sans-serif !important; color: var(--stark-white) !important; }
+    .stCodeBlock, [data-testid="stCode"] { background: rgba(0,0,51,0.5) !important; }
+    /* No white cards: selectbox, popover, expanders, columns */
+    [data-testid="stSelectbox"] > div,
+    [data-testid="stSelectbox"] [data-baseweb="select"] > div {
+      background-color: #000033 !important;
+      color: var(--stark-white) !important;
+      border-color: rgba(212,175,55,0.35) !important;
+    }
+    [data-testid="stExpander"] details { background: #000033 !important; border: 1px solid rgba(212,175,55,0.25) !important; }
+    [data-testid="stExpander"] summary { background: rgba(0,0,51,0.5) !important; color: var(--stark-white) !important; }
+    [data-testid="stVerticalBlock"] > div { background-color: transparent !important; }
+    div[data-testid="column"] > div { background-color: transparent !important; }
     .stApp {
-      background-color: #000080 !important;
+      background-color: #000033 !important;
       background-image: none !important;
       color: var(--stark-white) !important;
       font-family: 'Goldman', sans-serif !important;
@@ -311,25 +346,37 @@ st.markdown(
     .stApp h1, .stApp h2, .stApp h3, .stApp h4,
     [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3,
     [data-testid="stHeader"] { font-family: 'Goldman', sans-serif !important; }
+    .stApp, .stApp label, .stApp p, .stApp span, .stApp div, .stApp li,
+    .stApp input, .stApp textarea, .stApp button, .stApp select,
+    [data-testid="stSidebar"], [data-testid="stSidebar"] * {
+      font-family: 'Goldman', sans-serif !important;
+    }
     .stApp *:not(svg):not(path):not(circle):not(rect):not(line):not(polyline):not(polygon) {
       font-family: 'Goldman', sans-serif !important;
     }
+    svg text { font-family: 'Goldman', sans-serif !important; }
     [data-testid="stSidebar"] {
-      background: #000080 !important;
+      background: #000033 !important;
     }
     [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p,
     [data-testid="stSidebar"] label { color: var(--stark-white) !important; }
+    [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {
+      color: var(--metallic-gold) !important;
+    }
     .block-container {
       font-size: 1.1rem;
       position: relative;
       z-index: 2 !important;
       font-family: 'Goldman', sans-serif !important;
       color: var(--stark-white) !important;
-      background: #000080 !important;
+      background: #000033 !important;
     }
-    section.main [data-testid="stMarkdownContainer"] {
-      background-color: #000080 !important;
+    section.main [data-testid="stMarkdownContainer"],
+    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] {
+      background-color: #000033 !important;
       border-radius: 10px;
+      border: none !important;
+      box-shadow: none !important;
     }
     div[data-testid="stAppViewContainer"] > section.main { position: relative; z-index: 1; }
     .rhgi-brand-title {
@@ -362,15 +409,15 @@ st.markdown(
       font-size: 2rem;
       letter-spacing: 0.08em;
       color: var(--metallic-gold);
-      text-shadow: 0 0 18px rgba(212, 175, 55, 0.95), 0 0 36px rgba(183, 110, 121, 0.45);
+      text-shadow: 0 0 18px rgba(212, 175, 55, 0.95), 0 0 36px rgba(212, 175, 55, 0.35);
       box-shadow:
         0 0 36px rgba(212, 175, 55, 0.45),
-        inset 0 0 28px rgba(212, 175, 55, 0.18);
+        inset 0 0 28px rgba(212, 175, 55, 0.12);
       animation: emblemGoldPulse 2.8s ease-in-out infinite;
     }
     @keyframes emblemGoldPulse {
-      0%, 100% { filter: brightness(1); box-shadow: 0 0 28px rgba(212,175,55,0.4); }
-      50% { filter: brightness(1.15); box-shadow: 0 0 52px rgba(212,175,55,0.7); }
+      0%, 100% { filter: brightness(1); box-shadow: 0 0 28px rgba(212,175,55,0.45); }
+      50% { filter: brightness(1.12); box-shadow: 0 0 52px rgba(212,175,55,0.75); }
     }
     .rhgi-countdown-meter {
       text-align: center;
@@ -386,7 +433,7 @@ st.markdown(
       text-align: center;
       font-size: clamp(0.82rem, 2.2vw, 0.92rem);
       font-weight: 600;
-      color: var(--rose-gold) !important;
+      color: var(--metallic-gold) !important;
       margin: 0 0 12px 0;
       letter-spacing: 0.06em;
     }
@@ -408,7 +455,7 @@ st.markdown(
       margin-bottom: 22px;
       letter-spacing: 0.03em;
     }
-    .rhgi-wm-root { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; opacity: 0.4; }
+    .rhgi-wm-root { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; opacity: 0.45; }
     .rhgi-wm-inner {
       position: absolute; width: 260%; height: 260%; left: -80%; top: -80%;
       display: flex; flex-wrap: wrap; align-content: flex-start; gap: 2.2rem 3.2rem;
@@ -439,12 +486,19 @@ st.markdown(
       position: fixed; inset: 0; pointer-events: none; z-index: 9999;
       background:
         repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0px, transparent 1px, transparent 12px),
-        repeating-linear-gradient(90deg, rgba(0,0,128,0.06) 0px, transparent 1px, transparent 14px),
+        repeating-linear-gradient(90deg, rgba(0,0,51,0.06) 0px, transparent 1px, transparent 14px),
         radial-gradient(ellipse at 30% 20%, rgba(212,175,55,0.04) 0%, transparent 55%);
       mix-blend-mode: soft-light;
       opacity: 0.92;
     }
     button, input, textarea, [data-testid="stMarkdownContainer"], .stMarkdown { user-select: text !important; -webkit-user-select: text !important; }
+    /* 8R row: no white card behind buttons */
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)) [data-testid="element-container"],
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)) [data-testid="column"] {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+    }
     /* Column buttons default: metallic gold */
     div[data-testid="column"] button[kind="secondary"],
     div[data-testid="column"] button[kind="primary"] {
@@ -452,39 +506,58 @@ st.markdown(
       overflow: hidden !important;
       font-size: 1.06rem !important;
       font-weight: 700 !important;
+      font-family: 'Goldman', sans-serif !important;
       padding-top: 0.68rem !important;
       padding-bottom: 0.68rem !important;
       color: var(--metallic-gold) !important;
       border: 1px solid rgba(212, 175, 55, 0.55) !important;
-      background: linear-gradient(155deg, rgba(0,0,128,0.45) 0%, #0b1024 55%, rgba(183,110,121,0.12) 100%) !important;
+      background: linear-gradient(155deg, #00000e 0%, #00001a 55%, #000033 100%) !important;
       background-size: 220% 100% !important;
       animation: r8MetalPulse 2.6s ease-in-out infinite;
     }
-    /* 8R belt (8 columns): Rose Gold + metallic sweep 3s + pulse */
+    /* 8R belt: Yellow Gold text + navy field + shimmer (no white, no neon) */
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)) button[kind="secondary"],
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)) button[kind="primary"] {
-      color: var(--rose-gold) !important;
-      border: 1px solid rgba(183, 110, 121, 0.65) !important;
-      background: linear-gradient(155deg, rgba(0,0,128,0.45) 0%, #0b1024 55%, rgba(183,110,121,0.18) 100%) !important;
+      color: var(--metallic-gold) !important;
+      border: 1px solid rgba(212, 175, 55, 0.55) !important;
+      background: linear-gradient(155deg, #000005 0%, #00000f 50%, #00001c 100%) !important;
       background-size: 220% 100% !important;
       animation: r8WidgetPulse 2s ease-in-out infinite, r8ShimmerSweep 3s linear infinite !important;
     }
-    /* 6-column corridor belt: Rose Gold + shimmer (must follow generic column rule) */
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)) button p,
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)) button span {
+      color: #D4AF37 !important;
+      animation: r8GoldTextShimmer 2.4s ease-in-out infinite !important;
+    }
+    @keyframes r8GoldTextShimmer {
+      0%, 100% {
+        color: #D4AF37 !important;
+        text-shadow: 0 0 8px rgba(212,175,55,0.45), 0 0 14px rgba(0,0,51,0.6);
+      }
+      50% {
+        color: #f0e68c !important;
+        text-shadow:
+          0 0 22px rgba(212, 175, 55, 0.75),
+          0 0 36px rgba(212, 175, 55, 0.35),
+          0 0 4px rgba(255, 255, 255, 0.25);
+      }
+    }
+    /* 6-column corridor belt: Yellow Gold + navy + shimmer */
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)):not(:has(> div:nth-child(7))) button[kind="secondary"],
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)):not(:has(> div:nth-child(7))) button[kind="primary"] {
-      color: var(--rose-gold) !important;
-      border: 1px solid rgba(183, 110, 121, 0.65) !important;
-      background: linear-gradient(155deg, rgba(0,0,128,0.45) 0%, #0b1024 55%, rgba(183,110,121,0.18) 100%) !important;
+      color: var(--metallic-gold) !important;
+      border: 1px solid rgba(212, 175, 55, 0.55) !important;
+      background: linear-gradient(155deg, #000005 0%, #00000f 50%, #00001c 100%) !important;
       background-size: 220% 100% !important;
       animation: r8WidgetPulse 2s ease-in-out infinite, r8ShimmerSweep 3s linear infinite !important;
     }
     @keyframes r8WidgetPulse {
-      0%, 100% { box-shadow: 0 0 8px rgba(183,110,121,0.4); transform: scale(1); }
-      50% { box-shadow: 0 0 22px rgba(212,175,55,0.5); transform: scale(1.02); }
+      0%, 100% { box-shadow: 0 0 8px rgba(212,175,55,0.25); transform: scale(1); }
+      50% { box-shadow: 0 0 22px rgba(212,175,55,0.45); transform: scale(1.02); }
     }
     @keyframes r8MetalPulse {
-      0%, 100% { box-shadow: 0 0 10px rgba(183,110,121,0.35); }
-      50% { box-shadow: 0 0 26px rgba(212,175,55,0.45); }
+      0%, 100% { box-shadow: 0 0 10px rgba(212,175,55,0.2); }
+      50% { box-shadow: 0 0 26px rgba(212,175,55,0.4); }
     }
     @keyframes r8ShimmerSweep {
       0% { background-position: 200% center; }
@@ -495,7 +568,7 @@ st.markdown(
       max-height: 58vh;
       border: 1px solid rgba(212, 175, 55, 0.4);
       border-radius: 14px;
-      background: rgba(0, 0, 128, 0.22);
+      background: rgba(0, 0, 51, 0.22);
     }
     .rhgi-lga-marquee {
       display: flex;
@@ -513,14 +586,15 @@ st.markdown(
       scroll-behavior: smooth;
       border: 1px solid rgba(212, 175, 55, 0.35);
       border-radius: 12px;
-      background: rgba(0, 0, 128, 0.35);
+      background: rgba(0, 0, 51, 0.35);
     }
     .rhgi-kpi {
       padding: 12px 14px;
       border-radius: 10px;
-      border: 1px solid rgba(183, 110, 121, 0.35);
-      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      background: rgba(0, 0, 51, 0.45);
       font-family: 'Goldman', sans-serif !important;
+      color: var(--stark-white) !important;
     }
     .rhgi-pulse-red { animation: pulseRed 1s ease-in-out infinite; }
     @keyframes pulseRed {
@@ -542,8 +616,8 @@ st.markdown(
       font-weight: 800;
       letter-spacing: 0.28em;
       text-transform: uppercase;
-      color: #B76E79 !important;
-      text-shadow: 0 0 14px rgba(183,110,121,0.55), 0 0 28px rgba(0,0,128,0.55);
+      color: var(--metallic-gold) !important;
+      text-shadow: 0 0 14px rgba(212,175,55,0.5), 0 0 28px rgba(0,0,51,0.55);
       margin: 8px 0 6px 0;
     }
     .rhgi-mandate-secured {
@@ -552,7 +626,7 @@ st.markdown(
       margin: 12px 0 16px 0;
       border-radius: 12px;
       border: 3px solid var(--metallic-gold);
-      background: linear-gradient(180deg, rgba(11,16,36,0.95), rgba(26,35,126,0.35));
+      background: #000033 !important;
       animation: mandateGoldPulse 1.4s ease-in-out infinite;
     }
     @keyframes mandateGoldPulse {
@@ -563,7 +637,7 @@ st.markdown(
       position: relative;
       overflow: hidden;
       width: 100%;
-      background: #000080;
+      background: #000033;
       border-top: 1px solid rgba(212,175,55,0.4);
       border-bottom: 1px solid rgba(212,175,55,0.4);
       margin-top: 18px;
@@ -585,14 +659,14 @@ st.markdown(
     }
     .rhgi-gold-heading { color: var(--metallic-gold) !important; font-weight: 800 !important; font-size: 1.38rem !important;
       margin: 0.5rem 0 0.35rem 0; text-shadow: 0 0 12px rgba(212,175,55,0.45); letter-spacing: 0.02em; font-family: 'Goldman', sans-serif !important; }
-    .rhgi-rose-heading {
-      color: #B76E79 !important;
+    .rhgi-corridor-gold-heading {
+      color: var(--metallic-gold) !important;
       font-weight: 800 !important;
       font-size: 1.38rem !important;
       margin: 0.5rem 0 0.35rem 0;
       line-height: 1.35;
       letter-spacing: 0.08em;
-      text-shadow: 0 0 14px rgba(183, 110, 121, 0.45);
+      text-shadow: 0 0 14px rgba(212, 175, 55, 0.45);
       font-family: 'Goldman', sans-serif !important;
     }
     .stApp h1 { color: var(--metallic-gold) !important; font-weight: 800 !important; text-shadow: 0 0 14px rgba(212,175,55,0.4); }
@@ -601,9 +675,9 @@ st.markdown(
       font-family: 'Goldman', sans-serif !important;
       color: var(--metallic-gold) !important; font-weight: 800 !important;
       text-align: left; padding: 14px 16px;
-      background: rgba(0, 0, 128, 0.45);
+      background: rgba(0, 0, 51, 0.55);
       border-bottom: 2px solid rgba(212, 175, 55, 0.5);
-      text-shadow: 0 0 10px rgba(212, 175, 55, 0.55), 0 0 22px rgba(212, 175, 55, 0.25);
+      text-shadow: 0 0 10px rgba(212, 175, 55, 0.5), 0 0 20px rgba(212, 175, 55, 0.2);
       font-size: 1.12rem !important;
     }
     .rhgi-corridor-table td {
@@ -613,17 +687,17 @@ st.markdown(
       font-size: 1.1rem !important;
       font-weight: 600;
     }
-    .rhgi-corridor-table tr:nth-child(even) td { background: rgba(0, 0, 128, 0.35); }
-    [data-testid="stCaption"] { color: var(--rose-gold) !important; font-family: 'Goldman', sans-serif !important; }
-    [data-testid="stSelectbox"] label { color: var(--rose-gold) !important; font-family: 'Goldman', sans-serif !important; }
+    .rhgi-corridor-table tr:nth-child(even) td { background: rgba(0, 0, 51, 0.35); }
+    [data-testid="stCaption"] { color: var(--metallic-gold) !important; font-family: 'Goldman', sans-serif !important; }
+    [data-testid="stSelectbox"] label { color: var(--metallic-gold) !important; font-family: 'Goldman', sans-serif !important; }
     [data-baseweb="select"] { font-family: 'Goldman', sans-serif !important; }
     .rhgi-sovereign-budget {
       margin: 22px 0 8px 0;
       padding: 4px;
       border-radius: 16px;
       background: linear-gradient(120deg,
-        rgba(212,175,55,0.95) 0%, rgba(255,248,220,0.55) 25%, rgba(212,175,55,0.85) 50%,
-        rgba(183,110,121,0.45) 75%, rgba(212,175,55,0.95) 100%);
+        rgba(212,175,55,0.95) 0%, rgba(255,248,220,0.5) 22%, rgba(212,175,55,0.9) 48%,
+        rgba(255,236,160,0.45) 72%, rgba(212,175,55,0.95) 100%);
       background-size: 280% 100%;
       animation: sovereignFrameShimmer 4s ease-in-out infinite;
       box-shadow: 0 0 28px rgba(212, 175, 55, 0.35);
@@ -633,7 +707,7 @@ st.markdown(
       50% { background-position: 100% center; filter: brightness(1.08); }
     }
     .rhgi-sovereign-budget-inner {
-      background: #000080;
+      background: #000033;
       border-radius: 13px;
       padding: 18px 22px;
       text-align: center;
@@ -725,10 +799,12 @@ st.markdown(
 _r8_cols = st.columns(8)
 for _ri, (_r8_label, _r8_det) in enumerate(EIGHT_R_DETERMINANTS):
     with _r8_cols[_ri]:
-        if st.button(_r8_label, key=f"r8_btn_{_ri}", use_container_width=True):
-            st.session_state.r8_note = _r8_det
-if st.session_state.r8_note:
-    st.info(st.session_state.r8_note)
+        st.button(
+            _r8_label,
+            key=f"r8_btn_{_ri}",
+            help=_r8_det,
+            use_container_width=True,
+        )
 
 c1, c2, c3 = st.columns(3)
 # Abuja Pulse lead (UTC+1); Diamond Strobe when FCT projected APC < 25%.
@@ -778,6 +854,7 @@ fig_zone = px.bar(
 fig_zone.update_layout(
     paper_bgcolor=PRISM_NAVY,
     plot_bgcolor=PRISM_NAVY,
+    font=PLOTLY_FONT,
     font_color="#ffffff",
     xaxis_title="Zone",
     yaxis_title="Winning Margin (APC vs nearest rival)",
@@ -787,14 +864,19 @@ st.plotly_chart(fig_zone, use_container_width=True)
 
 _rose_heading("Corridor nodes — drill-down (774 LGAs)")
 st.caption(
-    "Choose a corridor, then a state. Canvasser budget = ₦30,000 × canvasser headcount per LGA. "
-    "Velocity % = (2027 APC − 2023 APC) ÷ 2023 APC × 100. Large LGA roll-ups scroll slowly; hover to pause."
+    "Choose a corridor, then a state. LGA roll-up ≈ one row every 0.5s (slow-mo); hover the marquee to pause. "
+    "Canvasser budget = ₦30,000 × canvasser headcount per LGA."
 )
 _cor_cols = st.columns(6)
 for _ci, (_abbr, _zname) in enumerate(CORRIDOR_NODES):
     with _cor_cols[_ci]:
         _nlg = int((dff["zone"] == _zname).sum())
-        if st.button(f"{_abbr} · {_nlg}", key=f"cor_btn_{_abbr}", use_container_width=True):
+        if st.button(
+            f"{_abbr} · {_nlg}",
+            key=f"cor_btn_{_abbr}",
+            help=f"Geopolitical corridor — {_zname}. Click to drill down to states and LGAs.",
+            use_container_width=True,
+        ):
             st.session_state.corridor_zone = _zname
 if st.session_state.corridor_zone is None:
     st.session_state._prev_corridor_state_key = None
@@ -804,7 +886,7 @@ if st.session_state.corridor_zone is None:
     )
 else:
     st.markdown(
-        f'<p class="rhgi-rose-heading" style="font-size:1.12rem;margin-top:6px;">Active corridor · '
+        f'<p class="rhgi-corridor-gold-heading" style="font-size:1.12rem;margin-top:6px;">Active corridor · '
         f'<span style="color:#ffffff;">{html.escape(st.session_state.corridor_zone)}</span></p>',
         unsafe_allow_html=True,
     )
@@ -840,15 +922,16 @@ else:
         "</tr></thead>"
     )
     _nrows = len(_mat)
-    if _nrows <= 4:
+    if _nrows < 2:
         _tbl = (
             '<div class="rhgi-lga-scroll"><table class="rhgi-corridor-table">'
             f"{_thead_html}<tbody>{_tbody}</tbody></table></div>"
         )
     else:
-        _roll_sec = max(220.0, min(680.0, _nrows * 6.5))
+        # ~1 row per 0.5s across one full LGA table scroll (marquee translates one table height)
+        _roll_sec = max(3.0, min(480.0, _nrows * 0.5))
         if _state_just_changed:
-            _roll_sec = max(_roll_sec, 400.0)
+            _roll_sec = max(_roll_sec, _nrows * 0.5 + 0.5)
         _roll_nonce = abs(hash(_corridor_state_key)) % 1_000_000
         _tbl = (
             f'<div class="rhgi-lga-scroll-outer" data-roll-key="{_roll_nonce}">'
@@ -861,15 +944,18 @@ else:
 
 _sb_base, _sb_after_misc, _sb_line_total = sovereign_budget_engine_breakdown()
 _sb_line_bn = _sb_line_total / 1e9
+_sb_mandate = SOVEREIGN_BUDGET_MANDATE_NGN
+_sb_mandate_bn = _sb_mandate / 1e9
 st.markdown(
     f"""
     <div class="rhgi-sovereign-budget">
       <div class="rhgi-sovereign-budget-inner">
-        <h3>Sovereign Budget Engine</h3>
-        <p class="rhgi-sovereign-mandate">₦{_sb_line_total:,}</p>
+        <h3>Sovereign Budget Engine — ₦{_sb_mandate_bn:,.2f}B</h3>
+        <p class="rhgi-sovereign-mandate">₦{_sb_mandate:,}</p>
         <p class="rhgi-sovereign-detail">
           (144,000 canvassers + 144,000 E-day staff) × ₦30,000 → ₦{_sb_base/1e9:.2f}B;
-          +15% misc → ₦{_sb_after_misc/1e9:.2f}B; +10% contingency → <b>₦{_sb_line_bn:.2f} billion</b> total.
+          +15% misc → ₦{_sb_after_misc/1e9:.2f}B; +10% contingency → line-model subtotal <b>₦{_sb_line_total:,}</b> (₦{_sb_line_bn:.2f}B).
+          RHGI sovereign headline total: <b>₦{_sb_mandate_bn:,.2f} billion</b>.
         </p>
       </div>
     </div>
@@ -905,6 +991,7 @@ fig_lga.update_traces(marker=dict(size=8, opacity=0.8))
 fig_lga.update_layout(
     paper_bgcolor=PRISM_NAVY,
     plot_bgcolor=PRISM_NAVY,
+    font=PLOTLY_FONT,
     font_color="#ffffff",
     margin=dict(l=0, r=0, t=48, b=0),
     coloraxis_colorbar=dict(title="Winning margin"),
@@ -931,6 +1018,7 @@ fig_scatter = px.scatter_mapbox(
 fig_scatter.update_layout(
     paper_bgcolor=PRISM_NAVY,
     plot_bgcolor=PRISM_NAVY,
+    font=PLOTLY_FONT,
     font_color="#ffffff",
     margin=dict(l=0, r=0, t=40, b=0),
 )
@@ -965,6 +1053,7 @@ fig_party = px.bar(
 fig_party.update_layout(
     paper_bgcolor=PRISM_NAVY,
     plot_bgcolor=PRISM_NAVY,
+    font=PLOTLY_FONT,
     font_color="#ffffff",
 )
 st.plotly_chart(fig_party, use_container_width=True)
