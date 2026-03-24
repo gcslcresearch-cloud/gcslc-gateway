@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&amp;display=swap" rel="stylesheet">
   <title>15-15 RHGI | Sovereign Dashboard</title>
   <style>
-/* RHGI-IGNITION-47 — prism · kinetic LGA · live clocks · 774@240s · GPU translateZ(0) */
+/* RHGI-HARD-IGNITION-49 — prism · kinetic LGA · clocks · 774 ticker · GPU translateZ(0) */
     :root {
       --rhgi-navy-deep: #050a14;
       --rhgi-gold: #e8c547;
@@ -290,23 +290,6 @@
     }
 
     /* Title — full RHGI · Gold–White–Navy metallic fusion */
-    .rhgi-r43-watermark {
-      position: fixed;
-      bottom: max(0.45rem, env(safe-area-inset-bottom));
-      right: max(0.55rem, env(safe-area-inset-right));
-      z-index: 120;
-      margin: 0;
-      max-width: min(90vw, 18rem);
-      font-family: 'Goldman', 'Segoe UI', sans-serif;
-      font-size: clamp(0.36rem, 0.85vw + 0.1rem, 0.48rem);
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      text-align: right;
-      color: rgba(212, 175, 55, 0.38);
-      pointer-events: none;
-      user-select: none;
-    }
     .rhgi-title.rhgi-title--rhgi-full {
       margin: 0;
       font-family: 'Goldman', 'Segoe UI', sans-serif;
@@ -1176,8 +1159,8 @@
         transform: scaleX(var(--rhgi-bar-sx, 1)) translateZ(0);
       }
     }
-    /* RHGI-IGNITION-47: smooth winning-margin bar fill (all six corridor matrices) */
-    @keyframes rhgi-ignition47-bar-fill {
+    /* RHGI-HARD-IGNITION-49: corridor bars 0% → target over 2.5s on load */
+    @keyframes rhgi-hard49-bar-fill {
       from {
         transform: scaleX(0) translateZ(0);
       }
@@ -1336,6 +1319,12 @@
       gap: clamp(0.65rem, 3vw, 1rem);
       width: 100%;
       justify-items: center;
+      transform: translateZ(0);
+      backface-visibility: hidden;
+    }
+    #rhgi-clocksRow {
+      transform: translateZ(0);
+      backface-visibility: hidden;
     }
     @media (min-width: 26rem) {
       .rhgi-clocks-grid {
@@ -1364,6 +1353,8 @@
       align-items: center;
       width: 100%;
       max-width: 8rem;
+      transform: translateZ(0);
+      backface-visibility: hidden;
     }
     .rhgi-analog-clock-frame {
       position: relative;
@@ -1437,7 +1428,7 @@
       padding: clamp(0.65rem, 2.5vw, 1rem);
     }
 
-    /* Full-width 774 LGA national footer ticker */
+    /* Full-width 774 LGA national footer — RHGI-HARD-IGNITION-49 (must animate; never static) */
     .rhgi-footer-774 {
       width: 100%;
       max-width: 100%;
@@ -1448,6 +1439,7 @@
       border: 1px solid #d4af37;
       box-shadow: none;
       transform: translateZ(0);
+      backface-visibility: hidden;
       will-change: transform;
     }
     .rhgi-footer-774.rhgi-prism-frame {
@@ -1470,29 +1462,32 @@
     .rhgi-footer-774-inner {
       overflow: hidden;
       width: 100%;
+      transform: translateZ(0);
+      backface-visibility: hidden;
       mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
     }
-    .rhgi-footer-774-track {
+    /* Linear infinite R→L glide — starts automatically with page paint (duplicated text spans = -50% loop) */
+    .rhgi-footer-774-track,
+    .rhgi-footer-774-track.rhgi-hard49-footer-ticker,
+    #rhgi-footer774Track.rhgi-hard49-footer-ticker {
       display: inline-flex;
       width: max-content;
       white-space: nowrap;
-      animation: rhgi-footer774-drift var(--rhgi-footer774-duration, 240s) linear infinite;
-      animation-play-state: running;
-      transform: translateZ(0);
-      will-change: transform;
-    }
-    /* RHGI-IGNITION-47: national 774 feed — R→L glide, 240s, always running */
-    .rhgi-footer-774-track.rhgi-ignition47-footer-track,
-    #rhgi-footer774Track.rhgi-ignition47-footer-track {
-      animation-name: rhgi-footer774-drift;
+      animation-name: rhgi-hard49-footer-ticker;
       animation-duration: var(--rhgi-footer774-duration, 240s);
       animation-timing-function: linear;
       animation-iteration-count: infinite;
+      animation-direction: normal;
+      animation-fill-mode: none;
       animation-play-state: running;
+      animation-delay: 0s;
+      transform: translate3d(0, 0, 0);
+      will-change: transform;
+      backface-visibility: hidden;
     }
-    @keyframes rhgi-footer774-drift {
-      from { transform: translateX(0); }
-      to { transform: translateX(-50%); }
+    @keyframes rhgi-hard49-footer-ticker {
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-50%, 0, 0); }
     }
     .rhgi-footer-774-text {
       flex-shrink: 0;
@@ -1580,27 +1575,23 @@
       animation: rhgi-title-metallic 6.5s ease-in-out infinite !important;
       will-change: background-position, filter !important;
     }
-    .rhgi-page .rhgi-sub.rhgi-r31-seal-sub {
-      display: inline-block;
+    /* RHGI-HARD-IGNITION-49: subtle architect line under H1 */
+    .rhgi-page .rhgi-sub.rhgi-hard49-identity-sub {
+      display: block;
       max-width: min(100%, 40rem);
       margin-inline: auto;
-      transform-origin: center;
-      background: linear-gradient(
-        118deg,
-        #040a12 0%,
-        #0f2844 20%,
-        #5a7a9c 45%,
-        #1a3450 70%,
-        #060a10 100%
-      ) !important;
-      background-size: 240% 200% !important;
-      background-position: 50% 50%;
-      -webkit-background-clip: text !important;
-      background-clip: text !important;
-      color: transparent !important;
-      filter: drop-shadow(0 0 0.35rem rgba(40, 90, 140, 0.45)) drop-shadow(0 0 0.75rem rgba(8, 22, 48, 0.4));
-      animation: rhgi-r1-breathe-sub 5.5s ease-in-out infinite !important;
-      will-change: transform !important;
+      font-weight: 600;
+      font-size: clamp(0.4rem, 0.85vw + 0.22rem, 0.58rem);
+      letter-spacing: 0.1em;
+      line-height: 1.45;
+      text-align: center;
+      color: rgba(150, 168, 195, 0.55) !important;
+      background: none !important;
+      background-clip: border-box !important;
+      -webkit-background-clip: border-box !important;
+      filter: none !important;
+      animation: none !important;
+      text-transform: none;
     }
     .rhgi-page .rhgi-r31-sovereign-seal {
       transform-origin: center;
@@ -1617,26 +1608,29 @@
       animation: rhgi-r1-margin-delta-sovereign-ss 3.8s ease-in-out infinite !important;
       will-change: transform !important;
     }
-    /* 774 glide — translateX only, 240s (RHGI-IGNITION-47: running) */
+    /* 774 glide — RHGI-HARD-IGNITION-49: linear infinite, always running */
     .rhgi-page .rhgi-footer-774-track {
-      animation: rhgi-footer774-drift var(--rhgi-footer774-duration, 240s) linear infinite !important;
+      animation-name: rhgi-hard49-footer-ticker !important;
+      animation-duration: var(--rhgi-footer774-duration, 240s) !important;
+      animation-timing-function: linear !important;
+      animation-iteration-count: infinite !important;
       animation-play-state: running !important;
-      transform: translateZ(0) !important;
+      transform: translate3d(0, 0, 0) !important;
       will-change: transform !important;
     }
-    /* RHGI-IGNITION-47: winning margin bars — smooth fill (all corridors); stagger via --row-index */
+    /* RHGI-HARD-IGNITION-49: six corridors — bar fill 2.5s from 0% to target */
     .rhgi-page .rhgi-matrix-row .rhgi-bar-fill.rhgi-bar-apc-b {
-      animation: rhgi-ignition47-bar-fill 1.75s cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
+      animation: rhgi-hard49-bar-fill 2.5s cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
       animation-delay: calc(var(--row-index) * 0.1s) !important;
       will-change: transform !important;
     }
     .rhgi-page .rhgi-matrix-row .rhgi-proj-fill.rhgi-matrix-bar--proj {
       animation:
-        rhgi-ignition47-bar-fill 1.75s cubic-bezier(0.22, 1, 0.36, 1) forwards,
+        rhgi-hard49-bar-fill 2.5s cubic-bezier(0.22, 1, 0.36, 1) forwards,
         rhgi-proj-bar-shimmer 5s ease-in-out infinite !important;
       animation-delay:
         calc(var(--row-index) * 0.1s),
-        calc(var(--row-index) * 0.1s + 1.75s) !important;
+        calc(var(--row-index) * 0.1s + 2.5s) !important;
       will-change: transform !important;
     }
     /* RHGI-IGNITION-47: LGA side-feed labels — gold glow pulse (3s) */
@@ -1847,9 +1841,7 @@
               </svg>
             </div>
             <h1 class="rhgi-title rhgi-title--rhgi-full">Renewed Hope Grassroots Initiatives 15/15 Model (RHGI)</h1>
-            <p class="rhgi-sub rhgi-r31-seal-sub">
-              RHGI Sovereign Seal / 15-15 Model
-            </p>
+            <p class="rhgi-sub rhgi-hard49-identity-sub">Architect: Dr. Sa&rsquo;ad Jaafaru</p>
           </div>
         </section>
 
@@ -2028,7 +2020,7 @@
                         </div>
                       </div>
                     </div>
-                    <p class="rhgi-deep-footer" id="rhgi-deep-footer">NW Projected Yield: — | Confidence Interval: 98% (8R Validated)</p>
+                    <p class="rhgi-deep-footer" id="rhgi-deep-footer">NW Projected Yield: — | Confidence Interval: 98% (15-15 model)</p>
                   </div>
 
                   <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-r41-gpu rhgi-prism-frame rhgi-prism-frame--compact rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-sw" aria-labelledby="rhgi-sw-heading">
@@ -2061,7 +2053,7 @@
                         </div>
                       </div>
                     </div>
-                    <p class="rhgi-deep-footer" id="rhgi-sw-footer">SW Projected Yield: — | Confidence Interval: 98% (8R Validated)</p>
+                    <p class="rhgi-deep-footer" id="rhgi-sw-footer">SW Projected Yield: — | Confidence Interval: 98% (15-15 model)</p>
                   </div>
 
                   <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-r41-gpu rhgi-prism-frame rhgi-prism-frame--compact rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-ne" aria-labelledby="rhgi-ne-heading">
@@ -2094,7 +2086,7 @@
                         </div>
                       </div>
                     </div>
-                    <p class="rhgi-deep-footer" id="rhgi-ne-footer">NE Projected Yield: — | Confidence Interval: 98% (8R Validated)</p>
+                    <p class="rhgi-deep-footer" id="rhgi-ne-footer">NE Projected Yield: — | Confidence Interval: 98% (15-15 model)</p>
                   </div>
 
                   <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-r41-gpu rhgi-prism-frame rhgi-prism-frame--compact rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-nc" aria-labelledby="rhgi-nc-heading">
@@ -2127,7 +2119,7 @@
                         </div>
                       </div>
                     </div>
-                    <p class="rhgi-deep-footer" id="rhgi-nc-footer">NC Projected Yield: — | Confidence Interval: 98% (8R Validated)</p>
+                    <p class="rhgi-deep-footer" id="rhgi-nc-footer">NC Projected Yield: — | Confidence Interval: 98% (15-15 model)</p>
                   </div>
 
                   <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-r41-gpu rhgi-prism-frame rhgi-prism-frame--compact rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-ss" aria-labelledby="rhgi-ss2-heading">
@@ -2160,7 +2152,7 @@
                         </div>
                       </div>
                     </div>
-                    <p class="rhgi-deep-footer" id="rhgi-ss-footer">SS Projected Yield: — | Confidence Interval: 98% (8R Validated)</p>
+                    <p class="rhgi-deep-footer" id="rhgi-ss-footer">SS Projected Yield: — | Confidence Interval: 98% (15-15 model)</p>
                   </div>
 
                   <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-r41-gpu rhgi-prism-frame rhgi-prism-frame--compact rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-se" aria-labelledby="rhgi-se2-heading">
@@ -2193,7 +2185,7 @@
                         </div>
                       </div>
                     </div>
-                    <p class="rhgi-deep-footer" id="rhgi-se-footer">SE Projected Yield: — | Confidence Interval: 98% (8R Validated)</p>
+                    <p class="rhgi-deep-footer" id="rhgi-se-footer">SE Projected Yield: — | Confidence Interval: 98% (15-15 model)</p>
                   </div>
                 </div>
 
@@ -2224,7 +2216,7 @@
         <div class="rhgi-footer-774 rhgi-r41-gpu rhgi-prism-frame rhgi-prism-frame--compact" role="region" aria-label="774 local government areas national mobilization feed">
           <p class="rhgi-footer-774-label">774 LGA national feed · 240s translateX glide</p>
           <div class="rhgi-footer-774-inner">
-            <div class="rhgi-footer-774-track rhgi-ignition47-footer-track" id="rhgi-footer774Track">
+            <div class="rhgi-footer-774-track rhgi-hard49-footer-ticker" id="rhgi-footer774Track">
               <span class="rhgi-footer-774-text" id="rhgi-footer774A"></span>
               <span class="rhgi-footer-774-text" id="rhgi-footer774B" aria-hidden="true"></span>
             </div>
@@ -2234,10 +2226,8 @@
     </div>
   </div>
 
-  <p class="rhgi-r43-watermark" aria-hidden="true">Architect: Dr. Sa&rsquo;ad Jaafaru</p>
-
   <script>
-/* RHGI-IGNITION-47 — live clocks · kinetic LGA · matrices · 774 footer (all inline) */
+/* RHGI-HARD-IGNITION-49 — live clocks · kinetic LGA · matrices · 774 ticker (all inline) */
     (function () {
       var STATE_NOW = 24;
       var STATE_MAX = 36;
@@ -2472,15 +2462,12 @@
           if (sEl) sEl.setAttribute('transform', 'rotate(' + secondDeg + ' 50 50)');
         });
       }
-      function rhgiIgnition47TickClocks() {
-        tickChromeClockHands();
-      }
-      rhgiIgnition47TickClocks();
+      tickChromeClockHands();
+      /* Dubai (UTC+4) + all zones: second hand advances every 1000ms */
       setInterval(tickChromeClockHands, 1000);
-      if (typeof requestAnimationFrame === 'function') {
-        requestAnimationFrame(rhgiIgnition47TickClocks);
-      }
-      window.addEventListener('load', rhgiIgnition47TickClocks);
+      window.addEventListener('load', function rhgiHard49ClockOnLoad() {
+        tickChromeClockHands();
+      });
 
       /* —— 15-15-DEPLOY-12: tri-corridor APC + Model 15-15 (Kano anchor multiplier) —— */
       var KANO_APC_2023 = 517341;
@@ -2680,7 +2667,7 @@
             regionLabel +
             ' Projected Yield: ' +
             vt.proj.toLocaleString('en-NG') +
-            ' | Confidence Interval: 98% (8R Validated)';
+            ' | Confidence Interval: 98% (15-15 model)';
         }
       }
 
@@ -2969,7 +2956,7 @@
       function rhgiIgnition47FooterKick() {
         var tr = document.getElementById('rhgi-footer774Track');
         if (!tr) return;
-        tr.classList.add('rhgi-ignition47-footer-track');
+        tr.classList.add('rhgi-hard49-footer-ticker');
         void tr.offsetWidth;
       }
 
