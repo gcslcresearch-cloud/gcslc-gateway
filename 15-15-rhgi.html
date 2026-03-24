@@ -36,8 +36,8 @@
       -webkit-user-select: none;
       user-select: none;
       background: var(--rhgi-navy-deep);
-      /* LGA ticker + AKZ spine: shared 40s loop (DEPLOY-12 moderate glide) */
-      --rhgi-lga-scroll-duration: 40s;
+      /* FORCE-43: LGA live feed vertical scroll (kinetic; not static) */
+      --rhgi-lga-scroll-duration: 30s;
       --rhgi-akz-spine-period: 40s;
       --rhgi-footer774-duration: 240s;
     }
@@ -179,34 +179,51 @@
     }
     @keyframes rhgi-scanline-drift { 0% { background-position: 0 0; } 100% { background-position: 0 0.4375rem; } }
 
-    /* —— 15-15-SOVEREIGN-REBIRTH-41: shell + footer solid; corridors use glass prism —— */
-    .rhgi-v33-shell {
-      border: 1px solid rgba(212, 175, 55, 0.45);
+    /* —— 15-15-FORCE-RESTORATION-43: full prism-frame · blur(15px) · metallic depth —— */
+    @keyframes rhgi-prism-frame-power {
+      0%, 100% {
+        border-color: rgba(212, 175, 55, 0.4);
+        box-shadow:
+          0 0 0 1px rgba(0, 229, 255, 0.14),
+          0 0 0 1px rgba(212, 175, 55, 0.14) inset,
+          0 0.5rem 2.25rem rgba(0, 0, 0, 0.45),
+          inset 0 1px 0 rgba(255, 255, 255, 0.08),
+          inset 0 -1px 0 rgba(0, 80, 140, 0.3),
+          0 0 1.35rem rgba(212, 175, 55, 0.24);
+      }
+      50% {
+        border-color: rgba(232, 197, 71, 0.55);
+        box-shadow:
+          0 0 0 1px rgba(0, 229, 255, 0.24),
+          0 0 0 1px rgba(232, 197, 71, 0.2) inset,
+          0 0.65rem 2.6rem rgba(0, 0, 0, 0.52),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1),
+          inset 0 -1px 0 rgba(0, 100, 160, 0.38),
+          0 0 1.85rem rgba(0, 200, 255, 0.22);
+      }
+    }
+    .rhgi-prism-frame {
+      position: relative;
       border-radius: 0.75rem;
-      background: #0a0e1a;
-      transform: translateZ(0);
-      backface-visibility: hidden;
-    }
-    .rhgi-v33-widget {
-      border: 1px solid rgba(212, 175, 55, 0.35);
-      border-radius: 0.65rem;
-      background: #0a0e1a;
-      transform: translateZ(0);
-      backface-visibility: hidden;
-    }
-    /* Glass-morphism prism — regional corridor widgets only */
-    .rhgi-corridor-widget.rhgi-r41-prism-region {
-      background: rgba(10, 14, 26, 0.52);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(212, 175, 55, 0.3);
+      background: rgba(8, 14, 28, 0.4);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid rgba(212, 175, 55, 0.4);
       box-shadow:
-        inset 0 0 1.25rem rgba(0, 229, 255, 0.07),
-        0 0 0.85rem rgba(0, 0, 0, 0.28);
+        0 0 0 1px rgba(0, 229, 255, 0.14),
+        0 0 0 1px rgba(212, 175, 55, 0.14) inset,
+        0 0.5rem 2.25rem rgba(0, 0, 0, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -1px 0 rgba(0, 80, 140, 0.3),
+        0 0 1.35rem rgba(212, 175, 55, 0.24);
       transform: translateZ(0);
       backface-visibility: hidden;
+      isolation: isolate;
+      animation: rhgi-prism-frame-power 6s ease-in-out infinite;
     }
-    /* GPU layer for primary widgets (MacBook Pro) */
+    .rhgi-prism-frame--compact {
+      border-radius: 0.65rem;
+    }
     .rhgi-r41-gpu {
       transform: translateZ(0);
       backface-visibility: hidden;
@@ -265,13 +282,7 @@
     }
 
     /* Title — full RHGI · Gold–White–Navy metallic fusion */
-    .rhgi-title-r41-line {
-      display: block;
-      margin-top: 0.28rem;
-      font-size: 0.88em;
-      letter-spacing: 0.04em;
-    }
-    .rhgi-r41-watermark {
+    .rhgi-r43-watermark {
       position: fixed;
       bottom: max(0.45rem, env(safe-area-inset-bottom));
       right: max(0.55rem, env(safe-area-inset-right));
@@ -295,7 +306,7 @@
       font-size: clamp(0.82rem, 2.35vw + 0.42rem, 1.45rem);
       letter-spacing: 0.035em;
       line-height: 1.22;
-      max-width: min(100%, 44rem);
+      max-width: min(100%, 48rem);
       margin-inline: auto;
       padding-inline: clamp(0.25rem, 2vw, 0.85rem);
       /* Gold–silver metallic shimmer (FULL-VELOCITY-33) */
@@ -362,6 +373,17 @@
       box-shadow:
         inset 0 0 1.375rem rgba(0, 229, 255, 0.05),
         0 0 0.875rem rgba(0, 0, 0, 0.4);
+    }
+    .rhgi-election-ticker.rhgi-prism-frame {
+      background: rgba(8, 14, 28, 0.4);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid rgba(212, 175, 55, 0.38);
+      box-shadow:
+        0 0 0 1px rgba(0, 229, 255, 0.12),
+        0 0 0 1px rgba(212, 175, 55, 0.1) inset,
+        0 0.4rem 1.75rem rgba(0, 0, 0, 0.4),
+        inset 0 0 1rem rgba(0, 229, 255, 0.06);
     }
     .rhgi-election-ticker-label {
       margin: 0 0 0.35rem;
@@ -588,6 +610,11 @@
       padding: clamp(0.55rem, 2.2vw, 0.85rem);
       background: linear-gradient(165deg, rgba(5, 14, 28, 0.72), rgba(3, 10, 22, 0.55));
     }
+    .rhgi-hub.rhgi-prism-frame {
+      background: rgba(8, 14, 28, 0.4);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+    }
     .rhgi-hub-inner {
       display: flex;
       flex-direction: row;
@@ -795,6 +822,11 @@
       border-radius: 0.75rem;
       padding: clamp(0.5rem, 2vw, 0.75rem);
       background: linear-gradient(165deg, rgba(4, 14, 30, 0.85), rgba(2, 10, 22, 0.72));
+    }
+    .rhgi-corridor-widget.rhgi-corridor-deep.rhgi-prism-frame {
+      background: rgba(8, 14, 28, 0.4);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
     }
     .rhgi-nw-margin {
       margin: 0 0 clamp(0.45rem, 2vw, 0.65rem);
@@ -1185,7 +1217,7 @@
       mask-image: linear-gradient(180deg, transparent, #000 6%, #000 94%, transparent);
     }
     .rhgi-deep-lga-track {
-      animation: rhgi-lga-scroll var(--rhgi-lga-scroll-duration, 40s) linear infinite;
+      animation: rhgi-lga-scroll var(--rhgi-lga-scroll-duration, 30s) linear infinite;
       transform: translateZ(0);
       will-change: opacity, transform;
     }
@@ -1376,8 +1408,6 @@
     .rhgi-content-prism {
       border-radius: 0.75rem;
       padding: clamp(0.65rem, 2.5vw, 1rem);
-      background: #0a0e1a;
-      box-shadow: none;
     }
 
     /* Full-width 774 LGA national footer ticker */
@@ -1392,6 +1422,12 @@
       box-shadow: none;
       transform: translateZ(0);
       will-change: transform;
+    }
+    .rhgi-footer-774.rhgi-prism-frame {
+      background: rgba(8, 14, 28, 0.42);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid rgba(212, 175, 55, 0.38);
     }
     .rhgi-footer-774-label {
       margin: 0 0 0.35rem;
@@ -1438,7 +1474,7 @@
       font-weight: 600;
     }
 
-    /* —— 15-15-REANIMATE-STEP-1 (hardware-safe glass + sanctioned motion) —— */
+    /* —— 15-15-FORCE-RESTORATION-43: sanctioned motion + prism overrides (replaces flat static) —— */
     .rhgi-emergency-hide {
       display: none !important;
     }
@@ -1450,33 +1486,19 @@
     .rhgi-shell {
       background: transparent !important;
     }
-    .rhgi-content-prism {
-      background: #0a0e1a !important;
-      box-shadow: none !important;
-    }
-    .rhgi-hub,
-    .rhgi-election-ticker {
-      background: #0a0e1a !important;
-      box-shadow: none !important;
-    }
-    .rhgi-corridor-widget:not(.rhgi-r41-prism-region),
-    .rhgi-corridor-deep:not(.rhgi-r41-prism-region) {
-      background: #0a0e1a !important;
-      box-shadow: none !important;
-    }
-    .rhgi-page .rhgi-corridor-widget.rhgi-r41-prism-region {
-      background: rgba(10, 14, 26, 0.52) !important;
-      backdrop-filter: blur(12px) !important;
-      -webkit-backdrop-filter: blur(12px) !important;
-      border: 1px solid rgba(212, 175, 55, 0.3) !important;
-      box-shadow:
-        inset 0 0 1.25rem rgba(0, 229, 255, 0.07),
-        0 0 0.85rem rgba(0, 0, 0, 0.28) !important;
-    }
-    .rhgi-footer-774 {
-      background: #0a0e1a !important;
+    /* FORCE-43: prism-frame glass + metallic stack (overrides prior flat static) */
+    .rhgi-page .rhgi-content-prism.rhgi-prism-frame,
+    .rhgi-page .rhgi-hub.rhgi-prism-frame,
+    .rhgi-page .rhgi-election-ticker.rhgi-prism-frame,
+    .rhgi-page .rhgi-footer-774.rhgi-prism-frame,
+    .rhgi-page .rhgi-corridor-widget.rhgi-prism-frame {
+      background: rgba(8, 14, 28, 0.4) !important;
+      backdrop-filter: blur(15px) !important;
+      -webkit-backdrop-filter: blur(15px) !important;
       border: 1px solid rgba(212, 175, 55, 0.4) !important;
-      box-shadow: none !important;
+    }
+    .rhgi-page .rhgi-prism-frame {
+      animation: rhgi-prism-frame-power 6s ease-in-out infinite !important;
     }
     .rhgi-conversion-ticker-track {
       transform: none !important;
@@ -1486,7 +1508,7 @@
       mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent) !important;
     }
     .rhgi-deep-lga-scroller {
-      overflow-y: auto !important;
+      overflow: hidden !important;
     }
     .rhgi-matrix-bar--proj:not(.rhgi-v33-proj-bar),
     .rhgi-bar-apc-b:not(.rhgi-v33-bar-fill) {
@@ -1596,7 +1618,7 @@
     }
     /* SOVEREIGN-REBIRTH-41: LGA list vertical scroll + staggered name scan */
     .rhgi-page .rhgi-deep-lga-track {
-      animation: rhgi-lga-scroll var(--rhgi-lga-scroll-duration, 40s) linear infinite !important;
+      animation: rhgi-lga-scroll var(--rhgi-lga-scroll-duration, 30s) linear infinite !important;
       transform: translateZ(0) !important;
       will-change: opacity, transform !important;
     }
@@ -1620,11 +1642,16 @@
     }
     .rhgi-page .rhgi-r1-global-pulse .rhgi-analog-clock-frame {
       animation: none !important;
-      background: #0a0e1a !important;
-      border: 1px solid #d4af37 !important;
-      box-shadow: none !important;
+      background: rgba(8, 14, 28, 0.45) !important;
+      backdrop-filter: blur(15px) !important;
+      -webkit-backdrop-filter: blur(15px) !important;
+      border: 1px solid rgba(212, 175, 55, 0.38) !important;
+      box-shadow:
+        0 0 0 1px rgba(0, 229, 255, 0.12),
+        inset 0 0 1rem rgba(0, 229, 255, 0.06),
+        0 0.35rem 1.25rem rgba(0, 0, 0, 0.35) !important;
     }
-    /* KINETIC-DUBAI-36: hands via setInterval + SVG rotate — no CSS clock animation */
+    /* FORCE-43: hands via setInterval(1000ms) + SVG rotate — no CSS clock hand animation */
     .rhgi-page .rhgi-chrome-sync-pulse .rhgi-chrome-hand-hour,
     .rhgi-page .rhgi-chrome-sync-pulse .rhgi-chrome-hand-minute,
     .rhgi-page .rhgi-chrome-sync-pulse .rhgi-chrome-hand-second {
@@ -1738,10 +1765,10 @@
   <div class="rhgi-satellite-scanlines rhgi-emergency-hide" aria-hidden="true"></div>
 
   <div class="rhgi-shell rhgi-mechanism-gpu-scope rhgi-r41-gpu">
-    <div class="rhgi-content-prism rhgi-v33-shell rhgi-r41-gpu">
+    <div class="rhgi-content-prism rhgi-r41-gpu rhgi-prism-frame">
       <div class="rhgi-dashboard">
         <section class="rhgi-ticker-section rhgi-r41-gpu">
-          <div class="rhgi-election-ticker" role="timer" aria-live="polite" aria-label="Countdown to 16 January 2027">
+          <div class="rhgi-election-ticker rhgi-prism-frame rhgi-prism-frame--compact" role="timer" aria-live="polite" aria-label="Countdown to 16 January 2027">
             <p class="rhgi-election-ticker-label">2027 countdown · 16 Jan · Africa/Lagos</p>
             <div class="rhgi-election-ticker-grid">
               <span class="rhgi-seg-val" id="rhgi-cd-mo">00</span>
@@ -1789,10 +1816,7 @@
                 >RHGI</text>
               </svg>
             </div>
-            <h1 class="rhgi-title rhgi-title--rhgi-full">
-              Renewed Hope Grassroots Initiatives
-              <span class="rhgi-title-r41-line">15/15 Model (RHGI)</span>
-            </h1>
+            <h1 class="rhgi-title rhgi-title--rhgi-full">Renewed Hope Grassroots Initiatives 15/15 Model (RHGI)</h1>
             <p class="rhgi-sub rhgi-r31-seal-sub">
               RHGI Sovereign Seal · 15/15 Model · 8R Stealth Paradigm Convergence
             </p>
@@ -1867,7 +1891,7 @@
 
         <section class="rhgi-hub-section" aria-labelledby="rhgi-hub-heading">
           <h2 id="rhgi-hub-heading" class="rhgi-hub-section-title">Sovereign Logistics Command</h2>
-          <div class="rhgi-hub rhgi-v33-shell rhgi-r32-sovereign-shell rhgi-r41-gpu">
+          <div class="rhgi-hub rhgi-r32-sovereign-shell rhgi-r41-gpu rhgi-prism-frame">
             <div class="rhgi-slc-budget rhgi-r41-gpu" id="rhgi-slc-budget">
               <p class="rhgi-slc-formula rhgi-v33-anchor" id="rhgi-slc-formula-mandate">144,000 Tactical Wards · mandate target 39,790,350 votes</p>
               <p class="rhgi-slc-total rhgi-v33-anchor rhgi-v33-anchor-total" id="rhgi-slc-total">—</p>
@@ -1914,7 +1938,7 @@
                 </div>
 
                 <div class="rhgi-corridor-widgets-stack">
-                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-v33-widget rhgi-r41-prism-region rhgi-r41-gpu rhgi-r30-nw-widget rhgi-r31-nw-gpu-lock rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-nw" aria-labelledby="rhgi-deep-heading">
+                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-r41-gpu rhgi-prism-frame rhgi-prism-frame--compact rhgi-r30-nw-widget rhgi-r31-nw-gpu-lock rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-nw" aria-labelledby="rhgi-deep-heading">
                     <h3 id="rhgi-deep-heading" class="rhgi-deep-head">Northwest Tactical Spine · Widget 1</h3>
                     <div class="rhgi-nw-margin" id="rhgi-nw-margin" aria-live="polite">
                       <span class="rhgi-nw-margin-label">Winning Margin</span>
@@ -1977,7 +2001,7 @@
                     <p class="rhgi-deep-footer" id="rhgi-deep-footer">NW Projected Yield: — | Confidence Interval: 98% (8R Validated)</p>
                   </div>
 
-                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-v33-widget rhgi-r41-prism-region rhgi-r41-gpu rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-sw" aria-labelledby="rhgi-sw-heading">
+                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-r41-gpu rhgi-prism-frame rhgi-prism-frame--compact rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-sw" aria-labelledby="rhgi-sw-heading">
                     <h3 id="rhgi-sw-heading" class="rhgi-deep-head">Southwest Corridor · Widget 2</h3>
                     <div class="rhgi-nw-margin" id="rhgi-sw-margin" aria-live="polite">
                       <span class="rhgi-nw-margin-label">Winning Margin</span>
@@ -2010,7 +2034,7 @@
                     <p class="rhgi-deep-footer" id="rhgi-sw-footer">SW Projected Yield: — | Confidence Interval: 98% (8R Validated)</p>
                   </div>
 
-                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-v33-widget rhgi-r41-prism-region rhgi-r41-gpu rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-ne" aria-labelledby="rhgi-ne-heading">
+                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-r41-gpu rhgi-prism-frame rhgi-prism-frame--compact rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-ne" aria-labelledby="rhgi-ne-heading">
                     <h3 id="rhgi-ne-heading" class="rhgi-deep-head">Northeast Corridor · Widget 3</h3>
                     <div class="rhgi-nw-margin" id="rhgi-ne-margin" aria-live="polite">
                       <span class="rhgi-nw-margin-label">Winning Margin</span>
@@ -2043,7 +2067,7 @@
                     <p class="rhgi-deep-footer" id="rhgi-ne-footer">NE Projected Yield: — | Confidence Interval: 98% (8R Validated)</p>
                   </div>
 
-                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-v33-widget rhgi-r41-prism-region rhgi-r41-gpu rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-nc" aria-labelledby="rhgi-nc-heading">
+                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-r41-gpu rhgi-prism-frame rhgi-prism-frame--compact rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-nc" aria-labelledby="rhgi-nc-heading">
                     <h3 id="rhgi-nc-heading" class="rhgi-deep-head">North Central · FCT 25% Strategic Lock · Widget 4</h3>
                     <div class="rhgi-nw-margin" id="rhgi-nc-margin" aria-live="polite">
                       <span class="rhgi-nw-margin-label">Winning Margin</span>
@@ -2076,7 +2100,7 @@
                     <p class="rhgi-deep-footer" id="rhgi-nc-footer">NC Projected Yield: — | Confidence Interval: 98% (8R Validated)</p>
                   </div>
 
-                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-v33-widget rhgi-r41-prism-region rhgi-r41-gpu rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-ss" aria-labelledby="rhgi-ss2-heading">
+                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-r41-gpu rhgi-prism-frame rhgi-prism-frame--compact rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-ss" aria-labelledby="rhgi-ss2-heading">
                     <h3 id="rhgi-ss2-heading" class="rhgi-deep-head">South-South Corridor · Widget 5</h3>
                     <div class="rhgi-nw-margin" id="rhgi-ss-margin" aria-live="polite">
                       <span class="rhgi-nw-margin-label">Winning Margin</span>
@@ -2109,7 +2133,7 @@
                     <p class="rhgi-deep-footer" id="rhgi-ss-footer">SS Projected Yield: — | Confidence Interval: 98% (8R Validated)</p>
                   </div>
 
-                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-v33-widget rhgi-r41-prism-region rhgi-r41-gpu rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-se" aria-labelledby="rhgi-se2-heading">
+                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-r41-gpu rhgi-prism-frame rhgi-prism-frame--compact rhgi-deep-layout--compact rhgi-r32-sovereign-widget rhgi-r32-sovereign-scroll" id="rhgi-widget-se" aria-labelledby="rhgi-se2-heading">
                     <h3 id="rhgi-se2-heading" class="rhgi-deep-head">Southeast Corridor · Widget 6</h3>
                     <div class="rhgi-nw-margin rhgi-se-strategic-lock-static" id="rhgi-se-margin" aria-live="polite">
                       <span class="rhgi-nw-margin-label">Strategic 25% Threshold Secure</span>
@@ -2167,7 +2191,7 @@
           ></div>
         </section>
 
-        <div class="rhgi-footer-774 rhgi-v33-widget rhgi-r41-gpu" role="region" aria-label="774 local government areas national mobilization feed">
+        <div class="rhgi-footer-774 rhgi-r41-gpu rhgi-prism-frame rhgi-prism-frame--compact" role="region" aria-label="774 local government areas national mobilization feed">
           <p class="rhgi-footer-774-label">774 LGA national feed · 240s translateX glide</p>
           <div class="rhgi-footer-774-inner">
             <div class="rhgi-footer-774-track" id="rhgi-footer774Track">
@@ -2180,7 +2204,7 @@
     </div>
   </div>
 
-  <p class="rhgi-r41-watermark" aria-hidden="true">Architect: Dr. Sa&rsquo;ad Jaafaru</p>
+  <p class="rhgi-r43-watermark" aria-hidden="true">Architect: Dr. Sa&rsquo;ad Jaafaru</p>
 
   <script>
     (function () {
@@ -2188,7 +2212,7 @@
       var STATE_MAX = 36;
       var THRESHOLD = 0.25;
       var ELECTION_TARGET = new Date('2027-01-16T00:00:00+01:00');
-      /* SOVEREIGN-REBIRTH-41: 144k wards · 39.7M mandate · ₦60,840,000,000 operational fund */
+      /* FORCE-RESTORATION-43: 144k wards · 39,790,350 mandate · ₦60,840,000,000 operational fund */
       var RHGI_TACTICAL_WARDS = 144000;
       var RHGI_CANVASSERS_PER_WARD = 15;
       var RHGI_MANDATE_VOTES = 39790350;
@@ -2332,7 +2356,7 @@
       tickCountdown();
       setInterval(tickCountdown, 1000);
 
-      /* SOVEREIGN-REBIRTH-41: Zaria · London · Dubai · New York — setInterval + rotate */
+      /* FORCE-RESTORATION-43: Zaria · London · Dubai · New York — setInterval(1000) + SVG rotate */
       var zones = [
         { city: 'Zaria', tz: 'Africa/Lagos' },
         { city: 'London', tz: 'Europe/London' },
