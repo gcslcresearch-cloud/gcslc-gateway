@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#050a14">
+  <meta name="theme-color" content="#0a0e1a">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&amp;display=swap" rel="stylesheet">
@@ -436,17 +436,12 @@
     }
     .rhgi-arc-progress {
       fill: none;
-      stroke: url(#rhgiArcProgGrad);
+      stroke: rgba(232, 197, 71, 0.9);
       stroke-width: 14;
       stroke-linecap: round;
-      animation: rhgi-arc-sheen 4s ease-in-out infinite;
     }
     .rhgi-arc-constitutional-mark {
       pointer-events: none;
-    }
-    @keyframes rhgi-arc-sheen {
-      0%, 100% { filter: brightness(1); }
-      50% { filter: brightness(1.08); }
     }
     .rhgi-arc-readout {
       margin: 0;
@@ -1250,35 +1245,149 @@
       font-weight: 600;
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      .rhgi-velocity-streaks, .rhgi-velocity-pulse, .rhgi-bluelaser-edge, .rhgi-bluelaser-scan, .rhgi-satellite-scanlines,
-      .rhgi-prism-frame, .rhgi-hub, .rhgi-corridor-deep, .rhgi-corridor-widget, .rhgi-title.rhgi-title--rhgi-full, .rhgi-sub, .rhgi-analog-clock-frame, .rhgi-fct-diamond, .rhgi-arc-progress, .rhgi-akz-path-core,
-      .rhgi-conversion-ticker-track, .rhgi-corridor-btn, .rhgi-conversion-ticker-text,
-      .rhgi-deep-lga-track, .rhgi-deep-pl-core, .rhgi-deep-pl-node, .rhgi-matrix-bar--proj {
-        animation: none !important;
-      }
-      .rhgi-conversion-ticker-track { transform: translateX(0) !important; }
-      .rhgi-footer-774-track { animation: none !important; transform: translateX(0) !important; }
-      .rhgi-deep-lga-track { transform: translateY(0) !important; }
-      .rhgi-ss-growth-shimmer.rhgi-nw-margin-delta { animation: none !important; }
-      .rhgi-nw-margin-delta { animation: none !important; background: linear-gradient(118deg, #e8c547, #fff8dc); -webkit-background-clip: text; background-clip: text; filter: none; }
-      .rhgi-akz-spine.rhgi-akz-spine--sparkle .rhgi-akz-path-core { animation: none !important; }
-      .rhgi-title.rhgi-title--rhgi-full {
-        background: linear-gradient(135deg, #fff8e8 0%, #e8c547 40%, #1a3a5c 100%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        filter: none;
-      }
-      .rhgi-sub { color: var(--rhgi-cyan); background: none; -webkit-background-clip: border-box; background-clip: border-box; }
+    /* —— EMERGENCY-STABILITY-26: visual lockdown — no CSS animation; solid Deep Navy; no gradient motion —— */
+    .rhgi-emergency-hide {
+      display: none !important;
+    }
+    .rhgi-page,
+    .rhgi-page *,
+    .rhgi-page *::before,
+    .rhgi-page *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+    body.rhgi-page {
+      background: #0a0e1a !important;
+      --rhgi-navy-deep: #0a0e1a;
+    }
+    .rhgi-shell,
+    .rhgi-content-prism,
+    .rhgi-prism-frame,
+    .rhgi-hub,
+    .rhgi-corridor-deep,
+    .rhgi-corridor-widget,
+    .rhgi-election-ticker,
+    .rhgi-footer-774,
+    .rhgi-velocity-field,
+    .rhgi-velocity-streaks,
+    .rhgi-velocity-pulse {
+      background: #0a0e1a !important;
+      background-image: none !important;
+      box-shadow: none !important;
+    }
+    .rhgi-title.rhgi-title--rhgi-full {
+      color: #e8c547 !important;
+      background: none !important;
+      -webkit-background-clip: border-box !important;
+      background-clip: border-box !important;
+      filter: none !important;
+    }
+    .rhgi-sub {
+      color: #8fa3bf !important;
+      background: none !important;
+      -webkit-background-clip: border-box !important;
+      background-clip: border-box !important;
+    }
+    .rhgi-nw-margin-delta,
+    .rhgi-ss-growth-shimmer.rhgi-nw-margin-delta {
+      color: #e8c547 !important;
+      background: none !important;
+      -webkit-background-clip: border-box !important;
+      background-clip: border-box !important;
+      text-shadow: none !important;
+    }
+    .rhgi-conversion-ticker-track,
+    .rhgi-deep-lga-track,
+    .rhgi-footer-774-track {
+      transform: none !important;
+      animation: none !important;
+    }
+    .rhgi-footer-774-inner {
+      mask-image: none !important;
+    }
+    .rhgi-deep-lga-scroller {
+      overflow-y: auto !important;
+    }
+    .rhgi-matrix-bar--proj,
+    .rhgi-bar-apc-b {
+      background: #2d5a42 !important;
+    }
+    .rhgi-fct-strategic-lock {
+      background: #0a0e1a !important;
+      border: 1px solid rgba(232, 197, 71, 0.55) !important;
+      border-radius: 0.5rem;
+      padding: 0.35rem 0.5rem;
+    }
+    .rhgi-se-strategic-lock-static {
+      background: #0a0e1a !important;
+      border: 1px solid rgba(232, 197, 71, 0.45) !important;
+    }
+    .rhgi-slc-budget {
+      width: 100%;
+      margin-bottom: clamp(0.5rem, 2vw, 0.75rem);
+      padding: clamp(0.45rem, 2vw, 0.65rem);
+      border: 1px solid rgba(232, 197, 71, 0.35);
+      border-radius: 0.5rem;
+      background: #0a0e1a !important;
+    }
+    .rhgi-slc-formula {
+      margin: 0 0 0.35rem;
+      font-family: 'Goldman', 'Segoe UI', sans-serif;
+      font-size: clamp(0.42rem, 1vw + 0.12rem, 0.55rem);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: rgba(232, 238, 244, 0.92);
+      line-height: 1.45;
+      text-align: center;
+    }
+    .rhgi-slc-total {
+      margin: 0 0 0.4rem;
+      font-family: ui-monospace, monospace;
+      font-size: clamp(0.72rem, 2.5vw + 0.2rem, 0.95rem);
+      font-weight: 800;
+      text-align: center;
+      color: #e8c547;
+      font-variant-numeric: tabular-nums;
+    }
+    .rhgi-slc-determinant {
+      margin: 0 0 0.45rem;
+      font-size: clamp(0.4rem, 0.95vw + 0.1rem, 0.5rem);
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-align: center;
+      color: rgba(143, 163, 191, 0.95);
+    }
+    .rhgi-slc-budget-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: clamp(0.44rem, 1.1vw + 0.12rem, 0.58rem);
+    }
+    .rhgi-slc-budget-table th,
+    .rhgi-slc-budget-table td {
+      padding: 0.35rem 0.4rem;
+      border-bottom: 1px solid rgba(40, 72, 118, 0.5);
+      text-align: left;
+      color: rgba(232, 238, 244, 0.9);
+    }
+    .rhgi-slc-budget-table th {
+      font-family: 'Goldman', 'Segoe UI', sans-serif;
+      color: rgba(232, 197, 71, 0.9);
+    }
+    .rhgi-slc-budget-table td:last-child {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      font-weight: 700;
+      color: #e8c547;
     }
   </style>
 </head>
 <body class="rhgi-page">
-  <div class="rhgi-velocity-field" aria-hidden="true"></div>
-  <div class="rhgi-velocity-streaks" aria-hidden="true"></div>
-  <div class="rhgi-velocity-pulse" aria-hidden="true"></div>
+  <div class="rhgi-velocity-field rhgi-emergency-hide" aria-hidden="true"></div>
+  <div class="rhgi-velocity-streaks rhgi-emergency-hide" aria-hidden="true"></div>
+  <div class="rhgi-velocity-pulse rhgi-emergency-hide" aria-hidden="true"></div>
 
-  <div class="rhgi-akz-spine" id="rhgi-akz-spine" aria-hidden="true">
+  <div class="rhgi-akz-spine rhgi-emergency-hide" id="rhgi-akz-spine" aria-hidden="true">
     <svg viewBox="0 0 400 220" preserveAspectRatio="xMidYMid slice">
       <defs>
         <linearGradient id="rhgiAkzSpineGrad" x1="0%" y1="100%" x2="100%" y2="0%">
@@ -1299,12 +1408,12 @@
     </svg>
   </div>
 
-  <div class="rhgi-bluelaser-stack" aria-hidden="true">
+  <div class="rhgi-bluelaser-stack rhgi-emergency-hide" aria-hidden="true">
     <div class="rhgi-bluelaser-scan"></div>
     <div class="rhgi-bluelaser-edge"></div>
     <div class="rhgi-bluelaser-vignette"></div>
   </div>
-  <div class="rhgi-satellite-scanlines" aria-hidden="true"></div>
+  <div class="rhgi-satellite-scanlines rhgi-emergency-hide" aria-hidden="true"></div>
 
   <div class="rhgi-shell rhgi-mechanism-gpu-scope">
     <div class="rhgi-content-prism rhgi-prism-frame">
@@ -1386,14 +1495,14 @@
                 </svg>
               </span>
             </button>
-            <div class="rhgi-fct-diamond-wrap">
+            <div class="rhgi-fct-diamond-wrap rhgi-fct-strategic-lock">
               <div class="rhgi-fct-diamond rhgi-fct-locked" id="rhgi-fctDiamond" aria-hidden="true">
                 <svg viewBox="0 0 32 32" aria-hidden="true">
                   <polygon class="rhgi-d-shape" points="16,4 28,16 16,28 4,16"/>
                 </svg>
               </div>
               <span class="rhgi-fct-tag">FCT · Abuja</span>
-              <span class="rhgi-fct-lock-label">25% threshold · Locked</span>
+              <span class="rhgi-fct-lock-label">Strategic 25% (144k tactical wards) · Static lock · FCT</span>
             </div>
           </div>
           <p class="rhgi-arc-readout" id="rhgi-arc-readout">Victory Arc · Six-corridor aggregate · 24 / 37 constitutional line</p>
@@ -1401,30 +1510,41 @@
         </section>
 
         <section class="rhgi-hub-section" aria-labelledby="rhgi-hub-heading">
-          <h2 id="rhgi-hub-heading" class="rhgi-hub-section-title">National Mobilization Hub</h2>
+          <h2 id="rhgi-hub-heading" class="rhgi-hub-section-title">Sovereign Logistics Command</h2>
           <div class="rhgi-hub rhgi-prism-frame">
+            <div class="rhgi-slc-budget" id="rhgi-slc-budget">
+              <p class="rhgi-slc-formula">Total Budget = (144,000 Tactical Wards × 15 Canvassers) × ₦20,000</p>
+              <p class="rhgi-slc-total" id="rhgi-slc-total">—</p>
+              <p class="rhgi-slc-determinant">Determinant 3 · 144,000 Tactical Wards</p>
+              <table class="rhgi-slc-budget-table">
+                <thead>
+                  <tr>
+                    <th scope="col">₦20,000 unit breakdown</th>
+                    <th scope="col">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Airtime/Data</td>
+                    <td>₦5,000</td>
+                  </tr>
+                  <tr>
+                    <td>Logistics/Fuel</td>
+                    <td>₦15,000</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
             <div class="rhgi-hub-inner">
               <div class="rhgi-hub-pillar-col">
-                <div class="rhgi-20m-pillar-wrap" id="rhgi-20mPillar" role="img" aria-label="National vote progress toward 20 million seven hundred nine thousand six hundred sixty-eight">
+                <div class="rhgi-20m-pillar-wrap" id="rhgi-20mPillar" role="img" aria-label="National logistics budget deployment progress">
                   <svg viewBox="0 0 80 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-                    <defs>
-                      <linearGradient id="rhgiPillarFillGrad" x1="0%" y1="100%" x2="0%" y2="0%">
-                        <stop offset="0%" stop-color="#0c1c34"/>
-                        <stop offset="40%" stop-color="#0099cc"/>
-                        <stop offset="75%" stop-color="#e8c547"/>
-                        <stop offset="100%" stop-color="#fff8dc"/>
-                      </linearGradient>
-                      <linearGradient id="rhgiPillarTrackGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stop-color="#1c3458"/>
-                        <stop offset="100%" stop-color="#0a1828"/>
-                      </linearGradient>
-                    </defs>
-                    <rect x="12" y="8" width="56" height="176" rx="10" fill="url(#rhgiPillarTrackGrad)" opacity="0.95"/>
-                    <rect id="rhgi-pillar-fill" x="16" y="180" width="48" height="0" rx="8" fill="url(#rhgiPillarFillGrad)"/>
+                    <rect x="12" y="8" width="56" height="176" rx="10" fill="#1a2332" opacity="0.95"/>
+                    <rect id="rhgi-pillar-fill" x="16" y="180" width="48" height="0" rx="8" fill="#3d5a4a"/>
                   </svg>
                 </div>
-                <span class="rhgi-20m-label">Target 20.7M pillar</span>
-                <span class="rhgi-20m-readout" id="rhgi-20m-readout">0 / 20,709,668</span>
+                <span class="rhgi-20m-label">Budget deployment pillar</span>
+                <span class="rhgi-20m-readout" id="rhgi-20m-readout">0 / 0</span>
               </div>
               <div class="rhgi-hub-main">
                 <div class="rhgi-corridor-grid" role="group" aria-label="Geopolitical corridor selector">
@@ -1603,7 +1723,7 @@
                     <h3 id="rhgi-ss2-heading" class="rhgi-deep-head">South-South Corridor · Widget 5</h3>
                     <div class="rhgi-nw-margin" id="rhgi-ss-margin" aria-live="polite">
                       <span class="rhgi-nw-margin-label">Winning Margin</span>
-                      <p class="rhgi-nw-margin-delta rhgi-ss-growth-shimmer" id="rhgi-ss-margin-delta">—</p>
+                      <p class="rhgi-nw-margin-delta" id="rhgi-ss-margin-delta">—</p>
                       <p class="rhgi-nw-margin-dtl" id="rhgi-ss-margin-dtl">SS APC vs 2023 base · +210% growth corridor · 123 LGAs</p>
                     </div>
                     <div class="rhgi-deep-layout">
@@ -1634,7 +1754,7 @@
 
                   <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-prism-frame rhgi-deep-layout--compact" id="rhgi-widget-se" aria-labelledby="rhgi-se2-heading">
                     <h3 id="rhgi-se2-heading" class="rhgi-deep-head">Southeast Corridor · Widget 6</h3>
-                    <div class="rhgi-nw-margin" id="rhgi-se-margin" aria-live="polite">
+                    <div class="rhgi-nw-margin rhgi-se-strategic-lock-static" id="rhgi-se-margin" aria-live="polite">
                       <span class="rhgi-nw-margin-label">Strategic 25% Threshold Secure</span>
                       <p class="rhgi-nw-margin-delta" id="rhgi-se-margin-delta">—</p>
                       <p class="rhgi-nw-margin-dtl" id="rhgi-se-margin-dtl">SE APC vs 2023 base · Model 15-15 · 95 LGAs</p>
@@ -1704,8 +1824,16 @@
       var STATE_MAX = 36;
       var THRESHOLD = 0.25;
       var ELECTION_TARGET = new Date('2027-01-16T00:00:00+01:00');
-      var NATIONAL_TARGET = 20709668;
-      var NATIONAL_CURRENT = 7245000;
+      /* Determinant 3 · 144,000 tactical wards; 20k multiplier engine */
+      var RHGI_TACTICAL_WARDS = 144000;
+      var RHGI_CANVASSERS_PER_WARD = 15;
+      var RHGI_UNIT_NGN = 20000;
+      var RHGI_BUDGET_AIRTIME_NGN = 5000;
+      var RHGI_BUDGET_LOGISTICS_NGN = 15000;
+      var RHGI_BUDGET_TOTAL_NGN =
+        RHGI_TACTICAL_WARDS * RHGI_CANVASSERS_PER_WARD * RHGI_UNIT_NGN;
+      var NATIONAL_TARGET = RHGI_BUDGET_TOTAL_NGN;
+      var NATIONAL_CURRENT = 8600000000;
 
       var diamond = document.getElementById('rhgi-fctDiamond');
       var ratio = STATE_NOW / STATE_MAX;
@@ -1715,6 +1843,13 @@
 
       var pillarFill = document.getElementById('rhgi-pillar-fill');
       var readout20 = document.getElementById('rhgi-20m-readout');
+      var slcTotalEl = document.getElementById('rhgi-slc-total');
+      function updateSovereignLogisticsDisplay() {
+        if (slcTotalEl) {
+          slcTotalEl.textContent =
+            '₦' + RHGI_BUDGET_TOTAL_NGN.toLocaleString('en-NG') + ' (global total)';
+        }
+      }
       function updatePillar() {
         var pct = Math.min(100, Math.max(0, (NATIONAL_CURRENT / NATIONAL_TARGET) * 100));
         var maxH = 168;
@@ -1726,9 +1861,14 @@
         }
         if (readout20) {
           readout20.textContent =
-            NATIONAL_CURRENT.toLocaleString('en-NG') + ' / ' + NATIONAL_TARGET.toLocaleString('en-NG');
+            '₦' +
+            NATIONAL_CURRENT.toLocaleString('en-NG') +
+            ' deployed / ₦' +
+            NATIONAL_TARGET.toLocaleString('en-NG') +
+            ' total';
         }
       }
+      updateSovereignLogisticsDisplay();
       updatePillar();
 
       document.querySelectorAll('.rhgi-corridor-btn').forEach(function (btn) {
@@ -1749,7 +1889,7 @@
           var targetId = corridorMap[key];
           if (targetId) {
             var targetEl = document.getElementById(targetId);
-            if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            if (targetEl) targetEl.scrollIntoView({ behavior: 'auto', block: 'nearest' });
           }
         });
       });
@@ -1764,7 +1904,6 @@
         if (convB) convB.textContent = line;
       }
       tickConversion();
-      setInterval(tickConversion, 4000);
 
       function pad2(n) { return String(n).padStart(2, '0'); }
 
@@ -1889,6 +2028,7 @@
       /* —— 15-15-DEPLOY-12: tri-corridor APC + Model 15-15 (Kano anchor multiplier) —— */
       var KANO_APC_2023 = 517341;
       var KANO_PROJ_15 = 1938480;
+      /* 15-15 projection multiplier (Kano anchor); engine realigned to Determinant 3 · 144,000 tactical wards */
       var MODEL_MULT = KANO_PROJ_15 / KANO_APC_2023;
       /* NE: 15-15 multiplier × 2027 security-weighted uplift (stability corridor) */
       var NE_SECURITY_WEIGHT_2027 = 1.032;
@@ -2052,7 +2192,7 @@
               vt.base.toLocaleString('en-NG') +
               ' → ' +
               vt.proj.toLocaleString('en-NG') +
-              ' · Strategic 25% Threshold Secure · Model 15-15 · ' +
+              ' · Strategic 25% Threshold Secure (144,000 tactical wards) · Model 15-15 · ' +
               SE_LGA_COUNT +
               ' LGAs';
           } else if (idPrefix === 'nc') {
@@ -2114,7 +2254,7 @@
         var victoryBtn = document.getElementById('rhgi-victory-btn');
         var readout = document.getElementById('rhgi-arc-readout');
         if (arcPath) arcPath.setAttribute('stroke-dasharray', dashLen + ' 100');
-        if (akz) akz.classList.toggle('rhgi-akz-spine--sparkle', growthPct > 50);
+        if (akz) akz.classList.remove('rhgi-akz-spine--sparkle');
         if (readout) {
           readout.textContent =
             'Victory Arc · Six-corridor aggregate · ' +
@@ -2416,7 +2556,6 @@
         renderFooter774Ticker();
       }
       renderAllLgaFeeds();
-      setInterval(renderAllLgaFeeds, 45000);
     })();
   </script>
 </body>
