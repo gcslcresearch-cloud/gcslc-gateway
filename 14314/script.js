@@ -28,12 +28,12 @@
     { city: "New York", offset: -4 }
   ];
   var corridorMatrix = [
-    { key: "nw", label: "Northwest", budget: "₦17.38B", baseline: { APC: 46, ADC: 16, PDP: 22, LP: 10 }, projection: { APC: 66, ADC: 24, PDP: 28, LP: 16 } },
-    { key: "ne", label: "Northeast", budget: "₦10.45B", baseline: { APC: 43, ADC: 14, PDP: 24, LP: 9 }, projection: { APC: 63, ADC: 22, PDP: 31, LP: 14 } },
-    { key: "nc", label: "Northcentral", budget: "₦11.22B", baseline: { APC: 34, ADC: 13, PDP: 27, LP: 16 }, projection: { APC: 57, ADC: 20, PDP: 33, LP: 21 } },
-    { key: "sw", label: "Southwest", budget: "₦12.84B", baseline: { APC: 38, ADC: 15, PDP: 18, LP: 27 }, projection: { APC: 61, ADC: 23, PDP: 24, LP: 34 } },
-    { key: "se", label: "Southeast", budget: "₦8.91B", baseline: { APC: 12, ADC: 10, PDP: 31, LP: 41 }, projection: { APC: 29, ADC: 18, PDP: 38, LP: 48 } },
-    { key: "ss", label: "Southsouth", budget: "₦10.00B", baseline: { APC: 19, ADC: 11, PDP: 36, LP: 24 }, projection: { APC: 36, ADC: 17, PDP: 42, LP: 31 } }
+    { key: "nw", label: "Northwest", budget: "₦17.38B", total2023: 6500000, total2027: 9600000, baseline: { APC: 46, ADC: 16, PDP: 22, LP: 10 }, projection: { APC: 66, ADC: 24, PDP: 28, LP: 16 } },
+    { key: "ne", label: "Northeast", budget: "₦10.45B", total2023: 3800000, total2027: 5500000, baseline: { APC: 43, ADC: 14, PDP: 24, LP: 9 }, projection: { APC: 63, ADC: 22, PDP: 31, LP: 14 } },
+    { key: "nc", label: "Northcentral", budget: "₦11.22B", total2023: 4200000, total2027: 6000000, baseline: { APC: 34, ADC: 13, PDP: 27, LP: 16 }, projection: { APC: 57, ADC: 20, PDP: 33, LP: 21 } },
+    { key: "sw", label: "Southwest", budget: "₦12.84B", total2023: 5200000, total2027: 7600000, baseline: { APC: 38, ADC: 15, PDP: 18, LP: 27 }, projection: { APC: 61, ADC: 23, PDP: 24, LP: 34 } },
+    { key: "se", label: "Southeast", budget: "₦8.91B", total2023: 2600000, total2027: 2200000, baseline: { APC: 12, ADC: 10, PDP: 31, LP: 41 }, projection: { APC: 24, ADC: 14, PDP: 29, LP: 33 } },
+    { key: "ss", label: "Southsouth", budget: "₦10.00B", total2023: 3200000, total2027: 6600000, baseline: { APC: 19, ADC: 11, PDP: 36, LP: 24 }, projection: { APC: 36, ADC: 17, PDP: 42, LP: 31 } }
   ];
 
   function tickGroupHtml() {
@@ -65,7 +65,11 @@
         ? '<span class="rhgi-clock-tz">UTC+4</span>'
         : "";
     return (
-      '<div class="rhgi-clock-wrap" data-tz="' +
+      '<div class="rhgi-clock-wrap' +
+      (idx === 0 ? " rhgi-clock-abuja-frame" : "") +
+      '" data-city="' +
+      zones[idx].city +
+      '" data-tz="' +
       zones[idx].offset +
       '">' +
       '<div class="rhgi-clock-face-wrap">' +
@@ -92,6 +96,17 @@
     return { h24: local.getUTCHours(), Mi: local.getUTCMinutes(), Se: local.getUTCSeconds() };
   }
 
+  function lagosClockPartsFromLocaleString() {
+    var lagosNow = new Date(
+      new Date().toLocaleString("en-US", { timeZone: "Africa/Lagos" })
+    );
+    return {
+      h24: lagosNow.getHours(),
+      Mi: lagosNow.getMinutes(),
+      Se: lagosNow.getSeconds()
+    };
+  }
+
   function updateSovereignClocks() {
     var row = document.getElementById("rhgi-clocksRow");
     if (!row) {
@@ -99,8 +114,12 @@
     }
     var nowUtcMs = Date.now();
     row.querySelectorAll(".rhgi-clock-wrap").forEach(function (wrap) {
+      var city = wrap.getAttribute("data-city");
       var offset = parseInt(wrap.getAttribute("data-tz"), 10);
-      var t = clockPartsForOffset(offset, nowUtcMs);
+      var t =
+        city === "Abuja"
+          ? lagosClockPartsFromLocaleString()
+          : clockPartsForOffset(offset, nowUtcMs);
       var h12 = t.h24 % 12;
       var hourDeg = (h12 + t.Mi / 60 + t.Se / 3600) * 30 - 90;
       var minuteDeg = (t.Mi + t.Se / 60) * 6 - 90;
@@ -176,17 +195,25 @@
     host.innerHTML = corridorMatrix
       .map(function (c) {
         var parties = ["APC", "ADC", "PDP", "LP"];
+        var baseVotes = c.total2023;
+        var targetVotes = c.total2027;
         var rows = parties
           .map(function (p) {
+            var baseVal = Math.round((c.baseline[p] / 100) * baseVotes);
+            var projVal = Math.round((c.projection[p] / 100) * targetVotes);
             return (
               '<div class="rhgi-corridor-row">' +
-              '<p class="rhgi-corridor-party"><span>' +
+              '<p class="rhgi-corridor-party"><span class="rhgi-digital-glow">' +
               p +
               '</span><span>' +
+              baseVal.toLocaleString("en-NG") +
+              " (" +
               c.baseline[p] +
-              "% | " +
+              "%) | " +
+              projVal.toLocaleString("en-NG") +
+              " (" +
               c.projection[p] +
-              "%</span></p>" +
+              "%)</span></p>" +
               '<div class="rhgi-corridor-bars">' +
               '<div class="rhgi-corridor-rail"><div class="rhgi-corridor-fill rhgi-corridor-fill-base" data-w="' +
               c.baseline[p] +
@@ -198,11 +225,37 @@
             );
           })
           .join("");
+        var baselineWinnerVotes = Math.max.apply(
+          null,
+          parties.map(function (p) {
+            return Math.round((c.baseline[p] / 100) * baseVotes);
+          })
+        );
+        var projectedWinnerVotes = Math.max.apply(
+          null,
+          parties.map(function (p) {
+            return Math.round((c.projection[p] / 100) * targetVotes);
+          })
+        );
+        var margin = targetVotes - baseVotes;
+        var redZone = projectedWinnerVotes < baselineWinnerVotes;
+        var wardGap = Math.max(0, Math.ceil((baselineWinnerVotes - projectedWinnerVotes) / 225));
+        var redZoneBudget = wardGap * 40000;
         return (
-          '<article class="rhgi-corridor-widget prism-frame rhgi-prism-frame">' +
+          '<article class="rhgi-corridor-widget prism-frame rhgi-prism-frame' +
+          (redZone ? " rhgi-combat-sentinel" : "") +
+          '">' +
           '<p class="rhgi-corridor-title">' +
           c.label +
           " Corridor</p>" +
+          '<div class="rhgi-corridor-pillars"><span>2023 Forensic</span><span>2027 Projection</span></div>' +
+          '<p class="rhgi-corridor-margin rhgi-digital-glow" data-base="' +
+          margin +
+          '" id="rhgi-margin-' +
+          c.key +
+          '">WINNING MARGIN: +' +
+          margin.toLocaleString("en-NG") +
+          "</p>" +
           rows +
           '<p class="rhgi-corridor-note">Total Region Budget: <strong>' +
           c.budget +
@@ -210,6 +263,11 @@
           '<p class="rhgi-corridor-note">2027 Projection Node: <strong>' +
           RHGI_PROJECTION_TARGET.toLocaleString("en-NG") +
           "</strong></p>" +
+          (redZone
+            ? '<p class="rhgi-corridor-note">Secondary Canvasser Budget (Red Zone @ ₦40,000/ward): <strong>₦' +
+              redZoneBudget.toLocaleString("en-NG") +
+              "</strong></p>"
+            : "") +
           '<p class="rhgi-corridor-ratio">1 Unit Commander → 15 Canvassers → 225 Voters</p>' +
           "</article>"
         );
@@ -221,6 +279,14 @@
       requestAnimationFrame(function () {
         el.style.width = w + "%";
       });
+    });
+  }
+
+  function updateWinningMarginsPulse() {
+    document.querySelectorAll(".rhgi-corridor-margin").forEach(function (el) {
+      var base = parseInt(el.getAttribute("data-base"), 10) || 0;
+      var pulse = Math.round((Math.sin(Date.now() / 650) + 1) * 0.5 * 25000);
+      el.textContent = "WINNING MARGIN: +" + (base + pulse).toLocaleString("en-NG");
     });
   }
 
@@ -244,6 +310,7 @@
     }
     (function tickCountdown() {
       updateCountdown();
+      updateWinningMarginsPulse();
       var delay = 1000 - (Date.now() % 1000);
       countdownTimer = setTimeout(tickCountdown, delay);
     })();
@@ -285,6 +352,11 @@
     if (diamond) {
       diamond.classList.toggle("is-solid", projected);
       diamond.style.opacity = projected ? "1" : "0.45";
+    }
+    var abujaFrame = document.querySelector(".rhgi-clock-abuja-frame");
+    if (abujaFrame) {
+      abujaFrame.classList.toggle("rhgi-clock-abuja-flicker", !projected);
+      abujaFrame.classList.toggle("rhgi-clock-abuja-solid", projected);
     }
     if (validator) {
       validator.textContent =
