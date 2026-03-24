@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#03050b">
+  <title>RHGI Sentinel Mobile</title>
+  <style>
+    :root {
+      --space-black: #03050b;
+      --prism-navy: #0a1325;
+      --prism-navy-soft: rgba(12, 22, 42, 0.82);
+      --metal-gold: #e6c35b;
+      --metal-gold-strong: #f3d27b;
+      --crimson: #8e1d28;
+      --ink: #dfe7f2;
+    }
+
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      min-height: 100dvh;
+      background: radial-gradient(circle at 80% 0%, rgba(230, 195, 91, 0.08), transparent 38%), var(--space-black);
+      color: var(--ink);
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    .shell {
+      width: min(100%, 430px);
+      margin: 0 auto;
+      padding: 14px 12px calc(84px + env(safe-area-inset-bottom));
+    }
+
+    .prism-frame {
+      background: var(--prism-navy-soft);
+      border: 1px solid rgba(230, 195, 91, 0.35);
+      border-radius: 12px;
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
+    .hero {
+      padding: 14px 12px;
+      margin-bottom: 12px;
+    }
+    .title {
+      margin: 0;
+      font-size: 1.02rem;
+      line-height: 1.25;
+      letter-spacing: 0.01em;
+      color: #fff6d5;
+      font-weight: 700;
+    }
+    .subtitle {
+      margin: 7px 0 0;
+      font-size: 0.78rem;
+      color: var(--metal-gold);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-shadow: 0 0 10px rgba(230, 195, 91, 0.35);
+    }
+
+    .section-label {
+      margin: 0 0 8px;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #f5deb0;
+      font-weight: 700;
+    }
+
+    .requests {
+      display: grid;
+      gap: 10px;
+    }
+
+    .request-card {
+      padding: 12px;
+    }
+
+    .meta {
+      margin: 0 0 8px;
+      font-size: 0.78rem;
+      line-height: 1.45;
+      color: #e4ecf7;
+    }
+    .meta strong { color: var(--metal-gold-strong); }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .btn {
+      border-radius: 10px;
+      border: 1px solid transparent;
+      padding: 10px 8px;
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      cursor: pointer;
+      color: #07101f;
+    }
+
+    .btn-grant {
+      background: linear-gradient(135deg, #d7ae3d, #f0d68a);
+      border-color: rgba(247, 226, 162, 0.85);
+    }
+
+    .btn-deny {
+      background: rgba(16, 7, 10, 0.85);
+      color: #f7d8dc;
+      border: 1px solid var(--crimson);
+    }
+
+    .clock-strip {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+      background: rgba(3, 5, 11, 0.95);
+      border-top: 1px solid rgba(230, 195, 91, 0.35);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .clock-grid {
+      width: min(100%, 430px);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+
+    .clock-pill {
+      border: 1px solid rgba(230, 195, 91, 0.25);
+      background: #081124;
+      border-radius: 9px;
+      text-align: center;
+      padding: 6px 4px;
+    }
+
+    .clock-city {
+      display: block;
+      font-size: 0.52rem;
+      color: #e7c871;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .clock-time {
+      display: block;
+      font-size: 0.65rem;
+      color: #ecf2fc;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="hero prism-frame">
+      <h1 class="title">RHGI Sentinel: Chairman&rsquo;s Quick-Response</h1>
+      <p class="subtitle">Sovereign Mirror Access Control</p>
+    </header>
+
+    <section>
+      <p class="section-label">Pending Access Requests</p>
+      <div class="requests">
+        <article class="request-card prism-frame">
+          <p class="meta"><strong>Name:</strong> Aisha Bello<br><strong>Location:</strong> Kaduna / Zaria LGA<br><strong>Duration:</strong> 30 minutes</p>
+          <div class="actions">
+            <button class="btn btn-grant" type="button">GRANT 30M</button>
+            <button class="btn btn-deny" type="button">DENY</button>
+          </div>
+        </article>
+
+        <article class="request-card prism-frame">
+          <p class="meta"><strong>Name:</strong> Tunde Okeke<br><strong>Location:</strong> Lagos / Ikeja LGA<br><strong>Duration:</strong> 45 minutes</p>
+          <div class="actions">
+            <button class="btn btn-grant" type="button">GRANT 30M</button>
+            <button class="btn btn-deny" type="button">DENY</button>
+          </div>
+        </article>
+
+        <article class="request-card prism-frame">
+          <p class="meta"><strong>Name:</strong> Maryam Yusuf<br><strong>Location:</strong> Kano / Nassarawa LGA<br><strong>Duration:</strong> 20 minutes</p>
+          <div class="actions">
+            <button class="btn btn-grant" type="button">GRANT 30M</button>
+            <button class="btn btn-deny" type="button">DENY</button>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="clock-strip" aria-label="Global sync clock strip">
+    <div class="clock-grid">
+      <div class="clock-pill"><span class="clock-city">Abuja</span><span class="clock-time" data-tz="Africa/Lagos">--:--:--</span></div>
+      <div class="clock-pill"><span class="clock-city">London</span><span class="clock-time" data-tz="Europe/London">--:--:--</span></div>
+      <div class="clock-pill"><span class="clock-city">Dubai</span><span class="clock-time" data-tz="Asia/Dubai">--:--:--</span></div>
+      <div class="clock-pill"><span class="clock-city">NY</span><span class="clock-time" data-tz="America/New_York">--:--:--</span></div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      "use strict";
+      var fmt = {};
+      function formatter(tz) {
+        if (!fmt[tz]) {
+          fmt[tz] = new Intl.DateTimeFormat("en-GB", {
+            timeZone: tz,
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: false
+          });
+        }
+        return fmt[tz];
+      }
+      function tick() {
+        var now = new Date();
+        document.querySelectorAll(".clock-time").forEach(function (el) {
+          var tz = el.getAttribute("data-tz");
+          el.textContent = formatter(tz).format(now);
+        });
+      }
+      document.addEventListener("DOMContentLoaded", function () {
+        tick();
+        setInterval(tick, 1000);
+      });
+    })();
+  </script>
+</body>
+</html>
