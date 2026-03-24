@@ -8,7 +8,15 @@ from datetime import datetime, time
 
 from data_engine import ALL_LGA_RECORDS, STATE_COORDS, records_as_dicts
 
-st.set_page_config(page_title="RHGI 774 Scientific Engine", layout="wide")
+st.set_page_config(
+    page_title="Renewed Hope Grassroots Initiatives — RHGI 774",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
+if "corridor_zone" not in st.session_state:
+    st.session_state.corridor_zone = None
+if "r8_note" not in st.session_state:
+    st.session_state.r8_note = ""
 
 GOLD = "#FFD700"
 NAVY = "#1A237E"
@@ -20,19 +28,43 @@ DEEP_NAVY_SAFE = "#152a45"
 METALLIC_GOLD_TARGET = "#FFD700"
 # 20.7M national vote mandate anchor (fixed reference).
 NATIONAL_VOTE_TARGET = 20_709_668
-# Six geopolitical corridors (display order).
-CORRIDOR_ZONES = (
-    "North Central",
-    "North East",
-    "North West",
-    "South East",
-    "South South",
-    "South West",
+# Drill-down order: abbrev → full zone name (matches dff["zone"]).
+CORRIDOR_NODES = (
+    ("NW", "North West"),
+    ("NE", "North East"),
+    ("NC", "North Central"),
+    ("SW", "South West"),
+    ("SS", "South South"),
+    ("SE", "South East"),
 )
+# 2027 general election countdown anchor (WAT); adjust if INEC publishes a firm date.
+_LAGOS_TZ = pytz.timezone("Africa/Lagos")
+ELECTION_DATETIME_WAT = _LAGOS_TZ.localize(datetime(2027, 2, 25, 8, 0, 0))
+EIGHT_R_DETERMINANTS = [
+    ("Refine", "Refine: sharpen ward-level turnout models and PVC reconciliation."),
+    ("Reset", "Reset: baseline integrity checks against 2023 forensic anchors."),
+    ("Research", "Research: continuous polling fusion with sovereign yield signals."),
+    ("Restructure", "Restructure: corridor logistics and canvasser deployment geometry."),
+    ("Resuscitate", "Resuscitate: mobilize dormant voter banks and low-turnout cells."),
+    ("Revitalize", "Revitalize: coalition messaging calibrated to zone determinants."),
+    ("Re-engineer", "Re-engineer: scenario lifts tied to scientific turnout bands."),
+    ("Retain", "Retain: lock gains through post-election mandate stewardship."),
+]
 
 
 def _gold_heading(text: str) -> None:
     st.markdown(f'<p class="rhgi-gold-heading">{text}</p>', unsafe_allow_html=True)
+
+
+def _format_election_countdown(now: datetime) -> str:
+    now = now.astimezone(_LAGOS_TZ)
+    delta = ELECTION_DATETIME_WAT - now
+    if delta.total_seconds() <= 0:
+        return "Election window reached — verify certified INEC 2027 calendar."
+    days = delta.days
+    h, rem = divmod(delta.seconds, 3600)
+    m, s = divmod(rem, 60)
+    return f"{days} days · {h:02d}:{m:02d}:{s:02d} remaining (WAT)"
 
 
 @st.cache_data(show_spinner=False)
@@ -153,8 +185,9 @@ def acceptance_velocity_pct(apc_2023: int, apc_2027: int) -> float:
     return round(100.0 * (a7 - a3) / a3, 2)
 
 
-def build_corridor_matrix_df(dff: pd.DataFrame, zone: str) -> pd.DataFrame:
-    sub = dff.loc[dff["zone"] == zone, ["lga", "apc_2023", "apc_2027"]].copy()
+def build_state_lga_matrix_df(dff: pd.DataFrame, state: str) -> pd.DataFrame:
+    """Per-state LGA matrix for corridor drill-down."""
+    sub = dff.loc[dff["state"] == state, ["lga", "apc_2023", "apc_2027"]].copy()
     sub["_lk"] = sub["lga"].str.lower()
     sub = sub.sort_values("_lk").drop(columns="_lk")
     sub["Acceptance Velocity (%)"] = sub.apply(
@@ -165,14 +198,14 @@ def build_corridor_matrix_df(dff: pd.DataFrame, zone: str) -> pd.DataFrame:
         columns={
             "lga": "LGA Name",
             "apc_2023": "2023 Actual APC",
-            "apc_2027": "2027 Projected Target",
+            "apc_2027": "2027 Sovereign Projection",
         }
     )
     return sub[
         [
             "LGA Name",
             "2023 Actual APC",
-            "2027 Projected Target",
+            "2027 Sovereign Projection",
             "Acceptance Velocity (%)",
         ]
     ]
@@ -192,11 +225,131 @@ def build_state_heatmap_df(dff: pd.DataFrame) -> pd.DataFrame:
 df = load_df()
 sovereign_total = float(df["sovereign_yield_gap"].sum())
 
-lagos_tz = pytz.timezone("Africa/Lagos")
+lagos_tz = _LAGOS_TZ
 
 st.markdown(
     """
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&display=swap');
+    .stApp { background-color: #0b1024 !important; color: #fafafa !important; }
+    .block-container { font-size: 1.08rem; position: relative; z-index: 2 !important; }
+    div[data-testid="stAppViewContainer"] > section.main { position: relative; z-index: 1; }
+    .rhgi-brand-title {
+      font-family: 'Cormorant Garamond', 'Times New Roman', Georgia, serif;
+      font-size: clamp(1.75rem, 4vw, 2.45rem);
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      background: linear-gradient(110deg, #fff8e0 0%, #FFD700 32%, #fffacd 52%, #FFD700 78%, #ffe566 100%);
+      background-size: 220% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: rhgiTitleShimmer 5s ease-in-out infinite;
+      text-align: center;
+      margin: 0.25rem 0 0.5rem 0;
+    }
+    @keyframes rhgiTitleShimmer {
+      0%, 100% { background-position: 0% center; }
+      50% { background-position: 100% center; }
+    }
+    .rhgi-emblem-wrap { text-align: center; margin: 4px 0 8px 0; }
+    .rhgi-emblem {
+      width: 112px; height: 112px; margin: 0 auto;
+      border-radius: 50%;
+      border: 3px solid #FFD700;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 800;
+      font-size: 1.75rem;
+      color: #FFD700;
+      text-shadow: 0 0 16px rgba(255,215,0,0.95);
+      box-shadow: 0 0 32px rgba(255,215,0,0.4), inset 0 0 24px rgba(255,215,0,0.15);
+      animation: emblemGoldPulse 2.6s ease-in-out infinite;
+    }
+    @keyframes emblemGoldPulse {
+      0%, 100% { filter: brightness(1); box-shadow: 0 0 24px rgba(255,215,0,0.35); }
+      50% { filter: brightness(1.18); box-shadow: 0 0 44px rgba(255,215,0,0.65); }
+    }
+    .rhgi-countdown-meter {
+      text-align: center;
+      font-size: clamp(1.15rem, 3.2vw, 1.45rem);
+      font-weight: 800;
+      color: #ffffff !important;
+      margin: 6px 0 14px 0;
+      letter-spacing: 0.06em;
+      text-shadow: 0 0 14px rgba(255,215,0,0.5);
+    }
+    .rhgi-creed {
+      font-size: clamp(1.05rem, 2.8vw, 1.18rem);
+      line-height: 1.6;
+      color: #f5f7ff !important;
+      max-width: 980px;
+      margin: 0 auto 14px auto;
+      text-align: center;
+      font-weight: 500;
+    }
+    .rhgi-signature {
+      font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+      color: #FFD700 !important;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 20px;
+      letter-spacing: 0.02em;
+    }
+    .rhgi-wm-root { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; opacity: 0.48; }
+    .rhgi-wm-inner {
+      position: absolute; width: 240%; height: 240%; left: -70%; top: -70%;
+      display: flex; flex-wrap: wrap; align-content: flex-start; gap: 2.5rem 3.5rem;
+      transform: rotate(-16deg);
+      animation: wmBubbleDrift 95s linear infinite;
+    }
+    .rhgi-wm-cell {
+      font-size: clamp(2.2rem, 7vw, 3.6rem);
+      font-weight: 900;
+      color: rgba(255, 215, 0, 0.42);
+      user-select: none;
+    }
+    @keyframes wmBubbleDrift {
+      0% { transform: rotate(-16deg) translate(0, 0); }
+      50% { transform: rotate(-16deg) translate(-48px, -72px); }
+      100% { transform: rotate(-16deg) translate(0, 0); }
+    }
+    .rhgi-capture-shield {
+      position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+      background: repeating-linear-gradient(
+        -4deg,
+        rgba(255,255,255,0.028) 0px,
+        rgba(255,255,255,0.028) 1px,
+        transparent 1px,
+        transparent 16px
+      );
+      mix-blend-mode: overlay;
+    }
+    .stApp { user-select: none; -webkit-user-select: none; }
+    button, input, textarea, [data-testid="stMarkdownContainer"], .stMarkdown { user-select: text !important; -webkit-user-select: text !important; }
+    div[data-testid="column"] button[kind="secondary"],
+    div[data-testid="column"] button[kind="primary"] {
+      font-size: 1.05rem !important;
+      font-weight: 700 !important;
+      padding-top: 0.65rem !important;
+      padding-bottom: 0.65rem !important;
+      background: linear-gradient(160deg, #121c3a 0%, #0b1024 100%) !important;
+      color: #FFD700 !important;
+      border: 1px solid rgba(255,215,0,0.5) !important;
+      animation: r8MetalPulse 2.4s ease-in-out infinite;
+    }
+    @keyframes r8MetalPulse {
+      0%, 100% { box-shadow: 0 0 8px rgba(255,215,0,0.25); }
+      50% { box-shadow: 0 0 22px rgba(255,215,0,0.55); }
+    }
+    .rhgi-lga-scroll {
+      max-height: 58vh;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+      border: 1px solid rgba(255,215,0,0.35);
+      border-radius: 12px;
+      background: rgba(8, 12, 28, 0.65);
+    }
     .rhgi-kpi {padding: 10px 12px; border-radius: 10px; border:1px solid rgba(26,35,126,0.55); background:#0b1024;}
     .rhgi-pulse-red { animation: pulseRed 1s ease-in-out infinite; }
     @keyframes pulseRed {
@@ -262,8 +415,7 @@ st.markdown(
     .rhgi-gold-heading { color: #FFD700 !important; font-weight: 800 !important; font-size: 1.35rem !important;
       margin: 0.5rem 0 0.35rem 0; text-shadow: 0 0 10px rgba(255,215,0,0.4); letter-spacing: 0.02em; }
     .stApp h1 { color: #FFD700 !important; font-weight: 800 !important; text-shadow: 0 0 14px rgba(255,215,0,0.35); }
-    [data-testid="stTabs"] { font-size: 1.05rem; }
-    .rhgi-corridor-table { width: 100%; border-collapse: collapse; font-size: 1.02rem; line-height: 1.45; }
+    .rhgi-corridor-table { width: 100%; border-collapse: collapse; font-size: 1.14rem; line-height: 1.55; }
     .rhgi-corridor-table th {
       color: #FFD700 !important; font-weight: 800 !important;
       text-align: left; padding: 12px 14px;
@@ -278,6 +430,12 @@ st.markdown(
     .rhgi-corridor-table tr:nth-child(even) td { background: rgba(14, 23, 51, 0.45); }
     </style>
     """,
+    unsafe_allow_html=True,
+)
+_wm_cells = "".join('<span class="rhgi-wm-cell">GCSLC</span>' for _ in range(48))
+st.markdown(
+    f'<div class="rhgi-wm-root" aria-hidden="true"><div class="rhgi-wm-inner">{_wm_cells}</div></div>'
+    '<div class="rhgi-capture-shield" aria-hidden="true"></div>',
     unsafe_allow_html=True,
 )
 
@@ -316,8 +474,27 @@ abuja_strobe = fct_pct < 25.0
 total_winning_margin = float(dff["winning_margin"].sum())
 
 abuja_now = datetime.now(lagos_tz)
+_countdown_line = _format_election_countdown(abuja_now)
+st.markdown(
+    f"""
+    <div class="rhgi-brand-block">
+      <h1 class="rhgi-brand-title">Renewed Hope Grassroots Initiatives</h1>
+      <div class="rhgi-emblem-wrap"><div class="rhgi-emblem">RHGI</div></div>
+      <div class="rhgi-countdown-meter">Election countdown (live) · {_countdown_line}</div>
+      <p class="rhgi-creed">This sovereign dashboard decodes the 2027 elections with scientific, uncorruptible precision. Powered by the 8R Stealth Paradigm Convergence and its Determinants.</p>
+      <p class="rhgi-signature">Prepared by Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE.</p>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+_r8_cols = st.columns(8)
+for _ri, (_r8_label, _r8_det) in enumerate(EIGHT_R_DETERMINANTS):
+    with _r8_cols[_ri]:
+        if st.button(_r8_label, key=f"r8_btn_{_ri}", use_container_width=True):
+            st.session_state.r8_note = _r8_det
+if st.session_state.r8_note:
+    st.info(st.session_state.r8_note)
 
-st.title("RHGI 774 Scientific Engine")
 c1, c2, c3 = st.columns(3)
 # Abuja Pulse lead (UTC+1); Diamond Strobe when FCT projected APC < 25%.
 _pulse_cls = "rhgi-kpi rhgi-abuja-strobe" if abuja_strobe else "rhgi-kpi"
@@ -373,36 +550,55 @@ fig_zone.update_layout(
 fig_zone.update_traces(marker=dict(color=GOLD))
 st.plotly_chart(fig_zone, use_container_width=True)
 
-_gold_heading("Corridor velocity matrix — 774 LGAs by geopolitical zone")
+_gold_heading("Corridor nodes — drill-down (774 LGAs)")
 st.caption(
-    "Each corridor tab lists all LGAs in that zone. "
-    "Acceptance velocity = (2027 APC − 2023 APC) ÷ 2023 APC × 100."
+    "Choose a corridor, then a state. Velocity % = (2027 APC − 2023 APC) ÷ 2023 APC × 100."
 )
-_tab_labels = [f"{z} · {len(dff[dff['zone']==z])} LGAs" for z in CORRIDOR_ZONES]
-_tabs = st.tabs(_tab_labels)
-for _tab, _zone in zip(_tabs, CORRIDOR_ZONES):
-    with _tab:
-        _mat = build_corridor_matrix_df(dff, _zone)
-        _rows_html = []
-        for _, _r in _mat.iterrows():
-            _nm = html.escape(str(_r["LGA Name"]))
-            _rows_html.append(
-                "<tr>"
-                f"<td>{_nm}</td>"
-                f"<td>{int(_r['2023 Actual APC']):,}</td>"
-                f"<td>{int(_r['2027 Projected Target']):,}</td>"
-                f"<td>{_r['Acceptance Velocity (%)']:.2f}</td>"
-                "</tr>"
-            )
-        _tbl = (
-            "<table class='rhgi-corridor-table'><thead><tr>"
-            "<th>LGA Name</th><th>2023 Actual APC</th><th>2027 Projected Target</th>"
-            "<th>Acceptance Velocity (%)</th>"
-            "</tr></thead><tbody>"
-            + "".join(_rows_html)
-            + "</tbody></table>"
+_cor_cols = st.columns(6)
+for _ci, (_abbr, _zname) in enumerate(CORRIDOR_NODES):
+    with _cor_cols[_ci]:
+        _nlg = int((dff["zone"] == _zname).sum())
+        if st.button(f"{_abbr} · {_nlg}", key=f"cor_btn_{_abbr}", use_container_width=True):
+            st.session_state.corridor_zone = _zname
+if st.session_state.corridor_zone is None:
+    st.markdown(
+        '<p class="rhgi-creed" style="margin-top:8px;">Select a corridor widget (NW · NE · NC · SW · SS · SE) to begin.</p>',
+        unsafe_allow_html=True,
+    )
+else:
+    st.markdown(
+        f'<p class="rhgi-gold-heading" style="font-size:1.1rem;">Active corridor: '
+        f'<span style="color:#ffffff;">{html.escape(st.session_state.corridor_zone)}</span></p>',
+        unsafe_allow_html=True,
+    )
+    _states_in_zone = sorted(dff[dff["zone"] == st.session_state.corridor_zone]["state"].unique())
+    _sel_state = st.selectbox(
+        "State (drill-down)",
+        options=_states_in_zone,
+        index=0,
+        key=f"state_drill_{st.session_state.corridor_zone}",
+    )
+    _mat = build_state_lga_matrix_df(dff, _sel_state)
+    _rows_html = []
+    for _, _r in _mat.iterrows():
+        _nm = html.escape(str(_r["LGA Name"]))
+        _rows_html.append(
+            "<tr>"
+            f"<td>{_nm}</td>"
+            f"<td>{int(_r['2023 Actual APC']):,}</td>"
+            f"<td>{int(_r['2027 Sovereign Projection']):,}</td>"
+            f"<td>{_r['Acceptance Velocity (%)']:.2f}</td>"
+            "</tr>"
         )
-        st.markdown(_tbl, unsafe_allow_html=True)
+    _tbl = (
+        "<div class='rhgi-lga-scroll'><table class='rhgi-corridor-table'><thead><tr>"
+        "<th>LGA Name</th><th>2023 Actual APC</th><th>2027 Sovereign Projection</th>"
+        "<th>Velocity %</th>"
+        "</tr></thead><tbody>"
+        + "".join(_rows_html)
+        + "</tbody></table></div>"
+    )
+    st.markdown(_tbl, unsafe_allow_html=True)
 
 _gold_heading("774 LGA heatmap — winning margin (rugged)")
 lga_map_df = build_lga_heatmap_df(dff)
@@ -463,7 +659,7 @@ fig_scatter.update_layout(
 )
 st.plotly_chart(fig_scatter, use_container_width=True)
 
-st.subheader("2023 vs 2027 Party Totals")
+_gold_heading("2023 vs 2027 Party Totals")
 party_totals = pd.DataFrame(
     {
         "Party": ["APC", "PDP", "LP", "ADC"] * 2,
