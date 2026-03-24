@@ -1445,7 +1445,7 @@
                             <tr>
                               <th scope="col">State</th>
                               <th scope="col">2023 APC (votes)</th>
-                              <th scope="col">15-15 Model APC (votes)</th>
+                              <th scope="col">Security-weighted 2027 (votes)</th>
                             </tr>
                           </thead>
                           <tbody id="rhgi-ne-matrix-tbody"></tbody>
@@ -1817,7 +1817,7 @@
         }
       }
 
-      function renderMatrixGeneric(tbodyId, rows, maxB, maxP, projExtraTitle) {
+      function renderMatrixGeneric(tbodyId, rows, maxB, maxP, projExtraTitle, projVoteTitlePrefix) {
         var tbody = document.getElementById(tbodyId);
         if (!tbody) return;
         var mb = maxB;
@@ -1854,7 +1854,8 @@
             bv +
             ' votes"></div></div></div>';
           var projTitle =
-            '15-15 Model APC ' +
+            (projVoteTitlePrefix || '15-15 Model APC') +
+            ' ' +
             pv +
             ' votes · ' +
             (projExtraTitle || 'Kano anchor multiplier');
@@ -1887,7 +1888,8 @@
           NE_2023,
           null,
           null,
-          'Stealth Paradigm 15-15'
+          '15-15 × security-weighted 2027 uplift',
+          'Security-weighted 2027'
         );
       }
       renderAllMatrices();
