@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&amp;display=swap" rel="stylesheet">
   <title>15-15 RHGI | Sovereign Dashboard</title>
   <style>
+/* RHGI-HOMECOMING-45 — self-contained: prism-frame · kinetic LGA · live clocks · 774@240s · GPU translateZ(0) */
     :root {
       --rhgi-navy-deep: #050a14;
       --rhgi-gold: #e8c547;
@@ -202,25 +203,32 @@
           0 0 1.85rem rgba(0, 200, 255, 0.22);
       }
     }
+    /* —— Prism-Frame: blur(15px) glass + gold/silver gradient border + 3D depth —— */
+    .prism-frame,
     .rhgi-prism-frame {
       position: relative;
       border-radius: 0.75rem;
-      background: rgba(8, 14, 28, 0.4);
+      border: 1px solid transparent;
+      background:
+        linear-gradient(165deg, rgba(8, 14, 28, 0.58), rgba(6, 16, 32, 0.42)) padding-box,
+        linear-gradient(135deg, #d4af37 0%, #f8f4ec 18%, #a8a9ad 38%, #ffd700 52%, #c0c0c0 68%, #e8c547 88%, #9a9a9e 100%) border-box;
+      background-clip: padding-box, border-box;
       backdrop-filter: blur(15px);
       -webkit-backdrop-filter: blur(15px);
-      border: 1px solid rgba(212, 175, 55, 0.4);
       box-shadow:
-        0 0 0 1px rgba(0, 229, 255, 0.14),
-        0 0 0 1px rgba(212, 175, 55, 0.14) inset,
-        0 0.5rem 2.25rem rgba(0, 0, 0, 0.45),
-        inset 0 1px 0 rgba(255, 255, 255, 0.08),
-        inset 0 -1px 0 rgba(0, 80, 140, 0.3),
-        0 0 1.35rem rgba(212, 175, 55, 0.24);
+        0 0 0 1px rgba(0, 229, 255, 0.16),
+        0 0.4rem 0 rgba(0, 0, 0, 0.42),
+        0 0.85rem 2.6rem rgba(0, 0, 0, 0.52),
+        0 1.4rem 4.2rem rgba(0, 0, 0, 0.38),
+        0 0 2.4rem rgba(212, 175, 55, 0.32),
+        inset 0 1px 0 rgba(255, 255, 255, 0.11),
+        inset 0 -2px 0 rgba(0, 50, 90, 0.4);
       transform: translateZ(0);
       backface-visibility: hidden;
       isolation: isolate;
       animation: rhgi-prism-frame-power 6s ease-in-out infinite;
     }
+    .prism-frame--compact,
     .rhgi-prism-frame--compact {
       border-radius: 0.65rem;
     }
@@ -1136,8 +1144,8 @@
       transform: translateZ(0);
       will-change: transform, opacity;
     }
-    .rhgi-v33-bar-fill,
-    .rhgi-v33-proj-bar {
+    .rhgi-bar-fill,
+    .rhgi-proj-fill {
       width: 100% !important;
       min-width: 0;
       transform-origin: 0 50%;
@@ -1154,7 +1162,7 @@
         transform: translateY(0);
       }
     }
-    .rhgi-page .rhgi-v33-matrix-row {
+    .rhgi-page .rhgi-matrix-row {
       animation: rhgi-v33-row-enter 0.55s ease forwards !important;
       animation-delay: calc(var(--row-index) * 0.1s) !important;
       transition-delay: calc(var(--row-index) * 0.1s);
@@ -1265,7 +1273,7 @@
       50% { opacity: 1; }
     }
     /* SOVEREIGN-REBIRTH-41: staggered vertical scan on LGA names */
-    @keyframes rhgi-r41-lga-name-scan {
+    @keyframes rhgi-lga-name-scan {
       0%, 100% {
         opacity: 0.72;
         filter: brightness(1);
@@ -1486,23 +1494,22 @@
     .rhgi-shell {
       background: transparent !important;
     }
-    /* FORCE-43: prism-frame glass + metallic stack (overrides prior flat static) */
+    /* RHGI-HOMECOMING-45: prism stack — gold/silver gradient border + glass (must not flatten to solid rgba) */
     .rhgi-page .rhgi-content-prism.rhgi-prism-frame,
     .rhgi-page .rhgi-hub.rhgi-prism-frame,
     .rhgi-page .rhgi-election-ticker.rhgi-prism-frame,
     .rhgi-page .rhgi-footer-774.rhgi-prism-frame,
     .rhgi-page .rhgi-corridor-widget.rhgi-prism-frame {
-      background: rgba(8, 14, 28, 0.4) !important;
+      border: 1px solid transparent !important;
+      background:
+        linear-gradient(165deg, rgba(8, 14, 28, 0.58), rgba(6, 16, 32, 0.42)) padding-box,
+        linear-gradient(135deg, #d4af37 0%, #f8f4ec 18%, #a8a9ad 38%, #ffd700 52%, #c0c0c0 68%, #e8c547 88%, #9a9a9e 100%) border-box !important;
+      background-clip: padding-box, border-box !important;
       backdrop-filter: blur(15px) !important;
       -webkit-backdrop-filter: blur(15px) !important;
-      border: 1px solid rgba(212, 175, 55, 0.4) !important;
     }
     .rhgi-page .rhgi-prism-frame {
       animation: rhgi-prism-frame-power 6s ease-in-out infinite !important;
-    }
-    .rhgi-conversion-ticker-track {
-      transform: none !important;
-      animation: none !important;
     }
     .rhgi-footer-774-inner {
       mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent) !important;
@@ -1510,14 +1517,14 @@
     .rhgi-deep-lga-scroller {
       overflow: hidden !important;
     }
-    .rhgi-matrix-bar--proj:not(.rhgi-v33-proj-bar),
-    .rhgi-bar-apc-b:not(.rhgi-v33-bar-fill) {
+    .rhgi-matrix-bar--proj:not(.rhgi-proj-fill),
+    .rhgi-bar-apc-b:not(.rhgi-bar-fill) {
       background: #2d5a42 !important;
     }
-    .rhgi-page .rhgi-v33-bar-fill.rhgi-bar-apc-b {
+    .rhgi-page .rhgi-bar-fill.rhgi-bar-apc-b {
       background: linear-gradient(90deg, #1a4d32, #2a6b45) !important;
     }
-    .rhgi-page .rhgi-v33-proj-bar.rhgi-matrix-bar--proj {
+    .rhgi-page .rhgi-proj-fill.rhgi-matrix-bar--proj {
       background: linear-gradient(105deg, #0f2844 0%, #1a3a5c 25%, #e8c547 55%, #fff8dc 72%, #1e3a5a 100%) !important;
     }
     .rhgi-fct-strategic-lock {
@@ -1530,15 +1537,7 @@
       background: #0a0e1a !important;
       border: 1px solid #d4af37 !important;
     }
-    /* Default: freeze CSS animation (flicker shield); explicit exceptions follow */
-    .rhgi-page,
-    .rhgi-page *,
-    .rhgi-page *::before,
-    .rhgi-page *::after {
-      animation: none !important;
-      transition: none !important;
-    }
-    /* REANIMATE-STEP-1: identity exceptions — metallic title + seal/sub breathe (transform-only motion) */
+    /* REANIMATE-STEP-1: identity — metallic title + seal/sub breathe */
     @keyframes rhgi-r1-breathe-seal {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.04); }
@@ -1596,12 +1595,12 @@
       will-change: transform !important;
     }
     /* Winning margin bars — scaleX reveal (all corridors); stagger inherits --row-index from tr */
-    .rhgi-page .rhgi-v33-matrix-row .rhgi-v33-bar-fill.rhgi-bar-apc-b {
+    .rhgi-page .rhgi-matrix-row .rhgi-bar-fill.rhgi-bar-apc-b {
       animation: rhgi-v33-bar-reveal 0.88s cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
       animation-delay: calc(var(--row-index) * 0.09s) !important;
       will-change: transform !important;
     }
-    .rhgi-page .rhgi-v33-matrix-row .rhgi-v33-proj-bar.rhgi-matrix-bar--proj {
+    .rhgi-page .rhgi-matrix-row .rhgi-proj-fill.rhgi-matrix-bar--proj {
       animation:
         rhgi-v33-bar-reveal 0.88s cubic-bezier(0.22, 1, 0.36, 1) forwards,
         rhgi-proj-bar-shimmer 5s ease-in-out infinite !important;
@@ -1622,14 +1621,14 @@
       transform: translateZ(0) !important;
       will-change: opacity, transform !important;
     }
-    .rhgi-page .rhgi-deep-lga-item .rhgi-r41-lga-name {
-      animation: rhgi-r41-lga-name-scan 2.8s ease-in-out infinite !important;
-      animation-delay: calc(var(--rhgi-name-index, 0) * 0.11s) !important;
+    .rhgi-page .rhgi-deep-lga-item .rhgi-lga-name {
+      animation: rhgi-lga-name-scan 2.8s ease-in-out infinite !important;
+      animation-delay: calc(var(--rhgi-idx, 0) * 0.11s) !important;
       will-change: opacity, filter !important;
     }
     /* Smooth scaleX on matrix bars (post-reveal updates) */
-    .rhgi-page .rhgi-v33-bar-fill,
-    .rhgi-page .rhgi-v33-proj-bar {
+    .rhgi-page .rhgi-bar-fill,
+    .rhgi-page .rhgi-proj-fill {
       transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1) !important;
     }
     @keyframes rhgi-r1-cd-pulse {
@@ -1893,7 +1892,7 @@
           <h2 id="rhgi-hub-heading" class="rhgi-hub-section-title">Sovereign Logistics Command</h2>
           <div class="rhgi-hub rhgi-r32-sovereign-shell rhgi-r41-gpu rhgi-prism-frame">
             <div class="rhgi-slc-budget rhgi-r41-gpu" id="rhgi-slc-budget">
-              <p class="rhgi-slc-formula rhgi-v33-anchor" id="rhgi-slc-formula-mandate">144,000 Tactical Wards · mandate target 39,790,350 votes</p>
+              <p class="rhgi-slc-formula rhgi-v33-anchor" id="rhgi-slc-formula-mandate">144,000 wards · 39,790,350 target votes · ₦60,840,000,000 operational budget</p>
               <p class="rhgi-slc-total rhgi-v33-anchor rhgi-v33-anchor-total" id="rhgi-slc-total">—</p>
               <p class="rhgi-slc-determinant rhgi-v33-anchor">Determinant 3 · 144,000 Tactical Wards</p>
               <p class="rhgi-slc-force-line rhgi-v33-anchor rhgi-v33-canvasser-anchor" id="rhgi-slc-force">—</p>
@@ -2207,12 +2206,13 @@
   <p class="rhgi-r43-watermark" aria-hidden="true">Architect: Dr. Sa&rsquo;ad Jaafaru</p>
 
   <script>
+/* RHGI-HOMECOMING-45 — live clocks · kinetic LGA · matrices · 774 footer (all inline) */
     (function () {
       var STATE_NOW = 24;
       var STATE_MAX = 36;
       var THRESHOLD = 0.25;
       var ELECTION_TARGET = new Date('2027-01-16T00:00:00+01:00');
-      /* FORCE-RESTORATION-43: 144k wards · 39,790,350 mandate · ₦60,840,000,000 operational fund */
+      /* Math lock: 144,000 wards · 39,790,350 target votes · ₦60,840,000,000 operational budget */
       var RHGI_TACTICAL_WARDS = 144000;
       var RHGI_CANVASSERS_PER_WARD = 15;
       var RHGI_MANDATE_VOTES = 39790350;
@@ -2238,15 +2238,18 @@
       function updateSovereignLogisticsDisplay() {
         if (slcFormulaMandateEl) {
           slcFormulaMandateEl.textContent =
-            '144,000 Tactical Wards · mandate target ' +
+            RHGI_TACTICAL_WARDS.toLocaleString('en-NG') +
+            ' wards · ' +
             RHGI_MANDATE_VOTES.toLocaleString('en-NG') +
-            ' votes';
+            ' target votes · ₦' +
+            RHGI_GLOBAL_FUND_NGN.toLocaleString('en-NG') +
+            ' operational budget';
         }
         if (slcTotalEl) {
           slcTotalEl.textContent =
             '₦' +
             RHGI_GLOBAL_FUND_NGN.toLocaleString('en-NG') +
-            ' Global Operational Fund';
+            ' · Global Operational Fund';
         }
         if (slcForceEl) {
           var canvasserForce = RHGI_TACTICAL_WARDS * RHGI_CANVASSERS_PER_WARD;
@@ -2356,7 +2359,7 @@
       tickCountdown();
       setInterval(tickCountdown, 1000);
 
-      /* FORCE-RESTORATION-43: Zaria · London · Dubai · New York — setInterval(1000) + SVG rotate */
+      /* Live world clocks — setInterval(1000ms) + SVG hand rotation; Dubai = Asia/Dubai (UTC+4) */
       var zones = [
         { city: 'Zaria', tz: 'Africa/Lagos' },
         { city: 'London', tz: 'Europe/London' },
@@ -2726,7 +2729,7 @@
             '<span class="rhgi-matrix-vote-num">' +
             bv +
             '</span>' +
-            '<div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-apc-b rhgi-v33-bar-fill" style="--rhgi-bar-sx:' +
+            '<div class="rhgi-matrix-bar-track"><div class="rhgi-matrix-bar rhgi-bar-apc-b rhgi-bar-fill" style="--rhgi-bar-sx:' +
             sxB +
             '" title="' +
             st.name +
@@ -2738,13 +2741,13 @@
             '<span class="rhgi-matrix-vote-num">' +
             pv +
             '</span>' +
-            '<div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj rhgi-v33-proj-bar" style="--rhgi-bar-sx:' +
+            '<div class="rhgi-matrix-bar-track rhgi-matrix-bar-track--proj"><div class="rhgi-matrix-bar rhgi-matrix-bar--proj rhgi-proj-fill" style="--rhgi-bar-sx:' +
             sxP +
             '" title="' +
             projTitle +
             '"></div></div></div>';
           html +=
-            '<tr class="rhgi-v33-matrix-row" style="--row-index:' +
+            '<tr class="rhgi-matrix-row" style="--row-index:' +
             s +
             '"><td class="rhgi-matrix-state">' +
             st.name +
@@ -2922,6 +2925,7 @@
         if (fb) fb.textContent = line;
       }
 
+      /* Kinetic LGA pulse: CSS vertical marquee (rhgi-lga-scroll) + staggered rhgi-lga-name scan (--rhgi-idx) */
       function buildLgaFeedFrom(namePool) {
         var names = shuffle(namePool);
         var n = names.length;
@@ -2938,7 +2942,7 @@
         var lab = item.secured ? 'Secured' : 'Mobilizing';
         return (
           '<li class="rhgi-deep-lga-item" data-lga="' + item.name.replace(/"/g, '&quot;') + '" data-status="' + st + '">' +
-          '<span class="rhgi-r41-lga-name" style="--rhgi-name-index:' +
+          '<span class="rhgi-lga-name" style="--rhgi-idx:' +
           rowIdx +
           '">' +
           item.name +
