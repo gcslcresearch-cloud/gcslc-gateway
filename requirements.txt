@@ -2,3 +2,6 @@ gradio
 streamlit
 folium
 pydeck
+pandas
+plotly
+pytz
