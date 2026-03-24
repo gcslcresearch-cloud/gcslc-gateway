@@ -18,6 +18,14 @@
       --rhgi-muted: #8fa3bf;
     }
     .rhgi-page *, .rhgi-page *::before, .rhgi-page *::after { box-sizing: border-box; }
+    /* MECHANISM-FINAL-18: GPU compositing on all shell UI (Right Mechanism) */
+    .rhgi-mechanism-gpu-scope,
+    .rhgi-mechanism-gpu-scope *,
+    .rhgi-mechanism-gpu-scope *::before,
+    .rhgi-mechanism-gpu-scope *::after {
+      transform: translateZ(0);
+      backface-visibility: hidden;
+    }
     html { -webkit-text-size-adjust: 100%; }
     body.rhgi-page {
       margin: 0;
@@ -31,6 +39,7 @@
       /* LGA ticker + AKZ spine: shared 40s loop (DEPLOY-12 moderate glide) */
       --rhgi-lga-scroll-duration: 40s;
       --rhgi-akz-spine-period: 40s;
+      --rhgi-footer774-duration: 240s;
     }
 
     .rhgi-velocity-field {
@@ -244,35 +253,36 @@
       width: min(100%, 36rem);
     }
 
-    /* Title — gold / white / navy metallic shimmer */
-    .rhgi-title {
+    /* Title — full RHGI · Gold–White–Navy metallic fusion */
+    .rhgi-title.rhgi-title--rhgi-full {
       margin: 0;
       font-family: 'Goldman', 'Segoe UI', sans-serif;
       font-weight: 700;
-      font-size: clamp(0.88rem, 2.4vw + 0.45rem, 1.55rem);
-      letter-spacing: 0.04em;
-      line-height: 1.22;
-      max-width: min(100%, 38rem);
+      font-size: clamp(0.92rem, 2.55vw + 0.48rem, 1.65rem);
+      letter-spacing: 0.035em;
+      line-height: 1.2;
+      max-width: min(100%, 42rem);
       margin-inline: auto;
-      padding-inline: clamp(0.25rem, 2vw, 0.75rem);
+      padding-inline: clamp(0.25rem, 2vw, 0.85rem);
       background: linear-gradient(
-        128deg,
-        #0d1a2e 0%,
-        #1a3a5c 12%,
-        #fff8e8 22%,
-        #e8c547 38%,
-        #f5f0e6 48%,
-        #1e3a5a 58%,
-        #e8c547 68%,
-        #ffffff 78%,
-        #0f2844 92%,
+        122deg,
+        #050a14 0%,
+        #0f2844 8%,
+        #fff8e8 18%,
+        #e8c547 32%,
+        #ffffff 42%,
+        #1a3a5c 52%,
+        #e8c547 62%,
+        #f5f0e6 72%,
+        #0d1a2e 86%,
         #e8c547 100%
       );
-      background-size: 280% 280%;
+      background-size: 320% 300%;
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
       animation: rhgi-title-metallic 6.5s ease-in-out infinite;
+      filter: drop-shadow(0 0.06rem 0.35rem rgba(8, 22, 42, 0.45));
     }
     @keyframes rhgi-title-metallic {
       0%, 100% { background-position: 12% 45%; filter: brightness(1.02); }
@@ -430,6 +440,9 @@
       stroke-width: 14;
       stroke-linecap: round;
       animation: rhgi-arc-sheen 4s ease-in-out infinite;
+    }
+    .rhgi-arc-constitutional-mark {
+      pointer-events: none;
     }
     @keyframes rhgi-arc-sheen {
       0%, 100% { filter: brightness(1); }
@@ -703,7 +716,7 @@
       50% { background-position: 100% 50%; }
     }
 
-    /* —— Corridor widgets (NW / SW / NE) —— */
+    /* —— Corridor widgets (six corridors) —— */
     .rhgi-corridor-widgets-stack {
       display: flex;
       flex-direction: column;
@@ -770,6 +783,25 @@
       background-clip: text;
       color: transparent;
       animation: rhgi-nw-margin-shimmer 4.2s ease-in-out infinite;
+    }
+    /* South-South: +210% growth strategic shimmer (123 LGAs) */
+    .rhgi-ss-growth-shimmer.rhgi-nw-margin-delta {
+      background: linear-gradient(
+        118deg,
+        #1a4d2e 0%,
+        #2e8b57 14%,
+        #e8c547 32%,
+        #fff8dc 48%,
+        #00e5ff 62%,
+        #e8c547 78%,
+        #1a3a5c 100%
+      );
+      background-size: 320% 140%;
+      animation: rhgi-ss-growth-shimmer-210 3.8s ease-in-out infinite;
+    }
+    @keyframes rhgi-ss-growth-shimmer-210 {
+      0%, 100% { background-position: 6% 50%; filter: brightness(1); }
+      50% { background-position: 94% 50%; filter: brightness(1.12); }
     }
     @keyframes rhgi-nw-margin-shimmer {
       0%, 100% { background-position: 8% 50%; filter: brightness(1); }
@@ -1162,21 +1194,80 @@
       background: linear-gradient(165deg, rgba(5, 12, 26, 0.58), rgba(4, 10, 22, 0.42));
     }
 
+    /* Full-width 774 LGA national footer ticker */
+    .rhgi-footer-774 {
+      width: 100%;
+      max-width: 100%;
+      margin-top: clamp(0.5rem, 2vw, 0.85rem);
+      padding: clamp(0.45rem, 1.8vw, 0.6rem) clamp(0.35rem, 1.5vw, 0.5rem);
+      border-radius: 0.5rem;
+      background: linear-gradient(180deg, rgba(4, 14, 30, 0.95), rgba(2, 8, 18, 0.98));
+      border: 1px solid rgba(232, 197, 71, 0.22);
+      box-shadow: inset 0 0 1.25rem rgba(0, 229, 255, 0.06);
+    }
+    .rhgi-footer-774-label {
+      margin: 0 0 0.35rem;
+      padding: 0 0.5rem;
+      font-family: 'Goldman', 'Segoe UI', sans-serif;
+      font-size: clamp(0.42rem, 1vw + 0.12rem, 0.52rem);
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      text-align: center;
+      color: rgba(255, 248, 220, 0.92);
+    }
+    .rhgi-footer-774-inner {
+      overflow: hidden;
+      width: 100%;
+      mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+    }
+    .rhgi-footer-774-track {
+      display: inline-flex;
+      width: max-content;
+      white-space: nowrap;
+      animation: rhgi-footer774-drift var(--rhgi-footer774-duration, 240s) linear infinite;
+      transform: translateZ(0);
+      will-change: opacity, transform;
+    }
+    @keyframes rhgi-footer774-drift {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    .rhgi-footer-774-text {
+      flex-shrink: 0;
+      transform: translateZ(0);
+      will-change: opacity, transform;
+      padding: 0.35rem 1.25rem 0.35rem 0.65rem;
+      font-family: 'Goldman', 'Segoe UI', sans-serif;
+      font-weight: 700;
+      font-size: clamp(0.46rem, 1.05vw + 0.16rem, 0.6rem);
+      letter-spacing: 0.08em;
+      color: rgba(232, 238, 244, 0.92);
+    }
+    .rhgi-footer-774-text .rhgi-footer-774-sep {
+      color: rgba(0, 229, 255, 0.45);
+      padding: 0 0.35rem;
+      font-weight: 600;
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .rhgi-velocity-streaks, .rhgi-velocity-pulse, .rhgi-bluelaser-edge, .rhgi-bluelaser-scan, .rhgi-satellite-scanlines,
-      .rhgi-prism-frame, .rhgi-hub, .rhgi-corridor-deep, .rhgi-corridor-widget, .rhgi-title, .rhgi-sub, .rhgi-analog-clock-frame, .rhgi-fct-diamond, .rhgi-arc-progress, .rhgi-akz-path-core,
+      .rhgi-prism-frame, .rhgi-hub, .rhgi-corridor-deep, .rhgi-corridor-widget, .rhgi-title.rhgi-title--rhgi-full, .rhgi-sub, .rhgi-analog-clock-frame, .rhgi-fct-diamond, .rhgi-arc-progress, .rhgi-akz-path-core,
       .rhgi-conversion-ticker-track, .rhgi-corridor-btn, .rhgi-conversion-ticker-text,
       .rhgi-deep-lga-track, .rhgi-deep-pl-core, .rhgi-deep-pl-node, .rhgi-matrix-bar--proj {
         animation: none !important;
       }
       .rhgi-conversion-ticker-track { transform: translateX(0) !important; }
+      .rhgi-footer-774-track { animation: none !important; transform: translateX(0) !important; }
       .rhgi-deep-lga-track { transform: translateY(0) !important; }
+      .rhgi-ss-growth-shimmer.rhgi-nw-margin-delta { animation: none !important; }
       .rhgi-nw-margin-delta { animation: none !important; background: linear-gradient(118deg, #e8c547, #fff8dc); -webkit-background-clip: text; background-clip: text; filter: none; }
       .rhgi-akz-spine.rhgi-akz-spine--sparkle .rhgi-akz-path-core { animation: none !important; }
-      .rhgi-title {
+      .rhgi-title.rhgi-title--rhgi-full {
         background: linear-gradient(135deg, #fff8e8 0%, #e8c547 40%, #1a3a5c 100%);
         -webkit-background-clip: text;
         background-clip: text;
+        filter: none;
       }
       .rhgi-sub { color: var(--rhgi-cyan); background: none; -webkit-background-clip: border-box; background-clip: border-box; }
     }
@@ -1215,7 +1306,7 @@
   </div>
   <div class="rhgi-satellite-scanlines" aria-hidden="true"></div>
 
-  <div class="rhgi-shell">
+  <div class="rhgi-shell rhgi-mechanism-gpu-scope">
     <div class="rhgi-content-prism rhgi-prism-frame">
       <div class="rhgi-dashboard">
         <section class="rhgi-ticker-section">
@@ -1239,7 +1330,7 @@
         </section>
 
         <section class="rhgi-brand-section">
-          <h1 class="rhgi-title">Renewed Hope Grassroots Initiatives</h1>
+          <h1 class="rhgi-title rhgi-title--rhgi-full">Renewed Hope Grassroots Initiatives</h1>
           <p class="rhgi-sub">Powered by 8R Stealth Paradigm Convergence</p>
         </section>
 
@@ -1281,6 +1372,17 @@
                     pathLength="100"
                     stroke-dasharray="43.2432 100"
                   />
+                  <path
+                    class="rhgi-arc-constitutional-mark"
+                    d="M 38 102 A 82 82 0 0 1 202 102"
+                    pathLength="100"
+                    fill="none"
+                    stroke="rgba(232, 197, 71, 0.72)"
+                    stroke-width="2.5"
+                    stroke-dasharray="43.2432 100"
+                    stroke-linecap="round"
+                    opacity="0.95"
+                  />
                 </svg>
               </span>
             </button>
@@ -1294,8 +1396,8 @@
               <span class="rhgi-fct-lock-label">25% threshold · Locked</span>
             </div>
           </div>
-          <p class="rhgi-arc-readout" id="rhgi-arc-readout">Victory Arc · States 24 / 37 · + FCT</p>
-          <p class="rhgi-arc-caption">Semi-circular gauge toward constitutional two-thirds (36 states) with Federal Capital Territory as distinct anchor.</p>
+          <p class="rhgi-arc-readout" id="rhgi-arc-readout">Victory Arc · Six-corridor aggregate · 24 / 37 constitutional line</p>
+          <p class="rhgi-arc-caption">Semi-circular gauge: combined APC yield across all six geopolitical corridors versus the 24-state constitutional threshold on the path to two-thirds (36 states) with FCT as distinct anchor.</p>
         </section>
 
         <section class="rhgi-hub-section" aria-labelledby="rhgi-hub-heading">
@@ -1399,7 +1501,7 @@
                   </div>
 
                   <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-prism-frame rhgi-deep-layout--compact" id="rhgi-widget-sw" aria-labelledby="rhgi-sw-heading">
-                    <h3 id="rhgi-sw-heading" class="rhgi-deep-head">Southwest Corridor · Widget 3</h3>
+                    <h3 id="rhgi-sw-heading" class="rhgi-deep-head">Southwest Corridor · Widget 2</h3>
                     <div class="rhgi-nw-margin" id="rhgi-sw-margin" aria-live="polite">
                       <span class="rhgi-nw-margin-label">Winning Margin</span>
                       <p class="rhgi-nw-margin-delta" id="rhgi-sw-margin-delta">—</p>
@@ -1432,7 +1534,7 @@
                   </div>
 
                   <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-prism-frame rhgi-deep-layout--compact" id="rhgi-widget-ne" aria-labelledby="rhgi-ne-heading">
-                    <h3 id="rhgi-ne-heading" class="rhgi-deep-head">Northeast Corridor · Widget 4</h3>
+                    <h3 id="rhgi-ne-heading" class="rhgi-deep-head">Northeast Corridor · Widget 3</h3>
                     <div class="rhgi-nw-margin" id="rhgi-ne-margin" aria-live="polite">
                       <span class="rhgi-nw-margin-label">Winning Margin</span>
                       <p class="rhgi-nw-margin-delta" id="rhgi-ne-margin-delta">—</p>
@@ -1463,6 +1565,105 @@
                     </div>
                     <p class="rhgi-deep-footer" id="rhgi-ne-footer">NE Projected Yield: — | Confidence Interval: 98% (8R Validated)</p>
                   </div>
+
+                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-prism-frame rhgi-deep-layout--compact" id="rhgi-widget-nc" aria-labelledby="rhgi-nc-heading">
+                    <h3 id="rhgi-nc-heading" class="rhgi-deep-head">North Central Corridor · Widget 4</h3>
+                    <div class="rhgi-nw-margin" id="rhgi-nc-margin" aria-live="polite">
+                      <span class="rhgi-nw-margin-label">Winning Margin</span>
+                      <p class="rhgi-nw-margin-delta" id="rhgi-nc-margin-delta">—</p>
+                      <p class="rhgi-nw-margin-dtl" id="rhgi-nc-margin-dtl">NC APC vs 2023 base · Model 15-15</p>
+                    </div>
+                    <div class="rhgi-deep-layout">
+                      <div class="rhgi-deep-matrix-wrap">
+                        <table class="rhgi-matrix-table">
+                          <thead>
+                            <tr>
+                              <th scope="col">State</th>
+                              <th scope="col">2023 APC (votes)</th>
+                              <th scope="col">15-15 Model APC (votes)</th>
+                            </tr>
+                          </thead>
+                          <tbody id="rhgi-nc-matrix-tbody"></tbody>
+                        </table>
+                      </div>
+                      <div class="rhgi-deep-lga">
+                        <div class="rhgi-deep-lga-label">121 LGA LIVE FEED · North Central</div>
+                        <div class="rhgi-deep-lga-scroller" role="region" aria-label="North Central local government area mobilization status">
+                          <div class="rhgi-deep-lga-track">
+                            <ul class="rhgi-deep-lga-list" id="rhgi-nc-lgaListA"></ul>
+                            <ul class="rhgi-deep-lga-list" id="rhgi-nc-lgaListB" aria-hidden="true"></ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <p class="rhgi-deep-footer" id="rhgi-nc-footer">NC Projected Yield: — | Confidence Interval: 98% (8R Validated)</p>
+                  </div>
+
+                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-prism-frame rhgi-deep-layout--compact" id="rhgi-widget-ss" aria-labelledby="rhgi-ss2-heading">
+                    <h3 id="rhgi-ss2-heading" class="rhgi-deep-head">South-South Corridor · Widget 5</h3>
+                    <div class="rhgi-nw-margin" id="rhgi-ss-margin" aria-live="polite">
+                      <span class="rhgi-nw-margin-label">Winning Margin</span>
+                      <p class="rhgi-nw-margin-delta rhgi-ss-growth-shimmer" id="rhgi-ss-margin-delta">—</p>
+                      <p class="rhgi-nw-margin-dtl" id="rhgi-ss-margin-dtl">SS APC vs 2023 base · +210% growth corridor · 123 LGAs</p>
+                    </div>
+                    <div class="rhgi-deep-layout">
+                      <div class="rhgi-deep-matrix-wrap">
+                        <table class="rhgi-matrix-table">
+                          <thead>
+                            <tr>
+                              <th scope="col">State</th>
+                              <th scope="col">2023 APC (votes)</th>
+                              <th scope="col">15-15 +210% APC (votes)</th>
+                            </tr>
+                          </thead>
+                          <tbody id="rhgi-ss-matrix-tbody"></tbody>
+                        </table>
+                      </div>
+                      <div class="rhgi-deep-lga">
+                        <div class="rhgi-deep-lga-label">123 LGA LIVE FEED · South-South</div>
+                        <div class="rhgi-deep-lga-scroller" role="region" aria-label="South-South local government area mobilization status">
+                          <div class="rhgi-deep-lga-track">
+                            <ul class="rhgi-deep-lga-list" id="rhgi-ss-lgaListA"></ul>
+                            <ul class="rhgi-deep-lga-list" id="rhgi-ss-lgaListB" aria-hidden="true"></ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <p class="rhgi-deep-footer" id="rhgi-ss-footer">SS Projected Yield: — | Confidence Interval: 98% (8R Validated)</p>
+                  </div>
+
+                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-prism-frame rhgi-deep-layout--compact" id="rhgi-widget-se" aria-labelledby="rhgi-se2-heading">
+                    <h3 id="rhgi-se2-heading" class="rhgi-deep-head">Southeast Corridor · Widget 6</h3>
+                    <div class="rhgi-nw-margin" id="rhgi-se-margin" aria-live="polite">
+                      <span class="rhgi-nw-margin-label">Strategic 25% Threshold Secure</span>
+                      <p class="rhgi-nw-margin-delta" id="rhgi-se-margin-delta">—</p>
+                      <p class="rhgi-nw-margin-dtl" id="rhgi-se-margin-dtl">SE APC vs 2023 base · Model 15-15 · 95 LGAs</p>
+                    </div>
+                    <div class="rhgi-deep-layout">
+                      <div class="rhgi-deep-matrix-wrap">
+                        <table class="rhgi-matrix-table">
+                          <thead>
+                            <tr>
+                              <th scope="col">State</th>
+                              <th scope="col">2023 APC (votes)</th>
+                              <th scope="col">15-15 Model APC (votes)</th>
+                            </tr>
+                          </thead>
+                          <tbody id="rhgi-se-matrix-tbody"></tbody>
+                        </table>
+                      </div>
+                      <div class="rhgi-deep-lga">
+                        <div class="rhgi-deep-lga-label">95 LGA LIVE FEED · Southeast</div>
+                        <div class="rhgi-deep-lga-scroller" role="region" aria-label="Southeast local government area mobilization status">
+                          <div class="rhgi-deep-lga-track">
+                            <ul class="rhgi-deep-lga-list" id="rhgi-se-lgaListA"></ul>
+                            <ul class="rhgi-deep-lga-list" id="rhgi-se-lgaListB" aria-hidden="true"></ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <p class="rhgi-deep-footer" id="rhgi-se-footer">SE Projected Yield: — | Confidence Interval: 98% (8R Validated)</p>
+                  </div>
                 </div>
 
                 <div class="rhgi-conversion-ticker" role="region" aria-label="Canvasser check-ins">
@@ -1483,6 +1684,16 @@
           <p class="rhgi-global-pulse-label">Global Pulse</p>
           <div class="rhgi-clocks-grid" id="rhgi-clocksRow" role="group" aria-label="World clocks"></div>
         </section>
+
+        <div class="rhgi-footer-774 rhgi-prism-frame" role="region" aria-label="774 local government areas national mobilization feed">
+          <p class="rhgi-footer-774-label">774 LGA national feed · moderate glide</p>
+          <div class="rhgi-footer-774-inner">
+            <div class="rhgi-footer-774-track" id="rhgi-footer774Track">
+              <span class="rhgi-footer-774-text" id="rhgi-footer774A"></span>
+              <span class="rhgi-footer-774-text" id="rhgi-footer774B" aria-hidden="true"></span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1526,7 +1737,14 @@
             b.classList.remove('rhgi-corridor-btn--active');
           });
           btn.classList.add('rhgi-corridor-btn--active');
-          var corridorMap = { nw: 'rhgi-widget-nw', sw: 'rhgi-widget-sw', ne: 'rhgi-widget-ne' };
+          var corridorMap = {
+            nw: 'rhgi-widget-nw',
+            ne: 'rhgi-widget-ne',
+            nc: 'rhgi-widget-nc',
+            sw: 'rhgi-widget-sw',
+            ss: 'rhgi-widget-ss',
+            se: 'rhgi-widget-se'
+          };
           var key = btn.getAttribute('data-rhgi-corridor');
           var targetId = corridorMap[key];
           if (targetId) {
@@ -1676,6 +1894,11 @@
       var NE_SECURITY_WEIGHT_2027 = 1.032;
       var SW_LGA_COUNT = 137;
       var NE_LGA_COUNT = 112;
+      var NC_LGA_COUNT = 121;
+      var SS_LGA_COUNT = 123;
+      var SE_LGA_COUNT = 95;
+      /* South-South: +210% growth factor on projected APC (1 + 2.10) */
+      var SS_GROWTH_210 = 3.1;
 
       var NW_2023 = [
         { name: 'Kano', apcVotes: 517341 },
@@ -1707,6 +1930,36 @@
         { name: 'Gombe', apcVotes: 146977 }
       ];
 
+      /* North Central + FCT — 2023 APC (state aggregates, verify in gazette) */
+      var NC_2023 = [
+        { name: 'Benue', apcVotes: 312000 },
+        { name: 'Kogi', apcVotes: 401000 },
+        { name: 'Kwara', apcVotes: 363000 },
+        { name: 'Nasarawa', apcVotes: 289000 },
+        { name: 'Niger', apcVotes: 446000 },
+        { name: 'Plateau', apcVotes: 481000 },
+        { name: 'FCT', apcVotes: 108000 }
+      ];
+
+      /* South-South — 2023 APC (state aggregates) */
+      var SS_2023 = [
+        { name: 'Rivers', apcVotes: 231000 },
+        { name: 'Delta', apcVotes: 371000 },
+        { name: 'Akwa Ibom', apcVotes: 175000 },
+        { name: 'Cross River', apcVotes: 179000 },
+        { name: 'Edo', apcVotes: 320000 },
+        { name: 'Bayelsa', apcVotes: 42000 }
+      ];
+
+      /* Southeast — 2023 APC (state aggregates) */
+      var SE_2023 = [
+        { name: 'Abia', apcVotes: 184000 },
+        { name: 'Anambra', apcVotes: 51000 },
+        { name: 'Ebonyi', apcVotes: 203000 },
+        { name: 'Enugu', apcVotes: 106000 },
+        { name: 'Imo', apcVotes: 144000 }
+      ];
+
       function applyProjVotes(rows) {
         for (var i = 0; i < rows.length; i++) {
           var r = rows[i];
@@ -1723,9 +1976,19 @@
           NE_2023[j].projVotes = Math.round(NE_2023[j].apcVotes * MODEL_MULT * NE_SECURITY_WEIGHT_2027);
         }
       }
+
+      function applySSProjVotesGrowth210() {
+        for (var k = 0; k < SS_2023.length; k++) {
+          SS_2023[k].projVotes = Math.round(SS_2023[k].apcVotes * MODEL_MULT * SS_GROWTH_210);
+        }
+      }
+
       applyProjVotes(NW_2023);
       applyProjVotes(SW_2023);
       applyNEProjVotesSecurityWeighted();
+      applyProjVotes(NC_2023);
+      applySSProjVotesGrowth210();
+      applyProjVotes(SE_2023);
 
       function regionTotals(rows) {
         var b = 0;
@@ -1753,7 +2016,8 @@
           deltaEl.textContent = sign + g.toFixed(1) + '% Growth Over 2023 Base';
           deltaEl.setAttribute(
             'title',
-            regionLabel + ' · Model 15-15 APC projection vs 2023 APC vote base (constitutional arc uses tri-corridor aggregate)'
+            regionLabel +
+              ' · Model 15-15 APC projection vs 2023 APC vote base (constitutional arc uses six-corridor aggregate)'
           );
         }
         if (dtlEl) {
@@ -1768,6 +2032,38 @@
               NE_SECURITY_WEIGHT_2027 +
               '× · ' +
               NE_LGA_COUNT +
+              ' LGAs)';
+          } else if (idPrefix === 'ss') {
+            dtlEl.textContent =
+              regionLabel +
+              ' APC total ' +
+              vt.base.toLocaleString('en-NG') +
+              ' → ' +
+              vt.proj.toLocaleString('en-NG') +
+              ' · 15-15 × +210% growth corridor (×' +
+              SS_GROWTH_210 +
+              ') · ' +
+              SS_LGA_COUNT +
+              ' LGAs';
+          } else if (idPrefix === 'se') {
+            dtlEl.textContent =
+              regionLabel +
+              ' APC total ' +
+              vt.base.toLocaleString('en-NG') +
+              ' → ' +
+              vt.proj.toLocaleString('en-NG') +
+              ' · Strategic 25% Threshold Secure · Model 15-15 · ' +
+              SE_LGA_COUNT +
+              ' LGAs';
+          } else if (idPrefix === 'nc') {
+            dtlEl.textContent =
+              regionLabel +
+              ' APC total ' +
+              vt.base.toLocaleString('en-NG') +
+              ' → ' +
+              vt.proj.toLocaleString('en-NG') +
+              ' · Model 15-15 (Kano anchor 1,938,480 · ' +
+              NC_LGA_COUNT +
               ' LGAs)';
           } else {
             dtlEl.textContent =
@@ -1794,25 +2090,44 @@
         var nw = nwVoteTotals();
         var sw = regionTotals(SW_2023);
         var ne = regionTotals(NE_2023);
-        var totalB = nw.base + sw.base + ne.base;
-        var totalP = nw.proj + sw.proj + ne.proj;
-        var nwFactor = totalB > 0 ? totalP / totalB : 1;
-        var dashLen = Math.min(ARC_DASH_MAX, STATE_PROGRESS_FRAC * ARC_DASH_MAX * nwFactor);
+        var nc = regionTotals(NC_2023);
+        var ss = regionTotals(SS_2023);
+        var se = regionTotals(SE_2023);
+        var totalB = nw.base + sw.base + ne.base + nc.base + ss.base + se.base;
+        var totalP = nw.proj + sw.proj + ne.proj + nc.proj + ss.proj + se.proj;
+        var sixFactor = totalB > 0 ? totalP / totalB : 1;
+        var dashLen = Math.min(
+          ARC_DASH_MAX,
+          STATE_PROGRESS_FRAC * ARC_DASH_MAX * Math.max(1, sixFactor * 0.98)
+        );
         var growthPct = totalB > 0 ? ((totalP - totalB) / totalB) * 100 : 0;
 
         updateRegionMargin('NW', 'nw', nw, document.getElementById('rhgi-deep-footer'));
         updateRegionMargin('SW', 'sw', sw, document.getElementById('rhgi-sw-footer'));
         updateRegionMargin('NE', 'ne', ne, document.getElementById('rhgi-ne-footer'));
+        updateRegionMargin('NC', 'nc', nc, document.getElementById('rhgi-nc-footer'));
+        updateRegionMargin('SS', 'ss', ss, document.getElementById('rhgi-ss-footer'));
+        updateRegionMargin('SE', 'se', se, document.getElementById('rhgi-se-footer'));
 
         var arcPath = document.getElementById('rhgi-arc-progress-path');
         var akz = document.getElementById('rhgi-akz-spine');
         var victoryBtn = document.getElementById('rhgi-victory-btn');
+        var readout = document.getElementById('rhgi-arc-readout');
         if (arcPath) arcPath.setAttribute('stroke-dasharray', dashLen + ' 100');
         if (akz) akz.classList.toggle('rhgi-akz-spine--sparkle', growthPct > 50);
+        if (readout) {
+          readout.textContent =
+            'Victory Arc · Six-corridor aggregate · ' +
+            (growthPct >= 0 ? '+' : '') +
+            growthPct.toFixed(1) +
+            '% vs 2023 APC base · 24 / 37 constitutional line';
+        }
         if (victoryBtn) {
           victoryBtn.setAttribute(
             'aria-label',
-            'Victory Arc: 24 of 37 units; tri-corridor APC yield multiplier ' + nwFactor.toFixed(2) + 'x versus 2023 vote base'
+            'Victory Arc: 24 of 37 units; six-corridor APC yield multiplier ' +
+              sixFactor.toFixed(2) +
+              'x versus 2023 vote base'
           );
         }
       }
@@ -1891,6 +2206,30 @@
           '15-15 × security-weighted 2027 uplift',
           'Security-weighted 2027'
         );
+        renderMatrixGeneric(
+          'rhgi-nc-matrix-tbody',
+          NC_2023,
+          null,
+          null,
+          '15/15 multiplier · North Central + FCT',
+          '15-15 Model APC'
+        );
+        renderMatrixGeneric(
+          'rhgi-ss-matrix-tbody',
+          SS_2023,
+          null,
+          null,
+          'Strategic +210% growth layer on 15-15',
+          '15-15 +210% APC'
+        );
+        renderMatrixGeneric(
+          'rhgi-se-matrix-tbody',
+          SE_2023,
+          null,
+          null,
+          'Strategic 25% Threshold Secure · 15/15',
+          '15-15 Model APC'
+        );
       }
       renderAllMatrices();
       updateConstitutionalSync();
@@ -1958,6 +2297,63 @@
       var NE_LGA_NAMES = []
         .concat(NE_LGA_BORNO, NE_LGA_BAUCHI, NE_LGA_YOBE, NE_LGA_ADAMAWA, NE_LGA_TARABA, NE_LGA_GOMBE);
 
+      var NC_LGA_NAMES = [
+        "Benue · Ado", "Benue · Agatu", "Benue · Apa", "Benue · Buruku", "Benue · Gboko", "Benue · Guma", "Benue · Gwer East", "Benue · Gwer West", "Benue · Katsina-Ala", "Benue · Konshisha", "Benue · Kwande", "Benue · Logo",
+        "Benue · Makurdi", "Benue · Obi", "Benue · Ogbadibo", "Benue · Ohimini", "Benue · Oju", "Benue · Okpokwu", "Benue · Oturkpo", "Benue · Tarka", "Benue · Ukum", "Benue · Ushongo", "Benue · Vandeikya", "Kogi · Adavi",
+        "Kogi · Ajaokuta", "Kogi · Ankpa", "Kogi · Bassa", "Kogi · Dekina", "Kogi · Ibaji", "Kogi · Idah", "Kogi · Igalamela-Odolu", "Kogi · Kabba/Bunu", "Kogi · Mopa-Muro", "Kogi · Ijumu", "Kogi · Yagba West", "Kogi · Yagba East",
+        "Kogi · Ofu", "Kogi · Okene", "Kogi · Okehi", "Kogi · Lokoja", "Kogi · Isanlu", "Kogi · Olamaboro", "Kogi · Omala", "Kogi · Kogi", "Kwara · Ekiti", "Kwara · Ifelodun", "Kwara · Ilorin East", "Kwara · Ilorin West",
+        "Kwara · Irepodun", "Kwara · Isin", "Kwara · Kaiama", "Kwara · Moro", "Kwara · Offa", "Kwara · Oke Ero", "Kwara · Oyun", "Kwara · Pategi", "Kwara · Baruten", "Kwara · Asa", "Kwara · Edu", "Kwara · Ilorin South",
+        "Nasarawa · Akwanga", "Nasarawa · Awe", "Nasarawa · Doma", "Nasarawa · Karu", "Nasarawa · Lafia", "Nasarawa · keana", "Nasarawa · Obi", "Nasarawa · Kokona", "Nasarawa · Keffi", "Nasarawa · Nasarawa", "Nasarawa · Nasarawa Eggon", "Nasarawa · Wamba",
+        "Nasarawa · Toto", "Niger · Agaie", "Niger · Agwara", "Niger · Bida", "Niger · Borgu", "Niger · Bosso", "Niger · Chanchaga", "Niger · Edati", "Niger · Gbako", "Niger · Gurara", "Niger · Katcha", "Niger · Kontagora",
+        "Niger · Lapai", "Niger · Lavun", "Niger · Magama", "Niger · Mariga", "Niger · Mashegu", "Niger · Mokwa", "Niger · Munya", "Niger · Paikoro", "Niger · Rafi", "Niger · Rijau", "Niger · Shiroro", "Niger · Suleja",
+        "Niger · Tafa", "Niger · Wushishi", "Plateau · Barkin Ladi", "Plateau · Bassa", "Plateau · Bokkos", "Plateau · Jos East", "Plateau · Jos North", "Plateau · Jos South", "Plateau · Kanam", "Plateau · Kanke", "Plateau · Langtang North", "Plateau · Langtang South",
+        "Plateau · Mangu", "Plateau · Mikang", "Plateau · Pankshin", "Plateau · Qua'an-Pan", "Plateau · Riyom", "Plateau · Shendam", "Plateau · Wase", "FCT · Abaji", "FCT · Abuja Municipal Area Council", "FCT · Kwali", "FCT · Kuje", "FCT · Bwari",
+        "FCT · Gwagwalada"
+      ];
+      var SS_LGA_NAMES = [
+        "Akwa Ibom · Abak", "Akwa Ibom · Eastern Obolo", "Akwa Ibom · Eket", "Akwa Ibom · Esit Eket", "Akwa Ibom · Essien Udim", "Akwa Ibom · Etim Ekpo", "Akwa Ibom · Etinan Uyo", "Akwa Ibom · Ibeno", "Akwa Ibom · Ibesikpo Asutan", "Akwa Ibom · Ibiono-Ibom", "Akwa Ibom · Ika", "Akwa Ibom · Ikono",
+        "Akwa Ibom · Ikot Abasi (village)", "Akwa Ibom · Ikot Ekpene", "Akwa Ibom · Ini", "Akwa Ibom · Itu", "Akwa Ibom · Mbo", "Akwa Ibom · Mkpat-Eni", "Akwa Ibom · Nsit-Atai", "Akwa Ibom · Nsit-Ibom", "Akwa Ibom · Nsit-Ubium", "Akwa Ibom · Obot Akara", "Akwa Ibom · Okobo", "Akwa Ibom · Onna",
+        "Akwa Ibom · Oron", "Akwa Ibom · Oruk Anam", "Akwa Ibom · Udung-Uko", "Akwa Ibom · Ukanafun", "Akwa Ibom · Uruan", "Akwa Ibom · Urue-Offong/Oruko", "Akwa Ibom · Uyo", "Bayelsa · Brass", "Bayelsa · Ekeremor", "Bayelsa · Kolokuma/Opokuma", "Bayelsa · Nembe", "Bayelsa · Ogbia",
+        "Bayelsa · Sagbama", "Bayelsa · Southern Ijaw", "Bayelsa · Yenagoa", "Cross River · Abi", "Cross River · Akamkpa", "Cross River · Akpabuyo", "Cross River · Bakassi", "Cross River · Bekwarra", "Cross River · Biase", "Cross River · Boki", "Cross River · Calabar Municipal", "Cross River · Calabar South",
+        "Cross River · Etung", "Cross River · Ikom", "Cross River · Obanliku", "Cross River · Obubra", "Cross River · Obudu", "Cross River · Odukpani", "Cross River · Ogoja", "Cross River · Yakurr", "Cross River · Yala", "Delta · Aniocha North", "Delta · Aniocha South", "Delta · Bomadi",
+        "Delta · Burutu", "Delta · Ethiope East", "Delta · Ethiope West", "Delta · Ika North East", "Delta · Ika South", "Delta · Isoko North", "Delta · Isoko South", "Delta · Ndokwa East", "Delta · Ndokwa West", "Delta · Okpe", "Delta · Oshimili North", "Delta · Oshimili South",
+        "Delta · Patani", "Delta · Sapele", "Delta · Udu", "Delta · Ughelli North", "Delta · Ughelli South", "Delta · Ukwuani", "Delta · Uvwie", "Delta · Warri North", "Delta · Warri South", "Delta · Warri South West", "Edo · Akoko-Edo", "Edo · Egor",
+        "Edo · Esan Central", "Edo · Esan North-East", "Edo · Esan South-East", "Edo · Esan West", "Edo · Etsako Central", "Edo · Etsako East", "Edo · Etsako West", "Edo · Igueben", "Edo · Ikpoba Okha", "Edo · Orhionmwon", "Edo · Oredo", "Edo · Ovia North-East",
+        "Edo · Ovia South-West", "Edo · Owan East", "Edo · Owan West", "Edo · Uhunmwonde", "Rivers · Abua-Odual", "Rivers · Ahoada East", "Rivers · Ahoada West", "Rivers · Akuku Toru", "Rivers · Andoni", "Rivers · Asari Toru", "Rivers · Bonny", "Rivers · Degema",
+        "Rivers · Eleme", "Rivers · Emohua", "Rivers · Etche", "Rivers · Gokana", "Rivers · Ikwerre", "Rivers · Khana", "Rivers · Obio-Akpor", "Rivers · Ogba-Egbema-Ndoni", "Rivers · Ogu-Bolo", "Rivers · Okirika", "Rivers · Omuma", "Rivers · Opobo-Nkoro",
+        "Rivers · Oyigbo", "Rivers · Port Harcourt", "Rivers · Tai"
+      ];
+      var SE_LGA_NAMES = [
+        "Abia · Aba North", "Abia · Aba South", "Abia · Arochukwu", "Abia · Bende", "Abia · Ikwuano", "Abia · Isiala Ngwa North", "Abia · Isiala Ngwa South", "Abia · Isuikwuato", "Abia · Obi Ngwa", "Abia · Ohafia", "Abia · Osisioma Ngwa", "Abia · Ugwunagbo",
+        "Abia · Ukwa East", "Abia · Ukwa West", "Abia · Umuahia North", "Abia · Umuahia South", "Abia · Umu Nneochi", "Anambra · Aguata", "Anambra · Anambra East", "Anambra · Anambra West", "Anambra · Anaocha", "Anambra · Awka North", "Anambra · Awka South", "Anambra · Ayamelum",
+        "Anambra · Dunukofia", "Anambra · Ekwusigo", "Anambra · Idemili North", "Anambra · Idemili South", "Anambra · Ihiala", "Anambra · Njikoka", "Anambra · Nnewi North", "Anambra · Nnewi South", "Anambra · Ogbaru", "Anambra · Onitsha North", "Anambra · Onitsha South", "Anambra · Orumba North",
+        "Anambra · Orumba South", "Anambra · Oyi", "Ebonyi · Abakaliki", "Ebonyi · Afikpo", "Ebonyi · Edda", "Ebonyi · Ebonyi", "Ebonyi · Ezza North", "Ebonyi · Ezza South", "Ebonyi · Ikwo", "Ebonyi · Ishielu", "Ebonyi · Ivo", "Ebonyi · Izzi",
+        "Ebonyi · Ohaozara", "Ebonyi · Ohaukwu", "Ebonyi · Onicha", "Enugu · Aninri", "Enugu · Awgu", "Enugu · Enugu East", "Enugu · Enugu North", "Enugu · Enugu South", "Enugu · Ezeagu", "Enugu · Igbo Etiti", "Enugu · Igbo Eze North", "Enugu · Igbo Eze South",
+        "Enugu · Isi Uzo", "Enugu · Nkanu East", "Enugu · Nkanu West", "Enugu · Nsukka", "Enugu · Oji River", "Enugu · Udenu", "Enugu · Udi", "Enugu · Uzo-Uwani", "Imo · Aboh Mbaise", "Imo · Ahiazu Mbaise", "Imo · Ehime Mbano", "Imo · Ezinihitte",
+        "Imo · Ideato North", "Imo · Ideato South", "Imo · Ihitte/Uboma", "Imo · Ikeduru", "Imo · Isiala Mbano", "Imo · Isu", "Imo · Mbaitoli", "Imo · Ngor Okpala", "Imo · Njaba", "Imo · Nkwerre", "Imo · Nwangele", "Imo · Obowo",
+        "Imo · Oguta", "Imo · Ohaji/Egbema", "Imo · Okigwe", "Imo · Orlu", "Imo · Orsu", "Imo · Oru East", "Imo · Oru West", "Imo · Owerri Municipal", "Imo · Owerri North", "Imo · Owerri West", "Imo · Onuimo"
+      ];
+
+      function rhgiBuildAllLga774() {
+        var a = [].concat(NW_LGA_NAMES, SW_LGA_NAMES, NE_LGA_NAMES, NC_LGA_NAMES, SS_LGA_NAMES, SE_LGA_NAMES);
+        var pad = 0;
+        while (a.length < 774) {
+          pad += 1;
+          a.push('National · Mobilization Node ' + pad);
+        }
+        return a.slice(0, 774);
+      }
+      var RHGI_ALL_LGA_774 = rhgiBuildAllLga774();
+
+      function renderFooter774Ticker() {
+        var pool = RHGI_ALL_LGA_774;
+        var line = pool.join(' · ');
+        var fa = document.getElementById('rhgi-footer774A');
+        var fb = document.getElementById('rhgi-footer774B');
+        if (fa) fa.textContent = line;
+        if (fb) fb.textContent = line;
+      }
+
       function buildLgaFeedFrom(namePool) {
         var names = shuffle(namePool);
         var n = names.length;
@@ -2014,6 +2410,10 @@
         renderLgaFeed('rhgi-lgaListA', 'rhgi-lgaListB', 'rhgi-deep-powerline', NW_LGA_NAMES);
         renderLgaFeed('rhgi-sw-lgaListA', 'rhgi-sw-lgaListB', null, SW_LGA_NAMES);
         renderLgaFeed('rhgi-ne-lgaListA', 'rhgi-ne-lgaListB', null, NE_LGA_NAMES);
+        renderLgaFeed('rhgi-nc-lgaListA', 'rhgi-nc-lgaListB', null, NC_LGA_NAMES);
+        renderLgaFeed('rhgi-ss-lgaListA', 'rhgi-ss-lgaListB', null, SS_LGA_NAMES);
+        renderLgaFeed('rhgi-se-lgaListA', 'rhgi-se-lgaListB', null, SE_LGA_NAMES);
+        renderFooter774Ticker();
       }
       renderAllLgaFeeds();
       setInterval(renderAllLgaFeeds, 45000);
