@@ -1,8 +1,9 @@
+import hashlib
 import pandas as pd
 import plotly.express as px
 import pytz
 import streamlit as st
-from datetime import datetime
+from datetime import datetime, time
 
 from data_engine import ALL_LGA_RECORDS, STATE_COORDS, records_as_dicts
 
@@ -13,6 +14,10 @@ NAVY = "#1A237E"
 # Prism-Frame Navy (dashboard canvas + plot wells).
 PRISM_NAVY = "#0b1024"
 PRISM_NAVY_PLOT = "#0e1733"
+# Deep Navy / Metallic Gold / Crimson — 774 LGA margin zones (map markers).
+DEEP_NAVY_SAFE = "#152a45"
+METALLIC_GOLD_TARGET = "#FFD700"
+CRIMSON_OPPOSITION = "#C41E3A"
 # 20.7M national vote mandate anchor (fixed reference).
 NATIONAL_VOTE_TARGET = 20_709_668
 
@@ -69,7 +74,9 @@ def fct_apc_percent(dff: pd.DataFrame) -> float:
     return 100.0 * dff.loc[m, "apc_2027"].sum() / tot
 
 
-def constitutional_sentinel(dff: pd.DataFrame) -> tuple[int, bool, bool]:
+def legal_gatekeeper(dff: pd.DataFrame) -> tuple[int, bool, bool]:
+    """Count the 36 states (excl. FCT) where APC projected share ≥ 25%.
+    Constitutional mandate: count ≥ 24 of those states AND FCT ≥ 25%."""
     state_projection = (
         dff.groupby("state", as_index=False)[["apc_2027", "projected_total"]]
         .sum()
@@ -77,11 +84,51 @@ def constitutional_sentinel(dff: pd.DataFrame) -> tuple[int, bool, bool]:
             apc_pct=lambda x: (x["apc_2027"] / x["projected_total"].replace(0, 1)) * 100
         )
     )
-    states_25 = int((state_projection["apc_pct"] >= 25).sum())
+    sp36 = state_projection[state_projection["state"] != "FCT"]
+    states_ge_25 = int((sp36["apc_pct"] >= 25).sum())
     fct = state_projection.loc[state_projection["state"] == "FCT", "apc_pct"]
-    fct_validated = bool(fct.ge(25).any()) if len(fct) else False
-    constitutional_ok = states_25 >= 24 and fct_validated
-    return states_25, fct_validated, constitutional_ok
+    fct_ge_25 = bool(fct.ge(25).any()) if len(fct) else False
+    mandate_secured = states_ge_25 >= 24 and fct_ge_25
+    return states_ge_25, fct_ge_25, mandate_secured
+
+
+def constitutional_sentinel(dff: pd.DataFrame) -> tuple[int, bool, bool]:
+    """Backward-compatible alias for legal_gatekeeper."""
+    return legal_gatekeeper(dff)
+
+
+def _lga_lat_lon(state: str, lga: str) -> tuple[float, float]:
+    """Deterministic jitter around state centroid so 774 LGAs map as distinct points."""
+    base_lat, base_lon = STATE_COORDS.get(state, (9.0, 8.0))
+    digest = hashlib.sha256(f"{state}:{lga}".encode("utf-8")).hexdigest()
+    jlat = (int(digest[:4], 16) / 0xFFFF - 0.5) * 0.42
+    jlon = (int(digest[4:8], 16) / 0xFFFF - 0.5) * 0.42
+    return base_lat + jlat, base_lon + jlon
+
+
+def margin_zone(row: pd.Series) -> str:
+    """Classify LGA by winning margin (share of projected total)."""
+    m = float(row["winning_margin"])
+    pt = max(float(row["projected_total"]), 1.0)
+    m_pct = 100.0 * m / pt
+    if m < 0:
+        return "Opposition Stronghold"
+    if m_pct < 4.0:
+        return "Target"
+    return "Safe APC"
+
+
+def build_lga_heatmap_df(dff: pd.DataFrame) -> pd.DataFrame:
+    out = dff.copy()
+    lats, lons = [], []
+    for _, r in out.iterrows():
+        la, lo = _lga_lat_lon(str(r["state"]), str(r["lga"]))
+        lats.append(la)
+        lons.append(lo)
+    out["lat"] = lats
+    out["lon"] = lons
+    out["margin_zone"] = out.apply(margin_zone, axis=1)
+    return out
 
 
 def build_state_heatmap_df(dff: pd.DataFrame) -> pd.DataFrame:
@@ -118,6 +165,52 @@ st.markdown(
     @keyframes diamondStrobe {
       0%, 100% { box-shadow: 0 0 4px rgba(255, 0, 0, 0.35); }
       50% { box-shadow: 0 0 22px rgba(255, 0, 0, 0.95); }
+    }
+    .rhgi-8r-stealth {
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: #e8ecff;
+      text-shadow: 0 0 14px rgba(255,215,0,0.55), 0 0 28px rgba(26,35,126,0.9);
+      margin: 8px 0 6px 0;
+    }
+    .rhgi-mandate-secured {
+      text-align: center;
+      padding: 14px 18px;
+      margin: 12px 0 16px 0;
+      border-radius: 12px;
+      border: 3px solid #FFD700;
+      background: linear-gradient(180deg, rgba(11,16,36,0.95), rgba(26,35,126,0.35));
+      animation: mandateGoldPulse 1.4s ease-in-out infinite;
+    }
+    @keyframes mandateGoldPulse {
+      0%, 100% { box-shadow: 0 0 6px rgba(255, 215, 0, 0.45), inset 0 0 20px rgba(255,215,0,0.08); }
+      50% { box-shadow: 0 0 26px rgba(255, 215, 0, 0.95), inset 0 0 28px rgba(255,215,0,0.15); }
+    }
+    .rhgi-ticker-wrap {
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      background: #0b1024;
+      border-top: 1px solid rgba(255,215,0,0.35);
+      border-bottom: 1px solid rgba(255,215,0,0.35);
+      margin-top: 18px;
+    }
+    .rhgi-ticker {
+      display: inline-block;
+      white-space: nowrap;
+      padding: 10px 0;
+      animation: tickerScroll 42s linear infinite;
+      color: #FFD700;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-shadow: 0 0 8px rgba(255,215,0,0.45);
+    }
+    .rhgi-ticker span { padding-right: 4rem; }
+    @keyframes tickerScroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
     }
     </style>
     """,
@@ -167,7 +260,7 @@ c1.markdown(
     unsafe_allow_html=True,
 )
 c2.markdown(
-    f"<div class='rhgi-kpi'><b>24/37 Constitutional Gauge</b><br><span class='rhgi-gauge'>{states_25} / 37 states at ≥25% APC</span><br>"
+    f"<div class='rhgi-kpi'><b>24/36 + FCT Constitutional Gauge</b><br><span class='rhgi-gauge'>{states_25} / 36 states at ≥25% APC</span><br>"
     f"FCT: {'VALIDATED' if fct_validated else 'PENDING'} | {'PASS' if constitutional_ok else 'WATCH'}</div>",
     unsafe_allow_html=True,
 )
@@ -183,6 +276,14 @@ st.markdown(
     f"<b>Remittance gap:</b> <span class='rhgi-glow'>{remittance_gap:,}</span></div>",
     unsafe_allow_html=True,
 )
+
+if constitutional_ok:
+    st.markdown(
+        "<div class='rhgi-mandate-secured'><span class='rhgi-glow' style='font-size:1.35rem;font-weight:800;'>"
+        "CONSTITUTIONAL MANDATE: SECURED</span><br>"
+        "<small style='color:#c8d4f8;'>Legal Gatekeeper — ≥24 of 36 states at ≥25% APC and FCT ≥25%</small></div>",
+        unsafe_allow_html=True,
+    )
 
 st.subheader("Winning Margin by Geopolitical Zone (turnout-adjusted)")
 zone_margin = (
@@ -204,6 +305,48 @@ fig_zone.update_layout(
 )
 fig_zone.update_traces(marker=dict(color=GOLD, line=dict(color=GOLD, width=0)))
 st.plotly_chart(fig_zone, use_container_width=True)
+
+st.subheader("774 LGA heatmap — winning margin zones (turnout-adjusted)")
+lga_map_df = build_lga_heatmap_df(dff)
+zone_colors = {
+    "Safe APC": DEEP_NAVY_SAFE,
+    "Target": METALLIC_GOLD_TARGET,
+    "Opposition Stronghold": CRIMSON_OPPOSITION,
+}
+fig_lga = px.scatter_mapbox(
+    lga_map_df,
+    lat="lat",
+    lon="lon",
+    color="margin_zone",
+    color_discrete_map=zone_colors,
+    category_orders={
+        "margin_zone": ["Safe APC", "Target", "Opposition Stronghold"],
+    },
+    hover_name="lga",
+    hover_data={
+        "state": True,
+        "zone": True,
+        "winning_margin": ":,.0f",
+        "projected_total": ":,.0f",
+        "lat": False,
+        "lon": False,
+        "margin_zone": True,
+    },
+    mapbox_style="carto-darkmatter",
+    zoom=4.9,
+    center={"lat": 9.082, "lon": 8.6753},
+    template="plotly_dark",
+    title="Deep Navy = Safe APC · Metallic Gold = Target · Crimson = Opposition stronghold",
+)
+fig_lga.update_traces(marker=dict(size=7, opacity=0.88))
+fig_lga.update_layout(
+    paper_bgcolor=PRISM_NAVY,
+    plot_bgcolor=PRISM_NAVY,
+    font_color="#dbe2ff",
+    margin=dict(l=0, r=0, t=48, b=0),
+    legend_title_text="Winning margin zone",
+)
+st.plotly_chart(fig_lga, use_container_width=True)
 
 st.subheader("Turnout heatmap — Nigeria (strike priority)")
 state_hm = build_state_heatmap_df(dff)
@@ -320,4 +463,15 @@ st.markdown(table_html, unsafe_allow_html=True)
 st.caption(
     "Showing first 200 LGAs. Red pulsing rows: canvasser ratio below 1:16. "
     "Move the sidebar slider to watch winning margin and constitutional gauge update."
+)
+
+_ticker = (
+    f"NATIONAL PROJECTION — APC votes {apc_national:,} · Total projected {projected_yield:,} · "
+    f"APC share {national_apc_share:.2f}% · Legal Gatekeeper {states_25}/36 states ≥25% APC · "
+    f"FCT APC {fct_pct:.2f}% · Remittance gap {remittance_gap:,} vs 20.7M anchor · "
+    f"Turnout lift +{turnout_lift}% (live) · "
+)
+st.markdown(
+    f"<div class='rhgi-ticker-wrap'><div class='rhgi-ticker'><span>{_ticker}</span><span>{_ticker}</span></div></div>",
+    unsafe_allow_html=True,
 )
