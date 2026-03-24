@@ -1,4 +1,5 @@
 import hashlib
+import html
 import pandas as pd
 import plotly.express as px
 import pytz
@@ -19,6 +20,19 @@ DEEP_NAVY_SAFE = "#152a45"
 METALLIC_GOLD_TARGET = "#FFD700"
 # 20.7M national vote mandate anchor (fixed reference).
 NATIONAL_VOTE_TARGET = 20_709_668
+# Six geopolitical corridors (display order).
+CORRIDOR_ZONES = (
+    "North Central",
+    "North East",
+    "North West",
+    "South East",
+    "South South",
+    "South West",
+)
+
+
+def _gold_heading(text: str) -> None:
+    st.markdown(f'<p class="rhgi-gold-heading">{text}</p>', unsafe_allow_html=True)
 
 
 @st.cache_data(show_spinner=False)
@@ -130,6 +144,40 @@ def build_lga_heatmap_df(dff: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
+def acceptance_velocity_pct(apc_2023: int, apc_2027: int) -> float:
+    """YoY-style growth in APC votes: (2027 − 2023) / 2023 × 100."""
+    a3 = max(int(apc_2023), 0)
+    a7 = int(apc_2027)
+    if a3 <= 0:
+        return 0.0 if a7 <= 0 else 100.0
+    return round(100.0 * (a7 - a3) / a3, 2)
+
+
+def build_corridor_matrix_df(dff: pd.DataFrame, zone: str) -> pd.DataFrame:
+    sub = dff.loc[dff["zone"] == zone, ["lga", "apc_2023", "apc_2027"]].copy()
+    sub["_lk"] = sub["lga"].str.lower()
+    sub = sub.sort_values("_lk").drop(columns="_lk")
+    sub["Acceptance Velocity (%)"] = sub.apply(
+        lambda r: acceptance_velocity_pct(r["apc_2023"], r["apc_2027"]),
+        axis=1,
+    )
+    sub = sub.rename(
+        columns={
+            "lga": "LGA Name",
+            "apc_2023": "2023 Actual APC",
+            "apc_2027": "2027 Projected Target",
+        }
+    )
+    return sub[
+        [
+            "LGA Name",
+            "2023 Actual APC",
+            "2027 Projected Target",
+            "Acceptance Velocity (%)",
+        ]
+    ]
+
+
 def build_state_heatmap_df(dff: pd.DataFrame) -> pd.DataFrame:
     g = dff.groupby("state", as_index=False).agg(
         strike_priority=("strike_priority", "mean"),
@@ -211,6 +259,23 @@ st.markdown(
       0% { transform: translateX(0); }
       100% { transform: translateX(-50%); }
     }
+    .rhgi-gold-heading { color: #FFD700 !important; font-weight: 800 !important; font-size: 1.35rem !important;
+      margin: 0.5rem 0 0.35rem 0; text-shadow: 0 0 10px rgba(255,215,0,0.4); letter-spacing: 0.02em; }
+    .stApp h1 { color: #FFD700 !important; font-weight: 800 !important; text-shadow: 0 0 14px rgba(255,215,0,0.35); }
+    [data-testid="stTabs"] { font-size: 1.05rem; }
+    .rhgi-corridor-table { width: 100%; border-collapse: collapse; font-size: 1.02rem; line-height: 1.45; }
+    .rhgi-corridor-table th {
+      color: #FFD700 !important; font-weight: 800 !important;
+      text-align: left; padding: 12px 14px;
+      background: rgba(26, 35, 126, 0.55);
+      border-bottom: 2px solid rgba(255, 215, 0, 0.45);
+      text-shadow: 0 0 6px rgba(255, 215, 0, 0.35);
+    }
+    .rhgi-corridor-table td {
+      color: #e8ecff !important; padding: 10px 14px;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.12);
+    }
+    .rhgi-corridor-table tr:nth-child(even) td { background: rgba(14, 23, 51, 0.45); }
     </style>
     """,
     unsafe_allow_html=True,
@@ -243,7 +308,10 @@ dff = apply_turnout_lift(df, turnout_lift)
 states_25, fct_validated, constitutional_ok = constitutional_sentinel(dff)
 fct_pct = fct_apc_percent(dff)
 projected_yield = int(dff["projected_total"].sum())
-remittance_gap = NATIONAL_VOTE_TARGET - projected_yield
+PROJECTED_TOTAL = projected_yield
+apc_national = int(dff["apc_2027"].sum())
+national_apc_share = 100.0 * apc_national / max(projected_yield, 1)
+remittance_gap = NATIONAL_VOTE_TARGET - PROJECTED_TOTAL
 abuja_strobe = fct_pct < 25.0
 total_winning_margin = float(dff["winning_margin"].sum())
 
@@ -284,7 +352,7 @@ if constitutional_ok:
         unsafe_allow_html=True,
     )
 
-st.subheader("Winning Margin by Geopolitical Zone (turnout-adjusted)")
+_gold_heading("Winning Margin by Geopolitical Zone (turnout-adjusted)")
 zone_margin = (
     dff.groupby("zone", as_index=False)["winning_margin"].sum().sort_values("winning_margin")
 )
@@ -305,7 +373,38 @@ fig_zone.update_layout(
 fig_zone.update_traces(marker=dict(color=GOLD))
 st.plotly_chart(fig_zone, use_container_width=True)
 
-st.subheader("774 LGA heatmap — winning margin (rugged)")
+_gold_heading("Corridor velocity matrix — 774 LGAs by geopolitical zone")
+st.caption(
+    "Each corridor tab lists all LGAs in that zone. "
+    "Acceptance velocity = (2027 APC − 2023 APC) ÷ 2023 APC × 100."
+)
+_tab_labels = [f"{z} · {len(dff[dff['zone']==z])} LGAs" for z in CORRIDOR_ZONES]
+_tabs = st.tabs(_tab_labels)
+for _tab, _zone in zip(_tabs, CORRIDOR_ZONES):
+    with _tab:
+        _mat = build_corridor_matrix_df(dff, _zone)
+        _rows_html = []
+        for _, _r in _mat.iterrows():
+            _nm = html.escape(str(_r["LGA Name"]))
+            _rows_html.append(
+                "<tr>"
+                f"<td>{_nm}</td>"
+                f"<td>{int(_r['2023 Actual APC']):,}</td>"
+                f"<td>{int(_r['2027 Projected Target']):,}</td>"
+                f"<td>{_r['Acceptance Velocity (%)']:.2f}</td>"
+                "</tr>"
+            )
+        _tbl = (
+            "<table class='rhgi-corridor-table'><thead><tr>"
+            "<th>LGA Name</th><th>2023 Actual APC</th><th>2027 Projected Target</th>"
+            "<th>Acceptance Velocity (%)</th>"
+            "</tr></thead><tbody>"
+            + "".join(_rows_html)
+            + "</tbody></table>"
+        )
+        st.markdown(_tbl, unsafe_allow_html=True)
+
+_gold_heading("774 LGA heatmap — winning margin (rugged)")
 lga_map_df = build_lga_heatmap_df(dff)
 lga_map_df["winning_margin"] = pd.to_numeric(lga_map_df["winning_margin"], errors="coerce")
 lga_map_df = lga_map_df.dropna(subset=["lat", "lon", "winning_margin"])
@@ -339,7 +438,7 @@ fig_lga.update_layout(
 )
 st.plotly_chart(fig_lga, use_container_width=True)
 
-st.subheader("Turnout heatmap — Nigeria (strike priority)")
+_gold_heading("Turnout heatmap — Nigeria (strike priority)")
 state_hm = build_state_heatmap_df(dff)
 fig_scatter = px.scatter_mapbox(
     state_hm,
@@ -397,7 +496,7 @@ fig_party.update_layout(
 )
 st.plotly_chart(fig_party, use_container_width=True)
 
-st.subheader("LGA Tactical Sheet (Logistics Alert)")
+_gold_heading("LGA Tactical Sheet (Logistics Alert)")
 view = dff[
     [
         "zone",
