@@ -39,7 +39,7 @@
       /* LGA ticker + AKZ spine: shared 40s loop (DEPLOY-12 moderate glide) */
       --rhgi-lga-scroll-duration: 40s;
       --rhgi-akz-spine-period: 40s;
-      --rhgi-footer774-duration: 280s;
+      --rhgi-footer774-duration: 260s;
     }
 
     .rhgi-velocity-field {
@@ -246,6 +246,23 @@
 
     .rhgi-brand-section {
       text-align: center;
+    }
+    .rhgi-r31-brand-identity {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: clamp(0.35rem, 2vw, 0.55rem);
+      width: 100%;
+    }
+    .rhgi-r31-sovereign-seal {
+      width: clamp(3rem, 11vw, 4.75rem);
+      flex-shrink: 0;
+      color: rgba(120, 170, 230, 0.95);
+    }
+    .rhgi-r31-sovereign-seal svg {
+      display: block;
+      width: 100%;
+      height: auto;
     }
 
     .rhgi-ticker-section {
@@ -1035,7 +1052,7 @@
     }
 
     /* —— 15-15-RESTORATION-30: Northwest high-velocity — scaleX bars (no width animation) —— */
-    #rhgi-widget-nw.rhgi-r30-nw-widget {
+    #rhgi-widget-nw.rhgi-r30-nw-widget.rhgi-r31-nw-gpu-lock {
       transform: translateZ(0);
       will-change: transform, opacity;
     }
@@ -1044,6 +1061,7 @@
       min-width: 0;
       transform-origin: 0 50%;
       transform: scaleX(var(--rhgi-bar-sx, 1));
+      will-change: transform;
     }
     @keyframes rhgi-r30-nw-row-enter {
       from {
@@ -1320,7 +1338,7 @@
       display: inline-flex;
       width: max-content;
       white-space: nowrap;
-      animation: rhgi-footer774-drift var(--rhgi-footer774-duration, 280s) linear infinite;
+      animation: rhgi-footer774-drift var(--rhgi-footer774-duration, 260s) linear infinite;
       transform: translateZ(0);
       will-change: transform;
     }
@@ -1345,14 +1363,14 @@
       font-weight: 600;
     }
 
-    /* —— 15-15-REANIMATE-STEP-1 + 15-15-CHROME-SYNC-29: glass navy + sanctioned motion —— */
+    /* —— 15-15-REANIMATE-STEP-1 + CHROME-SYNC-29 + REANIMATE-NORTHWEST-31 —— */
     .rhgi-emergency-hide {
       display: none !important;
     }
     body.rhgi-page {
       background: linear-gradient(165deg, #050a14 0%, #0a0e1a 42%, #101a2e 100%) !important;
       --rhgi-navy-deep: #0a0e1a;
-      --rhgi-chrome-glass: #0a0e1aCC;
+      --rhgi-chrome-glass: rgba(10, 14, 26, 0.85);
     }
     .rhgi-shell {
       background: transparent !important;
@@ -1382,42 +1400,6 @@
       background: var(--rhgi-chrome-glass) !important;
       border: 1px solid rgba(232, 197, 71, 0.22) !important;
       box-shadow: inset 0 0 1.25rem rgba(0, 229, 255, 0.06) !important;
-    }
-    .rhgi-title.rhgi-title--rhgi-full {
-      background: linear-gradient(
-        122deg,
-        #050a14 0%,
-        #0f2844 8%,
-        #fff8e8 18%,
-        #e8c547 32%,
-        #ffffff 42%,
-        #1a3a5c 52%,
-        #e8c547 62%,
-        #f5f0e6 72%,
-        #0d1a2e 86%,
-        #e8c547 100%
-      ) !important;
-      background-size: 100% 100% !important;
-      -webkit-background-clip: text !important;
-      background-clip: text !important;
-      color: transparent !important;
-      animation: none !important;
-      filter: drop-shadow(0 0.06rem 0.35rem rgba(8, 22, 42, 0.45)) !important;
-    }
-    .rhgi-sub {
-      background: linear-gradient(
-        118deg,
-        rgba(0, 200, 230, 0.85) 0%,
-        #00f0ff 22%,
-        #a8f8ff 48%,
-        #00c8e8 72%,
-        rgba(0, 229, 255, 0.9) 100%
-      ) !important;
-      background-size: 100% 100% !important;
-      -webkit-background-clip: text !important;
-      background-clip: text !important;
-      color: transparent !important;
-      animation: none !important;
     }
     .rhgi-conversion-ticker-track,
     .rhgi-deep-lga-track {
@@ -1458,6 +1440,47 @@
       animation: none !important;
       transition: none !important;
     }
+    /* —— 15-15-REANIMATE-NORTHWEST-31: metallic title + navy seal line (exceptions) —— */
+    @keyframes rhgi-r31-navy-seal-glow {
+      0%, 100% {
+        background-position: 0% 50%;
+        filter: drop-shadow(0 0 0.35rem rgba(40, 90, 140, 0.5)) drop-shadow(0 0 0.85rem rgba(8, 22, 48, 0.55));
+      }
+      50% {
+        background-position: 100% 50%;
+        filter: drop-shadow(0 0 0.55rem rgba(100, 160, 220, 0.5)) drop-shadow(0 0 1.05rem rgba(12, 32, 64, 0.5));
+      }
+    }
+    @keyframes rhgi-r31-seal-mark-pulse {
+      0%, 100% {
+        filter: drop-shadow(0 0 0.4rem rgba(50, 110, 180, 0.4));
+      }
+      50% {
+        filter: drop-shadow(0 0 0.8rem rgba(120, 180, 255, 0.48));
+      }
+    }
+    .rhgi-page .rhgi-title.rhgi-title--rhgi-full {
+      background-size: 320% 300% !important;
+      animation: rhgi-title-metallic 6.5s ease-in-out infinite !important;
+    }
+    .rhgi-page .rhgi-sub.rhgi-r31-seal-sub {
+      background: linear-gradient(
+        118deg,
+        #040a12 0%,
+        #0f2844 20%,
+        #5a7a9c 45%,
+        #1a3450 70%,
+        #060a10 100%
+      ) !important;
+      background-size: 240% 200% !important;
+      -webkit-background-clip: text !important;
+      background-clip: text !important;
+      color: transparent !important;
+      animation: rhgi-r31-navy-seal-glow 4.5s ease-in-out infinite !important;
+    }
+    .rhgi-page .rhgi-r31-sovereign-seal {
+      animation: rhgi-r31-seal-mark-pulse 5s ease-in-out infinite !important;
+    }
     /* Sovereign shimmer — Winning Margin Delta only */
     .rhgi-page .rhgi-nw-margin-delta::after,
     .rhgi-page .rhgi-ss-growth-shimmer.rhgi-nw-margin-delta::after {
@@ -1466,9 +1489,9 @@
     .rhgi-page .rhgi-ss-growth-shimmer.rhgi-nw-margin-delta::after {
       animation: rhgi-r1-margin-delta-sovereign-ss 3.8s ease-in-out infinite !important;
     }
-    /* 774 glide — translateX only, 280s stately drift (CHROME-SYNC-29) */
+    /* 774 glide — translateX only, 260s stately drift (REANIMATE-NORTHWEST-31) */
     .rhgi-page .rhgi-footer-774-track {
-      animation: rhgi-footer774-drift var(--rhgi-footer774-duration, 280s) linear infinite !important;
+      animation: rhgi-footer774-drift var(--rhgi-footer774-duration, 260s) linear infinite !important;
       transform: translateZ(0) !important;
       will-change: transform !important;
     }
@@ -1630,8 +1653,39 @@
         </section>
 
         <section class="rhgi-brand-section">
-          <h1 class="rhgi-title rhgi-title--rhgi-full">Renewed Hope Grassroots Initiatives</h1>
-          <p class="rhgi-sub">Powered by 8R Stealth Paradigm Convergence</p>
+          <div class="rhgi-r31-brand-identity">
+            <div class="rhgi-r31-sovereign-seal" aria-hidden="true">
+              <svg viewBox="0 0 80 80" role="img" aria-label="GCSLC Sovereign Seal">
+                <defs>
+                  <linearGradient id="rhgiR31SealRing" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#1a3a5c"/>
+                    <stop offset="45%" stop-color="#6a9fd8"/>
+                    <stop offset="100%" stop-color="#0c1828"/>
+                  </linearGradient>
+                </defs>
+                <circle cx="40" cy="40" r="34" fill="none" stroke="url(#rhgiR31SealRing)" stroke-width="2.25"/>
+                <polygon
+                  fill="rgba(30, 70, 120, 0.35)"
+                  stroke="rgba(120, 180, 240, 0.65)"
+                  stroke-width="1.2"
+                  points="40,14 58,28 58,52 40,66 22,52 22,28"
+                />
+                <text
+                  x="40"
+                  y="43"
+                  text-anchor="middle"
+                  fill="rgba(200, 225, 255, 0.92)"
+                  font-size="9"
+                  font-family="Goldman, Segoe UI, sans-serif"
+                  font-weight="700"
+                >GCSLC</text>
+              </svg>
+            </div>
+            <h1 class="rhgi-title rhgi-title--rhgi-full">Renewed Hope Grassroots Initiatives</h1>
+            <p class="rhgi-sub rhgi-r31-seal-sub">
+              GCSLC Sovereign Seal · Powered by 8R Stealth Paradigm Convergence
+            </p>
+          </div>
         </section>
 
         <section class="rhgi-victory-section" aria-labelledby="rhgi-gatekeeper-heading">
@@ -1748,7 +1802,7 @@
                 </div>
 
                 <div class="rhgi-corridor-widgets-stack">
-                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-prism-frame rhgi-r30-nw-widget" id="rhgi-widget-nw" aria-labelledby="rhgi-deep-heading">
+                  <div class="rhgi-corridor-widget rhgi-corridor-deep rhgi-prism-frame rhgi-r30-nw-widget rhgi-r31-nw-gpu-lock" id="rhgi-widget-nw" aria-labelledby="rhgi-deep-heading">
                     <h3 id="rhgi-deep-heading" class="rhgi-deep-head">Northwest Tactical Spine · Widget 1</h3>
                     <div class="rhgi-nw-margin" id="rhgi-nw-margin" aria-live="polite">
                       <span class="rhgi-nw-margin-label">Winning Margin</span>
@@ -1997,7 +2051,7 @@
         </section>
 
         <div class="rhgi-footer-774 rhgi-prism-frame" role="region" aria-label="774 local government areas national mobilization feed">
-          <p class="rhgi-footer-774-label">774 LGA national feed · 280s translateX glide</p>
+          <p class="rhgi-footer-774-label">774 LGA national feed · 260s translateX glide (stately)</p>
           <div class="rhgi-footer-774-inner">
             <div class="rhgi-footer-774-track" id="rhgi-footer774Track">
               <span class="rhgi-footer-774-text" id="rhgi-footer774A"></span>
