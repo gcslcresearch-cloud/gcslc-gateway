@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 
 import pytz
 import streamlit as st
+import streamlit.components.v1 as components
 
 
 PAGE_TITLE = "Renewed Hope Grassroots Initiatives (RHGI) - 15/15 Sovereign Mirror"
@@ -154,6 +155,47 @@ st.markdown(
         font-weight: 900;
       }}
 
+      /* Identity + budget block (above executive bar) */
+      .cqr-brand {{
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        margin: 14px 0 6px 0;
+        padding: 0 14px;
+      }}
+      .cqr-brand-title {{
+        color: var(--gold);
+        font-weight: 900;
+        letter-spacing: 0.03em;
+        font-size: clamp(1.05rem, 3.4vw, 1.35rem);
+        margin: 0;
+        text-shadow: 0 0 14px rgba(212,175,55,0.25);
+      }}
+      .cqr-creed-block {{
+        color: var(--gold);
+        font-weight: 700;
+        margin: 8px 0 0 0;
+        line-height: 1.45;
+        font-size: 1.02rem;
+      }}
+      .cqr-mobile-metrics {{
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        align-items: center;
+        justify-content: center;
+      }}
+      .cqr-mobile-metric {{
+        color: var(--white);
+        font-weight: 800;
+        letter-spacing: 0.01em;
+      }}
+      .cqr-mobile-metric b {{
+        color: var(--gold);
+        font-weight: 900;
+      }}
+
       /* Prism-framed cards for pending requests */
       .cqr-grid {{
         position: relative;
@@ -175,6 +217,7 @@ st.markdown(
         font-size: 1.1rem;
         color: var(--gold);
         text-shadow: 0 0 12px rgba(212,175,55,0.2);
+        font-family: 'Goldman', sans-serif !important;
       }}
       .cqr-meta {{
         color: var(--white);
@@ -183,19 +226,33 @@ st.markdown(
         margin-bottom: 12px;
         line-height: 1.4;
       }}
+      .cqr-extra {{
+        color: var(--stark-white);
+        opacity: 0.98;
+        font-size: 0.98rem;
+        margin: 0 0 10px 0;
+        text-align: left;
+        font-weight: 700;
+      }}
 
       /* Buttons: visual discipline (no unsafe tones) */
       .cqr-card button {{
         border-radius: 12px !important;
         font-family: 'Goldman', sans-serif !important;
         font-weight: 800 !important;
+        font-size: 1.15rem !important; /* +15% for one-tap mobile */
+        padding: 0.75rem 0.95rem !important;
       }}
       /* Grant: Gold border + White text */
       .cqr-card button[kind="primary"] {{
-        background: transparent !important;
-        color: var(--white) !important;
-        border: 1px solid rgba(212,175,55,0.75) !important;
+        background: var(--gold) !important;
+        color: #000033 !important; /* Deep navy for contrast */
+        border: 1px solid var(--gold) !important;
         box-shadow: none !important;
+      }}
+      .cqr-card button[kind="primary"]:hover {{
+        background: var(--gold) !important;
+        color: #000033 !important;
       }}
 
       /* Deny: White border + White text */
@@ -212,6 +269,14 @@ st.markdown(
       }}
     </style>
     <div class="cqr-watermark" aria-hidden="true"><span>GCSLC</span></div>
+    <div class="cqr-brand">
+      <h1 class="cqr-brand-title">{html.escape(PAGE_TITLE)}</h1>
+      <div class="cqr-creed-block">Decoding the 20.7M mandate anchor with scientific, uncorruptible precision.</div>
+      <div class="cqr-mobile-metrics">
+        <div class="cqr-mobile-metric"><b>Global Logistics Fuel:</b> ₦108,961,000,000</div>
+        <div class="cqr-mobile-metric"><b>Efficiency Gauge:</b> 1:15 Canvasser Ratio</div>
+      </div>
+    </div>
     <div class="cqr-topbar">
       <div class="cqr-toprow">
         <div class="cqr-topitem"><b>Mirror Integrity</b>: 100%</div>
@@ -229,6 +294,36 @@ st.markdown(
 st.markdown("<div class='cqr-grid'>", unsafe_allow_html=True)
 
 pending = [r for r in st.session_state.mobile_cqr_requests if r.get("status") == "PENDING"]
+
+pending_count = len(pending)
+_prev_pending = st.session_state.get("mobile_prev_pending_count", 0)
+if pending_count > _prev_pending:
+    # Short WebAudio chime (no external assets) when new requests appear.
+    components.html(
+        """
+        <script>
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          const ctx = new AudioContext();
+          const now = ctx.currentTime;
+          function tone(freq, t0, t1, gainVal) {
+            const o = ctx.createOscillator();
+            const g = ctx.createGain();
+            o.type = 'sine';
+            o.frequency.setValueAtTime(freq, t0);
+            g.gain.setValueAtTime(0.0001, t0);
+            g.gain.exponentialRampToValueAtTime(gainVal, t0 + 0.01);
+            g.gain.exponentialRampToValueAtTime(0.0001, t1);
+            o.connect(g); g.connect(ctx.destination);
+            o.start(t0); o.stop(t1);
+          }
+          tone(880, now, now+0.12, 0.22);
+          tone(1174, now+0.14, now+0.26, 0.18);
+          setTimeout(() => { try { ctx.close(); } catch(e){} }, 400);
+        </script>
+        """,
+        height=0,
+    )
+st.session_state.mobile_prev_pending_count = pending_count
 
 if not pending:
     st.markdown(
@@ -251,6 +346,17 @@ else:
             "</div>",
             unsafe_allow_html=True,
         )
+
+        if _role == "Logistics Analyst":
+            st.markdown(
+                "<div class='cqr-extra'>Requesting NW Corridor Drill-down.</div>",
+                unsafe_allow_html=True,
+            )
+        elif _role == "Canvasser Coordinator":
+            st.markdown(
+                "<div class='cqr-extra'>Requesting 15/15 Efficiency Gauge access.</div>",
+                unsafe_allow_html=True,
+            )
 
         # Buttons must be driven by `key=f'grant_{id}'` and `key=f'deny_{id}'`
         c1, c2 = st.columns(2)

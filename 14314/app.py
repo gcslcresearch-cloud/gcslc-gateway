@@ -2,6 +2,7 @@ import hashlib
 import html
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 import pytz
 import streamlit as st
 from datetime import datetime, time
@@ -250,6 +251,8 @@ def build_state_heatmap_df(dff: pd.DataFrame) -> pd.DataFrame:
         strike_priority=("strike_priority", "mean"),
         pvc_collection_rate=("pvc_collection_rate", "mean"),
         turnout_2023_rate=("turnout_2023_rate", "mean"),
+        canvasser_ratio=("canvasser_ratio", "mean"),
+        canvassers=("canvassers", "sum"),
     )
     g["lat"] = g["state"].map(lambda s: STATE_COORDS.get(s, (9.0, 8.0))[0])
     g["lon"] = g["state"].map(lambda s: STATE_COORDS.get(s, (9.0, 8.0))[1])
@@ -441,6 +444,18 @@ st.markdown(
       margin: 0 auto 16px auto;
       text-align: center;
       font-weight: 500;
+    }
+    .rhgi-creed-block {
+      font-size: clamp(1.08rem, 2.9vw, 1.22rem);
+      line-height: 1.65;
+      color: var(--metallic-gold) !important;
+      font-family: 'Goldman', sans-serif !important;
+      max-width: 1000px;
+      margin: 6px auto 16px auto;
+      text-align: center;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      text-shadow: 0 0 18px rgba(212,175,55,0.15);
     }
     .rhgi-signature {
       font-size: clamp(0.98rem, 2.6vw, 1.08rem);
@@ -737,6 +752,9 @@ st.markdown(
     [data-testid="stPlotlyChart"] .plotly-graph-div { background: transparent !important; }
     .js-plotly-plot .plotly .bg,
     .js-plotly-plot .plotly .bglayer rect { fill: transparent !important; }
+    /* Mapbox Visual Tint — Deep Royal Plum */
+    .js-plotly-plot .mapboxgl-map,
+    .js-plotly-plot .mapboxgl-canvas { background-color: #ffffff !important; }
     </style>
     """,
     unsafe_allow_html=True,
@@ -751,7 +769,8 @@ st.markdown(
 with st.sidebar:
     st.header("Scientific controls")
     st.subheader("Sovereign Budget Engine (Tranche 1)")
-    st.metric("Global Sovereign Logistics Fuel:", "₦108,961,000,000")
+    st.metric("Global Logistics Fuel:", "₦108,961,000,000")
+    st.metric("Efficiency Gauge", "1:15 Canvasser Ratio")
     st.markdown(
         "₦8.64B (Canvassers) + ₦86.32B (Logistics) + ₦14B (Contingency)"
     )
@@ -759,7 +778,7 @@ with st.sidebar:
         "Scientific turnout lift (%)",
         min_value=1,
         max_value=15,
-        value=5,
+        value=15,
         help="Increases projected 2027 vote totals across all parties proportionally.",
     )
     st.metric(
@@ -793,10 +812,10 @@ st.markdown(
     f"""
     <div class="rhgi-brand-block">
       <h1 class="rhgi-brand-title">Renewed Hope Grassroots Initiatives (RHGI) - 15/15 Sovereign Mirror</h1>
+      <p class="rhgi-creed-block">Decoding the 20.7M mandate anchor with scientific, uncorruptible precision.</p>
       <div class="rhgi-emblem-wrap"><div class="rhgi-emblem">RHGI</div></div>
       <p class="rhgi-countdown-keys">Election Countdown: Days : Hours : Minutes : Seconds → Feb 2027</p>
       <div class="rhgi-countdown-meter">{_countdown_line}</div>
-      <p class="rhgi-creed">Decoding the 20.7M mandate anchor with scientific, uncorruptible precision. Powered by the 8R Stealth Paradigm.</p>
       <p class="rhgi-signature">Prepared by Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE.</p>
     </div>
     """,
@@ -997,6 +1016,12 @@ _gold_heading("774 LGA heatmap — winning margin (rugged)")
 lga_map_df = build_lga_heatmap_df(dff)
 lga_map_df["winning_margin"] = pd.to_numeric(lga_map_df["winning_margin"], errors="coerce")
 lga_map_df = lga_map_df.dropna(subset=["lat", "lon", "winning_margin"])
+lga_map_df["mandate_status"] = lga_map_df["canvasser_ratio"].apply(
+    lambda r: f"{min(15, max(0, int(round(float(r)))) )}/15 Voters Secured"
+)
+lga_map_df["logistics_fuel"] = (
+    lga_map_df["canvassers"].astype(float) * CANVASSER_BUDGET_ANCHOR_NGN
+).round()
 wm = lga_map_df["winning_margin"].astype(float)
 wm_min = float(wm.min()) if len(wm) else 0.0
 wm_max = float(wm.max()) if len(wm) else 1.0
@@ -1007,21 +1032,47 @@ fig_lga = px.scatter_mapbox(
     lat="lat",
     lon="lon",
     color="winning_margin",
-    color_continuous_scale=[DEEP_NAVY_SAFE, "#2a4d7a", "#6b8fc9", METALLIC_GOLD_TARGET],
+    color_continuous_scale="YlOrBr",
     range_color=(wm_min, wm_max),
     hover_name="lga",
-    hover_data=["state", "zone", "margin_zone", "projected_total"],
-    mapbox_style="carto-darkmatter",
+    hover_data={"state": False, "zone": False, "margin_zone": False, "projected_total": False},
+    custom_data=["mandate_status", "logistics_fuel"],
+    mapbox_style="carto-positron",
     zoom=4.9,
     center={"lat": 9.082, "lon": 8.6753},
 )
-fig_lga.update_traces(marker=dict(size=8, opacity=0.8))
+fig_lga.update_traces(
+    marker=dict(
+        size=8,
+        color=lga_map_df["winning_margin"].astype(float).tolist(),
+        colorscale="YlOrBr",
+        opacity=0.8,
+    ),
+    hovertemplate=(
+        "<b>%{hovertext}</b>"
+        "<br>Mandate Status: %{customdata[0]}"
+        "<br>Logistics Fuel: ₦%{customdata[1]:,.0f}"
+        "<extra></extra>"
+    ),
+)
+_lga_outline_color = "#000033"  # Prism Navy sharp outline
+_lga_inner = fig_lga.data[0]
+_lga_outline = go.Scattermapbox(
+    lat=_lga_inner.lat,
+    lon=_lga_inner.lon,
+    mode="markers",
+    marker=dict(size=10, color=_lga_outline_color),
+    hoverinfo="skip",
+    showlegend=False,
+)
+fig_lga = go.Figure(data=[_lga_outline] + list(fig_lga.data), layout=fig_lga.layout)
 fig_lga.update_layout(
     template=None,
     paper_bgcolor="rgba(0,0,0,0)",
     plot_bgcolor="rgba(0,0,0,0)",
     font=dict(family="Goldman, sans-serif", color="#ffffff", size=13),
     font_color="#ffffff",
+    hoverlabel=dict(font=dict(family="Goldman, sans-serif", color="#ffffff", size=12)),
     margin=dict(l=0, r=0, t=12, b=0),
     coloraxis_colorbar=dict(
         title=dict(text="Winning margin", font=dict(family="Goldman, sans-serif", color=GOLD, size=12)),
@@ -1035,6 +1086,12 @@ st.plotly_chart(fig_lga, use_container_width=True)
 
 _gold_heading("Turnout heatmap — Nigeria (strike priority)")
 state_hm = build_state_heatmap_df(dff)
+state_hm["mandate_status"] = state_hm["canvasser_ratio"].apply(
+    lambda r: f"{min(15, max(0, int(round(float(r)))) )}/15 Voters Secured"
+)
+state_hm["logistics_fuel"] = (
+    state_hm["canvassers"].astype(float) * CANVASSER_BUDGET_ANCHOR_NGN
+).round()
 fig_scatter = px.scatter_mapbox(
     state_hm,
     lat="lat",
@@ -1042,18 +1099,45 @@ fig_scatter = px.scatter_mapbox(
     color="strike_priority",
     size="strike_priority",
     hover_name="state",
-    hover_data=["pvc_collection_rate", "turnout_2023_rate"],
-    color_continuous_scale=[NAVY, "#2a4d8c", GOLD],
-    mapbox_style="open-street-map",
+    hover_data={"pvc_collection_rate": False, "turnout_2023_rate": False},
+    custom_data=["mandate_status", "logistics_fuel"],
+    color_continuous_scale=[[0, "#1A0033"], [0.5, "#B87333"], [1.0, "#FFD700"]],
+    mapbox_style="carto-positron",
     zoom=4.85,
     center={"lat": 9.082, "lon": 8.6753},
 )
+fig_scatter.update_traces(
+    marker=dict(
+        size=8,
+        color=state_hm["strike_priority"].astype(float).tolist(),
+        colorscale=[[0, "#1A0033"], [0.5, "#B87333"], [1.0, "#FFD700"]],
+        opacity=0.8,
+    ),
+    hovertemplate=(
+        "<b>%{hovertext}</b>"
+        "<br>Mandate Status: %{customdata[0]}"
+        "<br>Logistics Fuel: ₦%{customdata[1]:,.0f}"
+        "<extra></extra>"
+    ),
+)
+_state_outline_color = "#000033"  # Prism Navy sharp outline
+_state_inner = fig_scatter.data[0]
+_state_outline = go.Scattermapbox(
+    lat=_state_inner.lat,
+    lon=_state_inner.lon,
+    mode="markers",
+    marker=dict(size=10, color=_state_outline_color),
+    hoverinfo="skip",
+    showlegend=False,
+)
+fig_scatter = go.Figure(data=[_state_outline] + list(fig_scatter.data), layout=fig_scatter.layout)
 fig_scatter.update_layout(
     template=None,
     paper_bgcolor="rgba(0,0,0,0)",
     plot_bgcolor="rgba(0,0,0,0)",
     font=dict(family="Goldman, sans-serif", color="#ffffff", size=13),
     font_color="#ffffff",
+    hoverlabel=dict(font=dict(family="Goldman, sans-serif", color="#ffffff", size=12)),
     margin=dict(l=0, r=0, t=12, b=0),
     coloraxis_colorbar=dict(
         title=dict(text="Strike priority", font=dict(family="Goldman, sans-serif", color=GOLD, size=12)),
