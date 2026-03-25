@@ -26,7 +26,6 @@ GOLD = METALLIC_GOLD
 NAVY = NAVY_CSS
 # Deep Prism Navy (video match — RHGI ABSOLUTE RESTORE-39).
 PRISM_NAVY = "#000033"
-PLOTLY_FONT = dict(family="Goldman, sans-serif", color="#ffffff", size=13)
 CANVASSER_BUDGET_ANCHOR_NGN = 30_000
 # RHGI TOTAL RESTORE-30 — Sovereign Budget Engine (personnel lines per mandate brief).
 SOVEREIGN_CANVASSERS_LINE = 144_000
@@ -736,6 +735,12 @@ st.markdown(
       margin: 4px 0;
       line-height: 1.45;
     }
+    /* RHGI-FIX-RED-ERASE-46 — kill Plotly template red/maroon bleed; lock to Prism Navy */
+    [data-testid="stPlotlyChart"],
+    [data-testid="stPlotlyChart"] .js-plotly-plot,
+    [data-testid="stPlotlyChart"] .plotly-graph-div { background: #000033 !important; }
+    .js-plotly-plot .plotly .bg,
+    .js-plotly-plot .plotly .bglayer rect { fill: #000033 !important; }
     </style>
     """,
     unsafe_allow_html=True,
@@ -844,22 +849,46 @@ _gold_heading("Winning Margin by Geopolitical Zone (turnout-adjusted)")
 zone_margin = (
     dff.groupby("zone", as_index=False)["winning_margin"].sum().sort_values("winning_margin")
 )
+# No plotly_dark — it injects maroon/red plot surfaces; explicit Prism Navy + gold/white only.
 fig_zone = px.bar(
     zone_margin,
     x="zone",
     y="winning_margin",
     color_discrete_sequence=[GOLD],
-    template="plotly_dark",
 )
+_axis_title_font = dict(family="Goldman, sans-serif", size=14, color=GOLD)
+_tick_font = dict(family="Goldman, sans-serif", size=12, color="#ffffff")
 fig_zone.update_layout(
+    template=None,
     paper_bgcolor=PRISM_NAVY,
     plot_bgcolor=PRISM_NAVY,
-    font=PLOTLY_FONT,
+    font=dict(family="Goldman, sans-serif", color="#ffffff", size=13),
     font_color="#ffffff",
-    xaxis_title="Zone",
-    yaxis_title="Winning Margin (APC vs nearest rival)",
+    showlegend=False,
+    margin=dict(t=28, b=52, l=72, r=28),
+    xaxis=dict(
+        title=dict(text="Zone", font=_axis_title_font),
+        tickfont=_tick_font,
+        showgrid=False,
+        linecolor="rgba(255,255,255,0.4)",
+        zeroline=False,
+    ),
+    yaxis=dict(
+        title=dict(
+            text="Winning Margin (APC vs nearest rival)",
+            font=dict(family="Goldman, sans-serif", size=13, color=GOLD),
+        ),
+        tickfont=_tick_font,
+        showgrid=True,
+        gridcolor="rgba(212,175,55,0.14)",
+        gridwidth=1,
+        zeroline=True,
+        zerolinecolor="rgba(255,255,255,0.22)",
+        zerolinewidth=1,
+        linecolor="rgba(255,255,255,0.4)",
+    ),
 )
-fig_zone.update_traces(marker=dict(color=GOLD))
+fig_zone.update_traces(marker=dict(color=GOLD, line=dict(width=0)))
 st.plotly_chart(fig_zone, use_container_width=True)
 
 _rose_heading("Corridor nodes — drill-down (774 LGAs)")
@@ -984,17 +1013,22 @@ fig_lga = px.scatter_mapbox(
     mapbox_style="carto-darkmatter",
     zoom=4.9,
     center={"lat": 9.082, "lon": 8.6753},
-    template="plotly_dark",
-    title="774 LGAs — winning margin (deep navy → metallic gold)",
 )
 fig_lga.update_traces(marker=dict(size=8, opacity=0.8))
 fig_lga.update_layout(
+    template=None,
     paper_bgcolor=PRISM_NAVY,
     plot_bgcolor=PRISM_NAVY,
-    font=PLOTLY_FONT,
+    font=dict(family="Goldman, sans-serif", color="#ffffff", size=13),
     font_color="#ffffff",
-    margin=dict(l=0, r=0, t=48, b=0),
-    coloraxis_colorbar=dict(title="Winning margin"),
+    margin=dict(l=0, r=0, t=12, b=0),
+    coloraxis_colorbar=dict(
+        title=dict(text="Winning margin", font=dict(family="Goldman, sans-serif", color=GOLD, size=12)),
+        tickfont=dict(family="Goldman, sans-serif", color="#ffffff", size=11),
+        bgcolor="rgba(0,0,51,0.55)",
+        bordercolor="rgba(212,175,55,0.35)",
+        len=0.72,
+    ),
 )
 st.plotly_chart(fig_lga, use_container_width=True)
 
@@ -1012,15 +1046,21 @@ fig_scatter = px.scatter_mapbox(
     mapbox_style="open-street-map",
     zoom=4.85,
     center={"lat": 9.082, "lon": 8.6753},
-    template="plotly_dark",
-    title="High PVC + low 2023 turnout → metallic gold (high-priority strike zones)",
 )
 fig_scatter.update_layout(
+    template=None,
     paper_bgcolor=PRISM_NAVY,
     plot_bgcolor=PRISM_NAVY,
-    font=PLOTLY_FONT,
+    font=dict(family="Goldman, sans-serif", color="#ffffff", size=13),
     font_color="#ffffff",
-    margin=dict(l=0, r=0, t=40, b=0),
+    margin=dict(l=0, r=0, t=12, b=0),
+    coloraxis_colorbar=dict(
+        title=dict(text="Strike priority", font=dict(family="Goldman, sans-serif", color=GOLD, size=12)),
+        tickfont=dict(family="Goldman, sans-serif", color="#ffffff", size=11),
+        bgcolor="rgba(0,0,51,0.55)",
+        bordercolor="rgba(212,175,55,0.35)",
+        len=0.72,
+    ),
 )
 st.plotly_chart(fig_scatter, use_container_width=True)
 
@@ -1047,15 +1087,41 @@ fig_party = px.bar(
     y="Votes",
     color="Year",
     barmode="group",
-    color_discrete_map={"2023": NAVY, "2027": GOLD},
-    template="plotly_dark",
+    color_discrete_map={"2023": "#5a4820", "2027": GOLD},
 )
 fig_party.update_layout(
+    template=None,
     paper_bgcolor=PRISM_NAVY,
     plot_bgcolor=PRISM_NAVY,
-    font=PLOTLY_FONT,
+    font=dict(family="Goldman, sans-serif", color="#ffffff", size=13),
     font_color="#ffffff",
+    bargap=0.22,
+    bargroupgap=0.08,
+    legend=dict(
+        title=dict(text="Year", font=dict(family="Goldman, sans-serif", color=GOLD, size=13)),
+        font=dict(family="Goldman, sans-serif", color="#ffffff", size=12),
+        bgcolor="rgba(0,0,51,0.5)",
+        bordercolor="rgba(212,175,55,0.35)",
+        borderwidth=1,
+    ),
+    xaxis=dict(
+        title=dict(text="Party", font=_axis_title_font),
+        tickfont=_tick_font,
+        showgrid=False,
+        linecolor="rgba(255,255,255,0.4)",
+        zeroline=False,
+    ),
+    yaxis=dict(
+        title=dict(text="Votes", font=dict(family="Goldman, sans-serif", size=14, color=GOLD)),
+        tickfont=_tick_font,
+        showgrid=True,
+        gridcolor="rgba(212,175,55,0.14)",
+        zerolinecolor="rgba(255,255,255,0.22)",
+        linecolor="rgba(255,255,255,0.4)",
+    ),
+    margin=dict(t=36, b=48, l=72, r=36),
 )
+fig_party.update_traces(marker_line_width=0)
 st.plotly_chart(fig_party, use_container_width=True)
 
 _gold_heading("LGA Tactical Sheet (Logistics Alert)")
