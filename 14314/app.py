@@ -292,8 +292,13 @@ def build_k3_nw_triangle_trace() -> go.Scattermapbox:
 def build_cien_audit_rows(dff: pd.DataFrame) -> list[dict]:
     """K3 priority: North West corridor first, then remaining zones; deterministic CIEN status."""
     hmap = build_lga_heatmap_df(dff)
+    _k3_order = {"Katsina": 0, "Kano": 1, "Kaduna": 2}
     hmap["_nw"] = (hmap["zone"] == "North West").astype(int)
-    hmap = hmap.sort_values(["_nw", "state", "lga"], ascending=[False, True, True])
+    hmap["_k3"] = hmap["state"].map(lambda s: _k3_order.get(str(s), 99)).astype(int)
+    hmap = hmap.sort_values(
+        ["_nw", "_k3", "state", "lga"],
+        ascending=[False, True, True, True],
+    )
     rows: list[dict] = []
     for _, r in hmap.iterrows():
         h = int(
@@ -1138,71 +1143,67 @@ _cien_audit_rows = build_cien_audit_rows(dff)
 st.session_state._cien_rows_full = _cien_audit_rows
 
 with st.sidebar:
-    st.markdown(
-        '<p style="font-family:Goldman,sans-serif;color:#D4AF37;font-weight:800;font-size:1.02rem;'
-        'margin:18px 0 8px 0;letter-spacing:0.04em;">LGA-CIEN REAL-TIME AUDIT TRAIL</p>',
-        unsafe_allow_html=True,
-    )
-    st.caption(
-        "Slow-motion pulse: 1 LGA every 3.0s · K3 corridor sort: Katsina → Kano → Kaduna → other NW → national."
-    )
-
-    def _cien_sidebar_pulse_inner() -> None:
-        rows = st.session_state.get("_cien_rows_full") or []
-        if not rows:
-            st.caption("No LGA rows.")
-            return
-        n = len(rows)
-        i = st.session_state.cien_tick_idx % n
-        st.session_state.cien_tick_idx = (st.session_state.cien_tick_idx + 1) % n
-        r = rows[i]
-        st.session_state.cien_map_candidate = {
-            "lat": r["lat"],
-            "lon": r["lon"],
-            "zoom": 10.2,
-        }
-        _n = "N"
-        _n_style = (
-            "display:inline-block;width:22px;height:22px;line-height:22px;text-align:center;"
-            "border-radius:4px;margin-right:8px;font-weight:800;font-size:0.75rem;"
-        )
-        if r["verified"]:
-            _n_html = (
-                f'<span style="{_n_style}background:rgba(212,175,55,0.35);color:#D4AF37;'
-                'border:1px solid #D4AF37;box-shadow:0 0 12px rgba(212,175,55,0.85);">{_n}</span>'
-            )
-        else:
-            _n_html = (
-                f'<span style="{_n_style}background:transparent;color:#ffffff;'
-                'border:1px solid rgba(255,255,255,0.75);">{_n}</span>'
-            )
+    _cien_sidebar_box = st.container()
+    with _cien_sidebar_box:
         st.markdown(
-            f'<div style="font-family:Goldman,sans-serif;font-size:0.88rem;line-height:1.5;color:#ffffff;">'
-            f"{_n_html}"
-            f'<span style="color:#ffffff;">{html.escape(r["state"])} : {html.escape(r["lga"])} : '
-            f'<span style="color:#D4AF37;font-weight:700;">{html.escape(r["status"])}</span></span></div>',
+            '<p style="font-family:Goldman,sans-serif;color:#D4AF37;font-weight:800;font-size:1.02rem;'
+            'margin:18px 0 8px 0;letter-spacing:0.04em;">LGA-CIEN REAL-TIME AUDIT TRAIL</p>',
             unsafe_allow_html=True,
         )
-        _one = pd.DataFrame(
-            [
-                {
-                    "State": r["state"],
-                    "LGA Name": r["lga"],
-                    "CIEN Verification Status": r["status"],
-                }
-            ]
+        st.caption(
+            "Slow-motion pulse: 1 LGA every 3.0s · K3 corridor sort: Katsina → Kano → Kaduna → other NW → national."
         )
-        st.dataframe(_one, hide_index=True, use_container_width=True)
-        if st.button("Zoom carto‑positron map to this LGA", key="cien_zoom_map_btn"):
-            mc = st.session_state.get("cien_map_candidate")
-            if mc:
-                st.session_state.map_view = dict(mc)
 
-    if hasattr(st, "fragment"):
-        _cien_pulse = st.fragment(run_every=timedelta(seconds=3.0))(_cien_sidebar_pulse_inner)
-        _cien_pulse()
-    else:
-        _cien_sidebar_pulse_inner()
+        def _cien_sidebar_pulse_inner() -> None:
+            rows = st.session_state.get("_cien_rows_full") or []
+            if not rows:
+                st.caption("No LGA rows.")
+                return
+            n = len(rows)
+            i = st.session_state.cien_tick_idx % n
+            st.session_state.cien_tick_idx = (st.session_state.cien_tick_idx + 1) % n
+            r = rows[i]
+            st.session_state.cien_map_candidate = {
+                "lat": r["lat"],
+                "lon": r["lon"],
+                "zoom": 10.2,
+            }
+            _n = "N"
+            _n_style = (
+                "display:inline-block;width:22px;height:22px;line-height:22px;text-align:center;"
+                "border-radius:4px;margin-right:8px;font-weight:800;font-size:0.75rem;"
+            )
+            if r["verified"]:
+                _n_html = (
+                    f'<span style="{_n_style}background:rgba(212,175,55,0.35);color:#D4AF37;'
+                    'border:1px solid #D4AF37;box-shadow:0 0 12px rgba(212,175,55,0.85);">{_n}</span>'
+                )
+            else:
+                _n_html = (
+                    f'<span style="{_n_style}background:transparent;color:#ffffff;'
+                    'border:1px solid rgba(255,255,255,0.75);">{_n}</span>'
+                )
+            st.markdown(
+                f'<div style="font-family:Goldman,sans-serif;font-size:0.88rem;line-height:1.5;color:#ffffff;">'
+                f"{_n_html}"
+                f'<span style="color:#ffffff;">{html.escape(r["lga"])} : {html.escape(r["state"])} : '
+                f'<span style="color:#D4AF37;font-weight:700;">{html.escape(r["status"])}</span></span></div>',
+                unsafe_allow_html=True,
+            )
+            if st.button(
+                f"Focus Map 2: {r['lga']}, {r['state']}",
+                key="cien_zoom_map_btn",
+                use_container_width=True,
+            ):
+                mc = st.session_state.get("cien_map_candidate")
+                if mc:
+                    st.session_state.map_view = dict(mc)
+
+        if hasattr(st, "fragment"):
+            _cien_pulse = st.fragment(run_every=timedelta(seconds=3.0))(_cien_sidebar_pulse_inner)
+            _cien_pulse()
+        else:
+            _cien_sidebar_pulse_inner()
 
 abuja_now = datetime.now(lagos_tz)
 st.markdown(
@@ -1281,30 +1282,23 @@ if constitutional_ok:
 
 (tab_global,) = st.tabs(["GLOBAL OVERVIEW (ACTIVE)"])
 with tab_global:
-    _swat_target = 21_750
-    _swat_current = 18_200
-    _swat_pct = 83.7
     st.markdown(
-        f"""
-        <div class="rhgi-swat-shell">
-          <div class="rhgi-swat-title">LGA ACTIVATION METRIC (15/15 TARGET)</div>
-          <div class="rhgi-swat-sub">LGA: KANO - NASARAWA</div>
-          <div class="rhgi-swat-target">{_swat_target:,}</div>
-          <div class="rhgi-swat-cylinder-wrap">
-            <div class="rhgi-swat-cylinder">
-              <div class="rhgi-swat-fill"></div>
-            </div>
-            <div class="rhgi-swat-current">Current fill: {_swat_current:,}</div>
+        """
+        <div class="rhgi-cien-row">
+          <div class="rhgi-cien-card">
+            <h3>CIEN-C</h3>
+            <div class="cien-sub">GeoCanvasser verification node — field geometry and corridor activation integrity.</div>
+            <div class="cien-chip">STATUS · ACTIVE</div>
           </div>
-          <div class="rhgi-swat-status">
-            CURRENT STATE: <span class="rhgi-swat-gold">ACTIVATING</span> &gt;
-            VELOCITY GAUGE: <span class="rhgi-swat-gold">{_swat_pct}% [PULSING]</span> &gt;
-            SWAT THRESHOLD: <span class="rhgi-swat-gold">{_swat_target:,} [PENDING]</span>
+          <div class="rhgi-cien-card">
+            <h3>CIEN-I</h3>
+            <div class="cien-sub">Data Integrity verification — PVC, turnout, and sovereign yield attestation.</div>
+            <div class="cien-chip">STATUS · ACTIVE</div>
           </div>
-          <div class="rhgi-swat-icons">
-            <div class="rhgi-swat-icon">CIEN-C<small>GeoCanvasser</small></div>
-            <div class="rhgi-swat-icon">CIEN-I<small>Data Integrity</small></div>
-            <div class="rhgi-swat-icon">CIEN-E<small>Logistics Fuel</small></div>
+          <div class="rhgi-cien-card">
+            <h3>CIEN-E</h3>
+            <div class="cien-sub">Logistics Fuel verification — deployment chain and remittance discipline lock.</div>
+            <div class="cien-chip">STATUS · ACTIVE</div>
           </div>
         </div>
         """,
