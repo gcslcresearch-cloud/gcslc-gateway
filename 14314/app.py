@@ -28,7 +28,8 @@ if "cien_map_candidate" not in st.session_state:
     st.session_state.cien_map_candidate = None
 
 # RHGI-GOLDMAN palette (mirrors :root CSS variables).
-METALLIC_GOLD = "#D4AF37"
+YELLOW_GOLD = "#D4AF37"
+METALLIC_GOLD = YELLOW_GOLD
 NAVY_CSS = "#000033"
 GOLD = METALLIC_GOLD
 NAVY = NAVY_CSS
@@ -59,6 +60,9 @@ CORRIDOR_NODES = (
 )
 # 2027 general election countdown anchor (WAT); adjust if INEC publishes a firm date.
 _LAGOS_TZ = pytz.timezone("Africa/Lagos")
+_LONDON_TZ = pytz.timezone("Europe/London")
+_NYC_TZ = pytz.timezone("America/New_York")
+_DUBAI_TZ = pytz.timezone("Asia/Dubai")
 ELECTION_DATETIME_WAT = _LAGOS_TZ.localize(datetime(2027, 2, 25, 8, 0, 0))
 EIGHT_R_DETERMINANTS = [
     ("Refine", "Proprietary Determinant — Refine: Sharpening ward-level turnout models and PVC reconciliation."),
@@ -1227,7 +1231,7 @@ def _live_countdown_header_inner() -> None:
     )
 
 if hasattr(st, "fragment"):
-    _live_cd = st.fragment(run_every=timedelta(seconds=3.0))(_live_countdown_header_inner)
+    _live_cd = st.fragment(run_every=timedelta(seconds=1))(_live_countdown_header_inner)
     _live_cd()
 else:
     _live_countdown_header_inner()
@@ -1247,13 +1251,34 @@ for _ri, (_r8_label, _r8_det) in enumerate(EIGHT_R_DETERMINANTS):
         )
 
 c1, c2, c3 = st.columns(3)
-# Abuja Pulse lead (UTC+1); Diamond Strobe when FCT projected APC < 25%.
+# Global clock strip (updates every 1s) in header.
 _pulse_cls = "rhgi-kpi rhgi-abuja-strobe" if abuja_strobe else "rhgi-kpi"
-c1.markdown(
-    f"<div class='{_pulse_cls}'><b>Abuja Pulse (UTC+1)</b><br><span class='rhgi-glow'>{abuja_now.strftime('%I:%M:%S %p WAT')}</span>"
-    f"<br><small style='color:#ffffff;font-weight:600;'>FCT APC (proj): {fct_pct:.2f}%</small></div>",
-    unsafe_allow_html=True,
-)
+_c1_clock = c1.empty()
+
+
+def _live_header_clocks_inner() -> None:
+    _abuja_now = datetime.now(lagos_tz)
+    _london_now = datetime.now(_LONDON_TZ)
+    _ny_now = datetime.now(_NYC_TZ)
+    _dubai_now = datetime.now(_DUBAI_TZ)
+    _c1_clock.markdown(
+        f"<div class='{_pulse_cls}'>"
+        f"<b>Global Clocks</b><br>"
+        f"Abuja (WAT): <span class='rhgi-glow'>{_abuja_now.strftime('%I:%M:%S %p WAT')}</span><br>"
+        f"London: <span class='rhgi-glow'>{_london_now.strftime('%I:%M:%S %p %Z')}</span><br>"
+        f"NY: <span class='rhgi-glow'>{_ny_now.strftime('%I:%M:%S %p %Z')}</span><br>"
+        f"Dubai: <span class='rhgi-glow'>{_dubai_now.strftime('%I:%M:%S %p %Z')}</span>"
+        f"<br><small style='color:#ffffff;font-weight:600;'>FCT APC (proj): {fct_pct:.2f}%</small>"
+        f"</div>",
+        unsafe_allow_html=True,
+    )
+
+
+if hasattr(st, "fragment"):
+    _hdr_clocks = st.fragment(run_every=timedelta(seconds=1))(_live_header_clocks_inner)
+    _hdr_clocks()
+else:
+    _live_header_clocks_inner()
 c2.markdown(
     f"<div class='rhgi-kpi'><b>24/36 + FCT Constitutional Gauge</b><br><span class='rhgi-gauge'>{states_25} / 36 states at ≥25% APC</span><br>"
     f"FCT: {'VALIDATED' if fct_validated else 'PENDING'} | {'PASS' if constitutional_ok else 'WATCH'}</div>",
@@ -1271,14 +1296,6 @@ st.markdown(
     f"<b>Remittance gap:</b> <span class='rhgi-glow'>{remittance_gap:,}</span></div>",
     unsafe_allow_html=True,
 )
-
-if constitutional_ok:
-    st.markdown(
-        "<div class='rhgi-mandate-secured'><span class='rhgi-glow' style='font-size:1.35rem;font-weight:800;'>"
-        "CONSTITUTIONAL MANDATE: SECURED</span><br>"
-        "<small style='color:#ffffff;'>Legal Gatekeeper — ≥24 of 36 states at ≥25% APC and FCT ≥25%</small></div>",
-        unsafe_allow_html=True,
-    )
 
 (tab_global,) = st.tabs(["GLOBAL OVERVIEW (ACTIVE)"])
 with tab_global:
@@ -1387,6 +1404,15 @@ with tab_global:
     )
     fig_party.update_traces(marker_line_width=0)
     st.plotly_chart(fig_party, use_container_width=True)
+
+    # POSITION 1B (Section B): Constitutional secured banner
+    if constitutional_ok:
+        st.markdown(
+            "<div class='rhgi-mandate-secured'><span class='rhgi-glow' style='font-size:1.35rem;font-weight:800;'>"
+            "CONSTITUTIONAL MANDATE: SECURED</span><br>"
+            "<small style='color:#ffffff;'>Legal Gatekeeper — ≥24 of 36 states at ≥25% APC and FCT ≥25%</small></div>",
+            unsafe_allow_html=True,
+        )
 
     # POSITION 2 (Below charts): Sovereign Mirror Map
     _gold_heading("774 LGA heatmap — winning margin (rugged)")
