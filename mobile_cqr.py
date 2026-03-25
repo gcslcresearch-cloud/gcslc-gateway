@@ -292,11 +292,158 @@ st.markdown(
       .cqr-card button {{
         --btn-danger: rgba(0,0,0,0);
       }}
+
+      /* CIEN-Verify Swat Widget — mirrors 14314/app.py (S24 Ultra primary) */
+      .cqr-swat-primary {{
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        max-width: min(520px, 100%);
+        margin: 0 auto 18px auto;
+      }}
+      @keyframes rhgiSwatBorderPulse {{
+        0%, 100% {{ box-shadow: 0 0 16px rgba(212,175,55,0.45), inset 0 0 22px rgba(212,175,55,0.08); }}
+        50% {{ box-shadow: 0 0 38px rgba(212,175,55,0.95), inset 0 0 32px rgba(255,248,220,0.12); }}
+      }}
+      @keyframes rhgiSwatFillFlow {{
+        0%, 100% {{ filter: brightness(1.02); transform: scaleY(1); }}
+        50% {{ filter: brightness(1.18); transform: scaleY(1.02); }}
+      }}
+      @keyframes rhgiSwatShimmer {{
+        0% {{ background-position: 0% 80%; }}
+        100% {{ background-position: 0% 20%; }}
+      }}
+      .rhgi-swat-shell {{
+        font-family: 'Goldman', sans-serif !important;
+        border: 2px solid #D4AF37;
+        border-radius: 22px;
+        padding: 22px 20px 26px 20px;
+        margin: 0;
+        background: rgba(0,0,51,0.72);
+        animation: rhgiSwatBorderPulse 2.6s ease-in-out infinite;
+        position: relative;
+        z-index: 2;
+      }}
+      .rhgi-swat-title {{
+        color: #D4AF37 !important;
+        font-weight: 800;
+        font-size: clamp(0.95rem, 2.2vw, 1.12rem);
+        text-align: center;
+        letter-spacing: 0.06em;
+        margin: 0 0 6px 0;
+        text-shadow: 0 0 14px rgba(212,175,55,0.45);
+      }}
+      .rhgi-swat-sub {{
+        color: #ffffff !important;
+        font-weight: 600;
+        font-size: 0.92rem;
+        text-align: center;
+        margin: 0 0 10px 0;
+        opacity: 0.95;
+      }}
+      .rhgi-swat-target {{
+        color: #D4AF37 !important;
+        font-weight: 900;
+        font-size: clamp(1.85rem, 5vw, 2.45rem);
+        text-align: center;
+        letter-spacing: 0.04em;
+        text-shadow: 0 0 22px rgba(212,175,55,0.65), 0 0 44px rgba(212,175,55,0.25);
+        margin: 0 0 14px 0;
+        line-height: 1.1;
+      }}
+      .rhgi-swat-cylinder-wrap {{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        margin: 8px 0 16px 0;
+      }}
+      .rhgi-swat-cylinder {{
+        position: relative;
+        width: 112px;
+        height: 260px;
+        border-radius: 56px;
+        border: 2px solid rgba(212,175,55,0.75);
+        background: linear-gradient(90deg,
+          rgba(0,0,51,0.55) 0%,
+          rgba(212,175,55,0.12) 45%,
+          rgba(255,250,220,0.08) 50%,
+          rgba(212,175,55,0.12) 55%,
+          rgba(0,0,51,0.55) 100%);
+        box-shadow:
+          inset 0 0 36px rgba(255,255,255,0.12),
+          inset 0 -20px 50px rgba(212,175,55,0.15),
+          0 0 28px rgba(212,175,55,0.35);
+        overflow: hidden;
+      }}
+      .rhgi-swat-fill {{
+        position: absolute;
+        left: 4px;
+        right: 4px;
+        bottom: 4px;
+        height: 83.7%;
+        border-radius: 0 0 48px 48px;
+        background: linear-gradient(180deg,
+          rgba(255,248,210,0.95) 0%,
+          rgba(212,175,55,0.88) 35%,
+          rgba(212,175,55,0.75) 70%,
+          rgba(180,140,45,0.85) 100%);
+        background-size: 100% 200%;
+        animation: rhgiSwatFillFlow 2.4s ease-in-out infinite, rhgiSwatShimmer 3.2s linear infinite;
+        box-shadow: inset 0 0 24px rgba(255,255,255,0.35), 0 0 22px rgba(212,175,55,0.55);
+      }}
+      .rhgi-swat-current {{
+        color: #ffffff !important;
+        font-weight: 800;
+        font-size: 1.05rem;
+        letter-spacing: 0.04em;
+      }}
+      .rhgi-swat-status {{
+        color: #ffffff !important;
+        font-size: clamp(0.78rem, 1.8vw, 0.9rem);
+        font-weight: 600;
+        line-height: 1.55;
+        text-align: center;
+        margin: 0 0 16px 0;
+        padding: 10px 12px;
+        border: 1px solid rgba(212,175,55,0.35);
+        border-radius: 12px;
+        background: rgba(0,0,51,0.5);
+      }}
+      .rhgi-swat-status .rhgi-swat-gold {{ color: #D4AF37 !important; font-weight: 800; }}
+      .rhgi-swat-icons {{
+        display: flex;
+        justify-content: center;
+        gap: 14px;
+        flex-wrap: wrap;
+        margin-top: 4px;
+      }}
+      .rhgi-swat-icon {{
+        flex: 1 1 90px;
+        max-width: 140px;
+        text-align: center;
+        color: #D4AF37 !important;
+        font-weight: 800;
+        font-size: 0.82rem;
+        letter-spacing: 0.04em;
+        padding: 10px 8px;
+        border: 1px solid rgba(212,175,55,0.45);
+        border-radius: 12px;
+        background: rgba(0,0,51,0.45);
+      }}
+      .rhgi-swat-icon small {{
+        display: block;
+        color: #ffffff !important;
+        font-weight: 600;
+        font-size: 0.72rem;
+        margin-top: 4px;
+        opacity: 0.92;
+      }}
     </style>
     <div class="cqr-watermark" aria-hidden="true"><span>GCSLC</span></div>
     <div class="cqr-brand">
       <h1 class="cqr-brand-title">{html.escape(PAGE_TITLE)}</h1>
-      <div class="cqr-creed-block">Securing the 20.7M Mandate through Scientific Precision.</div>
+      <div class="cqr-creed-block">Securing the 20.7M Mandate Anchor.</div>
       <div class="cqr-mobile-metrics">
         <div class="cqr-mobile-metric"><b>Global Logistics Fuel:</b> ₦108,961,000,000</div>
         <div class="cqr-mobile-metric"><b>Efficiency Gauge:</b> 1:15 Canvasser Ratio</div>
@@ -317,6 +464,37 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+_SWAT_TARGET = 21_750
+_SWAT_CURRENT = 18_200
+_SWAT_PCT = 83.7
+st.markdown(
+    f"""
+    <div class="cqr-swat-primary">
+      <div class="rhgi-swat-shell">
+        <div class="rhgi-swat-title">LGA ACTIVATION METRIC (15/15 TARGET)</div>
+        <div class="rhgi-swat-sub">LGA: KANO - NASARAWA</div>
+        <div class="rhgi-swat-target">{_SWAT_TARGET:,}</div>
+        <div class="rhgi-swat-cylinder-wrap">
+          <div class="rhgi-swat-cylinder">
+            <div class="rhgi-swat-fill"></div>
+          </div>
+          <div class="rhgi-swat-current">Current fill: {_SWAT_CURRENT:,}</div>
+        </div>
+        <div class="rhgi-swat-status">
+          CURRENT STATE: <span class="rhgi-swat-gold">ACTIVATING</span> &gt;
+          VELOCITY GAUGE: <span class="rhgi-swat-gold">{_SWAT_PCT}% [PULSING]</span> &gt;
+          SWAT THRESHOLD: <span class="rhgi-swat-gold">{_SWAT_TARGET:,} [PENDING]</span>
+        </div>
+        <div class="rhgi-swat-icons">
+          <div class="rhgi-swat-icon">CIEN-C<small>GeoCanvasser</small></div>
+          <div class="rhgi-swat-icon">CIEN-I<small>Data Integrity</small></div>
+          <div class="rhgi-swat-icon">CIEN-E<small>Logistics Fuel</small></div>
+        </div>
+      </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 st.markdown("<div class='cqr-grid'>", unsafe_allow_html=True)
 

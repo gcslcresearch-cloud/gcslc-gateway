@@ -271,10 +271,10 @@ _LGA_MARKER_OUTLINE = 10 * 1.15
 
 
 def build_k3_nw_triangle_trace() -> go.Scattermapbox:
-    """North West Villa — K3 strategic triangle (Sokoto · Kano · Kaduna)."""
-    s, k, d = STATE_COORDS["Sokoto"], STATE_COORDS["Kano"], STATE_COORDS["Kaduna"]
-    lats = [s[0], k[0], d[0], s[0]]
-    lons = [s[1], k[1], d[1], s[1]]
+    """North West Villa — K3 Geopolitical Corridor triangle (Katsina · Kano · Kaduna)."""
+    kt, kn, kd = STATE_COORDS["Katsina"], STATE_COORDS["Kano"], STATE_COORDS["Kaduna"]
+    lats = [kt[0], kn[0], kd[0], kt[0]]
+    lons = [kt[1], kn[1], kd[1], kt[1]]
     return go.Scattermapbox(
         lat=lats,
         lon=lons,
@@ -283,7 +283,7 @@ def build_k3_nw_triangle_trace() -> go.Scattermapbox:
         fillcolor="rgba(212,175,55,0.16)",
         line=dict(color="#D4AF37", width=2),
         hoverinfo="text",
-        hovertext="K3 Triangle — North West Villa anchor",
+        hovertext="K3 Triangle (Katsina · Kano · Kaduna) — North West Villa",
         showlegend=False,
         name="K3 Triangle",
     )
@@ -937,6 +937,148 @@ st.markdown(
     .rhgi-cien-card .cien-chip {
       margin-top: 12px; color: #D4AF37; font-size: 0.88rem; font-weight: 700; letter-spacing: 0.06em;
     }
+    /* CIEN-Verify Swat Widget — gold cylinder, no red */
+    @keyframes rhgiSwatBorderPulse {
+      0%, 100% { box-shadow: 0 0 16px rgba(212,175,55,0.45), inset 0 0 22px rgba(212,175,55,0.08); }
+      50% { box-shadow: 0 0 38px rgba(212,175,55,0.95), inset 0 0 32px rgba(255,248,220,0.12); }
+    }
+    @keyframes rhgiSwatFillFlow {
+      0%, 100% { filter: brightness(1.02); transform: scaleY(1); }
+      50% { filter: brightness(1.18); transform: scaleY(1.02); }
+    }
+    @keyframes rhgiSwatShimmer {
+      0% { background-position: 0% 80%; }
+      100% { background-position: 0% 20%; }
+    }
+    .rhgi-swat-shell {
+      font-family: 'Goldman', sans-serif !important;
+      border: 2px solid #D4AF37;
+      border-radius: 22px;
+      padding: 22px 20px 26px 20px;
+      margin: 6px 0 26px 0;
+      background: rgba(0,0,51,0.72);
+      animation: rhgiSwatBorderPulse 2.6s ease-in-out infinite;
+      position: relative;
+      z-index: 2;
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .rhgi-swat-title {
+      color: #D4AF37 !important;
+      font-weight: 800;
+      font-size: clamp(0.95rem, 2.2vw, 1.12rem);
+      text-align: center;
+      letter-spacing: 0.06em;
+      margin: 0 0 6px 0;
+      text-shadow: 0 0 14px rgba(212,175,55,0.45);
+    }
+    .rhgi-swat-sub {
+      color: #ffffff !important;
+      font-weight: 600;
+      font-size: 0.92rem;
+      text-align: center;
+      margin: 0 0 10px 0;
+      opacity: 0.95;
+    }
+    .rhgi-swat-target {
+      color: #D4AF37 !important;
+      font-weight: 900;
+      font-size: clamp(1.85rem, 5vw, 2.45rem);
+      text-align: center;
+      letter-spacing: 0.04em;
+      text-shadow: 0 0 22px rgba(212,175,55,0.65), 0 0 44px rgba(212,175,55,0.25);
+      margin: 0 0 14px 0;
+      line-height: 1.1;
+    }
+    .rhgi-swat-cylinder-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin: 8px 0 16px 0;
+    }
+    .rhgi-swat-cylinder {
+      position: relative;
+      width: 112px;
+      height: 260px;
+      border-radius: 56px;
+      border: 2px solid rgba(212,175,55,0.75);
+      background: linear-gradient(90deg,
+        rgba(0,0,51,0.55) 0%,
+        rgba(212,175,55,0.12) 45%,
+        rgba(255,250,220,0.08) 50%,
+        rgba(212,175,55,0.12) 55%,
+        rgba(0,0,51,0.55) 100%);
+      box-shadow:
+        inset 0 0 36px rgba(255,255,255,0.12),
+        inset 0 -20px 50px rgba(212,175,55,0.15),
+        0 0 28px rgba(212,175,55,0.35);
+      overflow: hidden;
+    }
+    .rhgi-swat-fill {
+      position: absolute;
+      left: 4px;
+      right: 4px;
+      bottom: 4px;
+      height: 83.7%;
+      border-radius: 0 0 48px 48px;
+      background: linear-gradient(180deg,
+        rgba(255,248,210,0.95) 0%,
+        rgba(212,175,55,0.88) 35%,
+        rgba(212,175,55,0.75) 70%,
+        rgba(180,140,45,0.85) 100%);
+      background-size: 100% 200%;
+      animation: rhgiSwatFillFlow 2.4s ease-in-out infinite, rhgiSwatShimmer 3.2s linear infinite;
+      box-shadow: inset 0 0 24px rgba(255,255,255,0.35), 0 0 22px rgba(212,175,55,0.55);
+    }
+    .rhgi-swat-current {
+      color: #ffffff !important;
+      font-weight: 800;
+      font-size: 1.05rem;
+      letter-spacing: 0.04em;
+    }
+    .rhgi-swat-status {
+      color: #ffffff !important;
+      font-size: clamp(0.78rem, 1.8vw, 0.9rem);
+      font-weight: 600;
+      line-height: 1.55;
+      text-align: center;
+      margin: 0 0 16px 0;
+      padding: 10px 12px;
+      border: 1px solid rgba(212,175,55,0.35);
+      border-radius: 12px;
+      background: rgba(0,0,51,0.5);
+    }
+    .rhgi-swat-status .rhgi-swat-gold { color: #D4AF37 !important; font-weight: 800; }
+    .rhgi-swat-icons {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+    .rhgi-swat-icon {
+      flex: 1 1 90px;
+      max-width: 140px;
+      text-align: center;
+      color: #D4AF37 !important;
+      font-weight: 800;
+      font-size: 0.82rem;
+      letter-spacing: 0.04em;
+      padding: 10px 8px;
+      border: 1px solid rgba(212,175,55,0.45);
+      border-radius: 12px;
+      background: rgba(0,0,51,0.45);
+    }
+    .rhgi-swat-icon small {
+      display: block;
+      color: #ffffff !important;
+      font-weight: 600;
+      font-size: 0.72rem;
+      margin-top: 4px;
+      opacity: 0.92;
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -1001,7 +1143,9 @@ with st.sidebar:
         'margin:18px 0 8px 0;letter-spacing:0.04em;">LGA-CIEN REAL-TIME AUDIT TRAIL</p>',
         unsafe_allow_html=True,
     )
-    st.caption("Slow-motion pulse: 1 LGA every 3s · K3 (NW) priority order.")
+    st.caption(
+        "Slow-motion pulse: 1 LGA every 3.0s · K3 corridor sort: Katsina → Kano → Kaduna → other NW → national."
+    )
 
     def _cien_sidebar_pulse_inner() -> None:
         rows = st.session_state.get("_cien_rows_full") or []
@@ -1044,7 +1188,7 @@ with st.sidebar:
                 {
                     "State": r["state"],
                     "LGA Name": r["lga"],
-                    "CIEN Status": r["status"],
+                    "CIEN Verification Status": r["status"],
                 }
             ]
         )
@@ -1137,73 +1281,37 @@ if constitutional_ok:
 
 (tab_global,) = st.tabs(["GLOBAL OVERVIEW (ACTIVE)"])
 with tab_global:
+    _swat_target = 21_750
+    _swat_current = 18_200
+    _swat_pct = 83.7
     st.markdown(
-        """
-        <div class="rhgi-cien-row">
-          <div class="rhgi-cien-card">
-            <h3>CIEN-C</h3>
-            <div class="cien-sub">Constitutional verification node — chain-of-custody attestation for mandate data.</div>
-            <div class="cien-chip">STATUS · ACTIVE</div>
+        f"""
+        <div class="rhgi-swat-shell">
+          <div class="rhgi-swat-title">LGA ACTIVATION METRIC (15/15 TARGET)</div>
+          <div class="rhgi-swat-sub">LGA: KANO - NASARAWA</div>
+          <div class="rhgi-swat-target">{_swat_target:,}</div>
+          <div class="rhgi-swat-cylinder-wrap">
+            <div class="rhgi-swat-cylinder">
+              <div class="rhgi-swat-fill"></div>
+            </div>
+            <div class="rhgi-swat-current">Current fill: {_swat_current:,}</div>
           </div>
-          <div class="rhgi-cien-card">
-            <h3>CIEN-I</h3>
-            <div class="cien-sub">Integrity verification — PVC / turnout forensic alignment against sovereign yield.</div>
-            <div class="cien-chip">STATUS · ACTIVE</div>
+          <div class="rhgi-swat-status">
+            CURRENT STATE: <span class="rhgi-swat-gold">ACTIVATING</span> &gt;
+            VELOCITY GAUGE: <span class="rhgi-swat-gold">{_swat_pct}% [PULSING]</span> &gt;
+            SWAT THRESHOLD: <span class="rhgi-swat-gold">{_swat_target:,} [PENDING]</span>
           </div>
-          <div class="rhgi-cien-card">
-            <h3>CIEN-E</h3>
-            <div class="cien-sub">Election-node verification — projection reconciliation vs 20.7M anchor.</div>
-            <div class="cien-chip">STATUS · ACTIVE</div>
+          <div class="rhgi-swat-icons">
+            <div class="rhgi-swat-icon">CIEN-C<small>GeoCanvasser</small></div>
+            <div class="rhgi-swat-icon">CIEN-I<small>Data Integrity</small></div>
+            <div class="rhgi-swat-icon">CIEN-E<small>Logistics Fuel</small></div>
           </div>
         </div>
         """,
         unsafe_allow_html=True,
     )
-    _gold_heading("Winning Margin by Geopolitical Zone (turnout-adjusted)")
-    zone_margin = (
-        dff.groupby("zone", as_index=False)["winning_margin"].sum().sort_values("winning_margin")
-    )
-    # template=None only — no plotly_dark. Canvas controlled explicitly.
-    fig_zone = px.bar(
-        zone_margin,
-        x="zone",
-        y="winning_margin",
-        color_discrete_sequence=[GOLD],
-    )
     _axis_title_font = dict(family="Goldman, sans-serif", size=14, color=GOLD)
     _tick_font = dict(family="Goldman, sans-serif", size=12, color="#ffffff")
-    fig_zone.update_layout(
-        template=None,
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)",
-        font=dict(family="Goldman, sans-serif", color="#ffffff", size=13),
-        font_color="#ffffff",
-        showlegend=False,
-        margin=dict(t=28, b=52, l=72, r=28),
-        xaxis=dict(
-            title=dict(text="Zone", font=_axis_title_font),
-            tickfont=_tick_font,
-            showgrid=False,
-            linecolor="rgba(255,255,255,0.4)",
-            zeroline=False,
-        ),
-        yaxis=dict(
-            title=dict(
-                text="Winning Margin (APC vs nearest rival)",
-                font=dict(family="Goldman, sans-serif", size=13, color=GOLD),
-            ),
-            tickfont=_tick_font,
-            showgrid=True,
-            gridcolor="rgba(255,255,255,0.12)",
-            gridwidth=1,
-            zeroline=True,
-            zerolinecolor="rgba(255,255,255,0.22)",
-            zerolinewidth=1,
-            linecolor="rgba(255,255,255,0.4)",
-        ),
-    )
-    fig_zone.update_traces(marker=dict(color="#D4AF37"))
-    st.plotly_chart(fig_zone, use_container_width=True)
 
     _rose_heading("Corridor nodes — drill-down (774 LGAs)")
     st.caption(
