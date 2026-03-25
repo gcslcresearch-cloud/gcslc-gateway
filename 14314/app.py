@@ -9,7 +9,7 @@ from datetime import datetime, time
 from data_engine import ALL_LGA_RECORDS, STATE_COORDS, records_as_dicts
 
 st.set_page_config(
-    page_title="Renewed Hope Grassroots Initiatives — RHGI 774",
+    page_title="Renewed Hope Grassroots Initiatives (RHGI) - 15/15 Sovereign Mirror",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -20,7 +20,6 @@ if "_prev_corridor_state_key" not in st.session_state:
 
 # RHGI-GOLDMAN palette (mirrors :root CSS variables).
 METALLIC_GOLD = "#D4AF37"
-ROSE_GOLD = "#B76E79"
 NAVY_CSS = "#000033"
 GOLD = METALLIC_GOLD
 NAVY = NAVY_CSS
@@ -82,23 +81,20 @@ def sovereign_budget_engine_breakdown() -> tuple[int, int, int]:
 
 
 def _format_election_countdown(now: datetime) -> str:
-    """Months : Days : Hours : Minutes : Seconds (30-day month units) until election anchor WAT."""
+    """Election Countdown: Days : Hours : Minutes : Seconds until election anchor WAT."""
     now = now.astimezone(_LAGOS_TZ)
     tgt = ELECTION_DATETIME_WAT
     if now >= tgt:
-        return "0 : 0 : 00 : 00 : 00 — verify certified INEC 2027 calendar."
+        return "Election Countdown: 0 : 00 : 00 : 00 — verify certified INEC 2027 calendar."
     delta = tgt - now
     total_sec = int(delta.total_seconds())
-    sec_per_month = 30 * 24 * 3600
-    months = total_sec // sec_per_month
-    rem = total_sec % sec_per_month
-    days = rem // (24 * 3600)
-    rem %= 24 * 3600
+    days = total_sec // (24 * 3600)
+    rem = total_sec % (24 * 3600)
     h = rem // 3600
     rem %= 3600
     m = rem // 60
     s = rem % 60
-    return f"{months} : {days} : {h:02d} : {m:02d} : {s:02d}"
+    return f"Election Countdown: {days} : {h:02d} : {m:02d} : {s:02d}"
 
 
 @st.cache_data(show_spinner=False)
@@ -121,7 +117,7 @@ def load_df() -> pd.DataFrame:
         axis=1
     )
     df["apc_share_2027"] = (df["apc_2027"] / df["projected_total"].replace(0, 1)) * 100
-    df["red_zone"] = df["canvasser_ratio"] < 16.0
+    df["logistics_alert"] = df["canvasser_ratio"] < 16.0
     # Strike priority: high PVC + low 2023 turnout → high-priority strike zones.
     df["strike_priority"] = df["pvc_collection_rate"] * (1.0 - df["turnout_2023_rate"])
     return df
@@ -271,7 +267,7 @@ st.markdown(
     @import url('https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap');
     :root {
       --metallic-gold: #D4AF37;
-      --rose-gold: #B76E79;
+      --rose-gold: #D4AF37;
       --navy: #000033;
       --stark-white: #ffffff;
     }
@@ -595,20 +591,20 @@ st.markdown(
       font-family: 'Goldman', sans-serif !important;
       color: var(--stark-white) !important;
     }
-    .rhgi-pulse-red { animation: pulseRed 1s ease-in-out infinite; }
-    @keyframes pulseRed {
-      0%,100% { box-shadow: 0 0 0 rgba(255,0,0,0); }
-      50% { box-shadow: 0 0 20px rgba(255,0,0,0.8); }
+    .rhgi-pulse-logistics { animation: pulseLogisticsGold 1.1s ease-in-out infinite; }
+    @keyframes pulseLogisticsGold {
+      0%,100% { box-shadow: 0 0 0 rgba(212,175,55,0); }
+      50% { box-shadow: 0 0 18px rgba(212,175,55,0.65); }
     }
     .rhgi-glow { color: var(--metallic-gold); text-shadow: 0 0 12px rgba(212,175,55,0.65); }
     .rhgi-gauge { font-size: 1.1rem; letter-spacing: 0.03em; }
     .rhgi-abuja-strobe {
-      border: 2px solid rgba(220, 40, 40, 0.95) !important;
-      animation: diamondStrobe 0.85s ease-in-out infinite;
+      border: 2px solid rgba(212, 175, 55, 0.85) !important;
+      animation: abujaGoldStrobe 0.9s ease-in-out infinite;
     }
-    @keyframes diamondStrobe {
-      0%, 100% { box-shadow: 0 0 4px rgba(255, 0, 0, 0.35); }
-      50% { box-shadow: 0 0 22px rgba(255, 0, 0, 0.95); }
+    @keyframes abujaGoldStrobe {
+      0%, 100% { box-shadow: 0 0 4px rgba(212, 175, 55, 0.35); }
+      50% { box-shadow: 0 0 22px rgba(212, 175, 55, 0.75); }
     }
     .rhgi-8r-stealth {
       font-size: 1.05rem;
@@ -735,12 +731,12 @@ st.markdown(
       margin: 4px 0;
       line-height: 1.45;
     }
-    /* RHGI-FIX-RED-ERASE-46 — kill Plotly template red/maroon bleed; lock to Prism Navy */
+    /* RHGI-SOVEREIGN-ALIGNMENT-50 — allow per-figure Plotly backgrounds */
     [data-testid="stPlotlyChart"],
     [data-testid="stPlotlyChart"] .js-plotly-plot,
-    [data-testid="stPlotlyChart"] .plotly-graph-div { background: #000033 !important; }
+    [data-testid="stPlotlyChart"] .plotly-graph-div { background: transparent !important; }
     .js-plotly-plot .plotly .bg,
-    .js-plotly-plot .plotly .bglayer rect { fill: #000033 !important; }
+    .js-plotly-plot .plotly .bglayer rect { fill: transparent !important; }
     </style>
     """,
     unsafe_allow_html=True,
@@ -754,6 +750,11 @@ st.markdown(
 
 with st.sidebar:
     st.header("Scientific controls")
+    st.subheader("Sovereign Budget Engine (Tranche 1)")
+    st.metric("Global Sovereign Logistics Fuel:", "₦108,961,000,000")
+    st.markdown(
+        "₦8.64B (Canvassers) + ₦86.32B (Logistics) + ₦14B (Contingency)"
+    )
     turnout_lift = st.slider(
         "Scientific turnout lift (%)",
         min_value=1,
@@ -791,11 +792,11 @@ _countdown_line = _format_election_countdown(abuja_now)
 st.markdown(
     f"""
     <div class="rhgi-brand-block">
-      <h1 class="rhgi-brand-title">Renewed Hope Grassroots Initiatives</h1>
+      <h1 class="rhgi-brand-title">Renewed Hope Grassroots Initiatives (RHGI) - 15/15 Sovereign Mirror</h1>
       <div class="rhgi-emblem-wrap"><div class="rhgi-emblem">RHGI</div></div>
-      <p class="rhgi-countdown-keys">Months : Days : Hours : Minutes : Seconds (WAT) → Feb 2027</p>
+      <p class="rhgi-countdown-keys">Election Countdown: Days : Hours : Minutes : Seconds → Feb 2027</p>
       <div class="rhgi-countdown-meter">{_countdown_line}</div>
-      <p class="rhgi-creed">This sovereign dashboard decodes the 2027 elections with scientific, uncorruptible precision. Powered by the 8R Stealth Paradigm Convergence and its Determinants.</p>
+      <p class="rhgi-creed">Decoding the 20.7M mandate anchor with scientific, uncorruptible precision. Powered by the 8R Stealth Paradigm.</p>
       <p class="rhgi-signature">Prepared by Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE.</p>
     </div>
     """,
@@ -849,7 +850,7 @@ _gold_heading("Winning Margin by Geopolitical Zone (turnout-adjusted)")
 zone_margin = (
     dff.groupby("zone", as_index=False)["winning_margin"].sum().sort_values("winning_margin")
 )
-# No plotly_dark — it injects maroon/red plot surfaces; explicit Prism Navy + gold/white only.
+# template=None only — no plotly_dark. Canvas controlled explicitly.
 fig_zone = px.bar(
     zone_margin,
     x="zone",
@@ -860,8 +861,8 @@ _axis_title_font = dict(family="Goldman, sans-serif", size=14, color=GOLD)
 _tick_font = dict(family="Goldman, sans-serif", size=12, color="#ffffff")
 fig_zone.update_layout(
     template=None,
-    paper_bgcolor=PRISM_NAVY,
-    plot_bgcolor=PRISM_NAVY,
+    paper_bgcolor="rgba(0,0,0,0)",
+    plot_bgcolor="rgba(0,0,0,0)",
     font=dict(family="Goldman, sans-serif", color="#ffffff", size=13),
     font_color="#ffffff",
     showlegend=False,
@@ -880,7 +881,7 @@ fig_zone.update_layout(
         ),
         tickfont=_tick_font,
         showgrid=True,
-        gridcolor="rgba(212,175,55,0.14)",
+        gridcolor="rgba(255,255,255,0.12)",
         gridwidth=1,
         zeroline=True,
         zerolinecolor="rgba(255,255,255,0.22)",
@@ -888,7 +889,7 @@ fig_zone.update_layout(
         linecolor="rgba(255,255,255,0.4)",
     ),
 )
-fig_zone.update_traces(marker=dict(color=GOLD, line=dict(width=0)))
+fig_zone.update_traces(marker=dict(color="#D4AF37", line=dict(width=0)))
 st.plotly_chart(fig_zone, use_container_width=True)
 
 _rose_heading("Corridor nodes — drill-down (774 LGAs)")
@@ -1017,8 +1018,8 @@ fig_lga = px.scatter_mapbox(
 fig_lga.update_traces(marker=dict(size=8, opacity=0.8))
 fig_lga.update_layout(
     template=None,
-    paper_bgcolor=PRISM_NAVY,
-    plot_bgcolor=PRISM_NAVY,
+    paper_bgcolor="rgba(0,0,0,0)",
+    plot_bgcolor="rgba(0,0,0,0)",
     font=dict(family="Goldman, sans-serif", color="#ffffff", size=13),
     font_color="#ffffff",
     margin=dict(l=0, r=0, t=12, b=0),
@@ -1049,8 +1050,8 @@ fig_scatter = px.scatter_mapbox(
 )
 fig_scatter.update_layout(
     template=None,
-    paper_bgcolor=PRISM_NAVY,
-    plot_bgcolor=PRISM_NAVY,
+    paper_bgcolor="rgba(0,0,0,0)",
+    plot_bgcolor="rgba(0,0,0,0)",
     font=dict(family="Goldman, sans-serif", color="#ffffff", size=13),
     font_color="#ffffff",
     margin=dict(l=0, r=0, t=12, b=0),
@@ -1087,12 +1088,12 @@ fig_party = px.bar(
     y="Votes",
     color="Year",
     barmode="group",
-    color_discrete_map={"2023": "#5a4820", "2027": GOLD},
+    color_discrete_map={"2023": "#b8962e", "2027": "#D4AF37"},
 )
 fig_party.update_layout(
     template=None,
-    paper_bgcolor=PRISM_NAVY,
-    plot_bgcolor=PRISM_NAVY,
+    paper_bgcolor="rgba(0,0,0,0)",
+    plot_bgcolor="rgba(0,0,0,0)",
     font=dict(family="Goldman, sans-serif", color="#ffffff", size=13),
     font_color="#ffffff",
     bargap=0.22,
@@ -1115,7 +1116,7 @@ fig_party.update_layout(
         title=dict(text="Votes", font=dict(family="Goldman, sans-serif", size=14, color=GOLD)),
         tickfont=_tick_font,
         showgrid=True,
-        gridcolor="rgba(212,175,55,0.14)",
+        gridcolor="rgba(255,255,255,0.12)",
         zerolinecolor="rgba(255,255,255,0.22)",
         linecolor="rgba(255,255,255,0.4)",
     ),
@@ -1142,7 +1143,7 @@ view = dff[
         "adc_2027",
         "winning_margin",
         "canvasser_ratio",
-        "red_zone",
+        "logistics_alert",
     ]
 ].copy()
 
@@ -1153,7 +1154,7 @@ view["turnout_2023_rate"] = view["turnout_2023_rate"].map(lambda x: f"{x:.2%}")
 
 rows = []
 for _, r in view.iterrows():
-    css = "rhgi-pulse-red" if r["red_zone"] else ""
+    css = "rhgi-pulse-logistics" if r["logistics_alert"] else ""
     rows.append(
         f"<tr class='{css}'>"
         f"<td>{r['zone']}</td><td>{r['state']}</td><td>{r['lga']}</td>"
@@ -1177,7 +1178,7 @@ table_html = (
 )
 st.markdown(table_html, unsafe_allow_html=True)
 st.caption(
-    "Showing first 200 LGAs. Red pulsing rows: canvasser ratio below 1:16. "
+    "Showing first 200 LGAs. Gold-pulse rows: canvasser ratio below 1:16. "
     "Move the sidebar slider to watch winning margin and constitutional gauge update."
 )
 

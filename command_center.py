@@ -684,7 +684,7 @@ try:
         go.Bar(name="National (95%)", x=["Raw carbon assets", "Sovereign Valuation"], y=[100, VALUATION_ANCHOR_B * 0.95], marker_color="#D4AF37"),
         go.Bar(name="Global Pool (5%)", x=["Raw carbon assets", "Sovereign Valuation"], y=[0, VALUATION_ANCHOR_B * 0.05], marker_color="#E8C547"),
     ])
-    fig_talon.update_layout(barmode="stack", title="95/5 Talon Lock → $170.85B Sovereign Valuation", template="plotly_dark", paper_bgcolor="rgba(0,0,128,0.9)", plot_bgcolor="rgba(0,0,128,0.8)", font=dict(color="#D4AF37"), height=280, margin=dict(t=40,b=30,l=40,r=30))
+    fig_talon.update_layout(barmode="stack", title="95/5 Talon Lock → $170.85B Sovereign Valuation", template=None, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#D4AF37"), height=280, margin=dict(t=40,b=30,l=40,r=30))
     st.plotly_chart(fig_talon, use_container_width=True)
 
     # 2) 9.6× Wealth Multiplier: Raw commodities → AI-ready Germanium/Silicon
@@ -693,14 +693,14 @@ try:
     fig_mult = go.Figure(data=[
         go.Bar(x=["Raw commodities", "AI-ready (9.6×)"], y=[raw_val, derived_val], marker_color=["#5a6c7d", "#D4AF37"], text=[f"{raw_val}×", f"{derived_val}×"], textposition="outside"),
     ])
-    fig_mult.update_layout(title="9.6× Wealth Multiplier: Raw → Germanium/Silicon precursors", template="plotly_dark", paper_bgcolor="rgba(0,0,128,0.9)", plot_bgcolor="rgba(0,0,128,0.8)", font=dict(color="#D4AF37"), height=280, margin=dict(t=40,b=30,l=40,r=30))
+    fig_mult.update_layout(title="9.6× Wealth Multiplier: Raw → Germanium/Silicon precursors", template=None, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#D4AF37"), height=280, margin=dict(t=40,b=30,l=40,r=30))
     st.plotly_chart(fig_mult, use_container_width=True)
 
     # 3) Industrial Spine: Abuja-Zaria-Kano Corridor (interactive)
     corridor_nodes = ["Abuja", "Zaria", "Kano"]
     corridor_vals = [1.2, 0.9, 1.0]  # relative power/activity
     fig_corridor = go.Figure(data=[go.Scatter(x=corridor_nodes, y=corridor_vals, mode="lines+markers", line=dict(color="#D4AF37", width=3), marker=dict(size=14))])
-    fig_corridor.update_layout(title=f"Industrial Spine: {ABUJA_ZARIA_KANO_CORRIDOR} Corridor", template="plotly_dark", paper_bgcolor="rgba(0,0,128,0.9)", plot_bgcolor="rgba(0,0,128,0.8)", font=dict(color="#D4AF37"), height=260, margin=dict(t=40,b=30,l=40,r=30))
+    fig_corridor.update_layout(title=f"Industrial Spine: {ABUJA_ZARIA_KANO_CORRIDOR} Corridor", template=None, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#D4AF37"), height=260, margin=dict(t=40,b=30,l=40,r=30))
     st.plotly_chart(fig_corridor, use_container_width=True)
 except Exception as e:
     # Prioritize core 8R logic; charts optional (high-velocity deployment, connection-error resilience)

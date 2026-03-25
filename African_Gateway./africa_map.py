@@ -15,7 +15,6 @@ GCSLC_GOLD_SHIMMER = [255, 215, 0]  # #FFD700
 NIGERIA_GREEN = [0, 135, 81]
 NIGERIA_WHITE = [255, 255, 255]
 SOVEREIGN_PULSE_GREEN = [0, 135, 81]
-RED = [200, 16, 46]
 GLITTER_GOLD = [255, 229, 92]
 
 # Continental nodes: id -> { name, lat, lon, polygon (optional), pulse_type }

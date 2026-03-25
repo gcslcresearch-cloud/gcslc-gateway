@@ -734,10 +734,10 @@ st.markdown("""
         font-weight: 700;
         margin: 0;
     }
-    /* INITIATE RESET button — Red background + Gold Shimmer border */
+    /* INITIATE RESET button — transparent field + Gold Shimmer border */
     .stButton > button {
-        background-color: #c0392b !important;
-        background: #c0392b !important;
+        background-color: rgba(0,0,0,0) !important;
+        background: rgba(0,0,0,0) !important;
         color: #fff !important;
         border: 2px solid #D4AF37 !important;
         box-shadow: 0 0 12px rgba(212, 175, 55, 0.5) !important;

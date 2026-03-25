@@ -363,8 +363,8 @@ def _nigeria_choropleth_figure(selected_state: Optional[str]) -> Optional[Any]:
     )
     fig.update_layout(
         margin={"l": 0, "r": 0, "t": 28, "b": 0},
-        paper_bgcolor="rgba(5,5,5,0.95)",
-        plot_bgcolor="rgba(5,5,5,0.95)",
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
         height=420,
         title=dict(
             text="Map of Authority — Federal Republic of Nigeria (36 State Borders)",
@@ -612,7 +612,7 @@ def _market_values_html_from_server(
 
 
 def _opportunity_cost_fifth_box(annual_b: float, monthly_b: float) -> str:
-    """5th widget: Cumulative National Opportunity Cost. Falcon flaps over total; pulsing red Sovereign Warning."""
+    """5th widget: Cumulative National Opportunity Cost. Falcon flaps over total; pulsing gold Sovereign Warning."""
     return f"""
     <div class="opportunity-cost-box">
       <div class="opportunity-cost-inner">
