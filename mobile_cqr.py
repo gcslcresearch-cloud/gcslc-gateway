@@ -6,7 +6,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 
-PAGE_TITLE = "Renewed Hope Grassroots Initiatives (RHGI) - 15/15 Sovereign Mirror"
+PAGE_TITLE = "RHGI - 15/15 Sovereign Mirror"
 FONT_LINK = "https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap"
 
 DEEP_PRISM_NAVY = "#000033"

@@ -10,7 +10,7 @@ from datetime import datetime, time
 from data_engine import ALL_LGA_RECORDS, STATE_COORDS, records_as_dicts
 
 st.set_page_config(
-    page_title="Renewed Hope Grassroots Initiatives (RHGI) - 15/15 Sovereign Mirror",
+    page_title="RHGI - 15/15 Sovereign Mirror",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -811,7 +811,7 @@ _countdown_line = _format_election_countdown(abuja_now)
 st.markdown(
     f"""
     <div class="rhgi-brand-block">
-      <h1 class="rhgi-brand-title">Renewed Hope Grassroots Initiatives (RHGI) - 15/15 Sovereign Mirror</h1>
+      <h1 class="rhgi-brand-title">RHGI - 15/15 Sovereign Mirror</h1>
       <p class="rhgi-creed-block">Decoding the 20.7M mandate anchor with scientific, uncorruptible precision.</p>
       <div class="rhgi-emblem-wrap"><div class="rhgi-emblem">RHGI</div></div>
       <p class="rhgi-countdown-keys">Election Countdown: Days : Hours : Minutes : Seconds → Feb 2027</p>
@@ -1027,12 +1027,13 @@ wm_min = float(wm.min()) if len(wm) else 0.0
 wm_max = float(wm.max()) if len(wm) else 1.0
 if wm_min == wm_max:
     wm_max = wm_min + 1.0
+_sunset_scale = [[0, "#1A0033"], [0.5, "#B87333"], [1.0, "#FFD700"]]
 fig_lga = px.scatter_mapbox(
     lga_map_df,
     lat="lat",
     lon="lon",
     color="winning_margin",
-    color_continuous_scale="YlOrBr",
+    color_continuous_scale=_sunset_scale,
     range_color=(wm_min, wm_max),
     hover_name="lga",
     hover_data={"state": False, "zone": False, "margin_zone": False, "projected_total": False},
@@ -1045,7 +1046,7 @@ fig_lga.update_traces(
     marker=dict(
         size=8,
         color=lga_map_df["winning_margin"].astype(float).tolist(),
-        colorscale="YlOrBr",
+        colorscale=_sunset_scale,
         opacity=0.8,
     ),
     hovertemplate=(
