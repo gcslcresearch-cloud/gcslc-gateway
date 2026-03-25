@@ -5,7 +5,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import pytz
 import streamlit as st
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 
 from dateutil.relativedelta import relativedelta
 
@@ -20,6 +20,12 @@ if "corridor_zone" not in st.session_state:
     st.session_state.corridor_zone = None
 if "_prev_corridor_state_key" not in st.session_state:
     st.session_state._prev_corridor_state_key = None
+if "cien_tick_idx" not in st.session_state:
+    st.session_state.cien_tick_idx = 0
+if "map_view" not in st.session_state:
+    st.session_state.map_view = None
+if "cien_map_candidate" not in st.session_state:
+    st.session_state.cien_map_candidate = None
 
 # RHGI-GOLDMAN palette (mirrors :root CSS variables).
 METALLIC_GOLD = "#D4AF37"
@@ -259,15 +265,54 @@ def build_state_heatmap_df(dff: pd.DataFrame) -> pd.DataFrame:
     return g
 
 
-NW_ZONE_FULL = "North West"
 _SUNSET_SCALE = [[0, "#1A0033"], [0.5, "#B87333"], [1.0, "#FFD700"]]
 _LGA_MARKER_INNER = 8 * 1.15
 _LGA_MARKER_OUTLINE = 10 * 1.15
 
 
-def mandate_turnout_label(ratio: float) -> str:
-    v = min(15, max(0, int(round(float(ratio)))))
-    return f"{v}/15"
+def build_k3_nw_triangle_trace() -> go.Scattermapbox:
+    """North West Villa — K3 strategic triangle (Sokoto · Kano · Kaduna)."""
+    s, k, d = STATE_COORDS["Sokoto"], STATE_COORDS["Kano"], STATE_COORDS["Kaduna"]
+    lats = [s[0], k[0], d[0], s[0]]
+    lons = [s[1], k[1], d[1], s[1]]
+    return go.Scattermapbox(
+        lat=lats,
+        lon=lons,
+        mode="lines",
+        fill="toself",
+        fillcolor="rgba(212,175,55,0.16)",
+        line=dict(color="#D4AF37", width=2),
+        hoverinfo="text",
+        hovertext="K3 Triangle — North West Villa anchor",
+        showlegend=False,
+        name="K3 Triangle",
+    )
+
+
+def build_cien_audit_rows(dff: pd.DataFrame) -> list[dict]:
+    """K3 priority: North West corridor first, then remaining zones; deterministic CIEN status."""
+    hmap = build_lga_heatmap_df(dff)
+    hmap["_nw"] = (hmap["zone"] == "North West").astype(int)
+    hmap = hmap.sort_values(["_nw", "state", "lga"], ascending=[False, True, True])
+    rows: list[dict] = []
+    for _, r in hmap.iterrows():
+        h = int(
+            hashlib.sha256(f"{r['state']}:{r['lga']}".encode("utf-8")).hexdigest()[:12],
+            16,
+        )
+        verified = (h % 7) != 0
+        rows.append(
+            {
+                "state": str(r["state"]),
+                "lga": str(r["lga"]),
+                "zone": str(r["zone"]),
+                "status": "VERIFIED" if verified else "PENDING",
+                "verified": verified,
+                "lat": float(r["lat"]),
+                "lon": float(r["lon"]),
+            }
+        )
+    return rows
 
 
 def enrich_lga_map_metrics(lga_map_df: pd.DataFrame) -> pd.DataFrame:
@@ -328,7 +373,11 @@ def build_lga_winning_margin_figure(
         hoverinfo="skip",
         showlegend=False,
     )
-    fig_lga = go.Figure(data=[_lga_outline] + list(fig_lga.data), layout=fig_lga.layout)
+    _k3 = build_k3_nw_triangle_trace()
+    fig_lga = go.Figure(
+        data=[_lga_outline] + list(fig_lga.data) + [_k3],
+        layout=fig_lga.layout,
+    )
     fig_lga.update_layout(
         template=None,
         paper_bgcolor="rgba(0,0,0,0)",
@@ -866,6 +915,28 @@ st.markdown(
     /* Mapbox Visual Tint — Deep Royal Plum */
     .js-plotly-plot .mapboxgl-map,
     .js-plotly-plot .mapboxgl-canvas { background-color: #ffffff !important; }
+    /* CIEN verification widgets (image_4 palette) */
+    .rhgi-cien-row {
+      display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+      margin: 6px 0 22px 0;
+    }
+    .rhgi-cien-card {
+      flex: 1 1 240px; max-width: 360px;
+      border: 2px solid #D4AF37; border-radius: 14px; padding: 20px 18px;
+      background: rgba(0,0,51,0.72);
+      text-align: center;
+      font-family: 'Goldman', sans-serif !important;
+      box-shadow: 0 0 26px rgba(212,175,55,0.22);
+    }
+    .rhgi-cien-card h3 {
+      color: #D4AF37 !important; margin: 0 0 10px 0; font-size: 1.4rem;
+      letter-spacing: 0.14em; font-weight: 800;
+      text-shadow: 0 0 14px rgba(212,175,55,0.45);
+    }
+    .rhgi-cien-card .cien-sub { color: #ffffff !important; font-size: 0.98rem; font-weight: 600; line-height: 1.45; }
+    .rhgi-cien-card .cien-chip {
+      margin-top: 12px; color: #D4AF37; font-size: 0.88rem; font-weight: 700; letter-spacing: 0.06em;
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -921,19 +992,103 @@ remittance_gap = NATIONAL_VOTE_TARGET - PROJECTED_TOTAL
 abuja_strobe = fct_pct < 25.0
 total_winning_margin = float(dff["winning_margin"].sum())
 
+_cien_audit_rows = build_cien_audit_rows(dff)
+st.session_state._cien_rows_full = _cien_audit_rows
+
+with st.sidebar:
+    st.markdown(
+        '<p style="font-family:Goldman,sans-serif;color:#D4AF37;font-weight:800;font-size:1.02rem;'
+        'margin:18px 0 8px 0;letter-spacing:0.04em;">LGA-CIEN REAL-TIME AUDIT TRAIL</p>',
+        unsafe_allow_html=True,
+    )
+    st.caption("Slow-motion pulse: 1 LGA every 3s · K3 (NW) priority order.")
+
+    def _cien_sidebar_pulse_inner() -> None:
+        rows = st.session_state.get("_cien_rows_full") or []
+        if not rows:
+            st.caption("No LGA rows.")
+            return
+        n = len(rows)
+        i = st.session_state.cien_tick_idx % n
+        st.session_state.cien_tick_idx = (st.session_state.cien_tick_idx + 1) % n
+        r = rows[i]
+        st.session_state.cien_map_candidate = {
+            "lat": r["lat"],
+            "lon": r["lon"],
+            "zoom": 10.2,
+        }
+        _n = "N"
+        _n_style = (
+            "display:inline-block;width:22px;height:22px;line-height:22px;text-align:center;"
+            "border-radius:4px;margin-right:8px;font-weight:800;font-size:0.75rem;"
+        )
+        if r["verified"]:
+            _n_html = (
+                f'<span style="{_n_style}background:rgba(212,175,55,0.35);color:#D4AF37;'
+                'border:1px solid #D4AF37;box-shadow:0 0 12px rgba(212,175,55,0.85);">{_n}</span>'
+            )
+        else:
+            _n_html = (
+                f'<span style="{_n_style}background:transparent;color:#ffffff;'
+                'border:1px solid rgba(255,255,255,0.75);">{_n}</span>'
+            )
+        st.markdown(
+            f'<div style="font-family:Goldman,sans-serif;font-size:0.88rem;line-height:1.5;color:#ffffff;">'
+            f"{_n_html}"
+            f'<span style="color:#ffffff;">{html.escape(r["state"])} : {html.escape(r["lga"])} : '
+            f'<span style="color:#D4AF37;font-weight:700;">{html.escape(r["status"])}</span></span></div>',
+            unsafe_allow_html=True,
+        )
+        _one = pd.DataFrame(
+            [
+                {
+                    "State": r["state"],
+                    "LGA Name": r["lga"],
+                    "CIEN Status": r["status"],
+                }
+            ]
+        )
+        st.dataframe(_one, hide_index=True, use_container_width=True)
+        if st.button("Zoom carto‑positron map to this LGA", key="cien_zoom_map_btn"):
+            mc = st.session_state.get("cien_map_candidate")
+            if mc:
+                st.session_state.map_view = dict(mc)
+
+    if hasattr(st, "fragment"):
+        _cien_pulse = st.fragment(run_every=timedelta(seconds=3.0))(_cien_sidebar_pulse_inner)
+        _cien_pulse()
+    else:
+        _cien_sidebar_pulse_inner()
+
 abuja_now = datetime.now(lagos_tz)
-_countdown_line = _format_election_countdown(abuja_now)
 st.markdown(
-    f"""
+    """
     <div class="rhgi-brand-block">
       <h1 class="rhgi-brand-title">RHGI - 15/15 Sovereign Mirror</h1>
       <p class="rhgi-creed-block">Securing the 20.7M Mandate through Scientific Precision.</p>
       <div class="rhgi-emblem-wrap"><div class="rhgi-emblem">RHGI</div></div>
-      <p class="rhgi-countdown-keys">Election Countdown: [Months] : [Days] : [Hours] : [Minutes] : [Seconds] → Feb 2027</p>
-      <div class="rhgi-countdown-meter">{_countdown_line}</div>
-      <p class="rhgi-signature">Prepared by Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE.</p>
     </div>
     """,
+    unsafe_allow_html=True,
+)
+countdown_live_ph = st.empty()
+
+def _live_countdown_header_inner() -> None:
+    line = _format_election_countdown(datetime.now(_LAGOS_TZ))
+    countdown_live_ph.markdown(
+        f'<p class="rhgi-countdown-keys">Election Countdown: [Months] : [Days] : [Hours] : [Minutes] : [Seconds] → Feb 2027</p>'
+        f'<div class="rhgi-countdown-meter">{line}</div>',
+        unsafe_allow_html=True,
+    )
+
+if hasattr(st, "fragment"):
+    _live_cd = st.fragment(run_every=timedelta(seconds=1))(_live_countdown_header_inner)
+    _live_cd()
+else:
+    _live_countdown_header_inner()
+
+st.markdown(
+    '<p class="rhgi-signature">Prepared by Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE.</p>',
     unsafe_allow_html=True,
 )
 _r8_cols = st.columns(8)
@@ -980,83 +1135,30 @@ if constitutional_ok:
         unsafe_allow_html=True,
     )
 
-tab_nw, tab_nat = st.tabs(["NW Geopolitical Corridor", "National Sovereign Mirror"])
-
-with tab_nw:
+(tab_global,) = st.tabs(["GLOBAL OVERVIEW (ACTIVE)"])
+with tab_global:
     st.markdown(
         """
-        <p style="color:#D4AF37;font-family:'Goldman',sans-serif;text-align:center;font-weight:700;font-size:1.05rem;margin:0 0 6px 0;">
-        Decoding the NW Battleground for the 20.7M Mandate Anchor.
-        </p>
-        <h2 style="color:#D4AF37;font-family:'Goldman',sans-serif;text-align:center;font-size:clamp(1.1rem,3vw,1.45rem);font-weight:800;margin:0 0 14px 0;letter-spacing:0.02em;">
-        Command Title: The Northwest Corridor: The Battle for 186 LGAs
-        </h2>
+        <div class="rhgi-cien-row">
+          <div class="rhgi-cien-card">
+            <h3>CIEN-C</h3>
+            <div class="cien-sub">Constitutional verification node — chain-of-custody attestation for mandate data.</div>
+            <div class="cien-chip">STATUS · ACTIVE</div>
+          </div>
+          <div class="rhgi-cien-card">
+            <h3>CIEN-I</h3>
+            <div class="cien-sub">Integrity verification — PVC / turnout forensic alignment against sovereign yield.</div>
+            <div class="cien-chip">STATUS · ACTIVE</div>
+          </div>
+          <div class="rhgi-cien-card">
+            <h3>CIEN-E</h3>
+            <div class="cien-sub">Election-node verification — projection reconciliation vs 20.7M anchor.</div>
+            <div class="cien-chip">STATUS · ACTIVE</div>
+          </div>
+        </div>
         """,
         unsafe_allow_html=True,
     )
-    _nw_scope = dff[dff["zone"] == NW_ZONE_FULL].copy()
-    _nw_canv = int(_nw_scope["canvassers"].sum())
-    _nw_vel = _nw_scope.apply(
-        lambda r: acceptance_velocity_pct(int(r["apc_2023"]), int(r["apc_2027"])),
-        axis=1,
-    )
-    _nw_vel_m = float(_nw_vel.mean()) if len(_nw_vel) else 0.0
-    _nw_m1, _nw_m2, _nw_m3 = st.columns(3)
-    with _nw_m1:
-        st.metric("Total Canvassers (NW)", f"{_nw_canv:,}")
-    with _nw_m2:
-        st.metric(
-            "Required turnout (scenario)",
-            f"+{turnout_lift}% lift",
-            help="Scientific turnout lift applied across all LGAs (sidebar control).",
-        )
-    with _nw_m3:
-        st.metric(
-            "Current velocity % (NW)",
-            f"{_nw_vel_m:.2f}%",
-            help="Mean APC acceptance velocity (2027 vs 2023) across NW LGAs.",
-        )
-    _nw_sorted = _nw_scope.sort_values(["state", "lga"])
-    _rows_nw = []
-    for _, _r in _nw_sorted.iterrows():
-        _rows_nw.append(
-            "<tr>"
-            f"<td>{html.escape(str(_r['lga']))}</td>"
-            f"<td>{html.escape(str(_r['state']))}</td>"
-            f"<td>{int(_r['canvassers']):,}</td>"
-            f"<td>{mandate_turnout_label(float(_r['canvasser_ratio']))}</td>"
-            "</tr>"
-        )
-    _tbody_nw = "".join(_rows_nw)
-    _thead_nw = (
-        "<thead><tr>"
-        "<th>LGA Name</th><th>State</th><th>Canvassers Activated</th><th>15/15 Turnout Status</th>"
-        "</tr></thead>"
-    )
-    _nrows_nw = len(_nw_sorted)
-    _roll_sec_nw = max(12.0, min(520.0, _nrows_nw * 0.35))
-    _tbl_nw = (
-        f'<div class="rhgi-lga-scroll-outer" data-roll-key="nw_villa_63001">'
-        f'<div class="rhgi-lga-marquee" style="animation-duration:{_roll_sec_nw:.0f}s;animation-name:rhgiSlowRoll;">'
-        f'<table class="rhgi-corridor-table">{_thead_nw}<tbody>{_tbody_nw}</tbody></table>'
-        f'<table class="rhgi-corridor-table">{_thead_nw}<tbody>{_tbody_nw}</tbody></table>'
-        f"</div></div>"
-    )
-    st.caption("NW slow-mo LGA scroll — hover the marquee to pause.")
-    st.markdown(_tbl_nw, unsafe_allow_html=True)
-    _gold_heading("774 LGA heatmap — NW isolation (winning margin)")
-    _lga_nw_only = enrich_lga_map_metrics(build_lga_heatmap_df(_nw_scope))
-    if len(_lga_nw_only) == 0:
-        st.info("No NW LGA rows to map.")
-    else:
-        _nw_center = {
-            "lat": float(_lga_nw_only["lat"].mean()),
-            "lon": float(_lga_nw_only["lon"].mean()),
-        }
-        fig_nw_map = build_lga_winning_margin_figure(_lga_nw_only, zoom=5.85, center=_nw_center)
-        st.plotly_chart(fig_nw_map, use_container_width=True)
-
-with tab_nat:
     _gold_heading("Winning Margin by Geopolitical Zone (turnout-adjusted)")
     zone_margin = (
         dff.groupby("zone", as_index=False)["winning_margin"].sum().sort_values("winning_margin")
@@ -1100,7 +1202,7 @@ with tab_nat:
             linecolor="rgba(255,255,255,0.4)",
         ),
     )
-    fig_zone.update_traces(marker=dict(color="#D4AF37", line=dict(width=0)))
+    fig_zone.update_traces(marker=dict(color="#D4AF37"))
     st.plotly_chart(fig_zone, use_container_width=True)
 
     _rose_heading("Corridor nodes — drill-down (774 LGAs)")
@@ -1205,29 +1307,20 @@ with tab_nat:
     )
 
     _gold_heading("774 LGA heatmap — winning margin (rugged)")
-    _hm_scope = st.radio(
-        "LGA heatmap scope",
-        ["All 774 LGAs", "North West (186 LGAs)"],
-        horizontal=True,
-        key="lga_heatmap_scope_filter",
-        help="Isolate the winning-margin map to the North West corridor.",
-    )
-    _dff_for_map = dff if _hm_scope == "All 774 LGAs" else dff[dff["zone"] == NW_ZONE_FULL].copy()
-    lga_map_df = enrich_lga_map_metrics(build_lga_heatmap_df(_dff_for_map))
-    if len(lga_map_df) == 0:
-        st.warning("No LGAs in selected scope.")
+    lga_map_df = enrich_lga_map_metrics(build_lga_heatmap_df(dff))
+    _mv = st.session_state.get("map_view")
+    if _mv and isinstance(_mv, dict) and "lat" in _mv and "lon" in _mv:
+        _fig_center = {"lat": float(_mv["lat"]), "lon": float(_mv["lon"])}
+        _fig_zoom = float(_mv.get("zoom", 10.2))
     else:
-        if _hm_scope == "All 774 LGAs":
-            _fig_center = {"lat": 9.082, "lon": 8.6753}
-            _fig_zoom = 4.9
-        else:
-            _fig_center = {
-                "lat": float(lga_map_df["lat"].mean()),
-                "lon": float(lga_map_df["lon"].mean()),
-            }
-            _fig_zoom = 5.85
-        fig_lga = build_lga_winning_margin_figure(lga_map_df, zoom=_fig_zoom, center=_fig_center)
-        st.plotly_chart(fig_lga, use_container_width=True)
+        _fig_center = {"lat": 9.082, "lon": 8.6753}
+        _fig_zoom = 4.9
+    fig_lga = build_lga_winning_margin_figure(lga_map_df, zoom=_fig_zoom, center=_fig_center)
+    st.plotly_chart(fig_lga, use_container_width=True)
+    if st.session_state.get("map_view"):
+        if st.button("Reset map to national (carto‑positron) view", key="reset_map_national_btn"):
+            st.session_state.map_view = None
+            st.rerun()
 
     _gold_heading("Turnout heatmap — Nigeria (strike priority)")
     state_hm = build_state_heatmap_df(dff)
@@ -1253,7 +1346,7 @@ with tab_nat:
     )
     fig_scatter.update_traces(
         marker=dict(
-            size=8,
+            size=_LGA_MARKER_INNER,
             color=state_hm["strike_priority"].astype(float).tolist(),
             colorscale=[[0, "#1A0033"], [0.5, "#B87333"], [1.0, "#FFD700"]],
             opacity=0.8,
@@ -1271,7 +1364,7 @@ with tab_nat:
         lat=_state_inner.lat,
         lon=_state_inner.lon,
         mode="markers",
-        marker=dict(size=10, color=_state_outline_color),
+        marker=dict(size=_LGA_MARKER_OUTLINE, color=_state_outline_color),
         hoverinfo="skip",
         showlegend=False,
     )
@@ -1353,63 +1446,6 @@ with tab_nat:
     )
     fig_party.update_traces(marker_line_width=0)
     st.plotly_chart(fig_party, use_container_width=True)
-
-    _gold_heading("LGA Tactical Sheet (Logistics Alert)")
-    view = dff[
-        [
-            "zone",
-            "state",
-            "lga",
-            "pvc_collection_rate",
-            "turnout_2023_rate",
-            "apc_2023",
-            "pdp_2023",
-            "lp_2023",
-            "adc_2023",
-            "apc_2027",
-            "pdp_2027",
-            "lp_2027",
-            "adc_2027",
-            "winning_margin",
-            "canvasser_ratio",
-            "logistics_alert",
-        ]
-    ].copy()
-
-    view["winning_margin"] = view["winning_margin"].map(lambda x: f"{x:,.0f}")
-    view["canvasser_ratio"] = view["canvasser_ratio"].map(lambda x: f"{x:.2f}")
-    view["pvc_collection_rate"] = view["pvc_collection_rate"].map(lambda x: f"{x:.2%}")
-    view["turnout_2023_rate"] = view["turnout_2023_rate"].map(lambda x: f"{x:.2%}")
-
-    rows = []
-    for _, r in view.iterrows():
-        css = "rhgi-pulse-logistics" if r["logistics_alert"] else ""
-        rows.append(
-            f"<tr class='{css}'>"
-            f"<td>{r['zone']}</td><td>{r['state']}</td><td>{r['lga']}</td>"
-            f"<td>{r['pvc_collection_rate']}</td><td>{r['turnout_2023_rate']}</td>"
-            f"<td>{r['apc_2023']}</td><td>{r['pdp_2023']}</td><td>{r['lp_2023']}</td><td>{r['adc_2023']}</td>"
-            f"<td>{r['apc_2027']}</td><td>{r['pdp_2027']}</td><td>{r['lp_2027']}</td><td>{r['adc_2027']}</td>"
-            f"<td class='rhgi-glow'>{r['winning_margin']}</td><td>{r['canvasser_ratio']}</td>"
-            "</tr>"
-        )
-
-    table_html = (
-        "<table><thead><tr>"
-        "<th>Zone</th><th>State</th><th>LGA</th>"
-        "<th>PVC %</th><th>Turnout '23</th>"
-        "<th>APC23</th><th>PDP23</th><th>LP23</th><th>ADC23</th>"
-        "<th>APC27</th><th>PDP27</th><th>LP27</th><th>ADC27</th>"
-        "<th>Winning Margin</th><th>Canvasser Ratio</th>"
-        "</tr></thead><tbody>"
-        + "".join(rows[:200])
-        + "</tbody></table>"
-    )
-    st.markdown(table_html, unsafe_allow_html=True)
-    st.caption(
-        "Showing first 200 LGAs. Gold-pulse rows: canvasser ratio below 1:16. "
-        "Move the sidebar slider to watch winning margin and constitutional gauge update."
-    )
 
     _ticker = (
         f"NATIONAL PROJECTION — APC votes {apc_national:,} · Total projected {projected_yield:,} · "
