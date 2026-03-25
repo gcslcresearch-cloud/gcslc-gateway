@@ -7,6 +7,8 @@ import pytz
 import streamlit as st
 from datetime import datetime, time
 
+from dateutil.relativedelta import relativedelta
+
 from data_engine import ALL_LGA_RECORDS, STATE_COORDS, records_as_dicts
 
 st.set_page_config(
@@ -82,20 +84,18 @@ def sovereign_budget_engine_breakdown() -> tuple[int, int, int]:
 
 
 def _format_election_countdown(now: datetime) -> str:
-    """Election Countdown: Days : Hours : Minutes : Seconds until election anchor WAT."""
+    """Months : Days : Hours : Minutes : Seconds until February 2027 election anchor (WAT)."""
     now = now.astimezone(_LAGOS_TZ)
     tgt = ELECTION_DATETIME_WAT
     if now >= tgt:
-        return "Election Countdown: 0 : 00 : 00 : 00 — verify certified INEC 2027 calendar."
-    delta = tgt - now
-    total_sec = int(delta.total_seconds())
-    days = total_sec // (24 * 3600)
-    rem = total_sec % (24 * 3600)
-    h = rem // 3600
-    rem %= 3600
-    m = rem // 60
-    s = rem % 60
-    return f"Election Countdown: {days} : {h:02d} : {m:02d} : {s:02d}"
+        return "[0] : [0] : [00] : [00] : [00]"
+    rd = relativedelta(tgt, now)
+    months = rd.years * 12 + rd.months
+    days = rd.days
+    h = rd.hours
+    m = rd.minutes
+    s = rd.seconds
+    return f"[{months}] : [{days}] : [{h:02d}] : [{m:02d}] : [{s:02d}]"
 
 
 @st.cache_data(show_spinner=False)
@@ -257,6 +257,95 @@ def build_state_heatmap_df(dff: pd.DataFrame) -> pd.DataFrame:
     g["lat"] = g["state"].map(lambda s: STATE_COORDS.get(s, (9.0, 8.0))[0])
     g["lon"] = g["state"].map(lambda s: STATE_COORDS.get(s, (9.0, 8.0))[1])
     return g
+
+
+NW_ZONE_FULL = "North West"
+_SUNSET_SCALE = [[0, "#1A0033"], [0.5, "#B87333"], [1.0, "#FFD700"]]
+_LGA_MARKER_INNER = 8 * 1.15
+_LGA_MARKER_OUTLINE = 10 * 1.15
+
+
+def mandate_turnout_label(ratio: float) -> str:
+    v = min(15, max(0, int(round(float(ratio)))))
+    return f"{v}/15"
+
+
+def enrich_lga_map_metrics(lga_map_df: pd.DataFrame) -> pd.DataFrame:
+    out = lga_map_df.copy()
+    out["winning_margin"] = pd.to_numeric(out["winning_margin"], errors="coerce")
+    out = out.dropna(subset=["lat", "lon", "winning_margin"])
+    out["mandate_status"] = out["canvasser_ratio"].apply(
+        lambda r: f"{min(15, max(0, int(round(float(r)))) )}/15 Voters Secured"
+    )
+    out["logistics_fuel"] = (out["canvassers"].astype(float) * CANVASSER_BUDGET_ANCHOR_NGN).round()
+    return out
+
+
+def build_lga_winning_margin_figure(
+    lga_map_df: pd.DataFrame,
+    zoom: float,
+    center: dict,
+) -> go.Figure:
+    wm = lga_map_df["winning_margin"].astype(float)
+    wm_min = float(wm.min()) if len(wm) else 0.0
+    wm_max = float(wm.max()) if len(wm) else 1.0
+    if wm_min == wm_max:
+        wm_max = wm_min + 1.0
+    fig_lga = px.scatter_mapbox(
+        lga_map_df,
+        lat="lat",
+        lon="lon",
+        color="winning_margin",
+        color_continuous_scale=_SUNSET_SCALE,
+        range_color=(wm_min, wm_max),
+        hover_name="lga",
+        hover_data={"state": False, "zone": False, "margin_zone": False, "projected_total": False},
+        custom_data=["mandate_status", "logistics_fuel"],
+        mapbox_style="carto-positron",
+        zoom=zoom,
+        center=center,
+    )
+    fig_lga.update_traces(
+        marker=dict(
+            size=_LGA_MARKER_INNER,
+            color=lga_map_df["winning_margin"].astype(float).tolist(),
+            colorscale=_SUNSET_SCALE,
+            opacity=0.8,
+        ),
+        hovertemplate=(
+            "<b>%{hovertext}</b>"
+            "<br>Mandate Status: %{customdata[0]}"
+            "<br>Logistics Fuel: ₦%{customdata[1]:,.0f}"
+            "<extra></extra>"
+        ),
+    )
+    _lga_inner = fig_lga.data[0]
+    _lga_outline = go.Scattermapbox(
+        lat=_lga_inner.lat,
+        lon=_lga_inner.lon,
+        mode="markers",
+        marker=dict(size=_LGA_MARKER_OUTLINE, color="#000033"),
+        hoverinfo="skip",
+        showlegend=False,
+    )
+    fig_lga = go.Figure(data=[_lga_outline] + list(fig_lga.data), layout=fig_lga.layout)
+    fig_lga.update_layout(
+        template=None,
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        font=dict(family="Goldman, sans-serif", color="#ffffff", size=13),
+        font_color="#ffffff",
+        hoverlabel=dict(font=dict(family="Goldman, sans-serif", color="#ffffff", size=12)),
+        margin=dict(l=0, r=0, t=12, b=0),
+        coloraxis_colorbar=dict(
+            title=dict(text="Winning margin", font=dict(family="Goldman, sans-serif", color=GOLD, size=12)),
+            tickfont=dict(family="Goldman, sans-serif", color="#ffffff", size=11),
+            bgcolor="rgba(0,0,51,0.55)",
+            bordercolor="rgba(212,175,55,0.35)",
+            len=0.72,
+        ),
+    )
+    return fig_lga
 
 
 df = load_df()
@@ -422,7 +511,7 @@ st.markdown(
       font-size: clamp(1.25rem, 3.5vw, 1.55rem);
       font-weight: 800;
       font-family: 'Goldman', sans-serif !important;
-      color: var(--stark-white) !important;
+      color: #D4AF37 !important;
       margin: 4px 0 6px 0;
       letter-spacing: 0.12em;
       text-shadow: 0 0 18px rgba(212, 175, 55, 0.55);
@@ -431,7 +520,8 @@ st.markdown(
       text-align: center;
       font-size: clamp(0.82rem, 2.2vw, 0.92rem);
       font-weight: 600;
-      color: var(--metallic-gold) !important;
+      font-family: 'Goldman', sans-serif !important;
+      color: #D4AF37 !important;
       margin: 0 0 12px 0;
       letter-spacing: 0.06em;
     }
@@ -572,6 +662,27 @@ st.markdown(
     @keyframes r8ShimmerSweep {
       0% { background-position: 200% center; }
       100% { background-position: -200% center; }
+    }
+    /* NW Villa + national tabs — Goldman, gold/white only (no red accent) */
+    [data-testid="stTabs"] {
+      font-family: 'Goldman', sans-serif !important;
+    }
+    [data-testid="stTabs"] [role="tab"] {
+      color: #D4AF37 !important;
+      font-family: 'Goldman', sans-serif !important;
+      background: rgba(0,0,51,0.55) !important;
+    }
+    [data-testid="stTabs"] [role="tab"][aria-selected="true"] {
+      color: #ffffff !important;
+      border-bottom-color: #D4AF37 !important;
+    }
+    [data-testid="stTabs"] [data-baseweb="tab-highlight"] {
+      background: #D4AF37 !important;
+    }
+    [data-testid="stRadio"] label,
+    [data-testid="stRadio"] [data-testid="stMarkdownContainer"] p {
+      color: #D4AF37 !important;
+      font-family: 'Goldman', sans-serif !important;
     }
     .rhgi-lga-scroll-outer {
       overflow: hidden;
@@ -769,7 +880,11 @@ st.markdown(
 with st.sidebar:
     st.header("Scientific controls")
     st.subheader("Sovereign Budget Engine (Tranche 1)")
-    st.metric("Global Logistics Fuel:", "₦108,961,000,000")
+    st.metric(
+        "Global Logistics Fuel:",
+        "₦108.96B",
+        help="Tranche 1 anchor: ₦108,961,000,000",
+    )
     st.metric("Efficiency Gauge", "1:15 Canvasser Ratio")
     st.markdown(
         "₦8.64B (Canvassers) + ₦86.32B (Logistics) + ₦14B (Contingency)"
@@ -812,9 +927,9 @@ st.markdown(
     f"""
     <div class="rhgi-brand-block">
       <h1 class="rhgi-brand-title">RHGI - 15/15 Sovereign Mirror</h1>
-      <p class="rhgi-creed-block">Decoding the 20.7M mandate anchor with scientific, uncorruptible precision.</p>
+      <p class="rhgi-creed-block">Securing the 20.7M Mandate through Scientific Precision.</p>
       <div class="rhgi-emblem-wrap"><div class="rhgi-emblem">RHGI</div></div>
-      <p class="rhgi-countdown-keys">Election Countdown: Days : Hours : Minutes : Seconds → Feb 2027</p>
+      <p class="rhgi-countdown-keys">Election Countdown: [Months] : [Days] : [Hours] : [Minutes] : [Seconds] → Feb 2027</p>
       <div class="rhgi-countdown-meter">{_countdown_line}</div>
       <p class="rhgi-signature">Prepared by Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE.</p>
     </div>
@@ -865,415 +980,444 @@ if constitutional_ok:
         unsafe_allow_html=True,
     )
 
-_gold_heading("Winning Margin by Geopolitical Zone (turnout-adjusted)")
-zone_margin = (
-    dff.groupby("zone", as_index=False)["winning_margin"].sum().sort_values("winning_margin")
-)
-# template=None only — no plotly_dark. Canvas controlled explicitly.
-fig_zone = px.bar(
-    zone_margin,
-    x="zone",
-    y="winning_margin",
-    color_discrete_sequence=[GOLD],
-)
-_axis_title_font = dict(family="Goldman, sans-serif", size=14, color=GOLD)
-_tick_font = dict(family="Goldman, sans-serif", size=12, color="#ffffff")
-fig_zone.update_layout(
-    template=None,
-    paper_bgcolor="rgba(0,0,0,0)",
-    plot_bgcolor="rgba(0,0,0,0)",
-    font=dict(family="Goldman, sans-serif", color="#ffffff", size=13),
-    font_color="#ffffff",
-    showlegend=False,
-    margin=dict(t=28, b=52, l=72, r=28),
-    xaxis=dict(
-        title=dict(text="Zone", font=_axis_title_font),
-        tickfont=_tick_font,
-        showgrid=False,
-        linecolor="rgba(255,255,255,0.4)",
-        zeroline=False,
-    ),
-    yaxis=dict(
-        title=dict(
-            text="Winning Margin (APC vs nearest rival)",
-            font=dict(family="Goldman, sans-serif", size=13, color=GOLD),
-        ),
-        tickfont=_tick_font,
-        showgrid=True,
-        gridcolor="rgba(255,255,255,0.12)",
-        gridwidth=1,
-        zeroline=True,
-        zerolinecolor="rgba(255,255,255,0.22)",
-        zerolinewidth=1,
-        linecolor="rgba(255,255,255,0.4)",
-    ),
-)
-fig_zone.update_traces(marker=dict(color="#D4AF37", line=dict(width=0)))
-st.plotly_chart(fig_zone, use_container_width=True)
+tab_nw, tab_nat = st.tabs(["NW Geopolitical Corridor", "National Sovereign Mirror"])
 
-_rose_heading("Corridor nodes — drill-down (774 LGAs)")
-st.caption(
-    "Choose a corridor, then a state. LGA roll-up ≈ one row every 0.5s (slow-mo); hover the marquee to pause. "
-    "Canvasser budget = ₦30,000 × canvasser headcount per LGA."
-)
-_cor_cols = st.columns(6)
-for _ci, (_abbr, _zname) in enumerate(CORRIDOR_NODES):
-    with _cor_cols[_ci]:
-        _nlg = int((dff["zone"] == _zname).sum())
-        if st.button(
-            f"{_abbr} · {_nlg}",
-            key=f"cor_btn_{_abbr}",
-            help=f"Geopolitical corridor — {_zname}. Click to drill down to states and LGAs.",
-            use_container_width=True,
-        ):
-            st.session_state.corridor_zone = _zname
-if st.session_state.corridor_zone is None:
-    st.session_state._prev_corridor_state_key = None
+with tab_nw:
     st.markdown(
-        '<p class="rhgi-creed" style="margin-top:8px;">Select a corridor widget (NW · NE · NC · SW · SS · SE) to begin.</p>',
+        """
+        <p style="color:#D4AF37;font-family:'Goldman',sans-serif;text-align:center;font-weight:700;font-size:1.05rem;margin:0 0 6px 0;">
+        Decoding the NW Battleground for the 20.7M Mandate Anchor.
+        </p>
+        <h2 style="color:#D4AF37;font-family:'Goldman',sans-serif;text-align:center;font-size:clamp(1.1rem,3vw,1.45rem);font-weight:800;margin:0 0 14px 0;letter-spacing:0.02em;">
+        Command Title: The Northwest Corridor: The Battle for 186 LGAs
+        </h2>
+        """,
         unsafe_allow_html=True,
     )
-else:
-    st.markdown(
-        f'<p class="rhgi-corridor-gold-heading" style="font-size:1.12rem;margin-top:6px;">Active corridor · '
-        f'<span style="color:#ffffff;">{html.escape(st.session_state.corridor_zone)}</span></p>',
-        unsafe_allow_html=True,
+    _nw_scope = dff[dff["zone"] == NW_ZONE_FULL].copy()
+    _nw_canv = int(_nw_scope["canvassers"].sum())
+    _nw_vel = _nw_scope.apply(
+        lambda r: acceptance_velocity_pct(int(r["apc_2023"]), int(r["apc_2027"])),
+        axis=1,
     )
-    _states_in_zone = sorted(dff[dff["zone"] == st.session_state.corridor_zone]["state"].unique())
-    _sel_state = st.selectbox(
-        "State (drill-down)",
-        options=_states_in_zone,
-        index=0,
-        key=f"state_drill_{st.session_state.corridor_zone}",
-    )
-    _corridor_state_key = f"{st.session_state.corridor_zone}|{_sel_state}"
-    _state_just_changed = st.session_state._prev_corridor_state_key != _corridor_state_key
-    st.session_state._prev_corridor_state_key = _corridor_state_key
-    _mat = build_state_lga_matrix_df(dff, _sel_state)
-    _rows_html = []
-    for _, _r in _mat.iterrows():
-        _nm = html.escape(str(_r["LGA Name"]))
-        _bud = int(_r["Canvasser Budget (₦30k anchor)"])
-        _rows_html.append(
+    _nw_vel_m = float(_nw_vel.mean()) if len(_nw_vel) else 0.0
+    _nw_m1, _nw_m2, _nw_m3 = st.columns(3)
+    with _nw_m1:
+        st.metric("Total Canvassers (NW)", f"{_nw_canv:,}")
+    with _nw_m2:
+        st.metric(
+            "Required turnout (scenario)",
+            f"+{turnout_lift}% lift",
+            help="Scientific turnout lift applied across all LGAs (sidebar control).",
+        )
+    with _nw_m3:
+        st.metric(
+            "Current velocity % (NW)",
+            f"{_nw_vel_m:.2f}%",
+            help="Mean APC acceptance velocity (2027 vs 2023) across NW LGAs.",
+        )
+    _nw_sorted = _nw_scope.sort_values(["state", "lga"])
+    _rows_nw = []
+    for _, _r in _nw_sorted.iterrows():
+        _rows_nw.append(
             "<tr>"
-            f"<td>{_nm}</td>"
-            f"<td>{int(_r['2023 Actual APC']):,}</td>"
-            f"<td>{int(_r['2027 Sovereign Projection']):,}</td>"
-            f"<td>{_r['Acceptance Velocity (%)']:.2f}</td>"
-            f"<td>₦{_bud:,}</td>"
+            f"<td>{html.escape(str(_r['lga']))}</td>"
+            f"<td>{html.escape(str(_r['state']))}</td>"
+            f"<td>{int(_r['canvassers']):,}</td>"
+            f"<td>{mandate_turnout_label(float(_r['canvasser_ratio']))}</td>"
             "</tr>"
         )
-    _tbody = "".join(_rows_html)
-    _thead_html = (
+    _tbody_nw = "".join(_rows_nw)
+    _thead_nw = (
         "<thead><tr>"
-        "<th>LGA Name</th><th>2023 Actual APC</th><th>2027 Sovereign Projection</th>"
-        "<th>Velocity %</th><th>Canvasser Budget (₦30k anchor)</th>"
+        "<th>LGA Name</th><th>State</th><th>Canvassers Activated</th><th>15/15 Turnout Status</th>"
         "</tr></thead>"
     )
-    _nrows = len(_mat)
-    if _nrows < 2:
-        _tbl = (
-            '<div class="rhgi-lga-scroll"><table class="rhgi-corridor-table">'
-            f"{_thead_html}<tbody>{_tbody}</tbody></table></div>"
+    _nrows_nw = len(_nw_sorted)
+    _roll_sec_nw = max(12.0, min(520.0, _nrows_nw * 0.35))
+    _tbl_nw = (
+        f'<div class="rhgi-lga-scroll-outer" data-roll-key="nw_villa_63001">'
+        f'<div class="rhgi-lga-marquee" style="animation-duration:{_roll_sec_nw:.0f}s;animation-name:rhgiSlowRoll;">'
+        f'<table class="rhgi-corridor-table">{_thead_nw}<tbody>{_tbody_nw}</tbody></table>'
+        f'<table class="rhgi-corridor-table">{_thead_nw}<tbody>{_tbody_nw}</tbody></table>'
+        f"</div></div>"
+    )
+    st.caption("NW slow-mo LGA scroll — hover the marquee to pause.")
+    st.markdown(_tbl_nw, unsafe_allow_html=True)
+    _gold_heading("774 LGA heatmap — NW isolation (winning margin)")
+    _lga_nw_only = enrich_lga_map_metrics(build_lga_heatmap_df(_nw_scope))
+    if len(_lga_nw_only) == 0:
+        st.info("No NW LGA rows to map.")
+    else:
+        _nw_center = {
+            "lat": float(_lga_nw_only["lat"].mean()),
+            "lon": float(_lga_nw_only["lon"].mean()),
+        }
+        fig_nw_map = build_lga_winning_margin_figure(_lga_nw_only, zoom=5.85, center=_nw_center)
+        st.plotly_chart(fig_nw_map, use_container_width=True)
+
+with tab_nat:
+    _gold_heading("Winning Margin by Geopolitical Zone (turnout-adjusted)")
+    zone_margin = (
+        dff.groupby("zone", as_index=False)["winning_margin"].sum().sort_values("winning_margin")
+    )
+    # template=None only — no plotly_dark. Canvas controlled explicitly.
+    fig_zone = px.bar(
+        zone_margin,
+        x="zone",
+        y="winning_margin",
+        color_discrete_sequence=[GOLD],
+    )
+    _axis_title_font = dict(family="Goldman, sans-serif", size=14, color=GOLD)
+    _tick_font = dict(family="Goldman, sans-serif", size=12, color="#ffffff")
+    fig_zone.update_layout(
+        template=None,
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        font=dict(family="Goldman, sans-serif", color="#ffffff", size=13),
+        font_color="#ffffff",
+        showlegend=False,
+        margin=dict(t=28, b=52, l=72, r=28),
+        xaxis=dict(
+            title=dict(text="Zone", font=_axis_title_font),
+            tickfont=_tick_font,
+            showgrid=False,
+            linecolor="rgba(255,255,255,0.4)",
+            zeroline=False,
+        ),
+        yaxis=dict(
+            title=dict(
+                text="Winning Margin (APC vs nearest rival)",
+                font=dict(family="Goldman, sans-serif", size=13, color=GOLD),
+            ),
+            tickfont=_tick_font,
+            showgrid=True,
+            gridcolor="rgba(255,255,255,0.12)",
+            gridwidth=1,
+            zeroline=True,
+            zerolinecolor="rgba(255,255,255,0.22)",
+            zerolinewidth=1,
+            linecolor="rgba(255,255,255,0.4)",
+        ),
+    )
+    fig_zone.update_traces(marker=dict(color="#D4AF37", line=dict(width=0)))
+    st.plotly_chart(fig_zone, use_container_width=True)
+
+    _rose_heading("Corridor nodes — drill-down (774 LGAs)")
+    st.caption(
+        "Choose a corridor, then a state. LGA roll-up ≈ one row every 0.5s (slow-mo); hover the marquee to pause. "
+        "Canvasser budget = ₦30,000 × canvasser headcount per LGA."
+    )
+    _cor_cols = st.columns(6)
+    for _ci, (_abbr, _zname) in enumerate(CORRIDOR_NODES):
+        with _cor_cols[_ci]:
+            _nlg = int((dff["zone"] == _zname).sum())
+            if st.button(
+                f"{_abbr} · {_nlg}",
+                key=f"cor_btn_{_abbr}",
+                help=f"Geopolitical corridor — {_zname}. Click to drill down to states and LGAs.",
+                use_container_width=True,
+            ):
+                st.session_state.corridor_zone = _zname
+    if st.session_state.corridor_zone is None:
+        st.session_state._prev_corridor_state_key = None
+        st.markdown(
+            '<p class="rhgi-creed" style="margin-top:8px;">Select a corridor widget (NW · NE · NC · SW · SS · SE) to begin.</p>',
+            unsafe_allow_html=True,
         )
     else:
-        # ~1 row per 0.5s across one full LGA table scroll (marquee translates one table height)
-        _roll_sec = max(3.0, min(480.0, _nrows * 0.5))
-        if _state_just_changed:
-            _roll_sec = max(_roll_sec, _nrows * 0.5 + 0.5)
-        _roll_nonce = abs(hash(_corridor_state_key)) % 1_000_000
-        _tbl = (
-            f'<div class="rhgi-lga-scroll-outer" data-roll-key="{_roll_nonce}">'
-            f'<div class="rhgi-lga-marquee" style="animation-duration:{_roll_sec:.0f}s;animation-name:rhgiSlowRoll;">'
-            f'<table class="rhgi-corridor-table">{_thead_html}<tbody>{_tbody}</tbody></table>'
-            f'<table class="rhgi-corridor-table">{_thead_html}<tbody>{_tbody}</tbody></table>'
-            f"</div></div>"
+        st.markdown(
+            f'<p class="rhgi-corridor-gold-heading" style="font-size:1.12rem;margin-top:6px;">Active corridor · '
+            f'<span style="color:#ffffff;">{html.escape(st.session_state.corridor_zone)}</span></p>',
+            unsafe_allow_html=True,
         )
-    st.markdown(_tbl, unsafe_allow_html=True)
+        _states_in_zone = sorted(dff[dff["zone"] == st.session_state.corridor_zone]["state"].unique())
+        _sel_state = st.selectbox(
+            "State (drill-down)",
+            options=_states_in_zone,
+            index=0,
+            key=f"state_drill_{st.session_state.corridor_zone}",
+        )
+        _corridor_state_key = f"{st.session_state.corridor_zone}|{_sel_state}"
+        _state_just_changed = st.session_state._prev_corridor_state_key != _corridor_state_key
+        st.session_state._prev_corridor_state_key = _corridor_state_key
+        _mat = build_state_lga_matrix_df(dff, _sel_state)
+        _rows_html = []
+        for _, _r in _mat.iterrows():
+            _nm = html.escape(str(_r["LGA Name"]))
+            _bud = int(_r["Canvasser Budget (₦30k anchor)"])
+            _rows_html.append(
+                "<tr>"
+                f"<td>{_nm}</td>"
+                f"<td>{int(_r['2023 Actual APC']):,}</td>"
+                f"<td>{int(_r['2027 Sovereign Projection']):,}</td>"
+                f"<td>{_r['Acceptance Velocity (%)']:.2f}</td>"
+                f"<td>₦{_bud:,}</td>"
+                "</tr>"
+            )
+        _tbody = "".join(_rows_html)
+        _thead_html = (
+            "<thead><tr>"
+            "<th>LGA Name</th><th>2023 Actual APC</th><th>2027 Sovereign Projection</th>"
+            "<th>Velocity %</th><th>Canvasser Budget (₦30k anchor)</th>"
+            "</tr></thead>"
+        )
+        _nrows = len(_mat)
+        if _nrows < 2:
+            _tbl = (
+                '<div class="rhgi-lga-scroll"><table class="rhgi-corridor-table">'
+                f"{_thead_html}<tbody>{_tbody}</tbody></table></div>"
+            )
+        else:
+            # ~1 row per 0.5s across one full LGA table scroll (marquee translates one table height)
+            _roll_sec = max(3.0, min(480.0, _nrows * 0.5))
+            if _state_just_changed:
+                _roll_sec = max(_roll_sec, _nrows * 0.5 + 0.5)
+            _roll_nonce = abs(hash(_corridor_state_key)) % 1_000_000
+            _tbl = (
+                f'<div class="rhgi-lga-scroll-outer" data-roll-key="{_roll_nonce}">'
+                f'<div class="rhgi-lga-marquee" style="animation-duration:{_roll_sec:.0f}s;animation-name:rhgiSlowRoll;">'
+                f'<table class="rhgi-corridor-table">{_thead_html}<tbody>{_tbody}</tbody></table>'
+                f'<table class="rhgi-corridor-table">{_thead_html}<tbody>{_tbody}</tbody></table>'
+                f"</div></div>"
+            )
+        st.markdown(_tbl, unsafe_allow_html=True)
 
-_sb_base, _sb_after_misc, _sb_line_total = sovereign_budget_engine_breakdown()
-_sb_line_bn = _sb_line_total / 1e9
-_sb_mandate = SOVEREIGN_BUDGET_MANDATE_NGN
-_sb_mandate_bn = _sb_mandate / 1e9
-st.markdown(
-    f"""
-    <div class="rhgi-sovereign-budget">
-      <div class="rhgi-sovereign-budget-inner">
-        <h3>Sovereign Budget Engine — ₦{_sb_mandate_bn:,.2f}B</h3>
-        <p class="rhgi-sovereign-mandate">₦{_sb_mandate:,}</p>
-        <p class="rhgi-sovereign-detail">
-          (144,000 canvassers + 144,000 E-day staff) × ₦30,000 → ₦{_sb_base/1e9:.2f}B;
-          +15% misc → ₦{_sb_after_misc/1e9:.2f}B; +10% contingency → line-model subtotal <b>₦{_sb_line_total:,}</b> (₦{_sb_line_bn:.2f}B).
-          RHGI sovereign headline total: <b>₦{_sb_mandate_bn:,.2f} billion</b>.
-        </p>
-      </div>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
-
-_gold_heading("774 LGA heatmap — winning margin (rugged)")
-lga_map_df = build_lga_heatmap_df(dff)
-lga_map_df["winning_margin"] = pd.to_numeric(lga_map_df["winning_margin"], errors="coerce")
-lga_map_df = lga_map_df.dropna(subset=["lat", "lon", "winning_margin"])
-lga_map_df["mandate_status"] = lga_map_df["canvasser_ratio"].apply(
-    lambda r: f"{min(15, max(0, int(round(float(r)))) )}/15 Voters Secured"
-)
-lga_map_df["logistics_fuel"] = (
-    lga_map_df["canvassers"].astype(float) * CANVASSER_BUDGET_ANCHOR_NGN
-).round()
-wm = lga_map_df["winning_margin"].astype(float)
-wm_min = float(wm.min()) if len(wm) else 0.0
-wm_max = float(wm.max()) if len(wm) else 1.0
-if wm_min == wm_max:
-    wm_max = wm_min + 1.0
-_sunset_scale = [[0, "#1A0033"], [0.5, "#B87333"], [1.0, "#FFD700"]]
-fig_lga = px.scatter_mapbox(
-    lga_map_df,
-    lat="lat",
-    lon="lon",
-    color="winning_margin",
-    color_continuous_scale=_sunset_scale,
-    range_color=(wm_min, wm_max),
-    hover_name="lga",
-    hover_data={"state": False, "zone": False, "margin_zone": False, "projected_total": False},
-    custom_data=["mandate_status", "logistics_fuel"],
-    mapbox_style="carto-positron",
-    zoom=4.9,
-    center={"lat": 9.082, "lon": 8.6753},
-)
-fig_lga.update_traces(
-    marker=dict(
-        size=8,
-        color=lga_map_df["winning_margin"].astype(float).tolist(),
-        colorscale=_sunset_scale,
-        opacity=0.8,
-    ),
-    hovertemplate=(
-        "<b>%{hovertext}</b>"
-        "<br>Mandate Status: %{customdata[0]}"
-        "<br>Logistics Fuel: ₦%{customdata[1]:,.0f}"
-        "<extra></extra>"
-    ),
-)
-_lga_outline_color = "#000033"  # Prism Navy sharp outline
-_lga_inner = fig_lga.data[0]
-_lga_outline = go.Scattermapbox(
-    lat=_lga_inner.lat,
-    lon=_lga_inner.lon,
-    mode="markers",
-    marker=dict(size=10, color=_lga_outline_color),
-    hoverinfo="skip",
-    showlegend=False,
-)
-fig_lga = go.Figure(data=[_lga_outline] + list(fig_lga.data), layout=fig_lga.layout)
-fig_lga.update_layout(
-    template=None,
-    paper_bgcolor="rgba(0,0,0,0)",
-    plot_bgcolor="rgba(0,0,0,0)",
-    font=dict(family="Goldman, sans-serif", color="#ffffff", size=13),
-    font_color="#ffffff",
-    hoverlabel=dict(font=dict(family="Goldman, sans-serif", color="#ffffff", size=12)),
-    margin=dict(l=0, r=0, t=12, b=0),
-    coloraxis_colorbar=dict(
-        title=dict(text="Winning margin", font=dict(family="Goldman, sans-serif", color=GOLD, size=12)),
-        tickfont=dict(family="Goldman, sans-serif", color="#ffffff", size=11),
-        bgcolor="rgba(0,0,51,0.55)",
-        bordercolor="rgba(212,175,55,0.35)",
-        len=0.72,
-    ),
-)
-st.plotly_chart(fig_lga, use_container_width=True)
-
-_gold_heading("Turnout heatmap — Nigeria (strike priority)")
-state_hm = build_state_heatmap_df(dff)
-state_hm["mandate_status"] = state_hm["canvasser_ratio"].apply(
-    lambda r: f"{min(15, max(0, int(round(float(r)))) )}/15 Voters Secured"
-)
-state_hm["logistics_fuel"] = (
-    state_hm["canvassers"].astype(float) * CANVASSER_BUDGET_ANCHOR_NGN
-).round()
-fig_scatter = px.scatter_mapbox(
-    state_hm,
-    lat="lat",
-    lon="lon",
-    color="strike_priority",
-    size="strike_priority",
-    hover_name="state",
-    hover_data={"pvc_collection_rate": False, "turnout_2023_rate": False},
-    custom_data=["mandate_status", "logistics_fuel"],
-    color_continuous_scale=[[0, "#1A0033"], [0.5, "#B87333"], [1.0, "#FFD700"]],
-    mapbox_style="carto-positron",
-    zoom=4.85,
-    center={"lat": 9.082, "lon": 8.6753},
-)
-fig_scatter.update_traces(
-    marker=dict(
-        size=8,
-        color=state_hm["strike_priority"].astype(float).tolist(),
-        colorscale=[[0, "#1A0033"], [0.5, "#B87333"], [1.0, "#FFD700"]],
-        opacity=0.8,
-    ),
-    hovertemplate=(
-        "<b>%{hovertext}</b>"
-        "<br>Mandate Status: %{customdata[0]}"
-        "<br>Logistics Fuel: ₦%{customdata[1]:,.0f}"
-        "<extra></extra>"
-    ),
-)
-_state_outline_color = "#000033"  # Prism Navy sharp outline
-_state_inner = fig_scatter.data[0]
-_state_outline = go.Scattermapbox(
-    lat=_state_inner.lat,
-    lon=_state_inner.lon,
-    mode="markers",
-    marker=dict(size=10, color=_state_outline_color),
-    hoverinfo="skip",
-    showlegend=False,
-)
-fig_scatter = go.Figure(data=[_state_outline] + list(fig_scatter.data), layout=fig_scatter.layout)
-fig_scatter.update_layout(
-    template=None,
-    paper_bgcolor="rgba(0,0,0,0)",
-    plot_bgcolor="rgba(0,0,0,0)",
-    font=dict(family="Goldman, sans-serif", color="#ffffff", size=13),
-    font_color="#ffffff",
-    hoverlabel=dict(font=dict(family="Goldman, sans-serif", color="#ffffff", size=12)),
-    margin=dict(l=0, r=0, t=12, b=0),
-    coloraxis_colorbar=dict(
-        title=dict(text="Strike priority", font=dict(family="Goldman, sans-serif", color=GOLD, size=12)),
-        tickfont=dict(family="Goldman, sans-serif", color="#ffffff", size=11),
-        bgcolor="rgba(0,0,51,0.55)",
-        bordercolor="rgba(212,175,55,0.35)",
-        len=0.72,
-    ),
-)
-st.plotly_chart(fig_scatter, use_container_width=True)
-
-_gold_heading("2023 vs 2027 Party Totals")
-party_totals = pd.DataFrame(
-    {
-        "Party": ["APC", "PDP", "LP", "ADC"] * 2,
-        "Year": ["2023"] * 4 + ["2027"] * 4,
-        "Votes": [
-            df["apc_2023"].sum(),
-            df["pdp_2023"].sum(),
-            df["lp_2023"].sum(),
-            df["adc_2023"].sum(),
-            dff["apc_2027"].sum(),
-            dff["pdp_2027"].sum(),
-            dff["lp_2027"].sum(),
-            dff["adc_2027"].sum(),
-        ],
-    }
-)
-fig_party = px.bar(
-    party_totals,
-    x="Party",
-    y="Votes",
-    color="Year",
-    barmode="group",
-    color_discrete_map={"2023": "#b8962e", "2027": "#D4AF37"},
-)
-fig_party.update_layout(
-    template=None,
-    paper_bgcolor="rgba(0,0,0,0)",
-    plot_bgcolor="rgba(0,0,0,0)",
-    font=dict(family="Goldman, sans-serif", color="#ffffff", size=13),
-    font_color="#ffffff",
-    bargap=0.22,
-    bargroupgap=0.08,
-    legend=dict(
-        title=dict(text="Year", font=dict(family="Goldman, sans-serif", color=GOLD, size=13)),
-        font=dict(family="Goldman, sans-serif", color="#ffffff", size=12),
-        bgcolor="rgba(0,0,51,0.5)",
-        bordercolor="rgba(212,175,55,0.35)",
-        borderwidth=1,
-    ),
-    xaxis=dict(
-        title=dict(text="Party", font=_axis_title_font),
-        tickfont=_tick_font,
-        showgrid=False,
-        linecolor="rgba(255,255,255,0.4)",
-        zeroline=False,
-    ),
-    yaxis=dict(
-        title=dict(text="Votes", font=dict(family="Goldman, sans-serif", size=14, color=GOLD)),
-        tickfont=_tick_font,
-        showgrid=True,
-        gridcolor="rgba(255,255,255,0.12)",
-        zerolinecolor="rgba(255,255,255,0.22)",
-        linecolor="rgba(255,255,255,0.4)",
-    ),
-    margin=dict(t=36, b=48, l=72, r=36),
-)
-fig_party.update_traces(marker_line_width=0)
-st.plotly_chart(fig_party, use_container_width=True)
-
-_gold_heading("LGA Tactical Sheet (Logistics Alert)")
-view = dff[
-    [
-        "zone",
-        "state",
-        "lga",
-        "pvc_collection_rate",
-        "turnout_2023_rate",
-        "apc_2023",
-        "pdp_2023",
-        "lp_2023",
-        "adc_2023",
-        "apc_2027",
-        "pdp_2027",
-        "lp_2027",
-        "adc_2027",
-        "winning_margin",
-        "canvasser_ratio",
-        "logistics_alert",
-    ]
-].copy()
-
-view["winning_margin"] = view["winning_margin"].map(lambda x: f"{x:,.0f}")
-view["canvasser_ratio"] = view["canvasser_ratio"].map(lambda x: f"{x:.2f}")
-view["pvc_collection_rate"] = view["pvc_collection_rate"].map(lambda x: f"{x:.2%}")
-view["turnout_2023_rate"] = view["turnout_2023_rate"].map(lambda x: f"{x:.2%}")
-
-rows = []
-for _, r in view.iterrows():
-    css = "rhgi-pulse-logistics" if r["logistics_alert"] else ""
-    rows.append(
-        f"<tr class='{css}'>"
-        f"<td>{r['zone']}</td><td>{r['state']}</td><td>{r['lga']}</td>"
-        f"<td>{r['pvc_collection_rate']}</td><td>{r['turnout_2023_rate']}</td>"
-        f"<td>{r['apc_2023']}</td><td>{r['pdp_2023']}</td><td>{r['lp_2023']}</td><td>{r['adc_2023']}</td>"
-        f"<td>{r['apc_2027']}</td><td>{r['pdp_2027']}</td><td>{r['lp_2027']}</td><td>{r['adc_2027']}</td>"
-        f"<td class='rhgi-glow'>{r['winning_margin']}</td><td>{r['canvasser_ratio']}</td>"
-        "</tr>"
+    _sb_base, _sb_after_misc, _sb_line_total = sovereign_budget_engine_breakdown()
+    _sb_line_bn = _sb_line_total / 1e9
+    _sb_mandate = SOVEREIGN_BUDGET_MANDATE_NGN
+    _sb_mandate_bn = _sb_mandate / 1e9
+    st.markdown(
+        f"""
+        <div class="rhgi-sovereign-budget">
+          <div class="rhgi-sovereign-budget-inner">
+            <h3>Sovereign Budget Engine — ₦{_sb_mandate_bn:,.2f}B</h3>
+            <p class="rhgi-sovereign-mandate">₦{_sb_mandate:,}</p>
+            <p class="rhgi-sovereign-detail">
+              (144,000 canvassers + 144,000 E-day staff) × ₦30,000 → ₦{_sb_base/1e9:.2f}B;
+              +15% misc → ₦{_sb_after_misc/1e9:.2f}B; +10% contingency → line-model subtotal <b>₦{_sb_line_total:,}</b> (₦{_sb_line_bn:.2f}B).
+              RHGI sovereign headline total: <b>₦{_sb_mandate_bn:,.2f} billion</b>.
+            </p>
+          </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
     )
 
-table_html = (
-    "<table><thead><tr>"
-    "<th>Zone</th><th>State</th><th>LGA</th>"
-    "<th>PVC %</th><th>Turnout '23</th>"
-    "<th>APC23</th><th>PDP23</th><th>LP23</th><th>ADC23</th>"
-    "<th>APC27</th><th>PDP27</th><th>LP27</th><th>ADC27</th>"
-    "<th>Winning Margin</th><th>Canvasser Ratio</th>"
-    "</tr></thead><tbody>"
-    + "".join(rows[:200])
-    + "</tbody></table>"
-)
-st.markdown(table_html, unsafe_allow_html=True)
-st.caption(
-    "Showing first 200 LGAs. Gold-pulse rows: canvasser ratio below 1:16. "
-    "Move the sidebar slider to watch winning margin and constitutional gauge update."
-)
+    _gold_heading("774 LGA heatmap — winning margin (rugged)")
+    _hm_scope = st.radio(
+        "LGA heatmap scope",
+        ["All 774 LGAs", "North West (186 LGAs)"],
+        horizontal=True,
+        key="lga_heatmap_scope_filter",
+        help="Isolate the winning-margin map to the North West corridor.",
+    )
+    _dff_for_map = dff if _hm_scope == "All 774 LGAs" else dff[dff["zone"] == NW_ZONE_FULL].copy()
+    lga_map_df = enrich_lga_map_metrics(build_lga_heatmap_df(_dff_for_map))
+    if len(lga_map_df) == 0:
+        st.warning("No LGAs in selected scope.")
+    else:
+        if _hm_scope == "All 774 LGAs":
+            _fig_center = {"lat": 9.082, "lon": 8.6753}
+            _fig_zoom = 4.9
+        else:
+            _fig_center = {
+                "lat": float(lga_map_df["lat"].mean()),
+                "lon": float(lga_map_df["lon"].mean()),
+            }
+            _fig_zoom = 5.85
+        fig_lga = build_lga_winning_margin_figure(lga_map_df, zoom=_fig_zoom, center=_fig_center)
+        st.plotly_chart(fig_lga, use_container_width=True)
 
-_ticker = (
-    f"NATIONAL PROJECTION — APC votes {apc_national:,} · Total projected {projected_yield:,} · "
-    f"APC share {national_apc_share:.2f}% · Legal Gatekeeper {states_25}/36 states ≥25% APC · "
-    f"FCT APC {fct_pct:.2f}% · Remittance gap {remittance_gap:,} vs 20.7M anchor · "
-    f"Turnout lift +{turnout_lift}% (live) · "
-)
-st.markdown(
-    f"<div class='rhgi-ticker-wrap'><div class='rhgi-ticker'><span>{_ticker}</span><span>{_ticker}</span></div></div>",
-    unsafe_allow_html=True,
-)
+    _gold_heading("Turnout heatmap — Nigeria (strike priority)")
+    state_hm = build_state_heatmap_df(dff)
+    state_hm["mandate_status"] = state_hm["canvasser_ratio"].apply(
+        lambda r: f"{min(15, max(0, int(round(float(r)))) )}/15 Voters Secured"
+    )
+    state_hm["logistics_fuel"] = (
+        state_hm["canvassers"].astype(float) * CANVASSER_BUDGET_ANCHOR_NGN
+    ).round()
+    fig_scatter = px.scatter_mapbox(
+        state_hm,
+        lat="lat",
+        lon="lon",
+        color="strike_priority",
+        size="strike_priority",
+        hover_name="state",
+        hover_data={"pvc_collection_rate": False, "turnout_2023_rate": False},
+        custom_data=["mandate_status", "logistics_fuel"],
+        color_continuous_scale=[[0, "#1A0033"], [0.5, "#B87333"], [1.0, "#FFD700"]],
+        mapbox_style="carto-positron",
+        zoom=4.85,
+        center={"lat": 9.082, "lon": 8.6753},
+    )
+    fig_scatter.update_traces(
+        marker=dict(
+            size=8,
+            color=state_hm["strike_priority"].astype(float).tolist(),
+            colorscale=[[0, "#1A0033"], [0.5, "#B87333"], [1.0, "#FFD700"]],
+            opacity=0.8,
+        ),
+        hovertemplate=(
+            "<b>%{hovertext}</b>"
+            "<br>Mandate Status: %{customdata[0]}"
+            "<br>Logistics Fuel: ₦%{customdata[1]:,.0f}"
+            "<extra></extra>"
+        ),
+    )
+    _state_outline_color = "#000033"  # Prism Navy sharp outline
+    _state_inner = fig_scatter.data[0]
+    _state_outline = go.Scattermapbox(
+        lat=_state_inner.lat,
+        lon=_state_inner.lon,
+        mode="markers",
+        marker=dict(size=10, color=_state_outline_color),
+        hoverinfo="skip",
+        showlegend=False,
+    )
+    fig_scatter = go.Figure(data=[_state_outline] + list(fig_scatter.data), layout=fig_scatter.layout)
+    fig_scatter.update_layout(
+        template=None,
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        font=dict(family="Goldman, sans-serif", color="#ffffff", size=13),
+        font_color="#ffffff",
+        hoverlabel=dict(font=dict(family="Goldman, sans-serif", color="#ffffff", size=12)),
+        margin=dict(l=0, r=0, t=12, b=0),
+        coloraxis_colorbar=dict(
+            title=dict(text="Strike priority", font=dict(family="Goldman, sans-serif", color=GOLD, size=12)),
+            tickfont=dict(family="Goldman, sans-serif", color="#ffffff", size=11),
+            bgcolor="rgba(0,0,51,0.55)",
+            bordercolor="rgba(212,175,55,0.35)",
+            len=0.72,
+        ),
+    )
+    st.plotly_chart(fig_scatter, use_container_width=True)
+
+    _gold_heading("2023 vs 2027 Party Totals")
+    party_totals = pd.DataFrame(
+        {
+            "Party": ["APC", "PDP", "LP", "ADC"] * 2,
+            "Year": ["2023"] * 4 + ["2027"] * 4,
+            "Votes": [
+                df["apc_2023"].sum(),
+                df["pdp_2023"].sum(),
+                df["lp_2023"].sum(),
+                df["adc_2023"].sum(),
+                dff["apc_2027"].sum(),
+                dff["pdp_2027"].sum(),
+                dff["lp_2027"].sum(),
+                dff["adc_2027"].sum(),
+            ],
+        }
+    )
+    fig_party = px.bar(
+        party_totals,
+        x="Party",
+        y="Votes",
+        color="Year",
+        barmode="group",
+        color_discrete_map={"2023": "#b8962e", "2027": "#D4AF37"},
+    )
+    fig_party.update_layout(
+        template=None,
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        font=dict(family="Goldman, sans-serif", color="#ffffff", size=13),
+        font_color="#ffffff",
+        bargap=0.22,
+        bargroupgap=0.08,
+        legend=dict(
+            title=dict(text="Year", font=dict(family="Goldman, sans-serif", color=GOLD, size=13)),
+            font=dict(family="Goldman, sans-serif", color="#ffffff", size=12),
+            bgcolor="rgba(0,0,51,0.5)",
+            bordercolor="rgba(212,175,55,0.35)",
+            borderwidth=1,
+        ),
+        xaxis=dict(
+            title=dict(text="Party", font=_axis_title_font),
+            tickfont=_tick_font,
+            showgrid=False,
+            linecolor="rgba(255,255,255,0.4)",
+            zeroline=False,
+        ),
+        yaxis=dict(
+            title=dict(text="Votes", font=dict(family="Goldman, sans-serif", size=14, color=GOLD)),
+            tickfont=_tick_font,
+            showgrid=True,
+            gridcolor="rgba(255,255,255,0.12)",
+            zerolinecolor="rgba(255,255,255,0.22)",
+            linecolor="rgba(255,255,255,0.4)",
+        ),
+        margin=dict(t=36, b=48, l=72, r=36),
+    )
+    fig_party.update_traces(marker_line_width=0)
+    st.plotly_chart(fig_party, use_container_width=True)
+
+    _gold_heading("LGA Tactical Sheet (Logistics Alert)")
+    view = dff[
+        [
+            "zone",
+            "state",
+            "lga",
+            "pvc_collection_rate",
+            "turnout_2023_rate",
+            "apc_2023",
+            "pdp_2023",
+            "lp_2023",
+            "adc_2023",
+            "apc_2027",
+            "pdp_2027",
+            "lp_2027",
+            "adc_2027",
+            "winning_margin",
+            "canvasser_ratio",
+            "logistics_alert",
+        ]
+    ].copy()
+
+    view["winning_margin"] = view["winning_margin"].map(lambda x: f"{x:,.0f}")
+    view["canvasser_ratio"] = view["canvasser_ratio"].map(lambda x: f"{x:.2f}")
+    view["pvc_collection_rate"] = view["pvc_collection_rate"].map(lambda x: f"{x:.2%}")
+    view["turnout_2023_rate"] = view["turnout_2023_rate"].map(lambda x: f"{x:.2%}")
+
+    rows = []
+    for _, r in view.iterrows():
+        css = "rhgi-pulse-logistics" if r["logistics_alert"] else ""
+        rows.append(
+            f"<tr class='{css}'>"
+            f"<td>{r['zone']}</td><td>{r['state']}</td><td>{r['lga']}</td>"
+            f"<td>{r['pvc_collection_rate']}</td><td>{r['turnout_2023_rate']}</td>"
+            f"<td>{r['apc_2023']}</td><td>{r['pdp_2023']}</td><td>{r['lp_2023']}</td><td>{r['adc_2023']}</td>"
+            f"<td>{r['apc_2027']}</td><td>{r['pdp_2027']}</td><td>{r['lp_2027']}</td><td>{r['adc_2027']}</td>"
+            f"<td class='rhgi-glow'>{r['winning_margin']}</td><td>{r['canvasser_ratio']}</td>"
+            "</tr>"
+        )
+
+    table_html = (
+        "<table><thead><tr>"
+        "<th>Zone</th><th>State</th><th>LGA</th>"
+        "<th>PVC %</th><th>Turnout '23</th>"
+        "<th>APC23</th><th>PDP23</th><th>LP23</th><th>ADC23</th>"
+        "<th>APC27</th><th>PDP27</th><th>LP27</th><th>ADC27</th>"
+        "<th>Winning Margin</th><th>Canvasser Ratio</th>"
+        "</tr></thead><tbody>"
+        + "".join(rows[:200])
+        + "</tbody></table>"
+    )
+    st.markdown(table_html, unsafe_allow_html=True)
+    st.caption(
+        "Showing first 200 LGAs. Gold-pulse rows: canvasser ratio below 1:16. "
+        "Move the sidebar slider to watch winning margin and constitutional gauge update."
+    )
+
+    _ticker = (
+        f"NATIONAL PROJECTION — APC votes {apc_national:,} · Total projected {projected_yield:,} · "
+        f"APC share {national_apc_share:.2f}% · Legal Gatekeeper {states_25}/36 states ≥25% APC · "
+        f"FCT APC {fct_pct:.2f}% · Remittance gap {remittance_gap:,} vs 20.7M anchor · "
+        f"Turnout lift +{turnout_lift}% (live) · "
+    )
+    st.markdown(
+        f"<div class='rhgi-ticker-wrap'><div class='rhgi-ticker'><span>{_ticker}</span><span>{_ticker}</span></div></div>",
+        unsafe_allow_html=True,
+    )

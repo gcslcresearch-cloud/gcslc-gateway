@@ -1,6 +1,7 @@
 import html
 from datetime import datetime, timedelta
 
+from dateutil.relativedelta import relativedelta
 import pytz
 import streamlit as st
 import streamlit.components.v1 as components
@@ -15,17 +16,16 @@ STARK_WHITE = "#ffffff"
 
 
 def _format_countdown_wat(now: datetime, target_wat: datetime) -> str:
-    """Days:Hrs:Min:Sec (all in WAT)."""
+    """Months : Days : Hours : Minutes : Seconds (WAT) until February 2027 anchor."""
     if now >= target_wat:
-        return "0:00:00:00"
-    delta = target_wat - now
-    days = delta.days
-    seconds = delta.seconds
-    hrs = seconds // 3600
-    seconds = seconds % 3600
-    mins = seconds // 60
-    secs = seconds % 60
-    return f"{days}:{hrs:02d}:{mins:02d}:{secs:02d}"
+        return "[0] : [0] : [00] : [00] : [00]"
+    rd = relativedelta(target_wat, now)
+    months = rd.years * 12 + rd.months
+    days = rd.days
+    h = rd.hours
+    m = rd.minutes
+    s = rd.seconds
+    return f"[{months}] : [{days}] : [{h:02d}] : [{m:02d}] : [{s:02d}]"
 
 
 def _make_mock_requests() -> list[dict]:
@@ -145,14 +145,30 @@ st.markdown(
         font-weight: 800;
       }}
       .cqr-countdown {{
+        font-family: 'Goldman', sans-serif !important;
         font-size: 1.05rem;
         color: var(--white);
         text-align: center;
         margin-top: 6px;
       }}
+      .cqr-countdown-label {{
+        color: var(--white);
+        font-weight: 700;
+        margin-bottom: 4px;
+      }}
+      .cqr-countdown-units {{
+        font-size: 0.82rem;
+        color: var(--gold);
+        opacity: 0.95;
+        margin-bottom: 6px;
+        letter-spacing: 0.02em;
+      }}
       .cqr-countdown b {{
         color: var(--gold);
         font-weight: 900;
+        font-family: 'Goldman', sans-serif !important;
+        font-size: 1.12rem;
+        letter-spacing: 0.06em;
       }}
 
       /* Identity + budget block (above executive bar) */
@@ -227,7 +243,7 @@ st.markdown(
         line-height: 1.4;
       }}
       .cqr-extra {{
-        color: var(--stark-white);
+        color: var(--white);
         opacity: 0.98;
         font-size: 0.98rem;
         margin: 0 0 10px 0;
@@ -243,24 +259,33 @@ st.markdown(
         font-size: 1.15rem !important; /* +15% for one-tap mobile */
         padding: 0.75rem 0.95rem !important;
       }}
-      /* Grant: Gold border + White text */
+      /* Grant: Yellow Gold #D4AF37 — no Streamlit red / danger bleed */
       .cqr-card button[kind="primary"] {{
-        background: var(--gold) !important;
-        color: #000033 !important; /* Deep navy for contrast */
-        border: 1px solid var(--gold) !important;
+        background: #D4AF37 !important;
+        background-image: none !important;
+        color: #000033 !important;
+        border: 2px solid #D4AF37 !important;
         box-shadow: none !important;
       }}
       .cqr-card button[kind="primary"]:hover {{
-        background: var(--gold) !important;
+        background: #D4AF37 !important;
+        background-image: none !important;
         color: #000033 !important;
+        border-color: #D4AF37 !important;
       }}
 
-      /* Deny: White border + White text */
+      /* Deny: Stark white outline, transparent fill */
       .cqr-card button[kind="secondary"] {{
         background: transparent !important;
-        color: var(--white) !important;
-        border: 1px solid rgba(255,255,255,0.8) !important;
+        background-image: none !important;
+        color: #ffffff !important;
+        border: 2px solid #ffffff !important;
         box-shadow: none !important;
+      }}
+      .cqr-card button[kind="secondary"]:hover {{
+        background: transparent !important;
+        color: #ffffff !important;
+        border-color: #ffffff !important;
       }}
 
       /* Remove any accidental danger tint (extra hardening) */
@@ -271,7 +296,7 @@ st.markdown(
     <div class="cqr-watermark" aria-hidden="true"><span>GCSLC</span></div>
     <div class="cqr-brand">
       <h1 class="cqr-brand-title">{html.escape(PAGE_TITLE)}</h1>
-      <div class="cqr-creed-block">Decoding the 20.7M mandate anchor with scientific, uncorruptible precision.</div>
+      <div class="cqr-creed-block">Securing the 20.7M Mandate through Scientific Precision.</div>
       <div class="cqr-mobile-metrics">
         <div class="cqr-mobile-metric"><b>Global Logistics Fuel:</b> ₦108,961,000,000</div>
         <div class="cqr-mobile-metric"><b>Efficiency Gauge:</b> 1:15 Canvasser Ratio</div>
@@ -283,7 +308,9 @@ st.markdown(
         <div class="cqr-topitem"><b>Current Sessions</b>: 4</div>
       </div>
       <div class="cqr-countdown">
-        Election Countdown: <b>{html.escape(_countdown)}</b>
+        <div class="cqr-countdown-label">Election Countdown → Feb 2027</div>
+        <div class="cqr-countdown-units">[Months] : [Days] : [Hours] : [Minutes] : [Seconds]</div>
+        <b>{html.escape(_countdown)}</b>
       </div>
     </div>
     """,
@@ -298,13 +325,12 @@ pending = [r for r in st.session_state.mobile_cqr_requests if r.get("status") ==
 pending_count = len(pending)
 _prev_pending = st.session_state.get("mobile_prev_pending_count", 0)
 if pending_count > _prev_pending:
-    # Short WebAudio chime (no external assets) when new requests appear.
+    # WebAudio chime — resume() helps Chrome/Samsung Internet (S24 Ultra) after autoplay policy.
     components.html(
         """
         <script>
           const AudioContext = window.AudioContext || window.webkitAudioContext;
           const ctx = new AudioContext();
-          const now = ctx.currentTime;
           function tone(freq, t0, t1, gainVal) {
             const o = ctx.createOscillator();
             const g = ctx.createGain();
@@ -316,9 +342,17 @@ if pending_count > _prev_pending:
             o.connect(g); g.connect(ctx.destination);
             o.start(t0); o.stop(t1);
           }
-          tone(880, now, now+0.12, 0.22);
-          tone(1174, now+0.14, now+0.26, 0.18);
-          setTimeout(() => { try { ctx.close(); } catch(e){} }, 400);
+          function playChime() {
+            const now = ctx.currentTime;
+            tone(880, now, now+0.12, 0.22);
+            tone(1174, now+0.14, now+0.26, 0.18);
+            setTimeout(() => { try { ctx.close(); } catch(e){} }, 400);
+          }
+          if (ctx.state === 'suspended') {
+            ctx.resume().then(playChime).catch(playChime);
+          } else {
+            playChime();
+          }
         </script>
         """,
         height=0,
