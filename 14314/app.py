@@ -84,6 +84,11 @@ _LONDON_TZ = pytz.timezone("Europe/London")
 _NYC_TZ = pytz.timezone("America/New_York")
 _DUBAI_TZ = pytz.timezone("Asia/Dubai")
 ELECTION_DATETIME_WAT = _LAGOS_TZ.localize(datetime(2027, 2, 25, 8, 0, 0))
+ELECTION_TARGET_WAT = _LAGOS_TZ.localize(datetime(2027, 1, 16, 0, 0, 0))
+STATIC_CALIBRATION_MONTHS = 9
+ELECTION_CALIBRATION_START_WAT = ELECTION_TARGET_WAT - relativedelta(
+    months=STATIC_CALIBRATION_MONTHS
+)
 PRIMARIES_START_WAT = _LAGOS_TZ.localize(datetime(2026, 4, 23, 0, 0, 0))
 EIGHT_R_DETERMINANTS = [
     ("Refine", "Proprietary Determinant — Refine: Sharpening ward-level turnout models and PVC reconciliation."),
@@ -140,6 +145,34 @@ def _pu_velocity_pct_for_clock() -> float:
     """PU Reminder Engine velocity → percentage (0–100)."""
     pu_messages_sent = int(st.session_state.get("pu_messages_sent", 0))
     return 100.0 * float(pu_messages_sent) / float(PU_TOTAL) if PU_TOTAL else 0.0
+
+
+def _compute_pu_messages_sent_from_payload(payload_df: pd.DataFrame) -> int:
+    """Compute reached PU count from Image 11 CSV payload.
+
+    Heuristics:
+    - Prefer `pu_lat` + `pu_lon` unique pairs.
+    - Else prefer `lat` + `lon` unique pairs.
+    - Else fall back to row count.
+    """
+    if payload_df is None or payload_df.empty:
+        return 0
+
+    cols = {str(c).lower(): c for c in payload_df.columns}
+    pu_lat = cols.get("pu_lat")
+    pu_lon = cols.get("pu_lon")
+    if pu_lat is not None and pu_lon is not None:
+        unique_pus = payload_df[[pu_lat, pu_lon]].drop_duplicates().shape[0]
+        return int(min(unique_pus, PU_TOTAL))
+
+    lat = cols.get("lat")
+    lon = cols.get("lon")
+    if lat is not None and lon is not None:
+        unique_pus = payload_df[[lat, lon]].drop_duplicates().shape[0]
+        return int(min(unique_pus, PU_TOTAL))
+
+    unique_pus = payload_df.shape[0]
+    return int(min(unique_pus, PU_TOTAL))
 
 
 def _threshold_gong_data_url() -> Optional[str]:
@@ -1299,6 +1332,27 @@ with st.sidebar:
     st.session_state["pu_messages_sent"] = pu_messages_sent
     velocity_pct = 100.0 * float(pu_messages_sent) / float(PU_TOTAL)
 
+    uploaded_img11 = st.file_uploader(
+        "Load PU Reminder CSV payload (Image 11)",
+        type=["csv"],
+        key="img11_pu_csv_uploader",
+        help="CSV should include PU coordinates (e.g. `pu_lat` + `pu_lon`) or `lat` + `lon`.",
+    )
+    if uploaded_img11 is not None:
+        try:
+            df_img11 = pd.read_csv(uploaded_img11)
+            st.session_state["pu_payload_image11"] = df_img11
+            st.session_state["pu_sync_payload"] = df_img11
+            reached_pus = _compute_pu_messages_sent_from_payload(df_img11)
+            st.session_state["pu_messages_sent"] = reached_pus
+            pu_messages_sent = reached_pus
+            velocity_pct = 100.0 * float(reached_pus) / float(PU_TOTAL)
+            st.success(
+                f"Image 11 payload loaded. Reached PUs: {reached_pus:,} / {PU_TOTAL:,}"
+            )
+        except Exception as e:
+            st.error(f"Failed to load Image 11 CSV: {e}")
+
     st.metric("Outreach Velocity", f"{velocity_pct:.2f}% coverage")
     st.metric(
         "SMS/WhatsApp Tracker",
@@ -1306,10 +1360,12 @@ with st.sidebar:
         delta="Direct PU messages sent",
     )
     if st.button("PUSH PU REMINDERS", use_container_width=True, key="push_pu_reminders_btn"):
-        pu_payload = build_pu_sync_payload(df)
+        if isinstance(st.session_state.get("pu_payload_image11"), pd.DataFrame):
+            pu_payload = st.session_state["pu_payload_image11"]
+            st.session_state["pu_messages_sent"] = _compute_pu_messages_sent_from_payload(pu_payload)
+        else:
+            pu_payload = build_pu_sync_payload(df)
         st.session_state["pu_sync_payload"] = pu_payload
-        # Treat this as a "send" to all PU coordinates for the velocity engine.
-        st.session_state["pu_messages_sent"] = PU_TOTAL
         st.success(
             f"PU Reminder Engine synced {len(pu_payload):,} voter records with PU coordinates."
         )
@@ -1486,22 +1542,30 @@ st.markdown(
       }
 
       .rhgi-metal-grid {
-        display: flex;
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
         gap: 10px;
-        justify-content: space-between;
-        flex-wrap: wrap;
         margin: 8px 0 14px 0;
       }
       .rhgi-metal-box {
-        flex: 1 1 140px;
-        min-width: 120px;
-        padding: 12px 10px;
+        height: 62px;
+        padding: 6px 8px 8px 8px;
         border-radius: 14px;
         border: 1px solid rgba(212,175,55,0.18);
-        background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(192,192,192,0.7), rgba(255,255,255,0.9));
+        background: linear-gradient(
+          135deg,
+          rgba(0,0,51,0.88) 0%,
+          rgba(255,255,255,0.92) 42%,
+          rgba(192,192,192,0.72) 60%,
+          rgba(0,0,51,0.84) 100%
+        );
         background-size: 200% 200%;
         animation: rhgiMetalShimmer 2.8s linear infinite, rhgiClockBreathe 2s ease-in-out infinite;
         text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
       }
       .rhgi-metal-label {
         color: #ffffff;
@@ -1512,8 +1576,8 @@ st.markdown(
       .rhgi-metal-number {
         color: #D4AF37;
         font-weight: 950;
-        font-size: 1.5rem;
-        margin-top: 8px;
+        font-size: 1.45rem;
+        margin-top: 6px;
         text-shadow: 0 0 18px rgba(212,175,55,0.35);
       }
     </style>
@@ -1599,13 +1663,6 @@ components.html(
               playGong();
             }}
           }}
-
-          if (remSec === 3600) {{
-            if (!window.__primaries_gong_fired_1h) {{
-              window.__primaries_gong_fired_1h = true;
-              playGong();
-            }}
-          }}
         }}
 
         setInterval(checkCountdown, 250);
@@ -1618,19 +1675,27 @@ components.html(
 
 def _live_primaries_metal_clock_inner() -> None:
     now = datetime.now(_LAGOS_TZ)
-    if now >= PRIMARIES_START_WAT:
-        months = 0
+    # Hard calibration: Months must be exactly "09" (static) for Jan 16, 2027.
+    months = "09"
+
+    # Weeks/Days/Hours/Minutes are relative to a fixed "9 months before election"
+    # calibration window.
+    if now >= ELECTION_CALIBRATION_START_WAT:
         weeks = 0
         days = 0
         hours = 0
         minutes = 0
     else:
-        rd = relativedelta(PRIMARIES_START_WAT, now)
-        months = rd.years * 12 + rd.months
-        weeks = rd.days // 7
-        days = rd.days % 7
-        hours = rd.hours
-        minutes = rd.minutes
+        rem = ELECTION_CALIBRATION_START_WAT - now
+        total_seconds = int(rem.total_seconds())
+        total_seconds = max(total_seconds, 0)
+        weeks = total_seconds // 604_800
+        total_seconds %= 604_800
+        days = total_seconds // 86_400
+        total_seconds %= 86_400
+        hours = total_seconds // 3_600
+        total_seconds %= 3_600
+        minutes = total_seconds // 60
 
     velocity_pct = _pu_velocity_pct_for_clock()
     # Data grounding: "Seconds" represent the velocity of the 20.7M mandate.
@@ -1850,6 +1915,15 @@ with tab_global:
 
     _gold_heading("Harvest Trendline")
     st.caption("Food Inflation (12.12%) vs Growth (4.4%) vs Reserves ($50B+).")
+    st.markdown(
+        "<div style='background:rgba(0,0,51,0.65); border:1px solid rgba(212,175,55,0.35); "
+        "color:#ffffff; padding:10px 14px; border-radius:14px; font-weight:900; "
+        "letter-spacing:0.02em;'>"
+        "CATEGORY 1 NARRATIVE: Harvest Trendline anchors Food Inflation (12.12%) versus Growth (4.4%) "
+        "and reserves ($50B+), keeping the mandate resilient under price pressure."
+        "</div>",
+        unsafe_allow_html=True,
+    )
     harvest = pd.DataFrame(
         {
             "Epoch": ["Q1", "Q2", "Q3", "Q4"],
@@ -1964,6 +2038,16 @@ with tab_global:
     )
     st.session_state.threat_monitor = _tm
     st.session_state.opposition_heatmap = _tm
+    st.markdown(
+        "<div style='background:rgba(0,0,51,0.65); border:1px solid rgba(212,175,55,0.35); "
+        "color:#ffffff; padding:10px 14px; border-radius:14px; font-weight:900; "
+        "letter-spacing:0.02em; margin-top:8px;'>"
+        "CATEGORY 2 NARRATIVE: Concrete Heritage tracks AKK Road Section 1 at <span style='color:#D4AF37;'>80%</span> "
+        "completion alongside Coastal Highway readiness, while the Stability Heatmap reflects Operation Kukan Kura "
+        "crime-drop pulse across mapped LGAs."
+        "</div>",
+        unsafe_allow_html=True,
+    )
     _gold_heading(
         "774 LGA heatmap — threat monitor (ADC + LP)" if _tm else "774 LGA heatmap — winning margin (rugged)"
     )
