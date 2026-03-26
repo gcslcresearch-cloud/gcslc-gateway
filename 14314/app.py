@@ -50,7 +50,15 @@ PRISM_NAVY = "#000033"
 # RHGI-DG-UNASSAILABLE-MASTER-76 — INEC baseline structure (2023 anchor).
 POLLING_UNITS_BASELINE = 176_846
 WARDS_BASELINE = 8_809
+# Legacy 2023 ward reference (pre–2027 forensic anchor).
 AVG_BALLOT_BOXES_PER_WARD = 25
+# Statutory 2027 federation-wide ballot-box anchor (SSMI-FORENSIC-2027-106).
+BALLOT_BOXES_FEDERATION_2027 = 202_225
+BALLOT_BOXES_LEGACY_PRODUCT = AVG_BALLOT_BOXES_PER_WARD * WARDS_BASELINE
+FORENSIC_2027_BALLOT_SCALE = BALLOT_BOXES_FEDERATION_2027 / float(BALLOT_BOXES_LEGACY_PRODUCT)
+FORENSIC_2027_BALLOT_BASELINE_CAPTION = (
+    "Projected 202,225 Ballot Boxes across 8,809 Wards (2027 Baseline)."
+)
 CANVASSER_BUDGET_ANCHOR_NGN = 30_000
 # RHGI TOTAL RESTORE-30 — Sovereign Budget Engine (personnel lines per mandate brief).
 SOVEREIGN_CANVASSERS_LINE = 144_000
@@ -197,15 +205,18 @@ def load_df() -> pd.DataFrame:
         df["registered_voters"] * df["pvc_collection_rate"] - df["actual_2023"]
     )
     df["winner_2023"] = df[["apc_2023", "pdp_2023", "lp_2023", "adc_2023"]].max(axis=1)
+    df["logistics_alert"] = df["canvasser_ratio"] < 16.0
+    # Strike priority: high PVC + low 2023 turnout → high-priority strike zones.
+    df["strike_priority"] = df["pvc_collection_rate"] * (1.0 - df["turnout_2023_rate"])
+    # Ground 2027 party projections to statutory 202,225 ballot-box federation anchor.
+    for c in ("apc_2027", "pdp_2027", "lp_2027", "adc_2027"):
+        df[c] = (df[c].astype(float) * FORENSIC_2027_BALLOT_SCALE).round().astype(int)
     df["winner_2027"] = df[["apc_2027", "pdp_2027", "lp_2027", "adc_2027"]].max(axis=1)
     df["projected_total"] = df[["apc_2027", "pdp_2027", "lp_2027", "adc_2027"]].sum(axis=1)
     df["winning_margin"] = df["apc_2027"] - df[["pdp_2027", "lp_2027", "adc_2027"]].max(
         axis=1
     )
     df["apc_share_2027"] = (df["apc_2027"] / df["projected_total"].replace(0, 1)) * 100
-    df["logistics_alert"] = df["canvasser_ratio"] < 16.0
-    # Strike priority: high PVC + low 2023 turnout → high-priority strike zones.
-    df["strike_priority"] = df["pvc_collection_rate"] * (1.0 - df["turnout_2023_rate"])
     return df
 
 
@@ -574,6 +585,8 @@ st.markdown(
       --command-white: #FFFFFF;
       --sec-glow-px: 12px;
       --sec-glow-alpha: 0.26;
+      /* SSMI-109 — slow-motion prism ring (DG hub + 8R) */
+      --prism-border-rotate: 8s;
     }
     /* SSMI-103 — silver + white border sweep (1.5s cycle) */
     @keyframes rhgiMetalShimmer {
@@ -697,10 +710,58 @@ st.markdown(
     [data-testid="stSidebar"] {
       background: #000033 !important;
     }
+    /* SSMI-108 — Category 1–3: brilliant #FFFFFF, no dimming */
     [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p,
-    [data-testid="stSidebar"] label { color: var(--stark-white) !important; }
-    [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {
-      color: var(--metallic-gold) !important;
+    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] span,
+    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] li,
+    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] strong,
+    [data-testid="stSidebar"] label,
+    [data-testid="stSidebar"] label span,
+    [data-testid="stSidebar"] [data-testid="stCaption"],
+    [data-testid="stSidebar"] [data-testid="stCaption"] p,
+    [data-testid="stSidebar"] [data-testid="stCaption"] span,
+    [data-testid="stSidebar"] h1,
+    [data-testid="stSidebar"] h2,
+    [data-testid="stSidebar"] h3,
+    [data-testid="stSidebar"] h4 {
+      color: #ffffff !important;
+      opacity: 1 !important;
+      -webkit-text-fill-color: #ffffff !important;
+    }
+    [data-testid="stSidebar"] .stMetric [data-testid="stMetricLabel"],
+    [data-testid="stSidebar"] .stMetric [data-testid="stMetricValue"],
+    [data-testid="stSidebar"] [data-testid="stMetricDelta"] {
+      color: #ffffff !important;
+      opacity: 1 !important;
+      -webkit-text-fill-color: #ffffff !important;
+    }
+    [data-testid="stSidebar"] .stMetric,
+    [data-testid="stSidebar"] [data-testid="stMetricContainer"] > div {
+      background: #000033 !important;
+      opacity: 1 !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stSlider"] label,
+    [data-testid="stSidebar"] [data-testid="stSlider"] + div,
+    [data-testid="stSidebar"] [data-baseweb="slider"] [data-testid="stThumbValue"] {
+      color: #ffffff !important;
+      opacity: 1 !important;
+    }
+    /* SSMI-109 — kill sidebar markdown ghosting (Category 1–3) */
+    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] {
+      color: #ffffff !important;
+      opacity: 1 !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] * {
+      color: #ffffff !important;
+      opacity: 1 !important;
+    }
+    .rhgi-forensic-baseline-line {
+      color: #ffffff !important;
+      opacity: 1 !important;
+      -webkit-text-fill-color: #ffffff !important;
+      font-family: 'Goldman', sans-serif !important;
+      font-size: 0.92rem !important;
+      margin: 0 0 10px 0 !important;
     }
     .block-container {
       font-size: 1.1rem;
@@ -841,9 +902,9 @@ st.markdown(
       opacity: 0.22;
     }
     button, input, textarea, [data-testid="stMarkdownContainer"], .stMarkdown { user-select: text !important; -webkit-user-select: text !important; }
-    /* 8R row: no white card behind buttons */
-    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)) [data-testid="element-container"],
-    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)) [data-testid="column"] {
+    /* 8R Strategic row (exactly 8 columns): no white card behind buttons */
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)):not(:has(> div:nth-child(9))) [data-testid="element-container"],
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)):not(:has(> div:nth-child(9))) [data-testid="column"] {
       background: transparent !important;
       border: none !important;
       box-shadow: none !important;
@@ -886,11 +947,11 @@ st.markdown(
       background-position: 0% 50%;
       animation: rhgiMetalShimmer 1.5s linear infinite, rhgiClockBreathe 3s ease-in-out infinite;
     }
-    /* 8R belt: Yellow Gold text + navy field + shimmer (no white, no neon) */
-    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)) button[kind="secondary"],
-    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)) button[kind="primary"] {
+    /* Strategic 8R — Prism Navy + rotating silver/gold ring (slow-motion sweep) + Seconds-sync pulse */
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)):not(:has(> div:nth-child(9))) button[kind="secondary"],
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)):not(:has(> div:nth-child(9))) button[kind="primary"] {
       color: #ffffff !important;
-      border: 1px solid transparent !important;
+      border: none !important;
       border-radius: var(--command-box-radius) !important;
       height: var(--command-box-height) !important;
       min-height: var(--command-box-height) !important;
@@ -899,25 +960,75 @@ st.markdown(
       max-width: 100% !important;
       box-sizing: border-box !important;
       transform-origin: center center !important;
-      background: #000033 padding-box,
-      linear-gradient(
-        90deg,
-        var(--command-silver) 0%,
-        var(--command-white) 18%,
-        var(--command-silver) 36%,
-        var(--command-white) 54%,
-        var(--command-silver) 72%,
-        var(--command-white) 90%,
-        var(--command-silver) 100%
-      ) border-box !important;
-      background-size: 240% 100%;
-      background-position: 0% 50%;
-      animation: rhgiMetalShimmer 1.5s linear infinite, rhgiClockBreathe 3s ease-in-out infinite !important;
+      isolation: isolate !important;
+      position: relative !important;
+      overflow: hidden !important;
+      background: transparent !important;
+      background-image: none !important;
+      animation: rhgiSecSyncPulse 1s ease-in-out infinite !important;
     }
-    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)) button p,
-    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)) button span {
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)):not(:has(> div:nth-child(9))) button[kind="secondary"]::before,
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)):not(:has(> div:nth-child(9))) button[kind="primary"]::before {
+      content: "" !important;
+      position: absolute !important;
+      inset: -2px !important;
+      border-radius: calc(var(--command-box-radius) + 2px) !important;
+      background: conic-gradient(
+        from 0deg,
+        #C0C0C0 0%,
+        #D4AF37 18%,
+        #C0C0C0 36%,
+        #D4AF37 54%,
+        #C0C0C0 72%,
+        #D4AF37 90%,
+        #C0C0C0 100%
+      ) !important;
+      animation: rhgiCorridorBorderRotate var(--prism-border-rotate) linear infinite !important;
+      transform-origin: center center !important;
+      z-index: 0 !important;
+      pointer-events: none !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)):not(:has(> div:nth-child(9))) button[kind="secondary"]::after,
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)):not(:has(> div:nth-child(9))) button[kind="primary"]::after {
+      content: "" !important;
+      position: absolute !important;
+      inset: 2px !important;
+      border-radius: calc(var(--command-box-radius) - 2px) !important;
+      background: #000033 !important;
+      z-index: 1 !important;
+      pointer-events: none !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)):not(:has(> div:nth-child(9))) button[kind="primary"]::after {
+      box-shadow: inset 0 0 0 2px rgba(212, 175, 55, 0.88) !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)):not(:has(> div:nth-child(9))) button[kind="secondary"] > div,
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)):not(:has(> div:nth-child(9))) button[kind="primary"] > div {
+      position: relative !important;
+      z-index: 2 !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)):not(:has(> div:nth-child(9))) button[kind="secondary"] p,
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)):not(:has(> div:nth-child(9))) button[kind="secondary"] span,
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)):not(:has(> div:nth-child(9))) button[kind="primary"] p,
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)):not(:has(> div:nth-child(9))) button[kind="primary"] span {
       color: #ffffff !important;
-      animation: none !important;
+      position: relative !important;
+      z-index: 2 !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)):not(:has(> div:nth-child(9))) button[kind="primary"] p,
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)):not(:has(> div:nth-child(9))) button[kind="primary"] span {
+      text-shadow:
+        0 0 10px rgba(212, 175, 55, 0.95),
+        0 0 22px rgba(212, 175, 55, 0.55) !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)):not(:has(> div:nth-child(9))) button[kind="secondary"]:hover p,
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)):not(:has(> div:nth-child(9))) button[kind="secondary"]:hover span,
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)):not(:has(> div:nth-child(9))) button[kind="primary"]:hover p,
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)):not(:has(> div:nth-child(9))) button[kind="primary"]:hover span {
+      text-shadow:
+        0 0 12px rgba(212, 175, 55, 0.98),
+        0 0 28px rgba(212, 175, 55, 0.72),
+        0 0 42px rgba(212, 175, 55, 0.4) !important;
+      color: #ffffff !important;
     }
     @keyframes r8GoldTextShimmer {
       0%, 100% {
@@ -968,7 +1079,7 @@ st.markdown(
         #D4AF37 90%,
         #C0C0C0 100%
       ) !important;
-      animation: rhgiCorridorBorderRotate 1.5s linear infinite !important;
+      animation: rhgiCorridorBorderRotate var(--prism-border-rotate) linear infinite !important;
       transform-origin: center center !important;
       z-index: 0 !important;
       pointer-events: none !important;
@@ -1447,9 +1558,10 @@ with st.sidebar:
         help="Anchor: 20.7M sovereign mandate baseline. Projected yield: 38.4M.",
     )
     st.caption("PVC & turnout rates are forensic anchors per LGA in data_engine.")
-    st.caption(
-        f"Baseline structure: {POLLING_UNITS_BASELINE:,} PUs · {WARDS_BASELINE:,} wards · "
-        f"avg {AVG_BALLOT_BOXES_PER_WARD} ballot boxes/ward (2023 anchor)."
+    st.markdown(
+        f'<p class="rhgi-forensic-baseline-line">Baseline structure: {POLLING_UNITS_BASELINE:,} PUs · '
+        f"{FORENSIC_2027_BALLOT_BASELINE_CAPTION}</p>",
+        unsafe_allow_html=True,
     )
     projected_national = int(df[["apc_2027", "pdp_2027", "lp_2027", "adc_2027"]].sum().sum())
     st.metric(
@@ -1657,6 +1769,7 @@ st.markdown(
         --command-navy: #000033;
         --sec-glow-px: 12px;
         --sec-glow-alpha: 0.26;
+        --prism-border-rotate: 8s;
       }
       .rhgi-prism-frames-row {
         display: flex;
@@ -1956,14 +2069,25 @@ for _hi, (_abbr, _zname) in enumerate(CORRIDOR_NODES):
             st.session_state.corridor_zone = _zname
             st.rerun()
 _hub_lbl = st.session_state.get("dg_corridor") or "ALL NIGERIA"
-st.caption(
-    f"Active command filter: {_hub_lbl} · Baseline {POLLING_UNITS_BASELINE:,} PUs · {WARDS_BASELINE:,} wards · "
-    f"{AVG_BALLOT_BOXES_PER_WARD} ballot boxes/ward (2023)."
+st.markdown(
+    f'<p class="rhgi-forensic-baseline-line">Active command filter: {_hub_lbl} · Baseline '
+    f"{POLLING_UNITS_BASELINE:,} PUs · {FORENSIC_2027_BALLOT_BASELINE_CAPTION}</p>",
+    unsafe_allow_html=True,
 )
-if st.button("National overview · all corridors", key="dg_hub_nat"):
-    st.session_state.dg_corridor = None
-    st.session_state.corridor_zone = None
-    st.rerun()
+st.markdown(
+    "<h3 style='color: #D4AF37; text-align: center; text-shadow: 0 0 10px #D4AF37;'>National overview • all corridors</h3>",
+    unsafe_allow_html=True,
+)
+_nr1, _nr2, _nr3 = st.columns([1, 2, 1])
+with _nr2:
+    if st.button(
+        "Reset national scope",
+        key="dg_hub_nat",
+        use_container_width=True,
+    ):
+        st.session_state.dg_corridor = None
+        st.session_state.corridor_zone = None
+        st.rerun()
 _r8_cols = st.columns(8)
 for _ri, (_r8_label, _r8_det) in enumerate(EIGHT_R_DETERMINANTS):
     with _r8_cols[_ri]:
