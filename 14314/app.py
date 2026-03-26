@@ -8,6 +8,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import pytz
 import streamlit as st
+import streamlit.components.v1 as components
 from datetime import datetime, time, timedelta
 
 from dateutil.relativedelta import relativedelta
@@ -62,6 +63,10 @@ DEEP_NAVY_SAFE = "#152a45"
 METALLIC_GOLD_TARGET = METALLIC_GOLD
 # 20.7M national vote mandate anchor (fixed reference).
 NATIONAL_VOTE_TARGET = 20_709_668
+PU_TOTAL = POLLING_UNITS_BASELINE
+HARVEST_FOOD_INFLATION_PCT = 12.12
+HARVEST_GROWTH_PCT = 4.4
+HARVEST_RESERVES_BN_USD = 50.0
 # Drill-down order: abbrev → full zone name (matches dff["zone"]).
 CORRIDOR_NODES = (
     ("NW", "North West"),
@@ -231,6 +236,32 @@ def build_pu_sync_payload(dff: pd.DataFrame) -> pd.DataFrame:
     return out[
         ["voter_name", "state", "lga", "zone", "pu_lat", "pu_lon", "assigned_canvassers"]
     ]
+
+
+def build_heritage_spine_layers() -> tuple[pd.DataFrame, pd.DataFrame, set[str]]:
+    """Road layer traces + active states used by SWAT audio gate."""
+    route_rows = [
+        {"corridor": "AKK Road Section 1", "state": "Abuja", "lat": 9.0765, "lon": 7.3986, "completion_pct": 80},
+        {"corridor": "AKK Road Section 1", "state": "Kaduna", "lat": 10.5222, "lon": 7.4384, "completion_pct": 80},
+        {"corridor": "AKK Road Section 1", "state": "Kano", "lat": 12.0022, "lon": 8.5920, "completion_pct": 80},
+        {"corridor": "Coastal Highway", "state": "Lagos", "lat": 6.5244, "lon": 3.3792, "completion_pct": 62},
+        {"corridor": "Coastal Highway", "state": "Ogun", "lat": 6.9094, "lon": 3.2580, "completion_pct": 62},
+        {"corridor": "Coastal Highway", "state": "Ondo", "lat": 7.2508, "lon": 5.2103, "completion_pct": 62},
+    ]
+    route_df = pd.DataFrame(route_rows)
+    active_states = set(route_df.loc[route_df["completion_pct"] >= 60, "state"].astype(str).tolist())
+    pulse_rows = []
+    for _, r in route_df.iterrows():
+        pulse_rows.append(
+            {
+                "state": r["state"],
+                "lat": r["lat"],
+                "lon": r["lon"],
+                "crime_drop_pct": 18.0 + (float(r["completion_pct"]) / 100.0 * 15.0),
+            }
+        )
+    stability_df = pd.DataFrame(pulse_rows)
+    return route_df, stability_df, active_states
 
 
 def margin_zone(row: pd.Series) -> str:
@@ -1234,7 +1265,14 @@ with st.sidebar:
         "- **Coastal Road Section 1**: commissioning target **May 20**"
     )
     st.subheader("Category 3: Outreach Command")
-    st.metric("Outreach Velocity", "46.63% coverage")
+    outreach_velocity = 46.63
+    direct_messages_sent = int(round((outreach_velocity / 100.0) * PU_TOTAL))
+    st.metric("Outreach Velocity", f"{outreach_velocity:.2f}% coverage")
+    st.metric(
+        "SMS/WhatsApp Tracker",
+        f"{direct_messages_sent:,} / {PU_TOTAL:,}",
+        delta="Direct PU messages sent",
+    )
     if st.button("PUSH PU REMINDERS", use_container_width=True, key="push_pu_reminders_btn"):
         pu_payload = build_pu_sync_payload(df)
         st.session_state["pu_sync_payload"] = pu_payload
@@ -1252,6 +1290,7 @@ with st.sidebar:
             mime="text/csv",
             use_container_width=True,
         )
+    st.caption("Outreach hub tracks direct SMS/WhatsApp pushes to all 176,846 PUs.")
 
 dff = apply_turnout_lift(df, turnout_lift)
 dff_hub = filter_by_corridor(dff, st.session_state.get("dg_corridor"))
@@ -1269,6 +1308,7 @@ total_winning_margin = float(dff_hub["winning_margin"].sum())
 
 _cien_audit_rows = build_cien_audit_rows(dff_hub)
 st.session_state._cien_rows_full = _cien_audit_rows
+_heritage_layer_df, _stability_heat_df, _infra_active_states = build_heritage_spine_layers()
 
 with st.sidebar:
     _cien_sidebar_box = st.container()
@@ -1325,6 +1365,34 @@ with st.sidebar:
                     "</div>",
                     unsafe_allow_html=True,
                 )
+            _infra_active = str(r["state"]) in _infra_active_states
+            _swat_gate = bool(r.get("swat_15_15") and _infra_active)
+            _prev_gate = bool(st.session_state.get("swat_audio_gate_prev", False))
+            if _swat_gate and not _prev_gate:
+                components.html(
+                    """
+                    <script>
+                      const Ctx = window.AudioContext || window.webkitAudioContext;
+                      const ctx = new Ctx();
+                      function hit(freq, t0, t1, gainVal){
+                        const o = ctx.createOscillator();
+                        const g = ctx.createGain();
+                        o.type = "triangle";
+                        o.frequency.setValueAtTime(freq, t0);
+                        g.gain.setValueAtTime(0.0001, t0);
+                        g.gain.exponentialRampToValueAtTime(gainVal, t0 + 0.01);
+                        g.gain.exponentialRampToValueAtTime(0.0001, t1);
+                        o.connect(g); g.connect(ctx.destination);
+                        o.start(t0); o.stop(t1);
+                      }
+                      const now = ctx.currentTime;
+                      hit(1046, now, now + 0.12, 0.2);
+                      hit(1318, now + 0.14, now + 0.28, 0.18);
+                    </script>
+                    """,
+                    height=0,
+                )
+            st.session_state.swat_audio_gate_prev = _swat_gate
             if st.button(
                 f"Focus Map 2: {r['lga']}, {r['state']}",
                 key="cien_zoom_map_btn",
@@ -1559,65 +1627,86 @@ with tab_global:
     )
     st.plotly_chart(fig_zone, use_container_width=True)
 
-    _gold_heading("2023 vs 2027 Party Totals")
-    party_totals = pd.DataFrame(
+    _gold_heading("Harvest Trendline")
+    st.caption("Food Inflation (12.12%) vs Growth (4.4%) vs Reserves ($50B+).")
+    harvest = pd.DataFrame(
         {
-            "Party": ["APC", "PDP", "LP", "ADC"] * 2,
-            "Year": ["2023"] * 4 + ["2027"] * 4,
-            "Votes": [
-                df_hub_pre["apc_2023"].sum(),
-                df_hub_pre["pdp_2023"].sum(),
-                df_hub_pre["lp_2023"].sum(),
-                df_hub_pre["adc_2023"].sum(),
-                dff_hub["apc_2027"].sum(),
-                dff_hub["pdp_2027"].sum(),
-                dff_hub["lp_2027"].sum(),
-                dff_hub["adc_2027"].sum(),
-            ],
+            "Epoch": ["Q1", "Q2", "Q3", "Q4"],
+            "Food Inflation (%)": [12.12, 12.45, 12.20, HARVEST_FOOD_INFLATION_PCT],
+            "Growth (%)": [3.80, 4.00, 4.20, HARVEST_GROWTH_PCT],
+            "Reserves (USD Bn)": [46.0, 47.5, 49.2, HARVEST_RESERVES_BN_USD],
         }
     )
-    fig_party = px.bar(
-        party_totals,
-        x="Party",
-        y="Votes",
-        color="Year",
-        barmode="group",
-        color_discrete_map={"2023": "#b8962e", "2027": "#D4AF37"},
+    fig_harvest = go.Figure()
+    fig_harvest.add_trace(
+        go.Scatter(
+            x=harvest["Epoch"],
+            y=harvest["Food Inflation (%)"],
+            mode="lines+markers",
+            name="Food Inflation",
+            line=dict(color="#ffffff", width=2),
+            marker=dict(size=7, color="#ffffff"),
+        )
     )
-    fig_party.update_layout(
+    fig_harvest.add_trace(
+        go.Scatter(
+            x=harvest["Epoch"],
+            y=harvest["Growth (%)"],
+            mode="lines+markers",
+            name="Growth",
+            line=dict(color=YELLOW_GOLD, width=3),
+            marker=dict(size=8, color=YELLOW_GOLD),
+        )
+    )
+    fig_harvest.add_trace(
+        go.Scatter(
+            x=harvest["Epoch"],
+            y=harvest["Reserves (USD Bn)"],
+            mode="lines+markers",
+            name="Reserves ($B+)",
+            yaxis="y2",
+            line=dict(color="#b8962e", width=2),
+            marker=dict(size=7, color="#b8962e"),
+        )
+    )
+    fig_harvest.update_layout(
         template=None,
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
         font=dict(family="Goldman, sans-serif", color="#ffffff", size=13),
         font_color="#ffffff",
-        bargap=0.22,
-        bargroupgap=0.08,
         legend=dict(
-            title=dict(text="Year", font=dict(family="Goldman, sans-serif", color=GOLD, size=13)),
+            title=dict(text="Harvest metrics", font=dict(family="Goldman, sans-serif", color=GOLD, size=13)),
             font=dict(family="Goldman, sans-serif", color="#ffffff", size=12),
             bgcolor="rgba(0,0,51,0.5)",
             bordercolor="rgba(212,175,55,0.35)",
             borderwidth=1,
         ),
         xaxis=dict(
-            title=dict(text="Party", font=_axis_title_font),
+            title=dict(text="Quarter", font=_axis_title_font),
             tickfont=_tick_font,
             showgrid=False,
             linecolor="rgba(255,255,255,0.4)",
             zeroline=False,
         ),
         yaxis=dict(
-            title=dict(text="Votes", font=dict(family="Goldman, sans-serif", size=14, color=GOLD)),
+            title=dict(text="Inflation / Growth (%)", font=dict(family="Goldman, sans-serif", size=14, color=GOLD)),
             tickfont=_tick_font,
             showgrid=True,
             gridcolor="rgba(255,255,255,0.12)",
             zerolinecolor="rgba(255,255,255,0.22)",
             linecolor="rgba(255,255,255,0.4)",
         ),
+        yaxis2=dict(
+            title=dict(text="Reserves (USD Bn)", font=dict(family="Goldman, sans-serif", color="#ffffff", size=12)),
+            overlaying="y",
+            side="right",
+            showgrid=False,
+            tickfont=dict(family="Goldman, sans-serif", color="#ffffff", size=10),
+        ),
         margin=dict(t=36, b=48, l=72, r=36),
     )
-    fig_party.update_traces(marker_line_width=0)
-    st.plotly_chart(fig_party, use_container_width=True)
+    st.plotly_chart(fig_harvest, use_container_width=True)
 
     # POSITION 2 — Forensic audit shadow (independent 15/15 node counter)
     _forensic_verified = int((dff_hub["canvasser_ratio"] >= 15.0).sum())
@@ -1642,6 +1731,16 @@ with tab_global:
         value=st.session_state.get("threat_monitor", False),
         key="threat_monitor_toggle",
     )
+    _heritage_toggle = st.checkbox(
+        "Heritage Spine layer (AKK + Coastal Highway)",
+        value=True,
+        key="heritage_spine_toggle",
+    )
+    _stability_toggle = st.checkbox(
+        "Stability Heatmap (Operation Kukan Kura)",
+        value=True,
+        key="stability_heat_toggle",
+    )
     st.session_state.threat_monitor = _tm
     st.session_state.opposition_heatmap = _tm
     _gold_heading(
@@ -1661,6 +1760,38 @@ with tab_global:
         center=_fig_center,
         threat_monitor=st.session_state.threat_monitor,
     )
+    if _heritage_toggle:
+        for _corr, _g in _heritage_layer_df.groupby("corridor"):
+            fig_lga.add_trace(
+                go.Scattermapbox(
+                    lat=_g["lat"],
+                    lon=_g["lon"],
+                    mode="lines+markers",
+                    line=dict(color=YELLOW_GOLD, width=3),
+                    marker=dict(size=9, color=YELLOW_GOLD),
+                    name=f"Heritage Spine · {_corr}",
+                    hovertemplate=f"{_corr}<br>Completion: %{{customdata[0]}}%<extra></extra>",
+                    customdata=_g[["completion_pct"]].values,
+                )
+            )
+    if _stability_toggle:
+        fig_lga.add_trace(
+            go.Scattermapbox(
+                lat=_stability_heat_df["lat"],
+                lon=_stability_heat_df["lon"],
+                mode="markers",
+                marker=dict(
+                    size=16,
+                    color=_stability_heat_df["crime_drop_pct"],
+                    colorscale=[[0, "#1A0033"], [0.5, "#B87333"], [1.0, "#FFD700"]],
+                    opacity=0.46,
+                    showscale=False,
+                ),
+                name="Stability Heatmap",
+                hovertemplate="Crime drop: %{customdata[0]:.1f}%<extra></extra>",
+                customdata=_stability_heat_df[["crime_drop_pct"]].values,
+            )
+        )
     st.plotly_chart(fig_lga, use_container_width=True)
     if st.session_state.get("map_view"):
         if st.button("Reset map to national (carto‑positron) view", key="reset_map_national_btn"):

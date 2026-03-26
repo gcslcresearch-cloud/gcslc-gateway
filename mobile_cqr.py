@@ -70,6 +70,8 @@ if "mobile_cqr_requests" not in st.session_state:
     st.session_state.mobile_cqr_requests = _make_mock_requests()
 if "mobile_cqr_audit" not in st.session_state:
     st.session_state.mobile_cqr_audit = []
+if "media_blitz_runs" not in st.session_state:
+    st.session_state.media_blitz_runs = 0
 
 
 _countdown = _format_countdown_wat(datetime.now(_TZ), ELECTION_DATETIME_WAT)
@@ -468,6 +470,20 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
+_mb_col1, _mb_col2 = st.columns([1, 1])
+with _mb_col1:
+    if st.button(
+        "Media Blitz Control",
+        key="media_blitz_control_btn",
+        use_container_width=True,
+        type="primary",
+        help="Launch WhatsApp/SMS corridor broadcasts",
+    ):
+        st.session_state.media_blitz_runs += 1
+        st.success("WhatsApp/SMS corridor broadcasts launched from S24 Ultra terminal.")
+with _mb_col2:
+    st.metric("Broadcast Runs", f"{int(st.session_state.media_blitz_runs):,}")
 
 _SWAT_TARGET = 21_750
 _SWAT_CURRENT = 18_200
