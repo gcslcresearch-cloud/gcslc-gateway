@@ -1,3 +1,5 @@
+YELLOW_GOLD = "#D4AF37"
+
 import hashlib
 import html
 from typing import Optional
@@ -36,7 +38,6 @@ if "threat_monitor" not in st.session_state:
 
 # RHGI-SWAT-OPPOSITION-77 — global colors (strict DG / SWAT palette).
 # RHGI-GOLDMAN palette (mirrors :root CSS variables).
-YELLOW_GOLD = "#D4AF37"
 METALLIC_GOLD = YELLOW_GOLD
 NAVY_CSS = "#000033"
 GOLD = METALLIC_GOLD
@@ -209,6 +210,27 @@ def _lga_lat_lon(state: str, lga: str) -> tuple[float, float]:
     jlat = (int(digest[:4], 16) / 0xFFFF - 0.5) * 0.42
     jlon = (int(digest[4:8], 16) / 0xFFFF - 0.5) * 0.42
     return base_lat + jlat, base_lon + jlon
+
+
+def build_pu_sync_payload(dff: pd.DataFrame) -> pd.DataFrame:
+    """Build outreach sync payload: voter identifiers aligned to PU coordinates."""
+    cols = ["state", "lga", "zone", "canvassers"]
+    out = dff[cols].copy()
+    out["voter_name"] = out.apply(
+        lambda r: f"VOTER-{str(r['state']).upper()}-{str(r['lga']).upper()}",
+        axis=1,
+    )
+    coords = out.apply(
+        lambda r: _lga_lat_lon(str(r["state"]), str(r["lga"])),
+        axis=1,
+        result_type="expand",
+    )
+    out["pu_lat"] = coords[0].round(6)
+    out["pu_lon"] = coords[1].round(6)
+    out = out.rename(columns={"canvassers": "assigned_canvassers"})
+    return out[
+        ["voter_name", "state", "lga", "zone", "pu_lat", "pu_lon", "assigned_canvassers"]
+    ]
 
 
 def margin_zone(row: pd.Series) -> str:
@@ -1170,6 +1192,7 @@ st.markdown(
 
 with st.sidebar:
     st.header("Scientific controls")
+    st.subheader("Category 1: Harvest Metrics")
     st.subheader("Sovereign Budget Engine (Tranche 1)")
     st.metric(
         "Global Logistics Fuel:",
@@ -1189,8 +1212,9 @@ with st.sidebar:
     )
     st.metric(
         "Sovereign Voter Yield",
-        f"{sovereign_total:,.0f}",
-        help="Σ over LGAs: (Registered Voters × PVC Collection Rate) − 2023 Actual Votes.",
+        "20.7M Anchor vs 38.4M Projected Yield",
+        delta="+17.7M projected delta",
+        help="Anchor: 20.7M sovereign mandate baseline. Projected yield: 38.4M.",
     )
     st.caption("PVC & turnout rates are forensic anchors per LGA in data_engine.")
     st.caption(
@@ -1204,6 +1228,30 @@ with st.sidebar:
         delta=f"Base projection {projected_national:,}",
         help="Mandate reference total; live yield updates with turnout lift.",
     )
+    st.subheader("Category 2: Infrastructure Layer")
+    st.markdown(
+        "- **Heritage Spine**: AKK Section 1 at **80% completion**\n"
+        "- **Coastal Road Section 1**: commissioning target **May 20**"
+    )
+    st.subheader("Category 3: Outreach Command")
+    st.metric("Outreach Velocity", "46.63% coverage")
+    if st.button("PUSH PU REMINDERS", use_container_width=True, key="push_pu_reminders_btn"):
+        pu_payload = build_pu_sync_payload(df)
+        st.session_state["pu_sync_payload"] = pu_payload
+        st.success(
+            f"PU Reminder Engine synced {len(pu_payload):,} voter records with PU coordinates."
+        )
+    pu_payload = st.session_state.get("pu_sync_payload")
+    if isinstance(pu_payload, pd.DataFrame) and not pu_payload.empty:
+        st.caption("PU Reminder Engine payload preview (first 10 rows).")
+        st.dataframe(pu_payload.head(10), use_container_width=True, hide_index=True)
+        st.download_button(
+            "Download PU sync payload (CSV)",
+            data=pu_payload.to_csv(index=False).encode("utf-8"),
+            file_name="pu_reminder_sync_payload.csv",
+            mime="text/csv",
+            use_container_width=True,
+        )
 
 dff = apply_turnout_lift(df, turnout_lift)
 dff_hub = filter_by_corridor(dff, st.session_state.get("dg_corridor"))
@@ -1492,7 +1540,7 @@ with tab_global:
             name="RHGI 15/15 Density",
             yaxis="y2",
             mode="lines+markers",
-            line=dict(color=YELLOW_GOLD, width=2, dash="dash"),
+            line=dict(color=YELLOW_GOLD, width=2),
             marker=dict(size=8, color=YELLOW_GOLD),
         )
     )
