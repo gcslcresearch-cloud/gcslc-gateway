@@ -471,6 +471,59 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+# DG phone threshold gong (armed)
+PRIMARIES_START_WAT = _TZ.localize(datetime(2026, 4, 23, 0, 0, 0))
+_primaries_start_ms = int(PRIMARIES_START_WAT.timestamp() * 1000)
+st.caption("DG Phone Threshold Gong: ARMED (24h Primary window)")
+components.html(
+    f"""
+    <script>
+      (function() {{
+        if (window.__dg_phone_primaries_gong_listener_setup) return;
+        window.__dg_phone_primaries_gong_listener_setup = true;
+
+        const PRIMARIES_START_MS = {_primaries_start_ms};
+
+        function playGongFallback() {{
+          try {{
+            const Ctx = window.AudioContext || window.webkitAudioContext;
+            const ctx = new Ctx();
+            if (ctx.state === 'suspended') ctx.resume();
+
+            const now = ctx.currentTime;
+            const o = ctx.createOscillator();
+            const g = ctx.createGain();
+            o.type = 'sine';
+            o.frequency.setValueAtTime(55, now);
+            o.frequency.exponentialRampToValueAtTime(22, now + 0.8);
+            g.gain.setValueAtTime(0.0001, now);
+            g.gain.exponentialRampToValueAtTime(0.28, now + 0.02);
+            g.gain.exponentialRampToValueAtTime(0.0001, now + 0.95);
+            o.connect(g); g.connect(ctx.destination);
+            o.start(now);
+            o.stop(now + 1.0);
+            setTimeout(() => {{ try {{ ctx.close(); }} catch(e){{}} }}, 1200);
+          }} catch (e) {{}}
+        }}
+
+        function checkCountdown() {{
+          const remMs = PRIMARIES_START_MS - Date.now();
+          const remSec = Math.floor(remMs / 1000);
+          if (remSec === 86400) {{
+            if (!window.__dg_phone_primaries_gong_fired_24h) {{
+              window.__dg_phone_primaries_gong_fired_24h = true;
+              playGongFallback();
+            }}
+          }}
+        }}
+
+        setInterval(checkCountdown, 250);
+      }})();
+    </script>
+    """,
+    height=0,
+)
+
 _mb_col1, _mb_col2 = st.columns([1, 1])
 with _mb_col1:
     if st.button(

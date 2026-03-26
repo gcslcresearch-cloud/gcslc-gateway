@@ -86,9 +86,8 @@ _DUBAI_TZ = pytz.timezone("Asia/Dubai")
 ELECTION_DATETIME_WAT = _LAGOS_TZ.localize(datetime(2027, 2, 25, 8, 0, 0))
 ELECTION_TARGET_WAT = _LAGOS_TZ.localize(datetime(2027, 1, 16, 0, 0, 0))
 STATIC_CALIBRATION_MONTHS = 9
-ELECTION_CALIBRATION_START_WAT = ELECTION_TARGET_WAT - relativedelta(
-    months=STATIC_CALIBRATION_MONTHS
-)
+# Hard research anchor: Mar 26, 2026 → Jan 16, 2027.
+ELECTION_CALIBRATION_START_WAT = _LAGOS_TZ.localize(datetime(2026, 3, 26, 0, 0, 0))
 PRIMARIES_START_WAT = _LAGOS_TZ.localize(datetime(2026, 4, 23, 0, 0, 0))
 EIGHT_R_DETERMINANTS = [
     ("Refine", "Proprietary Determinant — Refine: Sharpening ward-level turnout models and PVC reconciliation."),
@@ -821,25 +820,62 @@ st.markdown(
       font-family: 'Goldman', sans-serif !important;
       padding-top: 0.68rem !important;
       padding-bottom: 0.68rem !important;
-      color: var(--metallic-gold) !important;
-      border: 1px solid rgba(212, 175, 55, 0.55) !important;
-      background: linear-gradient(155deg, #00000e 0%, #00001a 55%, #000033 100%) !important;
-      background-size: 220% 100% !important;
-      animation: r8MetalPulse 2.6s ease-in-out infinite;
+      color: #ffffff !important;
+      border: 1px solid transparent !important;
+      border-radius: var(--command-box-radius) !important;
+      height: var(--command-box-height) !important;
+      min-height: var(--command-box-height) !important;
+      width: 100% !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      background: radial-gradient(
+        circle at 50% 35%,
+        rgba(212,175,55,0.14) 0%,
+        rgba(0,0,51,0.96) 55%,
+        rgba(0,0,33,1) 100%
+      ) padding-box,
+      linear-gradient(
+        90deg,
+        var(--command-silver) 0%,
+        rgba(255,255,255,0.22) 50%,
+        var(--command-silver) 100%
+      ) border-box !important;
+      background-size: 200% 200%;
+      background-position: 0% 50%;
+      animation: rhgiMetalShimmer 1.5s linear infinite, rhgiClockBreathe 3s ease-in-out infinite;
+      box-shadow: 0 0 var(--sec-glow-px) rgba(212,175,55,var(--sec-glow-alpha));
     }
     /* 8R belt: Yellow Gold text + navy field + shimmer (no white, no neon) */
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)) button[kind="secondary"],
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)) button[kind="primary"] {
-      color: var(--metallic-gold) !important;
-      border: 1px solid rgba(212, 175, 55, 0.55) !important;
-      background: linear-gradient(155deg, #000005 0%, #00000f 50%, #00001c 100%) !important;
-      background-size: 220% 100% !important;
-      animation: r8WidgetPulse 2s ease-in-out infinite, r8ShimmerSweep 3s linear infinite !important;
+      color: #ffffff !important;
+      border: 1px solid transparent !important;
+      border-radius: var(--command-box-radius) !important;
+      height: var(--command-box-height) !important;
+      min-height: var(--command-box-height) !important;
+      width: 100% !important;
+      background: radial-gradient(
+        circle at 50% 35%,
+        rgba(212,175,55,0.14) 0%,
+        rgba(0,0,51,0.96) 55%,
+        rgba(0,0,33,1) 100%
+      ) padding-box,
+      linear-gradient(
+        90deg,
+        var(--command-silver) 0%,
+        rgba(255,255,255,0.22) 50%,
+        var(--command-silver) 100%
+      ) border-box !important;
+      background-size: 200% 200%;
+      background-position: 0% 50%;
+      animation: rhgiMetalShimmer 1.5s linear infinite, rhgiClockBreathe 3s ease-in-out infinite !important;
+      box-shadow: 0 0 var(--sec-glow-px) rgba(212,175,55,var(--sec-glow-alpha));
     }
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)) button p,
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)) button span {
-      color: #D4AF37 !important;
-      animation: r8GoldTextShimmer 2.4s ease-in-out infinite !important;
+      color: #ffffff !important;
+      animation: none !important;
     }
     @keyframes r8GoldTextShimmer {
       0%, 100% {
@@ -857,11 +893,28 @@ st.markdown(
     /* 6-column corridor belt: Yellow Gold + navy + shimmer */
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)):not(:has(> div:nth-child(7))) button[kind="secondary"],
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)):not(:has(> div:nth-child(7))) button[kind="primary"] {
-      color: var(--metallic-gold) !important;
-      border: 1px solid rgba(212, 175, 55, 0.55) !important;
-      background: linear-gradient(155deg, #000005 0%, #00000f 50%, #00001c 100%) !important;
-      background-size: 220% 100% !important;
-      animation: r8WidgetPulse 2s ease-in-out infinite, r8ShimmerSweep 3s linear infinite !important;
+      color: #ffffff !important;
+      border: 1px solid transparent !important;
+      border-radius: var(--command-box-radius) !important;
+      height: var(--command-box-height) !important;
+      min-height: var(--command-box-height) !important;
+      width: 100% !important;
+      background: radial-gradient(
+        circle at 50% 35%,
+        rgba(212,175,55,0.14) 0%,
+        rgba(0,0,51,0.96) 55%,
+        rgba(0,0,33,1) 100%
+      ) padding-box,
+      linear-gradient(
+        90deg,
+        var(--command-silver) 0%,
+        rgba(255,255,255,0.22) 50%,
+        var(--command-silver) 100%
+      ) border-box !important;
+      background-size: 200% 200%;
+      background-position: 0% 50%;
+      animation: rhgiMetalShimmer 1.5s linear infinite, rhgiClockBreathe 3s ease-in-out infinite !important;
+      box-shadow: 0 0 var(--sec-glow-px) rgba(212,175,55,var(--sec-glow-alpha));
     }
     @keyframes r8WidgetPulse {
       0%, 100% { box-shadow: 0 0 8px rgba(212,175,55,0.25); transform: scale(1); }
@@ -1511,8 +1564,21 @@ st.markdown(
         100% { background-position: 200% 50%; }
       }
       @keyframes rhgiClockBreathe {
-        0%, 100% { box-shadow: 0 0 12px rgba(255,255,255,0.14); }
-        50% { box-shadow: 0 0 28px rgba(255,255,255,0.35); }
+        0%, 100% {
+          box-shadow: 0 0 calc(var(--sec-glow-px) * 0.55) rgba(212,175,55,var(--sec-glow-alpha));
+        }
+        50% {
+          box-shadow: 0 0 var(--sec-glow-px) rgba(212,175,55,var(--sec-glow-alpha));
+        }
+      }
+      :root {
+        --command-box-height: 62px;
+        --command-box-radius: 14px;
+        --command-gold: #D4AF37;
+        --command-silver: #C0C0C0;
+        --command-navy: #000033;
+        --sec-glow-px: 14px;
+        --sec-glow-alpha: 0.18;
       }
       .rhgi-prism-frames-row {
         display: flex;
@@ -1520,6 +1586,7 @@ st.markdown(
         justify-content: center;
         flex-wrap: wrap;
         margin: 6px 0 10px 0;
+        align-items: center;
       }
       .rhgi-prism-frame {
         padding: 1px;
@@ -1549,23 +1616,40 @@ st.markdown(
         margin: 8px 0 14px 0;
       }
       .rhgi-metal-box {
-        height: 62px;
-        padding: 6px 8px 8px 8px;
-        border-radius: 14px;
-        border: 1px solid rgba(212,175,55,0.18);
+        height: var(--command-box-height);
+        width: 100%;
+        padding: 1px; /* metallic edge */
+        border-radius: var(--command-box-radius);
+        border: 0;
         background: linear-gradient(
-          135deg,
-          rgba(0,0,51,0.88) 0%,
-          rgba(255,255,255,0.92) 42%,
-          rgba(192,192,192,0.72) 60%,
-          rgba(0,0,51,0.84) 100%
+          90deg,
+          var(--command-silver) 0%,
+          rgba(255,255,255,0.22) 50%,
+          var(--command-silver) 100%
         );
         background-size: 200% 200%;
-        animation: rhgiMetalShimmer 2.8s linear infinite, rhgiClockBreathe 2s ease-in-out infinite;
+        background-position: 0% 50%;
+        animation: rhgiMetalShimmer 1.5s linear infinite, rhgiClockBreathe 3s ease-in-out infinite;
         text-align: center;
+        display: flex;
+        justify-content: center;
+        box-shadow: 0 0 calc(var(--sec-glow-px) * 0.55) rgba(212,175,55,var(--sec-glow-alpha));
+      }
+      .rhgi-metal-box-inner {
+        width: 100%;
+        height: 100%;
+        border-radius: calc(var(--command-box-radius) - 1px);
+        background: radial-gradient(
+          circle at 50% 30%,
+          rgba(192,192,192,0.12) 0%,
+          rgba(0,0,51,0.92) 52%,
+          rgba(0,0,33,1) 100%
+        );
         display: flex;
         flex-direction: column;
         justify-content: center;
+        align-items: center;
+        gap: 4px;
       }
       .rhgi-metal-label {
         color: #ffffff;
@@ -1574,12 +1658,24 @@ st.markdown(
         font-size: 0.88rem;
       }
       .rhgi-metal-number {
-        color: #D4AF37;
+        color: var(--command-gold);
         font-weight: 950;
         font-size: 1.45rem;
         margin-top: 6px;
         text-shadow: 0 0 18px rgba(212,175,55,0.35);
       }
+      .rhgi-prism-narrative-frame {
+        background: rgba(0,0,51,0.65);
+        border: 1px solid rgba(255,255,255,0.18);
+        border-radius: 14px;
+        padding: 10px 14px;
+        color: #ffffff;
+        font-weight: 900;
+        letter-spacing: 0.02em;
+        box-shadow: 0 0 22px rgba(212,175,55,0.12);
+        text-align: center;
+      }
+      .rhgi-prism-narrative-frame * { color: #ffffff !important; }
     </style>
     <div class="rhgi-prism-frames-row">
       <div class="rhgi-prism-frame">
@@ -1675,48 +1771,52 @@ components.html(
 
 def _live_primaries_metal_clock_inner() -> None:
     now = datetime.now(_LAGOS_TZ)
-    # Hard calibration: Months must be exactly "09" (static) for Jan 16, 2027.
+    # Months are hard-anchored for Jan 16, 2027.
     months = "09"
-
-    # Weeks/Days/Hours/Minutes are relative to a fixed "9 months before election"
-    # calibration window.
-    if now >= ELECTION_CALIBRATION_START_WAT:
-        weeks = 0
-        days = 0
-        hours = 0
-        minutes = 0
-    else:
-        rem = ELECTION_CALIBRATION_START_WAT - now
-        total_seconds = int(rem.total_seconds())
-        total_seconds = max(total_seconds, 0)
-        weeks = total_seconds // 604_800
-        total_seconds %= 604_800
-        days = total_seconds // 86_400
-        total_seconds %= 86_400
-        hours = total_seconds // 3_600
-        total_seconds %= 3_600
-        minutes = total_seconds // 60
+    # Live sync: Weeks/Days/Hours/Minutes/Seconds pulse based on remaining time
+    # within the Mar 26, 2026 → Jan 16, 2027 research window.
+    # Static 09-month calibration window clamp:
+    # - If we're before the calibration start, hold full 09-month window.
+    # - Otherwise, count down from "now" to Jan 16, 2027.
+    rem = (
+        (ELECTION_TARGET_WAT - ELECTION_CALIBRATION_START_WAT)
+        if now < ELECTION_CALIBRATION_START_WAT
+        else (ELECTION_TARGET_WAT - now)
+    )
+    total_seconds = int(rem.total_seconds()) if rem.total_seconds() > 0 else 0
+    weeks = total_seconds // 604_800
+    total_seconds %= 604_800
+    days = total_seconds // 86_400
+    total_seconds %= 86_400
+    hours = total_seconds // 3_600
+    total_seconds %= 3_600
+    minutes = total_seconds // 60
 
     velocity_pct = _pu_velocity_pct_for_clock()
     # Data grounding: "Seconds" represent the velocity of the 20.7M mandate.
     seconds_val = f"{velocity_pct:.2f}"
+    # Gold outer-glow intensity synced to "Seconds" velocity counter.
+    glow_factor = max(0.0, min(1.0, velocity_pct / 100.0))
+    glow_px = 10.0 + 28.0 * glow_factor
+    glow_alpha = 0.10 + 0.30 * glow_factor
 
     metal_countdown_live_ph.markdown(
         f"""
+        <style>:root{{--sec-glow-px:{glow_px:.0f}px; --sec-glow-alpha:{glow_alpha:.3f};}}</style>
         <div class="rhgi-metal-grid">
-          <div class="rhgi-metal-box"><div class="rhgi-metal-label">Months</div><div class="rhgi-metal-number">{months}</div></div>
-          <div class="rhgi-metal-box"><div class="rhgi-metal-label">Weeks</div><div class="rhgi-metal-number">{weeks}</div></div>
-          <div class="rhgi-metal-box"><div class="rhgi-metal-label">Days</div><div class="rhgi-metal-number">{days}</div></div>
-          <div class="rhgi-metal-box"><div class="rhgi-metal-label">Hours</div><div class="rhgi-metal-number">{hours:02d}</div></div>
-          <div class="rhgi-metal-box"><div class="rhgi-metal-label">Minutes</div><div class="rhgi-metal-number">{minutes:02d}</div></div>
-          <div class="rhgi-metal-box"><div class="rhgi-metal-label">Seconds</div><div class="rhgi-metal-number">{seconds_val}</div></div>
+          <div class="rhgi-metal-box"><div class="rhgi-metal-box-inner"><div class="rhgi-metal-label">Months</div><div class="rhgi-metal-number">{months}</div></div></div>
+          <div class="rhgi-metal-box"><div class="rhgi-metal-box-inner"><div class="rhgi-metal-label">Weeks</div><div class="rhgi-metal-number">{weeks}</div></div></div>
+          <div class="rhgi-metal-box"><div class="rhgi-metal-box-inner"><div class="rhgi-metal-label">Days</div><div class="rhgi-metal-number">{days}</div></div></div>
+          <div class="rhgi-metal-box"><div class="rhgi-metal-box-inner"><div class="rhgi-metal-label">Hours</div><div class="rhgi-metal-number">{hours:02d}</div></div></div>
+          <div class="rhgi-metal-box"><div class="rhgi-metal-box-inner"><div class="rhgi-metal-label">Minutes</div><div class="rhgi-metal-number">{minutes:02d}</div></div></div>
+          <div class="rhgi-metal-box"><div class="rhgi-metal-box-inner"><div class="rhgi-metal-label">Seconds</div><div class="rhgi-metal-number">{seconds_val}</div></div></div>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
 if hasattr(st, "fragment"):
-    _live_cd = st.fragment(run_every=timedelta(seconds=1))(_live_primaries_metal_clock_inner)
+    _live_cd = st.fragment(run_every=timedelta(milliseconds=100))(_live_primaries_metal_clock_inner)
     _live_cd()
 else:
     _live_primaries_metal_clock_inner()
@@ -1730,7 +1830,13 @@ _hub_cols = st.columns(6)
 for _hi, (_abbr, _zname) in enumerate(CORRIDOR_NODES):
     _btn_label = "NW (K3)" if _abbr == "NW" else _abbr
     with _hub_cols[_hi]:
-        if st.button(_btn_label, key=f"dg_hub_{_abbr}", use_container_width=True, help=_zname):
+        if st.button(
+            _btn_label,
+            key=f"dg_hub_{_abbr}",
+            use_container_width=True,
+            help=_zname,
+            type="secondary",
+        ):
             st.session_state.dg_corridor = _zname
             st.session_state.corridor_zone = _zname
             st.rerun()
@@ -1751,6 +1857,7 @@ for _ri, (_r8_label, _r8_det) in enumerate(EIGHT_R_DETERMINANTS):
             key=f"r8_btn_{_ri}",
             help=_r8_det,
             use_container_width=True,
+            type="secondary",
         )
 
 c1, c2, c3 = st.columns(3)
@@ -1916,9 +2023,7 @@ with tab_global:
     _gold_heading("Harvest Trendline")
     st.caption("Food Inflation (12.12%) vs Growth (4.4%) vs Reserves ($50B+).")
     st.markdown(
-        "<div style='background:rgba(0,0,51,0.65); border:1px solid rgba(212,175,55,0.35); "
-        "color:#ffffff; padding:10px 14px; border-radius:14px; font-weight:900; "
-        "letter-spacing:0.02em;'>"
+        "<div class='rhgi-prism-narrative-frame'>"
         "CATEGORY 1 NARRATIVE: Harvest Trendline anchors Food Inflation (12.12%) versus Growth (4.4%) "
         "and reserves ($50B+), keeping the mandate resilient under price pressure."
         "</div>",
@@ -2039,9 +2144,7 @@ with tab_global:
     st.session_state.threat_monitor = _tm
     st.session_state.opposition_heatmap = _tm
     st.markdown(
-        "<div style='background:rgba(0,0,51,0.65); border:1px solid rgba(212,175,55,0.35); "
-        "color:#ffffff; padding:10px 14px; border-radius:14px; font-weight:900; "
-        "letter-spacing:0.02em; margin-top:8px;'>"
+        "<div class='rhgi-prism-narrative-frame' style='margin-top:8px;'>"
         "CATEGORY 2 NARRATIVE: Concrete Heritage tracks AKK Road Section 1 at <span style='color:#D4AF37;'>80%</span> "
         "completion alongside Coastal Highway readiness, while the Stability Heatmap reflects Operation Kukan Kura "
         "crime-drop pulse across mapped LGAs."
