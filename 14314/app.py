@@ -140,12 +140,6 @@ def _format_election_countdown(now: datetime) -> str:
     return f"[{months}] : [{days}] : [{h:02d}] : [{m:02d}] : [{s:02d}]"
 
 
-def _pu_velocity_pct_for_clock() -> float:
-    """PU Reminder Engine velocity → percentage (0–100)."""
-    pu_messages_sent = int(st.session_state.get("pu_messages_sent", 0))
-    return 100.0 * float(pu_messages_sent) / float(PU_TOTAL) if PU_TOTAL else 0.0
-
-
 def _compute_pu_messages_sent_from_payload(payload_df: pd.DataFrame) -> int:
     """Compute reached PU count from Image 11 CSV payload.
 
@@ -573,6 +567,53 @@ st.markdown(
       --rose-gold: #D4AF37;
       --navy: #000033;
       --stark-white: #ffffff;
+      --command-box-height: 62px;
+      --command-box-radius: 14px;
+      --command-gold: #D4AF37;
+      --command-silver: #C0C0C0;
+      --command-white: #FFFFFF;
+      --sec-glow-px: 12px;
+      --sec-glow-alpha: 0.26;
+    }
+    /* SSMI-103 — silver + white border sweep (1.5s cycle) */
+    @keyframes rhgiMetalShimmer {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+    /* Yellow Gold inner-pulse + tactical scale (1.0 → 1.03) — non-Seconds countdown cells */
+    @keyframes rhgiClockBreathe {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow:
+          0 0 calc(var(--sec-glow-px) * 0.35) rgba(212, 175, 55, calc(var(--sec-glow-alpha) * 0.65)),
+          inset 0 0 16px rgba(212, 175, 55, 0.18);
+      }
+      50% {
+        transform: scale(1.03);
+        box-shadow:
+          0 0 calc(var(--sec-glow-px) * 0.85) rgba(212, 175, 55, var(--sec-glow-alpha)),
+          inset 0 0 26px rgba(212, 175, 55, 0.32);
+      }
+    }
+    /* DG Corridor + Seconds box — 1s pulse (clock-second sync) */
+    @keyframes rhgiSecSyncPulse {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow:
+          0 0 8px rgba(212, 175, 55, 0.22),
+          inset 0 0 14px rgba(212, 175, 55, 0.14);
+      }
+      50% {
+        transform: scale(1.05);
+        box-shadow:
+          0 0 20px rgba(212, 175, 55, 0.48),
+          inset 0 0 24px rgba(212, 175, 55, 0.26);
+      }
+    }
+    /* Prism corridor — conic silver/gold border rotates in 1.5s */
+    @keyframes rhgiCorridorBorderRotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
     /* Anti-Blue Strike — strip default Streamlit / BaseWeb blues */
     html, body { background: #000033 !important; }
@@ -776,7 +817,7 @@ st.markdown(
     .rhgi-wm-cell {
       font-size: clamp(2rem, 6.5vw, 3.4rem);
       font-weight: 900;
-      color: rgba(212, 175, 55, 0.5);
+      color: rgba(212, 175, 55, 0.28);
       user-select: none;
       animation: wmCellBubble 8s ease-in-out infinite;
     }
@@ -795,12 +836,9 @@ st.markdown(
     }
     .rhgi-capture-shield {
       position: fixed; inset: 0; pointer-events: none; z-index: 9999;
-      background:
-        repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0px, transparent 1px, transparent 12px),
-        repeating-linear-gradient(90deg, rgba(0,0,51,0.06) 0px, transparent 1px, transparent 14px),
-        radial-gradient(ellipse at 30% 20%, rgba(212,175,55,0.04) 0%, transparent 55%);
-      mix-blend-mode: soft-light;
-      opacity: 0.92;
+      background: radial-gradient(ellipse at 50% 35%, rgba(212,175,55,0.04) 0%, transparent 60%);
+      mix-blend-mode: normal;
+      opacity: 0.22;
     }
     button, input, textarea, [data-testid="stMarkdownContainer"], .stMarkdown { user-select: text !important; -webkit-user-select: text !important; }
     /* 8R row: no white card behind buttons */
@@ -825,26 +863,28 @@ st.markdown(
       border-radius: var(--command-box-radius) !important;
       height: var(--command-box-height) !important;
       min-height: var(--command-box-height) !important;
+      max-height: var(--command-box-height) !important;
       width: 100% !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+      transform-origin: center center !important;
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
-      background: radial-gradient(
-        circle at 50% 35%,
-        rgba(212,175,55,0.14) 0%,
-        rgba(0,0,51,0.96) 55%,
-        rgba(0,0,33,1) 100%
-      ) padding-box,
+      background: #000033 padding-box,
       linear-gradient(
         90deg,
         var(--command-silver) 0%,
-        rgba(255,255,255,0.22) 50%,
+        var(--command-white) 18%,
+        var(--command-silver) 36%,
+        var(--command-white) 54%,
+        var(--command-silver) 72%,
+        var(--command-white) 90%,
         var(--command-silver) 100%
       ) border-box !important;
-      background-size: 200% 200%;
+      background-size: 240% 100%;
       background-position: 0% 50%;
       animation: rhgiMetalShimmer 1.5s linear infinite, rhgiClockBreathe 3s ease-in-out infinite;
-      box-shadow: 0 0 var(--sec-glow-px) rgba(212,175,55,var(--sec-glow-alpha));
     }
     /* 8R belt: Yellow Gold text + navy field + shimmer (no white, no neon) */
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)) button[kind="secondary"],
@@ -854,23 +894,25 @@ st.markdown(
       border-radius: var(--command-box-radius) !important;
       height: var(--command-box-height) !important;
       min-height: var(--command-box-height) !important;
+      max-height: var(--command-box-height) !important;
       width: 100% !important;
-      background: radial-gradient(
-        circle at 50% 35%,
-        rgba(212,175,55,0.14) 0%,
-        rgba(0,0,51,0.96) 55%,
-        rgba(0,0,33,1) 100%
-      ) padding-box,
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+      transform-origin: center center !important;
+      background: #000033 padding-box,
       linear-gradient(
         90deg,
         var(--command-silver) 0%,
-        rgba(255,255,255,0.22) 50%,
+        var(--command-white) 18%,
+        var(--command-silver) 36%,
+        var(--command-white) 54%,
+        var(--command-silver) 72%,
+        var(--command-white) 90%,
         var(--command-silver) 100%
       ) border-box !important;
-      background-size: 200% 200%;
+      background-size: 240% 100%;
       background-position: 0% 50%;
       animation: rhgiMetalShimmer 1.5s linear infinite, rhgiClockBreathe 3s ease-in-out infinite !important;
-      box-shadow: 0 0 var(--sec-glow-px) rgba(212,175,55,var(--sec-glow-alpha));
     }
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)) button p,
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)) button span {
@@ -890,31 +932,78 @@ st.markdown(
           0 0 4px rgba(255, 255, 255, 0.25);
       }
     }
-    /* 6-column corridor belt: Yellow Gold + navy + shimmer */
+    /* DG Corridor Command Hub — Prism Navy + rotating silver/gold ring + Seconds-sync pulse */
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)):not(:has(> div:nth-child(7))) button[kind="secondary"],
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)):not(:has(> div:nth-child(7))) button[kind="primary"] {
       color: #ffffff !important;
-      border: 1px solid transparent !important;
+      border: none !important;
       border-radius: var(--command-box-radius) !important;
       height: var(--command-box-height) !important;
       min-height: var(--command-box-height) !important;
+      max-height: var(--command-box-height) !important;
       width: 100% !important;
-      background: radial-gradient(
-        circle at 50% 35%,
-        rgba(212,175,55,0.14) 0%,
-        rgba(0,0,51,0.96) 55%,
-        rgba(0,0,33,1) 100%
-      ) padding-box,
-      linear-gradient(
-        90deg,
-        var(--command-silver) 0%,
-        rgba(255,255,255,0.22) 50%,
-        var(--command-silver) 100%
-      ) border-box !important;
-      background-size: 200% 200%;
-      background-position: 0% 50%;
-      animation: rhgiMetalShimmer 1.5s linear infinite, rhgiClockBreathe 3s ease-in-out infinite !important;
-      box-shadow: 0 0 var(--sec-glow-px) rgba(212,175,55,var(--sec-glow-alpha));
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+      transform-origin: center center !important;
+      isolation: isolate !important;
+      position: relative !important;
+      overflow: hidden !important;
+      background: transparent !important;
+      background-image: none !important;
+      animation: rhgiSecSyncPulse 1s ease-in-out infinite !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)):not(:has(> div:nth-child(7))) button[kind="secondary"]::before,
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)):not(:has(> div:nth-child(7))) button[kind="primary"]::before {
+      content: "" !important;
+      position: absolute !important;
+      inset: -2px !important;
+      border-radius: calc(var(--command-box-radius) + 2px) !important;
+      background: conic-gradient(
+        from 0deg,
+        #C0C0C0 0%,
+        #D4AF37 18%,
+        #C0C0C0 36%,
+        #D4AF37 54%,
+        #C0C0C0 72%,
+        #D4AF37 90%,
+        #C0C0C0 100%
+      ) !important;
+      animation: rhgiCorridorBorderRotate 1.5s linear infinite !important;
+      transform-origin: center center !important;
+      z-index: 0 !important;
+      pointer-events: none !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)):not(:has(> div:nth-child(7))) button[kind="secondary"]::after,
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)):not(:has(> div:nth-child(7))) button[kind="primary"]::after {
+      content: "" !important;
+      position: absolute !important;
+      inset: 2px !important;
+      border-radius: calc(var(--command-box-radius) - 2px) !important;
+      background: #000033 !important;
+      z-index: 1 !important;
+      pointer-events: none !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)):not(:has(> div:nth-child(7))) button[kind="primary"]::after {
+      box-shadow: inset 0 0 0 2px rgba(212, 175, 55, 0.88) !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)):not(:has(> div:nth-child(7))) button[kind="secondary"] > div,
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)):not(:has(> div:nth-child(7))) button[kind="primary"] > div {
+      position: relative !important;
+      z-index: 2 !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)):not(:has(> div:nth-child(7))) button[kind="secondary"] p,
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)):not(:has(> div:nth-child(7))) button[kind="secondary"] span,
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)):not(:has(> div:nth-child(7))) button[kind="primary"] p,
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)):not(:has(> div:nth-child(7))) button[kind="primary"] span {
+      color: #ffffff !important;
+      position: relative !important;
+      z-index: 2 !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)):not(:has(> div:nth-child(7))) button[kind="primary"] p,
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)):not(:has(> div:nth-child(7))) button[kind="primary"] span {
+      text-shadow:
+        0 0 10px rgba(212, 175, 55, 0.95),
+        0 0 22px rgba(212, 175, 55, 0.55) !important;
     }
     @keyframes r8WidgetPulse {
       0%, 100% { box-shadow: 0 0 8px rgba(212,175,55,0.25); transform: scale(1); }
@@ -1559,53 +1648,56 @@ st.markdown(
         0%, 100% { transform: scale(1.0); }
         50% { transform: scale(1.05); }
       }
-      @keyframes rhgiMetalShimmer {
-        0% { background-position: 0% 50%; }
-        100% { background-position: 200% 50%; }
-      }
-      @keyframes rhgiClockBreathe {
-        0%, 100% {
-          box-shadow: 0 0 calc(var(--sec-glow-px) * 0.55) rgba(212,175,55,var(--sec-glow-alpha));
-        }
-        50% {
-          box-shadow: 0 0 var(--sec-glow-px) rgba(212,175,55,var(--sec-glow-alpha));
-        }
-      }
       :root {
         --command-box-height: 62px;
         --command-box-radius: 14px;
         --command-gold: #D4AF37;
         --command-silver: #C0C0C0;
+        --command-white: #FFFFFF;
         --command-navy: #000033;
-        --sec-glow-px: 14px;
-        --sec-glow-alpha: 0.18;
+        --sec-glow-px: 12px;
+        --sec-glow-alpha: 0.26;
       }
       .rhgi-prism-frames-row {
         display: flex;
         gap: 14px;
         justify-content: center;
+        align-content: center;
         flex-wrap: wrap;
-        margin: 6px 0 10px 0;
+        margin: 6px auto 10px auto;
+        padding: 0 8px;
+        width: 100%;
+        max-width: 1200px;
         align-items: center;
       }
       .rhgi-prism-frame {
         padding: 1px;
         border-radius: 16px;
-        background: linear-gradient(90deg, #D4AF37 0%, #C0C0C0 50%, #D4AF37 100%);
-        animation: rhgiPrismZoom 5s ease-in-out infinite;
+        background: linear-gradient(
+          90deg,
+          #C0C0C0 0%,
+          #FFFFFF 20%,
+          #C0C0C0 40%,
+          #FFFFFF 60%,
+          #C0C0C0 80%,
+          #FFFFFF 100%
+        );
+        background-size: 220% 100%;
+        background-position: 0% 50%;
+        animation: rhgiMetalShimmer 1.5s linear infinite;
       }
       .rhgi-prism-frame-inner {
-        background: rgba(0,0,51,0.92);
+        background: #000033;
         border-radius: 15px;
         padding: 10px 16px;
         min-width: 360px;
         text-align: center;
+        animation: rhgiPrismZoom 5s ease-in-out infinite;
       }
       .rhgi-prism-frame-title {
         color: #ffffff;
         font-weight: 900;
         letter-spacing: 0.03em;
-        text-shadow: 0 0 14px rgba(212,175,55,0.25);
       }
 
       .rhgi-metal-grid {
@@ -1614,42 +1706,67 @@ st.markdown(
         grid-template-columns: repeat(6, minmax(0, 1fr));
         gap: 10px;
         margin: 8px 0 14px 0;
+        box-sizing: border-box;
       }
       .rhgi-metal-box {
         height: var(--command-box-height);
+        min-height: var(--command-box-height);
+        max-height: var(--command-box-height);
         width: 100%;
-        padding: 1px; /* metallic edge */
+        max-width: 100%;
+        box-sizing: border-box;
+        padding: 1px;
         border-radius: var(--command-box-radius);
         border: 0;
-        background: linear-gradient(
-          90deg,
-          var(--command-silver) 0%,
-          rgba(255,255,255,0.22) 50%,
-          var(--command-silver) 100%
-        );
-        background-size: 200% 200%;
-        background-position: 0% 50%;
-        animation: rhgiMetalShimmer 1.5s linear infinite, rhgiClockBreathe 3s ease-in-out infinite;
+        background: transparent;
         text-align: center;
         display: flex;
         justify-content: center;
-        box-shadow: 0 0 calc(var(--sec-glow-px) * 0.55) rgba(212,175,55,var(--sec-glow-alpha));
+        align-items: stretch;
+        transform-origin: center center;
+        position: relative;
+        overflow: hidden;
+      }
+      .rhgi-metal-box:not(.rhgi-seconds-box) {
+        animation: rhgiClockBreathe 3s ease-in-out infinite;
+      }
+      .rhgi-metal-box.rhgi-seconds-box {
+        animation: rhgiSecSyncPulse 1s ease-in-out infinite;
+      }
+      .rhgi-metal-box::before {
+        content: "";
+        position: absolute;
+        inset: -2px;
+        border-radius: calc(var(--command-box-radius) + 2px);
+        background: linear-gradient(
+          90deg,
+          #C0C0C0 0%,
+          #FFFFFF 18%,
+          #C0C0C0 36%,
+          #FFFFFF 54%,
+          #C0C0C0 72%,
+          #FFFFFF 90%,
+          #C0C0C0 100%
+        );
+        background-size: 240% 100%;
+        background-position: 0% 50%;
+        animation: rhgiMetalShimmer 1.5s linear infinite;
+        z-index: 0;
+        opacity: 1;
       }
       .rhgi-metal-box-inner {
         width: 100%;
         height: 100%;
+        min-height: 0;
         border-radius: calc(var(--command-box-radius) - 1px);
-        background: radial-gradient(
-          circle at 50% 30%,
-          rgba(192,192,192,0.12) 0%,
-          rgba(0,0,51,0.92) 52%,
-          rgba(0,0,33,1) 100%
-        );
+        background: #000033;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        gap: 4px;
+        gap: 2px;
+        position: relative;
+        z-index: 1;
       }
       .rhgi-metal-label {
         color: #ffffff;
@@ -1661,21 +1778,25 @@ st.markdown(
         color: var(--command-gold);
         font-weight: 950;
         font-size: 1.45rem;
-        margin-top: 6px;
-        text-shadow: 0 0 18px rgba(212,175,55,0.35);
+        margin-top: 2px;
       }
       .rhgi-prism-narrative-frame {
-        background: rgba(0,0,51,0.65);
-        border: 1px solid rgba(255,255,255,0.18);
+        background: #000033;
+        border: 1px solid rgba(212,175,55,0.45);
         border-radius: 14px;
         padding: 10px 14px;
         color: #ffffff;
         font-weight: 900;
         letter-spacing: 0.02em;
-        box-shadow: 0 0 22px rgba(212,175,55,0.12);
+        box-shadow: none;
         text-align: center;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.85);
       }
-      .rhgi-prism-narrative-frame * { color: #ffffff !important; }
+      .rhgi-prism-narrative-frame * { color: #ffffff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.85) !important; }
+      .rhgi-prism-narrative-frame, .rhgi-prism-narrative-frame * {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
     </style>
     <div class="rhgi-prism-frames-row">
       <div class="rhgi-prism-frame">
@@ -1791,25 +1912,18 @@ def _live_primaries_metal_clock_inner() -> None:
     hours = total_seconds // 3_600
     total_seconds %= 3_600
     minutes = total_seconds // 60
-
-    velocity_pct = _pu_velocity_pct_for_clock()
-    # Data grounding: "Seconds" represent the velocity of the 20.7M mandate.
-    seconds_val = f"{velocity_pct:.2f}"
-    # Gold outer-glow intensity synced to "Seconds" velocity counter.
-    glow_factor = max(0.0, min(1.0, velocity_pct / 100.0))
-    glow_px = 10.0 + 28.0 * glow_factor
-    glow_alpha = 0.10 + 0.30 * glow_factor
+    seconds = total_seconds % 60
+    seconds_val = f"{seconds:02d}"
 
     metal_countdown_live_ph.markdown(
         f"""
-        <style>:root{{--sec-glow-px:{glow_px:.0f}px; --sec-glow-alpha:{glow_alpha:.3f};}}</style>
         <div class="rhgi-metal-grid">
           <div class="rhgi-metal-box"><div class="rhgi-metal-box-inner"><div class="rhgi-metal-label">Months</div><div class="rhgi-metal-number">{months}</div></div></div>
           <div class="rhgi-metal-box"><div class="rhgi-metal-box-inner"><div class="rhgi-metal-label">Weeks</div><div class="rhgi-metal-number">{weeks}</div></div></div>
           <div class="rhgi-metal-box"><div class="rhgi-metal-box-inner"><div class="rhgi-metal-label">Days</div><div class="rhgi-metal-number">{days}</div></div></div>
           <div class="rhgi-metal-box"><div class="rhgi-metal-box-inner"><div class="rhgi-metal-label">Hours</div><div class="rhgi-metal-number">{hours:02d}</div></div></div>
           <div class="rhgi-metal-box"><div class="rhgi-metal-box-inner"><div class="rhgi-metal-label">Minutes</div><div class="rhgi-metal-number">{minutes:02d}</div></div></div>
-          <div class="rhgi-metal-box"><div class="rhgi-metal-box-inner"><div class="rhgi-metal-label">Seconds</div><div class="rhgi-metal-number">{seconds_val}</div></div></div>
+          <div class="rhgi-metal-box rhgi-seconds-box"><div class="rhgi-metal-box-inner"><div class="rhgi-metal-label">Seconds</div><div class="rhgi-metal-number">{seconds_val}</div></div></div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -1829,13 +1943,14 @@ _gold_heading("DG Corridor Command Hub")
 _hub_cols = st.columns(6)
 for _hi, (_abbr, _zname) in enumerate(CORRIDOR_NODES):
     _btn_label = "NW (K3)" if _abbr == "NW" else _abbr
+    _hub_active = st.session_state.get("dg_corridor") == _zname
     with _hub_cols[_hi]:
         if st.button(
             _btn_label,
             key=f"dg_hub_{_abbr}",
             use_container_width=True,
             help=_zname,
-            type="secondary",
+            type="primary" if _hub_active else "secondary",
         ):
             st.session_state.dg_corridor = _zname
             st.session_state.corridor_zone = _zname
@@ -2145,7 +2260,7 @@ with tab_global:
     st.session_state.opposition_heatmap = _tm
     st.markdown(
         "<div class='rhgi-prism-narrative-frame' style='margin-top:8px;'>"
-        "CATEGORY 2 NARRATIVE: Concrete Heritage tracks AKK Road Section 1 at <span style='color:#D4AF37;'>80%</span> "
+        "CATEGORY 2 NARRATIVE: Concrete Heritage tracks AKK Road Section 1 at <span style='color:#ffffff;font-weight:900;'>80%</span> "
         "completion alongside Coastal Highway readiness, while the Stability Heatmap reflects Operation Kukan Kura "
         "crime-drop pulse across mapped LGAs."
         "</div>",
