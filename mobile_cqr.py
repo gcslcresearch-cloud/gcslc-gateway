@@ -7,7 +7,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 
-PAGE_TITLE = "RHGI - 15/15 Sovereign Mirror"
+PAGE_TITLE = "RHGI - DG Command Terminal"
 FONT_LINK = "https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap"
 
 DEEP_PRISM_NAVY = "#000033"
@@ -266,12 +266,17 @@ st.markdown(
         color: #000033 !important;
         border: 2px solid #D4AF37 !important;
         box-shadow: none !important;
+        animation: cqrGrantGoldPulse 1.85s ease-in-out infinite !important;
       }}
       .cqr-card button[kind="primary"]:hover {{
         background: #D4AF37 !important;
         background-image: none !important;
         color: #000033 !important;
         border-color: #D4AF37 !important;
+      }}
+      @keyframes cqrGrantGoldPulse {{
+        0%, 100% {{ box-shadow: 0 0 10px rgba(212,175,55,0.45); transform: scale(1); }}
+        50% {{ box-shadow: 0 0 26px rgba(212,175,55,0.9); transform: scale(1.03); }}
       }}
 
       /* Deny: Stark white outline, transparent fill */

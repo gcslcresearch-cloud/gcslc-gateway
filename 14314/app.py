@@ -1,5 +1,6 @@
 import hashlib
 import html
+from typing import Optional
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
@@ -26,7 +27,14 @@ if "map_view" not in st.session_state:
     st.session_state.map_view = None
 if "cien_map_candidate" not in st.session_state:
     st.session_state.cien_map_candidate = None
+if "dg_corridor" not in st.session_state:
+    st.session_state.dg_corridor = None  # None = all Nigeria; else full zone name e.g. "North West"
+if "opposition_heatmap" not in st.session_state:
+    st.session_state.opposition_heatmap = False
+if "threat_monitor" not in st.session_state:
+    st.session_state.threat_monitor = bool(st.session_state.get("opposition_heatmap", False))
 
+# RHGI-SWAT-OPPOSITION-77 — global colors (strict DG / SWAT palette).
 # RHGI-GOLDMAN palette (mirrors :root CSS variables).
 YELLOW_GOLD = "#D4AF37"
 METALLIC_GOLD = YELLOW_GOLD
@@ -35,6 +43,10 @@ GOLD = METALLIC_GOLD
 NAVY = NAVY_CSS
 # Deep Prism Navy (video match — RHGI ABSOLUTE RESTORE-39).
 PRISM_NAVY = "#000033"
+# RHGI-DG-UNASSAILABLE-MASTER-76 — INEC baseline structure (2023 anchor).
+POLLING_UNITS_BASELINE = 176_846
+WARDS_BASELINE = 8_809
+AVG_BALLOT_BOXES_PER_WARD = 25
 CANVASSER_BUDGET_ANCHOR_NGN = 30_000
 # RHGI TOTAL RESTORE-30 — Sovereign Budget Engine (personnel lines per mandate brief).
 SOVEREIGN_CANVASSERS_LINE = 144_000
@@ -83,6 +95,13 @@ def _gold_heading(text: str) -> None:
 def _rose_heading(text: str) -> None:
     """Corridor section titles — Yellow Gold (strict video / COMPLIANCE-45)."""
     st.markdown(f'<p class="rhgi-corridor-gold-heading">{html.escape(text)}</p>', unsafe_allow_html=True)
+
+
+def filter_by_corridor(dff: pd.DataFrame, zone: Optional[str]) -> pd.DataFrame:
+    """DG Command Hub: None = national; else filter to one geopolitical zone."""
+    if zone is None or zone == "":
+        return dff
+    return dff[dff["zone"] == zone].copy()
 
 
 def sovereign_budget_engine_breakdown() -> tuple[int, int, int]:
@@ -310,6 +329,7 @@ def build_cien_audit_rows(dff: pd.DataFrame) -> list[dict]:
             16,
         )
         verified = (h % 7) != 0
+        _cr = float(r.get("canvasser_ratio", 0.0))
         rows.append(
             {
                 "state": str(r["state"]),
@@ -317,6 +337,7 @@ def build_cien_audit_rows(dff: pd.DataFrame) -> list[dict]:
                 "zone": str(r["zone"]),
                 "status": "VERIFIED" if verified else "PENDING",
                 "verified": verified,
+                "swat_15_15": _cr >= 15.0,
                 "lat": float(r["lat"]),
                 "lon": float(r["lon"]),
             }
@@ -332,6 +353,20 @@ def enrich_lga_map_metrics(lga_map_df: pd.DataFrame) -> pd.DataFrame:
         lambda r: f"{min(15, max(0, int(round(float(r)))) )}/15 Voters Secured"
     )
     out["logistics_fuel"] = (out["canvassers"].astype(float) * CANVASSER_BUDGET_ANCHOR_NGN).round()
+    out["opposition_heat"] = (
+        pd.to_numeric(out["pdp_2027"], errors="coerce").fillna(0)
+        + pd.to_numeric(out["lp_2027"], errors="coerce").fillna(0)
+        + pd.to_numeric(out["adc_2027"], errors="coerce").fillna(0)
+    )
+    _pt = pd.to_numeric(out["projected_total"], errors="coerce").replace(0, 1)
+    out["threat_adc_lp_pct"] = (
+        100.0
+        * (
+            pd.to_numeric(out["adc_2027"], errors="coerce").fillna(0)
+            + pd.to_numeric(out["lp_2027"], errors="coerce").fillna(0)
+        )
+        / _pt
+    )
     return out
 
 
@@ -339,8 +374,11 @@ def build_lga_winning_margin_figure(
     lga_map_df: pd.DataFrame,
     zoom: float,
     center: dict,
+    threat_monitor: bool = False,
 ) -> go.Figure:
-    wm = lga_map_df["winning_margin"].astype(float)
+    _color_col = "threat_adc_lp_pct" if threat_monitor else "winning_margin"
+    _cseries = _SUNSET_SCALE
+    wm = lga_map_df[_color_col].astype(float)
     wm_min = float(wm.min()) if len(wm) else 0.0
     wm_max = float(wm.max()) if len(wm) else 1.0
     if wm_min == wm_max:
@@ -349,8 +387,8 @@ def build_lga_winning_margin_figure(
         lga_map_df,
         lat="lat",
         lon="lon",
-        color="winning_margin",
-        color_continuous_scale=_SUNSET_SCALE,
+        color=_color_col,
+        color_continuous_scale=_cseries,
         range_color=(wm_min, wm_max),
         hover_name="lga",
         hover_data={"state": False, "zone": False, "margin_zone": False, "projected_total": False},
@@ -362,8 +400,8 @@ def build_lga_winning_margin_figure(
     fig_lga.update_traces(
         marker=dict(
             size=_LGA_MARKER_INNER,
-            color=lga_map_df["winning_margin"].astype(float).tolist(),
-            colorscale=_SUNSET_SCALE,
+            color=lga_map_df[_color_col].astype(float).tolist(),
+            colorscale=_cseries,
             opacity=0.8,
         ),
         hovertemplate=(
@@ -387,6 +425,11 @@ def build_lga_winning_margin_figure(
         data=[_lga_outline] + list(fig_lga.data) + [_k3],
         layout=fig_lga.layout,
     )
+    _cb_title = (
+        "ADC + LP activity (NNPP proxy) · % of LGA vote"
+        if threat_monitor
+        else "Winning margin"
+    )
     fig_lga.update_layout(
         template=None,
         paper_bgcolor="rgba(0,0,0,0)",
@@ -396,7 +439,7 @@ def build_lga_winning_margin_figure(
         hoverlabel=dict(font=dict(family="Goldman, sans-serif", color="#ffffff", size=12)),
         margin=dict(l=0, r=0, t=12, b=0),
         coloraxis_colorbar=dict(
-            title=dict(text="Winning margin", font=dict(family="Goldman, sans-serif", color=GOLD, size=12)),
+            title=dict(text=_cb_title, font=dict(family="Goldman, sans-serif", color=GOLD, size=12)),
             tickfont=dict(family="Goldman, sans-serif", color="#ffffff", size=11),
             bgcolor="rgba(0,0,51,0.55)",
             bordercolor="rgba(212,175,55,0.35)",
@@ -407,6 +450,7 @@ def build_lga_winning_margin_figure(
 
 
 df = load_df()
+df_hub_pre = filter_by_corridor(df, st.session_state.get("dg_corridor"))
 sovereign_total = float(df["sovereign_yield_gap"].sum())
 
 lagos_tz = _LAGOS_TZ
@@ -1088,6 +1132,31 @@ st.markdown(
       margin-top: 4px;
       opacity: 0.92;
     }
+    .rhgi-forensic-shadow {
+      font-family: 'Goldman', sans-serif !important;
+      text-align: center;
+      color: #D4AF37 !important;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      padding: 14px 16px;
+      margin: 0 0 14px 0;
+      border: 1px solid rgba(212,175,55,0.4);
+      border-radius: 14px;
+      background: rgba(0,0,51,0.55);
+      text-shadow: 0 0 14px rgba(212,175,55,0.45);
+    }
+    .rhgi-swat-grant-alert {
+      margin-top: 10px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid #D4AF37;
+      color: #ffffff !important;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      box-shadow: 0 0 14px rgba(212,175,55,0.35);
+      background: rgba(0,0,51,0.72);
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -1124,6 +1193,10 @@ with st.sidebar:
         help="Σ over LGAs: (Registered Voters × PVC Collection Rate) − 2023 Actual Votes.",
     )
     st.caption("PVC & turnout rates are forensic anchors per LGA in data_engine.")
+    st.caption(
+        f"Baseline structure: {POLLING_UNITS_BASELINE:,} PUs · {WARDS_BASELINE:,} wards · "
+        f"avg {AVG_BALLOT_BOXES_PER_WARD} ballot boxes/ward (2023 anchor)."
+    )
     projected_national = int(df[["apc_2027", "pdp_2027", "lp_2027", "adc_2027"]].sum().sum())
     st.metric(
         "National anchor (2027 base)",
@@ -1133,17 +1206,20 @@ with st.sidebar:
     )
 
 dff = apply_turnout_lift(df, turnout_lift)
+dff_hub = filter_by_corridor(dff, st.session_state.get("dg_corridor"))
 states_25, fct_validated, constitutional_ok = constitutional_sentinel(dff)
 fct_pct = fct_apc_percent(dff)
-projected_yield = int(dff["projected_total"].sum())
-PROJECTED_TOTAL = projected_yield
+projected_yield_nat = int(dff["projected_total"].sum())
+PROJECTED_TOTAL = projected_yield_nat
+projected_yield_hub = int(dff_hub["projected_total"].sum())
+projected_yield = projected_yield_nat
 apc_national = int(dff["apc_2027"].sum())
-national_apc_share = 100.0 * apc_national / max(projected_yield, 1)
+national_apc_share = 100.0 * apc_national / max(PROJECTED_TOTAL, 1)
 remittance_gap = NATIONAL_VOTE_TARGET - PROJECTED_TOTAL
 abuja_strobe = fct_pct < 25.0
-total_winning_margin = float(dff["winning_margin"].sum())
+total_winning_margin = float(dff_hub["winning_margin"].sum())
 
-_cien_audit_rows = build_cien_audit_rows(dff)
+_cien_audit_rows = build_cien_audit_rows(dff_hub)
 st.session_state._cien_rows_full = _cien_audit_rows
 
 with st.sidebar:
@@ -1151,11 +1227,11 @@ with st.sidebar:
     with _cien_sidebar_box:
         st.markdown(
             '<p style="font-family:Goldman,sans-serif;color:#D4AF37;font-weight:800;font-size:1.02rem;'
-            'margin:18px 0 8px 0;letter-spacing:0.04em;">LGA-CIEN REAL-TIME AUDIT TRAIL</p>',
+            'margin:18px 0 8px 0;letter-spacing:0.04em;">LGA-CIEN REAL-TIME AUDIT & LOGISTICS FEED</p>',
             unsafe_allow_html=True,
         )
         st.caption(
-            "Slow-motion pulse: 1 LGA every 3.0s · K3 corridor sort: Katsina → Kano → Kaduna → other NW → national."
+            "Swat-to-Grant ticker: 1 LGA / 3.0s · K3 Triangle priority · Swat = 15/15 activation threshold."
         )
 
         def _cien_sidebar_pulse_inner() -> None:
@@ -1194,6 +1270,13 @@ with st.sidebar:
                 f'<span style="color:#D4AF37;font-weight:700;">{html.escape(r["status"])}</span></span></div>',
                 unsafe_allow_html=True,
             )
+            if r.get("swat_15_15"):
+                st.markdown(
+                    "<div class='rhgi-swat-grant-alert'>"
+                    f"LGA: {html.escape(r['lga'])} SWAT COMPLETE &gt; COMMUNITY GRANT ACTIVATED"
+                    "</div>",
+                    unsafe_allow_html=True,
+                )
             if st.button(
                 f"Focus Map 2: {r['lga']}, {r['state']}",
                 key="cien_zoom_map_btn",
@@ -1240,6 +1323,24 @@ st.markdown(
     '<p class="rhgi-signature">Prepared by Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE.</p>',
     unsafe_allow_html=True,
 )
+_gold_heading("DG Corridor Command Hub")
+_hub_cols = st.columns(6)
+for _hi, (_abbr, _zname) in enumerate(CORRIDOR_NODES):
+    _btn_label = "NW (K3)" if _abbr == "NW" else _abbr
+    with _hub_cols[_hi]:
+        if st.button(_btn_label, key=f"dg_hub_{_abbr}", use_container_width=True, help=_zname):
+            st.session_state.dg_corridor = _zname
+            st.session_state.corridor_zone = _zname
+            st.rerun()
+_hub_lbl = st.session_state.get("dg_corridor") or "ALL NIGERIA"
+st.caption(
+    f"Active command filter: {_hub_lbl} · Baseline {POLLING_UNITS_BASELINE:,} PUs · {WARDS_BASELINE:,} wards · "
+    f"{AVG_BALLOT_BOXES_PER_WARD} ballot boxes/ward (2023)."
+)
+if st.button("National overview · all corridors", key="dg_hub_nat"):
+    st.session_state.dg_corridor = None
+    st.session_state.corridor_zone = None
+    st.rerun()
 _r8_cols = st.columns(8)
 for _ri, (_r8_label, _r8_det) in enumerate(EIGHT_R_DETERMINANTS):
     with _r8_cols[_ri]:
@@ -1290,9 +1391,14 @@ c3.markdown(
     unsafe_allow_html=True,
 )
 
+_py_line = (
+    f"{projected_yield_hub:,} <small>(corridor)</small>"
+    if st.session_state.get("dg_corridor")
+    else f"{projected_yield_nat:,}"
+)
 st.markdown(
     f"<div class='rhgi-kpi' style='margin-bottom:12px;'><b>20.7M mandate anchor</b> — Target: <span class='rhgi-glow'>{NATIONAL_VOTE_TARGET:,}</span> · "
-    f"Projected yield: <span class='rhgi-glow'>{projected_yield:,}</span> · "
+    f"Projected yield: <span class='rhgi-glow'>{_py_line}</span> · "
     f"<b>Remittance gap:</b> <span class='rhgi-glow'>{remittance_gap:,}</span></div>",
     unsafe_allow_html=True,
 )
@@ -1304,8 +1410,11 @@ with tab_global:
     _tick_font = dict(family="Goldman, sans-serif", size=12, color="#ffffff")
 
     _gold_heading("Winning Margin by Geopolitical Zone (turnout-adjusted)")
+    st.caption(
+        "Opposition Merger Tracker overlay: ADC Coalition Strength vs RHGI 15/15 Density (by zone)."
+    )
     zone_margin = (
-        dff.groupby("zone", as_index=False)["winning_margin"].sum().sort_values("winning_margin")
+        dff_hub.groupby("zone", as_index=False)["winning_margin"].sum().sort_values("winning_margin")
     )
     fig_zone = px.bar(
         zone_margin,
@@ -1319,8 +1428,8 @@ with tab_global:
         plot_bgcolor="rgba(0,0,0,0)",
         font=dict(family="Goldman, sans-serif", color="#ffffff", size=13),
         font_color="#ffffff",
-        showlegend=False,
-        margin=dict(t=28, b=52, l=72, r=28),
+        showlegend=True,
+        margin=dict(t=52, b=52, l=72, r=88),
         xaxis=dict(
             title=dict(text="Zone", font=_axis_title_font),
             tickfont=_tick_font,
@@ -1341,8 +1450,65 @@ with tab_global:
             zerolinewidth=1,
             linecolor="rgba(255,255,255,0.4)",
         ),
+        legend=dict(
+            font=dict(family="Goldman, sans-serif", color="#ffffff", size=11),
+            bgcolor="rgba(0,0,51,0.45)",
+            bordercolor="rgba(212,175,55,0.35)",
+            borderwidth=1,
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1,
+        ),
     )
     fig_zone.update_traces(marker=dict(color=YELLOW_GOLD))
+    _pt_z = dff_hub["projected_total"].replace(0, 1)
+    _merger_share = 100.0 * (dff_hub["adc_2027"] + dff_hub["lp_2027"]) / _pt_z
+    _tmp_m = dff_hub.assign(_merger_share=_merger_share)
+    _merger_zone = _tmp_m.groupby("zone", as_index=False).agg(
+        adc_coalition_strength=("_merger_share", "mean"),
+        rhgi_15_15_density=(
+            "canvasser_ratio",
+            lambda s: float((s.clip(upper=15.0) / 15.0 * 100.0).mean()),
+        ),
+    )
+    _mzone = zone_margin.merge(_merger_zone, on="zone", how="left")
+    fig_zone.add_trace(
+        go.Scatter(
+            x=_mzone["zone"],
+            y=_mzone["adc_coalition_strength"],
+            name="ADC Coalition Strength",
+            yaxis="y2",
+            mode="lines+markers",
+            line=dict(color="#ffffff", width=2),
+            marker=dict(size=8, color="#ffffff"),
+        )
+    )
+    fig_zone.add_trace(
+        go.Scatter(
+            x=_mzone["zone"],
+            y=_mzone["rhgi_15_15_density"],
+            name="RHGI 15/15 Density",
+            yaxis="y2",
+            mode="lines+markers",
+            line=dict(color=YELLOW_GOLD, width=2, dash="dash"),
+            marker=dict(size=8, color=YELLOW_GOLD),
+        )
+    )
+    fig_zone.update_layout(
+        yaxis2=dict(
+            title=dict(
+                text="Opposition Merger Tracker · 0–100",
+                font=dict(family="Goldman, sans-serif", color="#ffffff", size=11),
+            ),
+            overlaying="y",
+            side="right",
+            range=[0, 100],
+            showgrid=False,
+            tickfont=dict(family="Goldman, sans-serif", color="#ffffff", size=10),
+        ),
+    )
     st.plotly_chart(fig_zone, use_container_width=True)
 
     _gold_heading("2023 vs 2027 Party Totals")
@@ -1351,14 +1517,14 @@ with tab_global:
             "Party": ["APC", "PDP", "LP", "ADC"] * 2,
             "Year": ["2023"] * 4 + ["2027"] * 4,
             "Votes": [
-                df["apc_2023"].sum(),
-                df["pdp_2023"].sum(),
-                df["lp_2023"].sum(),
-                df["adc_2023"].sum(),
-                dff["apc_2027"].sum(),
-                dff["pdp_2027"].sum(),
-                dff["lp_2027"].sum(),
-                dff["adc_2027"].sum(),
+                df_hub_pre["apc_2023"].sum(),
+                df_hub_pre["pdp_2023"].sum(),
+                df_hub_pre["lp_2023"].sum(),
+                df_hub_pre["adc_2023"].sum(),
+                dff_hub["apc_2027"].sum(),
+                dff_hub["pdp_2027"].sum(),
+                dff_hub["lp_2027"].sum(),
+                dff_hub["adc_2027"].sum(),
             ],
         }
     )
@@ -1405,7 +1571,15 @@ with tab_global:
     fig_party.update_traces(marker_line_width=0)
     st.plotly_chart(fig_party, use_container_width=True)
 
-    # POSITION 1B (Section B): Constitutional secured banner
+    # POSITION 2 — Forensic audit shadow (independent 15/15 node counter)
+    _forensic_verified = int((dff_hub["canvasser_ratio"] >= 15.0).sum())
+    st.markdown(
+        f'<div class="rhgi-forensic-shadow">RHGI FORENSIC SHADOW: {_forensic_verified:,} Verified 15/15 Nodes<br>'
+        f'<small style="color:#ffffff;font-weight:600;opacity:0.92;">Independent receipt of the 20.7M Mandate — forensic chain silences skeptics.</small></div>',
+        unsafe_allow_html=True,
+    )
+
+    # POSITION 3a — Constitutional mandate banner
     if constitutional_ok:
         st.markdown(
             "<div class='rhgi-mandate-secured'><span class='rhgi-glow' style='font-size:1.35rem;font-weight:800;'>"
@@ -1414,9 +1588,18 @@ with tab_global:
             unsafe_allow_html=True,
         )
 
-    # POSITION 2 (Below charts): Sovereign Mirror Map
-    _gold_heading("774 LGA heatmap — winning margin (rugged)")
-    lga_map_df = enrich_lga_map_metrics(build_lga_heatmap_df(dff))
+    # POSITION 3b — Sovereign Mirror Map (carto-positron) + opposition threat toggle
+    _tm = st.checkbox(
+        "Threat Monitor (high ADC + LP / NNPP activity proxy)",
+        value=st.session_state.get("threat_monitor", False),
+        key="threat_monitor_toggle",
+    )
+    st.session_state.threat_monitor = _tm
+    st.session_state.opposition_heatmap = _tm
+    _gold_heading(
+        "774 LGA heatmap — threat monitor (ADC + LP)" if _tm else "774 LGA heatmap — winning margin (rugged)"
+    )
+    lga_map_df = enrich_lga_map_metrics(build_lga_heatmap_df(dff_hub))
     _mv = st.session_state.get("map_view")
     if _mv and isinstance(_mv, dict) and "lat" in _mv and "lon" in _mv:
         _fig_center = {"lat": float(_mv["lat"]), "lon": float(_mv["lon"])}
@@ -1424,7 +1607,12 @@ with tab_global:
     else:
         _fig_center = {"lat": 9.082, "lon": 8.6753}
         _fig_zoom = 4.9
-    fig_lga = build_lga_winning_margin_figure(lga_map_df, zoom=_fig_zoom, center=_fig_center)
+    fig_lga = build_lga_winning_margin_figure(
+        lga_map_df,
+        zoom=_fig_zoom,
+        center=_fig_center,
+        threat_monitor=st.session_state.threat_monitor,
+    )
     st.plotly_chart(fig_lga, use_container_width=True)
     if st.session_state.get("map_view"):
         if st.button("Reset map to national (carto‑positron) view", key="reset_map_national_btn"):
@@ -1455,46 +1643,35 @@ with tab_global:
         unsafe_allow_html=True,
     )
 
-    # Remaining sections (kept to preserve drill-down and engineering panels)
-    _rose_heading("Corridor nodes — drill-down (774 LGAs)")
+    # Remaining sections — LGA drill-down (uses DG hub corridor selection)
+    _rose_heading("Corridor LGA drill-down (774 LGAs)")
     st.caption(
-        "Choose a corridor, then a state. LGA roll-up ≈ one row every 0.5s (slow-mo); hover the marquee to pause. "
+        "LGA roll-up ≈ one row every 0.5s (slow-mo); hover the marquee to pause. "
         "Canvasser budget = ₦30,000 × canvasser headcount per LGA."
     )
-    _cor_cols = st.columns(6)
-    for _ci, (_abbr, _zname) in enumerate(CORRIDOR_NODES):
-        with _cor_cols[_ci]:
-            _nlg = int((dff["zone"] == _zname).sum())
-            if st.button(
-                f"{_abbr} · {_nlg}",
-                key=f"cor_btn_{_abbr}",
-                help=f"Geopolitical corridor — {_zname}. Click to drill down to states and LGAs.",
-                use_container_width=True,
-            ):
-                st.session_state.corridor_zone = _zname
-    if st.session_state.corridor_zone is None:
+    if not st.session_state.get("dg_corridor"):
         st.session_state._prev_corridor_state_key = None
         st.markdown(
-            '<p class="rhgi-creed" style="margin-top:8px;">Select a corridor widget (NW · NE · NC · SW · SS · SE) to begin.</p>',
+            '<p class="rhgi-creed" style="margin-top:8px;">Select a corridor in the DG Command Hub to open state / LGA drill-down.</p>',
             unsafe_allow_html=True,
         )
     else:
         st.markdown(
             f'<p class="rhgi-corridor-gold-heading" style="font-size:1.12rem;margin-top:6px;">Active corridor · '
-            f'<span style="color:#ffffff;">{html.escape(st.session_state.corridor_zone)}</span></p>',
+            f'<span style="color:#ffffff;">{html.escape(st.session_state.dg_corridor)}</span></p>',
             unsafe_allow_html=True,
         )
-        _states_in_zone = sorted(dff[dff["zone"] == st.session_state.corridor_zone]["state"].unique())
+        _states_in_zone = sorted(dff_hub["state"].unique())
         _sel_state = st.selectbox(
             "State (drill-down)",
             options=_states_in_zone,
             index=0,
-            key=f"state_drill_{st.session_state.corridor_zone}",
+            key=f"state_drill_{st.session_state.dg_corridor}",
         )
-        _corridor_state_key = f"{st.session_state.corridor_zone}|{_sel_state}"
+        _corridor_state_key = f"{st.session_state.dg_corridor}|{_sel_state}"
         _state_just_changed = st.session_state._prev_corridor_state_key != _corridor_state_key
         st.session_state._prev_corridor_state_key = _corridor_state_key
-        _mat = build_state_lga_matrix_df(dff, _sel_state)
+        _mat = build_state_lga_matrix_df(dff_hub, _sel_state)
         _rows_html = []
         for _, _r in _mat.iterrows():
             _nm = html.escape(str(_r["LGA Name"]))
@@ -1558,7 +1735,7 @@ with tab_global:
     )
 
     _gold_heading("Turnout heatmap — Nigeria (strike priority)")
-    state_hm = build_state_heatmap_df(dff)
+    state_hm = build_state_heatmap_df(dff_hub)
     state_hm["mandate_status"] = state_hm["canvasser_ratio"].apply(
         lambda r: f"{min(15, max(0, int(round(float(r)))) )}/15 Voters Secured"
     )
@@ -1623,7 +1800,7 @@ with tab_global:
     st.plotly_chart(fig_scatter, use_container_width=True)
 
     _ticker = (
-        f"NATIONAL PROJECTION — APC votes {apc_national:,} · Total projected {projected_yield:,} · "
+        f"NATIONAL PROJECTION — APC votes {apc_national:,} · Total projected {projected_yield_nat:,} · "
         f"APC share {national_apc_share:.2f}% · Legal Gatekeeper {states_25}/36 states ≥25% APC · "
         f"FCT APC {fct_pct:.2f}% · Remittance gap {remittance_gap:,} vs 20.7M anchor · "
         f"Turnout lift +{turnout_lift}% (live) · "
