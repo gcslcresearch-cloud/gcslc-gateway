@@ -10,6 +10,8 @@ import pytz
 import streamlit as st
 import streamlit.components.v1 as components
 from datetime import datetime, time, timedelta
+import os
+import base64
 
 from dateutil.relativedelta import relativedelta
 
@@ -82,6 +84,7 @@ _LONDON_TZ = pytz.timezone("Europe/London")
 _NYC_TZ = pytz.timezone("America/New_York")
 _DUBAI_TZ = pytz.timezone("Asia/Dubai")
 ELECTION_DATETIME_WAT = _LAGOS_TZ.localize(datetime(2027, 2, 25, 8, 0, 0))
+PRIMARIES_START_WAT = _LAGOS_TZ.localize(datetime(2026, 4, 23, 0, 0, 0))
 EIGHT_R_DETERMINANTS = [
     ("Refine", "Proprietary Determinant — Refine: Sharpening ward-level turnout models and PVC reconciliation."),
     ("Reset", "Proprietary Determinant — Reset: Re-anchoring baselines to 2023 forensic vote totals."),
@@ -131,6 +134,27 @@ def _format_election_countdown(now: datetime) -> str:
     m = rd.minutes
     s = rd.seconds
     return f"[{months}] : [{days}] : [{h:02d}] : [{m:02d}] : [{s:02d}]"
+
+
+def _pu_velocity_pct_for_clock() -> float:
+    """PU Reminder Engine velocity → percentage (0–100)."""
+    pu_messages_sent = int(st.session_state.get("pu_messages_sent", 0))
+    return 100.0 * float(pu_messages_sent) / float(PU_TOTAL) if PU_TOTAL else 0.0
+
+
+def _threshold_gong_data_url() -> Optional[str]:
+    """Return assets/threshold_gong.mp3 as a data URL, if present."""
+    # Expected location: repo_root/assets/threshold_gong.mp3
+    candidates = [
+        os.path.join(os.path.dirname(__file__), "..", "assets", "threshold_gong.mp3"),
+        os.path.join(os.path.dirname(__file__), "assets", "threshold_gong.mp3"),
+    ]
+    for p in candidates:
+        if os.path.exists(p):
+            with open(p, "rb") as f:
+                b64 = base64.b64encode(f.read()).decode("ascii")
+            return f"data:audio/mpeg;base64,{b64}"
+    return None
 
 
 @st.cache_data(show_spinner=False)
@@ -1265,17 +1289,27 @@ with st.sidebar:
         "- **Coastal Road Section 1**: commissioning target **May 20**"
     )
     st.subheader("Category 3: Outreach Command")
-    outreach_velocity = 46.63
-    direct_messages_sent = int(round((outreach_velocity / 100.0) * PU_TOTAL))
-    st.metric("Outreach Velocity", f"{outreach_velocity:.2f}% coverage")
+    default_outreach_velocity_pct = 46.63
+    pu_messages_sent = int(
+        st.session_state.get(
+            "pu_messages_sent",
+            int(round((default_outreach_velocity_pct / 100.0) * PU_TOTAL)),
+        )
+    )
+    st.session_state["pu_messages_sent"] = pu_messages_sent
+    velocity_pct = 100.0 * float(pu_messages_sent) / float(PU_TOTAL)
+
+    st.metric("Outreach Velocity", f"{velocity_pct:.2f}% coverage")
     st.metric(
         "SMS/WhatsApp Tracker",
-        f"{direct_messages_sent:,} / {PU_TOTAL:,}",
+        f"{pu_messages_sent:,} / {PU_TOTAL:,}",
         delta="Direct PU messages sent",
     )
     if st.button("PUSH PU REMINDERS", use_container_width=True, key="push_pu_reminders_btn"):
         pu_payload = build_pu_sync_payload(df)
         st.session_state["pu_sync_payload"] = pu_payload
+        # Treat this as a "send" to all PU coordinates for the velocity engine.
+        st.session_state["pu_messages_sent"] = PU_TOTAL
         st.success(
             f"PU Reminder Engine synced {len(pu_payload):,} voter records with PU coordinates."
         )
@@ -1411,6 +1445,90 @@ with st.sidebar:
 abuja_now = datetime.now(lagos_tz)
 st.markdown(
     """
+    <style>
+      @keyframes rhgiPrismZoom {
+        0%, 100% { transform: scale(1.0); }
+        50% { transform: scale(1.05); }
+      }
+      @keyframes rhgiMetalShimmer {
+        0% { background-position: 0% 50%; }
+        100% { background-position: 200% 50%; }
+      }
+      @keyframes rhgiClockBreathe {
+        0%, 100% { box-shadow: 0 0 12px rgba(255,255,255,0.14); }
+        50% { box-shadow: 0 0 28px rgba(255,255,255,0.35); }
+      }
+      .rhgi-prism-frames-row {
+        display: flex;
+        gap: 14px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin: 6px 0 10px 0;
+      }
+      .rhgi-prism-frame {
+        padding: 1px;
+        border-radius: 16px;
+        background: linear-gradient(90deg, #D4AF37 0%, #C0C0C0 50%, #D4AF37 100%);
+        animation: rhgiPrismZoom 5s ease-in-out infinite;
+      }
+      .rhgi-prism-frame-inner {
+        background: rgba(0,0,51,0.92);
+        border-radius: 15px;
+        padding: 10px 16px;
+        min-width: 360px;
+        text-align: center;
+      }
+      .rhgi-prism-frame-title {
+        color: #ffffff;
+        font-weight: 900;
+        letter-spacing: 0.03em;
+        text-shadow: 0 0 14px rgba(212,175,55,0.25);
+      }
+
+      .rhgi-metal-grid {
+        display: flex;
+        gap: 10px;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        margin: 8px 0 14px 0;
+      }
+      .rhgi-metal-box {
+        flex: 1 1 140px;
+        min-width: 120px;
+        padding: 12px 10px;
+        border-radius: 14px;
+        border: 1px solid rgba(212,175,55,0.18);
+        background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(192,192,192,0.7), rgba(255,255,255,0.9));
+        background-size: 200% 200%;
+        animation: rhgiMetalShimmer 2.8s linear infinite, rhgiClockBreathe 2s ease-in-out infinite;
+        text-align: center;
+      }
+      .rhgi-metal-label {
+        color: #ffffff;
+        font-weight: 900;
+        letter-spacing: 0.06em;
+        font-size: 0.88rem;
+      }
+      .rhgi-metal-number {
+        color: #D4AF37;
+        font-weight: 950;
+        font-size: 1.5rem;
+        margin-top: 8px;
+        text-shadow: 0 0 18px rgba(212,175,55,0.35);
+      }
+    </style>
+    <div class="rhgi-prism-frames-row">
+      <div class="rhgi-prism-frame">
+        <div class="rhgi-prism-frame-inner">
+          <div class="rhgi-prism-frame-title">PRESIDENTIAL PRIMARIES: APRIL 23, 2026</div>
+        </div>
+      </div>
+      <div class="rhgi-prism-frame">
+        <div class="rhgi-prism-frame-inner">
+          <div class="rhgi-prism-frame-title">PRESIDENTIAL ELECTION: JANUARY 16, 2027</div>
+        </div>
+      </div>
+    </div>
     <div class="rhgi-brand-block">
       <h1 class="rhgi-brand-title">RHGI - 15/15 Sovereign Mirror</h1>
       <p class="rhgi-creed-block">Securing the 20.7M Mandate through Scientific Precision.</p>
@@ -1419,21 +1537,124 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-countdown_live_ph = st.empty()
+metal_countdown_live_ph = st.empty()
 
-def _live_countdown_header_inner() -> None:
-    line = _format_election_countdown(datetime.now(_LAGOS_TZ))
-    countdown_live_ph.markdown(
-        f'<p class="rhgi-countdown-keys">Election Countdown: [Months] : [Days] : [Hours] : [Minutes] : [Seconds] → Feb 2027</p>'
-        f'<div class="rhgi-countdown-meter">{line}</div>',
+_primaries_start_ms = int(PRIMARIES_START_WAT.timestamp() * 1000)
+_gong_data_url = _threshold_gong_data_url() or ""
+
+components.html(
+    f"""
+    <script>
+      (function() {{
+        if (window.__primaries_gong_listener_setup) return;
+        window.__primaries_gong_listener_setup = true;
+
+        const PRIMARIES_START_MS = {_primaries_start_ms};
+        const GONG_DATA_URL = {_gong_data_url!r};
+
+        function playGongFallback() {{
+          try {{
+            const Ctx = window.AudioContext || window.webkitAudioContext;
+            const ctx = new Ctx();
+            if (ctx.state === 'suspended') ctx.resume();
+
+            const now = ctx.currentTime;
+            const o = ctx.createOscillator();
+            const g = ctx.createGain();
+            o.type = 'sine';
+            o.frequency.setValueAtTime(55, now);
+            o.frequency.exponentialRampToValueAtTime(22, now + 0.8);
+            g.gain.setValueAtTime(0.0001, now);
+            g.gain.exponentialRampToValueAtTime(0.28, now + 0.02);
+            g.gain.exponentialRampToValueAtTime(0.0001, now + 0.95);
+            o.connect(g); g.connect(ctx.destination);
+            o.start(now);
+            o.stop(now + 1.0);
+            setTimeout(() => {{ try {{ ctx.close(); }} catch(e){{}} }}, 1200);
+          }} catch (e) {{}}
+        }}
+
+        function playGong() {{
+          if (GONG_DATA_URL && GONG_DATA_URL.length > 20) {{
+            try {{
+              const a = new Audio(GONG_DATA_URL);
+              a.volume = 0.65;
+              const p = a.play();
+              if (p && p.catch) p.catch(function(){{ playGongFallback(); }});
+            }} catch(e) {{
+              playGongFallback();
+            }}
+          }} else {{
+            playGongFallback();
+          }}
+        }}
+
+        function checkCountdown() {{
+          const remMs = PRIMARIES_START_MS - Date.now();
+          const remSec = Math.floor(remMs / 1000);
+
+          if (remSec === 86400) {{
+            if (!window.__primaries_gong_fired_24h) {{
+              window.__primaries_gong_fired_24h = true;
+              playGong();
+            }}
+          }}
+
+          if (remSec === 3600) {{
+            if (!window.__primaries_gong_fired_1h) {{
+              window.__primaries_gong_fired_1h = true;
+              playGong();
+            }}
+          }}
+        }}
+
+        setInterval(checkCountdown, 250);
+      }})();
+    </script>
+    """,
+    height=0,
+)
+
+
+def _live_primaries_metal_clock_inner() -> None:
+    now = datetime.now(_LAGOS_TZ)
+    if now >= PRIMARIES_START_WAT:
+        months = 0
+        weeks = 0
+        days = 0
+        hours = 0
+        minutes = 0
+    else:
+        rd = relativedelta(PRIMARIES_START_WAT, now)
+        months = rd.years * 12 + rd.months
+        weeks = rd.days // 7
+        days = rd.days % 7
+        hours = rd.hours
+        minutes = rd.minutes
+
+    velocity_pct = _pu_velocity_pct_for_clock()
+    # Data grounding: "Seconds" represent the velocity of the 20.7M mandate.
+    seconds_val = f"{velocity_pct:.2f}"
+
+    metal_countdown_live_ph.markdown(
+        f"""
+        <div class="rhgi-metal-grid">
+          <div class="rhgi-metal-box"><div class="rhgi-metal-label">Months</div><div class="rhgi-metal-number">{months}</div></div>
+          <div class="rhgi-metal-box"><div class="rhgi-metal-label">Weeks</div><div class="rhgi-metal-number">{weeks}</div></div>
+          <div class="rhgi-metal-box"><div class="rhgi-metal-label">Days</div><div class="rhgi-metal-number">{days}</div></div>
+          <div class="rhgi-metal-box"><div class="rhgi-metal-label">Hours</div><div class="rhgi-metal-number">{hours:02d}</div></div>
+          <div class="rhgi-metal-box"><div class="rhgi-metal-label">Minutes</div><div class="rhgi-metal-number">{minutes:02d}</div></div>
+          <div class="rhgi-metal-box"><div class="rhgi-metal-label">Seconds</div><div class="rhgi-metal-number">{seconds_val}</div></div>
+        </div>
+        """,
         unsafe_allow_html=True,
     )
 
 if hasattr(st, "fragment"):
-    _live_cd = st.fragment(run_every=timedelta(seconds=1))(_live_countdown_header_inner)
+    _live_cd = st.fragment(run_every=timedelta(seconds=1))(_live_primaries_metal_clock_inner)
     _live_cd()
 else:
-    _live_countdown_header_inner()
+    _live_primaries_metal_clock_inner()
 
 st.markdown(
     '<p class="rhgi-signature">Prepared by Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE.</p>',
