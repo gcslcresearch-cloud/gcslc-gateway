@@ -708,7 +708,9 @@ st.markdown(
     }
     svg text { font-family: 'Goldman', sans-serif !important; }
     [data-testid="stSidebar"] {
-      background: #000033 !important;
+      background: transparent !important;
+      background-color: transparent !important;
+      background-image: none !important;
     }
     /* SSMI-COMMAND-PALETTE-FINAL-126 — transparent sidebar internals + no shadows */
     [data-testid="stSidebar"] [data-testid="stSidebarContent"],
@@ -875,17 +877,20 @@ st.markdown(
       font-size: 1.06rem !important;
       letter-spacing: 0.06em !important;
       margin: 0.55rem 0 0.4rem 0 !important;
-      padding: 10px 12px !important;
+      padding: 6px 0 !important;
       line-height: 1.3 !important;
-      color: #FFFFFF !important;
-      -webkit-text-fill-color: #FFFFFF !important;
-      border-radius: 12px !important;
-      border: 1px solid #FFFFFF !important;
-      background: #000033 !important;
-      background-color: #000033 !important;
-      background-clip: padding-box !important;
-      -webkit-background-clip: padding-box !important;
-      animation: rhgiSidebarBrilliantWhiteGlowPulse 3.2s ease-in-out infinite !important;
+      color: #0B1F5B !important;
+      -webkit-text-fill-color: #0B1F5B !important;
+      border-radius: 0 !important;
+      border: none !important;
+      background: transparent !important;
+      background-color: transparent !important;
+      background-clip: border-box !important;
+      -webkit-background-clip: border-box !important;
+      text-shadow:
+        0 0 1px rgba(250,250,210,0.95),
+        0 0 10px rgba(212,175,55,0.30) !important;
+      animation: none !important;
       opacity: 1 !important;
       filter: none !important;
     }
@@ -898,8 +903,8 @@ st.markdown(
     }
     [data-testid="stSidebar"] [data-testid="stFileUploader"] section,
     [data-testid="stSidebar"] [data-testid="stFileUploader"] [data-baseweb="file-uploader"] {
-      background: #000033 !important;
-      background-color: #000033 !important;
+      background: transparent !important;
+      background-color: transparent !important;
       background-image: none !important;
       border: 2px dashed #C0C0C0 !important;
       border-style: dashed !important;
@@ -909,8 +914,8 @@ st.markdown(
     }
     [data-testid="stSidebar"] [data-testid="stFileUploader"] [data-testid="stFileUploaderDropzone"],
     [data-testid="stSidebar"] [data-testid="stFileUploader"] [data-testid="stFileUploaderDropzone"] > div {
-      background: #000033 !important;
-      background-color: #000033 !important;
+      background: transparent !important;
+      background-color: transparent !important;
       background-image: none !important;
       border: 2px dashed #C0C0C0 !important;
       border-style: dashed !important;
@@ -969,6 +974,23 @@ st.markdown(
       0% { background-position: 0% 50%; }
       100% { background-position: 220% 50%; }
     }
+    @keyframes rhgiDeciderLiquidGoldFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 120% 50%; }
+      100% { background-position: 240% 50%; }
+    }
+    @keyframes rhgiDeciderSlowPulse {
+      0%, 100% {
+        box-shadow:
+          0 0 10px rgba(212,175,55,0.38),
+          inset 0 0 12px rgba(250,250,210,0.22);
+      }
+      50% {
+        box-shadow:
+          0 0 24px rgba(212,175,55,0.78),
+          inset 0 0 24px rgba(250,250,210,0.40);
+      }
+    }
     @keyframes rhgiSwingGoldPulse {
       0%, 100% {
         box-shadow: 0 0 8px rgba(212,175,55,0.45), inset 0 0 12px rgba(212,175,55,0.20);
@@ -1011,6 +1033,45 @@ st.markdown(
       letter-spacing: 0.04em;
       text-align: center;
       font-size: 1.02rem;
+    }
+    .rhgi-decider-shell {
+      margin: 8px 0 14px 0;
+      border-radius: 12px;
+      border: 1px solid rgba(250,250,210,0.58);
+      background: linear-gradient(
+        115deg,
+        rgba(212,175,55,0.18) 0%,
+        rgba(250,250,210,0.36) 18%,
+        rgba(212,175,55,0.22) 36%,
+        rgba(250,250,210,0.42) 52%,
+        rgba(212,175,55,0.24) 72%,
+        rgba(250,250,210,0.30) 100%
+      );
+      background-size: 240% 240%;
+      animation:
+        rhgiDeciderLiquidGoldFlow 18s linear infinite,
+        rhgiDeciderSlowPulse 6.8s ease-in-out infinite;
+      padding: 10px 14px;
+    }
+    .rhgi-decider-label {
+      margin: 0 0 4px 0;
+      color: #FAFAD2;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 800;
+      text-align: center;
+    }
+    .rhgi-decider-target {
+      margin: 0;
+      text-align: center;
+      color: #ffffff;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      font-size: 1.02rem;
+      text-shadow:
+        0 0 8px rgba(250,250,210,0.45),
+        0 0 16px rgba(212,175,55,0.32);
     }
     .rhgi-swing-grid {
       display: grid;
@@ -2574,6 +2635,92 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
+st.markdown(
+    """
+    <div class='rhgi-decider-shell'>
+      <p class='rhgi-decider-label'>Decider • Top-Tier Roll-Up</p>
+      <p class='rhgi-decider-target'>Target: 18/25 Boxes per PU</p>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
+_vol_df = dff_hub.copy()
+_vol_df["volatility_score"] = (
+    _vol_df["projected_total"].astype(float) / (_vol_df["winning_margin"].abs().astype(float) + 1.0)
+)
+_vol_df = _vol_df.sort_values("volatility_score", ascending=False).reset_index(drop=True)
+_loc_count = len(_vol_df)
+_top20_count = max(1, int(_loc_count * 0.2 + 0.9999))
+_vol_df["rank"] = _vol_df.index + 1
+_vol_df["is_top20"] = _vol_df["rank"] <= _top20_count
+_total_proj = float(_vol_df["projected_total"].sum())
+_mandate_80_cut = 0.8 * _total_proj
+_vol_df["cum_projected"] = _vol_df["projected_total"].cumsum()
+_vol_df["in_80_mandate"] = _vol_df["cum_projected"] <= _mandate_80_cut
+if not _vol_df.empty:
+    _first_cross = int((_vol_df["cum_projected"] >= _mandate_80_cut).idxmax())
+    _vol_df.loc[_first_cross, "in_80_mandate"] = True
+_vol_focus = _vol_df[_vol_df["is_top20"]].copy()
+if not _vol_focus.empty:
+    _vol_focus["ward_box_target"] = 18
+    _vol_focus["est_wards"] = (
+        (_vol_focus["projected_total"].astype(float) / max(_total_proj, 1.0)) * WARDS_BASELINE
+    ).round().clip(lower=1).astype(int)
+    _vol_focus["est_polling_units"] = (
+        (_vol_focus["projected_total"].astype(float) / max(_total_proj, 1.0)) * POLLING_UNITS_BASELINE
+    ).round().clip(lower=1).astype(int)
+    _vol_focus["est_boxes_2027"] = (
+        (_vol_focus["projected_total"].astype(float) / max(_total_proj, 1.0)) * BALLOT_BOXES_FEDERATION_2027
+    ).round().clip(lower=1).astype(int)
+    _vol_focus["mandate_share_pct"] = (
+        100.0 * _vol_focus["projected_total"].astype(float) / max(_total_proj, 1.0)
+    ).round(2)
+    _vol_focus = _vol_focus.rename(
+        columns={
+            "state": "State",
+            "lga": "High-Volatility Location",
+            "volatility_score": "Volatility Score",
+            "est_wards": "Est. High-Volatility Wards",
+            "est_polling_units": "Est. High-Volatility PUs",
+            "est_boxes_2027": "Est. 2027 Ballot Boxes",
+            "ward_box_target": "Decider Boxes/PU Target",
+            "projected_total": "Projected Votes",
+            "mandate_share_pct": "Mandate Share (%)",
+        }
+    )
+    _vol_focus = _vol_focus[
+        [
+            "State",
+            "High-Volatility Location",
+            "Volatility Score",
+            "Est. High-Volatility Wards",
+            "Est. High-Volatility PUs",
+            "Est. 2027 Ballot Boxes",
+            "Decider Boxes/PU Target",
+            "Projected Votes",
+            "Mandate Share (%)",
+        ]
+    ]
+    _top20_share = (100.0 * float(_vol_focus["Projected Votes"].sum()) / max(_total_proj, 1.0))
+    _gold_heading("Deciding States Table — High-Volatility Wards & Polling Units")
+    st.caption(
+        f"20/80 forensic filter from {BALLOT_BOXES_FEDERATION_2027:,} ballot-box baseline: "
+        f"top 20% locations ({len(_vol_focus):,}/{_loc_count:,}) currently carry {_top20_share:.2f}% "
+        f"of projected mandate flow."
+    )
+    st.dataframe(
+        _vol_focus.style.format(
+            {
+                "Volatility Score": "{:,.2f}",
+                "Mandate Share (%)": "{:,.2f}",
+                "Projected Votes": "{:,.0f}",
+            }
+        ),
+        use_container_width=True,
+        hide_index=True,
+    )
 
 _gold_heading("DG Corridor Command Hub")
 st.markdown(
