@@ -765,6 +765,67 @@ st.markdown(
       font-size: 0.92rem !important;
       margin: 0 0 10px 0 !important;
     }
+    @keyframes rhgiSwingLiquidFlow {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 220% 50%; }
+    }
+    @keyframes rhgiSwingWarningFlash {
+      0%, 100% { box-shadow: 0 0 10px rgba(212,175,55,0.55), inset 0 0 16px rgba(212,175,55,0.22); }
+      50% { box-shadow: 0 0 26px rgba(212,175,55,0.96), inset 0 0 24px rgba(212,175,55,0.36); }
+    }
+    .rhgi-swing-shell {
+      margin: 8px 0 12px 0;
+      padding: 1px;
+      border-radius: 14px;
+      background: linear-gradient(90deg, #C0C0C0 0%, #D4AF37 30%, #FFFFFF 55%, #D4AF37 78%, #C0C0C0 100%);
+      background-size: 240% 100%;
+      animation: rhgiSwingLiquidFlow var(--prism-border-rotate) linear infinite;
+    }
+    .rhgi-swing-inner {
+      border-radius: 13px;
+      background:
+        linear-gradient(110deg, rgba(212,175,55,0.16) 0%, rgba(255,255,255,0.08) 26%, rgba(0,0,51,0.96) 56%, rgba(0,0,51,0.98) 100%),
+        #000033;
+      padding: 12px 14px;
+      color: #ffffff !important;
+    }
+    .rhgi-swing-shell.warning .rhgi-swing-inner {
+      animation: rhgiSwingWarningFlash 1.15s ease-in-out infinite;
+    }
+    .rhgi-swing-title {
+      margin: 0 0 8px 0;
+      color: #ffffff;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      text-align: center;
+      font-size: 1.02rem;
+    }
+    .rhgi-swing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .rhgi-swing-item {
+      border: 1px solid rgba(192,192,192,0.45);
+      border-radius: 10px;
+      background: rgba(0,0,51,0.76);
+      padding: 10px 12px;
+      color: #ffffff;
+      min-height: 82px;
+    }
+    .rhgi-swing-k {
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 0.83rem;
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+    }
+    .rhgi-swing-v {
+      color: #ffffff;
+      font-weight: 700;
+      line-height: 1.35;
+      font-size: 0.9rem;
+    }
     .block-container {
       font-size: 1.1rem;
       position: relative;
@@ -2102,6 +2163,67 @@ st.markdown(
     '<p class="rhgi-signature">Prepared by Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE.</p>',
     unsafe_allow_html=True,
 )
+
+# Sovereign Swing Illuminator (top horizontal strip above DG Corridor Hub).
+_state_agg = dff.groupby("state", as_index=False).agg(
+    apc_2023=("apc_2023", "sum"),
+    pdp_2023=("pdp_2023", "sum"),
+    lp_2023=("lp_2023", "sum"),
+    adc_2023=("adc_2023", "sum"),
+    registered_voters=("registered_voters", "sum"),
+)
+_state_agg["reg_2027_proxy"] = (_state_agg["registered_voters"].astype(float) * FORENSIC_2027_BALLOT_SCALE)
+_state_agg["mov_2023"] = _state_agg[["apc_2023", "pdp_2023", "lp_2023", "adc_2023"]].apply(
+    lambda r: sorted([float(r["apc_2023"]), float(r["pdp_2023"]), float(r["lp_2023"]), float(r["adc_2023"])], reverse=True)[0]
+    - sorted([float(r["apc_2023"]), float(r["pdp_2023"]), float(r["lp_2023"]), float(r["adc_2023"])], reverse=True)[1],
+    axis=1,
+)
+_state_agg["volatility"] = (_state_agg["reg_2027_proxy"] / (_state_agg["mov_2023"].abs() + 1.0))
+_top5_states = ", ".join(_state_agg.sort_values("volatility", ascending=False).head(5)["state"].tolist())
+
+_apathy_potential_votes = int((dff["registered_voters"].sum() * 0.733) * FORENSIC_2027_BALLOT_SCALE)
+
+_zone_surge = dff.groupby("zone", as_index=False).agg(
+    strike_priority=("strike_priority", "mean"),
+    canvasser_ratio=("canvasser_ratio", "mean"),
+    projected_total=("projected_total", "sum"),
+)
+_zone_surge["undecided_youth_surge"] = (
+    (1.0 - (_zone_surge["canvasser_ratio"] / 15.0).clip(0, 1))
+    * _zone_surge["strike_priority"].clip(lower=0)
+    * (_zone_surge["projected_total"] * 0.60)
+)
+_resource_zone = str(_zone_surge.sort_values("undecided_youth_surge", ascending=False).iloc[0]["zone"]) if not _zone_surge.empty else "North West"
+
+_deepfake_alert = any(not bool(r.get("verified", True)) for r in (_cien_audit_rows or []))
+_swing_warn_cls = " warning" if _deepfake_alert else ""
+_swing_status = "DEEPFAKE ALERT - WARNING GOLD" if _deepfake_alert else "CYBER-SHIELD STABLE"
+
+st.markdown(
+    f"""
+    <div class='rhgi-swing-shell{_swing_warn_cls}'>
+      <div class='rhgi-swing-inner'>
+        <p class='rhgi-swing-title'>SOVEREIGN SWING ILLUMINATOR • 202,225 BALLOT-BOX BASELINE • {_swing_status}</p>
+        <div class='rhgi-swing-grid'>
+          <div class='rhgi-swing-item'>
+            <div class='rhgi-swing-k'>SWING STATES TRACKER (TOP 5 VOLATILE)</div>
+            <div class='rhgi-swing-v'>{html.escape(_top5_states)}</div>
+          </div>
+          <div class='rhgi-swing-item'>
+            <div class='rhgi-swing-k'>APATHY CONVERSION METER</div>
+            <div class='rhgi-swing-v'>Yield Potential from 73.3% non-voters: {(_apathy_potential_votes):,} votes</div>
+          </div>
+          <div class='rhgi-swing-item'>
+            <div class='rhgi-swing-k'>RESOURCE VECTOR</div>
+            <div class='rhgi-swing-v'>DIRECT ASSETS TO: {html.escape(_resource_zone)}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
 _gold_heading("DG Corridor Command Hub")
 _hub_cols = st.columns(6)
 for _hi, (_abbr, _zname) in enumerate(CORRIDOR_NODES):
