@@ -9,7 +9,10 @@ import plotly.graph_objects as go
 import pytz
 import streamlit as st
 import streamlit.components.v1 as components
-from datetime import datetime, time, timedelta
+from datetime import datetime, time, timedelta, timezone
+import json
+import urllib.error
+import urllib.request
 import os
 import base64
 from urllib.parse import quote
@@ -43,6 +46,16 @@ if "sovereign_feed_log" not in st.session_state:
     st.session_state.sovereign_feed_log = [
         "[INIT] SYSTEM: 144,000-cell / 15/15 model — pure sync (no alternate rep layer).",
     ]
+if "mgmt_demo_phones_text" not in st.session_state:
+    st.session_state.mgmt_demo_phones_text = "\n".join(
+        [f"234801000000{i}" for i in range(1, 11)]
+    )
+if "mgmt_demo_msg" not in st.session_state:
+    st.session_state.mgmt_demo_msg = (
+        "RHGI Management/Demonstration — please acknowledge this outreach sync."
+    )
+if "executive_sync_delivered" not in st.session_state:
+    st.session_state.executive_sync_delivered = False
 
 # RHGI-SWAT-OPPOSITION-77 — global colors (strict DG / SWAT palette).
 # RHGI-GOLDMAN palette (mirrors :root CSS variables).
@@ -98,8 +111,11 @@ _LAGOS_TZ = pytz.timezone("Africa/Lagos")
 _LONDON_TZ = pytz.timezone("Europe/London")
 _NYC_TZ = pytz.timezone("America/New_York")
 _DUBAI_TZ = pytz.timezone("Asia/Dubai")
-ELECTION_DATETIME_WAT = _LAGOS_TZ.localize(datetime(2027, 2, 25, 8, 0, 0))
+# SSMI-SIGNATURE-SYNC-139 — general election: Saturday 16 January 2027 (WAT), 08:00 ballot anchor.
+ELECTION_DATETIME_WAT = _LAGOS_TZ.localize(datetime(2027, 1, 16, 8, 0, 0))
 ELECTION_TARGET_WAT = _LAGOS_TZ.localize(datetime(2027, 1, 16, 0, 0, 0))
+# SSMI-NIGHT-DEPLOY-141 — 20.7M mandate Zero-Hour (general election midnight anchor, WAT).
+MANDATE_ZERO_HOUR_WAT = ELECTION_TARGET_WAT
 STATIC_CALIBRATION_MONTHS = 9
 # Hard research anchor: Mar 26, 2026 → Jan 16, 2027.
 ELECTION_CALIBRATION_START_WAT = _LAGOS_TZ.localize(datetime(2026, 3, 26, 0, 0, 0))
@@ -120,8 +136,37 @@ def _gold_heading(text: str) -> None:
     st.markdown(f'<p class="rhgi-gold-heading">{text}</p>', unsafe_allow_html=True)
 
 
+# SSMI-SIGNATURE-SYNC-139 — real newlines so WhatsApp/SMS render as separate lines on mobile.
+RHGI_OUTREACH_SIGNATURE = "From Dr. Sa'ad\nDG/RHGI"
+# SSMI-DEMO-READY-140 — Executive Test Run body (signature appended separately).
+EXEC_SYNC_TEST_RUN_MESSAGE = (
+    "RHGI Executive Test Run — ballot anchor Saturday 16 January 2027 (WAT). "
+    "Directives issued via Outreach Command."
+)
+
+
+def _append_outreach_signature(body: str) -> str:
+    b = (body or "").rstrip()
+    if not b:
+        return RHGI_OUTREACH_SIGNATURE
+    return f"{b}\n\n{RHGI_OUTREACH_SIGNATURE}"
+
+
+def _normalize_ng_e164_digits(phone: str) -> str:
+    raw = "".join(c for c in (phone or "") if c.isdigit())
+    if not raw:
+        return ""
+    if raw.startswith("234"):
+        return raw
+    if raw.startswith("0") and len(raw) >= 11:
+        return "234" + raw[1:]
+    if len(raw) == 10:
+        return "234" + raw
+    return raw
+
+
 def _sovereign_whatsapp_dm_url(state: str, lga: str) -> str:
-    msg = (
+    msg = _append_outreach_signature(
         "RHGI Sovereign Direct · "
         f"{state} / {lga}: Apathy conversion reminder — 2023 turnout benchmark locked. "
         "18/25 box target · PU mobilisation."
@@ -137,6 +182,87 @@ def _append_sovereign_feed(channel: str, message: str) -> None:
     st.session_state.sovereign_feed_log = _log[:100]
 
 
+_LEADERSHIP_JSON = os.path.join(os.path.dirname(os.path.abspath(__file__)), "leadership.json")
+
+
+def _load_leadership_config() -> dict:
+    with open(_LEADERSHIP_JSON, "r", encoding="utf-8") as fp:
+        return json.load(fp)
+
+
+_EXEC_SYNC_JSON = os.path.join(os.path.dirname(os.path.abspath(__file__)), "executive_sync_recipients.json")
+
+
+def _load_executive_sync_phones() -> list[str]:
+    """12 locked recipients: env GCSLC_EXEC_SYNC_PHONES (comma-separated) or executive_sync_recipients.json."""
+    env = os.environ.get("GCSLC_EXEC_SYNC_PHONES", "").strip()
+    if env:
+        out: list[str] = []
+        for part in env.split(","):
+            d = _normalize_ng_e164_digits(part.strip())
+            if len(d) >= 12:
+                out.append(d)
+        return out[:12]
+    with open(_EXEC_SYNC_JSON, "r", encoding="utf-8") as fp:
+        data = json.load(fp)
+    out = []
+    for r in data.get("recipients", []):
+        d = _normalize_ng_e164_digits(str(r.get("phone_e164", "")))
+        if len(d) >= 12:
+            out.append(d)
+    return out[:12]
+
+
+def _dispatch_sovereign_notepad(text: str) -> tuple[list[str], list[str]]:
+    """POST notepad payload only to S24 and Convener webhook URLs (env overrides file)."""
+    text = (text or "").strip()
+    if not text:
+        return [], ["empty message"]
+    try:
+        cfg = _load_leadership_config()
+    except Exception as e:
+        return [], [f"leadership.json: {e}"]
+    wh = cfg.get("webhooks") or {}
+    s24_url = (os.environ.get("GCSLC_LEADERSHIP_S24_URL") or wh.get("s24") or "").strip()
+    conv_url = (os.environ.get("GCSLC_LEADERSHIP_CONVENER_URL") or wh.get("convener") or "").strip()
+    names = [c.get("display_name") for c in cfg.get("contacts", []) if c.get("display_name")]
+    payload_obj = {
+        "channel": "sovereign_notepad",
+        "message": _append_outreach_signature(text),
+        "ts_utc": datetime.now(timezone.utc).isoformat(),
+        "leadership_contacts": names,
+        "push_notification_metadata": {
+            "signature": "From Dr. Sa'ad\nDG/RHGI",
+            "signature_line_1": "From Dr. Sa'ad",
+            "signature_line_2": "DG/RHGI",
+            "mandate_zero_hour_wat": MANDATE_ZERO_HOUR_WAT.isoformat(),
+            "mandate_anchor_votes": NATIONAL_VOTE_TARGET,
+        },
+    }
+    payload = json.dumps(payload_obj).encode("utf-8")
+    ok: list[str] = []
+    err: list[str] = []
+    targets = (("S24 (Dr. Sa'ad)", s24_url), ("Convener", conv_url))
+    for label, url in targets:
+        if not url:
+            err.append(f"{label}: no webhook URL (set in leadership.json or GCSLC_LEADERSHIP_S24_URL / GCSLC_LEADERSHIP_CONVENER_URL)")
+            continue
+        try:
+            req = urllib.request.Request(url, data=payload, method="POST")
+            req.add_header("Content-Type", "application/json")
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                code = getattr(resp, "status", resp.getcode())
+                if 200 <= int(code) < 300:
+                    ok.append(label)
+                else:
+                    err.append(f"{label}: HTTP {code}")
+        except urllib.error.HTTPError as e:
+            err.append(f"{label}: HTTP {e.code}")
+        except Exception as e:
+            err.append(f"{label}: {e}")
+    return ok, err
+
+
 def _lga_daily_apathy_target(
     registered: float, turnout_2023_rate: float, election_dt: datetime
 ) -> int:
@@ -148,7 +274,7 @@ def _lga_daily_apathy_target(
 
 
 def _sovereign_directive_wa_url(state: str, lga: str, daily_apathy: int) -> str:
-    msg = (
+    msg = _append_outreach_signature(
         "RHGI SOVEREIGN DIRECTIVE · 15/15 NODE\n"
         f"{state} / {lga}\n"
         f"2023 turnout benchmark: convert {daily_apathy:,} apathy voters TODAY "
@@ -178,7 +304,7 @@ def sovereign_budget_engine_breakdown() -> tuple[int, int, int]:
 
 
 def _format_election_countdown(now: datetime) -> str:
-    """Months : Days : Hours : Minutes : Seconds until February 2027 election anchor (WAT)."""
+    """Months : Days : Hours : Minutes : Seconds until general election anchor (WAT)."""
     now = now.astimezone(_LAGOS_TZ)
     tgt = ELECTION_DATETIME_WAT
     if now >= tgt:
@@ -1187,6 +1313,68 @@ st.markdown(
       font-size: 0.88rem;
       line-height: 1.35;
       -webkit-text-fill-color: #FFFFFF !important;
+    }
+    [data-testid="stSidebar"] .rhgi-outreach-bridge--executive {
+      border: 1px solid rgba(230, 195, 92, 0.85) !important;
+      box-shadow: inset 0 0 16px rgba(139, 0, 0, 0.18);
+    }
+    /* SSMI-NIGHT-DEPLOY-141 — Executive Sync primary: Cyber Cyan glow (tonight session) */
+    @keyframes rhgiExecSyncCyanPulse {
+      0%, 100% {
+        filter: brightness(1);
+        box-shadow:
+          0 0 18px rgba(0, 255, 255, 0.78),
+          0 0 38px rgba(0, 255, 255, 0.42),
+          inset 0 0 12px rgba(0, 255, 255, 0.18);
+      }
+      50% {
+        filter: brightness(1.1);
+        box-shadow:
+          0 0 28px rgba(0, 255, 255, 0.95),
+          0 0 56px rgba(0, 230, 255, 0.55),
+          inset 0 0 16px rgba(0, 255, 255, 0.28);
+      }
+    }
+    [data-testid="stSidebar"] [data-testid="stVerticalBlock"]:has(.rhgi-exec-sync-cyan-trigger) button[kind="primary"] {
+      border: 1px solid #00FFFF !important;
+      border-radius: 10px !important;
+      background: linear-gradient(180deg, rgba(0, 52, 72, 0.98) 0%, rgba(0, 112, 128, 0.98) 100%) !important;
+      color: #E0FFFF !important;
+      font-weight: 800 !important;
+      text-shadow: 0 0 10px rgba(0, 255, 255, 0.9), 0 0 22px rgba(0, 255, 255, 0.45) !important;
+      animation: rhgiExecSyncCyanPulse 2s ease-in-out infinite !important;
+    }
+    /* SSMI-EXECUTIVE-BYPASS-138 — Outreach Command: executive gold ring + deep red pulse */
+    @keyframes rhgiExecDeepRedPulse {
+      0%, 100% {
+        box-shadow:
+          0 0 0 1px rgba(230, 195, 92, 0.95),
+          0 0 18px rgba(139, 0, 0, 0.45),
+          inset 0 0 14px rgba(212, 175, 55, 0.12);
+      }
+      50% {
+        box-shadow:
+          0 0 0 2px rgba(230, 195, 92, 1),
+          0 0 28px rgba(139, 0, 0, 0.72),
+          inset 0 0 18px rgba(212, 175, 55, 0.22);
+      }
+    }
+    [data-testid="stSidebar"] [data-testid="stVerticalBlockBorderWrapper"]:has(.rhgi-outreach-bounded--exec) {
+      border: 2px solid #E6C35C !important;
+      border-radius: 14px !important;
+      background: linear-gradient(
+        165deg,
+        rgba(0, 0, 51, 0.55) 0%,
+        rgba(40, 0, 8, 0.35) 100%
+      ) !important;
+      animation: rhgiExecDeepRedPulse 2.2s ease-in-out infinite;
+    }
+    .rhgi-sovereign-notepad-host {
+      margin-top: 10px;
+      padding: 10px 10px 6px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      background: rgba(0, 0, 40, 0.5);
     }
     .rhgi-sovereign-feed-wrap {
       border-radius: 12px;
@@ -2211,82 +2399,247 @@ with st.sidebar:
         "<span style='color:#ffffff;font-weight:800;'>Rapid-Response Verification protocol is active for sovereign validation.</span>",
         unsafe_allow_html=True,
     )
-    st.markdown(
-        '<p class="rhgi-sidebar-cat rhgi-sidebar-cat--outreach">Category 3: Outreach Command</p>',
-        unsafe_allow_html=True,
-    )
-    default_outreach_velocity_pct = 46.63
-    pu_messages_sent = int(
-        st.session_state.get(
-            "pu_messages_sent",
-            int(round((default_outreach_velocity_pct / 100.0) * PU_TOTAL)),
+    with st.container(border=True):
+        _exec = st.checkbox(
+            "Leadership Only",
+            key="leadership_only",
+            help="Executive mode: polished gold frame with deep-red pulse. Sovereign Notepad POSTs only to S24 + Convener webhooks from leadership.json (or env overrides).",
         )
-    )
-    st.session_state["pu_messages_sent"] = pu_messages_sent
-    velocity_pct = 100.0 * float(pu_messages_sent) / float(PU_TOTAL)
-
-    uploaded_img11 = st.file_uploader(
-        "Load PU Reminder CSV payload (Image 11)",
-        type=["csv"],
-        key="img11_pu_csv_uploader",
-        help="CSV should include PU coordinates (e.g. `pu_lat` + `pu_lon`) or `lat` + `lon`.",
-    )
-    if uploaded_img11 is not None:
-        try:
-            df_img11 = pd.read_csv(uploaded_img11)
-            st.session_state["pu_payload_image11"] = df_img11
-            st.session_state["pu_sync_payload"] = df_img11
-            reached_pus = _compute_pu_messages_sent_from_payload(df_img11)
-            st.session_state["pu_messages_sent"] = reached_pus
-            pu_messages_sent = reached_pus
-            velocity_pct = 100.0 * float(reached_pus) / float(PU_TOTAL)
-            st.success(
-                f"Image 11 payload loaded. Reached PUs: {reached_pus:,} / {PU_TOTAL:,}"
+        st.markdown(
+            f'<div class="rhgi-outreach-bounded{" rhgi-outreach-bounded--exec" if _exec else ""}" aria-hidden="true"></div>',
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            '<p class="rhgi-sidebar-cat rhgi-sidebar-cat--outreach">Category 3: Outreach Command</p>',
+            unsafe_allow_html=True,
+        )
+        default_outreach_velocity_pct = 46.63
+        pu_messages_sent = int(
+            st.session_state.get(
+                "pu_messages_sent",
+                int(round((default_outreach_velocity_pct / 100.0) * PU_TOTAL)),
             )
-        except Exception as e:
-            st.error(f"Failed to load Image 11 CSV: {e}")
+        )
+        st.session_state["pu_messages_sent"] = pu_messages_sent
+        velocity_pct = 100.0 * float(pu_messages_sent) / float(PU_TOTAL)
 
-    st.metric("Outreach Velocity", f"{velocity_pct:.2f}% coverage")
-    st.metric(
-        "SMS/WhatsApp Tracker",
-        f"{pu_messages_sent:,} / {PU_TOTAL:,}",
-        delta="Direct PU messages sent",
-    )
-    if st.button("PUSH PU REMINDERS", use_container_width=True, key="push_pu_reminders_btn"):
-        if isinstance(st.session_state.get("pu_payload_image11"), pd.DataFrame):
-            pu_payload = st.session_state["pu_payload_image11"]
-            st.session_state["pu_messages_sent"] = _compute_pu_messages_sent_from_payload(pu_payload)
+        uploaded_img11 = st.file_uploader(
+            "Load PU Reminder CSV payload (Image 11)",
+            type=["csv"],
+            key="img11_pu_csv_uploader",
+            help="CSV should include PU coordinates (e.g. `pu_lat` + `pu_lon`) or `lat` + `lon`.",
+        )
+        if uploaded_img11 is not None:
+            try:
+                df_img11 = pd.read_csv(uploaded_img11)
+                st.session_state["pu_payload_image11"] = df_img11
+                st.session_state["pu_sync_payload"] = df_img11
+                reached_pus = _compute_pu_messages_sent_from_payload(df_img11)
+                st.session_state["pu_messages_sent"] = reached_pus
+                pu_messages_sent = reached_pus
+                velocity_pct = 100.0 * float(reached_pus) / float(PU_TOTAL)
+                st.success(
+                    f"Image 11 payload loaded. Reached PUs: {reached_pus:,} / {PU_TOTAL:,}"
+                )
+            except Exception as e:
+                st.error(f"Failed to load Image 11 CSV: {e}")
+
+        st.metric("Outreach Velocity", f"{velocity_pct:.2f}% coverage")
+        st.metric(
+            "SMS/WhatsApp Tracker",
+            f"{pu_messages_sent:,} / {PU_TOTAL:,}",
+            delta="Direct PU messages sent",
+        )
+        if st.button("PUSH PU REMINDERS", use_container_width=True, key="push_pu_reminders_btn"):
+            if isinstance(st.session_state.get("pu_payload_image11"), pd.DataFrame):
+                pu_payload = st.session_state["pu_payload_image11"]
+                st.session_state["pu_messages_sent"] = _compute_pu_messages_sent_from_payload(pu_payload)
+            else:
+                pu_payload = build_pu_sync_payload(df)
+            st.session_state["pu_sync_payload"] = pu_payload
+            _append_sovereign_feed(
+                "SMS",
+                _append_outreach_signature(
+                    f"PU reminder batch · {len(pu_payload):,} rows · 20.7M buffer · 15/15 cell bridge "
+                    f"(2023 turnout floor {NATIONAL_TURNOUT_2023_PCT:.2f}%)."
+                ),
+            )
+            st.success(
+                f"PU Reminder Engine synced {len(pu_payload):,} voter records with PU coordinates. "
+                f"Gap analysis for apathy reminders uses the 2023 turnout benchmark ({NATIONAL_TURNOUT_2023_PCT:.2f}% national) as the conversion floor."
+            )
+        pu_payload = st.session_state.get("pu_sync_payload")
+        if isinstance(pu_payload, pd.DataFrame) and not pu_payload.empty:
+            st.caption("PU Reminder Engine payload preview (first 10 rows).")
+            st.dataframe(pu_payload.head(10), use_container_width=True, hide_index=True)
+            st.download_button(
+                "Download PU sync payload (CSV)",
+                data=pu_payload.to_csv(index=False).encode("utf-8"),
+                file_name="pu_reminder_sync_payload.csv",
+                mime="text/csv",
+                use_container_width=True,
+            )
+        st.caption("Outreach hub tracks direct SMS/WhatsApp pushes to all 176,846 PUs.")
+        _bridge_cls = "rhgi-outreach-bridge" + (" rhgi-outreach-bridge--executive" if _exec else "")
+        st.markdown(
+            f'<div class="{_bridge_cls}">'
+            '<p class="rhgi-outreach-bridge-title">ACTIVE OUTREACH</p>'
+            "<p class='rhgi-outreach-bridge-line'>WhatsApp Status: <b>ACTIVE</b></p>"
+            "<p class='rhgi-outreach-bridge-line'>SMS Credits: <b>20.7M Buffer</b></p>"
+            "</div>",
+            unsafe_allow_html=True,
+        )
+
+        st.markdown(
+            '<p class="rhgi-sidebar-cat rhgi-sidebar-cat--outreach" style="margin-top:14px;">'
+            "Executive Sync</p>",
+            unsafe_allow_html=True,
+        )
+        st.caption(
+            "Recipient lockdown: 12 mobiles in executive_sync_recipients.json (Dr. Sa'ad, Convener, 10 colleagues) "
+            "or env GCSLC_EXEC_SYNC_PHONES= comma-separated ×12. Message includes signature tail "
+            "(From Dr. Sa'ad + newline + DG/RHGI)."
+        )
+        if st.session_state.executive_sync_delivered:
+            st.markdown(
+                "<div style='background:#198754;border:2px solid #146c43;border-radius:10px;padding:14px 12px;"
+                "text-align:center;font-family:Goldman,sans-serif;color:#ffffff;font-weight:800;'>"
+                "<div style='font-size:0.78rem;letter-spacing:0.06em;opacity:0.95;'>"
+                "ACTIVATE EXECUTIVE TEST RUN (JAN 16, 2027)</div>"
+                "<div style='font-size:1.05rem;margin-top:8px;'>12/12 DIRECTIVES DELIVERED</div>"
+                "</div>",
+                unsafe_allow_html=True,
+            )
         else:
-            pu_payload = build_pu_sync_payload(df)
-        st.session_state["pu_sync_payload"] = pu_payload
-        _append_sovereign_feed(
-            "SMS",
-            f"PU reminder batch · {len(pu_payload):,} rows · 20.7M buffer · 15/15 cell bridge (2023 turnout floor {NATIONAL_TURNOUT_2023_PCT:.2f}%).",
+            with st.container():
+                st.markdown(
+                    '<div class="rhgi-exec-sync-cyan-trigger" style="display:none" aria-hidden="true"></div>',
+                    unsafe_allow_html=True,
+                )
+                if st.button(
+                    "ACTIVATE EXECUTIVE TEST RUN (JAN 16, 2027)",
+                    use_container_width=True,
+                    key="executive_sync_activate_btn",
+                    type="primary",
+                    help="Opens WhatsApp for all 12 locked numbers with signed Executive Test Run message.",
+                ):
+                    _phones = _load_executive_sync_phones()
+                    if len(_phones) < 12:
+                        st.error(
+                            f"Recipient lockdown requires 12 valid Nigerian E.164 numbers; found {len(_phones)}. "
+                            "Edit 14314/executive_sync_recipients.json or set GCSLC_EXEC_SYNC_PHONES."
+                        )
+                    else:
+                        _exec_full = _append_outreach_signature(EXEC_SYNC_TEST_RUN_MESSAGE)
+                        _urls = [
+                            f"https://wa.me/{p}?text={quote(_exec_full, safe='')}" for p in _phones
+                        ]
+                        components.html(
+                            "<script>\n"
+                            f"const urls = {json.dumps(_urls)};\n"
+                            "urls.forEach((u, i) => setTimeout(() => { try { window.open(u, '_blank'); } catch(e) {} }, i * 550));\n"
+                            "</script>",
+                            height=0,
+                        )
+                        st.session_state.executive_sync_delivered = True
+                        _append_sovereign_feed(
+                            "Executive Sync",
+                            "Test run Jan 16 2027 anchor · 12/12 wa.me directives · signature appended.",
+                        )
+                        st.rerun()
+
+        st.markdown(
+            '<p class="rhgi-sidebar-cat rhgi-sidebar-cat--outreach" style="margin-top:14px;">'
+            "Management/Demonstration</p>",
+            unsafe_allow_html=True,
         )
-        st.success(
-            f"PU Reminder Engine synced {len(pu_payload):,} voter records with PU coordinates. "
-            f"Gap analysis for apathy reminders uses the 2023 turnout benchmark ({NATIONAL_TURNOUT_2023_PCT:.2f}% national) as the conversion floor."
+        st.caption(
+            "Optional ad-hoc group: edit up to 10 colleague lines (Nigeria: 234… or 080…). "
+            "Signature is appended automatically. Separate from Executive Sync lockdown."
         )
-    pu_payload = st.session_state.get("pu_sync_payload")
-    if isinstance(pu_payload, pd.DataFrame) and not pu_payload.empty:
-        st.caption("PU Reminder Engine payload preview (first 10 rows).")
-        st.dataframe(pu_payload.head(10), use_container_width=True, hide_index=True)
-        st.download_button(
-            "Download PU sync payload (CSV)",
-            data=pu_payload.to_csv(index=False).encode("utf-8"),
-            file_name="pu_reminder_sync_payload.csv",
-            mime="text/csv",
+        st.text_area(
+            "Colleague phone numbers",
+            key="mgmt_demo_phones_text",
+            height=132,
+            help="One mobile number per line. Outbound WhatsApp text uses real line breaks in the signature block.",
+        )
+        st.text_input(
+            "Broadcast message (RHGI signature appended automatically)",
+            key="mgmt_demo_msg",
+        )
+        if st.button(
+            "Open WhatsApp — Management 10 (one-click sequence)",
             use_container_width=True,
+            key="mgmt_demo_wa_all_btn",
+            help="Opens wa.me for each line in order (650ms apart). Allow pop-ups if the browser blocks them.",
+        ):
+            _lines = [
+                ln.strip()
+                for ln in str(st.session_state.get("mgmt_demo_phones_text", "")).splitlines()
+                if ln.strip()
+            ][:10]
+            _base = str(st.session_state.get("mgmt_demo_msg", "")).strip() or (
+                "RHGI Management/Demonstration — please acknowledge this outreach sync."
+            )
+            _full = _append_outreach_signature(_base)
+            _urls: list[str] = []
+            for _ln in _lines:
+                _d = _normalize_ng_e164_digits(_ln)
+                if len(_d) >= 12:
+                    _urls.append(f"https://wa.me/{_d}?text={quote(_full, safe='')}")
+            if _urls:
+                components.html(
+                    "<script>\n"
+                    f"const urls = {json.dumps(_urls)};\n"
+                    "urls.forEach((u, i) => setTimeout(() => { try { window.open(u, '_blank'); } catch(e) {} }, i * 650));\n"
+                    "</script>",
+                    height=0,
+                )
+                _append_sovereign_feed(
+                    "WhatsApp",
+                    f"Management/Demonstration wa.me sequence · {len(_urls)} tab(s) · signature lines embedded.",
+                )
+                st.info("Opening WhatsApp tabs in sequence — allow pop-ups if the browser blocks them.")
+            else:
+                st.warning("Add at least one valid Nigerian number (e.g. 23480XXXXXXXX or 080XXXXXXXX).")
+
+        st.markdown(
+            '<p class="rhgi-sovereign-notepad-host" style="margin:12px 0 4px 0;color:#E6C35C;font-weight:800;font-size:0.82rem;letter-spacing:0.06em;">'
+            "Sovereign Notepad · internal dashboard</p>",
+            unsafe_allow_html=True,
         )
-    st.caption("Outreach hub tracks direct SMS/WhatsApp pushes to all 176,846 PUs.")
-    st.markdown(
-        '<div class="rhgi-outreach-bridge">'
-        '<p class="rhgi-outreach-bridge-title">ACTIVE OUTREACH</p>'
-        "<p class='rhgi-outreach-bridge-line'>WhatsApp Status: <b>ACTIVE</b></p>"
-        "<p class='rhgi-outreach-bridge-line'>SMS Credits: <b>20.7M Buffer</b></p>"
-        "</div>",
-        unsafe_allow_html=True,
-    )
+        components.html(
+            """
+            <div style="font-family:Goldman,Georgia,serif;color:#C9A227;font-size:0.7rem;letter-spacing:0.12em;
+            margin:0 0 6px 0;font-weight:800;padding:2px 0;">
+              PRIVATE COMPONENT · LIVE
+              <span style="color:#8B0000;margin-left:6px;animation:rhgiSnLive 1.15s ease-in-out infinite;">●</span>
+            </div>
+            <style>
+              @keyframes rhgiSnLive { 0%,100% { opacity:1; } 50% { opacity:0.32; } }
+            </style>
+            """,
+            height=44,
+        )
+        with st.form("sovereign_notepad_form", clear_on_submit=True):
+            _sn_text = st.text_area(
+                "Sovereign Notepad",
+                height=120,
+                placeholder="Type here — Send dispatches JSON POSTs only to S24 + Convener endpoints (leadership.json / env).",
+                label_visibility="collapsed",
+                key="sovereign_notepad_text",
+            )
+            _sn_send = st.form_submit_button("Send", use_container_width=True, type="primary")
+        if _sn_send:
+            _ok, _bad = _dispatch_sovereign_notepad(_sn_text)
+            if _ok:
+                st.success("Sovereign Notepad dispatched to: " + " · ".join(_ok))
+                _append_sovereign_feed(
+                    "NOTEPAD",
+                    "Executive notepad · " + " · ".join(_ok),
+                )
+            if _bad:
+                st.warning("\n".join(_bad))
 
 dff = apply_turnout_lift(df, turnout_lift)
 dff_hub = filter_by_corridor(dff, st.session_state.get("dg_corridor"))
@@ -2571,13 +2924,14 @@ st.markdown(
       </div>
       <div class="rhgi-prism-frame">
         <div class="rhgi-prism-frame-inner">
-          <div class="rhgi-prism-frame-title">PRESIDENTIAL ELECTION: JANUARY 16, 2027</div>
+          <div class="rhgi-prism-frame-title">PRESIDENTIAL ELECTION: SATURDAY, JANUARY 16, 2027</div>
         </div>
       </div>
     </div>
     <div class="rhgi-brand-block">
       <h1 class="rhgi-brand-title">RHGI - 15/15 Sovereign Mirror</h1>
       <p class="rhgi-creed-block">Securing the 20.7M Mandate through Scientific Precision.</p>
+      <p class="rhgi-creed-block" style="font-size:0.88rem;color:#00FFFF;margin-top:6px;font-weight:700;">Zero-Hour · 16 January 2027 (WAT) — 20.7M mandate execution anchor</p>
       <div class="rhgi-emblem-wrap"><div class="rhgi-emblem">RHGI</div></div>
     </div>
     """,
@@ -2796,6 +3150,8 @@ _resource_vector_advice = (
     else f"Target: Non-Oil Sector Youth Engagement in {html.escape(_resource_zone)}"
 )
 _sovereign_ticker_segments = [
+    "20.7M MANDATE ZERO-HOUR: SATURDAY 16 JANUARY 2027 (WAT) — ELECTION ANCHOR LOCKED.",
+    "GENERAL ELECTION DATE LOCK: SATURDAY 16 JANUARY 2027 (WAT) — SOVEREIGN TICKER ANCHOR.",
     "OIL IS THE PAST. YOUR SKILLS ARE THE NEW OIL: Powering the Non-Oil Future.",
     "YOUR VOTE IS A DIGITAL RECEIPT: The Forensic Vault is Open and Synced.",
     "WE AREN'T JUST VOTING. WE ARE RE-ENGINEERING: The 8R Paradigm in Action.",
@@ -3286,7 +3642,6 @@ with tab_global:
                 "Send Sovereign Directive",
                 _wa_u,
                 use_container_width=True,
-                key=f"sov_directive_link_{_ni}",
                 help="Opens WhatsApp with pre-filled sovereign template (2023 turnout → daily apathy quota).",
             )
 
@@ -3577,6 +3932,7 @@ with tab_global:
     st.plotly_chart(fig_scatter, use_container_width=True)
 
     _ticker = (
+        f"20.7M MANDATE ZERO-HOUR — Saturday 16 January 2027 (WAT) · ELECTION ANCHOR · "
         f"NATIONAL PROJECTION — APC votes {apc_national:,} · Total projected {projected_yield_nat:,} · "
         f"APC share {national_apc_share:.2f}% · Legal Gatekeeper {states_25}/36 states ≥25% APC · "
         f"FCT APC {fct_pct:.2f}% · Remittance gap {remittance_gap:,} vs 20.7M anchor · "
