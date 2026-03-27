@@ -763,7 +763,7 @@ st.markdown(
       -webkit-text-fill-color: #FFFFFF !important;
       opacity: 1 !important;
     }
-    /* SSMI-SIDEBAR-PALETTE-120 — Category 1–3 heading palettes (override generic sidebar white) */
+    /* SSMI-COMMAND-CALIBRATION-121 — Category 1–3 heading palettes (anti-uniformity) */
     @keyframes rhgiSidebarSilverShimmer {
       0% { background-position: 0% 50%; }
       100% { background-position: 220% 50%; }
@@ -772,12 +772,18 @@ st.markdown(
       0% { background-position: 0% 50%; }
       100% { background-position: 220% 50%; }
     }
-    @keyframes rhgiSidebarNavyWhiteGlowPulse {
+    @keyframes rhgiSidebarBrilliantWhiteGlowPulse {
       0%, 100% {
-        box-shadow: 0 0 8px rgba(255, 255, 255, 0.35), inset 0 0 18px rgba(0, 31, 102, 0.55);
+        box-shadow:
+          0 0 10px rgba(255, 255, 255, 0.55),
+          0 0 22px rgba(255, 255, 255, 0.28),
+          inset 0 0 14px rgba(255, 255, 255, 0.06);
       }
       50% {
-        box-shadow: 0 0 22px rgba(255, 255, 255, 0.85), inset 0 0 26px rgba(0, 0, 51, 0.95);
+        box-shadow:
+          0 0 26px rgba(255, 255, 255, 0.95),
+          0 0 48px rgba(255, 255, 255, 0.42),
+          inset 0 0 18px rgba(255, 255, 255, 0.12);
       }
     }
     [data-testid="stSidebar"] p.rhgi-sidebar-cat--harvest {
@@ -790,14 +796,23 @@ st.markdown(
       line-height: 1.3 !important;
       color: transparent !important;
       -webkit-text-fill-color: transparent !important;
-      background: linear-gradient(90deg, #6e6e6e 0%, #b8b8b8 18%, #f0f0f0 42%, #ffffff 50%, #f0f0f0 58%, #b8b8b8 82%, #6e6e6e 100%) !important;
+      background: linear-gradient(
+        90deg,
+        #8a8a8a 0%,
+        #a8a8a8 18%,
+        #C0C0C0 38%,
+        #e4e4e4 50%,
+        #C0C0C0 62%,
+        #a8a8a8 82%,
+        #8a8a8a 100%
+      ) !important;
       background-size: 240% 100% !important;
       -webkit-background-clip: text !important;
       background-clip: text !important;
       animation: rhgiSidebarSilverShimmer 9s linear infinite !important;
       opacity: 1 !important;
-      filter: drop-shadow(0 0 5px rgba(93, 173, 226, 0.62)) drop-shadow(0 2px 8px rgba(0, 31, 102, 0.45)) !important;
-      text-shadow: 0 1px 0 rgba(255,255,255,0.12), 0 0 8px rgba(86, 156, 214, 0.55) !important;
+      filter: none !important;
+      text-shadow: none !important;
     }
     [data-testid="stSidebar"] p.rhgi-sidebar-cat--infra {
       font-family: 'Goldman', sans-serif !important;
@@ -809,7 +824,16 @@ st.markdown(
       line-height: 1.3 !important;
       color: transparent !important;
       -webkit-text-fill-color: transparent !important;
-      background: linear-gradient(90deg, #6b4c0a 0%, #c9a227 22%, #ffd54a 45%, #fff8dc 50%, #ffd54a 55%, #c9a227 78%, #6b4c0a 100%) !important;
+      background: linear-gradient(
+        90deg,
+        #6b5410 0%,
+        #a88620 18%,
+        #D4AF37 40%,
+        #f5e6a8 50%,
+        #D4AF37 60%,
+        #a88620 82%,
+        #6b5410 100%
+      ) !important;
       background-size: 240% 100% !important;
       -webkit-background-clip: text !important;
       background-clip: text !important;
@@ -828,15 +852,16 @@ st.markdown(
       color: #FFFFFF !important;
       -webkit-text-fill-color: #FFFFFF !important;
       border-radius: 12px !important;
-      border: 1px solid #FFFFFF !important;
-      background: linear-gradient(165deg, #072a75 0%, #001f66 35%, #000033 62%, #000021 100%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.22) !important;
+      background: #000033 !important;
+      background-color: #000033 !important;
       background-clip: padding-box !important;
       -webkit-background-clip: padding-box !important;
-      animation: rhgiSidebarNavyWhiteGlowPulse 3.4s ease-in-out infinite !important;
+      animation: rhgiSidebarBrilliantWhiteGlowPulse 3.2s ease-in-out infinite !important;
       opacity: 1 !important;
       filter: none !important;
     }
-    /* Sovereign Vault — PU CSV uploader (91-Standard: Prism Navy + Metallic Silver; kill white glare) */
+    /* Sovereign Vault — PU CSV uploader (Prism Navy + Metallic Silver dashed border) */
     [data-testid="stSidebar"] [data-testid="stFileUploader"] label,
     [data-testid="stSidebar"] [data-testid="stFileUploader"] label span,
     [data-testid="stSidebar"] [data-testid="stFileUploader"] small {
@@ -844,13 +869,23 @@ st.markdown(
       -webkit-text-fill-color: #FFFFFF !important;
     }
     [data-testid="stSidebar"] [data-testid="stFileUploader"] section,
-    [data-testid="stSidebar"] [data-testid="stFileUploader"] [data-baseweb="file-uploader"],
+    [data-testid="stSidebar"] [data-testid="stFileUploader"] [data-baseweb="file-uploader"] {
+      background: #000033 !important;
+      background-color: #000033 !important;
+      background-image: none !important;
+      border: 2px dashed #C0C0C0 !important;
+      border-style: dashed !important;
+      border-radius: 12px !important;
+      color: #FFFFFF !important;
+      box-shadow: none !important;
+    }
     [data-testid="stSidebar"] [data-testid="stFileUploader"] [data-testid="stFileUploaderDropzone"],
     [data-testid="stSidebar"] [data-testid="stFileUploader"] [data-testid="stFileUploaderDropzone"] > div {
       background: #000033 !important;
       background-color: #000033 !important;
       background-image: none !important;
-      border: 2px solid #C0C0C0 !important;
+      border: 2px dashed #C0C0C0 !important;
+      border-style: dashed !important;
       border-radius: 12px !important;
       color: #FFFFFF !important;
       box-shadow: none !important;
@@ -867,7 +902,7 @@ st.markdown(
     [data-testid="stSidebar"] [data-testid="stFileUploader"] input[type="file"] {
       color: #FFFFFF !important;
     }
-    [data-testid="stSidebar"] * {
+    [data-testid="stSidebar"] *:not(.rhgi-sidebar-cat--harvest):not(.rhgi-sidebar-cat--infra):not(.rhgi-sidebar-cat--outreach) {
       color: #FFFFFF !important;
       -webkit-text-fill-color: #FFFFFF !important;
       opacity: 1 !important;
