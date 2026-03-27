@@ -39,6 +39,10 @@ if "opposition_heatmap" not in st.session_state:
     st.session_state.opposition_heatmap = False
 if "threat_monitor" not in st.session_state:
     st.session_state.threat_monitor = bool(st.session_state.get("opposition_heatmap", False))
+if "sovereign_feed_log" not in st.session_state:
+    st.session_state.sovereign_feed_log = [
+        "[INIT] SYSTEM: 144,000-cell / 15/15 model — pure sync (no alternate rep layer).",
+    ]
 
 # RHGI-SWAT-OPPOSITION-77 — global colors (strict DG / SWAT palette).
 # RHGI-GOLDMAN palette (mirrors :root CSS variables).
@@ -64,6 +68,8 @@ CANVASSER_BUDGET_ANCHOR_NGN = 30_000
 # RHGI TOTAL RESTORE-30 — Sovereign Budget Engine (personnel lines per mandate brief).
 SOVEREIGN_CANVASSERS_LINE = 144_000
 SOVEREIGN_EDAY_STAFF_LINE = 144_000
+# SSMI-PURE-1515-SYNC-137 — single mandate geometry: 144k cells × 15/15 (no legacy “unit rep” tiers).
+RHGI_CELL_MODEL_1515 = SOVEREIGN_CANVASSERS_LINE
 SOVEREIGN_UNIT_NGN = 30_000
 SOVEREIGN_MISC_PCT = 0.15
 SOVEREIGN_CONTINGENCY_PCT = 0.10
@@ -119,6 +125,34 @@ def _sovereign_whatsapp_dm_url(state: str, lga: str) -> str:
         "RHGI Sovereign Direct · "
         f"{state} / {lga}: Apathy conversion reminder — 2023 turnout benchmark locked. "
         "18/25 box target · PU mobilisation."
+    )
+    return "whatsapp://send?text=" + quote(msg, safe="")
+
+
+def _append_sovereign_feed(channel: str, message: str) -> None:
+    _ts = datetime.now(_LAGOS_TZ).strftime("%H:%M:%S")
+    line = f"[{_ts}] {channel}: {message}"
+    _log = st.session_state.get("sovereign_feed_log", [])
+    _log.insert(0, line)
+    st.session_state.sovereign_feed_log = _log[:100]
+
+
+def _lga_daily_apathy_target(
+    registered: float, turnout_2023_rate: float, election_dt: datetime
+) -> int:
+    """Apathy pool from 2023 benchmark; equal daily slice to election anchor."""
+    apathy_pool = max(0.0, float(registered) * (1.0 - min(1.0, max(0.0, float(turnout_2023_rate)))))
+    now = datetime.now(_LAGOS_TZ)
+    days_left = max(1, int((election_dt - now).total_seconds() / 86400.0))
+    return max(1, int(apathy_pool / float(days_left)))
+
+
+def _sovereign_directive_wa_url(state: str, lga: str, daily_apathy: int) -> str:
+    msg = (
+        "RHGI SOVEREIGN DIRECTIVE · 15/15 NODE\n"
+        f"{state} / {lga}\n"
+        f"2023 turnout benchmark: convert {daily_apathy:,} apathy voters TODAY "
+        f"(RHGI geometry: {RHGI_CELL_MODEL_1515:,} cells @ 15/15; no alternate rep tier)."
     )
     return "whatsapp://send?text=" + quote(msg, safe="")
 
@@ -1154,6 +1188,48 @@ st.markdown(
       line-height: 1.35;
       -webkit-text-fill-color: #FFFFFF !important;
     }
+    .rhgi-sovereign-feed-wrap {
+      border-radius: 12px;
+      border: 1px solid rgba(0,255,255,0.28);
+      background: linear-gradient(180deg, rgba(0,0,51,0.96) 0%, rgba(0,10,28,0.92) 100%);
+      box-shadow: inset 0 0 24px rgba(0,0,0,0.45);
+      padding: 10px 10px 8px 10px;
+      min-height: 320px;
+      max-height: min(72vh, 620px);
+      display: flex;
+      flex-direction: column;
+    }
+    .rhgi-sovereign-feed-title {
+      color: #00FFFF;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      font-size: 0.78rem;
+      text-align: center;
+      margin: 0 0 8px 0;
+      text-shadow: 0 0 12px rgba(0,255,255,0.35);
+    }
+    .rhgi-sovereign-feed-window {
+      flex: 1;
+      overflow-y: auto;
+      font-family: 'Goldman', sans-serif;
+      font-size: 0.78rem;
+      line-height: 1.45;
+    }
+    .rhgi-sovereign-feed-line {
+      color: #00FFFF;
+      margin-bottom: 6px;
+      text-shadow: 0 0 6px rgba(0,255,255,0.22);
+      word-break: break-word;
+    }
+    .rhgi-sovereign-feed-meta {
+      margin-top: 8px;
+      padding-top: 6px;
+      border-top: 1px solid rgba(0,255,255,0.2);
+      color: rgba(0,255,255,0.75);
+      font-size: 0.68rem;
+      text-align: center;
+      letter-spacing: 0.04em;
+    }
     .rhgi-narrative-label {
       margin: 8px 0 2px 0;
       font-weight: 800;
@@ -2183,6 +2259,10 @@ with st.sidebar:
         else:
             pu_payload = build_pu_sync_payload(df)
         st.session_state["pu_sync_payload"] = pu_payload
+        _append_sovereign_feed(
+            "SMS",
+            f"PU reminder batch · {len(pu_payload):,} rows · 20.7M buffer · 15/15 cell bridge (2023 turnout floor {NATIONAL_TURNOUT_2023_PCT:.2f}%).",
+        )
         st.success(
             f"PU Reminder Engine synced {len(pu_payload):,} voter records with PU coordinates. "
             f"Gap analysis for apathy reminders uses the 2023 turnout benchmark ({NATIONAL_TURNOUT_2023_PCT:.2f}% national) as the conversion floor."
@@ -2968,107 +3048,120 @@ with tab_global:
     _axis_title_font = dict(family="Goldman, sans-serif", size=14, color=GOLD)
     _tick_font = dict(family="Goldman, sans-serif", size=12, color="#ffffff")
 
-    _gold_heading("Winning Margin by Geopolitical Zone (turnout-adjusted)")
-    st.caption(
-        "Opposition Merger Tracker overlay: ADC Coalition Strength vs RHGI 15/15 Density (by zone)."
-    )
-    zone_margin = (
-        dff_hub.groupby("zone", as_index=False)["winning_margin"].sum().sort_values("winning_margin")
-    )
-    fig_zone = px.bar(
-        zone_margin,
-        x="zone",
-        y="winning_margin",
-        color_discrete_sequence=[GOLD],
-    )
-    fig_zone.update_layout(
-        template=None,
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)",
-        font=dict(family="Goldman, sans-serif", color="#ffffff", size=13),
-        font_color="#ffffff",
-        showlegend=True,
-        margin=dict(t=52, b=52, l=72, r=88),
-        xaxis=dict(
-            title=dict(text="Zone", font=_axis_title_font),
-            tickfont=_tick_font,
-            showgrid=False,
-            linecolor="rgba(255,255,255,0.4)",
-            zeroline=False,
-        ),
-        yaxis=dict(
-            title=dict(
-                text="Winning Margin (APC vs nearest rival)",
-                font=dict(family="Goldman, sans-serif", size=13, color=GOLD),
+    _zone_l, _zone_r = st.columns([1.7, 1])
+    with _zone_r:
+        _feed_lines = "".join(
+            f'<div class="rhgi-sovereign-feed-line">{html.escape(line)}</div>'
+            for line in st.session_state.get("sovereign_feed_log", [])[:45]
+        )
+        st.markdown(
+            f'<div class="rhgi-sovereign-feed-wrap"><div class="rhgi-sovereign-feed-title">SOVEREIGN FEED</div>'
+            f'<div class="rhgi-sovereign-feed-window">{_feed_lines}</div>'
+            f'<div class="rhgi-sovereign-feed-meta">{RHGI_CELL_MODEL_1515:,} cells · 15/15 · live directive bridge</div></div>',
+            unsafe_allow_html=True,
+        )
+    with _zone_l:
+        _gold_heading("Winning Margin by Geopolitical Zone (turnout-adjusted)")
+        st.caption(
+            "Opposition Merger Tracker overlay: ADC Coalition Strength vs RHGI 15/15 Density (by zone)."
+        )
+        zone_margin = (
+            dff_hub.groupby("zone", as_index=False)["winning_margin"].sum().sort_values("winning_margin")
+        )
+        fig_zone = px.bar(
+            zone_margin,
+            x="zone",
+            y="winning_margin",
+            color_discrete_sequence=[GOLD],
+        )
+        fig_zone.update_layout(
+            template=None,
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
+            font=dict(family="Goldman, sans-serif", color="#ffffff", size=13),
+            font_color="#ffffff",
+            showlegend=True,
+            margin=dict(t=52, b=52, l=72, r=88),
+            xaxis=dict(
+                title=dict(text="Zone", font=_axis_title_font),
+                tickfont=_tick_font,
+                showgrid=False,
+                linecolor="rgba(255,255,255,0.4)",
+                zeroline=False,
             ),
-            tickfont=_tick_font,
-            showgrid=True,
-            gridcolor="rgba(255,255,255,0.12)",
-            zeroline=True,
-            zerolinecolor="rgba(255,255,255,0.22)",
-            zerolinewidth=1,
-            linecolor="rgba(255,255,255,0.4)",
-        ),
-        legend=dict(
-            font=dict(family="Goldman, sans-serif", color="#ffffff", size=11),
-            bgcolor="rgba(0,0,51,0.45)",
-            bordercolor="rgba(212,175,55,0.35)",
-            borderwidth=1,
-            orientation="h",
-            yanchor="bottom",
-            y=1.02,
-            xanchor="right",
-            x=1,
-        ),
-    )
-    fig_zone.update_traces(marker=dict(color=YELLOW_GOLD))
-    _pt_z = dff_hub["projected_total"].replace(0, 1)
-    _merger_share = 100.0 * (dff_hub["adc_2027"] + dff_hub["lp_2027"]) / _pt_z
-    _tmp_m = dff_hub.assign(_merger_share=_merger_share)
-    _merger_zone = _tmp_m.groupby("zone", as_index=False).agg(
-        adc_coalition_strength=("_merger_share", "mean"),
-        rhgi_15_15_density=(
-            "canvasser_ratio",
-            lambda s: float((s.clip(upper=15.0) / 15.0 * 100.0).mean()),
-        ),
-    )
-    _mzone = zone_margin.merge(_merger_zone, on="zone", how="left")
-    fig_zone.add_trace(
-        go.Scatter(
-            x=_mzone["zone"],
-            y=_mzone["adc_coalition_strength"],
-            name="ADC Coalition Strength",
-            yaxis="y2",
-            mode="lines+markers",
-            line=dict(color="#ffffff", width=2),
-            marker=dict(size=8, color="#ffffff"),
-        )
-    )
-    fig_zone.add_trace(
-        go.Scatter(
-            x=_mzone["zone"],
-            y=_mzone["rhgi_15_15_density"],
-            name="RHGI 15/15 Density",
-            yaxis="y2",
-            mode="lines+markers",
-            line=dict(color=YELLOW_GOLD, width=2),
-            marker=dict(size=8, color=YELLOW_GOLD),
-        )
-    )
-    fig_zone.update_layout(
-        yaxis2=dict(
-            title=dict(
-                text="Opposition Merger Tracker · 0–100",
+            yaxis=dict(
+                title=dict(
+                    text="Winning Margin (APC vs nearest rival)",
+                    font=dict(family="Goldman, sans-serif", size=13, color=GOLD),
+                ),
+                tickfont=_tick_font,
+                showgrid=True,
+                gridcolor="rgba(255,255,255,0.12)",
+                zeroline=True,
+                zerolinecolor="rgba(255,255,255,0.22)",
+                zerolinewidth=1,
+                linecolor="rgba(255,255,255,0.4)",
+            ),
+            legend=dict(
                 font=dict(family="Goldman, sans-serif", color="#ffffff", size=11),
+                bgcolor="rgba(0,0,51,0.45)",
+                bordercolor="rgba(212,175,55,0.35)",
+                borderwidth=1,
+                orientation="h",
+                yanchor="bottom",
+                y=1.02,
+                xanchor="right",
+                x=1,
             ),
-            overlaying="y",
-            side="right",
-            range=[0, 100],
-            showgrid=False,
-            tickfont=dict(family="Goldman, sans-serif", color="#ffffff", size=10),
-        ),
-    )
-    st.plotly_chart(fig_zone, use_container_width=True)
+        )
+        fig_zone.update_traces(marker=dict(color=YELLOW_GOLD))
+        _pt_z = dff_hub["projected_total"].replace(0, 1)
+        _merger_share = 100.0 * (dff_hub["adc_2027"] + dff_hub["lp_2027"]) / _pt_z
+        _tmp_m = dff_hub.assign(_merger_share=_merger_share)
+        _merger_zone = _tmp_m.groupby("zone", as_index=False).agg(
+            adc_coalition_strength=("_merger_share", "mean"),
+            rhgi_15_15_density=(
+                "canvasser_ratio",
+                lambda s: float((s.clip(upper=15.0) / 15.0 * 100.0).mean()),
+            ),
+        )
+        _mzone = zone_margin.merge(_merger_zone, on="zone", how="left")
+        fig_zone.add_trace(
+            go.Scatter(
+                x=_mzone["zone"],
+                y=_mzone["adc_coalition_strength"],
+                name="ADC Coalition Strength",
+                yaxis="y2",
+                mode="lines+markers",
+                line=dict(color="#ffffff", width=2),
+                marker=dict(size=8, color="#ffffff"),
+            )
+        )
+        fig_zone.add_trace(
+            go.Scatter(
+                x=_mzone["zone"],
+                y=_mzone["rhgi_15_15_density"],
+                name="RHGI 15/15 Density",
+                yaxis="y2",
+                mode="lines+markers",
+                line=dict(color=YELLOW_GOLD, width=2),
+                marker=dict(size=8, color=YELLOW_GOLD),
+            )
+        )
+        fig_zone.update_layout(
+            yaxis2=dict(
+                title=dict(
+                    text="Opposition Merger Tracker · 0–100",
+                    font=dict(family="Goldman, sans-serif", color="#ffffff", size=11),
+                ),
+                overlaying="y",
+                side="right",
+                range=[0, 100],
+                showgrid=False,
+                tickfont=dict(family="Goldman, sans-serif", color="#ffffff", size=10),
+            ),
+        )
+        st.plotly_chart(fig_zone, use_container_width=True)
 
     _gold_heading("Harvest Trendline")
     st.caption("Food Inflation (12.12%) vs Growth (4.4%) vs Reserves ($50B+).")
@@ -3165,6 +3258,37 @@ with tab_global:
         f'<small style="color:#ffffff;font-weight:600;opacity:0.92;">Independent receipt of the 20.7M Mandate — forensic chain silences skeptics.</small></div>',
         unsafe_allow_html=True,
     )
+
+    # POSITION 2b — 15/15 Sovereign Directive bridge (WhatsApp handshake; 2023 apathy floor)
+    _nodes1515 = dff_hub.loc[dff_hub["canvasser_ratio"] >= 15.0].copy()
+    _nodes1515 = _nodes1515.sort_values("strike_priority", ascending=False).head(24)
+    st.caption(
+        f"Pure model: {RHGI_CELL_MODEL_1515:,} RHGI cells @ 15/15 — daily apathy quota from 2023 turnout benchmark (spread to election anchor). "
+        "No alternate rep-tier geometry."
+    )
+    _dir_cols = st.columns(3)
+    for _ni, (_, _nr) in enumerate(_nodes1515.iterrows()):
+        _s = str(_nr["state"])
+        _l = str(_nr["lga"])
+        _daily = _lga_daily_apathy_target(
+            float(_nr["registered_voters"]),
+            float(_nr["turnout_2023_rate"]),
+            ELECTION_TARGET_WAT,
+        )
+        _wa_u = _sovereign_directive_wa_url(_s, _l, _daily)
+        with _dir_cols[_ni % 3]:
+            st.markdown(
+                f"<div style='color:#ffffff;font-size:0.8rem;font-weight:700;'>{html.escape(_s)} · {html.escape(_l[:26])}</div>"
+                f"<div style='color:#00FFFF;font-size:0.74rem;margin-bottom:6px;'>Apathy TODAY (2023 benchmark): <b>{_daily:,}</b></div>",
+                unsafe_allow_html=True,
+            )
+            st.link_button(
+                "Send Sovereign Directive",
+                _wa_u,
+                use_container_width=True,
+                key=f"sov_directive_link_{_ni}",
+                help="Opens WhatsApp with pre-filled sovereign template (2023 turnout → daily apathy quota).",
+            )
 
     # POSITION 3a — Constitutional mandate banner
     if constitutional_ok:
@@ -3377,7 +3501,7 @@ with tab_global:
             <h3>Sovereign Budget Engine — ₦{_sb_mandate_bn:,.2f}B</h3>
             <p class="rhgi-sovereign-mandate">₦{_sb_mandate:,}</p>
             <p class="rhgi-sovereign-detail">
-              (144,000 canvassers + 144,000 E-day staff) × ₦30,000 → ₦{_sb_base/1e9:.2f}B;
+              ({RHGI_CELL_MODEL_1515:,} canvassers + {RHGI_CELL_MODEL_1515:,} E-day staff) × ₦30,000 → ₦{_sb_base/1e9:.2f}B;
               +15% misc → ₦{_sb_after_misc/1e9:.2f}B; +10% contingency → line-model subtotal <b>₦{_sb_line_total:,}</b> (₦{_sb_line_bn:.2f}B).
               RHGI sovereign headline total: <b>₦{_sb_mandate_bn:,.2f} billion</b>.
             </p>
@@ -3464,12 +3588,12 @@ with tab_global:
     )
 
     st.markdown(
-        """
+        f"""
         <div class='rhgi-glossary-shell'>
           <div class='rhgi-glossary-inner'>
             <p class='rhgi-glossary-title'>SOVEREIGN GLOSSARY</p>
             <div class='rhgi-glossary-grid'>
-              <div class='rhgi-glossary-item'><b>SSMI:</b> Scientific Support Model Initiative - The data-driven framework geofencing Nigeria's 176,846 PUs into 15/15 canvasser cells.</div>
+              <div class='rhgi-glossary-item'><b>SSMI:</b> Scientific Support Model Initiative — geofences Nigeria&apos;s 176,846 PUs into 15/15 canvasser cells under the {RHGI_CELL_MODEL_1515:,}-cell RHGI geometry (no alternate &quot;unit rep&quot; layer).</div>
               <div class='rhgi-glossary-item'><b>CSV Payload:</b> Standardized PU dataset (e.g., Abia State PUs), ingested to ground the Heritage Spine to physical coordinates.</div>
               <div class='rhgi-glossary-item'><b>8R Paradigm:</b> Refine, Reset, Research... The 8-stage strategic engine driving the mandate.</div>
               <div class='rhgi-glossary-item'><b>Cyber-Sovereignty Node:</b> The Digital Shield for rapid-response verification of AI-driven deepfakes and misinformation.</div>
