@@ -766,6 +766,15 @@ st.markdown(
     [data-testid="stSidebar"] * {
       color: #FFFFFF !important;
       -webkit-text-fill-color: #FFFFFF !important;
+      opacity: 1 !important;
+      filter: none !important;
+      transition: none !important;
+    }
+    [data-testid="stSidebar"] *::before,
+    [data-testid="stSidebar"] *::after {
+      opacity: 1 !important;
+      filter: none !important;
+      transition: none !important;
     }
     .rhgi-forensic-baseline-line {
       color: #ffffff !important;
@@ -798,6 +807,10 @@ st.markdown(
     @keyframes rhgiSwingPrismSweep {
       0% { background-position: 0% 50%; }
       100% { background-position: 180% 50%; }
+    }
+    @keyframes rhgiSovereignMarquee {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
     }
     .rhgi-swing-shell {
       margin: 8px 0 12px 0;
@@ -892,6 +905,39 @@ st.markdown(
       font-weight: 700;
       line-height: 1.35;
       font-size: 0.9rem;
+    }
+    .rhgi-sovereign-marquee-wrap {
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      position: relative;
+    }
+    .rhgi-sovereign-marquee-track {
+      display: inline-flex;
+      min-width: max-content;
+      animation: rhgiSovereignMarquee 30s linear infinite;
+      will-change: transform;
+    }
+    .rhgi-sovereign-marquee-seg {
+      display: inline-block;
+      padding-right: 2.8rem;
+      color: #ffffff;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+    }
+    .rhgi-corridor-foundation-shell {
+      margin: 6px 0 10px 0;
+      padding: 1px;
+      border-radius: 14px;
+      background: linear-gradient(90deg, #D4AF37 0%, #FFFFFF 38%, #001F66 62%, #FFFFFF 82%, #D4AF37 100%);
+      background-size: 240% 100%;
+      animation: rhgiSwingLiquidFlow 30s linear infinite;
+    }
+    .rhgi-corridor-foundation-inner {
+      border-radius: 13px;
+      background: rgba(0, 0, 51, 0.95);
+      padding: 8px 12px;
+      border: 1px solid rgba(212,175,55,0.45);
     }
     .block-container {
       font-size: 1.1rem;
@@ -2302,13 +2348,20 @@ _resource_vector_advice = (
     if _deepfake_alert
     else f"Target: Non-Oil Sector Youth Engagement in {html.escape(_resource_zone)}"
 )
-_vector_messages = [
-    "MESSAGE 1: Powering the Non-Oil Future - Your Skills, Our New Oil.",
-    "MESSAGE 2: The Forensic Vault is Open - Every Vote is a Digital Receipt.",
-    "MESSAGE 3: The 8R Paradigm - Re-engineering Nigeria, One PU at a Time.",
+_sovereign_ticker_segments = [
+    "OIL IS THE PAST. YOUR SKILLS ARE THE NEW OIL: Powering the Non-Oil Future.",
+    "YOUR VOTE IS A DIGITAL RECEIPT: The Forensic Vault is Open and Synced.",
+    "WE AREN'T JUST VOTING. WE ARE RE-ENGINEERING: The 8R Paradigm in Action.",
 ]
-_vector_msg_idx = int((_now_wat.timestamp() // 10) % len(_vector_messages))
-_resource_vector_message = _vector_messages[_vector_msg_idx]
+_sovereign_ticker_text = "  ✦  ".join(_sovereign_ticker_segments)
+_sovereign_ticker_html = (
+    "<div class='rhgi-sovereign-marquee-wrap'>"
+    "<div class='rhgi-sovereign-marquee-track'>"
+    f"<span class='rhgi-sovereign-marquee-seg'>{html.escape(_sovereign_ticker_text)}</span>"
+    f"<span class='rhgi-sovereign-marquee-seg'>{html.escape(_sovereign_ticker_text)}</span>"
+    "</div>"
+    "</div>"
+)
 
 st.markdown(
     f"""
@@ -2319,7 +2372,7 @@ st.markdown(
           <div class='rhgi-swing-item rhgi-swing-item--silver'>
             <div class='rhgi-swing-k'>EASTERN STATES YIELD POTENTIAL</div>
             <div class='rhgi-swing-v'>
-              Enugu, Abia, Ebonyi, Anambra, Imo (73% Apathy): {(_eastern_yield_potential):,} votes
+              Enugu, Abia, Ebonyi, Anambra, Imo (73% Apathy Target): <b>{(_eastern_yield_potential):,} votes</b>
             </div>
           </div>
           <div class='rhgi-swing-item rhgi-swing-item--gold'>
@@ -2331,7 +2384,7 @@ st.markdown(
           </div>
           <div class='rhgi-swing-item rhgi-swing-item--prism'>
             <div class='rhgi-swing-k'>RESOURCE VECTOR</div>
-            <div class='rhgi-swing-v'>{html.escape(_resource_vector_message)}<br>{_resource_vector_advice}</div>
+            <div class='rhgi-swing-v'>{_sovereign_ticker_html}<div style='margin-top:6px;'>{_resource_vector_advice}</div></div>
           </div>
         </div>
       </div>
@@ -2341,6 +2394,16 @@ st.markdown(
 )
 
 _gold_heading("DG Corridor Command Hub")
+st.markdown(
+    f"""
+    <div class='rhgi-corridor-foundation-shell'>
+      <div class='rhgi-corridor-foundation-inner'>
+        {_sovereign_ticker_html}
+      </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 _hub_cols = st.columns(6)
 for _hi, (_abbr, _zname) in enumerate(CORRIDOR_NODES):
     _btn_label = "NW (K3)" if _abbr == "NW" else _abbr
