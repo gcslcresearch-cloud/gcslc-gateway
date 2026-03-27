@@ -710,6 +710,25 @@ st.markdown(
     [data-testid="stSidebar"] {
       background: #000033 !important;
     }
+    /* SSMI-ACCESS-RESTORE-122 — kill white “card” bleed in sidebar; keep Prism Navy shell */
+    [data-testid="stSidebar"] [data-testid="stSidebarContent"],
+    [data-testid="stSidebar"] [data-testid="stVerticalBlock"],
+    [data-testid="stSidebar"] [data-testid="stVerticalBlock"] > div,
+    [data-testid="stSidebar"] [data-testid="element-container"],
+    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"],
+    [data-testid="stSidebar"] [data-testid="stDataFrame"],
+    [data-testid="stSidebar"] [data-testid="stDataFrame"] > div,
+    [data-testid="stSidebar"] [data-testid="stAlert"],
+    [data-testid="stSidebar"] [data-testid="stNotification"],
+    [data-testid="stSidebar"] div[data-testid="stVerticalBlockBorderWrapper"] {
+      background-color: #000033 !important;
+      background-image: none !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stFileUploader"] [data-testid="stFileUploaderDropzone"] div,
+    [data-testid="stSidebar"] [data-testid="stFileUploader"] [data-baseweb="file-uploader"] div {
+      background-color: #000033 !important;
+      background-image: none !important;
+    }
     /* SSMI-108 — Category 1–3: brilliant #FFFFFF, no dimming (category titles use SSMI-119 palettes) */
     [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p:not(.rhgi-sidebar-cat--harvest):not(.rhgi-sidebar-cat--infra):not(.rhgi-sidebar-cat--outreach),
     [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] span,
@@ -763,7 +782,7 @@ st.markdown(
       -webkit-text-fill-color: #FFFFFF !important;
       opacity: 1 !important;
     }
-    /* SSMI-COMMAND-CALIBRATION-121 — Category 1–3 heading palettes (anti-uniformity) */
+    /* SSMI-COMMAND-CALIBRATION-121 + SSMI-ACCESS-RESTORE-122 — Category 1–3 heading palettes */
     @keyframes rhgiSidebarSilverShimmer {
       0% { background-position: 0% 50%; }
       100% { background-position: 220% 50%; }
@@ -861,7 +880,7 @@ st.markdown(
       opacity: 1 !important;
       filter: none !important;
     }
-    /* Sovereign Vault — PU CSV uploader (Prism Navy + Metallic Silver dashed border) */
+    /* Sovereign Vault — PU CSV uploader (122: dark Prism Navy; no white fill; dashed silver) */
     [data-testid="stSidebar"] [data-testid="stFileUploader"] label,
     [data-testid="stSidebar"] [data-testid="stFileUploader"] label span,
     [data-testid="stSidebar"] [data-testid="stFileUploader"] small {
@@ -896,8 +915,8 @@ st.markdown(
       fill: #C0C0C0 !important;
     }
     [data-testid="stSidebar"] [data-testid="stFileUploader"] [data-testid="stFileUploaderDropzone"]:hover {
-      border-color: #e8e8e8 !important;
-      box-shadow: 0 0 14px rgba(192, 192, 192, 0.35) !important;
+      border-color: #C0C0C0 !important;
+      box-shadow: 0 0 12px rgba(192, 192, 192, 0.28) !important;
     }
     [data-testid="stSidebar"] [data-testid="stFileUploader"] input[type="file"] {
       color: #FFFFFF !important;
