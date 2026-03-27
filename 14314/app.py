@@ -858,7 +858,7 @@ st.markdown(
       padding: 1px;
       background: linear-gradient(90deg, #A9A9A9 0%, #C0C0C0 24%, #FFFFFF 50%, #C0C0C0 76%, #A9A9A9 100%);
       background-size: 230% 100%;
-      animation: rhgiSwingSilverShimmer 2.2s linear infinite;
+      animation: rhgiSwingSilverShimmer 8.8s linear infinite;
       -webkit-mask:
         linear-gradient(#fff 0 0) content-box,
         linear-gradient(#fff 0 0);
@@ -867,13 +867,13 @@ st.markdown(
     }
     .rhgi-swing-item--gold {
       border-color: rgba(212,175,55,0.95);
-      animation: rhgiSwingGoldPulse 1.35s ease-in-out infinite;
+      animation: rhgiSwingGoldPulse 5.4s ease-in-out infinite;
     }
     .rhgi-swing-item--prism::before {
       padding: 1px;
-      background: linear-gradient(95deg, #000033 0%, #001F66 26%, #D4AF37 50%, #001F66 74%, #000033 100%);
+      background: linear-gradient(95deg, #000033 0%, #FFFFFF 26%, #001F66 50%, #FFFFFF 74%, #000033 100%);
       background-size: 200% 100%;
-      animation: rhgiSwingPrismSweep 6.5s linear infinite;
+      animation: rhgiSwingPrismSweep 26s linear infinite;
       -webkit-mask:
         linear-gradient(#fff 0 0) content-box,
         linear-gradient(#fff 0 0);
@@ -1836,7 +1836,7 @@ with st.sidebar:
     _cien_sidebar_box = st.container()
     with _cien_sidebar_box:
         st.markdown(
-            '<p style="font-family:Goldman,sans-serif;color:#D4AF37;font-weight:800;font-size:1.02rem;'
+            '<p style="font-family:Goldman,sans-serif;color:#FFFFFF;font-weight:800;font-size:1.02rem;'
             'margin:18px 0 8px 0;letter-spacing:0.04em;">LGA-CIEN REAL-TIME AUDIT & LOGISTICS FEED</p>',
             unsafe_allow_html=True,
         )
@@ -1877,7 +1877,7 @@ with st.sidebar:
                 f'<div style="font-family:Goldman,sans-serif;font-size:0.88rem;line-height:1.5;color:#ffffff;">'
                 f"{_n_html}"
                 f'<span style="color:#ffffff;">{html.escape(r["lga"])} : {html.escape(r["state"])} : '
-                f'<span style="color:#D4AF37;font-weight:700;">{html.escape(r["status"])}</span></span></div>',
+                f'<span style="color:#FFFFFF;font-weight:700;">{html.escape(r["status"])}</span></span></div>',
                 unsafe_allow_html=True,
             )
             if r.get("swat_15_15"):
@@ -2302,12 +2302,19 @@ _resource_vector_advice = (
     if _deepfake_alert
     else f"Target: Non-Oil Sector Youth Engagement in {html.escape(_resource_zone)}"
 )
+_vector_messages = [
+    "MESSAGE 1: Powering the Non-Oil Future - Your Skills, Our New Oil.",
+    "MESSAGE 2: The Forensic Vault is Open - Every Vote is a Digital Receipt.",
+    "MESSAGE 3: The 8R Paradigm - Re-engineering Nigeria, One PU at a Time.",
+]
+_vector_msg_idx = int((_now_wat.timestamp() // 10) % len(_vector_messages))
+_resource_vector_message = _vector_messages[_vector_msg_idx]
 
 st.markdown(
     f"""
     <div class='rhgi-swing-shell{_swing_warn_cls}'>
       <div class='rhgi-swing-inner'>
-        <p class='rhgi-swing-title'>SOVEREIGN SWING ILLUMINATOR • 202,225 BALLOT-BOX BASELINE • {_swing_status}</p>
+        <p class='rhgi-swing-title'>SOVEREIGN SWING HEADER • 202,225 BALLOT-BOX BASELINE • {_swing_status}</p>
         <div class='rhgi-swing-grid'>
           <div class='rhgi-swing-item rhgi-swing-item--silver'>
             <div class='rhgi-swing-k'>EASTERN STATES YIELD POTENTIAL</div>
@@ -2324,7 +2331,7 @@ st.markdown(
           </div>
           <div class='rhgi-swing-item rhgi-swing-item--prism'>
             <div class='rhgi-swing-k'>RESOURCE VECTOR</div>
-            <div class='rhgi-swing-v'>{_resource_vector_advice}</div>
+            <div class='rhgi-swing-v'>{html.escape(_resource_vector_message)}<br>{_resource_vector_advice}</div>
           </div>
         </div>
       </div>
