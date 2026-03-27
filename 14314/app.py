@@ -749,10 +749,12 @@ st.markdown(
     /* SSMI-109 — kill sidebar markdown ghosting (Category 1–3) */
     [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] {
       color: #ffffff !important;
+      color: white !important;
       opacity: 1 !important;
     }
     [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] * {
       color: #ffffff !important;
+      color: white !important;
       opacity: 1 !important;
     }
     .rhgi-forensic-baseline-line {
@@ -1519,6 +1521,41 @@ st.markdown(
       letter-spacing: 0.03em;
       box-shadow: 0 0 14px rgba(212,175,55,0.35);
       background: rgba(0,0,51,0.72);
+    }
+    .rhgi-glossary-shell {
+      margin: 22px 0 10px 0;
+      padding: 1px;
+      border-radius: 14px;
+      background: linear-gradient(90deg, #C0C0C0 0%, #FFFFFF 50%, #C0C0C0 100%);
+    }
+    .rhgi-glossary-inner {
+      background: #000033;
+      border-radius: 13px;
+      padding: 12px 14px;
+      color: #ffffff;
+    }
+    .rhgi-glossary-title {
+      margin: 0 0 10px 0;
+      color: #ffffff;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      text-align: center;
+    }
+    .rhgi-glossary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .rhgi-glossary-item {
+      border: 1px solid rgba(192,192,192,0.55);
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: rgba(0,0,51,0.84);
+      color: #ffffff !important;
+    }
+    .rhgi-glossary-item b {
+      color: #ffffff !important;
+      letter-spacing: 0.03em;
     }
     </style>
     """,
@@ -2647,5 +2684,22 @@ with tab_global:
     )
     st.markdown(
         f"<div class='rhgi-ticker-wrap'><div class='rhgi-ticker'><span>{_ticker}</span><span>{_ticker}</span></div></div>",
+        unsafe_allow_html=True,
+    )
+
+    st.markdown(
+        """
+        <div class='rhgi-glossary-shell'>
+          <div class='rhgi-glossary-inner'>
+            <p class='rhgi-glossary-title'>SOVEREIGN GLOSSARY</p>
+            <div class='rhgi-glossary-grid'>
+              <div class='rhgi-glossary-item'><b>SSMI:</b> Scientific Support Model Initiative - The data-driven framework geofencing Nigeria's 176,846 PUs into 15/15 canvasser cells.</div>
+              <div class='rhgi-glossary-item'><b>CSV Payload:</b> Standardized PU dataset (e.g., Abia State PUs), ingested to ground the Heritage Spine to physical coordinates.</div>
+              <div class='rhgi-glossary-item'><b>8R Paradigm:</b> Refine, Reset, Research... The 8-stage strategic engine driving the mandate.</div>
+              <div class='rhgi-glossary-item'><b>Cyber-Sovereignty Node:</b> The Digital Shield for rapid-response verification of AI-driven deepfakes and misinformation.</div>
+            </div>
+          </div>
+        </div>
+        """,
         unsafe_allow_html=True,
     )
