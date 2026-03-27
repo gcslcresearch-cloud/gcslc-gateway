@@ -710,7 +710,7 @@ st.markdown(
     [data-testid="stSidebar"] {
       background: #000033 !important;
     }
-    /* SSMI-ACCESS-RESTORE-122 — kill white “card” bleed in sidebar; keep Prism Navy shell */
+    /* SSMI-COMMAND-PALETTE-FINAL-126 — transparent sidebar internals + no shadows */
     [data-testid="stSidebar"] [data-testid="stSidebarContent"],
     [data-testid="stSidebar"] [data-testid="stVerticalBlock"],
     [data-testid="stSidebar"] [data-testid="stVerticalBlock"] > div,
@@ -721,13 +721,19 @@ st.markdown(
     [data-testid="stSidebar"] [data-testid="stAlert"],
     [data-testid="stSidebar"] [data-testid="stNotification"],
     [data-testid="stSidebar"] div[data-testid="stVerticalBlockBorderWrapper"] {
-      background-color: #000033 !important;
+      background-color: transparent !important;
       background-image: none !important;
+      box-shadow: none !important;
+      color: #FFFFFF !important;
+      -webkit-text-fill-color: #FFFFFF !important;
     }
     [data-testid="stSidebar"] [data-testid="stFileUploader"] [data-testid="stFileUploaderDropzone"] div,
     [data-testid="stSidebar"] [data-testid="stFileUploader"] [data-baseweb="file-uploader"] div {
-      background-color: #000033 !important;
+      background-color: transparent !important;
       background-image: none !important;
+      box-shadow: none !important;
+      color: #FFFFFF !important;
+      -webkit-text-fill-color: #FFFFFF !important;
     }
     /* SSMI-108 — Category 1–3: brilliant #FFFFFF, no dimming (category titles use SSMI-119 palettes) */
     [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p:not(.rhgi-sidebar-cat--harvest):not(.rhgi-sidebar-cat--infra):not(.rhgi-sidebar-cat--outreach),
@@ -756,7 +762,8 @@ st.markdown(
     }
     [data-testid="stSidebar"] .stMetric,
     [data-testid="stSidebar"] [data-testid="stMetricContainer"] > div {
-      background: #000033 !important;
+      background: transparent !important;
+      box-shadow: none !important;
       opacity: 1 !important;
     }
     [data-testid="stSidebar"] [data-testid="stSlider"] label,
@@ -769,6 +776,8 @@ st.markdown(
     [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] {
       color: #ffffff !important;
       color: white !important;
+      background: transparent !important;
+      box-shadow: none !important;
       opacity: 1 !important;
     }
     [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] * {
@@ -871,7 +880,7 @@ st.markdown(
       color: #FFFFFF !important;
       -webkit-text-fill-color: #FFFFFF !important;
       border-radius: 12px !important;
-      border: 1px solid rgba(255, 255, 255, 0.22) !important;
+      border: 1px solid #FFFFFF !important;
       background: #000033 !important;
       background-color: #000033 !important;
       background-clip: padding-box !important;
@@ -880,7 +889,7 @@ st.markdown(
       opacity: 1 !important;
       filter: none !important;
     }
-    /* Sovereign Vault — PU CSV uploader (122: dark Prism Navy; no white fill; dashed silver) */
+    /* Sovereign Vault — 126: dark Prism Navy + silver dashed border; no white fill */
     [data-testid="stSidebar"] [data-testid="stFileUploader"] label,
     [data-testid="stSidebar"] [data-testid="stFileUploader"] label span,
     [data-testid="stSidebar"] [data-testid="stFileUploader"] small {
@@ -941,6 +950,12 @@ st.markdown(
       font-family: 'Goldman', sans-serif !important;
       font-size: 0.92rem !important;
       margin: 0 0 10px 0 !important;
+    }
+    .rhgi-ballot-anchor-white {
+      color: #FFFFFF !important;
+      -webkit-text-fill-color: #FFFFFF !important;
+      font-weight: 900 !important;
+      text-shadow: 0 0 8px rgba(255,255,255,0.35) !important;
     }
     @keyframes rhgiSwingLiquidFlow {
       0% { background-position: 0% 50%; }
@@ -2534,7 +2549,7 @@ st.markdown(
     f"""
     <div class='rhgi-swing-shell{_swing_warn_cls}'>
       <div class='rhgi-swing-inner'>
-        <p class='rhgi-swing-title'>SOVEREIGN SWING HEADER • 202,225 BALLOT-BOX BASELINE • {_swing_status}</p>
+        <p class='rhgi-swing-title'>SOVEREIGN SWING HEADER • <span class='rhgi-ballot-anchor-white'>202,225 BALLOT-BOX BASELINE</span> • {_swing_status}</p>
         <div class='rhgi-swing-grid'>
           <div class='rhgi-swing-item rhgi-swing-item--silver'>
             <div class='rhgi-swing-k'>EASTERN STATES YIELD POTENTIAL</div>

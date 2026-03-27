@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SSMI-ACCESS-RESTORE-122 — Streamlit on 8505 + npx localtunnel (public .loca.lt URL for S24 / remote).
+# SSMI-COMMAND-PALETTE-FINAL-126 — Streamlit on 8505 + persistent localtunnel bridge.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
@@ -15,4 +15,11 @@ else
 fi
 
 sleep 3
-exec npx --yes localtunnel --port 8505
+npx --yes localtunnel --port 8505 2>&1 | while IFS= read -r line; do
+  printf '%s\n' "$line"
+  case "$line" in
+    *".loca.lt"*|*"localtunnel.me"*)
+      printf 'PUBLIC URL: %s\n' "$line"
+      ;;
+  esac
+done
