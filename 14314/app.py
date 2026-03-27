@@ -710,8 +710,8 @@ st.markdown(
     [data-testid="stSidebar"] {
       background: #000033 !important;
     }
-    /* SSMI-108 — Category 1–3: brilliant #FFFFFF, no dimming */
-    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p,
+    /* SSMI-108 — Category 1–3: brilliant #FFFFFF, no dimming (category titles use SSMI-119 palettes) */
+    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p:not(.rhgi-sidebar-cat--harvest):not(.rhgi-sidebar-cat--infra):not(.rhgi-sidebar-cat--outreach),
     [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] span,
     [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] li,
     [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] strong,
@@ -762,6 +762,110 @@ st.markdown(
       color: #FFFFFF !important;
       -webkit-text-fill-color: #FFFFFF !important;
       opacity: 1 !important;
+    }
+    /* SSMI-SIDEBAR-PALETTE-120 — Category 1–3 heading palettes (override generic sidebar white) */
+    @keyframes rhgiSidebarSilverShimmer {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 220% 50%; }
+    }
+    @keyframes rhgiSidebarGoldShimmer {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 220% 50%; }
+    }
+    @keyframes rhgiSidebarNavyWhiteGlowPulse {
+      0%, 100% {
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.35), inset 0 0 18px rgba(0, 31, 102, 0.55);
+      }
+      50% {
+        box-shadow: 0 0 22px rgba(255, 255, 255, 0.85), inset 0 0 26px rgba(0, 0, 51, 0.95);
+      }
+    }
+    [data-testid="stSidebar"] p.rhgi-sidebar-cat--harvest {
+      font-family: 'Goldman', sans-serif !important;
+      font-weight: 800 !important;
+      font-size: 1.06rem !important;
+      letter-spacing: 0.06em !important;
+      margin: 0.55rem 0 0.4rem 0 !important;
+      padding: 6px 0 !important;
+      line-height: 1.3 !important;
+      color: transparent !important;
+      -webkit-text-fill-color: transparent !important;
+      background: linear-gradient(90deg, #6e6e6e 0%, #b8b8b8 18%, #f0f0f0 42%, #ffffff 50%, #f0f0f0 58%, #b8b8b8 82%, #6e6e6e 100%) !important;
+      background-size: 240% 100% !important;
+      -webkit-background-clip: text !important;
+      background-clip: text !important;
+      animation: rhgiSidebarSilverShimmer 9s linear infinite !important;
+      opacity: 1 !important;
+      filter: drop-shadow(0 0 5px rgba(93, 173, 226, 0.62)) drop-shadow(0 2px 8px rgba(0, 31, 102, 0.45)) !important;
+      text-shadow: 0 1px 0 rgba(255,255,255,0.12), 0 0 8px rgba(86, 156, 214, 0.55) !important;
+    }
+    [data-testid="stSidebar"] p.rhgi-sidebar-cat--infra {
+      font-family: 'Goldman', sans-serif !important;
+      font-weight: 800 !important;
+      font-size: 1.06rem !important;
+      letter-spacing: 0.06em !important;
+      margin: 0.55rem 0 0.4rem 0 !important;
+      padding: 6px 0 !important;
+      line-height: 1.3 !important;
+      color: transparent !important;
+      -webkit-text-fill-color: transparent !important;
+      background: linear-gradient(90deg, #6b4c0a 0%, #c9a227 22%, #ffd54a 45%, #fff8dc 50%, #ffd54a 55%, #c9a227 78%, #6b4c0a 100%) !important;
+      background-size: 240% 100% !important;
+      -webkit-background-clip: text !important;
+      background-clip: text !important;
+      animation: rhgiSidebarGoldShimmer 9s linear infinite !important;
+      opacity: 1 !important;
+      filter: none !important;
+    }
+    [data-testid="stSidebar"] p.rhgi-sidebar-cat--outreach {
+      font-family: 'Goldman', sans-serif !important;
+      font-weight: 800 !important;
+      font-size: 1.06rem !important;
+      letter-spacing: 0.06em !important;
+      margin: 0.55rem 0 0.4rem 0 !important;
+      padding: 10px 12px !important;
+      line-height: 1.3 !important;
+      color: #FFFFFF !important;
+      -webkit-text-fill-color: #FFFFFF !important;
+      border-radius: 12px !important;
+      border: 1px solid #FFFFFF !important;
+      background: linear-gradient(165deg, #072a75 0%, #001f66 35%, #000033 62%, #000021 100%) !important;
+      background-clip: padding-box !important;
+      -webkit-background-clip: padding-box !important;
+      animation: rhgiSidebarNavyWhiteGlowPulse 3.4s ease-in-out infinite !important;
+      opacity: 1 !important;
+      filter: none !important;
+    }
+    /* Sovereign Vault — PU CSV uploader (91-Standard: Prism Navy + Metallic Silver; kill white glare) */
+    [data-testid="stSidebar"] [data-testid="stFileUploader"] label,
+    [data-testid="stSidebar"] [data-testid="stFileUploader"] label span,
+    [data-testid="stSidebar"] [data-testid="stFileUploader"] small {
+      color: #FFFFFF !important;
+      -webkit-text-fill-color: #FFFFFF !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stFileUploader"] section,
+    [data-testid="stSidebar"] [data-testid="stFileUploader"] [data-baseweb="file-uploader"],
+    [data-testid="stSidebar"] [data-testid="stFileUploader"] [data-testid="stFileUploaderDropzone"],
+    [data-testid="stSidebar"] [data-testid="stFileUploader"] [data-testid="stFileUploaderDropzone"] > div {
+      background: #000033 !important;
+      background-color: #000033 !important;
+      background-image: none !important;
+      border: 2px solid #C0C0C0 !important;
+      border-radius: 12px !important;
+      color: #FFFFFF !important;
+      box-shadow: none !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stFileUploader"] svg,
+    [data-testid="stSidebar"] [data-testid="stFileUploader"] path {
+      stroke: #C0C0C0 !important;
+      fill: #C0C0C0 !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stFileUploader"] [data-testid="stFileUploaderDropzone"]:hover {
+      border-color: #e8e8e8 !important;
+      box-shadow: 0 0 14px rgba(192, 192, 192, 0.35) !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stFileUploader"] input[type="file"] {
+      color: #FFFFFF !important;
     }
     [data-testid="stSidebar"] * {
       color: #FFFFFF !important;
@@ -1408,7 +1512,7 @@ st.markdown(
       display: inline-block;
       white-space: nowrap;
       padding: 10px 0;
-      animation: tickerScroll 42s linear infinite;
+      animation: tickerScroll 30s linear infinite;
       color: var(--metallic-gold);
       font-weight: 600;
       letter-spacing: 0.04em;
@@ -1744,7 +1848,10 @@ st.markdown(
 
 with st.sidebar:
     st.header("Scientific controls")
-    st.subheader("Category 1: Harvest Metrics")
+    st.markdown(
+        '<p class="rhgi-sidebar-cat rhgi-sidebar-cat--harvest">Category 1: Harvest Metrics</p>',
+        unsafe_allow_html=True,
+    )
     st.subheader("Sovereign Budget Engine (Tranche 1)")
     st.metric(
         "Global Logistics Fuel:",
@@ -1787,7 +1894,10 @@ with st.sidebar:
         delta=f"Base projection {projected_national:,}",
         help="Mandate reference total; live yield updates with turnout lift.",
     )
-    st.subheader("Category 2: Infrastructure Layer")
+    st.markdown(
+        '<p class="rhgi-sidebar-cat rhgi-sidebar-cat--infra">Category 2: Infrastructure Layer</p>',
+        unsafe_allow_html=True,
+    )
     st.markdown(
         "- **Heritage Spine**: AKK Section 1 at **80% completion**\n"
         "- **Non-Oil Sector Opportunities**: Innovation Heritage sub-layer targeting **100k+ high-tech roles** "
@@ -1799,7 +1909,10 @@ with st.sidebar:
         "<span style='color:#ffffff;font-weight:800;'>Rapid-Response Verification protocol is active for sovereign validation.</span>",
         unsafe_allow_html=True,
     )
-    st.subheader("Category 3: Outreach Command")
+    st.markdown(
+        '<p class="rhgi-sidebar-cat rhgi-sidebar-cat--outreach">Category 3: Outreach Command</p>',
+        unsafe_allow_html=True,
+    )
     default_outreach_velocity_pct = 46.63
     pu_messages_sent = int(
         st.session_state.get(
