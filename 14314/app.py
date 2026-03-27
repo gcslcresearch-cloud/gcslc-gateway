@@ -12,6 +12,7 @@ import streamlit.components.v1 as components
 from datetime import datetime, time, timedelta
 import os
 import base64
+from urllib.parse import quote
 
 from dateutil.relativedelta import relativedelta
 
@@ -111,6 +112,15 @@ EIGHT_R_DETERMINANTS = [
 
 def _gold_heading(text: str) -> None:
     st.markdown(f'<p class="rhgi-gold-heading">{text}</p>', unsafe_allow_html=True)
+
+
+def _sovereign_whatsapp_dm_url(state: str, lga: str) -> str:
+    msg = (
+        "RHGI Sovereign Direct · "
+        f"{state} / {lga}: Apathy conversion reminder — 2023 turnout benchmark locked. "
+        "18/25 box target · PU mobilisation."
+    )
+    return "whatsapp://send?text=" + quote(msg, safe="")
 
 
 def _rose_heading(text: str) -> None:
@@ -564,6 +574,9 @@ def build_lga_winning_margin_figure(
 
 
 df = load_df()
+NATIONAL_TURNOUT_2023_PCT = 100.0 * float(
+    df[["apc_2023", "pdp_2023", "lp_2023", "adc_2023"]].sum().sum()
+) / max(float(df["registered_voters"].sum()), 1.0)
 df_hub_pre = filter_by_corridor(df, st.session_state.get("dg_corridor"))
 sovereign_total = float(df["sovereign_yield_gap"].sum())
 
@@ -1103,6 +1116,43 @@ st.markdown(
       font-size: 0.84rem;
       font-weight: 700;
       letter-spacing: 0.02em;
+    }
+    @keyframes rhgiOutreachSilverShimmer {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 220% 50%; }
+    }
+    [data-testid="stSidebar"] .rhgi-outreach-bridge {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(192,192,192,0.65);
+      background: linear-gradient(
+        115deg,
+        rgba(192,192,192,0.28) 0%,
+        rgba(255,255,255,0.14) 38%,
+        rgba(192,192,192,0.22) 100%
+      );
+      background-size: 240% 100%;
+      animation: rhgiOutreachSilverShimmer 12s linear infinite;
+      box-shadow: inset 0 0 14px rgba(255,255,255,0.10);
+    }
+    [data-testid="stSidebar"] .rhgi-outreach-bridge-title {
+      color: #00FFFF !important;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-align: center;
+      text-shadow: 0 0 12px rgba(0,255,255,0.55);
+      margin: 0 0 8px 0;
+      font-size: 0.95rem;
+      -webkit-text-fill-color: #00FFFF !important;
+    }
+    [data-testid="stSidebar"] .rhgi-outreach-bridge-line {
+      color: #FFFFFF !important;
+      font-weight: 700;
+      margin: 5px 0;
+      font-size: 0.88rem;
+      line-height: 1.35;
+      -webkit-text-fill-color: #FFFFFF !important;
     }
     .rhgi-narrative-label {
       margin: 8px 0 2px 0;
@@ -2134,7 +2184,8 @@ with st.sidebar:
             pu_payload = build_pu_sync_payload(df)
         st.session_state["pu_sync_payload"] = pu_payload
         st.success(
-            f"PU Reminder Engine synced {len(pu_payload):,} voter records with PU coordinates."
+            f"PU Reminder Engine synced {len(pu_payload):,} voter records with PU coordinates. "
+            f"Gap analysis for apathy reminders uses the 2023 turnout benchmark ({NATIONAL_TURNOUT_2023_PCT:.2f}% national) as the conversion floor."
         )
     pu_payload = st.session_state.get("pu_sync_payload")
     if isinstance(pu_payload, pd.DataFrame) and not pu_payload.empty:
@@ -2148,6 +2199,14 @@ with st.sidebar:
             use_container_width=True,
         )
     st.caption("Outreach hub tracks direct SMS/WhatsApp pushes to all 176,846 PUs.")
+    st.markdown(
+        '<div class="rhgi-outreach-bridge">'
+        '<p class="rhgi-outreach-bridge-title">ACTIVE OUTREACH</p>'
+        "<p class='rhgi-outreach-bridge-line'>WhatsApp Status: <b>ACTIVE</b></p>"
+        "<p class='rhgi-outreach-bridge-line'>SMS Credits: <b>20.7M Buffer</b></p>"
+        "</div>",
+        unsafe_allow_html=True,
+    )
 
 dff = apply_turnout_lift(df, turnout_lift)
 dff_hub = filter_by_corridor(dff, st.session_state.get("dg_corridor"))
@@ -2457,6 +2516,7 @@ st.markdown(
         18/25 projection: <b>{_decider_box_projection:,}</b> of {BALLOT_BOXES_FEDERATION_2027:,} ballot boxes
         · Mandate flow: <b>{_decider_mandate_progress_pct:.2f}%</b> of 20.7M
         · Gap: <b>{_decider_gap_to_target:,}</b>
+        · Apathy comms floor: <b>{NATIONAL_TURNOUT_2023_PCT:.2f}%</b> (2023 turnout benchmark)
       </p>
     </div>
     """,
@@ -2685,6 +2745,7 @@ st.markdown(
           <div class='rhgi-swing-item rhgi-swing-item--gold'>
             <div class='rhgi-swing-k'>APATHY CONVERSION METER</div>
             <div class='rhgi-swing-v'>
+              Gap analysis: 2023 national turnout benchmark <b>{NATIONAL_TURNOUT_2023_PCT:.2f}%</b> — apathy pool anchored to registered − 2023 votes.<br>
               Youth Conversion: {_youth_conversion_pct:.2f}% ({_youth_conversion_pu_equiv:,} / {POLLING_UNITS_BASELINE:,} PUs)<br>
               Turnout Meter: {_turnout_live_meter_pct:.2f}% (Floor 26.7% → Target 50.0%)
             </div>
@@ -2734,6 +2795,10 @@ if not _vol_focus.empty:
     _vol_focus["mandate_share_pct"] = (
         100.0 * _vol_focus["decider_projected_total"].astype(float) / max(_total_proj, 1.0)
     ).round(2)
+    _vol_focus["Send Direct Message"] = _vol_focus.apply(
+        lambda r: _sovereign_whatsapp_dm_url(str(r["state"]), str(r["lga"])),
+        axis=1,
+    )
     _vol_focus = _vol_focus.rename(
         columns={
             "state": "State",
@@ -2760,6 +2825,7 @@ if not _vol_focus.empty:
             "Decider Boxes/PU Target",
             "Projected Votes (18/25 Sync)",
             "Mandate Share (%)",
+            "Send Direct Message",
         ]
     ]
     _top20_share = (100.0 * float(_vol_focus["Projected Votes (18/25 Sync)"].sum()) / max(_total_proj, 1.0))
@@ -2768,6 +2834,11 @@ if not _vol_focus.empty:
         f"20/80 forensic filter anchored to the 18/25 box target from {BALLOT_BOXES_FEDERATION_2027:,} baseline boxes: "
         f"top 20% locations ({len(_vol_focus):,}/{_loc_count:,}) currently carry {_top20_share:.2f}% "
         f"of synced mandate flow."
+    )
+    _dm_col = st.column_config.LinkColumn(
+        "Send Direct Message",
+        help="Opens WhatsApp with the sovereign apathy-reminder template (18/25 target).",
+        display_text="Send DM",
     )
     st.dataframe(
         _vol_focus.style.format(
@@ -2779,6 +2850,7 @@ if not _vol_focus.empty:
         ),
         use_container_width=True,
         hide_index=True,
+        column_config={"Send Direct Message": _dm_col},
     )
 
 _gold_heading("DG Corridor Command Hub")
