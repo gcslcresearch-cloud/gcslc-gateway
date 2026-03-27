@@ -586,7 +586,7 @@ st.markdown(
       --sec-glow-px: 12px;
       --sec-glow-alpha: 0.26;
       /* SSMI-109 — slow-motion prism ring (DG hub + 8R) */
-      --prism-border-rotate: 8s;
+      --prism-border-rotate: 32s;
     }
     /* SSMI-103 — silver + white border sweep (1.5s cycle) */
     @keyframes rhgiMetalShimmer {
@@ -757,6 +757,16 @@ st.markdown(
       color: white !important;
       opacity: 1 !important;
     }
+    [data-testid="stSidebar"] [data-testid="stSubheader"],
+    [data-testid="stSidebar"] [data-testid="stSubheader"] * {
+      color: #FFFFFF !important;
+      -webkit-text-fill-color: #FFFFFF !important;
+      opacity: 1 !important;
+    }
+    [data-testid="stSidebar"] * {
+      color: #FFFFFF !important;
+      -webkit-text-fill-color: #FFFFFF !important;
+    }
     .rhgi-forensic-baseline-line {
       color: #ffffff !important;
       opacity: 1 !important;
@@ -772,6 +782,22 @@ st.markdown(
     @keyframes rhgiSwingWarningFlash {
       0%, 100% { box-shadow: 0 0 10px rgba(212,175,55,0.55), inset 0 0 16px rgba(212,175,55,0.22); }
       50% { box-shadow: 0 0 26px rgba(212,175,55,0.96), inset 0 0 24px rgba(212,175,55,0.36); }
+    }
+    @keyframes rhgiSwingSilverShimmer {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 220% 50%; }
+    }
+    @keyframes rhgiSwingGoldPulse {
+      0%, 100% {
+        box-shadow: 0 0 8px rgba(212,175,55,0.45), inset 0 0 12px rgba(212,175,55,0.20);
+      }
+      50% {
+        box-shadow: 0 0 24px rgba(212,175,55,0.90), inset 0 0 22px rgba(212,175,55,0.38);
+      }
+    }
+    @keyframes rhgiSwingPrismSweep {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 180% 50%; }
     }
     .rhgi-swing-shell {
       margin: 8px 0 12px 0;
@@ -802,16 +828,57 @@ st.markdown(
     }
     .rhgi-swing-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(6, minmax(0, 1fr));
       gap: 10px;
     }
     .rhgi-swing-item {
-      border: 1px solid rgba(192,192,192,0.45);
+      grid-column: span 2;
+      border: 1px solid rgba(192,192,192,0.55);
       border-radius: 10px;
       background: rgba(0,0,51,0.76);
       padding: 10px 12px;
       color: #ffffff;
       min-height: 82px;
+      position: relative;
+      overflow: hidden;
+    }
+    .rhgi-swing-item::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 10px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .rhgi-swing-item > * {
+      position: relative;
+      z-index: 1;
+    }
+    .rhgi-swing-item--silver::before {
+      padding: 1px;
+      background: linear-gradient(90deg, #A9A9A9 0%, #C0C0C0 24%, #FFFFFF 50%, #C0C0C0 76%, #A9A9A9 100%);
+      background-size: 230% 100%;
+      animation: rhgiSwingSilverShimmer 2.2s linear infinite;
+      -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+    }
+    .rhgi-swing-item--gold {
+      border-color: rgba(212,175,55,0.95);
+      animation: rhgiSwingGoldPulse 1.35s ease-in-out infinite;
+    }
+    .rhgi-swing-item--prism::before {
+      padding: 1px;
+      background: linear-gradient(95deg, #000033 0%, #001F66 26%, #D4AF37 50%, #001F66 74%, #000033 100%);
+      background-size: 200% 100%;
+      animation: rhgiSwingPrismSweep 6.5s linear infinite;
+      -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
     }
     .rhgi-swing-k {
       color: #ffffff;
@@ -1880,7 +1947,7 @@ st.markdown(
         --command-navy: #000033;
         --sec-glow-px: 12px;
         --sec-glow-alpha: 0.26;
-        --prism-border-rotate: 8s;
+        --prism-border-rotate: 32s;
       }
       .rhgi-prism-frames-row {
         display: flex;
@@ -2181,7 +2248,31 @@ _state_agg["mov_2023"] = _state_agg[["apc_2023", "pdp_2023", "lp_2023", "adc_202
 _state_agg["volatility"] = (_state_agg["reg_2027_proxy"] / (_state_agg["mov_2023"].abs() + 1.0))
 _top5_states = ", ".join(_state_agg.sort_values("volatility", ascending=False).head(5)["state"].tolist())
 
-_apathy_potential_votes = int((dff["registered_voters"].sum() * 0.733) * FORENSIC_2027_BALLOT_SCALE)
+_eastern_states = ["Enugu", "Abia", "Ebonyi", "Anambra", "Imo"]
+_eastern_registered_total = float(
+    dff.loc[dff["state"].isin(_eastern_states), "registered_voters"].sum()
+)
+_eastern_yield_potential = int(round((_eastern_registered_total * 0.73) * FORENSIC_2027_BALLOT_SCALE))
+
+_registered_total = float(dff["registered_voters"].sum())
+_votes_2023_total = float(dff[["apc_2023", "pdp_2023", "lp_2023", "adc_2023"]].sum().sum())
+_non_voter_2023_total = max(0.0, _registered_total - _votes_2023_total)
+_now_wat = datetime.now(_LAGOS_TZ)
+_months_since_calibration = max(0.0, ((_now_wat - ELECTION_CALIBRATION_START_WAT).total_seconds()) / (30.4375 * 24 * 3600))
+_engagement_factor_pct = min(15.0, _months_since_calibration * 1.5)
+_apathy_adjusted_non_voters = max(0.0, _non_voter_2023_total * (1.0 - (_engagement_factor_pct / 100.0)))
+_apathy_potential_votes = int(round(_apathy_adjusted_non_voters * FORENSIC_2027_BALLOT_SCALE))
+_turnout_2027_dynamic_pct = 0.0 if _registered_total <= 0 else (100.0 - ((_apathy_adjusted_non_voters / _registered_total) * 100.0))
+_turnout_2027_dynamic_pct = max(0.0, min(100.0, _turnout_2027_dynamic_pct))
+_turnout_floor_2023 = 26.7
+_turnout_target_2027 = 50.0
+_window_total_s = max((ELECTION_TARGET_WAT - ELECTION_CALIBRATION_START_WAT).total_seconds(), 1.0)
+_window_elapsed_s = (_now_wat - ELECTION_CALIBRATION_START_WAT).total_seconds()
+_turnout_progress = max(0.0, min(1.0, _window_elapsed_s / _window_total_s))
+_turnout_live_meter_pct = _turnout_floor_2023 + ((_turnout_target_2027 - _turnout_floor_2023) * _turnout_progress)
+_engaged_youth_votes = max(0.0, _non_voter_2023_total - _apathy_adjusted_non_voters)
+_youth_conversion_pu_equiv = int(round(min(POLLING_UNITS_BASELINE, (_engaged_youth_votes / max(_registered_total, 1.0)) * POLLING_UNITS_BASELINE)))
+_youth_conversion_pct = 0.0 if POLLING_UNITS_BASELINE <= 0 else (100.0 * _youth_conversion_pu_equiv / POLLING_UNITS_BASELINE)
 
 _zone_surge = dff.groupby("zone", as_index=False).agg(
     strike_priority=("strike_priority", "mean"),
@@ -2198,6 +2289,19 @@ _resource_zone = str(_zone_surge.sort_values("undecided_youth_surge", ascending=
 _deepfake_alert = any(not bool(r.get("verified", True)) for r in (_cien_audit_rows or []))
 _swing_warn_cls = " warning" if _deepfake_alert else ""
 _swing_status = "DEEPFAKE ALERT - WARNING GOLD" if _deepfake_alert else "CYBER-SHIELD STABLE"
+_affected_states = sorted(
+    {
+        str(r.get("state", "")).strip()
+        for r in (_cien_audit_rows or [])
+        if (not bool(r.get("verified", True))) and str(r.get("state", "")).strip()
+    }
+)
+_affected_state_label = _affected_states[0] if _affected_states else _resource_zone
+_resource_vector_advice = (
+    f"Target: Non-Oil Sector Youth Engagement in {html.escape(_affected_state_label)}"
+    if _deepfake_alert
+    else f"Target: Non-Oil Sector Youth Engagement in {html.escape(_resource_zone)}"
+)
 
 st.markdown(
     f"""
@@ -2205,17 +2309,22 @@ st.markdown(
       <div class='rhgi-swing-inner'>
         <p class='rhgi-swing-title'>SOVEREIGN SWING ILLUMINATOR • 202,225 BALLOT-BOX BASELINE • {_swing_status}</p>
         <div class='rhgi-swing-grid'>
-          <div class='rhgi-swing-item'>
-            <div class='rhgi-swing-k'>SWING STATES TRACKER (TOP 5 VOLATILE)</div>
-            <div class='rhgi-swing-v'>{html.escape(_top5_states)}</div>
+          <div class='rhgi-swing-item rhgi-swing-item--silver'>
+            <div class='rhgi-swing-k'>EASTERN STATES YIELD POTENTIAL</div>
+            <div class='rhgi-swing-v'>
+              Enugu, Abia, Ebonyi, Anambra, Imo (73% Apathy): {(_eastern_yield_potential):,} votes
+            </div>
           </div>
-          <div class='rhgi-swing-item'>
+          <div class='rhgi-swing-item rhgi-swing-item--gold'>
             <div class='rhgi-swing-k'>APATHY CONVERSION METER</div>
-            <div class='rhgi-swing-v'>Yield Potential from 73.3% non-voters: {(_apathy_potential_votes):,} votes</div>
+            <div class='rhgi-swing-v'>
+              Youth Conversion: {_youth_conversion_pct:.2f}% ({_youth_conversion_pu_equiv:,} / {POLLING_UNITS_BASELINE:,} PUs)<br>
+              Turnout Meter: {_turnout_live_meter_pct:.2f}% (Floor 26.7% → Target 50.0%)
+            </div>
           </div>
-          <div class='rhgi-swing-item'>
+          <div class='rhgi-swing-item rhgi-swing-item--prism'>
             <div class='rhgi-swing-k'>RESOURCE VECTOR</div>
-            <div class='rhgi-swing-v'>DIRECT ASSETS TO: {html.escape(_resource_zone)}</div>
+            <div class='rhgi-swing-v'>{_resource_vector_advice}</div>
           </div>
         </div>
       </div>
