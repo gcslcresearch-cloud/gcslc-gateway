@@ -1563,6 +1563,12 @@ with st.sidebar:
         f"{FORENSIC_2027_BALLOT_BASELINE_CAPTION}</p>",
         unsafe_allow_html=True,
     )
+    st.metric(
+        "Forensic Vault",
+        f"Projected {BALLOT_BOXES_FEDERATION_2027:,} EC8A Digital Twins",
+        delta="Sovereign Proof-Load",
+        help="Forensic Vault sync status for projected EC8A digital twins.",
+    )
     projected_national = int(df[["apc_2027", "pdp_2027", "lp_2027", "adc_2027"]].sum().sum())
     st.metric(
         "National anchor (2027 base)",
@@ -1573,7 +1579,14 @@ with st.sidebar:
     st.subheader("Category 2: Infrastructure Layer")
     st.markdown(
         "- **Heritage Spine**: AKK Section 1 at **80% completion**\n"
-        "- **Coastal Road Section 1**: commissioning target **May 20**"
+        "- **Non-Oil Sector Opportunities**: Innovation Heritage sub-layer targeting **100k+ high-tech roles** "
+        "for the **60% youth demographic**."
+    )
+    st.subheader("Cyber-Sovereignty Node")
+    st.metric("AI Deepfake Detection", "ACTIVE", delta="Rapid-Response Verification ARMED")
+    st.markdown(
+        "<span style='color:#ffffff;font-weight:800;'>Rapid-Response Verification protocol is active for sovereign validation.</span>",
+        unsafe_allow_html=True,
     )
     st.subheader("Category 3: Outreach Command")
     default_outreach_velocity_pct = 46.63
@@ -2385,8 +2398,9 @@ with tab_global:
     st.markdown(
         "<div class='rhgi-prism-narrative-frame' style='margin-top:8px;'>"
         "CATEGORY 2 NARRATIVE: Concrete Heritage tracks AKK Road Section 1 at <span style='color:#ffffff;font-weight:900;'>80%</span> "
-        "completion alongside Coastal Highway readiness, while the Stability Heatmap reflects Operation Kukan Kura "
-        "crime-drop pulse across mapped LGAs."
+        "completion alongside Non-Oil Sector Opportunities via Innovation Heritage (100k+ high-tech roles for the "
+        "60% youth demographic), while the Stability Heatmap reflects Operation Kukan Kura crime-drop pulse across "
+        "mapped LGAs."
         "</div>",
         unsafe_allow_html=True,
     )
