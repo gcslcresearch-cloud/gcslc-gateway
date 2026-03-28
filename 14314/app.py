@@ -56,6 +56,8 @@ if "executive_sync_delivered" not in st.session_state:
     st.session_state.executive_sync_delivered = False
 if "executive_sync_handoff_ack" not in st.session_state:
     st.session_state.executive_sync_handoff_ack = False
+if "last_wa_urls" not in st.session_state:
+    st.session_state.last_wa_urls = []
 
 # RHGI-SWAT-OPPOSITION-77 — global colors (strict DG / SWAT palette).
 # RHGI-GOLDMAN palette (mirrors :root CSS variables).
@@ -167,13 +169,40 @@ def _normalize_ng_e164_digits(phone: str) -> str:
     return raw
 
 
+def _wa_me_url(phone_e164_digits: str, text: str) -> str:
+    """HTTPS wa.me deep link — works from browser → WhatsApp Desktop; avoid whatsapp:// in embedded iframes."""
+    d = _normalize_ng_e164_digits(phone_e164_digits)
+    if len(d) < 12:
+        d = DG_VERIFIED_E164
+    return f"https://wa.me/{d}?text={quote(text, safe='')}"
+
+
+def _wa_me_popup_html(urls: list[str]) -> str:
+    """Open wa.me in top window (escapes Streamlit iframe). If blocked, use Debug Mode or the wa.me link button."""
+    if not urls:
+        return ""
+    return (
+        "<script>\n"
+        "(function(){\n"
+        f"var urls={json.dumps(urls)};\n"
+        "var root=function(){try{return window.top||window.parent||window;}catch(e){return window;}}();\n"
+        "urls.forEach(function(u,i){\n"
+        "setTimeout(function(){\n"
+        "try{root.open(u,'_blank','noopener,noreferrer');}catch(e){}\n"
+        "},i*550);\n"
+        "});\n"
+        "})();\n"
+        "</script>"
+    )
+
+
 def _sovereign_whatsapp_dm_url(state: str, lga: str) -> str:
     msg = _append_outreach_signature(
         "RHGI Sovereign Direct · "
         f"{state} / {lga}: Apathy conversion reminder — 2023 turnout benchmark locked. "
         "18/25 box target · PU mobilisation."
     )
-    return "whatsapp://send?text=" + quote(msg, safe="")
+    return _wa_me_url(DG_VERIFIED_E164, msg)
 
 
 def _append_sovereign_feed(channel: str, message: str) -> None:
@@ -193,25 +222,8 @@ def _load_leadership_config() -> dict:
 
 
 def _strike_command_phones() -> list[str]:
-    """Master command node + Tier 1 from leadership.json (or GCSLC_TIER1_STRATEGIC_PHONES env). No placeholders."""
-    env = os.environ.get("GCSLC_TIER1_STRATEGIC_PHONES", "").strip()
-    if env:
-        out: list[str] = []
-        for part in env.split(","):
-            d = _normalize_ng_e164_digits(part.strip())
-            if len(d) >= 12:
-                out.append(d)
-        return list(dict.fromkeys(out))
-    cfg = _load_leadership_config()
-    out: list[str] = []
-    master = _normalize_ng_e164_digits(str(cfg.get("master_command_node_e164", "") or DG_VERIFIED_E164))
-    if len(master) >= 12:
-        out.append(master)
-    for r in cfg.get("tier_1_strategic_management", []) or []:
-        d = _normalize_ng_e164_digits(str(r.get("phone_e164", "")))
-        if len(d) >= 12 and d not in out:
-            out.append(d)
-    return out
+    """Verified DG number only — STRIKE / wa.me must not fan out to env, tier_1, or placeholders."""
+    return [DG_VERIFIED_E164]
 
 
 def _post_executive_sync_handoff(phones: list[str], full_message: str) -> tuple[bool, str]:
@@ -317,7 +329,7 @@ def _sovereign_directive_wa_url(state: str, lga: str, daily_apathy: int) -> str:
         f"2023 turnout benchmark: convert {daily_apathy:,} apathy voters TODAY "
         f"(RHGI geometry: {RHGI_CELL_MODEL_1515:,} cells @ 15/15; no alternate rep tier)."
     )
-    return "whatsapp://send?text=" + quote(msg, safe="")
+    return _wa_me_url(DG_VERIFIED_E164, msg)
 
 
 def _rose_heading(text: str) -> None:
@@ -2555,9 +2567,26 @@ with st.sidebar:
             unsafe_allow_html=True,
         )
         st.caption(
-            "STRIKE uses master_command_node_e164 + tier_1_strategic_management in leadership.json "
-            "(or GCSLC_TIER1_STRATEGIC_PHONES comma-separated). Direct-Link: whatsapp:// to each number — "
-            "no background bulk/API gateway."
+            "STRIKE uses **https://wa.me/2348099111515?text=…** (verified DG only). "
+            "Pop-ups can be blocked inside the app frame — use Debug Mode, the wa.me link, or allow pop-ups."
+        )
+        _strike_wa_url = _wa_me_url(DG_VERIFIED_E164, EXEC_SYNC_MESSAGE)
+        st.checkbox(
+            "Debug Mode (show exact wa.me URLs)",
+            key="wa_debug_mode",
+            help="Shows the full https://wa.me/…?text=… string and last fired URLs.",
+        )
+        if st.session_state.get("wa_debug_mode"):
+            st.caption("DEBUG — STRIKE URL (exact, copy if needed)")
+            st.code(_strike_wa_url, language="text")
+            if st.session_state.get("last_wa_urls"):
+                st.caption("Last fired wa.me URLs")
+                st.code("\n".join(st.session_state.last_wa_urls), language="text")
+        st.link_button(
+            "Open WhatsApp — STRIKE (wa.me)",
+            _strike_wa_url,
+            use_container_width=True,
+            key="strike_wa_me_fallback_link",
         )
         if st.session_state.executive_sync_delivered:
             _handoff_ok = bool(st.session_state.get("executive_sync_handoff_ack"))
@@ -2596,35 +2625,21 @@ with st.sidebar:
                     use_container_width=True,
                     key="executive_sync_activate_btn",
                     type="primary",
-                    help="Opens WhatsApp (whatsapp://) for each configured command number — master + Tier 1 in leadership.json (or env).",
+                    help="Opens https://wa.me/2348099111515?text=… in a new tab (top window). Use Debug Mode to verify the URL.",
                 ):
                     _phones = _strike_command_phones()
-                    if len(_phones) < 1:
-                        st.error(
-                            "No valid command numbers. Set master_command_node_e164 (and optional tier_1_strategic_management) "
-                            "in leadership.json, or GCSLC_TIER1_STRATEGIC_PHONES."
-                        )
-                    else:
-                        _exec_full = EXEC_SYNC_MESSAGE
-                        st.session_state.executive_sync_handoff_ack = False
-                        _urls = [
-                            f"whatsapp://send?phone={p}&text={quote(_exec_full, safe='')}"
-                            for p in _phones
-                        ]
-                        components.html(
-                            "<script>\n"
-                            f"const urls = {json.dumps(_urls)};\n"
-                            "urls.forEach((u, i) => setTimeout(() => { try { window.open(u, '_blank'); } catch(e) {} }, i * 550));\n"
-                            "</script>",
-                            height=0,
-                        )
-                        st.session_state.executive_sync_delivered = True
-                        st.session_state.executive_sync_recipient_count = len(_phones)
-                        _append_sovereign_feed(
-                            "Executive Sync",
-                            f"STRIKE · {len(_phones)} Direct-Link (whatsapp://) · RHGI-SSMI sync.",
-                        )
-                        st.rerun()
+                    _exec_full = EXEC_SYNC_MESSAGE
+                    st.session_state.executive_sync_handoff_ack = False
+                    _urls = [_wa_me_url(p, _exec_full) for p in _phones]
+                    st.session_state.last_wa_urls = list(_urls)
+                    components.html(_wa_me_popup_html(_urls), height=0)
+                    st.session_state.executive_sync_delivered = True
+                    st.session_state.executive_sync_recipient_count = len(_phones)
+                    _append_sovereign_feed(
+                        "Executive Sync",
+                        f"STRIKE · {len(_phones)} wa.me link(s) · RHGI-SSMI sync.",
+                    )
+                    st.rerun()
 
         st.markdown(
             '<p class="rhgi-sidebar-cat rhgi-sidebar-cat--outreach" style="margin-top:14px;">'
@@ -2632,8 +2647,8 @@ with st.sidebar:
             unsafe_allow_html=True,
         )
         st.caption(
-            "Optional broadcast: up to 10 lines — numbers must match master + Tier 1 in leadership.json "
-            "(same allowlist as STRIKE). Signature appended automatically."
+            "Optional broadcast: up to 10 lines — only **2348099111515** (DG) is accepted; other lines are ignored. "
+            "Signature appended automatically."
         )
         st.text_area(
             "Colleague phone numbers",
@@ -2649,9 +2664,9 @@ with st.sidebar:
             "Open WhatsApp — Management 10 (one-click sequence)",
             use_container_width=True,
             key="mgmt_demo_wa_all_btn",
-            help="Opens wa.me only for numbers on the command allowlist (master + Tier 1).",
+            help="Opens https://wa.me/… only for the verified DG number.",
         ):
-            _allowed = set(_strike_command_phones())
+            _allowed = {DG_VERIFIED_E164}
             _lines = [
                 ln.strip()
                 for ln in str(st.session_state.get("mgmt_demo_phones_text", "")).splitlines()
@@ -2671,28 +2686,23 @@ with st.sidebar:
                     _skipped.append(_ln)
             if _skipped:
                 st.warning(
-                    "Ignored lines not on the command allowlist (configure in leadership.json): "
+                    "Ignored lines (only **2348099111515** / 08099111515 formats accepted): "
                     + ", ".join(_skipped[:5])
                     + ("…" if len(_skipped) > 5 else "")
                 )
             if _urls:
-                components.html(
-                    "<script>\n"
-                    f"const urls = {json.dumps(_urls)};\n"
-                    "urls.forEach((u, i) => setTimeout(() => { try { window.open(u, '_blank'); } catch(e) {} }, i * 650));\n"
-                    "</script>",
-                    height=0,
-                )
+                st.session_state.last_wa_urls = list(_urls)
+                components.html(_wa_me_popup_html(_urls), height=0)
                 _append_sovereign_feed(
                     "WhatsApp",
                     f"Management/Demonstration wa.me sequence · {len(_urls)} tab(s) · signature lines embedded.",
                 )
-                st.info("Opening WhatsApp tabs in sequence — allow pop-ups if the browser blocks them.")
+                st.info("Opening WhatsApp — if blocked, enable Debug Mode and copy the wa.me URL.")
             elif not _skipped:
                 if not _lines:
-                    st.warning("Add at least one line with numbers on the command allowlist (master + Tier 1).")
+                    st.warning("Add the DG line (2348099111515 or 08099111515) to send.")
                 else:
-                    st.warning("Add at least one valid Nigerian number (e.g. 23480XXXXXXXX or 080XXXXXXXX).")
+                    st.warning("Add at least one valid Nigerian number (e.g. 2348099111515 or 08099111515).")
 
         st.markdown(
             '<p class="rhgi-sovereign-notepad-host" style="margin:12px 0 4px 0;color:#E6C35C;font-weight:800;font-size:0.82rem;letter-spacing:0.06em;">'
@@ -3364,7 +3374,7 @@ if not _vol_focus.empty:
     )
     _dm_col = st.column_config.LinkColumn(
         "Send Direct Message",
-        help="Opens WhatsApp with the sovereign apathy-reminder template (18/25 target).",
+        help="Opens https://wa.me/2348099111515?text=… (sovereign apathy-reminder template, 18/25 target).",
         display_text="Send DM",
     )
     st.dataframe(
@@ -3733,7 +3743,7 @@ with tab_global:
                 "Send Sovereign Directive",
                 _wa_u,
                 use_container_width=True,
-                help="Opens WhatsApp with pre-filled sovereign template (2023 turnout → daily apathy quota).",
+                help="Opens https://wa.me/2348099111515?text=… with the sovereign template (2023 turnout → daily apathy quota).",
             )
 
     # POSITION 3a — Constitutional mandate banner
