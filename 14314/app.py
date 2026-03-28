@@ -132,6 +132,24 @@ CORRIDOR_NODES = (
     ("SS", "South South"),
     ("SE", "South East"),
 )
+# Decider / Election-Day simulation — Kaduna record anchor (Suleiman node).
+KADUNA_SOVEREIGN_RECORD_ANCHOR = 276_060
+SULEIMAN_DECIDER_LABEL = f"Suleiman — Kaduna · {KADUNA_SOVEREIGN_RECORD_ANCHOR:,} records (15/15 sync)"
+NAT_DECIDER_LABEL = "National coordinator (clear corridor lock)"
+DECIDER_RADIO_OPTIONS = (SULEIMAN_DECIDER_LABEL, NAT_DECIDER_LABEL)
+
+
+def _sync_decider_facilitator_corridor() -> None:
+    sel = st.session_state.get("decider_facilitator_radio")
+    if sel == SULEIMAN_DECIDER_LABEL:
+        st.session_state.dg_corridor = "North West"
+        st.session_state.corridor_zone = "North West"
+        st.session_state["state_drill_North West"] = "Kaduna"
+        st.session_state._prev_corridor_state_key = None
+    elif sel == NAT_DECIDER_LABEL:
+        st.session_state.dg_corridor = None
+        st.session_state.corridor_zone = None
+        st.session_state._prev_corridor_state_key = None
 # 2027 general election countdown anchor (WAT); adjust if INEC publishes a firm date.
 _LAGOS_TZ = pytz.timezone("Africa/Lagos")
 _LONDON_TZ = pytz.timezone("Europe/London")
@@ -935,6 +953,14 @@ def build_lga_winning_margin_figure(
 
 
 df = load_df()
+if "decider_facilitator_radio" not in st.session_state:
+    st.session_state.decider_facilitator_radio = SULEIMAN_DECIDER_LABEL
+if "_decider_kaduna_bootstrapped" not in st.session_state:
+    st.session_state._decider_kaduna_bootstrapped = True
+    st.session_state.dg_corridor = "North West"
+    st.session_state.corridor_zone = "North West"
+    st.session_state["state_drill_North West"] = "Kaduna"
+    st.session_state._prev_corridor_state_key = None
 NATIONAL_TURNOUT_2023_PCT = 100.0 * float(
     df[["apc_2023", "pdp_2023", "lp_2023", "adc_2023"]].sum().sum()
 ) / max(float(df["registered_voters"].sum()), 1.0)
@@ -2142,6 +2168,19 @@ st.markdown(
       color: #D4AF37 !important;
       font-family: 'Goldman', sans-serif !important;
     }
+    [data-testid="stRadio"],
+    [data-testid="stRadio"] [role="radiogroup"],
+    [data-testid="stRadio"] label,
+    [data-testid="stRadio"] input {
+      pointer-events: auto !important;
+    }
+    [data-testid="stRadio"] { position: relative !important; z-index: 8 !important; }
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)):not(:has(> div:nth-child(7))) button[kind="secondary"],
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(6)):not(:has(> div:nth-child(7))) button[kind="primary"],
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)):not(:has(> div:nth-child(9))) button[kind="secondary"],
+    div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)):not(:has(> div:nth-child(9))) button[kind="primary"] {
+      pointer-events: auto !important;
+    }
     .rhgi-lga-scroll-outer {
       overflow: hidden;
       max-height: 58vh;
@@ -2580,7 +2619,8 @@ with st.sidebar:
         min_value=1,
         max_value=15,
         value=15,
-        help="Increases projected 2027 vote totals across all parties proportionally.",
+        key="scientific_turnout_lift_pct",
+        help="Increases projected 2027 vote totals across all parties proportionally. Uses its own session key so it does not collide with the Sovereign Notepad form.",
     )
     st.metric(
         "Sovereign Voter Yield",
@@ -2881,43 +2921,43 @@ with st.sidebar:
                 else:
                     st.warning("No accepted numbers — use roster digits only (e.g. 2348036948675 or local 080…).")
 
-        st.markdown(
-            '<p class="rhgi-sovereign-notepad-host" style="margin:12px 0 4px 0;color:#E6C35C;font-weight:800;font-size:0.82rem;letter-spacing:0.06em;">'
-            "Sovereign Notepad · internal dashboard</p>",
-            unsafe_allow_html=True,
+    st.markdown(
+        '<p class="rhgi-sovereign-notepad-host" style="margin:12px 0 4px 0;color:#E6C35C;font-weight:800;font-size:0.82rem;letter-spacing:0.06em;">'
+        "Sovereign Notepad · internal dashboard</p>",
+        unsafe_allow_html=True,
+    )
+    components.html(
+        """
+        <div style="font-family:Goldman,Georgia,serif;color:#C9A227;font-size:0.7rem;letter-spacing:0.12em;
+        margin:0 0 6px 0;font-weight:800;padding:2px 0;">
+          PRIVATE COMPONENT · LIVE
+          <span style="color:#8B0000;margin-left:6px;animation:rhgiSnLive 1.15s ease-in-out infinite;">●</span>
+        </div>
+        <style>
+          @keyframes rhgiSnLive { 0%,100% { opacity:1; } 50% { opacity:0.32; } }
+        </style>
+        """,
+        height=44,
+    )
+    with st.form("sovereign_notepad_form", clear_on_submit=True):
+        _sn_text = st.text_area(
+            "Sovereign Notepad",
+            height=120,
+            placeholder="Type here — Send dispatches JSON POSTs only to S24 + Convener endpoints (leadership.json / env).",
+            label_visibility="collapsed",
+            key="sovereign_notepad_text",
         )
-        components.html(
-            """
-            <div style="font-family:Goldman,Georgia,serif;color:#C9A227;font-size:0.7rem;letter-spacing:0.12em;
-            margin:0 0 6px 0;font-weight:800;padding:2px 0;">
-              PRIVATE COMPONENT · LIVE
-              <span style="color:#8B0000;margin-left:6px;animation:rhgiSnLive 1.15s ease-in-out infinite;">●</span>
-            </div>
-            <style>
-              @keyframes rhgiSnLive { 0%,100% { opacity:1; } 50% { opacity:0.32; } }
-            </style>
-            """,
-            height=44,
-        )
-        with st.form("sovereign_notepad_form", clear_on_submit=True):
-            _sn_text = st.text_area(
-                "Sovereign Notepad",
-                height=120,
-                placeholder="Type here — Send dispatches JSON POSTs only to S24 + Convener endpoints (leadership.json / env).",
-                label_visibility="collapsed",
-                key="sovereign_notepad_text",
+        _sn_send = st.form_submit_button("Send", use_container_width=True, type="primary")
+    if _sn_send:
+        _ok, _bad = _dispatch_sovereign_notepad(_sn_text)
+        if _ok:
+            st.success("Sovereign Notepad dispatched to: " + " · ".join(_ok))
+            _append_sovereign_feed(
+                "NOTEPAD",
+                "Executive notepad · " + " · ".join(_ok),
             )
-            _sn_send = st.form_submit_button("Send", use_container_width=True, type="primary")
-        if _sn_send:
-            _ok, _bad = _dispatch_sovereign_notepad(_sn_text)
-            if _ok:
-                st.success("Sovereign Notepad dispatched to: " + " · ".join(_ok))
-                _append_sovereign_feed(
-                    "NOTEPAD",
-                    "Executive notepad · " + " · ".join(_ok),
-                )
-            if _bad:
-                st.warning("\n".join(_bad))
+        if _bad:
+            st.warning("\n".join(_bad))
 
 dff = apply_turnout_lift(df, turnout_lift)
 dff_hub = filter_by_corridor(dff, st.session_state.get("dg_corridor"))
@@ -3255,6 +3295,52 @@ st.markdown(
         line-height: 1.38;
         display: inline-block;
       }
+      /* RHGI Sovereign Test — Election Day simulation notice */
+      .rhgi-sovereign-test-shell {
+        font-family: 'Goldman', system-ui, sans-serif !important;
+        max-width: min(920px, 100%);
+        margin: 18px auto 8px auto;
+        padding: 16px 20px 18px 20px;
+        border-radius: 14px;
+        border: 2px solid rgba(212, 175, 55, 0.85);
+        background: linear-gradient(180deg, rgba(0, 0, 51, 0.97) 0%, rgba(10, 30, 45, 0.98) 100%);
+        box-shadow: 0 0 24px rgba(212, 175, 55, 0.25), inset 0 0 20px rgba(251, 191, 36, 0.06);
+        text-align: left;
+      }
+      .rhgi-sovereign-test-title {
+        margin: 0 0 10px 0;
+        font-size: clamp(0.95rem, 2vw, 1.15rem);
+        font-weight: 900;
+        letter-spacing: 0.14em;
+        color: #D4AF37 !important;
+        text-shadow: 0 0 14px rgba(212, 175, 55, 0.5);
+        text-align: center;
+      }
+      .rhgi-sovereign-test-notice {
+        margin: 0 0 14px 0;
+        padding: 8px 12px;
+        border-radius: 8px;
+        background: rgba(251, 191, 36, 0.12);
+        border: 1px solid rgba(251, 191, 36, 0.45);
+        color: #fde68a !important;
+        font-weight: 800;
+        font-size: clamp(0.82rem, 1.5vw, 0.95rem);
+        letter-spacing: 0.04em;
+        text-align: center;
+      }
+      .rhgi-sovereign-test-line {
+        margin: 0 0 8px 0;
+        color: #ffffff !important;
+        font-size: clamp(0.8rem, 1.45vw, 0.94rem);
+        font-weight: 600;
+        line-height: 1.5;
+      }
+      .rhgi-sovereign-test-line:last-child { margin-bottom: 0; }
+      .rhgi-sovereign-test-line b {
+        color: #5eead4 !important;
+        font-weight: 800;
+        letter-spacing: 0.03em;
+      }
     </style>
     <div class="rhgi-prism-frames-row">
       <div class="rhgi-prism-frame">
@@ -3281,6 +3367,16 @@ st.markdown(
       <p class="rhgi-creed-block" style="font-size:0.88rem;color:#00FFFF;margin-top:6px;font-weight:700;">Zero-Hour · 16 January 2027 (WAT) — 20.7M mandate execution anchor</p>
       <div class="rhgi-emblem-wrap"><div class="rhgi-emblem">RHGI</div></div>
     </div>
+    <div class="rhgi-sovereign-test-shell" role="region" aria-label="RHGI Sovereign Test Election Day simulation">
+      <p class="rhgi-sovereign-test-title">RHGI SOVEREIGN TEST | 15/15 SYNC</p>
+      <p class="rhgi-sovereign-test-notice">NOTICE: This is an Election Day Simulation.</p>
+      <p class="rhgi-sovereign-test-line"><b>Voter Node:</b> [Simulated Name]</p>
+      <p class="rhgi-sovereign-test-line"><b>Primary Location:</b> Aba South / Adamawa Corridor</p>
+      <p class="rhgi-sovereign-test-line"><b>Polling Unit:</b> [Simulated PU Name]</p>
+      <p class="rhgi-sovereign-test-line"><b>Directive:</b> Proceed to your PU for 15/15 Validation. Your Facilitator is synced.</p>
+      <p class="rhgi-sovereign-test-line"><b>ID:</b> 14314-TEST-STRIKE</p>
+      <p class="rhgi-sovereign-test-line"><b>Auth:</b> OFFICE OF THE DG/RHGI</p>
+    </div>
     """,
     unsafe_allow_html=True,
 )
@@ -3288,6 +3384,11 @@ _decider_box_projection = int(round((18.0 / 25.0) * BALLOT_BOXES_FEDERATION_2027
 _decider_mandate_progress_pct = 100.0 * float(PROJECTED_TOTAL) / float(max(NATIONAL_VOTE_TARGET, 1))
 _decider_gap_to_target = int(NATIONAL_VOTE_TARGET - PROJECTED_TOTAL)
 _decider_gap_to_target = max(0, _decider_gap_to_target)
+_decider_kaduna_html = ""
+if st.session_state.get("decider_facilitator_radio") == SULEIMAN_DECIDER_LABEL:
+    _decider_kaduna_html = (
+        f" · <b>Kaduna node (Suleiman): {KADUNA_SOVEREIGN_RECORD_ANCHOR:,} records mapped — 15/15 sync</b>"
+    )
 st.markdown(
     f"""
     <div class='rhgi-decider-shell'>
@@ -3298,10 +3399,22 @@ st.markdown(
         · Mandate flow: <b>{_decider_mandate_progress_pct:.2f}%</b> of 20.7M
         · Gap: <b>{_decider_gap_to_target:,}</b>
         · Apathy comms floor: <b>{NATIONAL_TURNOUT_2023_PCT:.2f}%</b> (2023 turnout benchmark)
+        {_decider_kaduna_html}
       </p>
     </div>
     """,
     unsafe_allow_html=True,
+)
+st.radio(
+    "Decider · 15/15 facilitator sync",
+    options=list(DECIDER_RADIO_OPTIONS),
+    key="decider_facilitator_radio",
+    horizontal=True,
+    on_change=_sync_decider_facilitator_corridor,
+    help=(
+        "Suleiman: North West corridor lock + Kaduna state drill-down with the 276,060-record sovereign anchor. "
+        "National coordinator clears the corridor filter."
+    ),
 )
 metal_countdown_live_ph = st.empty()
 
@@ -3661,6 +3774,10 @@ for _hi, (_abbr, _zname) in enumerate(CORRIDOR_NODES):
         ):
             st.session_state.dg_corridor = _zname
             st.session_state.corridor_zone = _zname
+            if _zname == "North West":
+                st.session_state.decider_facilitator_radio = SULEIMAN_DECIDER_LABEL
+                st.session_state["state_drill_North West"] = "Kaduna"
+            st.session_state._prev_corridor_state_key = None
             st.rerun()
 _hub_lbl = st.session_state.get("dg_corridor") or "ALL NIGERIA"
 st.markdown(
@@ -3681,6 +3798,8 @@ with _nr2:
     ):
         st.session_state.dg_corridor = None
         st.session_state.corridor_zone = None
+        st.session_state.decider_facilitator_radio = NAT_DECIDER_LABEL
+        st.session_state._prev_corridor_state_key = None
         st.rerun()
 _r8_cols = st.columns(8)
 for _ri, (_r8_label, _r8_det) in enumerate(EIGHT_R_DETERMINANTS):
