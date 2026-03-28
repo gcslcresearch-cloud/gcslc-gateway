@@ -22,12 +22,23 @@ from dateutil.relativedelta import relativedelta
 from data_engine import ALL_LGA_RECORDS, STATE_COORDS, records_as_dicts
 
 OFFICE_IDENTITY = "OFFICE OF THE DG/RHGI"
+# Bump to force sovereign log wipe + executive 0/8 on next session attach (Management 8 STRIKE).
+_STRIKE_SESSION_EPOCH = "14314-EXEC-142-M8-20260328"
 
 st.set_page_config(
     page_title=OFFICE_IDENTITY,
     layout="wide",
     initial_sidebar_state="expanded",
 )
+if st.session_state.get("_strike_session_epoch") != _STRIKE_SESSION_EPOCH:
+    st.session_state._strike_session_epoch = _STRIKE_SESSION_EPOCH
+    st.session_state.sovereign_feed_log = [
+        f"[INIT] {OFFICE_IDENTITY} · Management 8 · delivery 0/8 · sovereign log cleared.",
+    ]
+    st.session_state.executive_sync_delivered = False
+    st.session_state.executive_sync_handoff_ack = False
+    st.session_state.executive_sync_recipient_count = 0
+    st.session_state.last_wa_urls = []
 if "corridor_zone" not in st.session_state:
     st.session_state.corridor_zone = None
 if "_prev_corridor_state_key" not in st.session_state:
@@ -46,7 +57,7 @@ if "threat_monitor" not in st.session_state:
     st.session_state.threat_monitor = bool(st.session_state.get("opposition_heatmap", False))
 if "sovereign_feed_log" not in st.session_state:
     st.session_state.sovereign_feed_log = [
-        "[INIT] SYSTEM: 144,000-cell / 15/15 model — pure sync (no alternate rep layer).",
+        f"[INIT] {OFFICE_IDENTITY} · Management 8 · 144,000-cell / 15/15 model.",
     ]
 if "mgmt_demo_phones_text" not in st.session_state:
     st.session_state.mgmt_demo_phones_text = ""
@@ -146,9 +157,9 @@ def _gold_heading(text: str) -> None:
 RHGI_OUTREACH_SIGNATURE = "From Dr. Sa'ad\nDG/RHGI"
 # Verified DG/RHGI E.164 (digits). Used with leadership.json master_command_node_e164.
 DG_VERIFIED_E164 = "2348099111515"
-# 14314-EXECUTIVE-LOAD-142 — exact directive payload (single line).
+# 14314-EXECUTIVE-LOAD-142 — exact directive payload (Unicode apostrophe in Sa’ad).
 EXEC_SYNC_MESSAGE = (
-    "RHGI-SSMI 15/15 sync. Presidential Date: 16-01-2027. All nodes report status. From Dr. Sa'ad, DG/RHGI"
+    "RHGI-SSMI 15/15 sync. Presidential Date: 16-01-2027. All nodes report status. From Dr. Sa\u2019ad, DG/RHGI"
 )
 # Management 8 strike roster (fallback if executive_sync_recipients.json is unreadable).
 _MANAGEMENT_8_E164_FALLBACK: tuple[str, ...] = (
@@ -184,9 +195,9 @@ def _normalize_ng_e164_digits(phone: str) -> str:
 
 
 def _wa_me_url(phone_e164_digits: str, text: str) -> str:
-    """HTTPS wa.me deep link — works from browser → WhatsApp Desktop; avoid whatsapp:// in embedded iframes."""
+    """HTTPS https://wa.me/ only (NANP 11-digit and NG 234… both supported; no whatsapp://)."""
     d = _normalize_ng_e164_digits(phone_e164_digits)
-    if len(d) < 12:
+    if not d or len(d) < 10:
         d = DG_VERIFIED_E164
     return f"https://wa.me/{d}?text={quote(text, safe='')}"
 
@@ -2643,6 +2654,20 @@ with st.sidebar:
             _strike_wa_me_clean,
             use_container_width=True,
         )
+        with st.expander("Management 8 — direct https://wa.me/ handshake (one link per number)", expanded=False):
+            st.caption(
+                f"Each button opens **https://wa.me/** with E.164 digits and the STRIKE text "
+                f"({OFFICE_IDENTITY} payload)."
+            )
+            _wm_cols = st.columns(2)
+            for _wi, _wp in enumerate(_mgmt_roster):
+                with _wm_cols[_wi % 2]:
+                    st.link_button(
+                        f"wa.me/{_wp}",
+                        _wa_me_url(_wp, EXEC_SYNC_MESSAGE),
+                        use_container_width=True,
+                        help="https://wa.me/…?text=… — STRIKE 14314-EXECUTIVE-LOAD-142 directive.",
+                    )
         if st.session_state.executive_sync_delivered:
             _handoff_ok = bool(st.session_state.get("executive_sync_handoff_ack"))
             _n = int(st.session_state.get("executive_sync_recipient_count", 0))
