@@ -166,11 +166,14 @@ def _gold_heading(text: str) -> None:
 RHGI_OUTREACH_SIGNATURE = "From Dr. Sa'ad\nDG/RHGI"
 # Verified DG/RHGI E.164 (digits). Used with leadership.json master_command_node_e164.
 DG_VERIFIED_E164 = "2348099111515"
-# 14314-EXECUTIVE-LOAD-142 — exact directive payload (Unicode apostrophe in Sa’ad).
-EXEC_SYNC_MESSAGE = (
+# 14314-EXECUTIVE-LOAD-142 — exact directive payload (Unicode apostrophe in Sa’ad); hardcoded for all STRIKE wa.me links.
+PRECISION_STRIKE_MESSAGE = (
     "RHGI-SSMI 15/15 sync. Presidential Date: 16-01-2027. All nodes report status. From Dr. Sa\u2019ad, DG/RHGI"
 )
+EXEC_SYNC_MESSAGE = PRECISION_STRIKE_MESSAGE
 STRIKE_LOAD_ID = "14314-EXECUTIVE-LOAD-142"
+# Precision Strike — Dr. Ikechukwu (OFFICE OF THE DG/RHGI · STRIKE_LOAD_ID).
+PRECISION_STRIKE_IKECHUKWU_E164 = "2348068378633"
 # Management 8 strike roster (fallback if executive_sync_recipients.json is unreadable).
 _MANAGEMENT_8_E164_FALLBACK: tuple[str, ...] = (
     "2348036948675",
@@ -204,12 +207,17 @@ def _normalize_ng_e164_digits(phone: str) -> str:
     return raw
 
 
+def _quote_wa_message(message: str) -> str:
+    """Percent-encode wa.me ?text= payload (UTF-8 via urllib.parse.quote); required for Unicode / specials (no 404/break)."""
+    return quote(message or "", safe="")
+
+
 def _wa_me_url(phone_e164_digits: str, text: str) -> str:
-    """HTTPS https://wa.me/ only (NANP 11-digit and NG 234… both supported; no whatsapp://)."""
+    """HTTPS https://wa.me/<digits>?text=<quote(message)> — NANP + NG; no whatsapp://."""
     d = _normalize_ng_e164_digits(phone_e164_digits)
     if not d or len(d) < 10:
         d = DG_VERIFIED_E164
-    return f"https://wa.me/{d}?text={quote(text, safe='')}"
+    return f"https://wa.me/{d}?text={_quote_wa_message(text)}"
 
 
 def _wa_me_popup_html(urls: list[str], stagger_ms: int = 550) -> str:
@@ -2717,25 +2725,32 @@ with st.sidebar:
             f"Sender text: **DG/RHGI** directive (master **{DG_VERIFIED_E164}** on roster). "
             f"One **https://wa.me/** handshake every **{_STRIKE_EXEC_LOOP_INTERVAL_SEC} seconds**; "
             "**Delivered** updates after each node. Engine port **8505** (see `.streamlit/config.toml`). "
-            "Fallback: DG clean link & expander. Allow pop-ups."
+            f"**Open WhatsApp** (below): Precision Strike → Dr. Ikechukwu **{PRECISION_STRIKE_IKECHUKWU_E164}** · `{STRIKE_LOAD_ID}`. "
+            "Expanders for Management 8. Allow pop-ups."
         )
         _strike_wa_urls_all = "\n".join(_wa_me_url(p, EXEC_SYNC_MESSAGE) for p in _mgmt_roster)
-        _strike_wa_me_clean = f"https://wa.me/{DG_VERIFIED_E164}"
+        _precision_strike_wa_url = _wa_me_url(PRECISION_STRIKE_IKECHUKWU_E164, PRECISION_STRIKE_MESSAGE)
         st.checkbox(
             "Debug Mode (show exact wa.me URLs)",
             key="wa_debug_mode",
             help="Shows full https://wa.me/…?text=… lines for all Management 8 targets and last fired URLs.",
         )
         if st.session_state.get("wa_debug_mode"):
+            st.caption("DEBUG — Precision Strike (Dr. Ikechukwu, quote-encoded ?text=)")
+            st.code(_precision_strike_wa_url, language="text")
             st.caption("DEBUG — STRIKE URLs (Management 8, exact, copy if needed)")
             st.code(_strike_wa_urls_all, language="text")
             if st.session_state.get("last_wa_urls"):
                 st.caption("Last fired wa.me URLs")
                 st.code("\n".join(st.session_state.last_wa_urls), language="text")
         st.link_button(
-            "Open WhatsApp — STRIKE (wa.me, DG clean link)",
-            _strike_wa_me_clean,
+            f"Open WhatsApp — Precision Strike (Dr. Ikechukwu · {STRIKE_LOAD_ID})",
+            _precision_strike_wa_url,
             use_container_width=True,
+            help=(
+                f"{OFFICE_IDENTITY} · Full https://wa.me/?text=… with urllib.parse.quote-encoded payload "
+                f"(Dr. Sa\u2019ad line)."
+            ),
         )
         with st.expander("Management 8 — direct https://wa.me/ handshake (one link per number)", expanded=False):
             st.caption(
@@ -2843,7 +2858,7 @@ with st.sidebar:
             for _ln in _lines:
                 _d = _normalize_ng_e164_digits(_ln)
                 if len(_d) >= 12 and _d in _allowed:
-                    _urls.append(f"https://wa.me/{_d}?text={quote(_full, safe='')}")
+                    _urls.append(f"https://wa.me/{_d}?text={_quote_wa_message(_full)}")
                 else:
                     _skipped.append(_ln)
             if _skipped:
