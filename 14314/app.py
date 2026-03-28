@@ -3193,6 +3193,68 @@ st.markdown(
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
       }
+      /* Sovereign Seal — DG office digital validation (turquoise prism + slow breath) */
+      .rhgi-sovereign-seal-breathe {
+        display: flex;
+        justify-content: center;
+        margin: 0 auto 14px auto;
+        max-width: min(960px, 100%);
+        animation: rhgiSovereignSealBreath 7.5s cubic-bezier(0.42, 0, 0.45, 1) infinite;
+        transform-origin: center center;
+      }
+      @keyframes rhgiSovereignSealBreath {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+      }
+      .rhgi-sovereign-seal-prism {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 3px;
+        border-radius: 16px;
+        background: linear-gradient(
+          118deg,
+          #0f766e 0%,
+          #99f6e4 12%,
+          #134e4a 26%,
+          #ccfbf1 38%,
+          #2dd4bf 50%,
+          #e0f2f1 62%,
+          #0d9488 74%,
+          #5eead4 86%,
+          #115e59 100%
+        );
+        background-size: 320% 320%;
+        animation: rhgiSovereignSealPrismShimmer 5.5s ease-in-out infinite;
+        box-shadow:
+          0 0 22px rgba(45, 212, 191, 0.55),
+          0 0 46px rgba(13, 148, 136, 0.32),
+          inset 0 0 14px rgba(240, 253, 250, 0.12);
+      }
+      @keyframes rhgiSovereignSealPrismShimmer {
+        0%, 100% { background-position: 0% 50%; filter: saturate(1.06) brightness(1); }
+        50% { background-position: 100% 50%; filter: saturate(1.18) brightness(1.1); }
+      }
+      .rhgi-sovereign-seal-inner {
+        border-radius: 13px;
+        background: linear-gradient(185deg, #042f2e 0%, #022c2c 42%, #134e4a 100%);
+        padding: 11px 18px;
+        text-align: center;
+        border: 1px solid rgba(94, 234, 212, 0.4);
+        box-shadow: inset 0 0 26px rgba(13, 148, 136, 0.28);
+      }
+      .rhgi-sovereign-seal-label {
+        font-family: 'Goldman', system-ui, sans-serif !important;
+        font-weight: 800;
+        font-size: clamp(0.8rem, 1.6vw, 1.06rem);
+        letter-spacing: 0.07em;
+        color: #5eead4 !important;
+        text-shadow:
+          0 0 16px rgba(94, 234, 212, 0.95),
+          0 0 32px rgba(45, 212, 191, 0.55),
+          0 1px 0 rgba(0, 0, 0, 0.9);
+        line-height: 1.38;
+        display: inline-block;
+      }
     </style>
     <div class="rhgi-prism-frames-row">
       <div class="rhgi-prism-frame">
@@ -3207,6 +3269,13 @@ st.markdown(
       </div>
     </div>
     <div class="rhgi-brand-block">
+      <div class="rhgi-sovereign-seal-breathe" role="img" aria-label="Sovereign Seal — Digital Validation of RHGI Policy Document.">
+        <div class="rhgi-sovereign-seal-prism">
+          <div class="rhgi-sovereign-seal-inner">
+            <span class="rhgi-sovereign-seal-label">Digital Validation of RHGI Policy Document.</span>
+          </div>
+        </div>
+      </div>
       <h1 class="rhgi-brand-title">OFFICE OF THE DG/RHGI</h1>
       <p class="rhgi-creed-block">Securing the 20.7M Mandate through Scientific Precision.</p>
       <p class="rhgi-creed-block" style="font-size:0.88rem;color:#00FFFF;margin-top:6px;font-weight:700;">Zero-Hour · 16 January 2027 (WAT) — 20.7M mandate execution anchor</p>
