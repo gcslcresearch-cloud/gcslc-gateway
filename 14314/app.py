@@ -140,9 +140,10 @@ def _gold_heading(text: str) -> None:
 
 # SSMI-SIGNATURE-SYNC-139 — real newlines so WhatsApp/SMS render as separate lines on mobile.
 RHGI_OUTREACH_SIGNATURE = "From Dr. Sa'ad\nDG/RHGI"
-# SSMI-EXECUTIVE-LOAD-142 — final demonstration body (signature appended separately).
+# SSMI-GATEWAY-BYPASS-143 — compact body + inline signature (no _append_outreach_signature; spam-filter friendly).
 EXEC_SYNC_TEST_RUN_MESSAGE = (
-    "This is a test run for the 15/15 RHGI, SSMI. Presidential election day is Saturday, January 16, 2027."
+    "RHGI-SSMI 15/15 System Check. Presidential Date: 16-01-2027. "
+    "All nodes report status. From Dr. Sa'ad, DG/RHGI"
 )
 
 
@@ -2552,8 +2553,8 @@ with st.sidebar:
         )
         st.caption(
             "Tier 1 Strategic Management: 8 E.164 numbers in leadership.json → tier_1_strategic_management "
-            "(or GCSLC_TIER1_STRATEGIC_PHONES comma-separated ×8). Optional API: webhooks.executive_sync_handoff "
-            "or GCSLC_EXEC_SYNC_HANDOFF_URL — success shimmer runs after 2xx ack. Signature: From Dr. Sa'ad + DG/RHGI."
+            "(or GCSLC_TIER1_STRATEGIC_PHONES comma-separated ×8). Direct-Link protocol: tap opens your WhatsApp "
+            "app (whatsapp://) with the system-check text — no background bulk/API gateway."
         )
         if st.session_state.executive_sync_delivered:
             _handoff_ok = bool(st.session_state.get("executive_sync_handoff_ack"))
@@ -2587,7 +2588,7 @@ with st.sidebar:
                     use_container_width=True,
                     key="executive_sync_activate_btn",
                     type="primary",
-                    help="API handoff (if configured), then WhatsApp wa.me for 8 Tier 1 numbers with demonstration text + signature.",
+                    help="Direct-Link: opens WhatsApp on this device (whatsapp://) for each Tier 1 number with the system-check message — from your verified account.",
                 ):
                     _phones = _load_tier1_strategic_phones()
                     if len(_phones) < 8:
@@ -2596,28 +2597,25 @@ with st.sidebar:
                             "Edit leadership.json tier_1_strategic_management or GCSLC_TIER1_STRATEGIC_PHONES."
                         )
                     else:
-                        _exec_full = _append_outreach_signature(EXEC_SYNC_TEST_RUN_MESSAGE)
-                        _hok, _herr = _post_executive_sync_handoff(_phones, _exec_full)
-                        if not _hok:
-                            st.error(f"Executive handoff API did not acknowledge: {_herr}")
-                        else:
-                            st.session_state.executive_sync_handoff_ack = True
-                            _urls = [
-                                f"https://wa.me/{p}?text={quote(_exec_full, safe='')}" for p in _phones
-                            ]
-                            components.html(
-                                "<script>\n"
-                                f"const urls = {json.dumps(_urls)};\n"
-                                "urls.forEach((u, i) => setTimeout(() => { try { window.open(u, '_blank'); } catch(e) {} }, i * 550));\n"
-                                "</script>",
-                                height=0,
-                            )
-                            st.session_state.executive_sync_delivered = True
-                            _append_sovereign_feed(
-                                "Executive Sync",
-                                "Tier 1 Strategic Management · 8/8 handoff + wa.me · demonstration message + signature.",
-                            )
-                            st.rerun()
+                        _exec_full = EXEC_SYNC_TEST_RUN_MESSAGE
+                        st.session_state.executive_sync_handoff_ack = False
+                        _urls = [
+                            f"whatsapp://send?phone={p}&text={quote(_exec_full, safe='')}"
+                            for p in _phones
+                        ]
+                        components.html(
+                            "<script>\n"
+                            f"const urls = {json.dumps(_urls)};\n"
+                            "urls.forEach((u, i) => setTimeout(() => { try { window.open(u, '_blank'); } catch(e) {} }, i * 550));\n"
+                            "</script>",
+                            height=0,
+                        )
+                        st.session_state.executive_sync_delivered = True
+                        _append_sovereign_feed(
+                            "Executive Sync",
+                            "Tier 1 Strategic Management · 8/8 Direct-Link (whatsapp://) · RHGI-SSMI system-check.",
+                        )
+                        st.rerun()
 
         st.markdown(
             '<p class="rhgi-sidebar-cat rhgi-sidebar-cat--outreach" style="margin-top:14px;">'
