@@ -39,6 +39,9 @@ if st.session_state.get("_strike_session_epoch") != _STRIKE_SESSION_EPOCH:
     st.session_state.executive_sync_handoff_ack = False
     st.session_state.executive_sync_recipient_count = 0
     st.session_state.last_wa_urls = []
+    st.session_state.strike_sequential_active = False
+    st.session_state.strike_urls_pending = []
+    st.session_state.strike_open_index = 0
 if "corridor_zone" not in st.session_state:
     st.session_state.corridor_zone = None
 if "_prev_corridor_state_key" not in st.session_state:
@@ -73,6 +76,12 @@ if "executive_sync_recipient_count" not in st.session_state:
     st.session_state.executive_sync_recipient_count = 0
 if "last_wa_urls" not in st.session_state:
     st.session_state.last_wa_urls = []
+if "strike_sequential_active" not in st.session_state:
+    st.session_state.strike_sequential_active = False
+if "strike_urls_pending" not in st.session_state:
+    st.session_state.strike_urls_pending = []
+if "strike_open_index" not in st.session_state:
+    st.session_state.strike_open_index = 0
 
 # RHGI-SWAT-OPPOSITION-77 — global colors (strict DG / SWAT palette).
 # RHGI-GOLDMAN palette (mirrors :root CSS variables).
@@ -161,6 +170,7 @@ DG_VERIFIED_E164 = "2348099111515"
 EXEC_SYNC_MESSAGE = (
     "RHGI-SSMI 15/15 sync. Presidential Date: 16-01-2027. All nodes report status. From Dr. Sa\u2019ad, DG/RHGI"
 )
+STRIKE_LOAD_ID = "14314-EXECUTIVE-LOAD-142"
 # Management 8 strike roster (fallback if executive_sync_recipients.json is unreadable).
 _MANAGEMENT_8_E164_FALLBACK: tuple[str, ...] = (
     "2348036948675",
@@ -202,19 +212,20 @@ def _wa_me_url(phone_e164_digits: str, text: str) -> str:
     return f"https://wa.me/{d}?text={quote(text, safe='')}"
 
 
-def _wa_me_popup_html(urls: list[str]) -> str:
-    """Open wa.me in top window (escapes Streamlit iframe). If blocked, use Debug Mode or the wa.me link button."""
+def _wa_me_popup_html(urls: list[str], stagger_ms: int = 550) -> str:
+    """Open https://wa.me/ URLs in top window; stagger_ms delays between opens (popup-blocker mitigation)."""
     if not urls:
         return ""
     return (
         "<script>\n"
         "(function(){\n"
         f"var urls={json.dumps(urls)};\n"
+        f"var delay={int(stagger_ms)};\n"
         "var root=function(){try{return window.top||window.parent||window;}catch(e){return window;}}();\n"
         "urls.forEach(function(u,i){\n"
         "setTimeout(function(){\n"
         "try{root.open(u,'_blank','noopener,noreferrer');}catch(e){}\n"
-        "},i*550);\n"
+        "},i*delay);\n"
         "});\n"
         "})();\n"
         "</script>"
@@ -236,6 +247,71 @@ def _append_sovereign_feed(channel: str, message: str) -> None:
     _log = st.session_state.get("sovereign_feed_log", [])
     _log.insert(0, line)
     st.session_state.sovereign_feed_log = _log[:100]
+
+
+# Automated Executive Loop: one https://wa.me/ open per fragment tick, 2s apart (panel + counter in fragment).
+_STRIKE_EXEC_LOOP_INTERVAL_SEC = 2
+_STRIKE_SEQUENTIAL_INTERVAL = timedelta(seconds=_STRIKE_EXEC_LOOP_INTERVAL_SEC)
+
+
+def _strike_exec_sidebar_fragment_inner() -> None:
+    if st.session_state.get("strike_sequential_active"):
+        urls = list(st.session_state.get("strike_urls_pending") or [])
+        idx = int(st.session_state.get("strike_open_index", 0))
+        total = len(urls)
+        if total == 0:
+            st.session_state.strike_sequential_active = False
+        elif idx >= total:
+            st.session_state.strike_sequential_active = False
+            st.session_state.executive_sync_delivered = True
+            st.session_state.executive_sync_recipient_count = total
+            st.session_state.last_wa_urls = list(urls)
+            _append_sovereign_feed(
+                "Executive Sync",
+                f"STRIKE {STRIKE_LOAD_ID} · {total} https://wa.me/ link(s) · RHGI-SSMI sync.",
+            )
+        else:
+            components.html(_wa_me_popup_html([urls[idx]]), height=0)
+            st.session_state.strike_open_index = idx + 1
+            st.session_state.executive_sync_recipient_count = idx + 1
+            if idx + 1 >= total:
+                st.session_state.strike_sequential_active = False
+                st.session_state.executive_sync_delivered = True
+                st.session_state.last_wa_urls = list(urls)
+                _append_sovereign_feed(
+                    "Executive Sync",
+                    f"STRIKE {STRIKE_LOAD_ID} · {total} https://wa.me/ link(s) · RHGI-SSMI sync.",
+                )
+    _mgmt_total = len(_strike_command_phones())
+    active = bool(st.session_state.get("strike_sequential_active"))
+    done = bool(st.session_state.get("executive_sync_delivered"))
+    _n = int(st.session_state.get("executive_sync_recipient_count", 0))
+    if active or done:
+        _handoff_ok = bool(st.session_state.get("executive_sync_handoff_ack"))
+        _sub = (
+            f"Automated Executive Loop — one https://wa.me/ tab every {_STRIKE_EXEC_LOOP_INTERVAL_SEC}s…"
+            if active
+            else "Executive sync (JAN 16, 2027)"
+        )
+        _inner = (
+            "<div style='font-size:0.78rem;letter-spacing:0.06em;opacity:0.95;'>"
+            f"STRIKE {STRIKE_LOAD_ID} — {_sub}</div>"
+            f"<div style='font-size:1.05rem;margin-top:8px;'>{_n}/{_mgmt_total} DIRECTIVES DELIVERED</div>"
+        )
+        if _handoff_ok:
+            st.markdown(
+                "<div class='rhgi-exec-sync-success-panel' style='border-radius:10px;padding:14px 12px;"
+                "text-align:center;font-family:Goldman,sans-serif;color:#ffffff;font-weight:800;'>"
+                f"{_inner}</div>",
+                unsafe_allow_html=True,
+            )
+        else:
+            st.markdown(
+                "<div style='background:#198754;border:2px solid #146c43;border-radius:10px;padding:14px 12px;"
+                "text-align:center;font-family:Goldman,sans-serif;color:#ffffff;font-weight:800;'>"
+                f"{_inner}</div>",
+                unsafe_allow_html=True,
+            )
 
 
 _LEADERSHIP_JSON = os.path.join(os.path.dirname(os.path.abspath(__file__)), "leadership.json")
@@ -271,8 +347,19 @@ def _load_management_8_phones() -> list[str]:
 
 
 def _strike_command_phones() -> list[str]:
-    """STRIKE 14314-EXECUTIVE-LOAD-142 — full Management 8 list for prefilled https://wa.me/ opens."""
+    """STRIKE_LOAD_ID — full Management 8 list for prefilled https://wa.me/ opens."""
     return list(_load_management_8_phones())
+
+
+def _build_executive_strike_wa_urls() -> tuple[list[str], Optional[str]]:
+    """Python loop: Node 1..N → https://wa.me/?text=… with EXEC_SYNC_MESSAGE (DG/RHGI verified on roster)."""
+    roster = _strike_command_phones()
+    if DG_VERIFIED_E164 not in roster:
+        return [], "Safety hold: DG/RHGI master E.164 (2348099111515) must be present on the Management 8 roster."
+    urls: list[str] = []
+    for _node_n, _e164 in enumerate(roster, start=1):
+        urls.append(_wa_me_url(_e164, EXEC_SYNC_MESSAGE))
+    return urls, None
 
 
 def _post_executive_sync_handoff(phones: list[str], full_message: str) -> tuple[bool, str]:
@@ -2625,16 +2712,12 @@ with st.sidebar:
         )
         _mgmt_roster = _strike_command_phones()
         _mgmt_total = len(_mgmt_roster)
-        _delivered_n = (
-            int(st.session_state.get("executive_sync_recipient_count", 0))
-            if st.session_state.executive_sync_delivered
-            else 0
-        )
         st.caption(
-            f"**{OFFICE_IDENTITY}** · Management 8 roster. "
-            f"Directives delivered: **{_delivered_n}/{_mgmt_total}**. "
-            "STRIKE opens **https://wa.me/** prefilled **?text=…** (directive payload) for each node. "
-            "Fallback link: clean **https://wa.me/** (DG). Pop-ups may be blocked in-frame — use Debug Mode or allow pop-ups."
+            f"**{OFFICE_IDENTITY}** · **Automated Executive Loop** ({STRIKE_LOAD_ID}). "
+            f"Sender text: **DG/RHGI** directive (master **{DG_VERIFIED_E164}** on roster). "
+            f"One **https://wa.me/** handshake every **{_STRIKE_EXEC_LOOP_INTERVAL_SEC} seconds**; "
+            "**Delivered** updates after each node. Engine port **8505** (see `.streamlit/config.toml`). "
+            "Fallback: DG clean link & expander. Allow pop-ups."
         )
         _strike_wa_urls_all = "\n".join(_wa_me_url(p, EXEC_SYNC_MESSAGE) for p in _mgmt_roster)
         _strike_wa_me_clean = f"https://wa.me/{DG_VERIFIED_E164}"
@@ -2666,59 +2749,59 @@ with st.sidebar:
                         f"wa.me/{_wp}",
                         _wa_me_url(_wp, EXEC_SYNC_MESSAGE),
                         use_container_width=True,
-                        help="https://wa.me/…?text=… — STRIKE 14314-EXECUTIVE-LOAD-142 directive.",
+                        help=f"https://wa.me/…?text=… — STRIKE {STRIKE_LOAD_ID} directive.",
                     )
-        if st.session_state.executive_sync_delivered:
-            _handoff_ok = bool(st.session_state.get("executive_sync_handoff_ack"))
-            _n = int(st.session_state.get("executive_sync_recipient_count", 0))
-            _inner = (
-                "<div style='font-size:0.78rem;letter-spacing:0.06em;opacity:0.95;'>"
-                "STRIKE 14314-EXECUTIVE-LOAD-142 — Executive sync (JAN 16, 2027)</div>"
-                f"<div style='font-size:1.05rem;margin-top:8px;'>{_n}/{_mgmt_total} DIRECTIVES DELIVERED</div>"
-            )
-            if _handoff_ok:
-                st.markdown(
-                    "<div class='rhgi-exec-sync-success-panel' style='border-radius:10px;padding:14px 12px;"
-                    "text-align:center;font-family:Goldman,sans-serif;color:#ffffff;font-weight:800;'>"
-                    f"{_inner}</div>",
-                    unsafe_allow_html=True,
-                )
-            else:
-                st.markdown(
-                    "<div style='background:#198754;border:2px solid #146c43;border-radius:10px;padding:14px 12px;"
-                    "text-align:center;font-family:Goldman,sans-serif;color:#ffffff;font-weight:800;'>"
-                    f"{_inner}</div>",
-                    unsafe_allow_html=True,
-                )
-        else:
+        _strike_idle = not st.session_state.get("strike_sequential_active") and not st.session_state.get(
+            "executive_sync_delivered"
+        )
+        if _strike_idle:
             with st.container():
                 st.markdown(
                     '<div class="rhgi-exec-sync-cyan-trigger" style="display:none" aria-hidden="true"></div>',
                     unsafe_allow_html=True,
                 )
                 if st.button(
-                    "STRIKE 14314-EXECUTIVE-LOAD-142",
+                    f"STRIKE {STRIKE_LOAD_ID}",
                     use_container_width=True,
                     key="executive_sync_activate_btn",
                     type="primary",
                     help=(
-                        f"Opens {len(_mgmt_roster)}× https://wa.me/…?text=… tabs (directive payload). "
-                        "Use Debug Mode to verify URLs."
+                        f"Automated Executive Loop: Node 1→8 via Python-built https://wa.me/ URLs, "
+                        f"{_STRIKE_EXEC_LOOP_INTERVAL_SEC}s apart (st.fragment); Delivered counter steps each open."
                     ),
                 ):
-                    _phones = list(_mgmt_roster)
-                    _exec_full = EXEC_SYNC_MESSAGE
-                    st.session_state.executive_sync_handoff_ack = False
-                    _urls = [_wa_me_url(p, _exec_full) for p in _phones]
-                    st.session_state.last_wa_urls = list(_urls)
-                    components.html(_wa_me_popup_html(_urls), height=0)
-                    st.session_state.executive_sync_delivered = True
-                    st.session_state.executive_sync_recipient_count = len(_phones)
-                    _append_sovereign_feed(
-                        "Executive Sync",
-                        f"STRIKE 14314-EXECUTIVE-LOAD-142 · {len(_phones)} https://wa.me/ link(s) · RHGI-SSMI sync.",
-                    )
-                    st.rerun()
+                    _urls, _url_err = _build_executive_strike_wa_urls()
+                    if _url_err:
+                        st.error(_url_err)
+                    else:
+                        st.session_state.executive_sync_handoff_ack = False
+                        st.session_state.last_wa_urls = []
+                        if hasattr(st, "fragment"):
+                            st.session_state.strike_urls_pending = _urls
+                            st.session_state.strike_open_index = 0
+                            st.session_state.strike_sequential_active = True
+                            st.session_state.executive_sync_delivered = False
+                            st.session_state.executive_sync_recipient_count = 0
+                        else:
+                            components.html(
+                                _wa_me_popup_html(_urls, stagger_ms=_STRIKE_EXEC_LOOP_INTERVAL_SEC * 1000),
+                                height=0,
+                            )
+                            st.session_state.executive_sync_delivered = True
+                            st.session_state.executive_sync_recipient_count = len(_urls)
+                            st.session_state.last_wa_urls = list(_urls)
+                            _append_sovereign_feed(
+                                "Executive Sync",
+                                f"STRIKE {STRIKE_LOAD_ID} · {len(_urls)} https://wa.me/ link(s) · RHGI-SSMI sync.",
+                            )
+                        st.rerun()
+        if hasattr(st, "fragment"):
+            _strike_seq_runner = st.fragment(run_every=_STRIKE_SEQUENTIAL_INTERVAL)(
+                _strike_exec_sidebar_fragment_inner
+            )
+            _strike_seq_runner()
+        elif not _strike_idle:
+            st.warning("Upgrade Streamlit for automated STRIKE sequencing (st.fragment).")
 
         st.markdown(
             '<p class="rhgi-sidebar-cat rhgi-sidebar-cat--outreach" style="margin-top:14px;">'
