@@ -22,7 +22,7 @@ from dateutil.relativedelta import relativedelta
 from data_engine import ALL_LGA_RECORDS, STATE_COORDS, records_as_dicts
 
 st.set_page_config(
-    page_title="RHGI - 15/15 Sovereign Mirror",
+    page_title="OFFICE OF THE DG/RHGI",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -47,9 +47,7 @@ if "sovereign_feed_log" not in st.session_state:
         "[INIT] SYSTEM: 144,000-cell / 15/15 model — pure sync (no alternate rep layer).",
     ]
 if "mgmt_demo_phones_text" not in st.session_state:
-    st.session_state.mgmt_demo_phones_text = "\n".join(
-        [f"234801000000{i}" for i in range(1, 11)]
-    )
+    st.session_state.mgmt_demo_phones_text = ""
 if "mgmt_demo_msg" not in st.session_state:
     st.session_state.mgmt_demo_msg = (
         "RHGI Management/Demonstration — please acknowledge this outreach sync."
@@ -140,9 +138,11 @@ def _gold_heading(text: str) -> None:
 
 # SSMI-SIGNATURE-SYNC-139 — real newlines so WhatsApp/SMS render as separate lines on mobile.
 RHGI_OUTREACH_SIGNATURE = "From Dr. Sa'ad\nDG/RHGI"
+# Verified DG/RHGI E.164 (digits). Used with leadership.json master_command_node_e164.
+DG_VERIFIED_E164 = "2348099111515"
 # SSMI-GATEWAY-BYPASS-143 — compact body + inline signature (no _append_outreach_signature; spam-filter friendly).
-EXEC_SYNC_TEST_RUN_MESSAGE = (
-    "RHGI-SSMI 15/15 System Check. Presidential Date: 16-01-2027. "
+EXEC_SYNC_MESSAGE = (
+    "RHGI-SSMI 15/15 sync. Presidential Date: 16-01-2027. "
     "All nodes report status. From Dr. Sa'ad, DG/RHGI"
 )
 
@@ -192,8 +192,8 @@ def _load_leadership_config() -> dict:
         return json.load(fp)
 
 
-def _load_tier1_strategic_phones() -> list[str]:
-    """SSMI-EXECUTIVE-LOAD-142 — 8 numbers from leadership.json (Tier 1: Strategic Management)."""
+def _strike_command_phones() -> list[str]:
+    """Master command node + Tier 1 from leadership.json (or GCSLC_TIER1_STRATEGIC_PHONES env). No placeholders."""
     env = os.environ.get("GCSLC_TIER1_STRATEGIC_PHONES", "").strip()
     if env:
         out: list[str] = []
@@ -201,14 +201,17 @@ def _load_tier1_strategic_phones() -> list[str]:
             d = _normalize_ng_e164_digits(part.strip())
             if len(d) >= 12:
                 out.append(d)
-        return out[:8]
+        return list(dict.fromkeys(out))
     cfg = _load_leadership_config()
-    out = []
-    for r in cfg.get("tier_1_strategic_management", []):
+    out: list[str] = []
+    master = _normalize_ng_e164_digits(str(cfg.get("master_command_node_e164", "") or DG_VERIFIED_E164))
+    if len(master) >= 12:
+        out.append(master)
+    for r in cfg.get("tier_1_strategic_management", []) or []:
         d = _normalize_ng_e164_digits(str(r.get("phone_e164", "")))
-        if len(d) >= 12:
+        if len(d) >= 12 and d not in out:
             out.append(d)
-    return out[:8]
+    return out
 
 
 def _post_executive_sync_handoff(phones: list[str], full_message: str) -> tuple[bool, str]:
@@ -2552,16 +2555,21 @@ with st.sidebar:
             unsafe_allow_html=True,
         )
         st.caption(
-            "Tier 1 Strategic Management: 8 E.164 numbers in leadership.json → tier_1_strategic_management "
-            "(or GCSLC_TIER1_STRATEGIC_PHONES comma-separated ×8). Direct-Link protocol: tap opens your WhatsApp "
-            "app (whatsapp://) with the system-check text — no background bulk/API gateway."
+            "STRIKE uses master_command_node_e164 + tier_1_strategic_management in leadership.json "
+            "(or GCSLC_TIER1_STRATEGIC_PHONES comma-separated). Direct-Link: whatsapp:// to each number — "
+            "no background bulk/API gateway."
         )
         if st.session_state.executive_sync_delivered:
             _handoff_ok = bool(st.session_state.get("executive_sync_handoff_ack"))
+            _n = int(
+                st.session_state.get("executive_sync_recipient_count")
+                or len(_strike_command_phones())
+                or 0
+            )
             _inner = (
                 "<div style='font-size:0.78rem;letter-spacing:0.06em;opacity:0.95;'>"
-                "ACTIVATE EXECUTIVE TEST RUN (JAN 16, 2027)</div>"
-                "<div style='font-size:1.05rem;margin-top:8px;'>8/8 DIRECTIVES DELIVERED</div>"
+                "STRIKE — Executive sync (JAN 16, 2027)</div>"
+                f"<div style='font-size:1.05rem;margin-top:8px;'>{_n}/{_n} DIRECTIVES DELIVERED</div>"
             )
             if _handoff_ok:
                 st.markdown(
@@ -2584,20 +2592,20 @@ with st.sidebar:
                     unsafe_allow_html=True,
                 )
                 if st.button(
-                    "ACTIVATE EXECUTIVE TEST RUN (JAN 16, 2027)",
+                    "STRIKE",
                     use_container_width=True,
                     key="executive_sync_activate_btn",
                     type="primary",
-                    help="Direct-Link: opens WhatsApp on this device (whatsapp://) for each Tier 1 number with the system-check message — from your verified account.",
+                    help="Opens WhatsApp (whatsapp://) for each configured command number — master + Tier 1 in leadership.json (or env).",
                 ):
-                    _phones = _load_tier1_strategic_phones()
-                    if len(_phones) < 8:
+                    _phones = _strike_command_phones()
+                    if len(_phones) < 1:
                         st.error(
-                            f"Tier 1 Strategic Management requires 8 valid Nigerian E.164 numbers; found {len(_phones)}. "
-                            "Edit leadership.json tier_1_strategic_management or GCSLC_TIER1_STRATEGIC_PHONES."
+                            "No valid command numbers. Set master_command_node_e164 (and optional tier_1_strategic_management) "
+                            "in leadership.json, or GCSLC_TIER1_STRATEGIC_PHONES."
                         )
                     else:
-                        _exec_full = EXEC_SYNC_TEST_RUN_MESSAGE
+                        _exec_full = EXEC_SYNC_MESSAGE
                         st.session_state.executive_sync_handoff_ack = False
                         _urls = [
                             f"whatsapp://send?phone={p}&text={quote(_exec_full, safe='')}"
@@ -2611,9 +2619,10 @@ with st.sidebar:
                             height=0,
                         )
                         st.session_state.executive_sync_delivered = True
+                        st.session_state.executive_sync_recipient_count = len(_phones)
                         _append_sovereign_feed(
                             "Executive Sync",
-                            "Tier 1 Strategic Management · 8/8 Direct-Link (whatsapp://) · RHGI-SSMI system-check.",
+                            f"STRIKE · {len(_phones)} Direct-Link (whatsapp://) · RHGI-SSMI sync.",
                         )
                         st.rerun()
 
@@ -2623,8 +2632,8 @@ with st.sidebar:
             unsafe_allow_html=True,
         )
         st.caption(
-            "Optional ad-hoc group: edit up to 10 colleague lines (Nigeria: 234… or 080…). "
-            "Signature is appended automatically. Separate from Executive Sync lockdown."
+            "Optional broadcast: up to 10 lines — numbers must match master + Tier 1 in leadership.json "
+            "(same allowlist as STRIKE). Signature appended automatically."
         )
         st.text_area(
             "Colleague phone numbers",
@@ -2640,8 +2649,9 @@ with st.sidebar:
             "Open WhatsApp — Management 10 (one-click sequence)",
             use_container_width=True,
             key="mgmt_demo_wa_all_btn",
-            help="Opens wa.me for each line in order (650ms apart). Allow pop-ups if the browser blocks them.",
+            help="Opens wa.me only for numbers on the command allowlist (master + Tier 1).",
         ):
+            _allowed = set(_strike_command_phones())
             _lines = [
                 ln.strip()
                 for ln in str(st.session_state.get("mgmt_demo_phones_text", "")).splitlines()
@@ -2652,10 +2662,19 @@ with st.sidebar:
             )
             _full = _append_outreach_signature(_base)
             _urls: list[str] = []
+            _skipped: list[str] = []
             for _ln in _lines:
                 _d = _normalize_ng_e164_digits(_ln)
-                if len(_d) >= 12:
+                if len(_d) >= 12 and _d in _allowed:
                     _urls.append(f"https://wa.me/{_d}?text={quote(_full, safe='')}")
+                else:
+                    _skipped.append(_ln)
+            if _skipped:
+                st.warning(
+                    "Ignored lines not on the command allowlist (configure in leadership.json): "
+                    + ", ".join(_skipped[:5])
+                    + ("…" if len(_skipped) > 5 else "")
+                )
             if _urls:
                 components.html(
                     "<script>\n"
@@ -2669,8 +2688,11 @@ with st.sidebar:
                     f"Management/Demonstration wa.me sequence · {len(_urls)} tab(s) · signature lines embedded.",
                 )
                 st.info("Opening WhatsApp tabs in sequence — allow pop-ups if the browser blocks them.")
-            else:
-                st.warning("Add at least one valid Nigerian number (e.g. 23480XXXXXXXX or 080XXXXXXXX).")
+            elif not _skipped:
+                if not _lines:
+                    st.warning("Add at least one line with numbers on the command allowlist (master + Tier 1).")
+                else:
+                    st.warning("Add at least one valid Nigerian number (e.g. 23480XXXXXXXX or 080XXXXXXXX).")
 
         st.markdown(
             '<p class="rhgi-sovereign-notepad-host" style="margin:12px 0 4px 0;color:#E6C35C;font-weight:800;font-size:0.82rem;letter-spacing:0.06em;">'
@@ -2998,7 +3020,7 @@ st.markdown(
       </div>
     </div>
     <div class="rhgi-brand-block">
-      <h1 class="rhgi-brand-title">RHGI - 15/15 Sovereign Mirror</h1>
+      <h1 class="rhgi-brand-title">OFFICE OF THE DG/RHGI</h1>
       <p class="rhgi-creed-block">Securing the 20.7M Mandate through Scientific Precision.</p>
       <p class="rhgi-creed-block" style="font-size:0.88rem;color:#00FFFF;margin-top:6px;font-weight:700;">Zero-Hour · 16 January 2027 (WAT) — 20.7M mandate execution anchor</p>
       <div class="rhgi-emblem-wrap"><div class="rhgi-emblem">RHGI</div></div>

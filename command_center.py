@@ -868,7 +868,7 @@ with st.sidebar:
     st.markdown("---")
     # WhatsApp Gateway — Contact for Sovereign Access (deep-data clearance)
     st.header("📱 Sovereign Access")
-    whatsapp_contact = "https://wa.me/2340000000000"  # Replace with official GCSLC number for deep-data clearance
+    whatsapp_contact = "https://wa.me/2348099111515"
     st.link_button("Contact WhatsApp for Sovereign Access", whatsapp_contact, type="secondary", help="Deep-data clearance and sovereign gateway access.")
     st.caption("Security Layer: Use for verified sovereign access.")
     st.markdown("---")
