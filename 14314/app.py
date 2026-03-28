@@ -21,8 +21,10 @@ from dateutil.relativedelta import relativedelta
 
 from data_engine import ALL_LGA_RECORDS, STATE_COORDS, records_as_dicts
 
+OFFICE_IDENTITY = "OFFICE OF THE DG/RHGI"
+
 st.set_page_config(
-    page_title="OFFICE OF THE DG/RHGI",
+    page_title=OFFICE_IDENTITY,
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -56,6 +58,8 @@ if "executive_sync_delivered" not in st.session_state:
     st.session_state.executive_sync_delivered = False
 if "executive_sync_handoff_ack" not in st.session_state:
     st.session_state.executive_sync_handoff_ack = False
+if "executive_sync_recipient_count" not in st.session_state:
+    st.session_state.executive_sync_recipient_count = 0
 if "last_wa_urls" not in st.session_state:
     st.session_state.last_wa_urls = []
 
@@ -142,10 +146,20 @@ def _gold_heading(text: str) -> None:
 RHGI_OUTREACH_SIGNATURE = "From Dr. Sa'ad\nDG/RHGI"
 # Verified DG/RHGI E.164 (digits). Used with leadership.json master_command_node_e164.
 DG_VERIFIED_E164 = "2348099111515"
-# SSMI-GATEWAY-BYPASS-143 — compact body + inline signature (no _append_outreach_signature; spam-filter friendly).
+# 14314-EXECUTIVE-LOAD-142 — exact directive payload (single line).
 EXEC_SYNC_MESSAGE = (
-    "RHGI-SSMI 15/15 sync. Presidential Date: 16-01-2027. "
-    "All nodes report status. From Dr. Sa'ad, DG/RHGI"
+    "RHGI-SSMI 15/15 sync. Presidential Date: 16-01-2027. All nodes report status. From Dr. Sa'ad, DG/RHGI"
+)
+# Management 8 strike roster (fallback if executive_sync_recipients.json is unreadable).
+_MANAGEMENT_8_E164_FALLBACK: tuple[str, ...] = (
+    "2348036948675",
+    "2348037910012",
+    "2349124572108",
+    "2348180649337",
+    "13473231693",
+    "2348054113010",
+    "2348099111515",
+    "2348079000900",
 )
 
 
@@ -214,6 +228,9 @@ def _append_sovereign_feed(channel: str, message: str) -> None:
 
 
 _LEADERSHIP_JSON = os.path.join(os.path.dirname(os.path.abspath(__file__)), "leadership.json")
+_EXEC_SYNC_RECIPIENTS_JSON = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "executive_sync_recipients.json"
+)
 
 
 def _load_leadership_config() -> dict:
@@ -221,9 +238,30 @@ def _load_leadership_config() -> dict:
         return json.load(fp)
 
 
+def _load_management_8_phones() -> list[str]:
+    """Management 8 roster from executive_sync_recipients.json (https://wa.me/ digits only)."""
+    try:
+        with open(_EXEC_SYNC_RECIPIENTS_JSON, "r", encoding="utf-8") as fp:
+            data = json.load(fp)
+        out: list[str] = []
+        seen: set[str] = set()
+        for row in data.get("recipients") or []:
+            p = str(row.get("phone_e164") or "").strip()
+            d = "".join(c for c in p if c.isdigit())
+            if len(d) < 10 or d in seen:
+                continue
+            seen.add(d)
+            out.append(d)
+        if out:
+            return out
+    except Exception:
+        pass
+    return list(_MANAGEMENT_8_E164_FALLBACK)
+
+
 def _strike_command_phones() -> list[str]:
-    """Verified DG number only — STRIKE / wa.me must not fan out to env, tier_1, or placeholders."""
-    return [DG_VERIFIED_E164]
+    """STRIKE 14314-EXECUTIVE-LOAD-142 — full Management 8 list for prefilled https://wa.me/ opens."""
+    return list(_load_management_8_phones())
 
 
 def _post_executive_sync_handoff(phones: list[str], full_message: str) -> tuple[bool, str]:
@@ -238,10 +276,14 @@ def _post_executive_sync_handoff(phones: list[str], full_message: str) -> tuple[
         return True, ""
     payload_obj = {
         "tier": "Tier 1: Strategic Management",
+        "office_identity": OFFICE_IDENTITY,
+        "sender_metadata": OFFICE_IDENTITY,
         "recipients_e164": phones,
         "message": full_message,
         "ts_utc": datetime.now(timezone.utc).isoformat(),
         "push_notification_metadata": {
+            "office_identity": OFFICE_IDENTITY,
+            "header": OFFICE_IDENTITY,
             "signature": "From Dr. Sa'ad\nDG/RHGI",
             "signature_line_1": "From Dr. Sa'ad",
             "signature_line_2": "DG/RHGI",
@@ -277,10 +319,14 @@ def _dispatch_sovereign_notepad(text: str) -> tuple[list[str], list[str]]:
     names = [c.get("display_name") for c in cfg.get("contacts", []) if c.get("display_name")]
     payload_obj = {
         "channel": "sovereign_notepad",
+        "office_identity": OFFICE_IDENTITY,
+        "sender_metadata": OFFICE_IDENTITY,
         "message": _append_outreach_signature(text),
         "ts_utc": datetime.now(timezone.utc).isoformat(),
         "leadership_contacts": names,
         "push_notification_metadata": {
+            "office_identity": OFFICE_IDENTITY,
+            "header": OFFICE_IDENTITY,
             "signature": "From Dr. Sa'ad\nDG/RHGI",
             "signature_line_1": "From Dr. Sa'ad",
             "signature_line_2": "DG/RHGI",
@@ -2566,40 +2612,44 @@ with st.sidebar:
             "Executive Sync</p>",
             unsafe_allow_html=True,
         )
-        st.caption(
-            "STRIKE link: **https://wa.me/2348099111515** (verified DG only; clean wa.me). "
-            "STRIKE action opens prefilled **?text=…** in a new tab. "
-            "Pop-ups can be blocked inside the app frame — use Debug Mode, the wa.me link, or allow pop-ups."
+        _mgmt_roster = _strike_command_phones()
+        _mgmt_total = len(_mgmt_roster)
+        _delivered_n = (
+            int(st.session_state.get("executive_sync_recipient_count", 0))
+            if st.session_state.executive_sync_delivered
+            else 0
         )
-        _strike_wa_url = _wa_me_url(DG_VERIFIED_E164, EXEC_SYNC_MESSAGE)
+        st.caption(
+            f"**{OFFICE_IDENTITY}** · Management 8 roster. "
+            f"Directives delivered: **{_delivered_n}/{_mgmt_total}**. "
+            "STRIKE opens **https://wa.me/** prefilled **?text=…** (directive payload) for each node. "
+            "Fallback link: clean **https://wa.me/** (DG). Pop-ups may be blocked in-frame — use Debug Mode or allow pop-ups."
+        )
+        _strike_wa_urls_all = "\n".join(_wa_me_url(p, EXEC_SYNC_MESSAGE) for p in _mgmt_roster)
         _strike_wa_me_clean = f"https://wa.me/{DG_VERIFIED_E164}"
         st.checkbox(
             "Debug Mode (show exact wa.me URLs)",
             key="wa_debug_mode",
-            help="Shows the full https://wa.me/…?text=… string and last fired URLs.",
+            help="Shows full https://wa.me/…?text=… lines for all Management 8 targets and last fired URLs.",
         )
         if st.session_state.get("wa_debug_mode"):
-            st.caption("DEBUG — STRIKE URL (exact, copy if needed)")
-            st.code(_strike_wa_url, language="text")
+            st.caption("DEBUG — STRIKE URLs (Management 8, exact, copy if needed)")
+            st.code(_strike_wa_urls_all, language="text")
             if st.session_state.get("last_wa_urls"):
                 st.caption("Last fired wa.me URLs")
                 st.code("\n".join(st.session_state.last_wa_urls), language="text")
         st.link_button(
-            "Open WhatsApp — STRIKE (wa.me)",
+            "Open WhatsApp — STRIKE (wa.me, DG clean link)",
             _strike_wa_me_clean,
             use_container_width=True,
         )
         if st.session_state.executive_sync_delivered:
             _handoff_ok = bool(st.session_state.get("executive_sync_handoff_ack"))
-            _n = int(
-                st.session_state.get("executive_sync_recipient_count")
-                or len(_strike_command_phones())
-                or 0
-            )
+            _n = int(st.session_state.get("executive_sync_recipient_count", 0))
             _inner = (
                 "<div style='font-size:0.78rem;letter-spacing:0.06em;opacity:0.95;'>"
-                "STRIKE — Executive sync (JAN 16, 2027)</div>"
-                f"<div style='font-size:1.05rem;margin-top:8px;'>{_n}/{_n} DIRECTIVES DELIVERED</div>"
+                "STRIKE 14314-EXECUTIVE-LOAD-142 — Executive sync (JAN 16, 2027)</div>"
+                f"<div style='font-size:1.05rem;margin-top:8px;'>{_n}/{_mgmt_total} DIRECTIVES DELIVERED</div>"
             )
             if _handoff_ok:
                 st.markdown(
@@ -2622,13 +2672,16 @@ with st.sidebar:
                     unsafe_allow_html=True,
                 )
                 if st.button(
-                    "STRIKE",
+                    "STRIKE 14314-EXECUTIVE-LOAD-142",
                     use_container_width=True,
                     key="executive_sync_activate_btn",
                     type="primary",
-                    help="Opens https://wa.me/2348099111515?text=… in a new tab (top window). Use Debug Mode to verify the URL.",
+                    help=(
+                        f"Opens {len(_mgmt_roster)}× https://wa.me/…?text=… tabs (directive payload). "
+                        "Use Debug Mode to verify URLs."
+                    ),
                 ):
-                    _phones = _strike_command_phones()
+                    _phones = list(_mgmt_roster)
                     _exec_full = EXEC_SYNC_MESSAGE
                     st.session_state.executive_sync_handoff_ack = False
                     _urls = [_wa_me_url(p, _exec_full) for p in _phones]
@@ -2638,7 +2691,7 @@ with st.sidebar:
                     st.session_state.executive_sync_recipient_count = len(_phones)
                     _append_sovereign_feed(
                         "Executive Sync",
-                        f"STRIKE · {len(_phones)} wa.me link(s) · RHGI-SSMI sync.",
+                        f"STRIKE 14314-EXECUTIVE-LOAD-142 · {len(_phones)} https://wa.me/ link(s) · RHGI-SSMI sync.",
                     )
                     st.rerun()
 
@@ -2648,8 +2701,8 @@ with st.sidebar:
             unsafe_allow_html=True,
         )
         st.caption(
-            "Optional broadcast: up to 10 lines — only **2348099111515** (DG) is accepted; other lines are ignored. "
-            "Signature appended automatically."
+            "Optional broadcast: up to 10 lines — only **Management 8** roster numbers are accepted; other lines are ignored. "
+            "Opens **https://wa.me/** with signature appended."
         )
         st.text_area(
             "Colleague phone numbers",
@@ -2662,12 +2715,12 @@ with st.sidebar:
             key="mgmt_demo_msg",
         )
         if st.button(
-            "Open WhatsApp — Management 10 (one-click sequence)",
+            "Open WhatsApp — Management 8 (https://wa.me/ sequence)",
             use_container_width=True,
             key="mgmt_demo_wa_all_btn",
-            help="Opens https://wa.me/… only for the verified DG number.",
+            help="Opens https://wa.me/…?text=… for each accepted Management 8 line (prefilled message).",
         ):
-            _allowed = {DG_VERIFIED_E164}
+            _allowed = frozenset(_load_management_8_phones())
             _lines = [
                 ln.strip()
                 for ln in str(st.session_state.get("mgmt_demo_phones_text", "")).splitlines()
@@ -2687,7 +2740,7 @@ with st.sidebar:
                     _skipped.append(_ln)
             if _skipped:
                 st.warning(
-                    "Ignored lines (only **2348099111515** / 08099111515 formats accepted): "
+                    "Ignored lines (not on Management 8 roster / invalid format): "
                     + ", ".join(_skipped[:5])
                     + ("…" if len(_skipped) > 5 else "")
                 )
@@ -2696,14 +2749,14 @@ with st.sidebar:
                 components.html(_wa_me_popup_html(_urls), height=0)
                 _append_sovereign_feed(
                     "WhatsApp",
-                    f"Management/Demonstration wa.me sequence · {len(_urls)} tab(s) · signature lines embedded.",
+                    f"Management 8 · https://wa.me/ sequence · {len(_urls)} tab(s) · signature lines embedded.",
                 )
                 st.info("Opening WhatsApp — if blocked, enable Debug Mode and copy the wa.me URL.")
             elif not _skipped:
                 if not _lines:
-                    st.warning("Add the DG line (2348099111515 or 08099111515) to send.")
+                    st.warning("Add at least one Management 8 roster line (E.164 / local NG format) to send.")
                 else:
-                    st.warning("Add at least one valid Nigerian number (e.g. 2348099111515 or 08099111515).")
+                    st.warning("No accepted numbers — use roster digits only (e.g. 2348036948675 or local 080…).")
 
         st.markdown(
             '<p class="rhgi-sovereign-notepad-host" style="margin:12px 0 4px 0;color:#E6C35C;font-weight:800;font-size:0.82rem;letter-spacing:0.06em;">'

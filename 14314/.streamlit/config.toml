@@ -1,3 +1,4 @@
-# Sovereign Gateway — engine listens strictly on 8505 (override with CLI if needed).
+# Sovereign Gateway — engine listens strictly on 8505 (14314-EXECUTIVE-LOAD-142).
 [server]
 port = 8505
+# Prefer explicit CLI: python3 -m streamlit run 14314/app.py --server.port 8505
