@@ -1,0 +1,3 @@
+# Sovereign Gateway — engine listens strictly on 8505 (override with CLI if needed).
+[server]
+port = 8505

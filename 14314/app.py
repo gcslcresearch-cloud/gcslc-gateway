@@ -2567,10 +2567,12 @@ with st.sidebar:
             unsafe_allow_html=True,
         )
         st.caption(
-            "STRIKE uses **https://wa.me/2348099111515?text=…** (verified DG only). "
+            "STRIKE link: **https://wa.me/2348099111515** (verified DG only; clean wa.me). "
+            "STRIKE action opens prefilled **?text=…** in a new tab. "
             "Pop-ups can be blocked inside the app frame — use Debug Mode, the wa.me link, or allow pop-ups."
         )
         _strike_wa_url = _wa_me_url(DG_VERIFIED_E164, EXEC_SYNC_MESSAGE)
+        _strike_wa_me_clean = f"https://wa.me/{DG_VERIFIED_E164}"
         st.checkbox(
             "Debug Mode (show exact wa.me URLs)",
             key="wa_debug_mode",
@@ -2584,9 +2586,8 @@ with st.sidebar:
                 st.code("\n".join(st.session_state.last_wa_urls), language="text")
         st.link_button(
             "Open WhatsApp — STRIKE (wa.me)",
-            _strike_wa_url,
+            _strike_wa_me_clean,
             use_container_width=True,
-            key="strike_wa_me_fallback_link",
         )
         if st.session_state.executive_sync_delivered:
             _handoff_ok = bool(st.session_state.get("executive_sync_handoff_ack"))
