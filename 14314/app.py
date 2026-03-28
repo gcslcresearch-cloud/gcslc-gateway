@@ -56,6 +56,8 @@ if "mgmt_demo_msg" not in st.session_state:
     )
 if "executive_sync_delivered" not in st.session_state:
     st.session_state.executive_sync_delivered = False
+if "executive_sync_handoff_ack" not in st.session_state:
+    st.session_state.executive_sync_handoff_ack = False
 
 # RHGI-SWAT-OPPOSITION-77 — global colors (strict DG / SWAT palette).
 # RHGI-GOLDMAN palette (mirrors :root CSS variables).
@@ -138,10 +140,9 @@ def _gold_heading(text: str) -> None:
 
 # SSMI-SIGNATURE-SYNC-139 — real newlines so WhatsApp/SMS render as separate lines on mobile.
 RHGI_OUTREACH_SIGNATURE = "From Dr. Sa'ad\nDG/RHGI"
-# SSMI-DEMO-READY-140 — Executive Test Run body (signature appended separately).
+# SSMI-EXECUTIVE-LOAD-142 — final demonstration body (signature appended separately).
 EXEC_SYNC_TEST_RUN_MESSAGE = (
-    "RHGI Executive Test Run — ballot anchor Saturday 16 January 2027 (WAT). "
-    "Directives issued via Outreach Command."
+    "This is a test run for the 15/15 RHGI, SSMI. Presidential election day is Saturday, January 16, 2027."
 )
 
 
@@ -190,27 +191,59 @@ def _load_leadership_config() -> dict:
         return json.load(fp)
 
 
-_EXEC_SYNC_JSON = os.path.join(os.path.dirname(os.path.abspath(__file__)), "executive_sync_recipients.json")
-
-
-def _load_executive_sync_phones() -> list[str]:
-    """12 locked recipients: env GCSLC_EXEC_SYNC_PHONES (comma-separated) or executive_sync_recipients.json."""
-    env = os.environ.get("GCSLC_EXEC_SYNC_PHONES", "").strip()
+def _load_tier1_strategic_phones() -> list[str]:
+    """SSMI-EXECUTIVE-LOAD-142 — 8 numbers from leadership.json (Tier 1: Strategic Management)."""
+    env = os.environ.get("GCSLC_TIER1_STRATEGIC_PHONES", "").strip()
     if env:
         out: list[str] = []
         for part in env.split(","):
             d = _normalize_ng_e164_digits(part.strip())
             if len(d) >= 12:
                 out.append(d)
-        return out[:12]
-    with open(_EXEC_SYNC_JSON, "r", encoding="utf-8") as fp:
-        data = json.load(fp)
+        return out[:8]
+    cfg = _load_leadership_config()
     out = []
-    for r in data.get("recipients", []):
+    for r in cfg.get("tier_1_strategic_management", []):
         d = _normalize_ng_e164_digits(str(r.get("phone_e164", "")))
         if len(d) >= 12:
             out.append(d)
-    return out[:12]
+    return out[:8]
+
+
+def _post_executive_sync_handoff(phones: list[str], full_message: str) -> tuple[bool, str]:
+    """POST handoff to webhooks.executive_sync_handoff or GCSLC_EXEC_SYNC_HANDOFF_URL; empty URL = skip (demo OK)."""
+    try:
+        cfg = _load_leadership_config()
+    except Exception as e:
+        return False, str(e)
+    wh = (cfg.get("webhooks") or {}).get("executive_sync_handoff", "")
+    url = (os.environ.get("GCSLC_EXEC_SYNC_HANDOFF_URL") or wh or "").strip()
+    if not url:
+        return True, ""
+    payload_obj = {
+        "tier": "Tier 1: Strategic Management",
+        "recipients_e164": phones,
+        "message": full_message,
+        "ts_utc": datetime.now(timezone.utc).isoformat(),
+        "push_notification_metadata": {
+            "signature": "From Dr. Sa'ad\nDG/RHGI",
+            "signature_line_1": "From Dr. Sa'ad",
+            "signature_line_2": "DG/RHGI",
+        },
+    }
+    payload = json.dumps(payload_obj).encode("utf-8")
+    try:
+        req = urllib.request.Request(url, data=payload, method="POST")
+        req.add_header("Content-Type", "application/json")
+        with urllib.request.urlopen(req, timeout=22) as resp:
+            code = int(resp.getcode())
+            if 200 <= code < 300:
+                return True, ""
+            return False, f"HTTP {code}"
+    except urllib.error.HTTPError as e:
+        return False, f"HTTP {e.code}"
+    except Exception as e:
+        return False, str(e)
 
 
 def _dispatch_sovereign_notepad(text: str) -> tuple[list[str], list[str]]:
@@ -1343,6 +1376,28 @@ st.markdown(
       font-weight: 800 !important;
       text-shadow: 0 0 10px rgba(0, 255, 255, 0.9), 0 0 22px rgba(0, 255, 255, 0.45) !important;
       animation: rhgiExecSyncCyanPulse 2s ease-in-out infinite !important;
+    }
+    /* SSMI-EXECUTIVE-LOAD-142 — Success shimmer after API handoff ack */
+    @keyframes rhgiExecSyncSuccessShimmer {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
+    [data-testid="stSidebar"] .rhgi-exec-sync-success-panel {
+      background: linear-gradient(
+        110deg,
+        #146c43 0%,
+        #20c997 22%,
+        #198754 44%,
+        #2dd4bf 56%,
+        #198754 78%,
+        #157347 100%
+      ) !important;
+      background-size: 240% 100% !important;
+      animation: rhgiExecSyncSuccessShimmer 2.8s ease-in-out infinite !important;
+      border: 2px solid rgba(255, 255, 255, 0.38) !important;
+      box-shadow:
+        0 0 26px rgba(32, 201, 151, 0.55),
+        inset 0 0 22px rgba(255, 255, 255, 0.14) !important;
     }
     /* SSMI-EXECUTIVE-BYPASS-138 — Outreach Command: executive gold ring + deep red pulse */
     @keyframes rhgiExecDeepRedPulse {
@@ -2496,20 +2551,31 @@ with st.sidebar:
             unsafe_allow_html=True,
         )
         st.caption(
-            "Recipient lockdown: 12 mobiles in executive_sync_recipients.json (Dr. Sa'ad, Convener, 10 colleagues) "
-            "or env GCSLC_EXEC_SYNC_PHONES= comma-separated ×12. Message includes signature tail "
-            "(From Dr. Sa'ad + newline + DG/RHGI)."
+            "Tier 1 Strategic Management: 8 E.164 numbers in leadership.json → tier_1_strategic_management "
+            "(or GCSLC_TIER1_STRATEGIC_PHONES comma-separated ×8). Optional API: webhooks.executive_sync_handoff "
+            "or GCSLC_EXEC_SYNC_HANDOFF_URL — success shimmer runs after 2xx ack. Signature: From Dr. Sa'ad + DG/RHGI."
         )
         if st.session_state.executive_sync_delivered:
-            st.markdown(
-                "<div style='background:#198754;border:2px solid #146c43;border-radius:10px;padding:14px 12px;"
-                "text-align:center;font-family:Goldman,sans-serif;color:#ffffff;font-weight:800;'>"
+            _handoff_ok = bool(st.session_state.get("executive_sync_handoff_ack"))
+            _inner = (
                 "<div style='font-size:0.78rem;letter-spacing:0.06em;opacity:0.95;'>"
                 "ACTIVATE EXECUTIVE TEST RUN (JAN 16, 2027)</div>"
-                "<div style='font-size:1.05rem;margin-top:8px;'>12/12 DIRECTIVES DELIVERED</div>"
-                "</div>",
-                unsafe_allow_html=True,
+                "<div style='font-size:1.05rem;margin-top:8px;'>8/8 DIRECTIVES DELIVERED</div>"
             )
+            if _handoff_ok:
+                st.markdown(
+                    "<div class='rhgi-exec-sync-success-panel' style='border-radius:10px;padding:14px 12px;"
+                    "text-align:center;font-family:Goldman,sans-serif;color:#ffffff;font-weight:800;'>"
+                    f"{_inner}</div>",
+                    unsafe_allow_html=True,
+                )
+            else:
+                st.markdown(
+                    "<div style='background:#198754;border:2px solid #146c43;border-radius:10px;padding:14px 12px;"
+                    "text-align:center;font-family:Goldman,sans-serif;color:#ffffff;font-weight:800;'>"
+                    f"{_inner}</div>",
+                    unsafe_allow_html=True,
+                )
         else:
             with st.container():
                 st.markdown(
@@ -2521,32 +2587,37 @@ with st.sidebar:
                     use_container_width=True,
                     key="executive_sync_activate_btn",
                     type="primary",
-                    help="Opens WhatsApp for all 12 locked numbers with signed Executive Test Run message.",
+                    help="API handoff (if configured), then WhatsApp wa.me for 8 Tier 1 numbers with demonstration text + signature.",
                 ):
-                    _phones = _load_executive_sync_phones()
-                    if len(_phones) < 12:
+                    _phones = _load_tier1_strategic_phones()
+                    if len(_phones) < 8:
                         st.error(
-                            f"Recipient lockdown requires 12 valid Nigerian E.164 numbers; found {len(_phones)}. "
-                            "Edit 14314/executive_sync_recipients.json or set GCSLC_EXEC_SYNC_PHONES."
+                            f"Tier 1 Strategic Management requires 8 valid Nigerian E.164 numbers; found {len(_phones)}. "
+                            "Edit leadership.json tier_1_strategic_management or GCSLC_TIER1_STRATEGIC_PHONES."
                         )
                     else:
                         _exec_full = _append_outreach_signature(EXEC_SYNC_TEST_RUN_MESSAGE)
-                        _urls = [
-                            f"https://wa.me/{p}?text={quote(_exec_full, safe='')}" for p in _phones
-                        ]
-                        components.html(
-                            "<script>\n"
-                            f"const urls = {json.dumps(_urls)};\n"
-                            "urls.forEach((u, i) => setTimeout(() => { try { window.open(u, '_blank'); } catch(e) {} }, i * 550));\n"
-                            "</script>",
-                            height=0,
-                        )
-                        st.session_state.executive_sync_delivered = True
-                        _append_sovereign_feed(
-                            "Executive Sync",
-                            "Test run Jan 16 2027 anchor · 12/12 wa.me directives · signature appended.",
-                        )
-                        st.rerun()
+                        _hok, _herr = _post_executive_sync_handoff(_phones, _exec_full)
+                        if not _hok:
+                            st.error(f"Executive handoff API did not acknowledge: {_herr}")
+                        else:
+                            st.session_state.executive_sync_handoff_ack = True
+                            _urls = [
+                                f"https://wa.me/{p}?text={quote(_exec_full, safe='')}" for p in _phones
+                            ]
+                            components.html(
+                                "<script>\n"
+                                f"const urls = {json.dumps(_urls)};\n"
+                                "urls.forEach((u, i) => setTimeout(() => { try { window.open(u, '_blank'); } catch(e) {} }, i * 550));\n"
+                                "</script>",
+                                height=0,
+                            )
+                            st.session_state.executive_sync_delivered = True
+                            _append_sovereign_feed(
+                                "Executive Sync",
+                                "Tier 1 Strategic Management · 8/8 handoff + wa.me · demonstration message + signature.",
+                            )
+                            st.rerun()
 
         st.markdown(
             '<p class="rhgi-sidebar-cat rhgi-sidebar-cat--outreach" style="margin-top:14px;">'
