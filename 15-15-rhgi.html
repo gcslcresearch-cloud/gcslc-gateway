@@ -191,7 +191,7 @@
         box-shadow:
           0 0 0 1px rgba(0, 229, 255, 0.14),
           0 0 0 1px rgba(212, 175, 55, 0.14) inset,
-          0 0.5rem 2.25rem rgba(0, 0, 0, 0.45),
+          0 0.5rem 2.25rem rgba(0, 18, 55, 0.48),
           inset 0 1px 0 rgba(255, 255, 255, 0.08),
           inset 0 -1px 0 rgba(0, 80, 140, 0.3),
           0 0 1.35rem rgba(212, 175, 55, 0.24);
@@ -201,7 +201,7 @@
         box-shadow:
           0 0 0 1px rgba(0, 229, 255, 0.24),
           0 0 0 1px rgba(232, 197, 71, 0.2) inset,
-          0 0.65rem 2.6rem rgba(0, 0, 0, 0.52),
+          0 0.65rem 2.6rem rgba(0, 22, 58, 0.52),
           inset 0 1px 0 rgba(255, 255, 255, 0.1),
           inset 0 -1px 0 rgba(0, 100, 160, 0.38),
           0 0 1.85rem rgba(0, 200, 255, 0.22);
@@ -214,16 +214,16 @@
       border-radius: 0.75rem;
       border: 1px solid transparent;
       background:
-        linear-gradient(165deg, rgba(8, 14, 28, 0.58), rgba(6, 16, 32, 0.42)) padding-box,
+        linear-gradient(165deg, rgba(0, 22, 58, 0.62), rgba(0, 16, 48, 0.48)) padding-box,
         linear-gradient(135deg, #d4af37 0%, #f8f4ec 18%, #a8a9ad 38%, #ffd700 52%, #c0c0c0 68%, #e8c547 88%, #9a9a9e 100%) border-box;
       background-clip: padding-box, border-box;
       backdrop-filter: blur(15px);
       -webkit-backdrop-filter: blur(15px);
       box-shadow:
         0 0 0 1px rgba(0, 229, 255, 0.16),
-        0 0.4rem 0 rgba(0, 0, 0, 0.42),
-        0 0.85rem 2.6rem rgba(0, 0, 0, 0.52),
-        0 1.4rem 4.2rem rgba(0, 0, 0, 0.38),
+        0 0.4rem 0 rgba(0, 18, 50, 0.45),
+        0 0.85rem 2.6rem rgba(0, 22, 58, 0.5),
+        0 1.4rem 4.2rem rgba(0, 18, 48, 0.42),
         0 0 2.4rem rgba(212, 175, 55, 0.32),
         inset 0 1px 0 rgba(255, 255, 255, 0.11),
         inset 0 -2px 0 rgba(0, 50, 90, 0.4);
@@ -321,7 +321,10 @@
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      animation: rhgi-title-metallic 6.5s ease-in-out infinite, rhgi-live-shimmer-gold-pulse 2.8s ease-in-out infinite;
+      animation:
+        rhgi-title-metallic 6.5s ease-in-out infinite,
+        rhgi-live-shimmer-gold-pulse 2.8s ease-in-out infinite,
+        rhgi-identity-breathe 3.8s ease-in-out infinite;
       filter: drop-shadow(0 0.06rem 0.35rem rgba(0, 40, 90, 0.5));
     }
     @keyframes rhgi-title-metallic {
@@ -334,6 +337,28 @@
       }
       50% {
         text-shadow: 0 0 0.55rem rgba(255, 255, 255, 0.55), 0 0 1.1rem rgba(255, 215, 0, 0.5);
+      }
+    }
+    @keyframes rhgi-identity-breathe {
+      0%, 100% { opacity: 0.96; }
+      50% { opacity: 1; }
+    }
+    @keyframes rhgi-metric-gold-pulse {
+      0%, 100% {
+        filter: brightness(1);
+        text-shadow: 0 0 0.4rem rgba(255, 215, 0, 0.5), 0 0 0.9rem rgba(255, 215, 0, 0.28);
+      }
+      50% {
+        filter: brightness(1.2);
+        text-shadow: 0 0 0.85rem rgba(255, 215, 0, 0.95), 0 0 1.4rem rgba(255, 245, 230, 0.42);
+      }
+    }
+    @keyframes rhgi-headline-golden-aura {
+      0%, 100% {
+        filter: drop-shadow(0 0 0.2rem rgba(255, 215, 0, 0.35)) drop-shadow(0 0 0.65rem rgba(255, 215, 0, 0.2));
+      }
+      50% {
+        filter: drop-shadow(0 0 0.45rem rgba(255, 215, 0, 0.55)) drop-shadow(0 0 1rem rgba(245, 240, 230, 0.38));
       }
     }
     @keyframes rhgi-headline-shimmer-gold {
@@ -364,7 +389,10 @@
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      animation: rhgi-brand-dg-shimmer 5s ease-in-out infinite, rhgi-live-shimmer-gold-pulse 2.8s ease-in-out infinite;
+      animation:
+        rhgi-brand-dg-shimmer 5s ease-in-out infinite,
+        rhgi-live-shimmer-gold-pulse 2.8s ease-in-out infinite,
+        rhgi-identity-breathe 3.8s ease-in-out infinite;
     }
     @keyframes rhgi-brand-dg-shimmer {
       0%, 100% { background-position: 8% 50%; }
@@ -390,6 +418,75 @@
       font-size: clamp(0.38rem, 0.85vw + 0.16rem, 0.55rem);
       letter-spacing: 0.03em;
       opacity: 0.98;
+    }
+
+    .rhgi-key-metric-gold {
+      color: #ffd700;
+      font-weight: 800;
+      animation: rhgi-metric-gold-pulse 2.2s ease-in-out infinite;
+    }
+
+    .rhgi-brand-elections {
+      margin: clamp(0.35rem, 1.2vw, 0.5rem) auto 0;
+      max-width: min(100%, 40rem);
+      padding-inline: clamp(0.35rem, 2vw, 0.75rem);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.38rem, 0.85vw + 0.16rem, 0.54rem);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      line-height: 1.5;
+      text-align: center;
+      background: linear-gradient(95deg, #f5f0e8 0%, #e8f8ff 22%, #f5f0e8 44%, #ffe8a8 66%, #f5f0e8 100%);
+      background-size: 220% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: rhgi-headline-shimmer-gold 5s ease-in-out infinite, rhgi-live-shimmer-gold-pulse 2.8s ease-in-out infinite;
+    }
+
+    .rhgi-brand-validation {
+      margin: clamp(0.45rem, 1.5vw, 0.65rem) auto 0;
+      width: min(100%, 38rem);
+      padding: clamp(0.42rem, 1.5vw, 0.55rem) clamp(0.5rem, 2vw, 0.75rem);
+      border-radius: 0.5rem;
+      border: 1px solid rgba(0, 206, 209, 0.45);
+      background: linear-gradient(165deg, rgba(0, 28, 65, 0.88), rgba(0, 18, 48, 0.94));
+      text-align: center;
+      animation: rhgi-validation-cyan-pulse 2.5s ease-in-out infinite;
+      transform: translateZ(0);
+    }
+    @keyframes rhgi-validation-cyan-pulse {
+      0%, 100% {
+        border-color: rgba(0, 206, 209, 0.42);
+        box-shadow:
+          0 0 12px rgba(0, 206, 209, 0.35),
+          0 0 24px rgba(0, 100, 140, 0.22),
+          inset 0 0 18px rgba(0, 206, 209, 0.08);
+      }
+      50% {
+        border-color: rgba(0, 240, 255, 0.78);
+        box-shadow:
+          0 0 22px rgba(0, 206, 209, 0.72),
+          0 0 40px rgba(0, 229, 255, 0.35),
+          inset 0 0 28px rgba(0, 206, 209, 0.18);
+      }
+    }
+    .rhgi-brand-validation-inner {
+      display: block;
+      font-family: 'Goldman', 'Segoe UI', sans-serif;
+      font-size: clamp(0.38rem, 0.85vw + 0.15rem, 0.56rem);
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--rhgi-pearl);
+      text-shadow:
+        0 0 10px rgba(0, 206, 209, 0.55),
+        0 0 20px rgba(0, 206, 209, 0.28);
+      animation: rhgi-validation-inner-flicker 2.5s ease-in-out infinite;
+    }
+    @keyframes rhgi-validation-inner-flicker {
+      0%, 100% { opacity: 0.92; text-shadow: 0 0 8px rgba(0, 206, 209, 0.45), 0 0 16px rgba(0, 206, 209, 0.22); }
+      50% { opacity: 1; text-shadow: 0 0 14px rgba(0, 240, 255, 0.65), 0 0 26px rgba(0, 206, 209, 0.4); }
     }
 
     .rhgi-brand-divider {
@@ -468,14 +565,14 @@
         0 0 0.875rem rgba(0, 15, 55, 0.45);
     }
     .rhgi-election-ticker.rhgi-prism-frame {
-      background: rgba(8, 14, 28, 0.4);
+      background: rgba(0, 22, 55, 0.45);
       backdrop-filter: blur(15px);
       -webkit-backdrop-filter: blur(15px);
       border: 1px solid rgba(212, 175, 55, 0.38);
       box-shadow:
         0 0 0 1px rgba(0, 229, 255, 0.12),
         0 0 0 1px rgba(212, 175, 55, 0.1) inset,
-        0 0.4rem 1.75rem rgba(0, 0, 0, 0.4),
+        0 0.4rem 1.75rem rgba(0, 20, 55, 0.42),
         inset 0 0 1rem rgba(0, 229, 255, 0.06);
     }
     .rhgi-election-ticker-label {
@@ -533,12 +630,12 @@
       font-weight: 700;
       letter-spacing: 0.24em;
       text-transform: uppercase;
-      background: linear-gradient(92deg, #ffffff 0%, #ffd700 28%, #fff8f0 48%, #ffd700 72%, #ffffff 100%);
+      background: linear-gradient(92deg, #f5f0e8 0%, #fffef9 18%, #ffe8a0 36%, #f5f0e8 50%, #ffd700 64%, #f8f4ec 78%, #f5f0e8 100%);
       background-size: 220% 100%;
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      animation: rhgi-headline-shimmer-gold 5.5s ease-in-out infinite, rhgi-live-shimmer-gold-pulse 2.8s ease-in-out infinite;
+      animation: rhgi-headline-shimmer-gold 5.5s ease-in-out infinite, rhgi-headline-golden-aura 3.5s ease-in-out infinite;
     }
     .rhgi-victory-arc-row {
       display: flex;
@@ -710,20 +807,20 @@
       letter-spacing: 0.22em;
       text-transform: uppercase;
       text-align: center;
-      background: linear-gradient(92deg, #ffffff 0%, #ffd700 30%, #f5f0e8 50%, #ffd700 70%, #ffffff 100%);
+      background: linear-gradient(92deg, #f5f0e8 0%, #fff8f0 22%, #ffd700 42%, #f5f0e8 55%, #ffe8c8 68%, #f5f0e8 100%);
       background-size: 220% 100%;
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      animation: rhgi-headline-shimmer-gold 5.5s ease-in-out infinite, rhgi-live-shimmer-gold-pulse 2.8s ease-in-out infinite;
+      animation: rhgi-headline-shimmer-gold 5.5s ease-in-out infinite, rhgi-headline-golden-aura 3.5s ease-in-out infinite;
     }
     .rhgi-hub {
       border-radius: 0.75rem;
       padding: clamp(0.55rem, 2.2vw, 0.85rem);
-      background: linear-gradient(165deg, rgba(5, 14, 28, 0.72), rgba(3, 10, 22, 0.55));
+      background: linear-gradient(165deg, rgba(0, 22, 55, 0.75), rgba(0, 15, 45, 0.58));
     }
     .rhgi-hub.rhgi-prism-frame {
-      background: rgba(8, 14, 28, 0.4);
+      background: rgba(0, 20, 52, 0.45);
       backdrop-filter: blur(15px);
       -webkit-backdrop-filter: blur(15px);
     }
@@ -837,7 +934,7 @@
       overflow: hidden;
       border-radius: 0.45rem;
       border: 1px solid rgba(0, 229, 255, 0.18);
-      background: linear-gradient(180deg, rgba(4, 16, 32, 0.92), rgba(2, 10, 22, 0.96));
+      background: linear-gradient(180deg, rgba(0, 24, 58, 0.92), rgba(0, 16, 48, 0.96));
       padding: 0.35rem 0;
     }
     .rhgi-conversion-ticker-label {
@@ -917,7 +1014,7 @@
       width: 7px;
     }
     .rhgi-corridor-widget.rhgi-r32-sovereign-widget.rhgi-r32-sovereign-scroll::-webkit-scrollbar-track {
-      background: rgba(4, 14, 28, 0.9);
+      background: rgba(0, 20, 52, 0.9);
       border-radius: 4px;
     }
     .rhgi-corridor-widget.rhgi-r32-sovereign-widget.rhgi-r32-sovereign-scroll::-webkit-scrollbar-thumb {
@@ -933,10 +1030,10 @@
       margin-top: 0;
       border-radius: 0.75rem;
       padding: clamp(0.5rem, 2vw, 0.75rem);
-      background: linear-gradient(165deg, rgba(4, 14, 30, 0.85), rgba(2, 10, 22, 0.72));
+      background: linear-gradient(165deg, rgba(0, 22, 55, 0.85), rgba(0, 16, 48, 0.72));
     }
     .rhgi-corridor-widget.rhgi-corridor-deep.rhgi-prism-frame {
-      background: rgba(8, 14, 28, 0.4);
+      background: rgba(0, 22, 55, 0.45);
       backdrop-filter: blur(15px);
       -webkit-backdrop-filter: blur(15px);
     }
@@ -945,7 +1042,7 @@
       padding: clamp(0.35rem, 1.5vw, 0.5rem) clamp(0.25rem, 1.5vw, 0.45rem);
       border-radius: 0.45rem;
       border: 1px solid rgba(232, 197, 71, 0.22);
-      background: rgba(2, 10, 22, 0.55);
+      background: rgba(0, 18, 48, 0.58);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -1070,12 +1167,12 @@
       letter-spacing: 0.18em;
       text-transform: uppercase;
       text-align: center;
-      background: linear-gradient(95deg, #ffd700 0%, #ffffff 22%, #ffd700 45%, #fff8e8 62%, #ffd700 100%);
+      background: linear-gradient(95deg, #f5f0e8 0%, #fffef9 18%, #ffd700 38%, #f5f0e8 52%, #ffe8b0 68%, #f5f0e8 88%, #ffd700 100%);
       background-size: 240% 100%;
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      animation: rhgi-headline-shimmer-gold 6s ease-in-out infinite, rhgi-live-shimmer-gold-pulse 2.8s ease-in-out infinite;
+      animation: rhgi-headline-shimmer-gold 6s ease-in-out infinite, rhgi-headline-golden-aura 3.5s ease-in-out infinite;
     }
     .rhgi-deep-layout {
       display: flex;
@@ -1277,7 +1374,7 @@
     .rhgi-sentinel50-nc-winbar-track {
       height: 0.4rem;
       border-radius: 0.22rem;
-      background: rgba(0, 0, 0, 0.42);
+      background: rgba(0, 18, 52, 0.48);
       overflow: hidden;
       position: relative;
       box-shadow: inset 0 0 0 1px rgba(232, 197, 71, 0.25);
@@ -1341,7 +1438,7 @@
       min-width: 0;
       height: var(--rhgi-bar-h, 0.35rem);
       border-radius: 0.2rem;
-      background: rgba(0, 0, 0, 0.35);
+      background: rgba(0, 20, 50, 0.42);
       overflow: hidden;
     }
     .rhgi-matrix-bar-track--proj {
@@ -1436,7 +1533,7 @@
       min-width: 0;
       border-radius: 0.5rem;
       border: 1px solid rgba(232, 197, 71, 0.22);
-      background: rgba(2, 10, 22, 0.75);
+      background: rgba(0, 18, 50, 0.78);
       overflow: hidden;
     }
     .rhgi-deep-lga-label {
@@ -1558,12 +1655,12 @@
       font-weight: 700;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      background: linear-gradient(90deg, #ffffff 0%, #ffd700 38%, #f5f0e8 52%, #ffd700 72%, #ffffff 100%);
+      background: linear-gradient(90deg, #f5f0e8 0%, #fff8f0 24%, #ffd700 42%, #f5f0e8 56%, #ffe8c0 74%, #f5f0e8 100%);
       background-size: 220% 100%;
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      animation: rhgi-headline-shimmer-gold 5.5s ease-in-out infinite, rhgi-live-shimmer-gold-pulse 2.8s ease-in-out infinite;
+      animation: rhgi-headline-shimmer-gold 5.5s ease-in-out infinite, rhgi-headline-golden-aura 3.5s ease-in-out infinite;
     }
     .rhgi-clocks-grid {
       display: grid;
@@ -1617,12 +1714,12 @@
       padding: 0.1875rem;
       width: min(100%, 5.5rem);
       aspect-ratio: 1;
-      background: linear-gradient(145deg, rgba(18, 36, 62, 0.95), rgba(6, 14, 28, 0.98), rgba(28, 48, 78, 0.9), rgba(8, 18, 36, 0.96));
+      background: linear-gradient(145deg, rgba(0, 28, 65, 0.95), rgba(0, 18, 50, 0.98), rgba(0, 35, 70, 0.9), rgba(0, 22, 52, 0.96));
       background-size: 200% 200%;
       border: 1px solid rgba(40, 72, 118, 0.85);
       box-shadow:
         0 0 0 1px rgba(0, 229, 255, 0.12),
-        inset 0 0 1.375rem rgba(0, 0, 0, 0.55),
+        inset 0 0 1.375rem rgba(0, 18, 50, 0.52),
         0 0 0.875rem rgba(0, 60, 120, 0.25);
       animation: rhgi-navy-frame-shimmer 4.5s ease-in-out infinite;
       animation-delay: calc(var(--rhgi-i) * 0.15s);
@@ -1640,7 +1737,7 @@
       max-width: 100%;
       transform-origin: 50px 50px;
     }
-    .rhgi-clock-face { fill: rgba(4, 14, 28, 0.92); stroke: rgba(40, 72, 118, 0.65); stroke-width: 1.2; }
+    .rhgi-clock-face { fill: rgba(0, 16, 45, 0.92); stroke: rgba(40, 72, 118, 0.65); stroke-width: 1.2; }
     .rhgi-clock-tick { stroke: rgba(100, 140, 190, 0.45); stroke-width: 0.8; }
     .rhgi-hand-hour, .rhgi-hand-minute, .rhgi-hand-second {
       stroke-linecap: round;
@@ -1695,7 +1792,7 @@
       will-change: transform;
     }
     .rhgi-footer-774.rhgi-prism-frame {
-      background: rgba(8, 14, 28, 0.42);
+      background: rgba(0, 22, 55, 0.45);
       backdrop-filter: blur(15px);
       -webkit-backdrop-filter: blur(15px);
       border: 1px solid rgba(212, 175, 55, 0.38);
@@ -1763,18 +1860,26 @@
       right: max(0.55rem, env(safe-area-inset-right));
       z-index: 120;
       margin: 0;
-      max-width: min(90vw, 18rem);
+      max-width: min(90vw, 20rem);
       font-family: 'Goldman', 'Segoe UI', sans-serif;
-      font-size: clamp(0.36rem, 0.85vw + 0.1rem, 0.48rem);
+      font-size: clamp(0.38rem, 0.9vw + 0.12rem, 0.52rem);
       font-weight: 700;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       text-align: right;
-      color: rgba(212, 175, 55, 0.4);
       pointer-events: none;
       user-select: none;
       transform: translateZ(0);
       backface-visibility: hidden;
+    }
+    .rhgi-force51-watermark.rhgi-watermark-sovereign {
+      color: transparent;
+      background: linear-gradient(105deg, #f5f0e8 0%, #ffd700 26%, #ffffff 48%, #ffd700 72%, #f5f0e8 100%);
+      background-size: 240% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      animation: rhgi-brand-dg-shimmer 5s ease-in-out infinite, rhgi-live-shimmer-gold-pulse 2.8s ease-in-out infinite;
+      opacity: 0.88;
     }
     body.rhgi-page {
       background: linear-gradient(165deg, #000033 0%, #00004d 42%, #000066 100%) !important;
@@ -1793,7 +1898,7 @@
     .rhgi-page .rhgi-corridor-widget.rhgi-prism-frame {
       border: 1px solid transparent !important;
       background:
-        linear-gradient(165deg, rgba(8, 14, 28, 0.58), rgba(6, 16, 32, 0.42)) padding-box,
+        linear-gradient(165deg, rgba(0, 22, 58, 0.62), rgba(0, 16, 48, 0.48)) padding-box,
         linear-gradient(135deg, #d4af37 0%, #f8f4ec 18%, #a8a9ad 38%, #ffd700 52%, #c0c0c0 68%, #e8c547 88%, #9a9a9e 100%) border-box !important;
       background-clip: padding-box, border-box !important;
       backdrop-filter: blur(15px) !important;
@@ -1841,15 +1946,17 @@
       background-size: 320% 300% !important;
       animation:
         rhgi-title-metallic 6.5s ease-in-out infinite,
-        rhgi-live-shimmer-gold-pulse 2.8s ease-in-out infinite !important;
-      will-change: background-position, filter !important;
+        rhgi-live-shimmer-gold-pulse 2.8s ease-in-out infinite,
+        rhgi-identity-breathe 3.8s ease-in-out infinite !important;
+      will-change: background-position, filter, opacity !important;
     }
     .rhgi-page .rhgi-brand-dg {
       background-size: 240% 220% !important;
       animation:
         rhgi-brand-dg-shimmer 5s ease-in-out infinite,
-        rhgi-live-shimmer-gold-pulse 2.8s ease-in-out infinite !important;
-      will-change: background-position, filter !important;
+        rhgi-live-shimmer-gold-pulse 2.8s ease-in-out infinite,
+        rhgi-identity-breathe 3.8s ease-in-out infinite !important;
+      will-change: background-position, filter, opacity !important;
     }
     .rhgi-page .rhgi-r31-sovereign-seal {
       transform-origin: center;
@@ -1930,14 +2037,14 @@
     }
     .rhgi-page .rhgi-r1-global-pulse .rhgi-analog-clock-frame {
       animation: none !important;
-      background: rgba(8, 14, 28, 0.45) !important;
+      background: rgba(0, 22, 55, 0.48) !important;
       backdrop-filter: blur(15px) !important;
       -webkit-backdrop-filter: blur(15px) !important;
       border: 1px solid rgba(212, 175, 55, 0.38) !important;
       box-shadow:
         0 0 0 1px rgba(0, 229, 255, 0.12),
         inset 0 0 1rem rgba(0, 229, 255, 0.06),
-        0 0.35rem 1.25rem rgba(0, 0, 0, 0.35) !important;
+        0 0.35rem 1.25rem rgba(0, 20, 55, 0.38) !important;
     }
     /* FORCE-43: hands via setInterval(1000ms) + SVG rotate — no CSS clock hand animation */
     .rhgi-page .rhgi-chrome-sync-pulse .rhgi-chrome-hand-hour,
@@ -2086,7 +2193,7 @@
           </div>
         </section>
 
-        <!-- Identity lock: RHGI H1 + Architect sub-line (RHGI-CONSTITUTIONAL-SENTINEL-50) -->
+        <!-- Sovereign Brand Activation: RHGI H1 · DG · mandate stack (layout lock) -->
         <section class="rhgi-brand-section">
           <div class="rhgi-r31-brand-identity">
             <div class="rhgi-r31-sovereign-seal" aria-hidden="true">
@@ -2119,8 +2226,12 @@
             <h1 class="rhgi-title rhgi-title--rhgi-full">Renewed Hope Grassroots Initiatives (RHGI)</h1>
             <p class="rhgi-brand-dg">Office of the Director General (DG)</p>
             <div class="rhgi-brand-divider" aria-hidden="true"></div>
-            <p class="rhgi-brand-mandate">Securing the 20.7 Million Votes Mandate through the 15/15 Superior Support Model Precision(15/15 SSMP).</p>
+            <p class="rhgi-brand-mandate">Securing the <span class="rhgi-key-metric-gold">20.7 Million</span> Votes Mandate through the <span class="rhgi-key-metric-gold">15/15</span> Superior Support Model (<span class="rhgi-key-metric-gold">15/15 SSMP</span>).</p>
             <p class="rhgi-brand-proprietary">Powered by the 8R Stealth Paradigm Convergence and its Determinants. Convergence and Determinant Day: January 16th, 2027.</p>
+            <p class="rhgi-brand-elections">Presidential Primaries: April 23, 2026 | Presidential Election: Saturday, January 16th, 2027.</p>
+            <div class="rhgi-brand-validation" role="status" aria-label="Digital Validation of the RHGI Policy Document">
+              <span class="rhgi-brand-validation-inner">Digital Validation of the RHGI Policy Document</span>
+            </div>
           </div>
         </section>
 
@@ -2221,7 +2332,7 @@
               <div class="rhgi-hub-pillar-col">
                 <div class="rhgi-20m-pillar-wrap" id="rhgi-20mPillar" role="img" aria-label="National logistics budget deployment progress">
                   <svg viewBox="0 0 80 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-                    <rect x="12" y="8" width="56" height="176" rx="10" fill="#1a2332" opacity="0.95"/>
+                    <rect x="12" y="8" width="56" height="176" rx="10" fill="#0c2048" opacity="0.95"/>
                     <rect id="rhgi-pillar-fill" x="16" y="180" width="48" height="0" rx="8" fill="#3d5a4a"/>
                   </svg>
                 </div>
@@ -2511,7 +2622,7 @@
     </div>
   </div>
 
-  <p class="rhgi-force51-watermark" aria-hidden="true">Architect: Dr. Sa&rsquo;ad Jaafaru</p>
+  <p class="rhgi-force51-watermark rhgi-watermark-sovereign" aria-hidden="true">Architect: Dr. Sa&rsquo;ad Jaafaru</p>
 
   <script>
 /* RHGI-IGNITION-52 — updateSovereignClocks · triple ignition · rhgi-glide (all inline) */
