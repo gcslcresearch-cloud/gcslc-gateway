@@ -129,6 +129,12 @@ SOVEREIGN_MISC_PCT = 0.15
 SOVEREIGN_CONTINGENCY_PCT = 0.10
 # RHGI video brief — sovereign headline (₦108.96B); line-model arithmetic shown in UI.
 SOVEREIGN_BUDGET_MANDATE_NGN = 108_960_000_000
+# Tranche 1 — Nigerian scale (sums to SOVEREIGN_BUDGET_MANDATE_NGN; all figures in ₦).
+SOVEREIGN_TRANCHE_CANVASSERS_NGN = 8_640_000_000
+SOVEREIGN_TRANCHE_LOGISTICS_NGN = 86_320_000_000
+SOVEREIGN_TRANCHE_CONTINGENCY_NGN = 14_000_000_000
+KADUNA_HARVEST_META_JSON = os.path.join(_ROOT_DIR, ".kaduna_harvest_meta.json")
+KADUNA_AUDIT_FEED_CSV = os.path.join(_ROOT_DIR, ".kaduna_audit_feed.csv")
 # Deep Navy → metallic gold — 774 LGA winning-margin map.
 DEEP_NAVY_SAFE = "#152a45"
 METALLIC_GOLD_TARGET = METALLIC_GOLD
@@ -629,8 +635,8 @@ def load_df() -> pd.DataFrame:
     return df
 
 
-def apply_turnout_lift(df: pd.DataFrame, lift_pct: int) -> pd.DataFrame:
-    """Scale 2027 vote totals by scientific turnout lift (1%–15%)."""
+def apply_turnout_lift(df: pd.DataFrame, lift_pct: float) -> pd.DataFrame:
+    """Scale 2027 vote totals by scientific turnout lift (1%–15%, fractional allowed)."""
     m = 1.0 + float(lift_pct) / 100.0
     out = df.copy()
     for c in ["apc_2027", "pdp_2027", "lp_2027", "adc_2027"]:
@@ -835,6 +841,111 @@ def build_k3_nw_triangle_trace() -> go.Scattermapbox:
     )
 
 
+def read_kaduna_harvest_meta() -> Optional[dict]:
+    if not os.path.isfile(KADUNA_HARVEST_META_JSON):
+        return None
+    try:
+        with open(KADUNA_HARVEST_META_JSON, encoding="utf-8") as f:
+            return json.load(f)
+    except (OSError, json.JSONDecodeError):
+        return None
+
+
+def scientific_turnout_lift_applied(slider_pct: int, kaduna_canvassed: int) -> float:
+    """Scale scientific turnout lift by Kaduna harvest depth (Suleiman anchor)."""
+    if kaduna_canvassed <= 0:
+        return float(slider_pct)
+    scale = min(1.0, float(kaduna_canvassed) / float(max(KADUNA_SOVEREIGN_RECORD_ANCHOR, 1)))
+    v = float(slider_pct) * scale
+    return max(1.0, min(15.0, v))
+
+
+def build_kaduna_voter_cien_rows(df_national: pd.DataFrame) -> Optional[list[dict]]:
+    """Real voter / PU-ID verification rows from 23-LGA harvest (audit feed sample)."""
+    if not os.path.isfile(KADUNA_AUDIT_FEED_CSV):
+        return None
+    try:
+        aud = pd.read_csv(KADUNA_AUDIT_FEED_CSV)
+    except OSError:
+        return None
+    if aud.empty:
+        return None
+    sub = df_national.loc[df_national["state"] == "Kaduna", ["lga", "canvasser_ratio"]].copy()
+    sub["_lk"] = sub["lga"].astype(str).str.strip().str.lower()
+    ratio_by = sub.drop_duplicates("_lk", keep="first").set_index("_lk")["canvasser_ratio"].to_dict()
+    rows: list[dict] = []
+    for _, r in aud.iterrows():
+        lk = str(r.get("lga", "")).strip().lower()
+        cr = float(ratio_by.get(lk, 0.0))
+        la, lo = _lga_lat_lon("Kaduna", str(r.get("lga", "")))
+        st_lab = str(r.get("verification_status", "PENDING"))
+        vf = bool(r["verified"]) if "verified" in aud.columns else st_lab.upper() == "VERIFIED"
+        m = df_national.loc[
+            (df_national["state"] == "Kaduna")
+            & (df_national["lga"].astype(str).str.strip().str.lower() == lk)
+        ]
+        canv = int(m["canvassers"].iloc[0]) if len(m) else 0
+        fuel = int(round(float(canv) * float(CANVASSER_BUDGET_ANCHOR_NGN)))
+        rows.append(
+            {
+                "state": "Kaduna",
+                "lga": str(r.get("lga", "")),
+                "voter_name": str(r.get("voter_name", ""))[:80],
+                "pu_id": str(r.get("pu_id", ""))[:40],
+                "status": st_lab,
+                "verified": vf,
+                "swat_15_15": cr >= 15.0,
+                "zone": "North West",
+                "lat": la,
+                "lon": lo,
+                "logistics_fuel_ngn": fuel,
+            }
+        )
+    return rows
+
+
+def build_kaduna_footer_ticker_segments(df_national: pd.DataFrame, meta: Optional[dict]) -> list[str]:
+    """Sovereign footer marquee: Kaduna verification + ₦ logistics fuel (23 LGAs)."""
+    segs: list[str] = []
+    if not meta:
+        return segs
+    n = int(meta.get("canvassed_rows", 0) or 0)
+    if n <= 0:
+        return segs
+    segs.append(
+        f"KADUNA SUPREMACY HARVEST — {n:,} canvassed records (₦{CANVASSER_BUDGET_ANCHOR_NGN:,} canvasser anchor) · "
+        f"{int(meta.get('lga_count', 23))} LGAs merged · sovereign budget tranche ₦{SOVEREIGN_BUDGET_MANDATE_NGN / 1e9:.2f}B (all NGN)."
+    )
+    kd = df_national.loc[df_national["state"] == "Kaduna", ["lga", "canvassers"]].copy()
+    kd["_lk"] = kd["lga"].astype(str).str.strip().str.lower()
+    for _, row in kd.iterrows():
+        fuel = int(round(float(row["canvassers"]) * float(CANVASSER_BUDGET_ANCHOR_NGN)))
+        segs.append(
+            f"₦ LOGISTICS NODE · {row['lga']} · corridor fuel ₦{fuel:,} (@ ₦{CANVASSER_BUDGET_ANCHOR_NGN:,} × {int(row['canvassers'])} canvassers)"
+        )
+    if not os.path.isfile(KADUNA_AUDIT_FEED_CSV):
+        return segs
+    try:
+        samp = pd.read_csv(KADUNA_AUDIT_FEED_CSV).head(120)
+    except OSError:
+        return segs
+    for _, r in samp.iterrows():
+        lk = str(r.get("lga", "")).strip().lower()
+        m = df_national.loc[
+            (df_national["state"] == "Kaduna")
+            & (df_national["lga"].astype(str).str.strip().str.lower() == lk)
+        ]
+        canv = int(m["canvassers"].iloc[0]) if len(m) else 0
+        fuel = int(round(float(canv) * float(CANVASSER_BUDGET_ANCHOR_NGN)))
+        vn = str(r.get("voter_name", ""))[:28].strip()
+        pid = str(r.get("pu_id", ""))[:16]
+        stt = str(r.get("verification_status", ""))
+        segs.append(
+            f"KADUNA AUDIT · {r.get('lga', '')} · {vn} · PU-ID {pid} · {stt} · ₦ corridor reserve ₦{fuel:,}"
+        )
+    return segs
+
+
 def build_cien_audit_rows(dff: pd.DataFrame) -> list[dict]:
     """K3 priority: North West corridor first, then remaining zones; deterministic CIEN status."""
     hmap = build_lga_heatmap_df(dff)
@@ -973,6 +1084,9 @@ def build_lga_winning_margin_figure(
 
 
 df = load_df()
+_k_harvest_meta = read_kaduna_harvest_meta()
+KADUNA_CANVASSED_ROWS = int(_k_harvest_meta["canvassed_rows"]) if _k_harvest_meta else 0
+KADUNA_REGISTERED_ELECTORATE = int(df.loc[df["state"] == "Kaduna", "registered_voters"].sum())
 if "decider_facilitator_radio" not in st.session_state:
     st.session_state.decider_facilitator_radio = SULEIMAN_DECIDER_LABEL
 if "_decider_kaduna_bootstrapped" not in st.session_state:
@@ -2280,6 +2394,28 @@ st.markdown(
     div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)):not(:has(> div:nth-child(9))) button[kind="primary"] {
       pointer-events: auto !important;
     }
+    .rhgi-kaduna-feed-shell {
+      overflow: hidden;
+      max-height: 200px;
+      border: 1px solid rgba(212, 175, 55, 0.45);
+      border-radius: 12px;
+      background: rgba(0, 0, 128, 0.38);
+      margin: 8px 0 12px 0;
+    }
+    .rhgi-kaduna-feed-marquee {
+      display: flex;
+      flex-direction: column;
+      animation: rhgiSlowRoll linear infinite;
+    }
+    .kaduna-feed-line {
+      font-family: Goldman, sans-serif;
+      font-size: 0.76rem;
+      color: #ffffff;
+      padding: 5px 10px;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.12);
+    }
+    .kaduna-feed-puid { color: #7fdbff; font-weight: 700; }
+    .kaduna-feed-ngn { color: #D4AF37; font-weight: 700; }
     .rhgi-lga-scroll-outer {
       overflow: hidden;
       max-height: 58vh;
@@ -2706,12 +2842,15 @@ with st.sidebar:
     st.subheader("Sovereign Budget Engine (Tranche 1)")
     st.metric(
         "Global Logistics Fuel:",
-        "₦108.96B",
-        help="Tranche 1 anchor: ₦108,961,000,000",
+        f"₦{SOVEREIGN_BUDGET_MANDATE_NGN / 1e9:.2f}B",
+        help=f"Tranche 1 — Nigeria: ₦{SOVEREIGN_BUDGET_MANDATE_NGN:,} (all figures NGN, not USD).",
     )
     st.metric("Efficiency Gauge", "1:15 Canvasser Ratio")
     st.markdown(
-        "₦8.64B (Canvassers) + ₦86.32B (Logistics) + ₦14B (Contingency)"
+        f"₦{SOVEREIGN_TRANCHE_CANVASSERS_NGN / 1e9:.2f}B (Canvassers) + "
+        f"₦{SOVEREIGN_TRANCHE_LOGISTICS_NGN / 1e9:.2f}B (Logistics) + "
+        f"₦{SOVEREIGN_TRANCHE_CONTINGENCY_NGN / 1e9:.2f}B (Contingency) → "
+        f"₦{(SOVEREIGN_TRANCHE_CANVASSERS_NGN + SOVEREIGN_TRANCHE_LOGISTICS_NGN + SOVEREIGN_TRANCHE_CONTINGENCY_NGN) / 1e9:.2f}B mandate."
     )
     turnout_lift = st.slider(
         "Scientific turnout lift (%)",
@@ -2721,7 +2860,8 @@ with st.sidebar:
         key="scientific_turnout_lift_pct",
         help="Increases projected 2027 vote totals across all parties proportionally. Uses its own session key so it does not collide with the Sovereign Notepad form.",
     )
-    _dff_yield_sidebar = apply_turnout_lift(df, turnout_lift)
+    _science_lift_applied = scientific_turnout_lift_applied(turnout_lift, KADUNA_CANVASSED_ROWS)
+    _dff_yield_sidebar = apply_turnout_lift(df, _science_lift_applied)
     _projected_lifted_nat = int(_dff_yield_sidebar["projected_total"].sum())
     _anchor_m = NATIONAL_VOTE_TARGET / 1_000_000.0
     _projected_m = _projected_lifted_nat / 1_000_000.0
@@ -2732,9 +2872,16 @@ with st.sidebar:
         delta=f"{_delta_vs_anchor / 1_000_000.0:+.1f}M projected delta",
         help=(
             f"Anchor: {NATIONAL_VOTE_TARGET:,} sovereign mandate baseline. "
-            f"Projected yield at +{turnout_lift}% scientific turnout lift: {_projected_lifted_nat:,}."
+            f"Projected yield at +{_science_lift_applied:.2f}% applied scientific turnout lift "
+            f"(slider {turnout_lift}%, scaled by Kaduna harvest {KADUNA_CANVASSED_ROWS:,} / "
+            f"{KADUNA_SOVEREIGN_RECORD_ANCHOR:,} Suleiman anchor): {_projected_lifted_nat:,}."
         ),
     )
+    if KADUNA_CANVASSED_ROWS > 0:
+        st.caption(
+            f"Kaduna harvest-linked lift: **{_science_lift_applied:.2f}%** applied (₦-scale controls). "
+            f"**{KADUNA_CANVASSED_ROWS:,}** canvassed rows / **{KADUNA_REGISTERED_ELECTORATE:,}** model Kaduna electorate."
+        )
     st.caption("PVC & turnout rates are forensic anchors per LGA in data_engine.")
     st.markdown(
         f'<p class="rhgi-forensic-baseline-line">Baseline structure: {POLLING_UNITS_BASELINE:,} PUs · '
@@ -2783,15 +2930,22 @@ with st.sidebar:
             '<p class="rhgi-sidebar-cat rhgi-sidebar-cat--outreach">Category 3: Outreach Command</p>',
             unsafe_allow_html=True,
         )
-        default_outreach_velocity_pct = 46.63
-        pu_messages_sent = int(
-            st.session_state.get(
-                "pu_messages_sent",
-                int(round((default_outreach_velocity_pct / 100.0) * PU_TOTAL)),
-            )
+        default_outreach_velocity_pct = (
+            100.0 * float(KADUNA_CANVASSED_ROWS) / float(max(KADUNA_REGISTERED_ELECTORATE, 1))
+            if KADUNA_CANVASSED_ROWS > 0
+            else 46.63
         )
+        _default_sent = (
+            KADUNA_CANVASSED_ROWS
+            if KADUNA_CANVASSED_ROWS > 0
+            else int(round((46.63 / 100.0) * PU_TOTAL))
+        )
+        pu_messages_sent = int(st.session_state.get("pu_messages_sent", _default_sent))
         st.session_state["pu_messages_sent"] = pu_messages_sent
-        velocity_pct = 100.0 * float(pu_messages_sent) / float(PU_TOTAL)
+        if KADUNA_CANVASSED_ROWS > 0:
+            velocity_pct = 100.0 * float(pu_messages_sent) / float(max(KADUNA_REGISTERED_ELECTORATE, 1))
+        else:
+            velocity_pct = 100.0 * float(pu_messages_sent) / float(PU_TOTAL)
 
         uploaded_img11 = st.file_uploader(
             "Load PU Reminder CSV payload (Image 11)",
@@ -2815,10 +2969,16 @@ with st.sidebar:
                 st.error(f"Failed to load Image 11 CSV: {e}")
 
         st.metric("Outreach Velocity", f"{velocity_pct:.2f}% coverage")
+        _track_denom = KADUNA_REGISTERED_ELECTORATE if KADUNA_CANVASSED_ROWS > 0 else PU_TOTAL
+        _track_lbl = (
+            "Kaduna electorate canvass (model register)"
+            if KADUNA_CANVASSED_ROWS > 0
+            else "National PU grid (176,846)"
+        )
         st.metric(
             "SMS/WhatsApp Tracker",
-            f"{pu_messages_sent:,} / {PU_TOTAL:,}",
-            delta="Direct PU messages sent",
+            f"{pu_messages_sent:,} / {_track_denom:,}",
+            delta=_track_lbl,
         )
         if st.button("PUSH PU REMINDERS", use_container_width=True, key="push_pu_reminders_btn"):
             if isinstance(st.session_state.get("pu_payload_image11"), pd.DataFrame):
@@ -3066,7 +3226,9 @@ with st.sidebar:
         if _bad:
             st.warning("\n".join(_bad))
 
-dff = apply_turnout_lift(df, turnout_lift)
+_turnout_slider_val = int(st.session_state.get("scientific_turnout_lift_pct", 15))
+_science_lift_main = scientific_turnout_lift_applied(_turnout_slider_val, KADUNA_CANVASSED_ROWS)
+dff = apply_turnout_lift(df, _science_lift_main)
 dff_hub = filter_by_corridor(dff, st.session_state.get("dg_corridor"))
 states_25, fct_validated, constitutional_ok = constitutional_sentinel(dff)
 fct_pct = fct_apc_percent(dff)
@@ -3080,7 +3242,8 @@ remittance_gap = NATIONAL_VOTE_TARGET - PROJECTED_TOTAL
 abuja_strobe = fct_pct < 25.0
 total_winning_margin = float(dff_hub["winning_margin"].sum())
 
-_cien_audit_rows = build_cien_audit_rows(dff_hub)
+_k_cien = build_kaduna_voter_cien_rows(df)
+_cien_audit_rows = _k_cien if _k_cien else build_cien_audit_rows(dff_hub)
 st.session_state._cien_rows_full = _cien_audit_rows
 _heritage_layer_df, _stability_heat_df, _infra_active_states = build_heritage_spine_layers()
 
@@ -3093,8 +3256,40 @@ with st.sidebar:
             unsafe_allow_html=True,
         )
         st.caption(
-            "Swat-to-Grant ticker: 1 LGA / 3.0s · K3 Triangle priority · Swat = 15/15 activation threshold."
+            "Kaduna 23-LGA harvest: live PU-ID verification + ₦ corridor logistics (sample scroll). "
+            "Swat-to-Grant: 1 row / 3.0s · Swat = 15/15 activation threshold."
         )
+        _kaduna_marq_lines: list[str] = []
+        if os.path.isfile(KADUNA_AUDIT_FEED_CSV):
+            try:
+                _kad_audit_df = pd.read_csv(KADUNA_AUDIT_FEED_CSV)
+                for _, _kr in _kad_audit_df.iterrows():
+                    _lk = str(_kr.get("lga", "")).strip().lower()
+                    _m = df.loc[
+                        (df["state"] == "Kaduna")
+                        & (df["lga"].astype(str).str.strip().str.lower() == _lk)
+                    ]
+                    _canv = int(_m["canvassers"].iloc[0]) if len(_m) else 0
+                    _fuel = int(round(float(_canv) * float(CANVASSER_BUDGET_ANCHOR_NGN)))
+                    _vn = html.escape(str(_kr.get("voter_name", ""))[:40])
+                    _lg = html.escape(str(_kr.get("lga", "")))
+                    _pid = html.escape(str(_kr.get("pu_id", ""))[:20])
+                    _st = html.escape(str(_kr.get("verification_status", "")))
+                    _kaduna_marq_lines.append(
+                        f'<div class="kaduna-feed-line">{_vn} · {_lg} · '
+                        f'<span class="kaduna-feed-puid">PU-ID {_pid}</span> · {_st} · '
+                        f'<span class="kaduna-feed-ngn">₦{_fuel:,}</span></div>'
+                    )
+            except OSError:
+                pass
+        if _kaduna_marq_lines:
+            _kdur = max(120, min(720, len(_kaduna_marq_lines) * 3))
+            _kad_inner = "".join(_kaduna_marq_lines)
+            st.markdown(
+                f'<div class="rhgi-kaduna-feed-shell"><div class="rhgi-kaduna-feed-marquee" '
+                f'style="animation-duration:{_kdur}s;">{_kad_inner}{_kad_inner}</div></div>',
+                unsafe_allow_html=True,
+            )
 
         def _cien_sidebar_pulse_inner() -> None:
             rows = st.session_state.get("_cien_rows_full") or []
@@ -3125,11 +3320,22 @@ with st.sidebar:
                     f'<span style="{_n_style}background:transparent;color:#ffffff;'
                     'border:1px solid rgba(255,255,255,0.75);">{_n}</span>'
                 )
+            if r.get("pu_id"):
+                _fuel_n = int(r.get("logistics_fuel_ngn") or 0)
+                _line = (
+                    f'{html.escape(str(r.get("voter_name", r["lga"])))} · {html.escape(r["lga"])} · '
+                    f'<span style="color:#7fdbff;font-weight:700;">PU-ID {html.escape(str(r["pu_id"]))}</span> · '
+                    f'<span style="color:#FFFFFF;font-weight:700;">{html.escape(r["status"])}</span> · '
+                    f'<span style="color:#D4AF37;">₦{_fuel_n:,}</span> logistics'
+                )
+            else:
+                _line = (
+                    f'{html.escape(r["lga"])} : {html.escape(r["state"])} : '
+                    f'<span style="color:#FFFFFF;font-weight:700;">{html.escape(r["status"])}</span>'
+                )
             st.markdown(
                 f'<div style="font-family:Goldman,sans-serif;font-size:0.88rem;line-height:1.5;color:#ffffff;">'
-                f"{_n_html}"
-                f'<span style="color:#ffffff;">{html.escape(r["lga"])} : {html.escape(r["state"])} : '
-                f'<span style="color:#FFFFFF;font-weight:700;">{html.escape(r["status"])}</span></span></div>',
+                f"{_n_html}<span style=\"color:#ffffff;\">{_line}</span></div>",
                 unsafe_allow_html=True,
             )
             if r.get("swat_15_15"):
@@ -3727,10 +3933,12 @@ _resource_vector_advice = (
 _sovereign_ticker_segments = [
     "20.7M MANDATE ZERO-HOUR: SATURDAY 16 JANUARY 2027 (WAT) — ELECTION ANCHOR LOCKED.",
     "GENERAL ELECTION DATE LOCK: SATURDAY 16 JANUARY 2027 (WAT) — SOVEREIGN TICKER ANCHOR.",
+    f"SOVEREIGN BUDGET ENGINE — ₦{SOVEREIGN_BUDGET_MANDATE_NGN / 1e9:.2f}B TRANCHE 1 (ALL NGN; CANVASSERS ₦{SOVEREIGN_TRANCHE_CANVASSERS_NGN / 1e9:.2f}B + LOGISTICS ₦{SOVEREIGN_TRANCHE_LOGISTICS_NGN / 1e9:.2f}B + CONTINGENCY ₦{SOVEREIGN_TRANCHE_CONTINGENCY_NGN / 1e9:.2f}B).",
     "OIL IS THE PAST. YOUR SKILLS ARE THE NEW OIL: Powering the Non-Oil Future.",
     "YOUR VOTE IS A DIGITAL RECEIPT: The Forensic Vault is Open and Synced.",
     "WE AREN'T JUST VOTING. WE ARE RE-ENGINEERING: The 8R Paradigm in Action.",
 ]
+_sovereign_ticker_segments = build_kaduna_footer_ticker_segments(df, _k_harvest_meta) + _sovereign_ticker_segments
 _sovereign_ticker_text = "  ✦  ".join(_sovereign_ticker_segments)
 _sovereign_ticker_html = (
     "<div class='rhgi-sovereign-marquee-wrap'>"

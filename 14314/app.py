@@ -126,7 +126,12 @@ NATIONAL_VOTE_TARGET = 20_709_668
 PU_TOTAL = POLLING_UNITS_BASELINE
 HARVEST_FOOD_INFLATION_PCT = 12.12
 HARVEST_GROWTH_PCT = 4.4
-HARVEST_RESERVES_BN_USD = 50.0
+# Harvest trendline — external reserves as ₦-scale (trillions equivalent @ brief FX; all UI NGN).
+HARVEST_RESERVES_FX_NGN_PER_USD = 1350.0
+HARVEST_RESERVES_USD_BN_SERIES = [46.0, 47.5, 49.2, 50.0]
+HARVEST_RESERVES_NGN_TRN_SERIES = [
+    round(x * HARVEST_RESERVES_FX_NGN_PER_USD / 1000.0, 2) for x in HARVEST_RESERVES_USD_BN_SERIES
+]
 # Drill-down order: abbrev → full zone name (matches dff["zone"]).
 CORRIDOR_NODES = (
     ("NW", "North West"),
@@ -4085,11 +4090,14 @@ with tab_global:
         st.plotly_chart(fig_zone, use_container_width=True)
 
     _gold_heading("Harvest Trendline")
-    st.caption("Food Inflation (12.12%) vs Growth (4.4%) vs Reserves ($50B+).")
+    st.caption(
+        f"Food Inflation (12.12%) vs Growth (4.4%) vs External reserves (₦ trillions equiv. @ ₦{HARVEST_RESERVES_FX_NGN_PER_USD:,.0f}/$)."
+    )
     st.markdown(
         "<div class='rhgi-prism-narrative-frame'>"
         "CATEGORY 1 NARRATIVE: Harvest Trendline anchors Food Inflation (12.12%) versus Growth (4.4%) "
-        "and reserves ($50B+), keeping the mandate resilient under price pressure."
+        f"and external reserves on a Nigerian naira scale (₦ trillions equivalent @ ₦{HARVEST_RESERVES_FX_NGN_PER_USD:,.0f}/$), "
+        "keeping the mandate resilient under price pressure."
         "</div>",
         unsafe_allow_html=True,
     )
@@ -4098,7 +4106,7 @@ with tab_global:
             "Epoch": ["Q1", "Q2", "Q3", "Q4"],
             "Food Inflation (%)": [12.12, 12.45, 12.20, HARVEST_FOOD_INFLATION_PCT],
             "Growth (%)": [3.80, 4.00, 4.20, HARVEST_GROWTH_PCT],
-            "Reserves (USD Bn)": [46.0, 47.5, 49.2, HARVEST_RESERVES_BN_USD],
+            "Reserves (₦ Tn equiv.)": HARVEST_RESERVES_NGN_TRN_SERIES,
         }
     )
     fig_harvest = go.Figure()
@@ -4125,9 +4133,9 @@ with tab_global:
     fig_harvest.add_trace(
         go.Scatter(
             x=harvest["Epoch"],
-            y=harvest["Reserves (USD Bn)"],
+            y=harvest["Reserves (₦ Tn equiv.)"],
             mode="lines+markers",
-            name="Reserves ($B+)",
+            name="Reserves (₦ Tn equiv.)",
             yaxis="y2",
             line=dict(color="#b8962e", width=2),
             marker=dict(size=7, color="#b8962e"),
@@ -4162,7 +4170,10 @@ with tab_global:
             linecolor="rgba(255,255,255,0.4)",
         ),
         yaxis2=dict(
-            title=dict(text="Reserves (USD Bn)", font=dict(family="Goldman, sans-serif", color="#ffffff", size=12)),
+            title=dict(
+                text="Reserves (₦ Tn equiv.)",
+                font=dict(family="Goldman, sans-serif", color="#ffffff", size=12),
+            ),
             overlaying="y",
             side="right",
             showgrid=False,
