@@ -1028,16 +1028,20 @@ st.markdown(
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-    /* Anti-Blue Strike — strip default Streamlit / BaseWeb blues */
-    html, body { background: #000080 !important; }
+    /* FORCE-188 — Metallic Deep Navy shell (matches 15-15 RHGI standalone) */
+    html, body {
+      background: linear-gradient(165deg, #000033 0%, #00004d 42%, #000066 100%) !important;
+      background-attachment: fixed !important;
+    }
     [data-testid="stAppViewContainer"], [data-testid="stAppViewContainer"] > .main {
-      background: #000080 !important;
+      background: linear-gradient(165deg, #000033 0%, #00004d 42%, #000066 100%) !important;
+      background-attachment: fixed !important;
     }
     [data-testid="stHeader"], header[data-testid="stHeader"] {
       background: rgba(0, 0, 128, 0.97) !important;
       border-bottom: 1px solid rgba(212, 175, 55, 0.25) !important;
     }
-    [data-testid="stDecoration"] { background: #000080 !important; }
+    [data-testid="stDecoration"] { background: #000033 !important; }
     [data-testid="stToolbar"] { background: transparent !important; }
     [data-testid="stSidebarNav"] { background: transparent !important; }
     div[data-testid="stVerticalBlockBorderWrapper"] { border-color: rgba(212,175,55,0.2) !important; }
@@ -1066,30 +1070,30 @@ st.markdown(
     [data-testid="stAlert"] { color: var(--stark-white) !important; font-family: 'Goldman', sans-serif !important; }
     a, a:visited { color: var(--metallic-gold) !important; }
     a:hover { color: var(--metallic-gold) !important; }
-    iframe { background: #000080 !important; }
+    iframe { background: linear-gradient(165deg, #000033 0%, #000066 100%) !important; }
     /* Kill residual Streamlit / BaseWeb light surfaces */
     [data-testid="stVerticalBlock"] > div,
     [data-testid="stVerticalBlockBorderWrapper"] > div { background-color: transparent !important; }
     div[data-baseweb="select"] > div,
     [data-baseweb="popover"],
     ul[data-testid="stSelectboxVirtualDropdown"],
-    [data-baseweb="menu"] { background-color: #000080 !important; color: var(--stark-white) !important; }
+    [data-baseweb="menu"] { background-color: #000044 !important; color: var(--stark-white) !important; }
     [data-baseweb="menu"] li { font-family: 'Goldman', sans-serif !important; color: var(--stark-white) !important; }
     .stCodeBlock, [data-testid="stCode"] { background: rgba(0,0,128,0.5) !important; }
     /* No white cards: selectbox, popover, expanders, columns */
     [data-testid="stSelectbox"] > div,
     [data-testid="stSelectbox"] [data-baseweb="select"] > div {
-      background-color: #000080 !important;
+      background-color: #000044 !important;
       color: var(--stark-white) !important;
       border-color: rgba(212,175,55,0.35) !important;
     }
-    [data-testid="stExpander"] details { background: #000080 !important; border: 1px solid rgba(212,175,55,0.25) !important; }
+    [data-testid="stExpander"] details { background: #000044 !important; border: 1px solid rgba(212,175,55,0.25) !important; }
     [data-testid="stExpander"] summary { background: rgba(0,0,128,0.5) !important; color: var(--stark-white) !important; }
     [data-testid="stVerticalBlock"] > div { background-color: transparent !important; }
     div[data-testid="column"] > div { background-color: transparent !important; }
     .stApp {
-      background-color: #000080 !important;
-      background-image: none !important;
+      background: linear-gradient(165deg, #000033 0%, #00004d 42%, #000066 100%) !important;
+      background-attachment: fixed !important;
       color: var(--stark-white) !important;
       font-family: 'Goldman', sans-serif !important;
       user-select: none;
@@ -1818,7 +1822,8 @@ st.markdown(
       z-index: 2 !important;
       font-family: 'Goldman', sans-serif !important;
       color: var(--stark-white) !important;
-      background: #000080 !important;
+      background: linear-gradient(165deg, #000033 0%, #00004d 42%, #000066 100%) !important;
+      background-attachment: fixed !important;
     }
     section.main [data-testid="stMarkdownContainer"],
     [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] {
