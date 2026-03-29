@@ -1,4 +1,4 @@
-# Sovereign Gateway — engine listens strictly on 8505 (14314-EXECUTIVE-LOAD-142).
+# Sovereign Gateway — Prompt 194 / Convener: strict port 8505 only.
 [server]
 port = 8505
-# Prefer explicit CLI: python3 -m streamlit run 14314/app.py --server.port 8505
+# CLI: streamlit run app.py --server.port 8505 (from 14314/)

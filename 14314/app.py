@@ -1,5 +1,10 @@
 YELLOW_GOLD = "#D4AF37"
 
+import os
+
+# Prompt 194 — Convener: strict port 8505 (see 14314/.streamlit/config.toml).
+os.environ.setdefault("STREAMLIT_SERVER_PORT", "8505")
+
 import hashlib
 import html
 from typing import Optional
@@ -13,7 +18,6 @@ from datetime import datetime, time, timedelta, timezone
 import json
 import urllib.error
 import urllib.request
-import os
 import base64
 from urllib.parse import quote
 
@@ -1833,24 +1837,68 @@ st.markdown(
       box-shadow: none !important;
     }
     div[data-testid="stAppViewContainer"] > section.main { position: relative; z-index: 1; }
-    .rhgi-brand-title {
-      font-family: 'Goldman', system-ui, sans-serif !important;
-      font-size: clamp(1.85rem, 4.2vw, 2.65rem);
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      color: var(--metallic-gold) !important;
-      -webkit-text-fill-color: var(--metallic-gold);
-      text-shadow:
-        0 0 20px rgba(212, 175, 55, 0.55),
-        0 0 40px rgba(183, 110, 121, 0.35);
-      text-align: center;
-      margin: 0.35rem 0 0.65rem 0;
-      line-height: 1.2;
-      animation: rhgiGoldmanShimmer 3.5s ease-in-out infinite;
-    }
     @keyframes rhgiGoldmanShimmer {
       0%, 100% { filter: brightness(1) drop-shadow(0 0 8px rgba(212,175,55,0.4)); }
       50% { filter: brightness(1.12) drop-shadow(0 0 22px rgba(212,175,55,0.75)); }
+    }
+    /* PROMPT-194 — pearl/gold live shimmer on identity headers; cyan heart; gold mandate pulse */
+    .rhgi-brand-h1, .rhgi-brand-dg-st {
+      font-family: 'Goldman', system-ui, sans-serif !important;
+      text-align: center;
+      margin: 0.35rem 0 0.15rem 0;
+      line-height: 1.2;
+      background: linear-gradient(110deg, #f8f0e3 0%, #d4af37 22%, #fff8e7 45%, #d4af37 68%, #fff8e7 88%, #f8f0e3 100%);
+      background-size: 220% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent !important;
+      -webkit-text-fill-color: transparent;
+      animation: rhgiHeaderPearlGoldShimmer 3.2s ease-in-out infinite;
+    }
+    .rhgi-brand-h1 {
+      font-size: clamp(1.25rem, 3.2vw, 1.55rem);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+    .rhgi-brand-dg-st {
+      font-size: clamp(1.08rem, 2.8vw, 1.38rem);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.2rem;
+    }
+    @keyframes rhgiHeaderPearlGoldShimmer {
+      0%, 100% { background-position: 0% 50%; filter: brightness(1); }
+      50% { background-position: 100% 50%; filter: brightness(1.08); }
+    }
+    .rhgi-cyan-heart-st {
+      height: 4px;
+      width: min(92vw, 640px);
+      margin: 0.3rem auto 0.55rem auto;
+      border-radius: 999px;
+      background: linear-gradient(90deg, transparent 0%, #00CED1 20%, #00e8e8 50%, #00CED1 80%, transparent 100%);
+      background-size: 200% 100%;
+      box-shadow: 0 0 12px rgba(0, 206, 209, 0.55), 0 0 24px rgba(0, 206, 209, 0.25);
+      animation: rhgiCyanHeartShimmerSt 2.2s ease-in-out infinite;
+    }
+    @keyframes rhgiCyanHeartShimmerSt {
+      0%, 100% { background-position: 0% 50%; opacity: 1; }
+      50% { background-position: 100% 50%; opacity: 0.95; }
+    }
+    .rhgi-mandate-gold {
+      font-family: 'Goldman', system-ui, sans-serif !important;
+      font-size: clamp(1.05rem, 2.6vw, 1.22rem);
+      font-weight: 700;
+      text-align: center;
+      margin: 0.35rem 0;
+      letter-spacing: 0.06em;
+      color: #D4AF37 !important;
+      -webkit-text-fill-color: #D4AF37;
+      text-shadow: 0 0 14px rgba(212, 175, 55, 0.55), 0 0 28px rgba(255, 215, 0, 0.25);
+      animation: rhgiMandateGoldPulseSt 2.2s ease-in-out infinite;
+    }
+    @keyframes rhgiMandateGoldPulseSt {
+      0%, 100% { filter: brightness(1) drop-shadow(0 0 6px rgba(212,175,55,0.4)); transform: scale(1); }
+      50% { filter: brightness(1.15) drop-shadow(0 0 18px rgba(255,215,0,0.65)); transform: scale(1.012); }
     }
     .rhgi-emblem-wrap { text-align: center; margin: 8px 0 12px 0; transform: scale(1.05); }
     .rhgi-emblem {
@@ -3405,8 +3453,11 @@ st.markdown(
           </div>
         </div>
       </div>
-      <h1 class="rhgi-brand-title">OFFICE OF THE DG/RHGI</h1>
-      <p class="rhgi-creed-block">Securing the 20.7M Mandate through Scientific Precision.</p>
+      <p class="rhgi-brand-h1">Renewed Hope Grassroots Initiatives (RHGI)</p>
+      <p class="rhgi-brand-dg-st">Office of the DG</p>
+      <div class="rhgi-cyan-heart-st" aria-hidden="true"></div>
+      <p class="rhgi-mandate-gold">20.7 Million Votes Mandate</p>
+      <p class="rhgi-mandate-gold">15/15 SSMP</p>
       <p class="rhgi-creed-block" style="font-size:0.88rem;color:#00CED1;margin-top:6px;font-weight:700;">Zero-Hour · 16 January 2027 (WAT) — 20.7M mandate execution anchor</p>
       <div class="rhgi-emblem-wrap"><div class="rhgi-emblem">RHGI</div></div>
     </div>

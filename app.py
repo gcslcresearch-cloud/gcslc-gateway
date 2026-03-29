@@ -112,20 +112,129 @@ def get_leak_md():
     current_b = LEAK_BASE_B + LEAK_STEP_B * steps
     return f"**Sovereign Wealth Leakage: The Cost of Delay**  \\n# ${current_b:.2f} B  \\n*cumulative loss · sector moribund*"
 
-CSS = (
-    ":root, body, .gradio-container { background: #050a15 !important; } "
-    ".block, .wrap { background: transparent !important; } "
-    ".header-native, .header-native p { color: #D4AF37 !important; text-align: center; } "
-    ".footer-native, .footer-native p { color: #8fa3bf !important; text-align: center; font-size: 0.9rem; margin-top: 1rem; } "
-    "label { color: #D4AF37 !important; } "
-    ".clock-pulse, .clock-pulse p { color: #D4AF37 !important; font-weight: 600; } "
-    ".ticker-box { color: #D4AF37; font-weight: 600; } "
-    "input, .number input { background: #0a1225 !important; border: 1px solid #D4AF37 !important; color: #e8eef4 !important; } "
-    "table, .dataframe { background: #0a1225 !important; color: #e8eef4 !important; border: 1px solid #D4AF37 !important; } "
-)
+
+def get_rhgi_sovereign_header_html() -> str:
+    """Prompt 196 — RHGI / DG identity + cyan heart + mandate (Gradio HTML)."""
+    return """
+    <div class="rhgi-header-196">
+      <h1 class="rhgi-brand-h1">Renewed Hope Grassroots Initiatives (RHGI)</h1>
+      <p class="rhgi-brand-dg">OFFICE OF THE DG</p>
+      <div class="rhgi-cyan-heart" aria-hidden="true"></div>
+      <p class="rhgi-mandate-line">Securing the 20.7 Million Votes Mandate</p>
+      <p class="rhgi-fusion-sub">GCSLC NRRFC — Nigeria Coal Reserves · 8R Stealth Paradigm</p>
+    </div>
+    """
+
+
+# Prompt 196 — Metallic Deep Navy shell + RHGI shimmer + cyan heart + metallic gold mandate
+CSS = """
+@import url('https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap');
+html, body, #root, [data-testid="gradio-app"], [data-testid="app"] {
+    background: linear-gradient(165deg, #000033 0%, #00004d 42%, #000066 100%) !important;
+    background-attachment: fixed !important;
+    min-height: 100vh;
+}
+.gradio-container {
+    background: linear-gradient(165deg, #000033 0%, #00004d 42%, #000066 100%) !important;
+    background-attachment: fixed !important;
+}
+.main, .container, .wrap, .block { background: transparent !important; color: #f5f0e8 !important; }
+.footer-native, .footer-native p { color: #8fa3bf !important; text-align: center; font-size: 0.9rem; margin-top: 1rem; }
+label { color: #D4AF37 !important; }
+.clock-pulse, .clock-pulse p { color: #D4AF37 !important; font-weight: 600; }
+.ticker-box { color: #D4AF37; font-weight: 600; }
+input, .number input { background: rgba(0, 10, 40, 0.55) !important; border: 1px solid #D4AF37 !important; color: #e8eef4 !important; }
+table, .dataframe { background: rgba(0, 10, 40, 0.45) !important; color: #e8eef4 !important; border: 1px solid #D4AF37 !important; }
+
+@keyframes rhgi-identity-breathe {
+    0%, 100% { opacity: 0.88; }
+    50% { opacity: 1; }
+}
+@keyframes rhgi-brand-dg-shimmer {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+}
+@keyframes rhgi-live-shimmer-gold-pulse {
+    0%, 100% { filter: brightness(1.02) drop-shadow(0 0 0.12rem rgba(255, 248, 240, 0.75)) drop-shadow(0 0 0.45rem rgba(255, 215, 0, 0.4)); }
+    50% { filter: brightness(1.16) drop-shadow(0 0 0.28rem rgba(255, 255, 255, 0.9)) drop-shadow(0 0 0.75rem rgba(255, 215, 0, 0.65)); }
+}
+.rhgi-brand-h1 {
+    font-family: 'Goldman', system-ui, sans-serif !important;
+    font-weight: 700 !important;
+    text-align: center !important;
+    margin: 0 0 8px 0 !important;
+    line-height: 1.25 !important;
+    font-size: clamp(1rem, 2.8vw, 1.35rem) !important;
+    letter-spacing: 0.04em !important;
+    background: linear-gradient(90deg, #f5f0e8 0%, #ffd700 18%, #ffffff 32%, #ffe8b0 48%, #ffd700 62%, #f5f0e8 78%, #ffffff 92%, #f5f0e8 100%) !important;
+    background-size: 300% 100% !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    color: transparent !important;
+    animation: rhgi-brand-dg-shimmer 4.2s linear infinite, rhgi-live-shimmer-gold-pulse 2.4s ease-in-out infinite, rhgi-identity-breathe 3.6s ease-in-out infinite !important;
+}
+.rhgi-brand-dg {
+    font-family: 'Goldman', system-ui, sans-serif !important;
+    font-weight: 700 !important;
+    text-align: center !important;
+    margin: 0 !important;
+    font-size: clamp(0.82rem, 2.2vw, 1.05rem) !important;
+    letter-spacing: 0.12em !important;
+    text-transform: uppercase !important;
+    background: linear-gradient(90deg, #f5f0e8 0%, #ffd700 22%, #ffffff 40%, #ffd700 58%, #fdfaf5 76%, #ffd700 90%, #f5f0e8 100%) !important;
+    background-size: 300% 100% !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    color: transparent !important;
+    animation: rhgi-brand-dg-shimmer 4.2s linear infinite, rhgi-live-shimmer-gold-pulse 2.4s ease-in-out infinite, rhgi-identity-breathe 3.6s ease-in-out infinite !important;
+}
+.rhgi-cyan-heart {
+    width: min(100%, 28rem);
+    height: 4px;
+    margin: 10px auto 12px auto;
+    border-radius: 3px;
+    background: linear-gradient(90deg, transparent 0%, rgba(0, 206, 209, 0.25) 10%, #00CED1 35%, #7fffd4 50%, #00CED1 65%, rgba(0, 206, 209, 0.35) 90%, transparent 100%);
+    background-size: 400% 100%;
+    animation: rhgi-cyan-divider-travel 2s linear infinite, rhgi-cyan-divider-glow 1.35s ease-in-out infinite;
+}
+@keyframes rhgi-cyan-divider-travel {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+}
+@keyframes rhgi-cyan-divider-glow {
+    0%, 100% { filter: brightness(1); box-shadow: 0 0 6px rgba(0, 206, 209, 0.5), 0 0 14px rgba(0, 180, 200, 0.22); }
+    35% { filter: brightness(1.35); box-shadow: 0 0 18px rgba(0, 240, 255, 0.85), 0 0 32px rgba(0, 206, 209, 0.5); }
+    55% { filter: brightness(0.82); box-shadow: 0 0 5px rgba(0, 206, 209, 0.28); }
+    75% { filter: brightness(1.28); box-shadow: 0 0 22px rgba(0, 255, 252, 0.65), 0 0 36px rgba(0, 206, 209, 0.45); }
+}
+@keyframes rhgi-metallic-gold-pulse {
+    0%, 100% { color: #ffd700 !important; text-shadow: 0 0 8px rgba(255, 215, 0, 0.45), 0 0 16px rgba(255, 215, 0, 0.25); filter: brightness(1); }
+    50% { color: #fff8dc !important; text-shadow: 0 0 14px rgba(255, 215, 0, 0.85), 0 0 28px rgba(255, 215, 0, 0.45); filter: brightness(1.12); }
+}
+.rhgi-mandate-line {
+    font-family: 'Goldman', system-ui, sans-serif !important;
+    text-align: center !important;
+    font-weight: 700 !important;
+    font-size: clamp(0.88rem, 2.2vw, 1.05rem) !important;
+    margin: 6px auto 10px auto !important;
+    max-width: 720px !important;
+    line-height: 1.4 !important;
+    color: #ffd700 !important;
+    animation: rhgi-metallic-gold-pulse 2.2s ease-in-out infinite !important;
+}
+.rhgi-fusion-sub {
+    font-family: 'Goldman', system-ui, sans-serif !important;
+    text-align: center !important;
+    font-size: clamp(0.78rem, 1.8vw, 0.92rem) !important;
+    color: rgba(212, 175, 55, 0.85) !important;
+    margin: 0 0 4px 0 !important;
+    letter-spacing: 0.04em !important;
+}
+.rhgi-header-196 { padding: 4px 0 12px 0; }
+"""
 
 with gr.Blocks(css=CSS, title="GCSLC NRRFC Fusion Center") as demo:
-    gr.Markdown("## GCSLC NRRFC — Nigeria Coal Reserves  \n*National Resources Revitalization Fusion Center · 8R Stealth Paradigm*", elem_classes=["header-native"])
+    gr.HTML(value=get_rhgi_sovereign_header_html())
 
     clock_md = gr.Markdown(value=get_utc_time(), elem_classes=["clock-pulse"])
     ticker_md = gr.Markdown(value=get_ticker(), elem_classes=["ticker-box"])
@@ -163,9 +272,4 @@ with gr.Blocks(css=CSS, title="GCSLC NRRFC Fusion Center") as demo:
     demo.load(get_leak_md, None, leak_md, every=60)
 
 if __name__ == "__main__":
-    demo.launch(
-        server_name="127.0.0.1",
-        server_port=7860,
-        share=False,
-        prevent_thread_lock=True,
-    )
+    demo.launch(server_port=8505, inline=False)

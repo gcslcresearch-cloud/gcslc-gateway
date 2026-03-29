@@ -159,6 +159,11 @@ CHAIRMAN_SIGNATURE = "Dr. Sa'ad Jaafaru (Galadiman Ruwan Zazzau), Chairman, GCSL
 
 TITLE_FULL = "Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC - LTD/GTE)"
 
+RHGI_BRAND_H1 = "Renewed Hope Grassroots Initiatives (RHGI)"
+RHGI_BRAND_DG = "OFFICE OF THE DG"
+RHGI_LINE_MANDATE = "20.7 Million Votes Mandate"
+RHGI_LINE_8R = "The 8R Stealth Paradigm Convergence and its Determinants."
+
 HOOK_TEXT = (
     "(We believe everything is powered and anchored by The 8R Stealth Paradigm Convergence and its Determinants. "
     "Let's converge from the human world to the AI/Robotics world for you to understand.)"
@@ -832,25 +837,115 @@ def _agentic_terminal_html() -> str:
 
 # ---- CSS: GCSLC Prestige (custom + medallion, shimmer, watermark, falcon, aura) ----
 CSS = """
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Goldman:wght@400;700&display=swap');
 
-/* --- Prism Frame (CapCut Aesthetic): linear-gradient border + cyan glow --- */
+/* --- GRADIO-193 — RHGI brand lock: Metallic Deep Navy + identity + cyan heart + gold mandate --- */
+html, body, #root, [data-testid="gradio-app"], [data-testid="app"] {
+    background: linear-gradient(165deg, #000033 0%, #00004d 42%, #000066 100%) !important;
+    background-attachment: fixed !important;
+    min-height: 100vh;
+}
 .gradio-container {
-    background: linear-gradient(135deg, #050508 0%, #0a0a18 50%, #050510 100%) !important;
-    border: 2px solid rgba(0, 212, 255, 0.5);
-    box-shadow: 0 0 20px rgba(0, 212, 255, 0.8), inset 0 0 60px rgba(0, 212, 255, 0.03);
+    background: linear-gradient(165deg, #000033 0%, #00004d 42%, #000066 100%) !important;
+    background-attachment: fixed !important;
+    border: 2px solid rgba(0, 206, 209, 0.45) !important;
+    box-shadow: 0 0 24px rgba(0, 206, 209, 0.35), inset 0 0 80px rgba(0, 30, 80, 0.15) !important;
     position: relative;
     transition: box-shadow 0.4s ease, border-color 0.4s ease;
 }
 .gradio-container:hover {
-    border-color: rgba(0, 212, 255, 0.9);
-    box-shadow: 0 0 28px rgba(0, 212, 255, 0.95), inset 0 0 80px rgba(0, 212, 255, 0.06);
+    border-color: rgba(0, 206, 209, 0.75) !important;
+    box-shadow: 0 0 32px rgba(0, 206, 209, 0.5), inset 0 0 90px rgba(0, 40, 100, 0.12) !important;
 }
-.main, .container {
+.main, .container, .wrap, [class*="main"] {
     background-color: transparent !important;
-    color: #e0e0e0 !important;
+    background: transparent !important;
+    color: #f5f0e8 !important;
     font-family: 'Orbitron', sans-serif;
 }
+
+@keyframes rhgi-identity-breathe {
+    0%, 100% { opacity: 0.88; }
+    50% { opacity: 1; }
+}
+@keyframes rhgi-brand-dg-shimmer {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+}
+@keyframes rhgi-live-shimmer-gold-pulse {
+    0%, 100% { filter: brightness(1.02) drop-shadow(0 0 0.12rem rgba(255, 248, 240, 0.75)) drop-shadow(0 0 0.45rem rgba(255, 215, 0, 0.4)); }
+    50% { filter: brightness(1.16) drop-shadow(0 0 0.28rem rgba(255, 255, 255, 0.9)) drop-shadow(0 0 0.75rem rgba(255, 215, 0, 0.65)); }
+}
+.rhgi-brand-h1 {
+    font-family: 'Goldman', 'Orbitron', sans-serif !important;
+    font-weight: 700 !important;
+    text-align: center !important;
+    margin: 0 0 8px 0 !important;
+    line-height: 1.25 !important;
+    font-size: clamp(1rem, 2.8vw, 1.35rem) !important;
+    letter-spacing: 0.04em !important;
+    background: linear-gradient(90deg, #f5f0e8 0%, #ffd700 18%, #ffffff 32%, #ffe8b0 48%, #ffd700 62%, #f5f0e8 78%, #ffffff 92%, #f5f0e8 100%) !important;
+    background-size: 300% 100% !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    color: transparent !important;
+    animation: rhgi-brand-dg-shimmer 4.2s linear infinite, rhgi-live-shimmer-gold-pulse 2.4s ease-in-out infinite, rhgi-identity-breathe 3.6s ease-in-out infinite !important;
+    will-change: background-position, filter, opacity !important;
+}
+.rhgi-brand-dg {
+    font-family: 'Goldman', 'Orbitron', sans-serif !important;
+    font-weight: 700 !important;
+    text-align: center !important;
+    margin: 0 !important;
+    font-size: clamp(0.82rem, 2.2vw, 1.05rem) !important;
+    letter-spacing: 0.12em !important;
+    text-transform: uppercase !important;
+    background: linear-gradient(90deg, #f5f0e8 0%, #ffd700 22%, #ffffff 40%, #ffd700 58%, #fdfaf5 76%, #ffd700 90%, #f5f0e8 100%) !important;
+    background-size: 300% 100% !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    color: transparent !important;
+    animation: rhgi-brand-dg-shimmer 4.2s linear infinite, rhgi-live-shimmer-gold-pulse 2.4s ease-in-out infinite, rhgi-identity-breathe 3.6s ease-in-out infinite !important;
+    will-change: background-position, filter, opacity !important;
+}
+.rhgi-cyan-heart {
+    width: min(100%, 28rem);
+    height: 4px;
+    margin: 10px auto 12px auto;
+    border-radius: 3px;
+    background: linear-gradient(90deg, transparent 0%, rgba(0, 206, 209, 0.25) 10%, #00ced1 35%, #7fffd4 50%, #00ced1 65%, rgba(0, 206, 209, 0.35) 90%, transparent 100%);
+    background-size: 400% 100%;
+    animation: rhgi-cyan-divider-travel 2s linear infinite, rhgi-cyan-divider-glow 1.35s ease-in-out infinite;
+    transform: translateZ(0);
+}
+@keyframes rhgi-cyan-divider-travel {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+}
+@keyframes rhgi-cyan-divider-glow {
+    0%, 100% { filter: brightness(1); box-shadow: 0 0 6px rgba(0, 206, 209, 0.5), 0 0 14px rgba(0, 180, 200, 0.22); }
+    35% { filter: brightness(1.35); box-shadow: 0 0 18px rgba(0, 240, 255, 0.85), 0 0 32px rgba(0, 206, 209, 0.5); }
+    55% { filter: brightness(0.82); box-shadow: 0 0 5px rgba(0, 206, 209, 0.28); }
+    75% { filter: brightness(1.28); box-shadow: 0 0 22px rgba(0, 255, 252, 0.65), 0 0 36px rgba(0, 206, 209, 0.45); }
+}
+@keyframes rhgi-metallic-gold-pulse {
+    0%, 100% { color: #ffd700 !important; text-shadow: 0 0 8px rgba(255, 215, 0, 0.45), 0 0 16px rgba(255, 215, 0, 0.25); filter: brightness(1); }
+    50% { color: #fff8dc !important; text-shadow: 0 0 14px rgba(255, 215, 0, 0.85), 0 0 28px rgba(255, 215, 0, 0.45); filter: brightness(1.12); }
+}
+.rhgi-gold-line {
+    font-family: 'Goldman', 'Orbitron', sans-serif !important;
+    text-align: center !important;
+    font-weight: 700 !important;
+    font-size: 0.92rem !important;
+    margin: 6px auto !important;
+    max-width: 720px !important;
+    line-height: 1.4 !important;
+    color: #ffd700 !important;
+    animation: rhgi-metallic-gold-pulse 2.2s ease-in-out infinite !important;
+}
+.header-area.rhgi-brand-lock { padding-left: 72px; padding-top: 8px; padding-bottom: 4px; }
+
+/* --- Prism Frame (CapCut Aesthetic): linear-gradient border + cyan glow --- */
 
 /* --- Custom GCSLC Prestige: Shimmering Medallion (pulse 3s) --- */
 #medallion, .gcslc-medallion {
@@ -947,7 +1042,6 @@ CSS = """
 .gcslc-medallion svg { width: 100%; height: 100%; display: block; }
 
 .title-shimmer { color: #D4AF37; animation: title-shimmer 2.2s ease-in-out infinite; }
-.header-area { padding-left: 72px; padding-top: 8px; padding-bottom: 12px; }
 .shimmer { animation: title-shimmer 2.2s ease-in-out infinite; color: #D4AF37; }
 .gold-border { border: 2px solid #D4AF37; border-radius: 12px; background: linear-gradient(135deg, #001A35 0%, #000B1E 100%); }
 
@@ -1280,12 +1374,18 @@ with demo:
     # 1. THE MEDALLION — GCSLC gold-pulsing seal at the very top
     gr.HTML('<div id="medallion" class="gcslc-medallion" aria-label="GCSLC Seal">' + _medallion_svg() + "</div>")
     gr.HTML(
-        "<div class='header-area'>"
-        "<h1 class='title-shimmer sovereign-title' style='text-align: center; font-size: 1.1rem; margin: 0 0 6px 0; line-height: 1.3;'>Sovereign Command</h1>"
-        "<p class='title-full' style='text-align: center; font-size: 0.95rem; margin: 0 0 8px 0; color: #D4AF37;'>" + TITLE_FULL + "</p>"
+        "<div class='header-area rhgi-brand-lock'>"
+        "<h1 class='rhgi-brand-h1'>" + html.escape(RHGI_BRAND_H1) + "</h1>"
+        "<p class='rhgi-brand-dg'>" + html.escape(RHGI_BRAND_DG) + "</p>"
+        "<div class='rhgi-cyan-heart' aria-hidden='true'></div>"
+        "<p class='title-full' style='text-align: center; font-size: 0.95rem; margin: 0 0 8px 0; color: #D4AF37;'>" + html.escape(TITLE_FULL) + "</p>"
         "</div>"
     )
-    gr.HTML(f"<p class='hook' style='text-align: center; font-size: 0.92rem; max-width: 700px; margin: 0 auto 20px auto; line-height: 1.45; color: #e8eef4;'>{HOOK_TEXT}</p>")
+    gr.HTML(
+        "<p class='rhgi-gold-line'>" + html.escape(RHGI_LINE_MANDATE) + "</p>"
+        "<p class='rhgi-gold-line'>" + html.escape(RHGI_LINE_8R) + "</p>"
+        "<p class='hook' style='text-align: center; font-size: 0.92rem; max-width: 700px; margin: 0 auto 20px auto; line-height: 1.45; color: #e8eef4;'>" + html.escape(HOOK_TEXT) + "</p>"
+    )
 
     # 5-Minute Heartbeat: commodity data refresh every 300s (gradio.Blocks timer). Glittering Pulse = Hot.
     market_values_out = gr.HTML(value=refresh_commodity_heartbeat(), label="Real-Time Commodity Data")
