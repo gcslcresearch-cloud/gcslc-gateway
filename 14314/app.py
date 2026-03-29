@@ -86,11 +86,11 @@ if "strike_open_index" not in st.session_state:
 # RHGI-SWAT-OPPOSITION-77 — global colors (strict DG / SWAT palette).
 # RHGI-GOLDMAN palette (mirrors :root CSS variables).
 METALLIC_GOLD = YELLOW_GOLD
-NAVY_CSS = "#000033"
+NAVY_CSS = "#000080"
 GOLD = METALLIC_GOLD
 NAVY = NAVY_CSS
 # Deep Prism Navy (video match — RHGI ABSOLUTE RESTORE-39).
-PRISM_NAVY = "#000033"
+PRISM_NAVY = "#000080"
 # RHGI-DG-UNASSAILABLE-MASTER-76 — INEC baseline structure (2023 anchor).
 POLLING_UNITS_BASELINE = 176_846
 WARDS_BASELINE = 8_809
@@ -919,7 +919,7 @@ def build_lga_winning_margin_figure(
         lat=_lga_inner.lat,
         lon=_lga_inner.lon,
         mode="markers",
-        marker=dict(size=_LGA_MARKER_OUTLINE, color="#000033"),
+        marker=dict(size=_LGA_MARKER_OUTLINE, color="#000080"),
         hoverinfo="skip",
         showlegend=False,
     )
@@ -944,7 +944,7 @@ def build_lga_winning_margin_figure(
         coloraxis_colorbar=dict(
             title=dict(text=_cb_title, font=dict(family="Goldman, sans-serif", color=GOLD, size=12)),
             tickfont=dict(family="Goldman, sans-serif", color="#ffffff", size=11),
-            bgcolor="rgba(0,0,51,0.55)",
+            bgcolor="rgba(0,0,128,0.55)",
             bordercolor="rgba(212,175,55,0.35)",
             len=0.72,
         ),
@@ -976,7 +976,7 @@ st.markdown(
     :root {
       --metallic-gold: #D4AF37;
       --rose-gold: #D4AF37;
-      --navy: #000033;
+      --navy: #000080;
       --stark-white: #ffffff;
       --command-box-height: 62px;
       --command-box-radius: 14px;
@@ -1029,25 +1029,25 @@ st.markdown(
       100% { transform: rotate(360deg); }
     }
     /* Anti-Blue Strike — strip default Streamlit / BaseWeb blues */
-    html, body { background: #000033 !important; }
+    html, body { background: #000080 !important; }
     [data-testid="stAppViewContainer"], [data-testid="stAppViewContainer"] > .main {
-      background: #000033 !important;
+      background: #000080 !important;
     }
     [data-testid="stHeader"], header[data-testid="stHeader"] {
-      background: rgba(0, 0, 51, 0.97) !important;
+      background: rgba(0, 0, 128, 0.97) !important;
       border-bottom: 1px solid rgba(212, 175, 55, 0.25) !important;
     }
-    [data-testid="stDecoration"] { background: #000033 !important; }
+    [data-testid="stDecoration"] { background: #000080 !important; }
     [data-testid="stToolbar"] { background: transparent !important; }
     [data-testid="stSidebarNav"] { background: transparent !important; }
     div[data-testid="stVerticalBlockBorderWrapper"] { border-color: rgba(212,175,55,0.2) !important; }
     [data-baseweb="slider"] [role="slider"] { background: var(--metallic-gold) !important; }
     [data-baseweb="slider"] [data-testid="stThumbValue"] { color: var(--metallic-gold) !important; }
-    [data-baseweb="slider"] [style*="background"] { background: rgba(0,0,51,0.6) !important; }
+    [data-baseweb="slider"] [style*="background"] { background: rgba(0,0,128,0.6) !important; }
     [data-testid="stSlider"], [data-testid="stSlider"] > label,
     [data-testid="stSlider"] + div { background: transparent !important; }
     .stMetric, [data-testid="stMetricContainer"], [data-testid="stMetricContainer"] > div {
-      background: rgba(0,0,51,0.55) !important;
+      background: rgba(0,0,128,0.55) !important;
       background-image: none !important;
       border: 1px solid rgba(212,175,55,0.3) !important;
       border-radius: 10px !important;
@@ -1057,7 +1057,7 @@ st.markdown(
     .stMetric [data-testid="stMetricLabel"] { color: var(--metallic-gold) !important; }
     [data-testid="stMetricDelta"] { color: var(--metallic-gold) !important; }
     .stAlert, [data-testid="stNotification"], [data-testid="stAlert"] {
-      background: rgba(0,0,51,0.65) !important;
+      background: rgba(0,0,128,0.65) !important;
       background-image: none !important;
       border: 1px solid rgba(212,175,55,0.35) !important;
       box-shadow: none !important;
@@ -1066,29 +1066,29 @@ st.markdown(
     [data-testid="stAlert"] { color: var(--stark-white) !important; font-family: 'Goldman', sans-serif !important; }
     a, a:visited { color: var(--metallic-gold) !important; }
     a:hover { color: var(--metallic-gold) !important; }
-    iframe { background: #000033 !important; }
+    iframe { background: #000080 !important; }
     /* Kill residual Streamlit / BaseWeb light surfaces */
     [data-testid="stVerticalBlock"] > div,
     [data-testid="stVerticalBlockBorderWrapper"] > div { background-color: transparent !important; }
     div[data-baseweb="select"] > div,
     [data-baseweb="popover"],
     ul[data-testid="stSelectboxVirtualDropdown"],
-    [data-baseweb="menu"] { background-color: #000033 !important; color: var(--stark-white) !important; }
+    [data-baseweb="menu"] { background-color: #000080 !important; color: var(--stark-white) !important; }
     [data-baseweb="menu"] li { font-family: 'Goldman', sans-serif !important; color: var(--stark-white) !important; }
-    .stCodeBlock, [data-testid="stCode"] { background: rgba(0,0,51,0.5) !important; }
+    .stCodeBlock, [data-testid="stCode"] { background: rgba(0,0,128,0.5) !important; }
     /* No white cards: selectbox, popover, expanders, columns */
     [data-testid="stSelectbox"] > div,
     [data-testid="stSelectbox"] [data-baseweb="select"] > div {
-      background-color: #000033 !important;
+      background-color: #000080 !important;
       color: var(--stark-white) !important;
       border-color: rgba(212,175,55,0.35) !important;
     }
-    [data-testid="stExpander"] details { background: #000033 !important; border: 1px solid rgba(212,175,55,0.25) !important; }
-    [data-testid="stExpander"] summary { background: rgba(0,0,51,0.5) !important; color: var(--stark-white) !important; }
+    [data-testid="stExpander"] details { background: #000080 !important; border: 1px solid rgba(212,175,55,0.25) !important; }
+    [data-testid="stExpander"] summary { background: rgba(0,0,128,0.5) !important; color: var(--stark-white) !important; }
     [data-testid="stVerticalBlock"] > div { background-color: transparent !important; }
     div[data-testid="column"] > div { background-color: transparent !important; }
     .stApp {
-      background-color: #000033 !important;
+      background-color: #000080 !important;
       background-image: none !important;
       color: var(--stark-white) !important;
       font-family: 'Goldman', sans-serif !important;
@@ -1320,8 +1320,8 @@ st.markdown(
     }
     [data-testid="stSidebar"] [data-testid="stFileUploader"] section,
     [data-testid="stSidebar"] [data-testid="stFileUploader"] [data-baseweb="file-uploader"] {
-      background: #000033 !important;
-      background-color: #000033 !important;
+      background: #000080 !important;
+      background-color: #000080 !important;
       background-image: none !important;
       border: 2px dashed #C0C0C0 !important;
       border-style: dashed !important;
@@ -1331,8 +1331,8 @@ st.markdown(
     }
     [data-testid="stSidebar"] [data-testid="stFileUploader"] [data-testid="stFileUploaderDropzone"],
     [data-testid="stSidebar"] [data-testid="stFileUploader"] [data-testid="stFileUploaderDropzone"] > div {
-      background: #000033 !important;
-      background-color: #000033 !important;
+      background: #000080 !important;
+      background-color: #000080 !important;
       background-image: none !important;
       border: 2px dashed #C0C0C0 !important;
       border-style: dashed !important;
@@ -1378,6 +1378,26 @@ st.markdown(
       -webkit-text-fill-color: #FFFFFF !important;
       font-weight: 900 !important;
       text-shadow: 0 0 8px rgba(255,255,255,0.35) !important;
+    }
+    .rhgi-voter-impact-divider-wrap,
+    .rhgi-divider-widget {
+      width: 100%;
+      max-width: min(1180px, 100%);
+      margin: 0 auto 14px auto;
+      padding: 0 12px;
+      box-sizing: border-box;
+    }
+    .rhgi-voter-impact-divider {
+      height: 3px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #000080 0%, #00CED1 32%, #5eead4 50%, #00CED1 68%, #000080 100%);
+      background-size: 240% 100%;
+      animation: rhgiMandateDividerShimmer 18s ease-in-out infinite;
+      box-shadow: 0 0 20px rgba(0, 206, 209, 0.42);
+    }
+    @keyframes rhgiMandateDividerShimmer {
+      0%, 100% { background-position: 0% 50%; filter: brightness(1) saturate(1.05); }
+      50% { background-position: 100% 50%; filter: brightness(1.12) saturate(1.1); }
     }
     @keyframes rhgiSwingLiquidFlow {
       0% { background-position: 0% 50%; }
@@ -1435,8 +1455,8 @@ st.markdown(
     .rhgi-swing-inner {
       border-radius: 13px;
       background:
-        linear-gradient(110deg, rgba(212,175,55,0.16) 0%, rgba(255,255,255,0.08) 26%, rgba(0,0,51,0.96) 56%, rgba(0,0,51,0.98) 100%),
-        #000033;
+        linear-gradient(110deg, rgba(212,175,55,0.16) 0%, rgba(255,255,255,0.08) 26%, rgba(0,0,128,0.96) 56%, rgba(0,0,128,0.98) 100%),
+        #000080;
       padding: 12px 14px;
       color: #ffffff !important;
     }
@@ -1524,14 +1544,14 @@ st.markdown(
       box-shadow: inset 0 0 14px rgba(255,255,255,0.10);
     }
     [data-testid="stSidebar"] .rhgi-outreach-bridge-title {
-      color: #00FFFF !important;
+      color: #00CED1 !important;
       font-weight: 900;
       letter-spacing: 0.06em;
       text-align: center;
       text-shadow: 0 0 12px rgba(0,255,255,0.55);
       margin: 0 0 8px 0;
       font-size: 0.95rem;
-      -webkit-text-fill-color: #00FFFF !important;
+      -webkit-text-fill-color: #00CED1 !important;
     }
     [data-testid="stSidebar"] .rhgi-outreach-bridge-line {
       color: #FFFFFF !important;
@@ -1563,7 +1583,7 @@ st.markdown(
       }
     }
     [data-testid="stSidebar"] [data-testid="stVerticalBlock"]:has(.rhgi-exec-sync-cyan-trigger) button[kind="primary"] {
-      border: 1px solid #00FFFF !important;
+      border: 1px solid #00CED1 !important;
       border-radius: 10px !important;
       background: linear-gradient(180deg, rgba(0, 52, 72, 0.98) 0%, rgba(0, 112, 128, 0.98) 100%) !important;
       color: #E0FFFF !important;
@@ -1613,7 +1633,7 @@ st.markdown(
       border-radius: 14px !important;
       background: linear-gradient(
         165deg,
-        rgba(0, 0, 51, 0.55) 0%,
+        rgba(0, 0, 128, 0.55) 0%,
         rgba(40, 0, 8, 0.35) 100%
       ) !important;
       animation: rhgiExecDeepRedPulse 2.2s ease-in-out infinite;
@@ -1628,7 +1648,7 @@ st.markdown(
     .rhgi-sovereign-feed-wrap {
       border-radius: 12px;
       border: 1px solid rgba(0,255,255,0.28);
-      background: linear-gradient(180deg, rgba(0,0,51,0.96) 0%, rgba(0,10,28,0.92) 100%);
+      background: linear-gradient(180deg, rgba(0,0,128,0.96) 0%, rgba(0,10,28,0.92) 100%);
       box-shadow: inset 0 0 24px rgba(0,0,0,0.45);
       padding: 10px 10px 8px 10px;
       min-height: 320px;
@@ -1637,7 +1657,7 @@ st.markdown(
       flex-direction: column;
     }
     .rhgi-sovereign-feed-title {
-      color: #00FFFF;
+      color: #00CED1;
       font-weight: 900;
       letter-spacing: 0.08em;
       font-size: 0.78rem;
@@ -1653,7 +1673,7 @@ st.markdown(
       line-height: 1.45;
     }
     .rhgi-sovereign-feed-line {
-      color: #00FFFF;
+      color: #00CED1;
       margin-bottom: 6px;
       text-shadow: 0 0 6px rgba(0,255,255,0.22);
       word-break: break-word;
@@ -1675,7 +1695,7 @@ st.markdown(
       line-height: 1.25;
     }
     .rhgi-narrative-label--cyan {
-      color: #00FFFF !important;
+      color: #00CED1 !important;
       text-shadow: 0 0 10px rgba(0,255,255,0.36);
     }
     .rhgi-narrative-label--amber {
@@ -1691,7 +1711,7 @@ st.markdown(
       grid-column: span 2;
       border: 1px solid rgba(192,192,192,0.55);
       border-radius: 10px;
-      background: rgba(0,0,51,0.76);
+      background: rgba(0,0,128,0.76);
       padding: 10px 12px;
       color: #ffffff;
       min-height: 82px;
@@ -1727,7 +1747,7 @@ st.markdown(
     }
     .rhgi-swing-item--prism::before {
       padding: 1px;
-      background: linear-gradient(95deg, #000033 0%, #FFFFFF 26%, #001F66 50%, #FFFFFF 74%, #000033 100%);
+      background: linear-gradient(95deg, #000080 0%, #FFFFFF 26%, #001F66 50%, #FFFFFF 74%, #000080 100%);
       background-size: 200% 100%;
       animation: rhgiSwingPrismSweep 26s linear infinite;
       -webkit-mask:
@@ -1778,7 +1798,7 @@ st.markdown(
     }
     .rhgi-corridor-foundation-inner {
       border-radius: 13px;
-      background: rgba(0, 0, 51, 0.95);
+      background: rgba(0, 0, 128, 0.95);
       padding: 8px 12px;
       border: 1px solid rgba(212,175,55,0.45);
     }
@@ -1788,7 +1808,7 @@ st.markdown(
       z-index: 2 !important;
       font-family: 'Goldman', sans-serif !important;
       color: var(--stark-white) !important;
-      background: #000033 !important;
+      background: #000080 !important;
     }
     section.main [data-testid="stMarkdownContainer"],
     [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] {
@@ -1951,7 +1971,7 @@ st.markdown(
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
-      background: #000033 padding-box,
+      background: #000080 padding-box,
       linear-gradient(
         90deg,
         var(--command-silver) 0%,
@@ -2013,7 +2033,7 @@ st.markdown(
       position: absolute !important;
       inset: 2px !important;
       border-radius: calc(var(--command-box-radius) - 2px) !important;
-      background: #000033 !important;
+      background: #000080 !important;
       z-index: 1 !important;
       pointer-events: none !important;
     }
@@ -2052,7 +2072,7 @@ st.markdown(
     @keyframes r8GoldTextShimmer {
       0%, 100% {
         color: #D4AF37 !important;
-        text-shadow: 0 0 8px rgba(212,175,55,0.45), 0 0 14px rgba(0,0,51,0.6);
+        text-shadow: 0 0 8px rgba(212,175,55,0.45), 0 0 14px rgba(0,0,128,0.6);
       }
       50% {
         color: #f0e68c !important;
@@ -2109,7 +2129,7 @@ st.markdown(
       position: absolute !important;
       inset: 2px !important;
       border-radius: calc(var(--command-box-radius) - 2px) !important;
-      background: #000033 !important;
+      background: #000080 !important;
       z-index: 1 !important;
       pointer-events: none !important;
     }
@@ -2154,7 +2174,7 @@ st.markdown(
     [data-testid="stTabs"] [role="tab"] {
       color: #D4AF37 !important;
       font-family: 'Goldman', sans-serif !important;
-      background: rgba(0,0,51,0.55) !important;
+      background: rgba(0,0,128,0.55) !important;
     }
     [data-testid="stTabs"] [role="tab"][aria-selected="true"] {
       color: #ffffff !important;
@@ -2186,7 +2206,7 @@ st.markdown(
       max-height: 58vh;
       border: 1px solid rgba(212, 175, 55, 0.4);
       border-radius: 14px;
-      background: rgba(0, 0, 51, 0.22);
+      background: rgba(0, 0, 128, 0.22);
     }
     .rhgi-lga-marquee {
       display: flex;
@@ -2204,13 +2224,13 @@ st.markdown(
       scroll-behavior: smooth;
       border: 1px solid rgba(212, 175, 55, 0.35);
       border-radius: 12px;
-      background: rgba(0, 0, 51, 0.35);
+      background: rgba(0, 0, 128, 0.35);
     }
     .rhgi-kpi {
       padding: 12px 14px;
       border-radius: 10px;
       border: 1px solid rgba(212, 175, 55, 0.35);
-      background: rgba(0, 0, 51, 0.45);
+      background: rgba(0, 0, 128, 0.45);
       font-family: 'Goldman', sans-serif !important;
       color: var(--stark-white) !important;
     }
@@ -2235,7 +2255,7 @@ st.markdown(
       letter-spacing: 0.28em;
       text-transform: uppercase;
       color: var(--metallic-gold) !important;
-      text-shadow: 0 0 14px rgba(212,175,55,0.5), 0 0 28px rgba(0,0,51,0.55);
+      text-shadow: 0 0 14px rgba(212,175,55,0.5), 0 0 28px rgba(0,0,128,0.55);
       margin: 8px 0 6px 0;
     }
     .rhgi-mandate-secured {
@@ -2244,7 +2264,7 @@ st.markdown(
       margin: 12px 0 16px 0;
       border-radius: 12px;
       border: 3px solid var(--metallic-gold);
-      background: #000033 !important;
+      background: #000080 !important;
       animation: mandateGoldPulse 1.4s ease-in-out infinite;
     }
     @keyframes mandateGoldPulse {
@@ -2255,7 +2275,7 @@ st.markdown(
       position: relative;
       overflow: hidden;
       width: 100%;
-      background: #000033;
+      background: #000080;
       border-top: 1px solid rgba(212,175,55,0.4);
       border-bottom: 1px solid rgba(212,175,55,0.4);
       margin-top: 18px;
@@ -2293,7 +2313,7 @@ st.markdown(
       font-family: 'Goldman', sans-serif !important;
       color: var(--metallic-gold) !important; font-weight: 800 !important;
       text-align: left; padding: 14px 16px;
-      background: rgba(0, 0, 51, 0.55);
+      background: rgba(0, 0, 128, 0.55);
       border-bottom: 2px solid rgba(212, 175, 55, 0.5);
       text-shadow: 0 0 10px rgba(212, 175, 55, 0.5), 0 0 20px rgba(212, 175, 55, 0.2);
       font-size: 1.12rem !important;
@@ -2305,7 +2325,7 @@ st.markdown(
       font-size: 1.1rem !important;
       font-weight: 600;
     }
-    .rhgi-corridor-table tr:nth-child(even) td { background: rgba(0, 0, 51, 0.35); }
+    .rhgi-corridor-table tr:nth-child(even) td { background: rgba(0, 0, 128, 0.35); }
     [data-testid="stCaption"] { color: var(--metallic-gold) !important; font-family: 'Goldman', sans-serif !important; }
     [data-testid="stSelectbox"] label { color: var(--metallic-gold) !important; font-family: 'Goldman', sans-serif !important; }
     [data-baseweb="select"] { font-family: 'Goldman', sans-serif !important; }
@@ -2325,7 +2345,7 @@ st.markdown(
       50% { background-position: 100% center; filter: brightness(1.08); }
     }
     .rhgi-sovereign-budget-inner {
-      background: #000033;
+      background: #000080;
       border-radius: 13px;
       padding: 18px 22px;
       text-align: center;
@@ -2371,7 +2391,7 @@ st.markdown(
     .rhgi-cien-card {
       flex: 1 1 240px; max-width: 360px;
       border: 2px solid #D4AF37; border-radius: 14px; padding: 20px 18px;
-      background: rgba(0,0,51,0.72);
+      background: rgba(0,0,128,0.72);
       text-align: center;
       font-family: 'Goldman', sans-serif !important;
       box-shadow: 0 0 26px rgba(212,175,55,0.22);
@@ -2404,7 +2424,7 @@ st.markdown(
       border-radius: 22px;
       padding: 22px 20px 26px 20px;
       margin: 6px 0 26px 0;
-      background: rgba(0,0,51,0.72);
+      background: rgba(0,0,128,0.72);
       animation: rhgiSwatBorderPulse 2.6s ease-in-out infinite;
       position: relative;
       z-index: 2;
@@ -2453,11 +2473,11 @@ st.markdown(
       border-radius: 56px;
       border: 2px solid rgba(212,175,55,0.75);
       background: linear-gradient(90deg,
-        rgba(0,0,51,0.55) 0%,
+        rgba(0,0,128,0.55) 0%,
         rgba(212,175,55,0.12) 45%,
         rgba(255,250,220,0.08) 50%,
         rgba(212,175,55,0.12) 55%,
-        rgba(0,0,51,0.55) 100%);
+        rgba(0,0,128,0.55) 100%);
       box-shadow:
         inset 0 0 36px rgba(255,255,255,0.12),
         inset 0 -20px 50px rgba(212,175,55,0.15),
@@ -2496,7 +2516,7 @@ st.markdown(
       padding: 10px 12px;
       border: 1px solid rgba(212,175,55,0.35);
       border-radius: 12px;
-      background: rgba(0,0,51,0.5);
+      background: rgba(0,0,128,0.5);
     }
     .rhgi-swat-status .rhgi-swat-gold { color: #D4AF37 !important; font-weight: 800; }
     .rhgi-swat-icons {
@@ -2517,7 +2537,7 @@ st.markdown(
       padding: 10px 8px;
       border: 1px solid rgba(212,175,55,0.45);
       border-radius: 12px;
-      background: rgba(0,0,51,0.45);
+      background: rgba(0,0,128,0.45);
     }
     .rhgi-swat-icon small {
       display: block;
@@ -2537,7 +2557,7 @@ st.markdown(
       margin: 0 0 14px 0;
       border: 1px solid rgba(212,175,55,0.4);
       border-radius: 14px;
-      background: rgba(0,0,51,0.55);
+      background: rgba(0,0,128,0.55);
       text-shadow: 0 0 14px rgba(212,175,55,0.45);
     }
     .rhgi-swat-grant-alert {
@@ -2550,7 +2570,7 @@ st.markdown(
       font-weight: 700;
       letter-spacing: 0.03em;
       box-shadow: 0 0 14px rgba(212,175,55,0.35);
-      background: rgba(0,0,51,0.72);
+      background: rgba(0,0,128,0.72);
     }
     .rhgi-glossary-shell {
       margin: 22px 0 10px 0;
@@ -2559,7 +2579,7 @@ st.markdown(
       background: linear-gradient(90deg, #C0C0C0 0%, #FFFFFF 50%, #C0C0C0 100%);
     }
     .rhgi-glossary-inner {
-      background: #000033;
+      background: #000080;
       border-radius: 13px;
       padding: 12px 14px;
       color: #ffffff;
@@ -2580,7 +2600,7 @@ st.markdown(
       border: 1px solid rgba(192,192,192,0.55);
       border-radius: 10px;
       padding: 10px 12px;
-      background: rgba(0,0,51,0.84);
+      background: rgba(0,0,128,0.84);
       color: #ffffff !important;
     }
     .rhgi-glossary-item b {
@@ -3089,7 +3109,7 @@ st.markdown(
         --command-gold: #D4AF37;
         --command-silver: #C0C0C0;
         --command-white: #FFFFFF;
-        --command-navy: #000033;
+        --command-navy: #000080;
         --sec-glow-px: 12px;
         --sec-glow-alpha: 0.26;
         --prism-border-rotate: 32s;
@@ -3123,7 +3143,7 @@ st.markdown(
         animation: rhgiMetalShimmer 1.5s linear infinite;
       }
       .rhgi-prism-frame-inner {
-        background: #000033;
+        background: #000080;
         border-radius: 15px;
         padding: 10px 16px;
         min-width: 360px;
@@ -3195,7 +3215,7 @@ st.markdown(
         height: 100%;
         min-height: 0;
         border-radius: calc(var(--command-box-radius) - 1px);
-        background: #000033;
+        background: #000080;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -3217,7 +3237,7 @@ st.markdown(
         margin-top: 2px;
       }
       .rhgi-prism-narrative-frame {
-        background: #000033;
+        background: #000080;
         border: 1px solid rgba(212,175,55,0.45);
         border-radius: 14px;
         padding: 10px 14px;
@@ -3303,7 +3323,7 @@ st.markdown(
         padding: 16px 20px 18px 20px;
         border-radius: 14px;
         border: 2px solid rgba(212, 175, 55, 0.85);
-        background: linear-gradient(180deg, rgba(0, 0, 51, 0.97) 0%, rgba(10, 30, 45, 0.98) 100%);
+        background: linear-gradient(180deg, rgba(0, 0, 128, 0.97) 0%, rgba(10, 30, 45, 0.98) 100%);
         box-shadow: 0 0 24px rgba(212, 175, 55, 0.25), inset 0 0 20px rgba(251, 191, 36, 0.06);
         text-align: left;
       }
@@ -3364,7 +3384,7 @@ st.markdown(
       </div>
       <h1 class="rhgi-brand-title">OFFICE OF THE DG/RHGI</h1>
       <p class="rhgi-creed-block">Securing the 20.7M Mandate through Scientific Precision.</p>
-      <p class="rhgi-creed-block" style="font-size:0.88rem;color:#00FFFF;margin-top:6px;font-weight:700;">Zero-Hour · 16 January 2027 (WAT) — 20.7M mandate execution anchor</p>
+      <p class="rhgi-creed-block" style="font-size:0.88rem;color:#00CED1;margin-top:6px;font-weight:700;">Zero-Hour · 16 January 2027 (WAT) — 20.7M mandate execution anchor</p>
       <div class="rhgi-emblem-wrap"><div class="rhgi-emblem">RHGI</div></div>
     </div>
     <div class="rhgi-sovereign-test-shell" role="region" aria-label="RHGI Sovereign Test Election Day simulation">
@@ -3380,6 +3400,11 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+st.markdown(
+    '<div class="rhgi-voter-impact-divider-wrap rhgi-divider-widget" role="presentation" aria-hidden="true">'
+    '<div class="rhgi-voter-impact-divider"></div></div>',
+    unsafe_allow_html=True,
+)
 _decider_box_projection = int(round((18.0 / 25.0) * BALLOT_BOXES_FEDERATION_2027))
 _decider_mandate_progress_pct = 100.0 * float(PROJECTED_TOTAL) / float(max(NATIONAL_VOTE_TARGET, 1))
 _decider_gap_to_target = int(NATIONAL_VOTE_TARGET - PROJECTED_TOTAL)
@@ -3392,7 +3417,7 @@ if st.session_state.get("decider_facilitator_radio") == SULEIMAN_DECIDER_LABEL:
 st.markdown(
     f"""
     <div class='rhgi-decider-shell'>
-      <p class='rhgi-decider-label'>Decider • Top Header Roll-Up</p>
+      <p class='rhgi-decider-label'>Decider • Suleiman / Coordinator</p>
       <p class='rhgi-decider-target'>Target: 18/25 Boxes per PU</p>
       <p class='rhgi-decider-sub'>
         18/25 projection: <b>{_decider_box_projection:,}</b> of {BALLOT_BOXES_FEDERATION_2027:,} ballot boxes
@@ -3926,7 +3951,7 @@ with tab_global:
             ),
             legend=dict(
                 font=dict(family="Goldman, sans-serif", color="#ffffff", size=11),
-                bgcolor="rgba(0,0,51,0.45)",
+                bgcolor="rgba(0,0,128,0.45)",
                 bordercolor="rgba(212,175,55,0.35)",
                 borderwidth=1,
                 orientation="h",
@@ -4043,7 +4068,7 @@ with tab_global:
         legend=dict(
             title=dict(text="Harvest metrics", font=dict(family="Goldman, sans-serif", color=GOLD, size=13)),
             font=dict(family="Goldman, sans-serif", color="#ffffff", size=12),
-            bgcolor="rgba(0,0,51,0.5)",
+            bgcolor="rgba(0,0,128,0.5)",
             bordercolor="rgba(212,175,55,0.35)",
             borderwidth=1,
         ),
@@ -4101,7 +4126,7 @@ with tab_global:
         with _dir_cols[_ni % 3]:
             st.markdown(
                 f"<div style='color:#ffffff;font-size:0.8rem;font-weight:700;'>{html.escape(_s)} · {html.escape(_l[:26])}</div>"
-                f"<div style='color:#00FFFF;font-size:0.74rem;margin-bottom:6px;'>Apathy TODAY (2023 benchmark): <b>{_daily:,}</b></div>",
+                f"<div style='color:#00CED1;font-size:0.74rem;margin-bottom:6px;'>Apathy TODAY (2023 benchmark): <b>{_daily:,}</b></div>",
                 unsafe_allow_html=True,
             )
             st.link_button(
@@ -4368,7 +4393,7 @@ with tab_global:
             "<extra></extra>"
         ),
     )
-    _state_outline_color = "#000033"  # Prism Navy sharp outline
+    _state_outline_color = "#000080"  # Prism Navy sharp outline
     _state_inner = fig_scatter.data[0]
     _state_outline = go.Scattermapbox(
         lat=_state_inner.lat,
@@ -4390,7 +4415,7 @@ with tab_global:
         coloraxis_colorbar=dict(
             title=dict(text="Strike priority", font=dict(family="Goldman, sans-serif", color=GOLD, size=12)),
             tickfont=dict(family="Goldman, sans-serif", color="#ffffff", size=11),
-            bgcolor="rgba(0,0,51,0.55)",
+            bgcolor="rgba(0,0,128,0.55)",
             bordercolor="rgba(212,175,55,0.35)",
             len=0.72,
         ),
