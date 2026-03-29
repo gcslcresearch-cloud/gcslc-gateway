@@ -1,0 +1,36 @@
+{
+  "schema": "gcslc.leadership.v2",
+  "description": "Master command node (DG/RHGI) and Management 8 strike roster — 14314-EXECUTIVE-LOAD-142. E.164 digits only; no demo placeholders. Handoff webhook optional.",
+  "office_identity": "OFFICE OF THE DG/RHGI",
+  "display_name": "OFFICE OF THE DG/RHGI",
+  "master_command_node_e164": "2348099111515",
+  "contacts": [
+    {
+      "id": "dr_saad",
+      "display_name": "OFFICE OF THE DG/RHGI",
+      "role": "chairman",
+      "route_key": "s24"
+    },
+    {
+      "id": "convener",
+      "display_name": "OFFICE OF THE DG/RHGI",
+      "role": "convener",
+      "route_key": "convener"
+    }
+  ],
+  "tier_1_strategic_management": [
+    {"label": "OFFICE OF THE DG/RHGI", "phone_e164": "2348036948675"},
+    {"label": "OFFICE OF THE DG/RHGI", "phone_e164": "2348037910012"},
+    {"label": "OFFICE OF THE DG/RHGI", "phone_e164": "2349124572108"},
+    {"label": "OFFICE OF THE DG/RHGI", "phone_e164": "2348180649337"},
+    {"label": "OFFICE OF THE DG/RHGI", "phone_e164": "13473231693"},
+    {"label": "OFFICE OF THE DG/RHGI", "phone_e164": "2348054113010"},
+    {"label": "OFFICE OF THE DG/RHGI", "phone_e164": "2348099111515"},
+    {"label": "OFFICE OF THE DG/RHGI", "phone_e164": "2348079000900"}
+  ],
+  "webhooks": {
+    "s24": "",
+    "convener": "",
+    "executive_sync_handoff": ""
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "schema": "gcslc.executive_sync.v1",
+  "election_anchor": "2027-01-16",
+  "description": "Management 8 — STRIKE 14314-EXECUTIVE-LOAD-142 (canonical roster).",
+  "office_identity": "OFFICE OF THE DG/RHGI",
+  "display_name": "OFFICE OF THE DG/RHGI",
+  "recipients": [
+    {"role": "management", "label": "OFFICE OF THE DG/RHGI", "phone_e164": "2348036948675"},
+    {"role": "management", "label": "OFFICE OF THE DG/RHGI", "phone_e164": "2348037910012"},
+    {"role": "management", "label": "OFFICE OF THE DG/RHGI", "phone_e164": "2349124572108"},
+    {"role": "management", "label": "OFFICE OF THE DG/RHGI", "phone_e164": "2348180649337"},
+    {"role": "management", "label": "OFFICE OF THE DG/RHGI", "phone_e164": "13473231693"},
+    {"role": "management", "label": "OFFICE OF THE DG/RHGI", "phone_e164": "2348054113010"},
+    {"role": "chairman", "label": "OFFICE OF THE DG/RHGI", "phone_e164": "2348099111515"},
+    {"role": "management", "label": "OFFICE OF THE DG/RHGI", "phone_e164": "2348079000900"}
+  ]
+}
