@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#0a0e1a">
+  <meta name="theme-color" content="#000033">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&amp;display=swap" rel="stylesheet">
@@ -11,12 +11,15 @@
   <style>
 /* RHGI-IGNITION-52 — rhgi-glide triple ticker · updateSovereignClocks · secured gold pulse · GPU translate3d */
     :root {
-      --rhgi-navy-deep: #050a14;
-      --rhgi-gold: #e8c547;
-      --rhgi-gold-dim: #b8942a;
+      --rhgi-navy-deep: #000033;
+      --rhgi-navy-mid: #00004d;
+      --rhgi-navy-bright: #000066;
+      --rhgi-gold: #ffd700;
+      --rhgi-gold-dim: #c9a227;
       --rhgi-gold-bright: #fff8dc;
-      --rhgi-cyan: #00e5ff;
-      --rhgi-muted: #8fa3bf;
+      --rhgi-cyan: #00ced1;
+      --rhgi-pearl: #f5f0e8;
+      --rhgi-muted: #9eb6c8;
     }
     .rhgi-page *, .rhgi-page *::before, .rhgi-page *::after { box-sizing: border-box; }
     /* MECHANISM-FINAL-18: GPU compositing on all shell UI (Right Mechanism) */
@@ -32,11 +35,12 @@
       margin: 0;
       min-height: 100dvh;
       font-family: 'Segoe UI', system-ui, sans-serif;
-      color: var(--rhgi-gold);
+      color: var(--rhgi-pearl);
       overflow-x: hidden;
       -webkit-user-select: none;
       user-select: none;
-      background: var(--rhgi-navy-deep);
+      background: linear-gradient(165deg, var(--rhgi-navy-deep) 0%, var(--rhgi-navy-mid) 42%, var(--rhgi-navy-bright) 100%);
+      background-attachment: fixed;
       /* FORCE-43: LGA live feed vertical scroll (kinetic; not static) */
       --rhgi-lga-scroll-duration: 30s;
       --rhgi-akz-spine-period: 40s;
@@ -49,8 +53,8 @@
       z-index: 0;
       pointer-events: none;
       background:
-        radial-gradient(ellipse 100% 80% at 50% 0%, #0f2844 0%, var(--rhgi-navy-deep) 45%),
-        radial-gradient(ellipse 60% 50% at 80% 100%, rgba(0, 120, 200, 0.12) 0%, transparent 55%);
+        radial-gradient(ellipse 100% 80% at 50% 0%, #001a4d 0%, var(--rhgi-navy-deep) 48%),
+        radial-gradient(ellipse 60% 50% at 80% 100%, rgba(0, 80, 160, 0.22) 0%, transparent 55%);
     }
     .rhgi-velocity-streaks {
       position: fixed;
@@ -145,7 +149,7 @@
       border: 0.1875rem solid transparent;
       background:
         linear-gradient(var(--rhgi-navy-deep), var(--rhgi-navy-deep)) padding-box,
-        linear-gradient(125deg, #00f0ff 0%, #0099cc 18%, #e8c547 42%, #fff8c4 55%, #00d4e8 78%, #00f0ff 100%) border-box;
+        linear-gradient(125deg, #00ced1 0%, #0099aa 18%, #ffd700 42%, #fff8e8 55%, #00b8c4 78%, #00ced1 100%) border-box;
       background-size: 320% 320%;
       animation: rhgi-cyan-gold-pulse 5.5s ease-in-out infinite;
       opacity: 0.92;
@@ -163,7 +167,7 @@
     .rhgi-bluelaser-vignette {
       position: absolute;
       inset: 0;
-      box-shadow: inset 0 0 6.25rem rgba(0, 20, 50, 0.55), inset 0 0 1.75rem rgba(0, 200, 255, 0.06);
+      box-shadow: inset 0 0 6.25rem rgba(0, 25, 80, 0.5), inset 0 0 1.75rem rgba(0, 206, 209, 0.08);
     }
     @keyframes rhgi-bluelaser-spin { to { transform: rotate(360deg); } }
 
@@ -289,7 +293,7 @@
       width: min(100%, 36rem);
     }
 
-    /* Title — full RHGI · Gold–White–Navy metallic fusion */
+    /* Title — RHGI Master Palette · shimmering gold + pearl white */
     .rhgi-title.rhgi-title--rhgi-full {
       margin: 0;
       font-family: 'Goldman', 'Segoe UI', sans-serif;
@@ -300,32 +304,130 @@
       max-width: min(100%, 48rem);
       margin-inline: auto;
       padding-inline: clamp(0.25rem, 2vw, 0.85rem);
-      /* Gold–silver metallic shimmer (FULL-VELOCITY-33) */
       background: linear-gradient(
         118deg,
-        #050a14 0%,
-        #1a2542 6%,
-        #c0c4cc 14%,
-        #e8c547 24%,
-        #f8f6f2 34%,
-        #d4af37 44%,
-        #a8a9ad 52%,
-        #fff8e8 62%,
-        #e8c547 72%,
-        #8a9098 82%,
-        #0d1a2e 92%,
-        #d4af37 100%
+        #000044 0%,
+        #1a3a6e 8%,
+        #ffd700 22%,
+        #ffffff 34%,
+        #ffe066 46%,
+        #ffd700 58%,
+        #f5f0e8 70%,
+        #ffd700 82%,
+        #001a55 94%,
+        #ffd700 100%
       );
       background-size: 320% 300%;
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      animation: rhgi-title-metallic 6.5s ease-in-out infinite;
-      filter: drop-shadow(0 0.06rem 0.35rem rgba(8, 22, 42, 0.45));
+      animation: rhgi-title-metallic 6.5s ease-in-out infinite, rhgi-live-shimmer-gold-pulse 2.8s ease-in-out infinite;
+      filter: drop-shadow(0 0.06rem 0.35rem rgba(0, 40, 90, 0.5));
     }
     @keyframes rhgi-title-metallic {
-      0%, 100% { background-position: 12% 45%; filter: brightness(1.02); }
-      50% { background-position: 88% 55%; filter: brightness(1.08); }
+      0%, 100% { background-position: 12% 45%; filter: brightness(1.02) drop-shadow(0 0 0.2rem rgba(255, 245, 235, 0.35)); }
+      50% { background-position: 88% 55%; filter: brightness(1.1) drop-shadow(0 0 0.45rem rgba(255, 215, 0, 0.42)); }
+    }
+    @keyframes rhgi-live-shimmer-gold-pulse {
+      0%, 100% {
+        text-shadow: 0 0 0.35rem rgba(245, 240, 230, 0.45), 0 0 0.75rem rgba(255, 215, 0, 0.35);
+      }
+      50% {
+        text-shadow: 0 0 0.55rem rgba(255, 255, 255, 0.55), 0 0 1.1rem rgba(255, 215, 0, 0.5);
+      }
+    }
+    @keyframes rhgi-headline-shimmer-gold {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .rhgi-brand-dg {
+      margin: 0;
+      max-width: min(100%, 42rem);
+      margin-inline: auto;
+      padding-inline: clamp(0.25rem, 2vw, 0.85rem);
+      font-family: 'Goldman', 'Segoe UI', sans-serif;
+      font-weight: 700;
+      font-size: clamp(0.62rem, 1.65vw + 0.28rem, 0.95rem);
+      letter-spacing: 0.06em;
+      line-height: 1.3;
+      text-align: center;
+      background: linear-gradient(
+        105deg,
+        #ffffff 0%,
+        #ffd700 28%,
+        #f5f0e8 48%,
+        #ffd700 68%,
+        #ffffff 100%
+      );
+      background-size: 240% 220%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: rhgi-brand-dg-shimmer 5s ease-in-out infinite, rhgi-live-shimmer-gold-pulse 2.8s ease-in-out infinite;
+    }
+    @keyframes rhgi-brand-dg-shimmer {
+      0%, 100% { background-position: 8% 50%; }
+      50% { background-position: 92% 50%; }
+    }
+
+    .rhgi-brand-mandate,
+    .rhgi-brand-proprietary {
+      margin: clamp(0.45rem, 1.5vw, 0.6rem) auto 0;
+      max-width: min(100%, 40rem);
+      padding-inline: clamp(0.35rem, 2vw, 0.75rem);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-weight: 600;
+      font-size: clamp(0.42rem, 0.95vw + 0.2rem, 0.62rem);
+      letter-spacing: 0.04em;
+      line-height: 1.55;
+      text-align: center;
+      color: var(--rhgi-pearl);
+    }
+    .rhgi-brand-proprietary {
+      margin-top: clamp(0.25rem, 1.2vw, 0.4rem);
+      font-weight: 500;
+      font-size: clamp(0.38rem, 0.85vw + 0.16rem, 0.55rem);
+      letter-spacing: 0.03em;
+      opacity: 0.98;
+    }
+
+    .rhgi-brand-divider {
+      width: min(100%, 34rem);
+      height: 3px;
+      margin: clamp(0.45rem, 1.6vw, 0.65rem) auto 0;
+      border-radius: 2px;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(0, 206, 209, 0.35) 12%,
+        #00ced1 35%,
+        #ffd700 50%,
+        #00ced1 65%,
+        rgba(0, 206, 209, 0.35) 88%,
+        transparent 100%
+      );
+      background-size: 220% 100%;
+      animation: rhgi-cyan-divider-shimmer 3.8s ease-in-out infinite;
+      box-shadow:
+        0 0 10px rgba(0, 206, 209, 0.45),
+        0 0 18px rgba(255, 215, 0, 0.22);
+    }
+    @keyframes rhgi-cyan-divider-shimmer {
+      0%, 100% {
+        background-position: 0% 50%;
+        filter: brightness(1);
+        box-shadow:
+          0 0 8px rgba(0, 206, 209, 0.4),
+          0 0 16px rgba(245, 240, 230, 0.25);
+      }
+      50% {
+        background-position: 100% 50%;
+        filter: brightness(1.12);
+        box-shadow:
+          0 0 14px rgba(255, 245, 235, 0.45),
+          0 0 24px rgba(255, 215, 0, 0.38);
+      }
     }
 
     .rhgi-sub {
@@ -359,11 +461,11 @@
     .rhgi-election-ticker {
       border-radius: 0.625rem;
       padding: clamp(0.45rem, 2vw, 0.55rem) clamp(0.5rem, 2.5vw, 0.65rem);
-      background: linear-gradient(165deg, rgba(6, 18, 36, 0.92), rgba(2, 10, 22, 0.96));
-      border: 1px solid rgba(0, 229, 255, 0.22);
+      background: linear-gradient(165deg, rgba(0, 25, 60, 0.92), rgba(0, 15, 45, 0.96));
+      border: 1px solid rgba(0, 206, 209, 0.28);
       box-shadow:
-        inset 0 0 1.375rem rgba(0, 229, 255, 0.05),
-        0 0 0.875rem rgba(0, 0, 0, 0.4);
+        inset 0 0 1.375rem rgba(0, 206, 209, 0.06),
+        0 0 0.875rem rgba(0, 15, 55, 0.45);
     }
     .rhgi-election-ticker.rhgi-prism-frame {
       background: rgba(8, 14, 28, 0.4);
@@ -396,10 +498,19 @@
       font-family: ui-monospace, 'Cascadia Code', monospace;
       font-weight: 800;
       font-size: clamp(0.7rem, 2.8vw + 0.2rem, 0.95rem);
-      color: var(--rhgi-gold-bright);
-      text-shadow: 0 0 0.75rem rgba(232, 197, 71, 0.35);
+      background: linear-gradient(118deg, #00ced1 0%, #ffd700 42%, #fff5e0 52%, #00ced1 100%);
+      background-size: 220% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: rhgi-metric-shimmer 4s ease-in-out infinite, rhgi-live-shimmer-gold-pulse 2.8s ease-in-out infinite;
+      filter: drop-shadow(0 0 0.35rem rgba(0, 206, 209, 0.35));
       text-align: center;
       font-variant-numeric: tabular-nums;
+    }
+    @keyframes rhgi-metric-shimmer {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
     }
     .rhgi-seg-lab {
       font-size: clamp(0.4rem, 1.8vw + 0.15rem, 0.5rem);
@@ -422,7 +533,12 @@
       font-weight: 700;
       letter-spacing: 0.24em;
       text-transform: uppercase;
-      color: rgba(255, 248, 220, 0.94);
+      background: linear-gradient(92deg, #ffffff 0%, #ffd700 28%, #fff8f0 48%, #ffd700 72%, #ffffff 100%);
+      background-size: 220% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: rhgi-headline-shimmer-gold 5.5s ease-in-out infinite, rhgi-live-shimmer-gold-pulse 2.8s ease-in-out infinite;
     }
     .rhgi-victory-arc-row {
       display: flex;
@@ -486,7 +602,7 @@
     }
     .rhgi-arc-progress {
       fill: none;
-      stroke: rgba(232, 197, 71, 0.9);
+      stroke: rgba(255, 215, 0, 0.92);
       stroke-width: 14;
       stroke-linecap: round;
     }
@@ -499,7 +615,7 @@
       font-size: clamp(0.5rem, 1vw + 0.35rem, 0.65rem);
       font-weight: 700;
       letter-spacing: 0.1em;
-      color: rgba(232, 238, 244, 0.92);
+      color: var(--rhgi-pearl);
       text-align: center;
     }
     .rhgi-arc-caption {
@@ -593,8 +709,13 @@
       font-weight: 700;
       letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: rgba(255, 248, 220, 0.92);
       text-align: center;
+      background: linear-gradient(92deg, #ffffff 0%, #ffd700 30%, #f5f0e8 50%, #ffd700 70%, #ffffff 100%);
+      background-size: 220% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: rhgi-headline-shimmer-gold 5.5s ease-in-out infinite, rhgi-live-shimmer-gold-pulse 2.8s ease-in-out infinite;
     }
     .rhgi-hub {
       border-radius: 0.75rem;
@@ -858,17 +979,18 @@
       will-change: transform;
       background: linear-gradient(
         118deg,
-        #6a5518 0%,
-        #e8c547 22%,
-        #fff8dc 42%,
-        #e8c547 58%,
-        #fff8e8 78%,
-        #c9a227 100%
+        #00ced1 0%,
+        #ffd700 28%,
+        #f5f0e8 45%,
+        #ffd700 58%,
+        #00ced1 78%,
+        #ffd700 100%
       );
-      background-size: 100% 100%;
+      background-size: 220% 100%;
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
+      animation: rhgi-metric-shimmer 4s ease-in-out infinite, rhgi-live-shimmer-gold-pulse 2.8s ease-in-out infinite;
     }
     /* Sovereign shimmer: sweep uses transform + opacity (GPU); text gradient stays static */
     .rhgi-nw-margin-delta::after {
@@ -900,18 +1022,18 @@
     .rhgi-ss-growth-shimmer.rhgi-nw-margin-delta {
       background: linear-gradient(
         118deg,
-        #1a4d2e 0%,
-        #2e8b57 14%,
-        #e8c547 32%,
-        #fff8dc 48%,
-        #00e5ff 62%,
-        #e8c547 78%,
-        #1a3a5c 100%
+        #00ced1 0%,
+        #ffd700 22%,
+        #f5f0e8 40%,
+        #00ced1 55%,
+        #ffd700 72%,
+        #001a55 100%
       );
-      background-size: 100% 100%;
+      background-size: 220% 100%;
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
+      animation: rhgi-metric-shimmer 4s ease-in-out infinite, rhgi-live-shimmer-gold-pulse 2.8s ease-in-out infinite;
     }
     .rhgi-ss-growth-shimmer.rhgi-nw-margin-delta::after {
       background: linear-gradient(
@@ -947,8 +1069,13 @@
       font-weight: 700;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: rgba(255, 248, 220, 0.94);
       text-align: center;
+      background: linear-gradient(95deg, #ffd700 0%, #ffffff 22%, #ffd700 45%, #fff8e8 62%, #ffd700 100%);
+      background-size: 240% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: rhgi-headline-shimmer-gold 6s ease-in-out infinite, rhgi-live-shimmer-gold-pulse 2.8s ease-in-out infinite;
     }
     .rhgi-deep-layout {
       display: flex;
@@ -1288,8 +1415,7 @@
     .rhgi-page .rhgi-slc-budget .rhgi-v33-anchor {
       font-weight: 800;
       letter-spacing: 0.04em;
-      animation: none !important;
-      filter: drop-shadow(0 0 0.35rem rgba(232, 197, 71, 0.38)) drop-shadow(0 0 0.85rem rgba(232, 197, 71, 0.16));
+      filter: drop-shadow(0 0 0.35rem rgba(255, 215, 0, 0.38)) drop-shadow(0 0 0.85rem rgba(0, 206, 209, 0.18));
     }
     .rhgi-page .rhgi-slc-budget .rhgi-v33-anchor-total {
       font-weight: 900;
@@ -1298,11 +1424,10 @@
       padding: 0.35rem 0.75rem;
       border-radius: 0.5rem;
       box-shadow: none;
-      animation: none !important;
-      filter: drop-shadow(0 0 0.45rem rgba(232, 197, 71, 0.48)) drop-shadow(0 0 1.1rem rgba(232, 197, 71, 0.22));
+      filter: drop-shadow(0 0 0.45rem rgba(255, 215, 0, 0.45)) drop-shadow(0 0 1rem rgba(0, 206, 209, 0.22));
     }
     .rhgi-page .rhgi-slc-budget .rhgi-v33-canvasser-anchor {
-      filter: drop-shadow(0 0 0.32rem rgba(232, 197, 71, 0.35)) drop-shadow(0 0 0.75rem rgba(232, 197, 71, 0.14));
+      filter: drop-shadow(0 0 0.32rem rgba(255, 215, 0, 0.35)) drop-shadow(0 0 0.75rem rgba(0, 206, 209, 0.14));
     }
 
     .rhgi-deep-lga {
@@ -1433,7 +1558,12 @@
       font-weight: 700;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--rhgi-gold-bright);
+      background: linear-gradient(90deg, #ffffff 0%, #ffd700 38%, #f5f0e8 52%, #ffd700 72%, #ffffff 100%);
+      background-size: 220% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: rhgi-headline-shimmer-gold 5.5s ease-in-out infinite, rhgi-live-shimmer-gold-pulse 2.8s ease-in-out infinite;
     }
     .rhgi-clocks-grid {
       display: grid;
@@ -1557,7 +1687,7 @@
       margin-top: clamp(0.5rem, 2vw, 0.85rem);
       padding: clamp(0.45rem, 1.8vw, 0.6rem) clamp(0.35rem, 1.5vw, 0.5rem);
       border-radius: 0.5rem;
-      background: #0a0e1a;
+      background: linear-gradient(165deg, #000044 0%, #000055 100%);
       border: 1px solid #d4af37;
       box-shadow: none;
       transform: translate3d(0, 0, 0);
@@ -1647,9 +1777,10 @@
       backface-visibility: hidden;
     }
     body.rhgi-page {
-      background: #0a0e1a !important;
-      --rhgi-navy-deep: #0a0e1a;
-      --rhgi-chrome-glass: #0a0e1a;
+      background: linear-gradient(165deg, #000033 0%, #00004d 42%, #000066 100%) !important;
+      background-attachment: fixed !important;
+      --rhgi-navy-deep: #000033;
+      --rhgi-chrome-glass: #000044;
     }
     .rhgi-shell {
       background: transparent !important;
@@ -1688,13 +1819,13 @@
       background: linear-gradient(105deg, #0f2844 0%, #1a3a5c 25%, #e8c547 55%, #fff8dc 72%, #1e3a5a 100%) !important;
     }
     .rhgi-fct-strategic-lock {
-      background: #0a0e1a !important;
+      background: linear-gradient(165deg, #000044 0%, #000055 100%) !important;
       border: 1px solid #d4af37 !important;
       border-radius: 0.5rem;
       padding: 0.35rem 0.5rem;
     }
     .rhgi-se-strategic-lock-static {
-      background: #0a0e1a !important;
+      background: linear-gradient(165deg, #000044 0%, #000055 100%) !important;
       border: 1px solid #d4af37 !important;
     }
     /* REANIMATE-STEP-1: identity — metallic title + seal/sub breathe */
@@ -1708,26 +1839,17 @@
     }
     .rhgi-page .rhgi-title.rhgi-title--rhgi-full {
       background-size: 320% 300% !important;
-      animation: rhgi-title-metallic 6.5s ease-in-out infinite !important;
+      animation:
+        rhgi-title-metallic 6.5s ease-in-out infinite,
+        rhgi-live-shimmer-gold-pulse 2.8s ease-in-out infinite !important;
       will-change: background-position, filter !important;
     }
-    /* RHGI-HARD-IGNITION-49: subtle architect line under H1 */
-    .rhgi-page .rhgi-sub.rhgi-hard49-identity-sub {
-      display: block;
-      max-width: min(100%, 40rem);
-      margin-inline: auto;
-      font-weight: 600;
-      font-size: clamp(0.4rem, 0.85vw + 0.22rem, 0.58rem);
-      letter-spacing: 0.1em;
-      line-height: 1.45;
-      text-align: center;
-      color: rgba(150, 168, 195, 0.55) !important;
-      background: none !important;
-      background-clip: border-box !important;
-      -webkit-background-clip: border-box !important;
-      filter: none !important;
-      animation: none !important;
-      text-transform: none;
+    .rhgi-page .rhgi-brand-dg {
+      background-size: 240% 220% !important;
+      animation:
+        rhgi-brand-dg-shimmer 5s ease-in-out infinite,
+        rhgi-live-shimmer-gold-pulse 2.8s ease-in-out infinite !important;
+      will-change: background-position, filter !important;
     }
     .rhgi-page .rhgi-r31-sovereign-seal {
       transform-origin: center;
@@ -1800,8 +1922,11 @@
       50% { opacity: 0.9; }
     }
     .rhgi-page .rhgi-election-ticker .rhgi-seg-val {
-      animation: rhgi-r1-cd-pulse 1s step-end infinite !important;
-      will-change: opacity !important;
+      animation:
+        rhgi-r1-cd-pulse 1s step-end infinite,
+        rhgi-metric-shimmer 4s ease-in-out infinite,
+        rhgi-live-shimmer-gold-pulse 2.8s ease-in-out infinite !important;
+      will-change: opacity, background-position, filter !important;
     }
     .rhgi-page .rhgi-r1-global-pulse .rhgi-analog-clock-frame {
       animation: none !important;
@@ -1828,7 +1953,7 @@
       padding: clamp(0.55rem, 2.2vw, 0.85rem);
       border: 1px solid #d4af37;
       border-radius: 0.5rem;
-      background: #0a0e1a !important;
+      background: linear-gradient(165deg, #000044 0%, #000055 100%) !important;
       position: relative;
       z-index: 1;
       isolation: isolate;
@@ -1839,9 +1964,14 @@
       font-size: clamp(0.58rem, 1.35vw + 0.22rem, 0.88rem);
       font-weight: 700;
       letter-spacing: 0.05em;
-      color: rgba(232, 238, 244, 0.96);
       line-height: 1.4;
       text-align: center;
+      background: linear-gradient(100deg, #00ced1 0%, #ffd700 32%, #f5f0e8 48%, #00ced1 62%, #ffd700 100%);
+      background-size: 240% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: rhgi-metric-shimmer 4.5s ease-in-out infinite, rhgi-live-shimmer-gold-pulse 2.8s ease-in-out infinite;
     }
     .rhgi-slc-total {
       margin: 0 0 0.45rem;
@@ -1849,8 +1979,13 @@
       font-size: clamp(1.05rem, 4vw + 0.35rem, 1.55rem);
       font-weight: 800;
       text-align: center;
-      color: #e8c547;
       font-variant-numeric: tabular-nums;
+      background: linear-gradient(118deg, #ffd700 0%, #fff8e8 35%, #ffd700 55%, #f5f0e8 75%, #ffd700 100%);
+      background-size: 220% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: rhgi-metric-shimmer 4s ease-in-out infinite, rhgi-live-shimmer-gold-pulse 2.8s ease-in-out infinite;
     }
     .rhgi-slc-determinant {
       margin: 0 0 0.5rem;
@@ -1859,7 +1994,8 @@
       letter-spacing: 0.12em;
       text-transform: uppercase;
       text-align: center;
-      color: rgba(143, 163, 191, 0.95);
+      color: #00ced1;
+      text-shadow: 0 0 0.45rem rgba(0, 206, 209, 0.35);
     }
     .rhgi-slc-force-line {
       margin: 0 0 0.55rem;
@@ -1867,7 +2003,7 @@
       font-weight: 700;
       letter-spacing: 0.1em;
       text-align: center;
-      color: rgba(232, 238, 244, 0.94);
+      color: var(--rhgi-pearl);
       line-height: 1.4;
     }
     .rhgi-slc-budget-table {
@@ -1880,17 +2016,17 @@
       padding: 0.35rem 0.4rem;
       border-bottom: 1px solid rgba(40, 72, 118, 0.5);
       text-align: left;
-      color: rgba(232, 238, 244, 0.9);
+      color: var(--rhgi-pearl);
     }
     .rhgi-slc-budget-table th {
       font-family: 'Goldman', 'Segoe UI', sans-serif;
-      color: rgba(232, 197, 71, 0.9);
+      color: rgba(255, 215, 0, 0.92);
     }
     .rhgi-slc-budget-table td:last-child {
       text-align: right;
       font-variant-numeric: tabular-nums;
       font-weight: 700;
-      color: #e8c547;
+      color: #ffd700;
     }
   </style>
 </head>
@@ -1980,8 +2116,11 @@
                 >RHGI</text>
               </svg>
             </div>
-            <h1 class="rhgi-title rhgi-title--rhgi-full">OFFICE OF THE DG/RHGI</h1>
-            <p class="rhgi-sub rhgi-hard49-identity-sub">Architect: Dr. Sa&rsquo;ad Jaafaru</p>
+            <h1 class="rhgi-title rhgi-title--rhgi-full">Renewed Hope Grassroots Initiatives (RHGI)</h1>
+            <p class="rhgi-brand-dg">Office of the Director General (DG)</p>
+            <div class="rhgi-brand-divider" aria-hidden="true"></div>
+            <p class="rhgi-brand-mandate">Securing the 20.7 Million Votes Mandate through the 15/15 Superior Support Model Precision(15/15 SSMP).</p>
+            <p class="rhgi-brand-proprietary">Powered by the 8R Stealth Paradigm Convergence and its Determinants. Convergence and Determinant Day: January 16th, 2027.</p>
           </div>
         </section>
 
