@@ -1769,6 +1769,16 @@ st.markdown(
       line-height: 1.35;
       font-size: 0.9rem;
     }
+    @media (max-width: 1100px) {
+      .rhgi-swing-grid {
+        grid-template-columns: 1fr;
+      }
+      .rhgi-swing-item {
+        grid-column: 1 / -1;
+        min-height: auto;
+        overflow: visible;
+      }
+    }
     .rhgi-sovereign-marquee-wrap {
       width: 100%;
       overflow: hidden;
@@ -2642,11 +2652,19 @@ with st.sidebar:
         key="scientific_turnout_lift_pct",
         help="Increases projected 2027 vote totals across all parties proportionally. Uses its own session key so it does not collide with the Sovereign Notepad form.",
     )
+    _dff_yield_sidebar = apply_turnout_lift(df, turnout_lift)
+    _projected_lifted_nat = int(_dff_yield_sidebar["projected_total"].sum())
+    _anchor_m = NATIONAL_VOTE_TARGET / 1_000_000.0
+    _projected_m = _projected_lifted_nat / 1_000_000.0
+    _delta_vs_anchor = _projected_lifted_nat - NATIONAL_VOTE_TARGET
     st.metric(
         "Sovereign Voter Yield",
-        "20.7M Anchor vs 38.4M Projected Yield",
-        delta="+17.7M projected delta",
-        help="Anchor: 20.7M sovereign mandate baseline. Projected yield: 38.4M.",
+        f"{_anchor_m:.1f}M Anchor vs {_projected_m:.1f}M Projected Yield",
+        delta=f"{_delta_vs_anchor / 1_000_000.0:+.1f}M projected delta",
+        help=(
+            f"Anchor: {NATIONAL_VOTE_TARGET:,} sovereign mandate baseline. "
+            f"Projected yield at +{turnout_lift}% scientific turnout lift: {_projected_lifted_nat:,}."
+        ),
     )
     st.caption("PVC & turnout rates are forensic anchors per LGA in data_engine.")
     st.markdown(
