@@ -676,7 +676,7 @@ def _sovereign_achievements_carousel_html() -> str:
 </head>
 <body>
   <div class="rhgi-sc-root">
-    <div class="rhgi-sc-kicker">Sovereign <span>♥</span> Achievements</div>
+    <div class="rhgi-sc-kicker">Sovereign <span>♥</span> Carousel</div>
     <div class="rhgi-sc-viewport">
       <div class="rhgi-sc-track">
         <div class="rhgi-sc-panel">
@@ -687,24 +687,24 @@ def _sovereign_achievements_carousel_html() -> str:
           </p>
         </div>
         <div class="rhgi-sc-panel">
-          <h2 class="rhgi-sc-title">Fiscal Bravery</h2>
+          <h2 class="rhgi-sc-title">Fiscal Integrity</h2>
           <p class="rhgi-sc-body">
             <strong>Subsidy removal</strong> &amp; <strong>FX uniformity</strong> — end of corrupt round-tripping;
             sovereign price discovery on the Nigerian scale.
           </p>
         </div>
         <div class="rhgi-sc-panel">
-          <h2 class="rhgi-sc-title">The Peoples Dividend</h2>
+          <h2 class="rhgi-sc-title">Social Equity</h2>
           <p class="rhgi-sc-body">
             <strong>NELFUND</strong> — <strong>1.16M students</strong> supported.
             <br /><strong>NCGC</strong> — <strong>₦10B</strong> youth &amp; women guarantee corridor.
           </p>
         </div>
         <div class="rhgi-sc-panel">
-          <h2 class="rhgi-sc-title">Reform Results</h2>
+          <h2 class="rhgi-sc-title">Growth</h2>
           <p class="rhgi-sc-body">
-            <strong>4.4% GDP growth</strong> (IMF confirmed) &amp;
-            <strong>food inflation</strong> easing to <strong>12.12%</strong> (Mar 2026).
+            <strong>4.4% GDP Projection</strong> &amp;
+            <strong>12.12% Food Inflation</strong> (Mar 2026).
           </p>
         </div>
       </div>
@@ -4066,6 +4066,8 @@ st.radio(
         "National coordinator clears the corridor filter."
     ),
 )
+components.html(_sovereign_achievements_carousel_html(), height=318, scrolling=False)
+
 metal_countdown_live_ph = st.empty()
 
 _primaries_start_ms = int(PRIMARIES_START_WAT.timestamp() * 1000)
@@ -4308,8 +4310,6 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
-components.html(_sovereign_achievements_carousel_html(), height=318, scrolling=False)
 
 with st.container(border=True):
     _gold_heading("National Trends — Election Forensic (Nigeria-wide)")
