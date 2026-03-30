@@ -542,6 +542,185 @@ def _rose_heading(text: str) -> None:
     st.markdown(f'<p class="rhgi-corridor-gold-heading">{html.escape(text)}</p>', unsafe_allow_html=True)
 
 
+def _sovereign_achievements_carousel_html() -> str:
+    """Prompt 232 — auto-sliding achievement cards (isolated HTML; navy / gold / pearl)."""
+    return """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Goldman:wght@400;700&family=Great+Vibes&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      background: #000080;
+      font-family: 'Goldman', 'Georgia', serif;
+      color: #fdfcf8;
+      overflow: hidden;
+    }
+    .rhgi-sc-root {
+      width: 100%;
+      max-width: 100%;
+      padding: 14px 18px 16px 18px;
+      border-radius: 16px;
+      border: 1px solid rgba(212, 175, 55, 0.42);
+      background: linear-gradient(165deg, rgba(0,0,128,0.98) 0%, rgba(21, 42, 69, 0.96) 55%, rgba(0,0,128,0.98) 100%);
+      box-shadow: 0 0 28px rgba(212, 175, 55, 0.14), inset 0 0 40px rgba(0, 0, 64, 0.35);
+      position: relative;
+    }
+    .rhgi-sc-kicker {
+      font-family: system-ui, sans-serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.38em;
+      text-transform: uppercase;
+      color: rgba(253, 252, 248, 0.72);
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    .rhgi-sc-kicker span {
+      color: #2dd4bf;
+      text-shadow: 0 0 12px rgba(45, 212, 191, 0.45);
+    }
+    .rhgi-sc-viewport {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      overflow: hidden;
+      border-radius: 12px;
+      border: 1px solid rgba(212, 175, 55, 0.22);
+      background: rgba(0, 0, 64, 0.45);
+    }
+    .rhgi-sc-track {
+      display: flex;
+      width: 400%;
+      height: 100%;
+      animation: rhgiSovereignCarousel 24s cubic-bezier(0.45, 0.05, 0.25, 1) infinite;
+    }
+    @keyframes rhgiSovereignCarousel {
+      0%, 20% { transform: translateX(0); }
+      25%, 45% { transform: translateX(-25%); }
+      50%, 70% { transform: translateX(-50%); }
+      75%, 95% { transform: translateX(-75%); }
+      100% { transform: translateX(0); }
+    }
+    .rhgi-sc-panel {
+      width: 25%;
+      flex: 0 0 25%;
+      height: 100%;
+      padding: 18px 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .rhgi-sc-title {
+      font-family: 'Great Vibes', 'Alex Brush', cursive;
+      font-size: clamp(1.85rem, 4.2vw, 2.55rem);
+      line-height: 1.15;
+      margin: 0 0 12px 0;
+      font-weight: 400;
+      background: linear-gradient(
+        110deg,
+        #D4AF37 0%,
+        #fff8e7 18%,
+        #D4AF37 32%,
+        #fffef6 48%,
+        #D4AF37 62%,
+        #fff8e7 78%,
+        #D4AF37 100%
+      );
+      background-size: 220% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+      animation: rhgiScTitleShimmer 3.8s linear infinite;
+      filter: drop-shadow(0 0 14px rgba(212, 175, 55, 0.35));
+    }
+    @keyframes rhgiScTitleShimmer {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 220% 50%; }
+    }
+    .rhgi-sc-body {
+      font-family: 'Goldman', Georgia, serif;
+      font-size: 0.95rem;
+      line-height: 1.55;
+      color: #fdfcf8;
+      max-width: 520px;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.65);
+    }
+    .rhgi-sc-body strong {
+      color: #D4AF37;
+      font-weight: 700;
+    }
+    .rhgi-sc-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .rhgi-sc-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(253, 252, 248, 0.5);
+      border: 1px solid rgba(212, 175, 55, 0.55);
+      box-shadow: 0 0 6px rgba(212, 175, 55, 0.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="rhgi-sc-root">
+    <div class="rhgi-sc-kicker">Sovereign <span>♥</span> Achievements</div>
+    <div class="rhgi-sc-viewport">
+      <div class="rhgi-sc-track">
+        <div class="rhgi-sc-panel">
+          <h2 class="rhgi-sc-title">The Great Arteries</h2>
+          <p class="rhgi-sc-body">
+            <strong>Lagos–Calabar Coastal Highway</strong> — Section 1 commissioning <strong>May 2026</strong>.
+            <br /><strong>1,068 km Sokoto–Badagry Superhighway</strong> — national arterial spine.
+          </p>
+        </div>
+        <div class="rhgi-sc-panel">
+          <h2 class="rhgi-sc-title">Fiscal Bravery</h2>
+          <p class="rhgi-sc-body">
+            <strong>Subsidy removal</strong> &amp; <strong>FX uniformity</strong> — end of corrupt round-tripping;
+            sovereign price discovery on the Nigerian scale.
+          </p>
+        </div>
+        <div class="rhgi-sc-panel">
+          <h2 class="rhgi-sc-title">The Peoples Dividend</h2>
+          <p class="rhgi-sc-body">
+            <strong>NELFUND</strong> — <strong>1.16M students</strong> supported.
+            <br /><strong>NCGC</strong> — <strong>₦10B</strong> youth &amp; women guarantee corridor.
+          </p>
+        </div>
+        <div class="rhgi-sc-panel">
+          <h2 class="rhgi-sc-title">Reform Results</h2>
+          <p class="rhgi-sc-body">
+            <strong>4.4% GDP growth</strong> (IMF confirmed) &amp;
+            <strong>food inflation</strong> easing to <strong>12.12%</strong> (Mar 2026).
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="rhgi-sc-dots" aria-hidden="true">
+      <span class="rhgi-sc-dot"></span>
+      <span class="rhgi-sc-dot"></span>
+      <span class="rhgi-sc-dot"></span>
+      <span class="rhgi-sc-dot"></span>
+    </div>
+  </div>
+</body>
+</html>
+"""
+
+
 def filter_by_corridor(dff: pd.DataFrame, zone: Optional[str]) -> pd.DataFrame:
     """DG Command Hub: None = national; else filter to one geopolitical zone."""
     if zone is None or zone == "":
@@ -4129,6 +4308,8 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
+components.html(_sovereign_achievements_carousel_html(), height=318, scrolling=False)
 
 with st.container(border=True):
     _gold_heading("National Trends — Election Forensic (Nigeria-wide)")
