@@ -18,6 +18,8 @@ os.environ.setdefault("STREAMLIT_SERVER_PORT", "8505")
 
 import hashlib
 import html
+import random
+import re
 from typing import Optional
 import pandas as pd
 import plotly.express as px
@@ -119,6 +121,16 @@ if "strike_urls_pending" not in st.session_state:
     st.session_state.strike_urls_pending = []
 if "strike_open_index" not in st.session_state:
     st.session_state.strike_open_index = 0
+if "referendum_gauge_values" not in st.session_state:
+    st.session_state.referendum_gauge_values = _default_referendum_gauges()
+if "referendum_gauge_live" not in st.session_state:
+    st.session_state.referendum_gauge_live = {}
+if "daily_pulse_queue" not in st.session_state:
+    st.session_state.daily_pulse_queue = []
+if "daily_pulse_simulate" not in st.session_state:
+    st.session_state.daily_pulse_simulate = True
+if "question_of_day_text" not in st.session_state:
+    st.session_state.question_of_day_text = QOD_DEFAULT
 
 # RHGI-SWAT-OPPOSITION-77 — global colors (strict DG / SWAT palette).
 # RHGI-GOLDMAN palette (mirrors :root CSS variables).
@@ -257,6 +269,17 @@ SOVEREIGN_REFERENDUM_GAUGES = [
     ("Electoral Integrity", 91),
     ("Digital Economy", 88),
 ]
+QOD_DEFAULT = "How do the artisans in your ward feel about the Lagos-Calabar Highway today?"
+_REFORM_KEYWORDS: dict[str, tuple[str, ...]] = {
+    "Tax Reform": ("tax", "tax reform"),
+    "Energy Sovereignty": ("energy", "power", "electricity"),
+    "Food Security": ("food", "agri", "agriculture", "market"),
+    "Education Access": ("education", "school", "nelfund", "student"),
+    "Healthcare Access": ("health", "hospital", "clinic"),
+    "Judicial Reform": ("judicial", "court", "justice", "rule of law"),
+    "Electoral Integrity": ("electoral", "inec", "pvc", "vote integrity"),
+    "Digital Economy": ("digital", "internet", "innovation", "tech"),
+}
 
 
 def _gold_heading(text: str) -> None:
@@ -569,6 +592,80 @@ def _dispatch_sovereign_notepad(text: str) -> tuple[list[str], list[str]]:
         except Exception as e:
             err.append(f"{label}: {e}")
     return ok, err
+
+
+def _default_referendum_gauges() -> dict[str, int]:
+    return {k: int(v) for k, v in SOVEREIGN_REFERENDUM_GAUGES}
+
+
+def _extract_daily_pulse_updates(text: str) -> tuple[dict[str, int], Optional[str]]:
+    raw = (text or "").strip()
+    if not raw:
+        return {}, None
+    qod: Optional[str] = None
+    updates: dict[str, int] = {}
+    for line in raw.splitlines():
+        ln = line.strip()
+        if not ln:
+            continue
+        low = ln.lower()
+        if low.startswith("qod:") or low.startswith("question:"):
+            qod = ln.split(":", 1)[1].strip()
+            continue
+        m = re.search(r"([+-]?\d{1,3})\s*%?", ln)
+        if not m:
+            continue
+        val = int(m.group(1))
+        for reform, keys in _REFORM_KEYWORDS.items():
+            if any(k in low for k in keys):
+                updates[reform] = val
+                break
+    return updates, qod
+
+
+def _apply_daily_pulse_updates(updates: dict[str, int], source: str) -> int:
+    if not updates:
+        return 0
+    board = dict(st.session_state.get("referendum_gauge_values") or _default_referendum_gauges())
+    live = dict(st.session_state.get("referendum_gauge_live") or {})
+    changed = 0
+    for reform, value in updates.items():
+        if reform not in board:
+            continue
+        v = max(0, min(100, int(value)))
+        if int(board[reform]) != v:
+            board[reform] = v
+            live[reform] = 3
+            changed += 1
+    st.session_state.referendum_gauge_values = board
+    st.session_state.referendum_gauge_live = live
+    if changed:
+        _append_sovereign_feed("Daily Pulse", f"{source} · {changed} reform gauge update(s) applied.")
+    return changed
+
+
+def _daily_pulse_listener_fragment_inner() -> None:
+    queue = list(st.session_state.get("daily_pulse_queue") or [])
+    if queue:
+        payload = queue.pop(0)
+        st.session_state.daily_pulse_queue = queue
+        _apply_daily_pulse_updates(payload, "listener queue")
+    elif bool(st.session_state.get("daily_pulse_simulate", True)) and random.random() < 0.34:
+        board = dict(st.session_state.get("referendum_gauge_values") or _default_referendum_gauges())
+        if board:
+            pick = random.choice(list(board.keys()))
+            drift = random.choice([-2, -1, 1, 2])
+            _apply_daily_pulse_updates({pick: int(board[pick]) + drift}, "listener simulation")
+    live = dict(st.session_state.get("referendum_gauge_live") or {})
+    dirty = False
+    for k in list(live.keys()):
+        n = int(live.get(k, 0))
+        if n <= 0:
+            continue
+        live[k] = n - 1
+        dirty = True
+    if dirty:
+        st.session_state.referendum_gauge_live = live
 
 
 def _lga_daily_apathy_target(
@@ -3447,6 +3544,13 @@ st.markdown(
     .rhgi-gauge-row {
       margin-bottom: 7px;
     }
+    .rhgi-gauge-row--live {
+      animation: sovereignPulse 1.8s ease-in-out infinite;
+      filter: brightness(128%);
+      box-shadow: 0 0 16px rgba(212, 175, 55, 0.4);
+      border-radius: 8px;
+      padding: 3px 4px;
+    }
     .rhgi-gauge-label {
       display: flex;
       justify-content: space-between;
@@ -3466,6 +3570,25 @@ st.markdown(
       border-radius: 999px;
       background: linear-gradient(90deg, #D4AF37 0%, #ffe8a3 50%, #D4AF37 100%);
       box-shadow: 0 0 10px rgba(212, 175, 55, 0.45);
+    }
+    .rhgi-qod-title {
+      font-family: 'Goldman', sans-serif;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #D4AF37;
+      text-align: center;
+      margin: 10px 0 5px 0;
+      font-size: 0.78rem;
+    }
+    .rhgi-qod-calligraphy {
+      font-family: 'Great Vibes', 'Alex Brush', cursive;
+      font-size: clamp(1.18rem, 2.2vw, 1.6rem);
+      color: #D4AF37;
+      text-align: center;
+      line-height: 1.28;
+      margin: 0 0 10px 0;
+      text-shadow: 0 0 14px rgba(212, 175, 55, 0.35);
     }
     @keyframes sovereignPulse {
       0% {
@@ -3504,6 +3627,11 @@ st.markdown(
 )
 
 with st.sidebar:
+    if hasattr(st, "fragment"):
+        _pulse_listener = st.fragment(run_every=timedelta(seconds=6.0))(_daily_pulse_listener_fragment_inner)
+        _pulse_listener()
+    else:
+        _daily_pulse_listener_fragment_inner()
     st.header("Scientific controls")
     st.markdown(
         '<p class="rhgi-sidebar-cat rhgi-sidebar-cat--harvest">Category 1: Harvest Metrics</p>',
@@ -3868,13 +3996,17 @@ with st.sidebar:
         "</div>",
         unsafe_allow_html=True,
     )
+    _board = dict(st.session_state.get("referendum_gauge_values") or _default_referendum_gauges())
+    _live = dict(st.session_state.get("referendum_gauge_live") or {})
     _gauge_rows_html = "".join(
-        "<div class='rhgi-gauge-row'>"
-        f"<div class='rhgi-gauge-label'><span>{html.escape(label)}</span><span>{value}%</span></div>"
-        "<div class='rhgi-gauge-track'>"
-        f"<div class='rhgi-gauge-fill' style='width:{max(0, min(100, int(value)))}%;'></div>"
-        "</div></div>"
-        for label, value in SOVEREIGN_REFERENDUM_GAUGES
+        (
+            f"<div class='rhgi-gauge-row{' rhgi-gauge-row--live' if int(_live.get(label, 0)) > 0 else ''}'>"
+            f"<div class='rhgi-gauge-label'><span>{html.escape(label)}</span><span>{int(value)}%</span></div>"
+            "<div class='rhgi-gauge-track'>"
+            f"<div class='rhgi-gauge-fill' style='width:{max(0, min(100, int(value)))}%;'></div>"
+            "</div></div>"
+        )
+        for label, value in _board.items()
     )
     st.markdown(
         "<div class='rhgi-referendum-shell'>"
@@ -3883,10 +4015,36 @@ with st.sidebar:
         "</div>",
         unsafe_allow_html=True,
     )
+    st.toggle(
+        "Daily Pulse Listener Simulation",
+        key="daily_pulse_simulate",
+        help="Keeps Directorate 14 board alive with simulated daily pulse drift when no dispatch is queued.",
+    )
+    st.markdown("<div class='rhgi-qod-title'>Question of the Day</div>", unsafe_allow_html=True)
+    st.markdown(
+        f"<div class='rhgi-qod-calligraphy'>{html.escape(st.session_state.get('question_of_day_text', QOD_DEFAULT))}</div>",
+        unsafe_allow_html=True,
+    )
+    _qod_msg = _append_outreach_signature(
+        "RHGI Daily Question Broadcast · 23-LGA SWAT Teams\n"
+        + str(st.session_state.get("question_of_day_text", QOD_DEFAULT))
+    )
+    if st.button("Broadcast Question — WhatsApp", use_container_width=True, key="qod_wa_broadcast_btn"):
+        components.html(_wa_me_popup_html([_wa_me_url(DG_VERIFIED_E164, _qod_msg)]), height=0)
+        _append_sovereign_feed("QOD", "Question of the Day broadcast via WhatsApp relay.")
+        st.info("Broadcast packet opened on WhatsApp relay for 23-LGA SWAT teams.")
+    if st.button("Broadcast Question — SMS", use_container_width=True, key="qod_sms_broadcast_btn"):
+        _sms_url = "sms:?&body=" + quote(_qod_msg, safe="")
+        components.html(
+            f"<script>try{{window.top.location.href={json.dumps(_sms_url)};}}catch(e){{window.location.href={json.dumps(_sms_url)};}}</script>",
+            height=0,
+        )
+        _append_sovereign_feed("QOD", "Question of the Day broadcast via SMS relay.")
+        st.info("SMS composer opened for 23-LGA SWAT teams relay.")
 
     st.markdown(
         '<p class="rhgi-sovereign-notepad-host" style="margin:12px 0 4px 0;color:#E6C35C;font-weight:800;font-size:0.82rem;letter-spacing:0.06em;">'
-        "Sovereign Notepad · internal dashboard</p>",
+        "Sovereign Notepad · Live Polling Listener</p>",
         unsafe_allow_html=True,
     )
     components.html(
@@ -3906,12 +4064,21 @@ with st.sidebar:
         _sn_text = st.text_area(
             "Sovereign Notepad",
             height=120,
-            placeholder="Type here — Send dispatches JSON POSTs only to S24 + Convener endpoints (leadership.json / env).",
+            placeholder="Daily Pulse format: Tax +84 | Energy +82 | Food +80 | QOD: your question... (dispatch still posts to S24 + Convener).",
             label_visibility="collapsed",
             key="sovereign_notepad_text",
         )
         _sn_send = st.form_submit_button("Send", use_container_width=True, type="primary")
     if _sn_send:
+        _updates, _qod = _extract_daily_pulse_updates(_sn_text)
+        if _updates:
+            st.session_state.daily_pulse_queue = list(st.session_state.get("daily_pulse_queue") or []) + [_updates]
+            _applied = _apply_daily_pulse_updates(_updates, "sovereign notepad")
+            if _applied:
+                st.success(f"Daily Pulse listener ingested {_applied} reform update(s).")
+        if _qod:
+            st.session_state.question_of_day_text = _qod
+            st.info("Question of the Day updated from dispatch.")
         _ok, _bad = _dispatch_sovereign_notepad(_sn_text)
         if _ok:
             st.success("Sovereign Notepad dispatched to: " + " · ".join(_ok))
