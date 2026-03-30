@@ -1,0 +1,829 @@
+voter_name,first_name,last_name,state,lga,gender,pu_id,verification_status,verified,source_lga_file
+Richard Swanta,Richard,Swanta,Kaduna,BIRNIN GWARI,Male,8066008205,VERIFIED,True,BIRNIN GWARI
+Saleh Abdu,Saleh,Abdu,Kaduna,BIRNIN GWARI,Male,7037697592,VERIFIED,True,BIRNIN GWARI
+Joseph Idibia,Joseph,Idibia,Kaduna,BIRNIN GWARI,Male,7063157884,VERIFIED,True,BIRNIN GWARI
+Joseph Uteno,Joseph,Uteno,Kaduna,BIRNIN GWARI,Male,8012345678,VERIFIED,True,BIRNIN GWARI
+Mohammed Bello,Mohammed,Bello,Kaduna,BIRNIN GWARI,Male,8036189897,VERIFIED,True,BIRNIN GWARI
+Nana Ama,Nana,Ama,Kaduna,BIRNIN GWARI,Female,709989876,VERIFIED,True,BIRNIN GWARI
+Rose Ndid,Rose,Ndid,Kaduna,BIRNIN GWARI,Female,8067856667,VERIFIED,True,BIRNIN GWARI
+Wer Wer,Wer,Wer,Kaduna,BIRNIN GWARI,Male,80234567,VERIFIED,True,BIRNIN GWARI
+Usman Garba,Usman,Garba,Kaduna,BIRNIN GWARI,Male,8062391778,VERIFIED,True,BIRNIN GWARI
+Djauro Paul,Djauro,Paul,Kaduna,BIRNIN GWARI,Male,8061552293,VERIFIED,True,BIRNIN GWARI
+Toyin Mustapaha,Toyin,Mustapaha,Kaduna,BIRNIN GWARI,Female,8060781235,VERIFIED,True,BIRNIN GWARI
+Ikechukwu Ememandu,Ikechukwu,Ememandu,Kaduna,BIRNIN GWARI,Male,8062686096,VERIFIED,True,BIRNIN GWARI
+Nana Yusuf,Nana,Yusuf,Kaduna,BIRNIN GWARI,Female,8061233048,VERIFIED,True,BIRNIN GWARI
+Ajibade Damilola,Ajibade,Damilola ,Kaduna,BIRNIN GWARI,Female,8023048304,VERIFIED,True,BIRNIN GWARI
+Itonameh Israel Dazaba,Itonameh Israel,Dazaba,Kaduna,BIRNIN GWARI,Male,8095847448,VERIFIED,True,BIRNIN GWARI
+Joseph Kierian,Joseph,Kierian,Kaduna,BIRNIN GWARI,Male,7039497122,VERIFIED,True,BIRNIN GWARI
+Oghogho Duke,Oghogho,Duke,Kaduna,BIRNIN GWARI,Male,8062467884,VERIFIED,True,BIRNIN GWARI
+Srtfyuiuio Tiooppp,Srtfyuiuio,Tiooppp,Kaduna,BIRNIN GWARI,Male,803528678,VERIFIED,True,BIRNIN GWARI
+Mercy Kabiru,Mercy,Kabiru,Kaduna,BIRNIN GWARI,Female,8035960800,VERIFIED,True,BIRNIN GWARI
+Dahiru Jonathan,Dahiru,Jonathan,Kaduna,BIRNIN GWARI,Male,7030258084,VERIFIED,True,BIRNIN GWARI
+Scholar Noshiri,Scholar,Noshiri,Kaduna,BIRNIN GWARI,Female,8037034221,VERIFIED,True,BIRNIN GWARI
+Auta Aduniya,Auta,Aduniya,Kaduna,BIRNIN GWARI,Male,8097999999,VERIFIED,True,BIRNIN GWARI
+A Haruna Alh Abdullahi,A Haruna,Alh Abdullahi,Kaduna,BIRNIN GWARI,Male,8068848019,VERIFIED,True,BIRNIN GWARI
+Haruna Alh Shehu,Haruna,Alh Shehu,Kaduna,BIRNIN GWARI,Male,7037479214,VERIFIED,True,BIRNIN GWARI
+Idrisu Dari,Idrisu,Dari,Kaduna,BIRNIN GWARI,Male,8023854587,VERIFIED,True,BIRNIN GWARI
+Abdullahi Hamilu,Abdullahi,Hamilu,Kaduna,BIRNIN GWARI,Male,8032982992,VERIFIED,True,BIRNIN GWARI
+Ibrahim Yusuf,Ibrahim,Yusuf,Kaduna,BIRNIN GWARI,Male,7039652842,VERIFIED,True,BIRNIN GWARI
+Kabiru Ibrahim,Kabiru,Ibrahim,Kaduna,BIRNIN GWARI,Male,7069062093,VERIFIED,True,BIRNIN GWARI
+Abdullahi Dalhatu,Abdullahi,Dalhatu,Kaduna,BIRNIN GWARI,Male,8022549175,VERIFIED,True,BIRNIN GWARI
+Abdulrashid Ibrahim,Abdulrashid,Ibrahim,Kaduna,BIRNIN GWARI,Male,8029601094,VERIFIED,True,BIRNIN GWARI
+Nasiru Abubakar,Nasiru,Abubakar,Kaduna,BIRNIN GWARI,Male,8132631139,VERIFIED,True,BIRNIN GWARI
+Aminu Abdulah,Aminu,Abdulah,Kaduna,BIRNIN GWARI,Male,8163719494,VERIFIED,True,BIRNIN GWARI
+Abdulhadi Lawal,Abdulhadi,Lawal,Kaduna,BIRNIN GWARI,Male,7081842036,VERIFIED,True,BIRNIN GWARI
+Rabiu Idris,Rabiu,Idris,Kaduna,BIRNIN GWARI,Male,8085969981,VERIFIED,True,BIRNIN GWARI
+Yusuf Ibrahim,Yusuf,Ibrahim,Kaduna,BIRNIN GWARI,Male,7084904374,VERIFIED,True,BIRNIN GWARI
+Adamu Sani,Adamu,Sani,Kaduna,BIRNIN GWARI,Male,7032024583,VERIFIED,True,BIRNIN GWARI
+Peter Bala,Peter,Bala,Kaduna,CHIKUN,Male,8028500284,VERIFIED,True,CHIKUN
+Ibrahim Jagaba,Ibrahim,Jagaba,Kaduna,CHIKUN,Male,8028715836,VERIFIED,True,CHIKUN
+Danjuma Audu,Danjuma,Audu,Kaduna,CHIKUN,Male,7028353677,VERIFIED,True,CHIKUN
+Zarmai Bala,Zarmai,Bala,Kaduna,CHIKUN,Male,7041224320,VERIFIED,True,CHIKUN
+Ezekiel Andrew,Ezekiel,Andrew,Kaduna,CHIKUN,Male,8167926853,VERIFIED,True,CHIKUN
+Benjamin Baba,Benjamin,Baba,Kaduna,CHIKUN,Male,7065812233,VERIFIED,True,CHIKUN
+Grace Yahaya,Grace,Yahaya,Kaduna,CHIKUN,Female,8122378706,VERIFIED,True,CHIKUN
+Naomi Timothy,Naomi,Timothy,Kaduna,CHIKUN,Female,8120111892,VERIFIED,True,CHIKUN
+Talatu Fidelis,Talatu,Fidelis,Kaduna,CHIKUN,Female,7036410528,VERIFIED,True,CHIKUN
+Yemi Zarmai,Yemi,Zarmai,Kaduna,CHIKUN,Female,8136418271,VERIFIED,True,CHIKUN
+Alice Emmanuel,Alice,Emmanuel,Kaduna,CHIKUN,Female,7081815357,VERIFIED,True,CHIKUN
+Emmanuel Dada,Emmanuel,Dada,Kaduna,CHIKUN,Male,7068586899,VERIFIED,True,CHIKUN
+Musa Andrew,Musa,Andrew,Kaduna,CHIKUN,Male,7026016335,VERIFIED,True,CHIKUN
+Peter Mamma,Peter,Mamma,Kaduna,CHIKUN,Male,7041224303,VERIFIED,True,CHIKUN
+Danjuma Bulus,Danjuma,Bulus,Kaduna,CHIKUN,Male,7061331165,VERIFIED,True,CHIKUN
+Obadia Samuel,Obadia,Samuel,Kaduna,CHIKUN,Male,7040968862,VERIFIED,True,CHIKUN
+Musa Buba,Musa,Buba,Kaduna,CHIKUN,Male,7069231766,VERIFIED,True,CHIKUN
+Ambrose Dakwai,Ambrose,Dakwai,Kaduna,CHIKUN,Male,7042621398,VERIFIED,True,CHIKUN
+Hosea Ishaya,Hosea,Ishaya,Kaduna,CHIKUN,Male,8065869443,VERIFIED,True,CHIKUN
+Danjuma Rataya,Danjuma,Rataya,Kaduna,CHIKUN,Male,8184695920,VERIFIED,True,CHIKUN
+Umaru Tanko,Umaru,Tanko,Kaduna,CHIKUN,Male,8130095571,VERIFIED,True,CHIKUN
+David Sarki,David,Sarki,Kaduna,CHIKUN,Male,7036185675,VERIFIED,True,CHIKUN
+Sabo Sarki,Sabo,Sarki,Kaduna,CHIKUN,Male,8162922811,VERIFIED,True,CHIKUN
+Haruna Dogoyaro,Haruna,Dogoyaro,Kaduna,CHIKUN,Male,7063408388,VERIFIED,True,CHIKUN
+Abubakar Dauda,Abubakar,Dauda,Kaduna,CHIKUN,Male,8034516180,VERIFIED,True,CHIKUN
+Dantala Tanko,Dantala,Tanko,Kaduna,CHIKUN,Male,7040037518,VERIFIED,True,CHIKUN
+Yahaya Wanbayi,Yahaya,Wanbayi,Kaduna,CHIKUN,Male,8026447157,VERIFIED,True,CHIKUN
+Marukus Ratiya,Marukus,Ratiya,Kaduna,CHIKUN,Male,8032773788,VERIFIED,True,CHIKUN
+Tina Ratiya,Tina,Ratiya,Kaduna,CHIKUN,Female,7060649505,VERIFIED,True,CHIKUN
+Bamaiyi Dakwai,Bamaiyi,Dakwai,Kaduna,CHIKUN,Male,8033701572,VERIFIED,True,CHIKUN
+Ayenajheyi Isah,Ayenajheyi,Isah,Kaduna,CHIKUN,Male,7035966423,VERIFIED,True,CHIKUN
+Simon Adamu,Simon,Adamu,Kaduna,CHIKUN,Male,8131283765,VERIFIED,True,CHIKUN
+Comfort Joshua,Comfort,Joshua,Kaduna,CHIKUN,Female,8164427964,VERIFIED,True,CHIKUN
+Danlami Andrew,Danlami,Andrew,Kaduna,CHIKUN,Male,7043656345,VERIFIED,True,CHIKUN
+Dauda Garba,Dauda,Garba,Kaduna,CHIKUN,Male,8028404281,VERIFIED,True,CHIKUN
+Moses Amos,Moses,Amos,Kaduna,CHIKUN,Male,7067683405,VERIFIED,True,CHIKUN
+Zainab Alabere,Zainab,Alabere,Kaduna,GIWA,Female,8066035364,VERIFIED,True,GIWA
+Aisha Mohammed,Aisha,Mohammed,Kaduna,GIWA,Female,8185671872,VERIFIED,True,GIWA
+Hadiza Dogara,Hadiza,Dogara,Kaduna,GIWA,Female,7057598849,VERIFIED,True,GIWA
+Ibrahim Yunusa,Ibrahim,Yunusa,Kaduna,GIWA,Male,7065686963,VERIFIED,True,GIWA
+Lawal Salihu,Lawal,Salihu,Kaduna,GIWA,Male,8069297683,VERIFIED,True,GIWA
+Yunusa Dogara,Yunusa,Dogara,Kaduna,GIWA,Male,7030435582,VERIFIED,True,GIWA
+Maryam Isah,Maryam,Isah,Kaduna,GIWA,Female,8035826370,VERIFIED,True,GIWA
+Nafiu Ibrahim,Nafiu,Ibrahim,Kaduna,GIWA,Male,7069656865,VERIFIED,True,GIWA
+Umaru Mohammed,Umaru,Mohammed,Kaduna,GIWA,Male,8036114030,VERIFIED,True,GIWA
+Yusuf Abdulkadir,Yusuf,Abdulkadir,Kaduna,GIWA,Male,8067433803,VERIFIED,True,GIWA
+Ibrahim Sabitu,Ibrahim,Sabitu,Kaduna,GIWA,Male,7034906105,VERIFIED,True,GIWA
+Ibrahim Saminu,Ibrahim,Saminu,Kaduna,GIWA,Male,7038009983,VERIFIED,True,GIWA
+Joji Yalli,Joji,Yalli,Kaduna,GIWA,Male,62890370,VERIFIED,True,GIWA
+Abdullahi Musa,Abdullahi,Musa,Kaduna,GIWA,Male,8065993497,VERIFIED,True,GIWA
+Hussaini Muhammad,Hussaini,Muhammad,Kaduna,GIWA,Male,7066486225,VERIFIED,True,GIWA
+Surajo Adamu,Surajo,Adamu,Kaduna,GIWA,Male,7068931237,VERIFIED,True,GIWA
+Bashiru Abdulkareem,Bashiru,Abdulkareem,Kaduna,GIWA,Male,7032168445,VERIFIED,True,GIWA
+Mukhtar Aliyu,Mukhtar,Aliyu,Kaduna,GIWA,Male,8033912332,VERIFIED,True,GIWA
+Lawal Sulaiman,Lawal,Sulaiman,Kaduna,GIWA,Male,8125418638,VERIFIED,True,GIWA
+Habila Nuhu,Habila,Nuhu,Kaduna,GIWA,Male,7062477022,VERIFIED,True,GIWA
+Hussaina Habila,Hussaina,Habila,Kaduna,GIWA,Female,8168348578,VERIFIED,True,GIWA
+Victoria Lawal,Victoria,Lawal,Kaduna,GIWA,Female,8024813809,VERIFIED,True,GIWA
+Murtala Ahmad,Murtala,Ahmad,Kaduna,GIWA,Male,8061290036,VERIFIED,True,GIWA
+Mathew Dauda,Mathew,Dauda,Kaduna,GIWA,Male,7032985569,VERIFIED,True,GIWA
+Pastor Idris Nasiru,Pastor Idris,Nasiru,Kaduna,GIWA,Male,8168504612,VERIFIED,True,GIWA
+Joshua Mathew,Joshua,Mathew,Kaduna,GIWA,Male,7061987214,VERIFIED,True,GIWA
+Abdullahi Umar,Abdullahi,Umar,Kaduna,GIWA,Male,8032528796,VERIFIED,True,GIWA
+Isah Dangrunfa Nuruddeeni,Isah Dangrunfa,Nuruddeeni,Kaduna,GIWA,Male,8122849464,VERIFIED,True,GIWA
+Oluchi Mbama,Oluchi,Mbama,Kaduna,GIWA,Female,7038666047,VERIFIED,True,GIWA
+Lawal Abubakar,Lawal,Abubakar,Kaduna,GIWA,Male,8020302009,VERIFIED,True,GIWA
+Nasuru Mohammed,Nasuru,Mohammed,Kaduna,GIWA,Male,8025631238,VERIFIED,True,GIWA
+Abdulrashed Sulieman,Abdulrashed,Sulieman,Kaduna,GIWA,Male,8086741159,VERIFIED,True,GIWA
+Mohamed Lawal,Mohamed,Lawal ,Kaduna,GIWA,Male,8081023468,VERIFIED,True,GIWA
+Mashakuru Usman,Mashakuru,Usman,Kaduna,GIWA,Male,8084798607,VERIFIED,True,GIWA
+Abubakar Dairu,Abubakar,Dairu,Kaduna,GIWA,Male,7087278917,VERIFIED,True,GIWA
+Adamu Lawal,Adamu,Lawal,Kaduna,GIWA,Male,8088077703,VERIFIED,True,GIWA
+Sule Haliru,Sule,Haliru,Kaduna,IGABI,Male,8069152782,VERIFIED,True,IGABI
+Ubale Shehu,Ubale,Shehu,Kaduna,IGABI,Male,8057441364,VERIFIED,True,IGABI
+Kasimu Saidu,Kasimu,Saidu,Kaduna,IGABI,Male,8068049782,VERIFIED,True,IGABI
+Yahaya Sani,Yahaya,Sani,Kaduna,IGABI,Male,8165557982,VERIFIED,True,IGABI
+Abdulhami Useni,Abdulhami,Useni,Kaduna,IGABI,Male,8064965953,VERIFIED,True,IGABI
+Rufai Abdullahi,Rufai,Abdullahi,Kaduna,IGABI,Male,8135419048,VERIFIED,True,IGABI
+Mele Abubakar,Mele,Abubakar,Kaduna,IGABI,Male,8024700084,VERIFIED,True,IGABI
+Adamu Husseini,Adamu,Husseini,Kaduna,IGABI,Male,8069298206,VERIFIED,True,IGABI
+Yau Abubakar,Yau,Abubakar,Kaduna,IGABI,Male,8132372337,VERIFIED,True,IGABI
+Nura Haruna,Nura,Haruna,Kaduna,IGABI,Male,8137364139,VERIFIED,True,IGABI
+Shehu Sani,Shehu,Sani,Kaduna,IGABI,Male,816631123,VERIFIED,True,IGABI
+Hamza Inusa,Hamza,Inusa,Kaduna,IGABI,Male,7032641634,VERIFIED,True,IGABI
+Ayuba Bello,Ayuba,Bello,Kaduna,IGABI,Male,8162841902,VERIFIED,True,IGABI
+Surajo Dalhatu,Surajo,Dalhatu,Kaduna,IGABI,Male,8054915103,VERIFIED,True,IGABI
+Musa Abubakar,Musa,Abubakar,Kaduna,IGABI,Male,7051759720,VERIFIED,True,IGABI
+Ayuba Ibrahim,Ayuba,Ibrahim,Kaduna,IGABI,Male,8037628571,VERIFIED,True,IGABI
+Abdurrashid Abdullahi,Abdurrashid,Abdullahi,Kaduna,IGABI,Male,8054767705,VERIFIED,True,IGABI
+Ajilo Salisu,Ajilo,Salisu,Kaduna,IGABI,Male,8058886794,VERIFIED,True,IGABI
+Hamisu Sani,Hamisu,Sani,Kaduna,IGABI,Male,8167639461,VERIFIED,True,IGABI
+Yusuf Abdullahi,Yusuf,Abdullahi,Kaduna,IGABI,Male,8079681788,VERIFIED,True,IGABI
+Rilwanu Adamu,Rilwanu,Adamu,Kaduna,IGABI,Male,8076097026,VERIFIED,True,IGABI
+Hama Sharif,Hama,Sharif,Kaduna,IGABI,Female,7056414850,VERIFIED,True,IGABI
+Ahmed Muhammed,Ahmed,Muhammed,Kaduna,IGABI,Male,7038342378,VERIFIED,True,IGABI
+Abdullahi Ibrahim,Abdullahi,Ibrahim,Kaduna,IGABI,Male,8056378410,VERIFIED,True,IGABI
+Abbas Rabiu,Abbas,Rabiu,Kaduna,IGABI,Male,8076680318,VERIFIED,True,IGABI
+Abdurrahman Musa,Abdurrahman,Musa,Kaduna,IGABI,Male,7055648353,VERIFIED,True,IGABI
+Basiru Rabiu,Basiru,Rabiu,Kaduna,IGABI,Male,7053285087,VERIFIED,True,IGABI
+Mamuda Lawal,Mamuda,Lawal,Kaduna,IGABI,Male,8073869867,VERIFIED,True,IGABI
+Ibrahim Maidawa,Ibrahim,Maidawa,Kaduna,IGABI,Male,8125382982,VERIFIED,True,IGABI
+Rayyanu Sani,Rayyanu,Sani,Kaduna,IGABI,Male,8050833178,VERIFIED,True,IGABI
+Nasiru Idris,Nasiru,Idris,Kaduna,IGABI,Male,8026073128,VERIFIED,True,IGABI
+Yusuf Sani,Yusuf,Sani,Kaduna,IGABI,Male,8054604298,VERIFIED,True,IGABI
+Mustafa Abdullahi,Mustafa,Abdullahi,Kaduna,IGABI,Male,7083710295,VERIFIED,True,IGABI
+Rabiu Magaji,Rabiu,Magaji,Kaduna,IGABI,Male,8139136021,VERIFIED,True,IGABI
+Danlami Mohammed,Danlami,Mohammed,Kaduna,IGABI,Male,8162923448,VERIFIED,True,IGABI
+Zakariya Kasimu,Zakariya,Kasimu,Kaduna,IGABI,Male,8167833055,VERIFIED,True,IGABI
+Hananiah Azaman,Hananiah,Azaman,Kaduna,IKARA,Male,7065960070,VERIFIED,True,IKARA
+James Mato,James,Mato,Kaduna,IKARA,Male,7031613875,VERIFIED,True,IKARA
+Salisu Samaila,Salisu,Samaila ,Kaduna,IKARA,Male,8063730354,VERIFIED,True,IKARA
+Nasuir Ali,Nasuir,Ali,Kaduna,IKARA,Male,8131303831,VERIFIED,True,IKARA
+Idris Shuaibu,Idris,Shuaibu,Kaduna,IKARA,Male,7030903771,VERIFIED,True,IKARA
+Dahiru Ali,Dahiru,Ali,Kaduna,IKARA,Male,7030402317,VERIFIED,True,IKARA
+Ali Sani,Ali,Sani,Kaduna,IKARA,Male,8133556947,VERIFIED,True,IKARA
+Mohammed Aliyu,Mohammed,Aliyu,Kaduna,IKARA,Male,8069084882,VERIFIED,True,IKARA
+Shafiu Yusuf,Shafiu,Yusuf,Kaduna,IKARA,Male,8133323320,VERIFIED,True,IKARA
+Abdulhadi Yusuf,Abdulhadi,Yusuf,Kaduna,IKARA,Male,8161502641,VERIFIED,True,IKARA
+Nuhu Mallam,Nuhu,Mallam,Kaduna,IKARA,Male,8067326504,VERIFIED,True,IKARA
+Lado Mato,Lado,Mato,Kaduna,IKARA,Male,8060584467,VERIFIED,True,IKARA
+Sale Ali,Sale,Ali,Kaduna,IKARA,Male,8066362047,VERIFIED,True,IKARA
+Sule Samaila,Sule,Samaila,Kaduna,IKARA,Male,806081172,VERIFIED,True,IKARA
+Idris Zakari,Idris,Zakari,Kaduna,IKARA,Male,8164856647,VERIFIED,True,IKARA
+Samaila Aliyu,Samaila,Aliyu,Kaduna,IKARA,Male,8161335618,VERIFIED,True,IKARA
+E Adebola,E,Adebola,Kaduna,IKARA,Male,8056933878,VERIFIED,True,IKARA
+Salisu Garba,Salisu,Garba,Kaduna,IKARA,Male,7030383208,VERIFIED,True,IKARA
+Salisu Muhammed,Salisu,Muhammed,Kaduna,IKARA,Male,8069777166,VERIFIED,True,IKARA
+Ummar Idris,Ummar,Idris,Kaduna,IKARA,Male,8165176089,VERIFIED,True,IKARA
+Emeka Eze,Emeka,Eze,Kaduna,IKARA,Male,8138578235,VERIFIED,True,IKARA
+Ummar Dalha,Ummar,Dalha,Kaduna,IKARA,Male,7066605059,VERIFIED,True,IKARA
+Garba Tafida,Garba,Tafida,Kaduna,IKARA,Male,8034987259,VERIFIED,True,IKARA
+Daharatu Ibrahim,Daharatu,Ibrahim,Kaduna,IKARA,Female,8133778659,VERIFIED,True,IKARA
+Tukur Musa,Tukur,Musa,Kaduna,IKARA,Male,7037211652,VERIFIED,True,IKARA
+Yahaya Usman,Yahaya,Usman,Kaduna,IKARA,Male,8082913813,VERIFIED,True,IKARA
+Sani Yuguda,Sani,Yuguda,Kaduna,IKARA,Male,8131594377,VERIFIED,True,IKARA
+Haliru Sambo,Haliru,Sambo,Kaduna,IKARA,Male,7030802949,VERIFIED,True,IKARA
+Danladi Ahmed,Danladi,Ahmed,Kaduna,IKARA,Male,8031383264,VERIFIED,True,IKARA
+Salihu Sambo,Salihu,Sambo,Kaduna,IKARA,Male,8069749580,VERIFIED,True,IKARA
+Saminu Akilu,Saminu,Akilu,Kaduna,IKARA,Male,7038990009,VERIFIED,True,IKARA
+Auwal Sambo,Auwal,Sambo,Kaduna,IKARA,Male,7030615036,VERIFIED,True,IKARA
+Yau Garba,Yau,Garba,Kaduna,IKARA,Male,8063151174,VERIFIED,True,IKARA
+Yakubu Akilu,Yakubu,Akilu,Kaduna,IKARA,Male,8069414815,VERIFIED,True,IKARA
+Bashir Hussain,Bashir,Hussain,Kaduna,IKARA,Male,7030220136,VERIFIED,True,IKARA
+Adamu Tukur,Adamu,Tukur,Kaduna,IKARA,Male,7031693940,VERIFIED,True,IKARA
+Bilkisu Hammanyero,Bilkisu,Hammanyero,Kaduna,JABA,Female,8099999999,VERIFIED,True,JABA
+Usman Suleiman,Usman,Suleiman,Kaduna,JABA,Male,8062856255,VERIFIED,True,JABA
+Usman Suleiman,Usman,Suleiman,Kaduna,JABA,Male,8020917199,VERIFIED,True,JABA
+Joseph Sarah,Joseph,Sarah,Kaduna,JABA,Male,8036370744,VERIFIED,True,JABA
+Musa Garba,Musa,Garba,Kaduna,JABA,Male,8033006067,VERIFIED,True,JABA
+Abdul Jumare,Abdul,Jumare,Kaduna,JABA,Male,8023765498,VERIFIED,True,JABA
+Tijjani Ibrahim,Tijjani,Ibrahim,Kaduna,JABA,Male,8036591626,VERIFIED,True,JABA
+Ijeoma Obasi,Ijeoma,Obasi,Kaduna,JABA,Female,8030961733,VERIFIED,True,JABA
+Joseph Anoka,Joseph,Anoka,Kaduna,JABA,Male,8063597210,VERIFIED,True,JABA
+May Okoronkwo,May,Okoronkwo,Kaduna,JABA,Female,8030691910,VERIFIED,True,JABA
+Paul Chidozie,Paul,Chidozie,Kaduna,JABA,Male,8037754197,VERIFIED,True,JABA
+Shakira Okegbemila,Shakira,Okegbemila,Kaduna,JABA,Female,7034643288,VERIFIED,True,JABA
+Suleiman Abubakar,Suleiman,Abubakar,Kaduna,JABA,Male,8034657871,VERIFIED,True,JABA
+Patrick Ahaneku,Patrick,Ahaneku,Kaduna,JABA,Male,80621514,VERIFIED,True,JABA
+Saidu Akilu,Saidu,Akilu,Kaduna,JABA,Male,805555555,VERIFIED,True,JABA
+Chioma Aboh,Chioma,Aboh,Kaduna,JABA,Female,8035305718,VERIFIED,True,JABA
+Akilu Saidu,Akilu,Saidu,Kaduna,JABA,Male,8062104031,VERIFIED,True,JABA
+Patience Obeten,Patience,Obeten,Kaduna,JABA,Female,8066079811,VERIFIED,True,JABA
+Jossy Obodo,Jossy,Obodo,Kaduna,JABA,Female,8030209072,VERIFIED,True,JABA
+Ujunwa Mephors,Ujunwa,Mephors,Kaduna,JABA,Female,8035082248,VERIFIED,True,JABA
+Rita Nnamani,Rita,Nnamani,Kaduna,JABA,Female,8063755482,VERIFIED,True,JABA
+Gloria Azubuike,Gloria,Azubuike,Kaduna,JABA,Female,8031110842,VERIFIED,True,JABA
+Adetutu Abdul,Adetutu,Abdul,Kaduna,JABA,Female,8062679391,VERIFIED,True,JABA
+Mobolaji Mebawondu,Mobolaji,Mebawondu,Kaduna,JABA,Male,8055072117,VERIFIED,True,JABA
+Victory Efone,Victory,Efone,Kaduna,JABA,Female,8034567789,VERIFIED,True,JABA
+Chinenye Ebenebe,Chinenye,Ebenebe,Kaduna,JABA,Female,8037430953,VERIFIED,True,JABA
+Onyinechi Nwosu,Onyinechi,Nwosu,Kaduna,JABA,Female,816899230,VERIFIED,True,JABA
+Sallah Mohammed,Sallah,Mohammed,Kaduna,JABA,Male,8065514748,VERIFIED,True,JABA
+Michael Akimkunmi,Michael,Akimkunmi,Kaduna,JABA,Male,8013040140,VERIFIED,True,JABA
+Edward Anike,Edward,Anike ,Kaduna,JABA,Male,8012356780,VERIFIED,True,JABA
+Imoleayo Olutayo,Imoleayo,Olutayo,Kaduna,JABA,Female,7038428570,VERIFIED,True,JABA
+Peace Agubosim,Peace,Agubosim,Kaduna,JABA,Female,8032778763,VERIFIED,True,JABA
+Tajuddeen Idris,Tajuddeen,Idris,Kaduna,JABA,Male,8067180235,VERIFIED,True,JABA
+Austin Abiri,Austin,Abiri,Kaduna,JABA,Male,8011233112,VERIFIED,True,JABA
+Janet Ibrahim,Janet,Ibrahim,Kaduna,JABA,Female,8033333333,VERIFIED,True,JABA
+Yakubu Umar,Yakubu,Umar,Kaduna,JABA,Male,8057684532,VERIFIED,True,JABA
+Lazarus Onyeabor,Lazarus,Onyeabor ,Kaduna,JEMA'A,Male,8069677796,VERIFIED,True,JEMA'A
+Emmanuei Onyeaboh,Emmanuei,Onyeaboh,Kaduna,JEMA'A,Male,8055645503,VERIFIED,True,JEMA'A
+"Ya,u Muhammad","Ya,u",Muhammad,Kaduna,JEMA'A,Male,8089637082,VERIFIED,True,JEMA'A
+Victoria Bango,Victoria,Bango,Kaduna,JEMA'A,Female,8068999118,VERIFIED,True,JEMA'A
+Rachel Oyegunle,Rachel,Oyegunle,Kaduna,JEMA'A,Female,8061539611,VERIFIED,True,JEMA'A
+Kenneth Agu,Kenneth,Agu,Kaduna,JEMA'A,Male,8025206146,VERIFIED,True,JEMA'A
+Etim Isaac,Etim,Isaac,Kaduna,JEMA'A,Male,8132212337,VERIFIED,True,JEMA'A
+Anyah Paul,Anyah,Paul,Kaduna,JEMA'A,Male,8058832699,VERIFIED,True,JEMA'A
+John Anremo,John,Anremo,Kaduna,JEMA'A,Male,8024253175,VERIFIED,True,JEMA'A
+Habiba Aliyu,Habiba,Aliyu,Kaduna,JEMA'A,Female,8073738055,VERIFIED,True,JEMA'A
+Mgbakor Paul,Mgbakor,Paul,Kaduna,JEMA'A,Male,8027945145,VERIFIED,True,JEMA'A
+Abdul-rauf Ahmad,Abdul-rauf,Ahmad,Kaduna,JEMA'A,Male,8060956982,VERIFIED,True,JEMA'A
+Emmanuel Mgbakor,Emmanuel,Mgbakor,Kaduna,JEMA'A,Male,7065969482,VERIFIED,True,JEMA'A
+Angela Igwe,Angela,Igwe,Kaduna,JEMA'A,Female,8024343328,VERIFIED,True,JEMA'A
+Mercy Mgbakor,Mercy,Mgbakor,Kaduna,JEMA'A,Female,8069177916,VERIFIED,True,JEMA'A
+Abubakar Saidu,Abubakar,Saidu,Kaduna,JEMA'A,Male,8137603615,VERIFIED,True,JEMA'A
+Beatrice Asoh,Beatrice,Asoh,Kaduna,JEMA'A,Female,8138644940,VERIFIED,True,JEMA'A
+Lucy Ugwu,Lucy,Ugwu,Kaduna,JEMA'A,Male,7068239597,VERIFIED,True,JEMA'A
+Gift Mgbakor,Gift,Mgbakor,Kaduna,JEMA'A,Female,8164422544,VERIFIED,True,JEMA'A
+Saleh Adamu,Saleh,Adamu,Kaduna,JEMA'A,Male,8086524222,VERIFIED,True,JEMA'A
+Josiah Nwokocha,Josiah,Nwokocha,Kaduna,JEMA'A,Male,8035048929,VERIFIED,True,JEMA'A
+Moses Aremo,Moses,Aremo,Kaduna,JEMA'A,Male,8067332544,VERIFIED,True,JEMA'A
+Celestine Nnaji,Celestine,Nnaji,Kaduna,JEMA'A,Male,8069295452,VERIFIED,True,JEMA'A
+Joseph Okeke,Joseph,Okeke,Kaduna,JEMA'A,Male,8030571700,VERIFIED,True,JEMA'A
+Magret Wayo,Magret,Wayo,Kaduna,JEMA'A,Female,8086670927,VERIFIED,True,JEMA'A
+Uche Chukwu,Uche,Chukwu,Kaduna,JEMA'A,Male,8063957697,VERIFIED,True,JEMA'A
+Raphael Ifeonu,Raphael,Ifeonu,Kaduna,JEMA'A,Male,7038401175,VERIFIED,True,JEMA'A
+Nike Adeyemi,Nike,Adeyemi,Kaduna,JEMA'A,Female,8064439692,VERIFIED,True,JEMA'A
+Perpetua Okeke,Perpetua,Okeke,Kaduna,JEMA'A,Female,8059122971,VERIFIED,True,JEMA'A
+Augustina Madu,Augustina,Madu,Kaduna,JEMA'A,Female,8065134500,VERIFIED,True,JEMA'A
+Idiat Olaiya,Idiat,Olaiya,Kaduna,JEMA'A,Female,8024347541,VERIFIED,True,JEMA'A
+Jude Igwe,Jude,Igwe,Kaduna,JEMA'A,Male,8133022396,VERIFIED,True,JEMA'A
+Bola Suleiman,Bola,Suleiman,Kaduna,JEMA'A,Female,8077134290,VERIFIED,True,JEMA'A
+Chuks Onwu,Chuks,Onwu,Kaduna,JEMA'A,Male,8050474011,VERIFIED,True,JEMA'A
+Aisha Suleiman,Aisha,Suleiman,Kaduna,JEMA'A,Female,8139099503,VERIFIED,True,JEMA'A
+Juliet Eboh,Juliet,Eboh,Kaduna,JEMA'A,Female,7035885086,VERIFIED,True,JEMA'A
+Peter Jock,Peter,Jock,Kaduna,KACHIA,Male,8087084462,VERIFIED,True,KACHIA
+Dogo Solomon,Dogo,Solomon,Kaduna,KACHIA,Male,8079339467,VERIFIED,True,KACHIA
+Useni Joseph,Useni,Joseph,Kaduna,KACHIA,Male,8072308341,VERIFIED,True,KACHIA
+Peter Agibi,Peter,Agibi,Kaduna,KACHIA,Male,7056255402,VERIFIED,True,KACHIA
+Bako Sheyin,Bako,Sheyin,Kaduna,KACHIA,Male,8057657914,VERIFIED,True,KACHIA
+Luka Jonathan,Luka,Jonathan,Kaduna,KACHIA,Male,7057070206,VERIFIED,True,KACHIA
+Mary Augustine,Mary,Augustine,Kaduna,KACHIA,Female,8076660119,VERIFIED,True,KACHIA
+Yakubu Zakari,Yakubu,Zakari,Kaduna,KACHIA,Male,8073512617,VERIFIED,True,KACHIA
+Augustine Dogo,Augustine ,Dogo,Kaduna,KACHIA,Male,8072084432,VERIFIED,True,KACHIA
+Rose Nicholas,Rose,Nicholas,Kaduna,KACHIA,Female,7058343413,VERIFIED,True,KACHIA
+Grace Zacharia,Grace,Zacharia,Kaduna,KACHIA,Female,7055905557,VERIFIED,True,KACHIA
+Thomas Elisha,Thomas,Elisha,Kaduna,KACHIA,Male,8070595075,VERIFIED,True,KACHIA
+John Achi,John,Achi,Kaduna,KACHIA,Male,7026422956,VERIFIED,True,KACHIA
+Tina Joseph,Tina,Joseph,Kaduna,KACHIA,Female,8073459090,VERIFIED,True,KACHIA
+Timothy Dauda,Timothy,Dauda,Kaduna,KACHIA,Male,8050551601,VERIFIED,True,KACHIA
+Lord Sunday,Lord,Sunday,Kaduna,KACHIA,Male,7059740596,VERIFIED,True,KACHIA
+Ibrahim James,Ibrahim,James,Kaduna,KACHIA,Male,7034367233,VERIFIED,True,KACHIA
+Angela Ibrahim,Angela,Ibrahim,Kaduna,KACHIA,Female,7056290815,VERIFIED,True,KACHIA
+Emmanuel Bulus,Emmanuel,Bulus,Kaduna,KACHIA,Male,8166186437,VERIFIED,True,KACHIA
+Isaac Dodo,Isaac,Dodo,Kaduna,KACHIA,Male,8071913834,VERIFIED,True,KACHIA
+Sule Useni,Sule,Useni,Kaduna,KACHIA,Male,8072089268,VERIFIED,True,KACHIA
+Raymond Sunday,Raymond,Sunday,Kaduna,KACHIA,Male,7055703171,VERIFIED,True,KACHIA
+Simon Sylvester,Simon,Sylvester,Kaduna,KACHIA,Male,8151321626,VERIFIED,True,KACHIA
+Ruth Ishaya,Ruth,Ishaya,Kaduna,KACHIA,Female,7053183920,VERIFIED,True,KACHIA
+Cosmas Nkom,Cosmas,Nkom,Kaduna,KACHIA,Male,8037005965,VERIFIED,True,KACHIA
+Comfort Raymond,Comfort,Raymond,Kaduna,KACHIA,Female,8073242422,VERIFIED,True,KACHIA
+Celestina Lucky,Celestina,Lucky,Kaduna,KACHIA,Female,8057130187,VERIFIED,True,KACHIA
+Gregory James,Gregory,James,Kaduna,KACHIA,Male,8075385222,VERIFIED,True,KACHIA
+Simon Nuhu,Simon,Nuhu,Kaduna,KACHIA,Male,8123471701,VERIFIED,True,KACHIA
+Nuhu Dauda,Nuhu,Dauda,Kaduna,KACHIA,Male,8076159193,VERIFIED,True,KACHIA
+Emmanuel Aduwak,Emmanuel,Aduwak,Kaduna,KACHIA,Male,7083456791,VERIFIED,True,KACHIA
+Ezeikel Dauda,Ezeikel,Dauda,Kaduna,KACHIA,Male,8079807126,VERIFIED,True,KACHIA
+Lawrence Magaji,Lawrence,Magaji,Kaduna,KACHIA,Male,7053518829,VERIFIED,True,KACHIA
+Bernard Kabuk,Bernard,Kabuk,Kaduna,KACHIA,Male,8059762919,VERIFIED,True,KACHIA
+John Tanko,John,Tanko,Kaduna,KACHIA,Male,7058976655,VERIFIED,True,KACHIA
+Elias Nashe,Elias,Nashe,Kaduna,KACHIA,Male,8058992642,VERIFIED,True,KACHIA
+Habib Bello,Habib,Bello,Kaduna,KADUNA NORTH,Male,8068564714,VERIFIED,True,KADUNA NORTH
+Queen. Samuel.,Queen.,Samuel.,Kaduna,KADUNA NORTH,Female,8079894684,VERIFIED,True,KADUNA NORTH
+Mustapha Aliyu,Mustapha,Aliyu,Kaduna,KADUNA NORTH,Male,8032533737,VERIFIED,True,KADUNA NORTH
+Uhvdjm Rfhbk.iiuml,Uhvdjm,Rfhbk.iiuml ,Kaduna,KADUNA NORTH,Male,8022404766,VERIFIED,True,KADUNA NORTH
+Ahmad Saratu,Ahmad,Saratu,Kaduna,KADUNA NORTH,Female,803333333,VERIFIED,True,KADUNA NORTH
+Sani Ramatu,Sani,Ramatu,Kaduna,KADUNA NORTH,Female,8034500624,VERIFIED,True,KADUNA NORTH
+Abubakar Liman,Abubakar,Liman,Kaduna,KADUNA NORTH,Male,8028843474,VERIFIED,True,KADUNA NORTH
+Victoria Ugah,Victoria ,Ugah,Kaduna,KADUNA NORTH,Female,8027060033,VERIFIED,True,KADUNA NORTH
+Abdul Salihu,Abdul,Salihu,Kaduna,KADUNA NORTH,Male,7038523260,VERIFIED,True,KADUNA NORTH
+Malam Kimbamala,Malam,Kimbamala,Kaduna,KADUNA NORTH,Male,7084534790,VERIFIED,True,KADUNA NORTH
+Ibrahim Jibrin,Ibrahim,Jibrin,Kaduna,KADUNA NORTH,Male,8027809040,VERIFIED,True,KADUNA NORTH
+Sulaiman Mohammed,Sulaiman,Mohammed,Kaduna,KADUNA NORTH,Male,8065500947,VERIFIED,True,KADUNA NORTH
+Mamuda Usman,Mamuda,Usman,Kaduna,KADUNA NORTH,Male,7089555205,VERIFIED,True,KADUNA NORTH
+Aisha Sha Aibu,Aisha,Sha Aibu,Kaduna,KADUNA NORTH,Female,8054254621,VERIFIED,True,KADUNA NORTH
+Aminatu Abdulkadir,Aminatu,Abdulkadir,Kaduna,KADUNA NORTH,Female,7035877466,VERIFIED,True,KADUNA NORTH
+Sakina Salisu,Sakina,Salisu,Kaduna,KADUNA NORTH,Female,8080931147,VERIFIED,True,KADUNA NORTH
+Fatima Mohammed,Fatima,Mohammed,Kaduna,KADUNA NORTH,Female,8037682675,VERIFIED,True,KADUNA NORTH
+Hadiza Ibrahim,Hadiza,Ibrahim,Kaduna,KADUNA NORTH,Female,808738802,VERIFIED,True,KADUNA NORTH
+Aisha Mohammad,Aisha,Mohammad,Kaduna,KADUNA NORTH,Female,7037063532,VERIFIED,True,KADUNA NORTH
+Salisu Adamu,Salisu,Adamu,Kaduna,KADUNA NORTH,Male,8026361244,VERIFIED,True,KADUNA NORTH
+Ahmad Magems,Ahmad,Magems,Kaduna,KADUNA NORTH,Male,8033588459,VERIFIED,True,KADUNA NORTH
+Yusuf Adamu,Yusuf,Adamu,Kaduna,KADUNA NORTH,Male,8134134852,VERIFIED,True,KADUNA NORTH
+Yusuf Abdullahi,Yusuf,Abdullahi,Kaduna,KADUNA NORTH,Male,7064475539,VERIFIED,True,KADUNA NORTH
+Malami Saadu,Malami,Saadu,Kaduna,KADUNA NORTH,Male,8081067487,VERIFIED,True,KADUNA NORTH
+Yusuf Yahaya,Yusuf,Yahaya,Kaduna,KADUNA NORTH,Male,7057764672,VERIFIED,True,KADUNA NORTH
+Musa Haruna,Musa,Haruna,Kaduna,KADUNA NORTH,Male,7036454502,VERIFIED,True,KADUNA NORTH
+Usman Sani,Usman,Sani,Kaduna,KADUNA NORTH,Male,7039890436,VERIFIED,True,KADUNA NORTH
+Adamu Haruna,Adamu,Haruna,Kaduna,KADUNA NORTH,Male,8031839487,VERIFIED,True,KADUNA NORTH
+Abdullahi Mohamadu,Abdullahi,Mohamadu,Kaduna,KADUNA NORTH,Male,7026431483,VERIFIED,True,KADUNA NORTH
+Umar Abdullahi,Umar,Abdullahi,Kaduna,KADUNA NORTH,Male,8080232899,VERIFIED,True,KADUNA NORTH
+Kabiru Abdulkadir,Kabiru,Abdulkadir,Kaduna,KADUNA NORTH,Male,8035673960,VERIFIED,True,KADUNA NORTH
+Mohammed Yahaya,Mohammed,Yahaya,Kaduna,KADUNA NORTH,Male,7037612724,VERIFIED,True,KADUNA NORTH
+Alhasan Zakariya,Alhasan,Zakariya,Kaduna,KADUNA NORTH,Male,7035561148,VERIFIED,True,KADUNA NORTH
+Haruna Ibrahim,Haruna,Ibrahim,Kaduna,KADUNA NORTH,Male,7038579518,VERIFIED,True,KADUNA NORTH
+Abdullahi Jibir,Abdullahi,Jibir,Kaduna,KADUNA NORTH,Male,8036230333,VERIFIED,True,KADUNA NORTH
+Adamu Muhammadu,Adamu,Muhammadu,Kaduna,KADUNA NORTH,Male,8028468807,VERIFIED,True,KADUNA NORTH
+Suleiman Shuaibu,Suleiman,Shuaibu,Kaduna,KADUNA SOUTH,Male,8035309485,VERIFIED,True,KADUNA SOUTH
+Shittu Adeleke,Shittu,Adeleke,Kaduna,KADUNA SOUTH,Male,8068109809,VERIFIED,True,KADUNA SOUTH
+Chukwujekwu Nwankwo,Chukwujekwu,Nwankwo,Kaduna,KADUNA SOUTH,Male,8060067152,VERIFIED,True,KADUNA SOUTH
+Muazu Nuhu,Muazu,Nuhu,Kaduna,KADUNA SOUTH,Male,8182039194,VERIFIED,True,KADUNA SOUTH
+Tanko Bijin,Tanko,Bijin,Kaduna,KADUNA SOUTH,Male,7086864650,VERIFIED,True,KADUNA SOUTH
+Usman Shafiu,Usman,Shafiu,Kaduna,KADUNA SOUTH,Male,8160378878,VERIFIED,True,KADUNA SOUTH
+Bitrus Bala,Bitrus,Bala,Kaduna,KADUNA SOUTH,Male,8024365689,VERIFIED,True,KADUNA SOUTH
+Adaobi Amatu,Adaobi,Amatu,Kaduna,KADUNA SOUTH,Female,8064639385,VERIFIED,True,KADUNA SOUTH
+Dahiru Abdullahi,Dahiru,Abdullahi,Kaduna,KADUNA SOUTH,Male,7069006611,VERIFIED,True,KADUNA SOUTH
+Murthar Iliyasu,Murthar,Iliyasu,Kaduna,KADUNA SOUTH,Male,7030619540,VERIFIED,True,KADUNA SOUTH
+Sunbo Shobayo,Sunbo,Shobayo,Kaduna,KADUNA SOUTH,Female,8054446224,VERIFIED,True,KADUNA SOUTH
+Bitrus Gaya,Bitrus,Gaya,Kaduna,KADUNA SOUTH,Male,7039048347,VERIFIED,True,KADUNA SOUTH
+Godwill Ogah,Godwill,Ogah,Kaduna,KADUNA SOUTH,Male,7088203099,VERIFIED,True,KADUNA SOUTH
+Kwanat Larai,Kwanat,Larai,Kaduna,KADUNA SOUTH,Female,8035952422,VERIFIED,True,KADUNA SOUTH
+Bilikisu Suleiman,Bilikisu,Suleiman,Kaduna,KADUNA SOUTH,Female,8083887717,VERIFIED,True,KADUNA SOUTH
+Mark Azudibia,Mark,Azudibia,Kaduna,KADUNA SOUTH,Male,8023505536,VERIFIED,True,KADUNA SOUTH
+Florence Omotuyole,Florence,Omotuyole,Kaduna,KADUNA SOUTH,Female,8057125838,VERIFIED,True,KADUNA SOUTH
+Ruth Nabaida,Ruth,Nabaida,Kaduna,KADUNA SOUTH,Female,8034040890,VERIFIED,True,KADUNA SOUTH
+Yusuf Maaji,Yusuf,Maaji,Kaduna,KADUNA SOUTH,Male,7030556362,VERIFIED,True,KADUNA SOUTH
+Folasade Aderemi,Folasade,Aderemi,Kaduna,KADUNA SOUTH,Female,8065825988,VERIFIED,True,KADUNA SOUTH
+Tanko Rose,Tanko,Rose,Kaduna,KADUNA SOUTH,Female,8068087341,VERIFIED,True,KADUNA SOUTH
+Stella Olayinka,Stella,Olayinka,Kaduna,KADUNA SOUTH,Female,8060863640,VERIFIED,True,KADUNA SOUTH
+Lewi Lois,Lewi,Lois,Kaduna,KADUNA SOUTH,Female,8035370537,VERIFIED,True,KADUNA SOUTH
+Daniel Amune,Daniel,Amune,Kaduna,KADUNA SOUTH,Male,7060474317,VERIFIED,True,KADUNA SOUTH
+Victor Bagaiya,Victor,Bagaiya,Kaduna,KADUNA SOUTH,Male,8066017441,VERIFIED,True,KADUNA SOUTH
+Okoli Sandra,Okoli,Sandra,Kaduna,KADUNA SOUTH,Female,8061336963,VERIFIED,True,KADUNA SOUTH
+Isiyaku Tabitha,Isiyaku,Tabitha ,Kaduna,KADUNA SOUTH,Female,8062687754,VERIFIED,True,KADUNA SOUTH
+Joshua Victoria,Joshua,Victoria,Kaduna,KADUNA SOUTH,Female,8069733366,VERIFIED,True,KADUNA SOUTH
+Tanko Joshua,Tanko,Joshua,Kaduna,KADUNA SOUTH,Male,8036120395,VERIFIED,True,KADUNA SOUTH
+Samuel Betty,Samuel,Betty,Kaduna,KADUNA SOUTH,Female,8036992903,VERIFIED,True,KADUNA SOUTH
+Alfred Yerima,Alfred,Yerima,Kaduna,KADUNA SOUTH,Male,8023320859,VERIFIED,True,KADUNA SOUTH
+Gloria Nwosu,Gloria,Nwosu,Kaduna,KADUNA SOUTH,Female,8038024970,VERIFIED,True,KADUNA SOUTH
+Umar Hajara,Umar,Hajara,Kaduna,KADUNA SOUTH,Female,8022324665,VERIFIED,True,KADUNA SOUTH
+Habibu Ramatu,Habibu,Ramatu,Kaduna,KADUNA SOUTH,Female,7039622918,VERIFIED,True,KADUNA SOUTH
+Olubunmi Aremu,Olubunmi,Aremu,Kaduna,KADUNA SOUTH,Female,8028524871,VERIFIED,True,KADUNA SOUTH
+Yem Rahila,Yem,Rahila,Kaduna,KADUNA SOUTH,Female,8062243954,VERIFIED,True,KADUNA SOUTH
+Hauwa Ajayi,Hauwa,Ajayi,Kaduna,KAGARKO,Female,8062985596,VERIFIED,True,KAGARKO
+Sambo Sarki,Sambo,Sarki,Kaduna,KAGARKO,Male,7062461612,VERIFIED,True,KAGARKO
+Japhet Benerd,Japhet,Benerd,Kaduna,KAGARKO,Male,8134917958,VERIFIED,True,KAGARKO
+Dauda Yakubu,Dauda,Yakubu,Kaduna,KAGARKO,Male,7065938166,VERIFIED,True,KAGARKO
+Ezekiel Stephen,Ezekiel,Stephen,Kaduna,KAGARKO,Male,8169328413,VERIFIED,True,KAGARKO
+Dominic Musa,Dominic,Musa,Kaduna,KAGARKO,Male,8064659281,VERIFIED,True,KAGARKO
+Amos Peter,Amos,Peter,Kaduna,KAGARKO,Male,8162791443,VERIFIED,True,KAGARKO
+Ishaku Garba,Ishaku,Garba,Kaduna,KAGARKO,Male,8130982101,VERIFIED,True,KAGARKO
+Gambo Musa,Gambo,Musa,Kaduna,KAGARKO,Male,7033567803,VERIFIED,True,KAGARKO
+Alice Dogo,Alice,Dogo,Kaduna,KAGARKO,Female,7064983638,VERIFIED,True,KAGARKO
+Linda Dogo,Linda,Dogo,Kaduna,KAGARKO,Female,8161249673,VERIFIED,True,KAGARKO
+Bulus Waziri,Bulus,Waziri,Kaduna,KAGARKO,Male,8130981471,VERIFIED,True,KAGARKO
+Samson Luka,Samson,Luka,Kaduna,KAGARKO,Male,7030205291,VERIFIED,True,KAGARKO
+Paul Musa,Paul,Musa,Kaduna,KAGARKO,Male,7033542876,VERIFIED,True,KAGARKO
+Friday Emmanuel,Friday,Emmanuel,Kaduna,KAGARKO,Male,7063165532,VERIFIED,True,KAGARKO
+Philip Garba,Philip,Garba ,Kaduna,KAGARKO,Male,8064657220,VERIFIED,True,KAGARKO
+Francis Bako,Francis,Bako,Kaduna,KAGARKO,Male,8168177947,VERIFIED,True,KAGARKO
+Abraham Ishaya,Abraham,Ishaya,Kaduna,KAGARKO,Male,8130114102,VERIFIED,True,KAGARKO
+Paul Christopher,Paul,Christopher,Kaduna,KAGARKO,Male,8133720955,VERIFIED,True,KAGARKO
+Tanko Yero,Tanko,Yero,Kaduna,KAGARKO,Male,8167642097,VERIFIED,True,KAGARKO
+Gideon Bitrus,Gideon,Bitrus,Kaduna,KAGARKO,Male,8168177852,VERIFIED,True,KAGARKO
+Tanko Dango,Tanko,Dango,Kaduna,KAGARKO,Male,7032548018,VERIFIED,True,KAGARKO
+Philip Dango,Philip,Dango,Kaduna,KAGARKO,Male,8135795357,VERIFIED,True,KAGARKO
+Ibrahim Dango,Ibrahim,Dango,Kaduna,KAGARKO,Male,7062354721,VERIFIED,True,KAGARKO
+John Garba,John,Garba,Kaduna,KAGARKO,Male,7030748977,VERIFIED,True,KAGARKO
+Hosea Ibrahim,Hosea,Ibrahim,Kaduna,KAGARKO,Male,7065639212,VERIFIED,True,KAGARKO
+Goerge Awu,Goerge,Awu,Kaduna,KAGARKO,Male,8186804529,VERIFIED,True,KAGARKO
+Yari Ishaya,Yari,Ishaya,Kaduna,KAGARKO,Male,7081853547,VERIFIED,True,KAGARKO
+Dangiwa Awuson,Dangiwa,Awuson,Kaduna,KAGARKO,Male,7032695697,VERIFIED,True,KAGARKO
+Abbas Akuso,Abbas,Akuso,Kaduna,KAGARKO,Male,8036588196,VERIFIED,True,KAGARKO
+Elisha Dinatu,Elisha,Dinatu,Kaduna,KAGARKO,Male,8131347056,VERIFIED,True,KAGARKO
+Esther Akuso,Esther,Akuso,Kaduna,KAGARKO,Female,8066725593,VERIFIED,True,KAGARKO
+Florence Ibrahim,Florence,Ibrahim,Kaduna,KAGARKO,Female,7068875823,VERIFIED,True,KAGARKO
+Revernd Ibrahim,Revernd,Ibrahim,Kaduna,KAGARKO,Male,8168776085,VERIFIED,True,KAGARKO
+Bature Akosu,Bature,Akosu,Kaduna,KAGARKO,Male,7037446464,VERIFIED,True,KAGARKO
+Williams Ibrahim,Williams,Ibrahim,Kaduna,KAGARKO,Male,8135884826,VERIFIED,True,KAGARKO
+Usman Sale,Usman,Sale,Kaduna,KAJURU,Male,8071675385,VERIFIED,True,KAJURU
+Ibrahim Abdulahi,Ibrahim,Abdulahi,Kaduna,KAJURU,Male,8070929553,VERIFIED,True,KAJURU
+Abdurahman Suleman,Abdurahman,Suleman,Kaduna,KAJURU,Male,8073355207,VERIFIED,True,KAJURU
+Jubiri Isa,Jubiri,Isa,Kaduna,KAJURU,Male,8051277681,VERIFIED,True,KAJURU
+Abdulrahman Ideris,Abdulrahman,Ideris,Kaduna,KAJURU,Male,7057865854,VERIFIED,True,KAJURU
+Saidu Ado,Saidu,Ado,Kaduna,KAJURU,Male,7052038921,VERIFIED,True,KAJURU
+Musa Sahu,Musa,Sahu,Kaduna,KAJURU,Male,7056334615,VERIFIED,True,KAJURU
+Haruna Ahmadu,Haruna,Ahmadu,Kaduna,KAJURU,Male,7051622848,VERIFIED,True,KAJURU
+Suleman Abubakar,Suleman,Abubakar,Kaduna,KAJURU,Male,7058105792,VERIFIED,True,KAJURU
+Yahaya Usman,Yahaya,Usman,Kaduna,KAJURU,Male,8074372784,VERIFIED,True,KAJURU
+Abdukarim Isiaku,Abdukarim,Isiaku,Kaduna,KAJURU,Male,8050524478,VERIFIED,True,KAJURU
+Yali Dahu,Yali,Dahu,Kaduna,KAJURU,Male,8072640549,VERIFIED,True,KAJURU
+Jibiri Tambaya,Jibiri,Tambaya,Kaduna,KAJURU,Male,8037527303,VERIFIED,True,KAJURU
+Abdukarim Usman,Abdukarim,Usman,Kaduna,KAJURU,Male,7057943810,VERIFIED,True,KAJURU
+Magaji Machu,Magaji,Machu,Kaduna,KAJURU,Male,7059536540,VERIFIED,True,KAJURU
+Idiris Yusuf,Idiris,Yusuf,Kaduna,KAJURU,Male,8053566227,VERIFIED,True,KAJURU
+Shehu Muhamade,Shehu,Muhamade,Kaduna,KAJURU,Male,7056308833,VERIFIED,True,KAJURU
+Abubakar Ibrahim,Abubakar,Ibrahim,Kaduna,KAJURU,Male,7058700847,VERIFIED,True,KAJURU
+Yau Idris,Yau,Idris,Kaduna,KAJURU,Male,7036704246,VERIFIED,True,KAJURU
+Yahaya Umar,Yahaya,Umar,Kaduna,KAJURU,Male,8060696591,VERIFIED,True,KAJURU
+Nura Saidu,Nura,Saidu,Kaduna,KAJURU,Male,7087668057,VERIFIED,True,KAJURU
+Danladi Danlami,Danladi,Danlami,Kaduna,KAJURU,Male,7052425838,VERIFIED,True,KAJURU
+Atiku Abubakar,Atiku,Abubakar,Kaduna,KAJURU,Male,7055372111,VERIFIED,True,KAJURU
+Abdulahi Hassan,Abdulahi,Hassan,Kaduna,KAJURU,Male,8072080573,VERIFIED,True,KAJURU
+Nababa Mohamed,Nababa,Mohamed,Kaduna,KAJURU,Male,8084353240,VERIFIED,True,KAJURU
+Tanimu Mansur,Tanimu,Mansur,Kaduna,KAJURU,Male,8029493137,VERIFIED,True,KAJURU
+Muhamed Shaibu,Muhamed,Shaibu,Kaduna,KAJURU,Male,8088320308,VERIFIED,True,KAJURU
+Yau Umaru,Yau,Umaru,Kaduna,KAJURU,Male,8085037266,VERIFIED,True,KAJURU
+Ibrahim Mohamed,Ibrahim,Mohamed,Kaduna,KAJURU,Male,7083068717,VERIFIED,True,KAJURU
+Yau Madugu,Yau,Madugu,Kaduna,KAJURU,Male,8080651083,VERIFIED,True,KAJURU
+Ado Saugigi,Ado,Saugigi,Kaduna,KAJURU,Male,7063515415,VERIFIED,True,KAJURU
+Okechukwu Nwile,Okechukwu,Nwile,Kaduna,KAJURU,Male,7052899377,VERIFIED,True,KAJURU
+Sulaiman Musa,Sulaiman,Musa,Kaduna,KAJURU,Male,7051248716,VERIFIED,True,KAJURU
+Kaduna Juli,Kaduna,Juli,Kaduna,KAJURU,Male,7056273508,VERIFIED,True,KAJURU
+Mohammed Salisu,Mohammed,Salisu,Kaduna,KAJURU,Male,8055744561,VERIFIED,True,KAJURU
+Garba Juli,Garba,Juli,Kaduna,KAJURU,Male,7057943811,VERIFIED,True,KAJURU
+Danjuma Magaji,Danjuma,Magaji,Kaduna,KAURA,Male,8081949378,VERIFIED,True,KAURA
+Ishaku Sauka,Ishaku,Sauka,Kaduna,KAURA,Male,708466460,VERIFIED,True,KAURA
+Maaji Jaafaru,Maaji,Jaafaru ,Kaduna,KAURA,Male,8065381998,VERIFIED,True,KAURA
+Ezeikel Taya,Ezeikel,Taya,Kaduna,KAURA,Male,8131273596,VERIFIED,True,KAURA
+Gideon Yusuf,Gideon,Yusuf,Kaduna,KAURA,Male,8022322388,VERIFIED,True,KAURA
+Musa Danjuma,Musa,Danjuma,Kaduna,KAURA,Male,8187408495,VERIFIED,True,KAURA
+Bawa John,Bawa,John,Kaduna,KAURA,Male,7088642629,VERIFIED,True,KAURA
+Williams Sadi,Williams,Sadi,Kaduna,KAURA,Male,8136020045,VERIFIED,True,KAURA
+Stephen Maitala,Stephen,Maitala,Kaduna,KAURA,Male,8029482194,VERIFIED,True,KAURA
+Nathan Danjuma,Nathan,Danjuma,Kaduna,KAURA,Male,7086773810,VERIFIED,True,KAURA
+Prayer Saleh,Prayer,Saleh,Kaduna,KAURA,Male,8167278400,VERIFIED,True,KAURA
+Ibrahim Dangata,Ibrahim,Dangata,Kaduna,KAURA,Male,7085051025,VERIFIED,True,KAURA
+Maitala Magaji,Maitala,Magaji,Kaduna,KAURA,Male,7085695597,VERIFIED,True,KAURA
+Titus Shadafi,Titus,Shadafi,Kaduna,KAURA,Male,8121049363,VERIFIED,True,KAURA
+Iliya Musa,Iliya,Musa ,Kaduna,KAURA,Male,8080338498,VERIFIED,True,KAURA
+Mathew Simon,Mathew,Simon,Kaduna,KAURA,Male,8065373735,VERIFIED,True,KAURA
+Moses Joshua,Moses,Joshua,Kaduna,KAURA,Male,7051034802,VERIFIED,True,KAURA
+Musa Bala,Musa,Bala,Kaduna,KAURA,Male,8024279074,VERIFIED,True,KAURA
+Sunday Lafat,Sunday,Lafat,Kaduna,KAURA,Male,8011623039,VERIFIED,True,KAURA
+Umar Musa,Umar,Musa,Kaduna,KAURA,Male,8033985647,VERIFIED,True,KAURA
+Khaijah Yunusa,Khaijah,Yunusa,Kaduna,KAURA,Female,8038141430,VERIFIED,True,KAURA
+Veronica Ogunwole,Veronica,Ogunwole,Kaduna,KAURA,Female,8027946350,VERIFIED,True,KAURA
+Jerry Mallam,Jerry,Mallam,Kaduna,KAURA,Male,8033728552,VERIFIED,True,KAURA
+Diana Mallam,Diana,Mallam,Kaduna,KAURA,Female,8036414885,VERIFIED,True,KAURA
+Daniel William,Daniel,William,Kaduna,KAURA,Male,7030477367,VERIFIED,True,KAURA
+Daboh Samuel,Daboh,Samuel,Kaduna,KAURA,Male,8081163361,VERIFIED,True,KAURA
+Gwayit Anthony,Gwayit,Anthony,Kaduna,KAURA,Male,7069695057,VERIFIED,True,KAURA
+John Guazah,John,Guazah,Kaduna,KAURA,Male,7065592607,VERIFIED,True,KAURA
+Daniel Dajuma,Daniel,Dajuma,Kaduna,KAURA,Male,8152437698,VERIFIED,True,KAURA
+Kukah Jocob,Kukah,Jocob,Kaduna,KAURA,Male,8162136312,VERIFIED,True,KAURA
+Tutus Peter,Tutus,Peter,Kaduna,KAURA,Male,7039312798,VERIFIED,True,KAURA
+Waje Samson,Waje,Samson,Kaduna,KAURA,Male,8162656108,VERIFIED,True,KAURA
+Adamu Jacob,Adamu,Jacob,Kaduna,KAURA,Male,8053960978,VERIFIED,True,KAURA
+John Jacob,John,Jacob,Kaduna,KAURA,Male,7068312662,VERIFIED,True,KAURA
+Alpha Goni,Alpha,Goni,Kaduna,KAURA,Male,8067549903,VERIFIED,True,KAURA
+Galadima Bulus,Galadima,Bulus,Kaduna,KAURA,Male,8161733601,VERIFIED,True,KAURA
+Yusuf Suleiman,Yusuf,Suleiman,Kaduna,KAURU,Male,8080866361,VERIFIED,True,KAURU
+Ado Idris,Ado,Idris,Kaduna,KAURU,Male,80838715,VERIFIED,True,KAURU
+Alhassan Haruna,Alhassan,Haruna,Kaduna,KAURU,Female,8088269585,VERIFIED,True,KAURU
+Hamisu Abdullahi,Hamisu,Abdullahi,Kaduna,KAURU,Male,7085255942,VERIFIED,True,KAURU
+Zainab Lawal,Zainab,Lawal,Kaduna,KAURU,Female,8120713416,VERIFIED,True,KAURU
+Yusufu Danjuma,Yusufu,Danjuma,Kaduna,KAURU,Male,7082679062,VERIFIED,True,KAURU
+Mohammad Haruna,Mohammad,Haruna,Kaduna,KAURU,Male,8025516847,VERIFIED,True,KAURU
+Iliyas Idris,Iliyas,Idris,Kaduna,KAURU,Male,8088992617,VERIFIED,True,KAURU
+Abdullahi Hamisu,Abdullahi,Hamisu,Kaduna,KAURU,Male,8084183358,VERIFIED,True,KAURU
+Ishak Haruna,Ishak,Haruna,Kaduna,KAURU,Male,8025252663,VERIFIED,True,KAURU
+Yunusa Haruna,Yunusa,Haruna,Kaduna,KAURU,Male,8029482166,VERIFIED,True,KAURU
+Idris Yahaya,Idris,Yahaya,Kaduna,KAURU,Male,8085041225,VERIFIED,True,KAURU
+Shuaibu Idris,Shuaibu,Idris,Kaduna,KAURU,Male,8084756470,VERIFIED,True,KAURU
+Abdullahi Abubakar,Abdullahi,Abubakar,Kaduna,KAURU,Male,8125379840,VERIFIED,True,KAURU
+Nasiruddeen Muhammed,Nasiruddeen,Muhammed,Kaduna,KAURU,Male,7081542614,VERIFIED,True,KAURU
+Abdullahi Husaini,Abdullahi,Husaini,Kaduna,KAURU,Male,8032675798,VERIFIED,True,KAURU
+Adamu Muazu,Adamu,Muazu,Kaduna,KAURU,Male,7084564206,VERIFIED,True,KAURU
+Yusuf Idris,Yusuf,Idris,Kaduna,KAURU,Male,802226251,VERIFIED,True,KAURU
+Waje Audu,Waje,Audu,Kaduna,KAURU,Male,8123137448,VERIFIED,True,KAURU
+Yakubu Muhammad,Yakubu,Muhammad,Kaduna,KAURU,Male,8123830561,VERIFIED,True,KAURU
+Dauda Hamisu,Dauda,Hamisu,Kaduna,KAURU,Male,8081698381,VERIFIED,True,KAURU
+Salmanu Aliyu,Salmanu,Aliyu,Kaduna,KAURU,Male,8022470928,VERIFIED,True,KAURU
+Ayuba Abdullahi,Ayuba,Abdullahi,Kaduna,KAURU,Male,8080900439,VERIFIED,True,KAURU
+Hussaini Abdullahi,Hussaini,Abdullahi,Kaduna,KAURU,Male,8024162827,VERIFIED,True,KAURU
+Ismail Usman,Ismail,Usman,Kaduna,KAURU,Male,8087337050,VERIFIED,True,KAURU
+Aliyu Ishaq,Aliyu,Ishaq,Kaduna,KAURU,Male,8026400373,VERIFIED,True,KAURU
+Nuhu Mohammad,Nuhu,Mohammad,Kaduna,KAURU,Male,8122411827,VERIFIED,True,KAURU
+Jibril Hassan,Jibril,Hassan,Kaduna,KAURU,Male,7085052508,VERIFIED,True,KAURU
+Said Haruna,Said,Haruna,Kaduna,KAURU,Male,8088203408,VERIFIED,True,KAURU
+Aliyu Haruna,Aliyu,Haruna,Kaduna,KAURU,Male,8086284188,VERIFIED,True,KAURU
+Musa Haruna,Musa,Haruna,Kaduna,KAURU,Male,7081839632,VERIFIED,True,KAURU
+Douglass Gambo,Douglass,Gambo,Kaduna,KAURU,Male,7063322099,VERIFIED,True,KAURU
+Dickson Jackob,Dickson,Jackob,Kaduna,KAURU,Male,8082006361,VERIFIED,True,KAURU
+Buhari Lawal,Buhari,Lawal,Kaduna,KAURU,Male,7081891571,VERIFIED,True,KAURU
+Abubkar Ishaq,Abubkar,Ishaq,Kaduna,KAURU,Male,7088242537,VERIFIED,True,KAURU
+Salisu Saminu,Salisu,Saminu,Kaduna,KAURU,Male,8028632370,VERIFIED,True,KAURU
+A I,A,I,Kaduna,KUBAU,Male,8098977798,VERIFIED,True,KUBAU
+Abdullah Usman,Abdullah,Usman,Kaduna,KUBAU,Male,8135439162,VERIFIED,True,KUBAU
+Yakubu Aliyu,Yakubu ,Aliyu,Kaduna,KUBAU,Male,8028870586,VERIFIED,True,KUBAU
+Muhammad Isah,Muhammad,Isah,Kaduna,KUBAU,Male,8139705842,VERIFIED,True,KUBAU
+Ali Lawal,Ali,Lawal,Kaduna,KUBAU,Male,7084228555,VERIFIED,True,KUBAU
+Abdulhamid Ali,Abdulhamid,Ali,Kaduna,KUBAU,Male,8166134829,VERIFIED,True,KUBAU
+Ridwanu Alhaji,Ridwanu,Alhaji,Kaduna,KUBAU,Male,8032084597,VERIFIED,True,KUBAU
+Magaji Muhammadu,Magaji,Muhammadu,Kaduna,KUBAU,Male,8029005176,VERIFIED,True,KUBAU
+Ashiru Yakubu,Ashiru,Yakubu,Kaduna,KUBAU,Male,8086161619,VERIFIED,True,KUBAU
+Hassan Usman,Hassan,Usman,Kaduna,KUBAU,Male,8136520538,VERIFIED,True,KUBAU
+Zailani Muhammad,Zailani,Muhammad,Kaduna,KUBAU,Male,7064578903,VERIFIED,True,KUBAU
+Alhassan Mai Anguwa,Alhassan,Mai Anguwa,Kaduna,KUBAU,Male,8085038508,VERIFIED,True,KUBAU
+Lawal Muhammad,Lawal,Muhammad,Kaduna,KUBAU,Male,7039867848,VERIFIED,True,KUBAU
+Alhaji Aliyu Haruna,Alhaji Aliyu,Haruna,Kaduna,KUBAU,Male,908176954,VERIFIED,True,KUBAU
+Yahaya Ya-u,Yahaya,Ya-u,Kaduna,KUBAU,Male,8160921210,VERIFIED,True,KUBAU
+Alhaji Abdullah,Alhaji,Abdullah,Kaduna,KUBAU,Male,7088931813,VERIFIED,True,KUBAU
+Akiru Yakubu,Akiru,Yakubu,Kaduna,KUBAU,Male,8034076341,VERIFIED,True,KUBAU
+Abdu Ya-u,Abdu,Ya-u,Kaduna,KUBAU,Male,8064600036,VERIFIED,True,KUBAU
+Abdulkarim Sulaiman,Abdulkarim,Sulaiman,Kaduna,KUBAU,Male,7066151976,VERIFIED,True,KUBAU
+Muhammad Nasiru,Muhammad,Nasiru,Kaduna,KUBAU,Male,8137319914,VERIFIED,True,KUBAU
+Raja-u Abdullahi,Raja-u,Abdullahi,Kaduna,KUBAU,Male,8162181434,VERIFIED,True,KUBAU
+Hudu Ali,Hudu,Ali,Kaduna,KUBAU,Male,8167181138,VERIFIED,True,KUBAU
+Awwalu Yahaya,Awwalu,Yahaya,Kaduna,KUBAU,Male,8034354753,VERIFIED,True,KUBAU
+Abubakar Isa,Abubakar,Isa,Kaduna,KUBAU,Male,8133629954,VERIFIED,True,KUBAU
+Abdullah Sulaiman,Abdullah,Sulaiman,Kaduna,KUBAU,Male,8137150932,VERIFIED,True,KUBAU
+Ibrahim Yunusa,Ibrahim,Yunusa,Kaduna,KUBAU,Male,8139508150,VERIFIED,True,KUBAU
+Alhassan Idris,Alhassan,Idris,Kaduna,KUBAU,Male,8132975761,VERIFIED,True,KUBAU
+Ya-u Aminu,Ya-u,Aminu,Kaduna,KUBAU,Male,8131303748,VERIFIED,True,KUBAU
+Haruna Bala,Haruna,Bala,Kaduna,KUBAU,Male,8164233134,VERIFIED,True,KUBAU
+Ibrahim Garba,Ibrahim,Garba,Kaduna,KUBAU,Male,7030759563,VERIFIED,True,KUBAU
+Nadabo Salisu,Nadabo,Salisu,Kaduna,KUBAU,Male,8039295531,VERIFIED,True,KUBAU
+Abdulsalam Ya-u,Abdulsalam,Ya-u,Kaduna,KUBAU,Male,8135724712,VERIFIED,True,KUBAU
+Muhammad Dayyabu,Muhammad,Dayyabu,Kaduna,KUBAU,Male,8133717296,VERIFIED,True,KUBAU
+Muhammad Musa,Muhammad,Musa,Kaduna,KUBAU,Male,8029263232,VERIFIED,True,KUBAU
+Hamza Abdu,Hamza,Abdu,Kaduna,KUBAU,Male,7081158314,VERIFIED,True,KUBAU
+Idris Saleh,Idris,Saleh,Kaduna,KUBAU,Male,8133381502,VERIFIED,True,KUBAU
+Isah Musa,Isah,Musa,Kaduna,KUDAN,Male,7034789290,VERIFIED,True,KUDAN
+Gambo Sale,Gambo,Sale,Kaduna,KUDAN,Male,7066328333,VERIFIED,True,KUDAN
+Ahmed Hassan,Ahmed,Hassan,Kaduna,KUDAN,Male,8039522293,VERIFIED,True,KUDAN
+Bello Suleiman,Bello,Suleiman,Kaduna,KUDAN,Male,7038339584,VERIFIED,True,KUDAN
+Annas Murtala,Annas,Murtala,Kaduna,KUDAN,Male,8073542895,VERIFIED,True,KUDAN
+Kabiru Usman,Kabiru,Usman,Kaduna,KUDAN,Male,8066110483,VERIFIED,True,KUDAN
+Idris Bala,Idris,Bala,Kaduna,KUDAN,Male,8061609035,VERIFIED,True,KUDAN
+Ado Dauda,Ado,Dauda,Kaduna,KUDAN,Male,7055212781,VERIFIED,True,KUDAN
+Shamsu Ahmad,Shamsu,Ahmad,Kaduna,KUDAN,Male,8126317666,VERIFIED,True,KUDAN
+Sagiru Usman,Sagiru,Usman,Kaduna,KUDAN,Male,7036117565,VERIFIED,True,KUDAN
+Halliru Magaji,Halliru,Magaji,Kaduna,KUDAN,Male,8087457611,VERIFIED,True,KUDAN
+Boniface Asadu,Boniface,Asadu,Kaduna,KUDAN,Male,7031966049,VERIFIED,True,KUDAN
+Ahmed Abdullahi,Ahmed,Abdullahi,Kaduna,KUDAN,Male,8065735537,VERIFIED,True,KUDAN
+Hauwa Sarki Ibrahim,Hauwa Sarki,Ibrahim,Kaduna,KUDAN,Female,7037695208,VERIFIED,True,KUDAN
+Hauwa Abbas,Hauwa,Abbas,Kaduna,KUDAN,Female,8068785218,VERIFIED,True,KUDAN
+Jumai Abubakar,Jumai,Abubakar,Kaduna,KUDAN,Female,8035602006,VERIFIED,True,KUDAN
+Jibrin Umar,Jibrin,Umar,Kaduna,KUDAN,Male,8067354773,VERIFIED,True,KUDAN
+Suwaiba Ahmed,Suwaiba,Ahmed,Kaduna,KUDAN,Female,8029968584,VERIFIED,True,KUDAN
+"Sa,adatu Abdullahi","Sa,adatu",Abdullahi,Kaduna,KUDAN,Female,8038968953,VERIFIED,True,KUDAN
+Jaafar Aliyu,Jaafar,Aliyu ,Kaduna,KUDAN,Male,7068299272,VERIFIED,True,KUDAN
+Abubakar Aliyu,Abubakar,Aliyu,Kaduna,KUDAN,Female,8034502349,VERIFIED,True,KUDAN
+Musa Hamisu,Musa,Hamisu,Kaduna,KUDAN,Male,7033837149,VERIFIED,True,KUDAN
+Zaharadeen Aliyu,Zaharadeen,Aliyu,Kaduna,KUDAN,Male,7063364413,VERIFIED,True,KUDAN
+Isah Yusuf,Isah,Yusuf,Kaduna,KUDAN,Male,7063309406,VERIFIED,True,KUDAN
+Muazu Sufiyanu,Muazu,Sufiyanu,Kaduna,KUDAN,Male,7082886749,VERIFIED,True,KUDAN
+Isah Abdullahi,Isah,Abdullahi,Kaduna,KUDAN,Male,7036745720,VERIFIED,True,KUDAN
+Sani Lawal,Sani,Lawal,Kaduna,KUDAN,Male,8136173947,VERIFIED,True,KUDAN
+Isah Lawal,Isah,Lawal,Kaduna,KUDAN,Male,7065699478,VERIFIED,True,KUDAN
+Mustafa Yusuf,Mustafa,Yusuf,Kaduna,KUDAN,Male,8061616781,VERIFIED,True,KUDAN
+Abdulkareem Yahya,Abdulkareem,Yahya,Kaduna,KUDAN,Male,8036522474,VERIFIED,True,KUDAN
+Maaruf Umar,Maaruf,Umar,Kaduna,KUDAN,Male,7032054188,VERIFIED,True,KUDAN
+Maharazu Shehu,Maharazu,Shehu,Kaduna,KUDAN,Male,8063613007,VERIFIED,True,KUDAN
+Zubairu Nuhu,Zubairu,Nuhu,Kaduna,KUDAN,Male,8062486851,VERIFIED,True,KUDAN
+Salisu Dahiru,Salisu,Dahiru,Kaduna,KUDAN,Male,7067892721,VERIFIED,True,KUDAN
+Tasiu Abdulkarim,Tasiu,Abdulkarim,Kaduna,KUDAN,Male,7069663769,VERIFIED,True,KUDAN
+Sani Ahmed,Sani,Ahmed,Kaduna,KUDAN,Male,8036165898,VERIFIED,True,KUDAN
+Adamu Marcus,Adamu,Marcus,Kaduna,LERE,Male,8164678349,VERIFIED,True,LERE
+Yaki David,Yaki,David,Kaduna,LERE,Male,8163459014,VERIFIED,True,LERE
+Yunana Yakubu,Yunana,Yakubu,Kaduna,LERE,Male,8060820580,VERIFIED,True,LERE
+Bizuga Agai,Bizuga,Agai,Kaduna,LERE,Male,8065888647,VERIFIED,True,LERE
+Ibrahim Adams,Ibrahim,Adams,Kaduna,LERE,Male,8133431553,VERIFIED,True,LERE
+Godiya Yakubu,Godiya,Yakubu,Kaduna,LERE,Male,8135547458,VERIFIED,True,LERE
+Saleh Waje,Saleh,Waje,Kaduna,LERE,Male,8166179609,VERIFIED,True,LERE
+Habu Idris,Habu,Idris,Kaduna,LERE,Male,7062716285,VERIFIED,True,LERE
+Hassan Daniel,Hassan,Daniel,Kaduna,LERE,Male,8134089834,VERIFIED,True,LERE
+Hassan Bayero,Hassan,Bayero,Kaduna,LERE,Male,8139729781,VERIFIED,True,LERE
+Danjuma Mamman,Danjuma,Mamman,Kaduna,LERE,Male,8160064411,VERIFIED,True,LERE
+Hamisu Magaji,Hamisu,Magaji,Kaduna,LERE,Male,8132524831,VERIFIED,True,LERE
+Saleh Abdullahi,Saleh,Abdullahi,Kaduna,LERE,Male,8160673414,VERIFIED,True,LERE
+Zaidu Mahamud,Zaidu,Mahamud,Kaduna,LERE,Male,7033889832,VERIFIED,True,LERE
+Abdullahi Umar,Abdullahi,Umar,Kaduna,LERE,Male,8139797621,VERIFIED,True,LERE
+Yakubu Muhammed,Yakubu,Muhammed,Kaduna,LERE,Male,7064689747,VERIFIED,True,LERE
+Duka Muhamadu,Duka,Muhamadu,Kaduna,LERE,Male,8036805546,VERIFIED,True,LERE
+Babangida Emmanuel,Babangida,Emmanuel,Kaduna,LERE,Male,8133446929,VERIFIED,True,LERE
+Mahamud Ahamad,Mahamud,Ahamad,Kaduna,LERE,Male,8136807018,VERIFIED,True,LERE
+Bitrus Adamu,Bitrus,Adamu,Kaduna,LERE,Male,8160852254,VERIFIED,True,LERE
+Hosea Yola,Hosea,Yola,Kaduna,LERE,Male,8133180675,VERIFIED,True,LERE
+Ishaya Bitrus,Ishaya,Bitrus,Kaduna,LERE,Male,8062650099,VERIFIED,True,LERE
+Habila Bitrus,Habila,Bitrus,Kaduna,LERE,Male,8133217498,VERIFIED,True,LERE
+Idris Jibril,Idris,Jibril,Kaduna,LERE,Male,8136845686,VERIFIED,True,LERE
+Musa Yona,Musa,Yona,Kaduna,LERE,Male,8138780087,VERIFIED,True,LERE
+Kefas Ba,Kefas,Ba,Kaduna,LERE,Male,8133273509,VERIFIED,True,LERE
+Samaila Abubakar,Samaila,Abubakar,Kaduna,LERE,Male,7038451545,VERIFIED,True,LERE
+Usman Dangaye,Usman,Dangaye,Kaduna,LERE,Male,8169620171,VERIFIED,True,LERE
+Iliya Danyaro,Iliya,Danyaro,Kaduna,LERE,Male,8168470813,VERIFIED,True,LERE
+Musa Sunday,Musa,Sunday,Kaduna,LERE,Male,7034940987,VERIFIED,True,LERE
+Isah Yakubu,Isah,Yakubu,Kaduna,LERE,Male,7061292869,VERIFIED,True,LERE
+Abdulmumin Umar,Abdulmumin,Umar,Kaduna,LERE,Male,813684572,VERIFIED,True,LERE
+Sunday Jonathan,Sunday,Jonathan,Kaduna,LERE,Male,8132095506,VERIFIED,True,LERE
+Abdulmumin Shuaibu,Abdulmumin,Shuaibu,Kaduna,LERE,Male,8136361362,VERIFIED,True,LERE
+Adamu Idris,Adamu,Idris,Kaduna,LERE,Male,8161846887,VERIFIED,True,LERE
+Aliyu Ibrahim,Aliyu,Ibrahim,Kaduna,LERE,Male,8133217011,VERIFIED,True,LERE
+Lawal Ibrahim,Lawal,Ibrahim,Kaduna,MAKARFI,Male,7034758853,VERIFIED,True,MAKARFI
+Basiru Samaila,Basiru,Samaila,Kaduna,MAKARFI,Male,8131036202,VERIFIED,True,MAKARFI
+Matti Ojo,Matti,Ojo,Kaduna,MAKARFI,Male,8053297235,VERIFIED,True,MAKARFI
+Abldulahi Samaila,Abldulahi,Samaila,Kaduna,MAKARFI,Male,7083535382,VERIFIED,True,MAKARFI
+Dalhatu Usman,Dalhatu,Usman,Kaduna,MAKARFI,Male,8060771101,VERIFIED,True,MAKARFI
+Lawal Usman,Lawal,Usman,Kaduna,MAKARFI,Male,8091494272,VERIFIED,True,MAKARFI
+Abdulmumini Mohammed,Abdulmumini,Mohammed,Kaduna,MAKARFI,Male,8035881118,VERIFIED,True,MAKARFI
+Kasimu Ali,Kasimu,Ali,Kaduna,MAKARFI,Male,8065938432,VERIFIED,True,MAKARFI
+Kabiru Abdullahi,Kabiru,Abdullahi,Kaduna,MAKARFI,Male,7037765032,VERIFIED,True,MAKARFI
+Sabo Abdulwahab,Sabo,Abdulwahab,Kaduna,MAKARFI,Male,8090752659,VERIFIED,True,MAKARFI
+Mustafa Abdullahi,Mustafa,Abdullahi,Kaduna,MAKARFI,Male,8096928426,VERIFIED,True,MAKARFI
+Rufai Ibrahim,Rufai,Ibrahim,Kaduna,MAKARFI,Male,8050263661,VERIFIED,True,MAKARFI
+Yahaya Adam,Yahaya,Adam,Kaduna,MAKARFI,Male,8096362317,VERIFIED,True,MAKARFI
+Abdulkadir Sale,Abdulkadir,Sale,Kaduna,MAKARFI,Male,8067444824,VERIFIED,True,MAKARFI
+Aminu Muhammed,Aminu,Muhammed,Kaduna,MAKARFI,Male,8185614413,VERIFIED,True,MAKARFI
+Danladi Aliyu,Danladi,Aliyu,Kaduna,MAKARFI,Male,7088231853,VERIFIED,True,MAKARFI
+Kabiru Samaila,Kabiru,Samaila,Kaduna,MAKARFI,Male,8095096681,VERIFIED,True,MAKARFI
+Umaru Abdullahi,Umaru,Abdullahi,Kaduna,MAKARFI,Male,8090932976,VERIFIED,True,MAKARFI
+Muhammadu Rilwanu,Muhammadu,Rilwanu,Kaduna,MAKARFI,Male,8122766775,VERIFIED,True,MAKARFI
+Sanusi Samaila,Sanusi,Samaila,Kaduna,MAKARFI,Male,8036851672,VERIFIED,True,MAKARFI
+Saidu Umar,Saidu,Umar,Kaduna,MAKARFI,Male,7036713869,VERIFIED,True,MAKARFI
+Ibrahim Sanusi,Ibrahim,Sanusi,Kaduna,MAKARFI,Male,7031389443,VERIFIED,True,MAKARFI
+Basiru Ibrahim,Basiru,Ibrahim,Kaduna,MAKARFI,Male,8035061834,VERIFIED,True,MAKARFI
+Husaini Yusufa,Husaini,Yusufa,Kaduna,MAKARFI,Male,8182050479,VERIFIED,True,MAKARFI
+Amina Ibrahim,Amina,Ibrahim,Kaduna,MAKARFI,Female,8022522850,VERIFIED,True,MAKARFI
+Nura Ali,Nura,Ali,Kaduna,MAKARFI,Male,8030631590,VERIFIED,True,MAKARFI
+Roselyn Ejeikwu,Roselyn,Ejeikwu,Kaduna,MAKARFI,Female,8034802086,VERIFIED,True,MAKARFI
+Auwal Mikailu,Auwal,Mikailu,Kaduna,MAKARFI,Male,8023379233,VERIFIED,True,MAKARFI
+Mansur Mahmud,Mansur,Mahmud,Kaduna,MAKARFI,Male,8032523451,VERIFIED,True,MAKARFI
+Hamza Salisu,Hamza,Salisu,Kaduna,MAKARFI,Male,8186221730,VERIFIED,True,MAKARFI
+Suleiman Sani,Suleiman,Sani,Kaduna,MAKARFI,Male,8028991106,VERIFIED,True,MAKARFI
+Abdulkareem Abubakar,Abdulkareem,Abubakar,Kaduna,MAKARFI,Male,7068340132,VERIFIED,True,MAKARFI
+Rebecca Esho,Rebecca,Esho,Kaduna,MAKARFI,Female,7038009840,VERIFIED,True,MAKARFI
+Sufiyanu Usman,Sufiyanu,Usman,Kaduna,MAKARFI,Male,8025653741,VERIFIED,True,MAKARFI
+Abubakar Lawal,Abubakar,Lawal,Kaduna,MAKARFI,Male,8065894196,VERIFIED,True,MAKARFI
+Idris Muhammad,Idris,Muhammad,Kaduna,MAKARFI,Male,8035871159,VERIFIED,True,MAKARFI
+Suleman Abubakar,Suleman,Abubakar,Kaduna,SABON GARI,Male,8068985969,VERIFIED,True,SABON GARI
+Sunday Isiagu,Sunday,Isiagu,Kaduna,SABON GARI,Male,8062104846,VERIFIED,True,SABON GARI
+Hamza Abdulkadir,Hamza,Abdulkadir,Kaduna,SABON GARI,Male,7035662048,VERIFIED,True,SABON GARI
+Hellen David,Hellen,David ,Kaduna,SABON GARI,Female,7032683653,VERIFIED,True,SABON GARI
+Abubakar Dayabu,Abubakar,Dayabu,Kaduna,SABON GARI,Male,8037474128,VERIFIED,True,SABON GARI
+Ibrahim Shehu,Ibrahim,Shehu,Kaduna,SABON GARI,Male,7030400941,VERIFIED,True,SABON GARI
+Naomi William,Naomi,William,Kaduna,SABON GARI,Female,7066084121,VERIFIED,True,SABON GARI
+Aisha A . A. Ladan,Aisha,A . A. Ladan,Kaduna,SABON GARI,Female,8032668706,VERIFIED,True,SABON GARI
+John Kisu,John,Kisu,Kaduna,SABON GARI,Male,8036952912,VERIFIED,True,SABON GARI
+Safiratu Monday,Safiratu,Monday,Kaduna,SABON GARI,Female,8060408289,VERIFIED,True,SABON GARI
+Nura Abubakar,Nura,Abubakar,Kaduna,SABON GARI,Male,8026677702,VERIFIED,True,SABON GARI
+Yau Aliyu,Yau,Aliyu,Kaduna,SABON GARI,Male,8131302058,VERIFIED,True,SABON GARI
+Hussaini Lurwan,Hussaini,Lurwan,Kaduna,SABON GARI,Male,8153171086,VERIFIED,True,SABON GARI
+Suwaiba Hafisu,Suwaiba,Hafisu,Kaduna,SABON GARI,Female,7033400687,VERIFIED,True,SABON GARI
+Abduraman Abdulkadir,Abduraman,Abdulkadir,Kaduna,SABON GARI,Male,7040380000,VERIFIED,True,SABON GARI
+Amina Hamisu,Amina,Hamisu,Kaduna,SABON GARI,Female,7032467058,VERIFIED,True,SABON GARI
+Addau Sani,Addau,Sani,Kaduna,SABON GARI,Male,8037972653,VERIFIED,True,SABON GARI
+Ramatu Umar,Ramatu,Umar,Kaduna,SABON GARI,Female,8066348490,VERIFIED,True,SABON GARI
+Babansani Admu,Babansani,Admu,Kaduna,SABON GARI,Male,7068301090,VERIFIED,True,SABON GARI
+Musa Ahmmad,Musa,Ahmmad,Kaduna,SABON GARI,Male,7067663713,VERIFIED,True,SABON GARI
+Balla Ahmadu,Balla,Ahmadu,Kaduna,SABON GARI,Male,7066506613,VERIFIED,True,SABON GARI
+Solomi Mailafiya,Solomi,Mailafiya,Kaduna,SABON GARI,Female,8139015032,VERIFIED,True,SABON GARI
+Umar Admu,Umar,Admu,Kaduna,SABON GARI,Male,8061573215,VERIFIED,True,SABON GARI
+Rukayya Sani,Rukayya,Sani,Kaduna,SABON GARI,Female,7031207784,VERIFIED,True,SABON GARI
+Abubakar Maidabo,Abubakar,Maidabo,Kaduna,SABON GARI,Male,7030070539,VERIFIED,True,SABON GARI
+Nura Mohammed,Nura,Mohammed,Kaduna,SABON GARI,Male,8132060574,VERIFIED,True,SABON GARI
+Rabila Aminu,Rabila,Aminu,Kaduna,SABON GARI,Female,8066348531,VERIFIED,True,SABON GARI
+Balarabe Usman,Balarabe,Usman,Kaduna,SABON GARI,Male,8035950619,VERIFIED,True,SABON GARI
+Tukur Sani,Tukur,Sani,Kaduna,SABON GARI,Male,8063503990,VERIFIED,True,SABON GARI
+Zullaiha Mohammad,Zullaiha,Mohammad,Kaduna,SABON GARI,Female,8080861157,VERIFIED,True,SABON GARI
+Kasimu Muazu,Kasimu,Muazu,Kaduna,SABON GARI,Male,7036039937,VERIFIED,True,SABON GARI
+Fatima Ibrahim,Fatima,Ibrahim,Kaduna,SABON GARI,Male,8162081110,VERIFIED,True,SABON GARI
+Yahaya Ibrahim,Yahaya,Ibrahim,Kaduna,SABON GARI,Male,7086104100,VERIFIED,True,SABON GARI
+Rabi Awalu,Rabi,Awalu,Kaduna,SABON GARI,Female,7033876530,VERIFIED,True,SABON GARI
+Sadisu Tukur,Sadisu,Tukur,Kaduna,SABON GARI,Male,8063200545,VERIFIED,True,SABON GARI
+Rahila Dalang,Rahila,Dalang,Kaduna,SABON GARI,Female,8137417955,VERIFIED,True,SABON GARI
+Solomon Samuel,Solomon,Samuel,Kaduna,SANGA,Male,8132280371,VERIFIED,True,SANGA
+Hassana Joseph,Hassana,Joseph,Kaduna,SANGA,Female,8066982369,VERIFIED,True,SANGA
+Rufai Ekiel,Rufai,Ekiel,Kaduna,SANGA,Male,7031118802,VERIFIED,True,SANGA
+Livinus Bako,Livinus,Bako,Kaduna,SANGA,Male,8163318084,VERIFIED,True,SANGA
+Jummai Julius,Jummai,Julius,Kaduna,SANGA,Female,7088319249,VERIFIED,True,SANGA
+Danazumi Ezekiel,Danazumi,Ezekiel,Kaduna,SANGA,Male,8036048851,VERIFIED,True,SANGA
+Simon Ishaya,Simon,Ishaya,Kaduna,SANGA,Male,8068143955,VERIFIED,True,SANGA
+Chukwudi Egbuagu,Chukwudi,Egbuagu,Kaduna,SANGA,Male,8067779445,VERIFIED,True,SANGA
+Irimiya John,Irimiya,John,Kaduna,SANGA,Male,8135424306,VERIFIED,True,SANGA
+Emmanuel Musa,Emmanuel,Musa,Kaduna,SANGA,Male,8133589622,VERIFIED,True,SANGA
+Henry Monday,Henry,Monday,Kaduna,SANGA,Male,8160902339,VERIFIED,True,SANGA
+Rita Michael,Rita,Michael,Kaduna,SANGA,Female,7067186788,VERIFIED,True,SANGA
+Patience Zaphania,Patience,Zaphania,Kaduna,SANGA,Female,7037474574,VERIFIED,True,SANGA
+Danladi Gumut,Danladi,Gumut,Kaduna,SANGA,Male,8162506083,VERIFIED,True,SANGA
+Priscillia John,Priscillia,John,Kaduna,SANGA,Female,7067350804,VERIFIED,True,SANGA
+Ramatu Maji,Ramatu,Maji,Kaduna,SANGA,Female,7037418538,VERIFIED,True,SANGA
+Timan Monday,Timan,Monday,Kaduna,SANGA,Male,8067357410,VERIFIED,True,SANGA
+Magaji Bawa,Magaji,Bawa,Kaduna,SANGA,Male,8067315655,VERIFIED,True,SANGA
+Mary Bala,Mary,Bala,Kaduna,SANGA,Female,7065752791,VERIFIED,True,SANGA
+Vincent Bako,Vincent,Bako,Kaduna,SANGA,Male,8064290079,VERIFIED,True,SANGA
+James Bala,James,Bala,Kaduna,SANGA,Male,8069179994,VERIFIED,True,SANGA
+Titus Aboi,Titus,Aboi,Kaduna,SANGA,Male,7067105688,VERIFIED,True,SANGA
+Benjamin Habu,Benjamin,Habu,Kaduna,SANGA,Male,7066591634,VERIFIED,True,SANGA
+Fidelis Paul,Fidelis,Paul,Kaduna,SANGA,Male,8069091079,VERIFIED,True,SANGA
+Ladan Bala,Ladan,Bala,Kaduna,SANGA,Male,7067784417,VERIFIED,True,SANGA
+Ladi Monday,Ladi,Monday,Kaduna,SANGA,Female,7032195544,VERIFIED,True,SANGA
+Danlami Ruga,Danlami,Ruga,Kaduna,SANGA,Male,7039205256,VERIFIED,True,SANGA
+Christopher Chindo,Christopher,Chindo,Kaduna,SANGA,Male,7068717790,VERIFIED,True,SANGA
+Habu Ali,Habu,Ali,Kaduna,SANGA,Male,8133213480,VERIFIED,True,SANGA
+Apworo Daniel,Apworo,Daniel,Kaduna,SANGA,Male,8036154350,VERIFIED,True,SANGA
+Danlami Zarumi,Danlami,Zarumi,Kaduna,SANGA,Male,7036005882,VERIFIED,True,SANGA
+Cecilia Amos,Cecilia,Amos,Kaduna,SANGA,Female,8160911720,VERIFIED,True,SANGA
+Timothy Njabwai,Timothy,Njabwai,Kaduna,SANGA,Female,8065656280,VERIFIED,True,SANGA
+Salisu Danladi,Salisu,Danladi,Kaduna,SANGA,Male,7063017754,VERIFIED,True,SANGA
+Danlami Usuman,Danlami,Usuman,Kaduna,SANGA,Male,7036231298,VERIFIED,True,SANGA
+Danjuma Gyan,Danjuma,Gyan,Kaduna,SANGA,Male,8135336303,VERIFIED,True,SANGA
+Awwal Usman,Awwal,Usman,Kaduna,SOBA,Male,8162924877,VERIFIED,True,SOBA
+Murtala Saadu,Murtala,Saadu,Kaduna,SOBA,Male,8088408689,VERIFIED,True,SOBA
+Zayyanu Bello,Zayyanu,Bello,Kaduna,SOBA,Male,7039409985,VERIFIED,True,SOBA
+Mohammed Shehu,Mohammed,Shehu,Kaduna,SOBA,Male,8162083216,VERIFIED,True,SOBA
+Iro Baso,Iro,Baso,Kaduna,SOBA,Male,8024157293,VERIFIED,True,SOBA
+Ubaidu Usman,Ubaidu,Usman,Kaduna,SOBA,Male,8085160622,VERIFIED,True,SOBA
+Abubakar Yunusa,Abubakar,Yunusa,Kaduna,SOBA,Male,8022200851,VERIFIED,True,SOBA
+Kasimu Yunusa,Kasimu,Yunusa,Kaduna,SOBA,Male,8087968932,VERIFIED,True,SOBA
+Rabiu Mohammed,Rabiu,Mohammed,Kaduna,SOBA,Male,8027140498,VERIFIED,True,SOBA
+Shehu Salau,Shehu,Salau,Kaduna,SOBA,Male,8125928119,VERIFIED,True,SOBA
+Jibrin Mahmuda,Jibrin,Mahmuda,Kaduna,SOBA,Male,8022488464,VERIFIED,True,SOBA
+Rayyanu Bako,Rayyanu,Bako,Kaduna,SOBA,Male,7032477818,VERIFIED,True,SOBA
+Mohammed Saidu,Mohammed,Saidu,Kaduna,SOBA,Male,7068161227,VERIFIED,True,SOBA
+Hashiru Bako,Hashiru,Bako,Kaduna,SOBA,Male,8132526767,VERIFIED,True,SOBA
+Mohammed Abdullahi,Mohammed,Abdullahi,Kaduna,SOBA,Male,7088396175,VERIFIED,True,SOBA
+Muazu Mohammed,Muazu,Mohammed,Kaduna,SOBA,Male,8069438507,VERIFIED,True,SOBA
+Babajo Zakari,Babajo,Zakari,Kaduna,SOBA,Male,807416023,VERIFIED,True,SOBA
+Awwal Ahmed,Awwal,Ahmed,Kaduna,SOBA,Male,8028513864,VERIFIED,True,SOBA
+Danda Liman,Danda,Liman,Kaduna,SOBA,Male,7083330911,VERIFIED,True,SOBA
+Aliyu Mohammed,Aliyu,Mohammed,Kaduna,SOBA,Male,8026340902,VERIFIED,True,SOBA
+Danladi Haruna,Danladi,Haruna,Kaduna,SOBA,Male,7033792418,VERIFIED,True,SOBA
+Babangida Babangida,Babangida,Babangida,Kaduna,SOBA,Male,8020759525,VERIFIED,True,SOBA
+Abba Sani,Abba,Sani,Kaduna,SOBA,Male,8026879101,VERIFIED,True,SOBA
+Ibrahim Jibrin,Ibrahim,Jibrin,Kaduna,SOBA,Male,8087374711,VERIFIED,True,SOBA
+Dahiru Jibrin,Dahiru,Jibrin,Kaduna,SOBA,Male,8084064828,VERIFIED,True,SOBA
+Kwasho Abdulhamidu,Kwasho,Abdulhamidu,Kaduna,SOBA,Male,7038536198,VERIFIED,True,SOBA
+Junaidu Ibrahim,Junaidu,Ibrahim,Kaduna,SOBA,Male,7033855730,VERIFIED,True,SOBA
+Bashir Salihu,Bashir,Salihu,Kaduna,SOBA,Male,8073037216,VERIFIED,True,SOBA
+Audi Lawal,Audi,Lawal,Kaduna,SOBA,Male,8025179896,VERIFIED,True,SOBA
+Abubakar Umar,Abubakar,Umar,Kaduna,SOBA,Male,7038290267,VERIFIED,True,SOBA
+Umar Dauda,Umar,Dauda,Kaduna,SOBA,Male,8027937055,VERIFIED,True,SOBA
+Ayuba Abdulrashid,Ayuba,Abdulrashid,Kaduna,SOBA,Male,8033287624,VERIFIED,True,SOBA
+Bello Mairabo,Bello,Mairabo,Kaduna,SOBA,Male,8082895304,VERIFIED,True,SOBA
+Abubakar Abdullahi,Abubakar,Abdullahi,Kaduna,SOBA,Male,8026692429,VERIFIED,True,SOBA
+Mansir Falalu,Mansir,Falalu,Kaduna,SOBA,Male,7084042903,VERIFIED,True,SOBA
+Ibrahim Aliyu,Ibrahim,Aliyu,Kaduna,SOBA,Male,8027219671,VERIFIED,True,SOBA
+Yusuf Bako,Yusuf,Bako,Kaduna,ZANGON KATAF,Male,8065455500,VERIFIED,True,ZANGON KATAF
+Yusuf John,Yusuf,John,Kaduna,ZANGON KATAF,Male,7036506139,VERIFIED,True,ZANGON KATAF
+Samuel Gaiya,Samuel,Gaiya,Kaduna,ZANGON KATAF,Male,8038861578,VERIFIED,True,ZANGON KATAF
+Mathew Yashem,Mathew,Yashem,Kaduna,ZANGON KATAF,Male,7065679510,VERIFIED,True,ZANGON KATAF
+Simon Dauda,Simon,Dauda,Kaduna,ZANGON KATAF,Male,8055129760,VERIFIED,True,ZANGON KATAF
+Gift Simon,Gift,Simon,Kaduna,ZANGON KATAF,Female,8051993316,VERIFIED,True,ZANGON KATAF
+Reuben Bala,Reuben,Bala,Kaduna,ZANGON KATAF,Male,8025488666,VERIFIED,True,ZANGON KATAF
+Godwin Bala,Godwin,Bala,Kaduna,ZANGON KATAF,Male,8037758985,VERIFIED,True,ZANGON KATAF
+Emmanuel Bala,Emmanuel,Bala,Kaduna,ZANGON KATAF,Male,8184226515,VERIFIED,True,ZANGON KATAF
+Goddy Basheru,Goddy,Basheru,Kaduna,ZANGON KATAF,Male,8073745962,VERIFIED,True,ZANGON KATAF
+Sylvia Innocent,Sylvia,Innocent,Kaduna,ZANGON KATAF,Female,8069559293,VERIFIED,True,ZANGON KATAF
+Benjamine Michael,Benjamine,Michael,Kaduna,ZANGON KATAF,Male,8188805508,VERIFIED,True,ZANGON KATAF
+Grace Yohanna,Grace,Yohanna,Kaduna,ZANGON KATAF,Female,8056774621,VERIFIED,True,ZANGON KATAF
+Angela Emmanuel,Angela,Emmanuel,Kaduna,ZANGON KATAF,Female,7082900023,VERIFIED,True,ZANGON KATAF
+Jeremiah Danladi,Jeremiah,Danladi,Kaduna,ZANGON KATAF,Male,8073939866,VERIFIED,True,ZANGON KATAF
+Ezekiel Joshua,Ezekiel,Joshua,Kaduna,ZANGON KATAF,Male,8094789914,VERIFIED,True,ZANGON KATAF
+Gaiya Umaru,Gaiya,Umaru,Kaduna,ZANGON KATAF,Male,7082516986,VERIFIED,True,ZANGON KATAF
+Babale Gankon,Babale,Gankon,Kaduna,ZANGON KATAF,Male,8140161050,VERIFIED,True,ZANGON KATAF
+Joy Philip,Joy,Philip,Kaduna,ZANGON KATAF,Female,8124030024,VERIFIED,True,ZANGON KATAF
+Mathew Amadu,Mathew,Amadu,Kaduna,ZANGON KATAF,Male,8169078089,VERIFIED,True,ZANGON KATAF
+Ibrahim Michael,Ibrahim,Michael,Kaduna,ZANGON KATAF,Male,7063541468,VERIFIED,True,ZANGON KATAF
+Shekari Abbott,Shekari,Abbott,Kaduna,ZANGON KATAF,Male,8026985408,VERIFIED,True,ZANGON KATAF
+Evarest Silas,Evarest,Silas,Kaduna,ZANGON KATAF,Male,8167507809,VERIFIED,True,ZANGON KATAF
+Moses Garba,Moses,Garba,Kaduna,ZANGON KATAF,Male,7080051381,VERIFIED,True,ZANGON KATAF
+Amos Garba,Amos,Garba,Kaduna,ZANGON KATAF,Male,7080027091,VERIFIED,True,ZANGON KATAF
+Margaret Dadah,Margaret,Dadah,Kaduna,ZANGON KATAF,Female,8136199496,VERIFIED,True,ZANGON KATAF
+Audu Umaru,Audu,Umaru,Kaduna,ZANGON KATAF,Male,8166186737,VERIFIED,True,ZANGON KATAF
+Esther John,Esther,John,Kaduna,ZANGON KATAF,Female,7062809886,VERIFIED,True,ZANGON KATAF
+Syenk Samuel,Syenk,Samuel,Kaduna,ZANGON KATAF,Female,8186828118,VERIFIED,True,ZANGON KATAF
+Bulus Simon,Bulus,Simon,Kaduna,ZANGON KATAF,Male,8185695710,VERIFIED,True,ZANGON KATAF
+Bayo Gada,Bayo,Gada,Kaduna,ZANGON KATAF,Male,8094258352,VERIFIED,True,ZANGON KATAF
+Sani Baba,Sani,Baba,Kaduna,ZANGON KATAF,Male,7085964709,VERIFIED,True,ZANGON KATAF
+Dauda Ashafa,Dauda,Ashafa,Kaduna,ZANGON KATAF,Male,8030794894,VERIFIED,True,ZANGON KATAF
+Batholome Jacob,Batholome,Jacob,Kaduna,ZANGON KATAF,Male,8095532137,VERIFIED,True,ZANGON KATAF
+Augustine Dadah,Augustine,Dadah,Kaduna,ZANGON KATAF,Male,8093167314,VERIFIED,True,ZANGON KATAF
+John Sanke,John,Sanke,Kaduna,ZANGON KATAF,Male,8121356566,VERIFIED,True,ZANGON KATAF
+Maharazu Balarabe,Maharazu,Balarabe,Kaduna,ZARIA,Male,08039116305,VERIFIED,True,ZARIA
+Shafiu Yahaya,Shafiu,Yahaya,Kaduna,ZARIA,Male,08033254683,VERIFIED,True,ZARIA
+Mansir Ahmad,Mansir,Ahmad,Kaduna,ZARIA,Male,07063511513,VERIFIED,True,ZARIA
+Hassan Ahmed,Hassan,Ahmed,Kaduna,ZARIA,Male,08135548252,VERIFIED,True,ZARIA
+Balarabe Halliru,Balarabe,Halliru,Kaduna,ZARIA,Male,08133144591,VERIFIED,True,ZARIA
+Hashimu Shuaibu,Hashimu,Shuaibu,Kaduna,ZARIA,Male,08061603415,VERIFIED,True,ZARIA
+Ahmed Musa,Ahmed,Musa,Kaduna,ZARIA,Male,07033429658,VERIFIED,True,ZARIA
+Habibu Ayuba,Habibu,Ayuba,Kaduna,ZARIA,Male,08062338147,VERIFIED,True,ZARIA
+Iliya Tijjani,Iliya,Tijjani,Kaduna,ZARIA,Male,07034688009,VERIFIED,True,ZARIA
+Shuaibu Salisu,Shuaibu,Salisu,Kaduna,ZARIA,Male,07068735929,VERIFIED,True,ZARIA
+Amadu Garba,Amadu,Garba,Kaduna,ZARIA,Male,07067570027,VERIFIED,True,ZARIA
+Musa Iliya,Musa,Iliya,Kaduna,ZARIA,Male,08064499738,VERIFIED,True,ZARIA
+Hashimu Abdullahi,Hashimu,Abdullahi,Kaduna,ZARIA,Male,08035390236,VERIFIED,True,ZARIA
+Muazu Yunusa,Muazu,Yunusa,Kaduna,ZARIA,Male,08165353302,VERIFIED,True,ZARIA
+Shuaibu Hamisu,Shuaibu,Hamisu,Kaduna,ZARIA,Male,08037218539,VERIFIED,True,ZARIA
+Muhammed Salihu,Muhammed,Salihu,Kaduna,ZARIA,Male,08032826229,VERIFIED,True,ZARIA
+Nuhu Usiman,Nuhu,Usiman,Kaduna,ZARIA,Male,08065647221,VERIFIED,True,ZARIA
+K Mahammad,K,Mahammad,Kaduna,ZARIA,Male,08062740103,VERIFIED,True,ZARIA
+Yau Aliyu,Yau,Aliyu,Kaduna,ZARIA,Male,07030216961,VERIFIED,True,ZARIA
+Habibu Auwal,Habibu,Auwal,Kaduna,ZARIA,Male,07092256546,VERIFIED,True,ZARIA
+Garba Adamu,Garba,Adamu,Kaduna,ZARIA,Male,08021397419,VERIFIED,True,ZARIA
+Adamu Mamuda,Adamu,Mamuda,Kaduna,ZARIA,Male,08188069723,VERIFIED,True,ZARIA
+Iliya Mujjitafa,Iliya,Mujjitafa,Kaduna,ZARIA,Male,08138437134,VERIFIED,True,ZARIA
+Jafaru Aminu,Jafaru,Aminu,Kaduna,ZARIA,Male,08039692431,VERIFIED,True,ZARIA
+Hassan Umar,Hassan,Umar,Kaduna,ZARIA,Male,08125214810,VERIFIED,True,ZARIA
+Musa Adamu,Musa,Adamu,Kaduna,ZARIA,Male,08065748896,VERIFIED,True,ZARIA
+Jibrin Imirana,Jibrin,Imirana,Kaduna,ZARIA,Male,07042657159,VERIFIED,True,ZARIA
+Shuaibu Tasiu,Shuaibu,Tasiu,Kaduna,ZARIA,Male,07035679725,VERIFIED,True,ZARIA
+Dahiru Abdullahi,Dahiru,Abdullahi,Kaduna,ZARIA,Male,07043725583,VERIFIED,True,ZARIA
+Maharazu Hudu,Maharazu,Hudu,Kaduna,ZARIA,Male,08022834654,VERIFIED,True,ZARIA
+Hashimu Dahiru,Hashimu,Dahiru,Kaduna,ZARIA,Male,07042980419,VERIFIED,True,ZARIA
+Shuaibu Zubairu,Shuaibu,Zubairu,Kaduna,ZARIA,Male,07039695401,VERIFIED,True,ZARIA
+Sulaiman Isah,Sulaiman,Isah,Kaduna,ZARIA,Male,07031107327,VERIFIED,True,ZARIA
+Habibu Yusifa,Habibu,Yusifa,Kaduna,ZARIA,Male,07083788726,VERIFIED,True,ZARIA
+Muazu Armayau,Muazu,Armayau,Kaduna,ZARIA,Male,07084263925,VERIFIED,True,ZARIA
+Daiyabu Auwal,Daiyabu,Auwal,Kaduna,ZARIA,Male,08025063402,VERIFIED,True,ZARIA

@@ -32,7 +32,7 @@ import json
 import urllib.error
 import urllib.request
 import base64
-from urllib.parse import quote
+from urllib.parse import quote, urlencode
 
 from dateutil.relativedelta import relativedelta
 
@@ -52,19 +52,34 @@ NARRATIVE_X_MBU_EMPATHY = (
     "UNIMAID renamed to Muhammadu Buhari University (MBU) as a symbol of empathy, national continuity, "
     "and love for the Nigerian idea. The 20.7M Sovereign Mandate treats this as moral infrastructure — "
     "recognition that leadership and compassion can be inscribed into stone. "
-    "#MBU #SheikhDahiruBauchi #RHGI"
+    "#MBU #SheikhDahiruBauchi #RenewedHope"
 )
 NARRATIVE_X_SHEIKH_EMPATHY = (
     "RHGI — Empathy & Love: Immortalizing a Titan of Faith with reverence and humility. "
     "Azare Federal University of Medical Sciences renamed Sheikh Dahiru Usman Bauchi University — "
     "honoring the revered Tijjaniyya leader and the light he carries across generations. "
     "The 20.7M Mandate affirms that faith, scholarship, and service belong in the same sovereign sentence. "
-    "#MBU #SheikhDahiruBauchi #RHGI"
+    "#MBU #SheikhDahiruBauchi #RenewedHope"
 )
 
 
 def _dashboard_public_url() -> str:
     return (os.environ.get("RHGI_DASHBOARD_PUBLIC_URL") or "http://127.0.0.1:8505").strip()
+
+
+def _google_form_poll_url() -> str:
+    u = (os.environ.get("RHGI_GOOGLE_FORM_URL") or "").strip()
+    if u:
+        return u
+    return "https://docs.google.com/forms/d/e/REPLACE_WITH_YOUR_FORM_ID/viewform"
+
+
+def _social_x_handle() -> str:
+    return (os.environ.get("RHGI_X_HANDLE") or "").strip().lstrip("@")
+
+
+def _social_fb_handle() -> str:
+    return (os.environ.get("RHGI_FB_HANDLE") or "").strip().lstrip("@")
 
 
 def _campaign_lens_key() -> str:
@@ -78,36 +93,73 @@ def _campaign_lens_key() -> str:
 
 def _campaign_push_whatsapp_text() -> str:
     q = str(st.session_state.get("question_of_day_text", QOD_DEFAULT))
-    return _append_outreach_signature(
-        "🚨 RHGI STRATEGIC ALERT — Question of the Day\n"
+    form = _google_form_poll_url()
+    body = (
+        "🚨 RHGI POLL: "
         + q
-        + "\n\nOpen the Sovereign dashboard: "
-        + _dashboard_public_url()
+        + ". Please click here to vote: "
+        + form
+        + ". Feedback updates the Situation Room live!"
     )
+    return _append_outreach_signature(body)
 
 
 def _campaign_trend_x_text() -> str:
     u = _dashboard_public_url()
     lk = _campaign_lens_key()
     if lk == "mbu":
-        return NARRATIVE_X_MBU_EMPATHY + " " + u
-    if lk == "sheikh":
-        return NARRATIVE_X_SHEIKH_EMPATHY + " " + u
-    q = str(st.session_state.get("question_of_day_text", QOD_DEFAULT))
-    return f"{q} — The 20.7M Mandate is delivering. #MBU #SheikhDahiruBauchi #RHGI {u}"
+        t = NARRATIVE_X_MBU_EMPATHY + " " + u
+    elif lk == "sheikh":
+        t = NARRATIVE_X_SHEIKH_EMPATHY + " " + u
+    else:
+        q = str(st.session_state.get("question_of_day_text", QOD_DEFAULT))
+        t = (
+            f"{q} — The 20.7M Mandate is delivering. "
+            f"#MBU #SheikhDahiruBauchi #RenewedHope {u}"
+        )
+    xh = _social_x_handle()
+    if xh:
+        t += f" via @{xh}"
+    return t
+
+
+def _campaign_fb_quote_text() -> str:
+    """Empathy & Love narrative for FB share quote (Bauchi + Katsina presidential thread)."""
+    fb_h = _social_fb_handle()
+    base = (
+        "RHGI — Empathy & Love: The President's visits to Bauchi and to Katsina reflect the same sovereign thread — "
+        "presence, listening, and fidelity to the people. Muhammadu Buhari University (MBU) and "
+        "Sheikh Dahiru Usman Bauchi University immortalize empathy and national continuity — "
+        "faith, memory, and service on one mandate arc. The 20.7M Mandate carries this narrative forward. "
+        + _dashboard_public_url()
+    )
+    if fb_h:
+        base += f" · Tagged @{fb_h}"
+    return base
+
+
+def _campaign_fb_share_url() -> str:
+    return "https://www.facebook.com/sharer/sharer.php?" + urlencode(
+        {"u": _dashboard_public_url(), "quote": _campaign_fb_quote_text()}
+    )
 
 
 def _campaign_sms_blast_text() -> str:
     q = str(st.session_state.get("question_of_day_text", QOD_DEFAULT))
     return _append_outreach_signature(
-        "RHGI SMS Blast — Question of the Day\n" + q + "\nDashboard: " + _dashboard_public_url()
+        "RHGI SMS Blast — Question of the Day\n"
+        + q
+        + "\nVote (Google Form): "
+        + _google_form_poll_url()
+        + "\nDashboard: "
+        + _dashboard_public_url()
     )
 
 
 def _campaign_action_bar_html() -> str:
     _wa = quote(_campaign_push_whatsapp_text(), safe="")
     _x = quote(_campaign_trend_x_text(), safe="")
-    _u = quote(_dashboard_public_url(), safe="")
+    _fb_js = json.dumps(_campaign_fb_share_url())
     _sms_href = "sms:?&body=" + quote(_campaign_sms_blast_text(), safe="")
     _sms_js = json.dumps(_sms_href)
     return f"""
@@ -142,7 +194,7 @@ def _campaign_action_bar_html() -> str:
 <div class="rhgi-campaign-4" role="group" aria-label="Campaign action bar">
   <button type="button" onclick="window.open('https://wa.me/?text={_wa}','_blank','noopener,noreferrer')">Push to WhatsApp</button>
   <button type="button" onclick="window.open('https://twitter.com/intent/tweet?text={_x}','_blank','noopener,noreferrer')">Trend on X</button>
-  <button type="button" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u={_u}','_blank','noopener,noreferrer')">Share to FB</button>
+  <button type="button" onclick='window.open({_fb_js}, "_blank", "noopener,noreferrer")'>Share to FB</button>
   <button type="button" onclick="try{{window.top.location.href={_sms_js};}}catch(e){{window.location.href={_sms_js};}}">SMS Blast</button>
 </div>
 """
