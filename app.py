@@ -37,11 +37,16 @@ from urllib.parse import quote
 from dateutil.relativedelta import relativedelta
 
 from data_engine import ALL_LGA_RECORDS, STATE_COORDS, records_as_dicts
+try:
+    from streamlit_gsheets import GSheetsConnection
+except Exception:
+    GSheetsConnection = None
 
 OFFICE_IDENTITY = "OFFICE OF THE DG/RHGI"
 # Bump to force sovereign log wipe + executive 0/8 on next session attach (Management 8 STRIKE).
 _STRIKE_SESSION_EPOCH = "14314-EXEC-142-M8-20260328"
 QOD_DEFAULT = "On a scale of 1-5, how has the unification of the FX rate improved your business confidence compared to the previous era of round-tripping?"
+_GSHEET_POLL_INTERVAL_SEC = 60
 
 
 def _default_referendum_gauges() -> dict[str, int]:
@@ -146,6 +151,10 @@ if "daily_pulse_simulate" not in st.session_state:
     st.session_state.daily_pulse_simulate = True
 if "question_of_day_text" not in st.session_state:
     st.session_state.question_of_day_text = QOD_DEFAULT
+if "gsheets_last_signature" not in st.session_state:
+    st.session_state.gsheets_last_signature = ""
+if "referendum_live_flash_ticks" not in st.session_state:
+    st.session_state.referendum_live_flash_ticks = 0
 
 # RHGI-SWAT-OPPOSITION-77 — global colors (strict DG / SWAT palette).
 # RHGI-GOLDMAN palette (mirrors :root CSS variables).
@@ -653,7 +662,92 @@ def _apply_daily_pulse_updates(updates: dict[str, int], source: str) -> int:
     st.session_state.referendum_gauge_live = live
     if changed:
         _append_sovereign_feed("Daily Pulse", f"{source} · {changed} reform gauge update(s) applied.")
+        st.session_state.referendum_live_flash_ticks = max(
+            int(st.session_state.get("referendum_live_flash_ticks", 0)),
+            3,
+        )
     return changed
+
+
+def _coerce_poll_value(raw: object) -> Optional[int]:
+    if raw is None:
+        return None
+    if isinstance(raw, (int, float)):
+        return int(raw)
+    s = str(raw).strip()
+    if not s:
+        return None
+    m = re.search(r"([+-]?\d{1,3})", s)
+    if not m:
+        return None
+    return int(m.group(1))
+
+
+def _normalize_poll_column(name: str) -> str:
+    return re.sub(r"[^a-z0-9]", "", str(name).strip().lower())
+
+
+def _fetch_latest_gsheet_poll_updates() -> tuple[dict[str, int], Optional[str], bool]:
+    if GSheetsConnection is None:
+        return {}, None, False
+    try:
+        conn = st.connection("gsheets", type=GSheetsConnection)
+        df_poll = conn.read(ttl=0)
+    except Exception:
+        return {}, None, False
+    if df_poll is None or getattr(df_poll, "empty", True):
+        return {}, None, False
+    latest = df_poll.tail(1).iloc[0].to_dict()
+    sig_src = {str(k): str(v) for k, v in latest.items()}
+    signature = hashlib.sha256(json.dumps(sig_src, sort_keys=True).encode("utf-8")).hexdigest()
+    if signature == str(st.session_state.get("gsheets_last_signature", "")):
+        return {}, None, False
+    st.session_state.gsheets_last_signature = signature
+
+    board = dict(st.session_state.get("referendum_gauge_values") or _default_referendum_gauges())
+    key_map = {
+        _normalize_poll_column(k): k
+        for k in board.keys()
+    }
+    key_map.update(
+        {
+            "energysovereignty": "Energy",
+            "educationaccess": "Education",
+            "healthcareaccess": "Healthcare",
+            "judicialreform": "Judicial",
+            "electoralintegrity": "Electoral",
+            "taxreform": "Tax Reform",
+            "legacyapproval": "Legacy Approval",
+        }
+    )
+    updates: dict[str, int] = {}
+    qod: Optional[str] = None
+    for col, raw in latest.items():
+        ncol = _normalize_poll_column(col)
+        if ncol in ("qod", "questionofday", "question"):
+            qod_val = str(raw or "").strip()
+            if qod_val:
+                qod = qod_val
+            continue
+        mapped = key_map.get(ncol)
+        if not mapped:
+            continue
+        v = _coerce_poll_value(raw)
+        if v is None:
+            continue
+        updates[mapped] = v
+    return updates, qod, True
+
+
+def _gsheet_poll_ingest_fragment_inner() -> None:
+    updates, qod, changed_row = _fetch_latest_gsheet_poll_updates()
+    if not changed_row:
+        return
+    _apply_daily_pulse_updates(updates, "google sheet")
+    if qod:
+        st.session_state.question_of_day_text = qod
+    if updates or qod:
+        _append_sovereign_feed("GSheets", "Live poll row ingested from Sovereign Referendum sheet.")
 
 
 def _daily_pulse_listener_fragment_inner() -> None:
@@ -678,6 +772,9 @@ def _daily_pulse_listener_fragment_inner() -> None:
         dirty = True
     if dirty:
         st.session_state.referendum_gauge_live = live
+    _flash_n = int(st.session_state.get("referendum_live_flash_ticks", 0))
+    if _flash_n > 0:
+        st.session_state.referendum_live_flash_ticks = _flash_n - 1
 
 
 def _lga_daily_apathy_target(
@@ -886,6 +983,32 @@ def _sovereign_achievements_carousel_html() -> str:
       border: 1px solid rgba(212, 175, 55, 0.55);
       box-shadow: 0 0 6px rgba(212, 175, 55, 0.2);
     }
+    .rhgi-sc-campaign-wrap {
+      margin-top: 10px;
+      padding: 8px 6px 2px 6px;
+      border-top: 1px solid rgba(212, 175, 55, 0.28);
+    }
+    .rhgi-sc-campaign-label {
+      font-family: 'Goldman', sans-serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      text-align: center;
+      color: rgba(45, 212, 191, 0.95);
+      margin-bottom: 8px;
+      text-shadow: 0 0 10px rgba(45, 212, 191, 0.35);
+    }
+    .rhgi-sc-campaign-dispatch {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
+    .rhgi-sc-btn--campaign {
+      min-width: 118px;
+      min-height: 48px;
+    }
     @media (max-width: 900px) {
       .rhgi-sc-title {
         font-size: 22px !important;
@@ -939,11 +1062,6 @@ def _sovereign_achievements_carousel_html() -> str:
             <strong>Lagos–Calabar Coastal Highway</strong> — Section 1 commissioning <strong>May 2026</strong>.
             <br /><strong>1,068 km Sokoto–Badagry Superhighway</strong> — national arterial spine.
           </p>
-          <div class="rhgi-sc-actions">
-            <button class="rhgi-sc-btn" type="button" data-action="wa">WhatsApp</button>
-            <button class="rhgi-sc-btn" type="button" data-action="sms">SMS</button>
-            <button class="rhgi-sc-btn" type="button" data-action="x">X</button>
-          </div>
         </div>
         <div class="rhgi-sc-panel">
           <h2 class="rhgi-sc-title">Fiscal Integrity</h2>
@@ -951,11 +1069,6 @@ def _sovereign_achievements_carousel_html() -> str:
             <strong>Subsidy removal</strong> &amp; <strong>FX uniformity</strong> — end of corrupt round-tripping;
             sovereign price discovery on the Nigerian scale.
           </p>
-          <div class="rhgi-sc-actions">
-            <button class="rhgi-sc-btn" type="button" data-action="wa">WhatsApp</button>
-            <button class="rhgi-sc-btn" type="button" data-action="sms">SMS</button>
-            <button class="rhgi-sc-btn" type="button" data-action="x">X</button>
-          </div>
         </div>
         <div class="rhgi-sc-panel">
           <h2 class="rhgi-sc-title">Social Equity</h2>
@@ -963,11 +1076,6 @@ def _sovereign_achievements_carousel_html() -> str:
             <strong>NELFUND</strong> — <strong>1.16M students</strong> supported.
             <br /><strong>NCGC</strong> — <strong>₦10B</strong> youth &amp; women guarantee corridor.
           </p>
-          <div class="rhgi-sc-actions">
-            <button class="rhgi-sc-btn" type="button" data-action="wa">WhatsApp</button>
-            <button class="rhgi-sc-btn" type="button" data-action="sms">SMS</button>
-            <button class="rhgi-sc-btn" type="button" data-action="x">X</button>
-          </div>
         </div>
         <div class="rhgi-sc-panel">
           <h2 class="rhgi-sc-title">Growth</h2>
@@ -975,33 +1083,18 @@ def _sovereign_achievements_carousel_html() -> str:
             <strong>4.4% GDP Projection</strong> &amp;
             <strong>12.12% Food Inflation</strong> (Mar 2026).
           </p>
-          <div class="rhgi-sc-actions">
-            <button class="rhgi-sc-btn" type="button" data-action="wa">WhatsApp</button>
-            <button class="rhgi-sc-btn" type="button" data-action="sms">SMS</button>
-            <button class="rhgi-sc-btn" type="button" data-action="x">X</button>
-          </div>
         </div>
         <div class="rhgi-sc-panel rhgi-sc-panel--legacy" data-hashtags="#MBU #SheikhDahiruBauchi #RenewedHopeLegacy">
           <h2 class="rhgi-sc-title">Muhammadu Buhari University (MBU)</h2>
           <p class="rhgi-sc-body">
             Honoring the 8th President&rsquo;s legacy. UNIMAID renamed to MBU as a symbol of empathy and national continuity.
           </p>
-          <div class="rhgi-sc-actions">
-            <button class="rhgi-sc-btn" type="button" data-action="wa">WhatsApp</button>
-            <button class="rhgi-sc-btn" type="button" data-action="sms">SMS</button>
-            <button class="rhgi-sc-btn" type="button" data-action="x">X</button>
-          </div>
         </div>
         <div class="rhgi-sc-panel rhgi-sc-panel--legacy" data-hashtags="#MBU #SheikhDahiruBauchi #RenewedHopeLegacy">
           <h2 class="rhgi-sc-title">Sheikh Dahiru Usman Bauchi University</h2>
           <p class="rhgi-sc-body">
             Immortalizing a Titan of Faith. Azare Federal University of Medical Sciences renamed in honor of the revered Tijjaniyya leader.
           </p>
-          <div class="rhgi-sc-actions">
-            <button class="rhgi-sc-btn" type="button" data-action="wa">WhatsApp</button>
-            <button class="rhgi-sc-btn" type="button" data-action="sms">SMS</button>
-            <button class="rhgi-sc-btn" type="button" data-action="x">X</button>
-          </div>
         </div>
       </div>
     </div>
@@ -1013,13 +1106,19 @@ def _sovereign_achievements_carousel_html() -> str:
       <span class="rhgi-sc-dot"></span>
       <span class="rhgi-sc-dot"></span>
     </div>
+    <div class="rhgi-sc-campaign-wrap">
+      <div class="rhgi-sc-campaign-label">Campaign Dispatch · 20.7M Mandate</div>
+      <div class="rhgi-sc-campaign-dispatch" role="group" aria-label="Campaign dispatch to social">
+        <button class="rhgi-sc-btn rhgi-sc-btn--campaign" type="button" data-campaign="wa">WhatsApp</button>
+        <button class="rhgi-sc-btn rhgi-sc-btn--campaign" type="button" data-campaign="x">X</button>
+        <button class="rhgi-sc-btn rhgi-sc-btn--campaign" type="button" data-campaign="fb">Facebook</button>
+      </div>
+    </div>
   </div>
   <script>
     (function () {
-      const HASHTAGS = "#RenewedHope #RHGI";
-      const CTA =
-        "Forward this to 5 people in your ward to protect the 20.7M mandate.";
       const LIVE_DASHBOARD_URL = "http://127.0.0.1:8505";
+      const X_HASHTAGS = "#MBU #SheikhDahiruBauchi #RHGI";
       const pageUrl = (() => {
         try {
           const resolved =
@@ -1032,73 +1131,87 @@ def _sovereign_achievements_carousel_html() -> str:
         }
       })();
 
-      function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
-        const words = text.split(" ");
-        let line = "";
-        for (let i = 0; i < words.length; i++) {
-          const test = line + words[i] + " ";
-          if (ctx.measureText(test).width > maxWidth && i > 0) {
-            ctx.fillText(line.trim(), x, y);
-            line = words[i] + " ";
-            y += lineHeight;
-          } else {
-            line = test;
+      function getActiveAchievementPanel() {
+        const vp = document.querySelector(".rhgi-sc-viewport");
+        if (!vp) return null;
+        const vRect = vp.getBoundingClientRect();
+        const mid = vRect.left + vRect.width / 2;
+        let best = null;
+        let bestDist = Infinity;
+        document.querySelectorAll(".rhgi-sc-panel").forEach(function (p) {
+          const r = p.getBoundingClientRect();
+          if (r.width < 8) return;
+          const c = r.left + r.width / 2;
+          const d = Math.abs(c - mid);
+          if (d < bestDist) {
+            bestDist = d;
+            best = p;
           }
-        }
-        ctx.fillText(line.trim(), x, y);
-        return y;
+        });
+        return best;
       }
 
-      function onButtonClick(ev) {
-        const btn = ev.target.closest(".rhgi-sc-btn");
+      function getCampaignTitle() {
+        const panel = getActiveAchievementPanel();
+        const t = panel && panel.querySelector(".rhgi-sc-title");
+        return (t && t.textContent && t.textContent.trim()) || "Sovereign Achievement";
+      }
+
+      function campaignDispatchWhatsApp() {
+        const title = getCampaignTitle();
+        const text =
+          "🚨 RHGI ALERT: " +
+          title +
+          ". The 20.7M Mandate is delivering. Forward to your ward leaders now!";
+        window.open(
+          "https://wa.me/?text=" + encodeURIComponent(text),
+          "_blank",
+          "noopener,noreferrer"
+        );
+      }
+
+      function campaignDispatchX() {
+        const title = getCampaignTitle();
+        const text =
+          title +
+          " — The 20.7M Mandate is delivering. " +
+          X_HASHTAGS +
+          " " +
+          pageUrl;
+        window.open(
+          "https://twitter.com/intent/tweet?text=" + encodeURIComponent(text),
+          "_blank",
+          "noopener,noreferrer"
+        );
+      }
+
+      function campaignDispatchFacebook() {
+        const u = encodeURIComponent(pageUrl || LIVE_DASHBOARD_URL);
+        window.open(
+          "https://www.facebook.com/sharer/sharer.php?u=" + u,
+          "_blank",
+          "noopener,noreferrer"
+        );
+      }
+
+      function onCampaignClick(ev) {
+        const btn = ev.target.closest("[data-campaign]");
         if (!btn) return;
-        const panel = btn.closest(".rhgi-sc-panel");
-        if (!panel) return;
-        const title = panel.querySelector(".rhgi-sc-title")?.textContent?.trim() || "Sovereign Achievement";
-        const body = panel.querySelector(".rhgi-sc-body")?.textContent?.replace(/\s+/g, " ").trim() || "";
-        const panelTags = panel.getAttribute("data-hashtags");
-        const hashtags = panelTags && panelTags.trim() ? panelTags.trim() : HASHTAGS;
-        const xText =
-          "The Sovereign Transformation: " +
-          title +
-          " is delivering results for the 20.7M Mandate. " +
-          hashtags +
-          " " +
-          CTA;
-        const shareText =
-          "RHGI Sovereign Achievement: " +
-          title +
-          ". " +
-          body +
-          " " +
-          hashtags +
-          " " +
-          CTA;
-        const action = btn.getAttribute("data-action");
-        if (action === "x") {
-          const url =
-            "https://twitter.com/intent/tweet?text=" +
-            encodeURIComponent(xText) +
-            "&url=" +
-            encodeURIComponent(pageUrl);
-          window.open(url, "_blank", "noopener,noreferrer");
+        const kind = btn.getAttribute("data-campaign");
+        if (kind === "wa") {
+          campaignDispatchWhatsApp();
           return;
         }
-        if (action === "wa") {
-          const waPrefill =
-            "🚨 RHGI STRATEGIC ALERT: " + shareText + " " + LIVE_DASHBOARD_URL;
-          const url = "https://wa.me/?text=" + encodeURIComponent(waPrefill);
-          window.open(url, "_blank", "noopener,noreferrer");
+        if (kind === "x") {
+          campaignDispatchX();
           return;
         }
-        if (action === "sms") {
-          const smsBody = encodeURIComponent(shareText + " " + LIVE_DASHBOARD_URL);
-          const smsUrl = "sms:?&body=" + smsBody;
-          window.location.href = smsUrl;
+        if (kind === "fb") {
+          campaignDispatchFacebook();
         }
       }
 
-      document.addEventListener("click", onButtonClick);
+      document.addEventListener("click", onCampaignClick);
     })();
   </script>
 </body>
@@ -3609,6 +3722,11 @@ st.markdown(
       transform-origin: center center;
       will-change: transform, filter;
     }
+    .rhgi-referendum-shell--flash {
+      animation: sovereignPulse 1.05s ease-in-out infinite !important;
+      filter: brightness(145%);
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.65), inset 0 0 16px rgba(212, 175, 55, 0.28);
+    }
     .rhgi-referendum-title {
       color: #D4AF37;
       font-family: 'Goldman', sans-serif;
@@ -3705,6 +3823,13 @@ st.markdown(
 )
 
 with st.sidebar:
+    if hasattr(st, "fragment"):
+        _gsheet_ingest = st.fragment(run_every=timedelta(seconds=_GSHEET_POLL_INTERVAL_SEC))(
+            _gsheet_poll_ingest_fragment_inner
+        )
+        _gsheet_ingest()
+    else:
+        _gsheet_poll_ingest_fragment_inner()
     if hasattr(st, "fragment"):
         _pulse_listener = st.fragment(run_every=timedelta(seconds=6.0))(_daily_pulse_listener_fragment_inner)
         _pulse_listener()
@@ -4087,7 +4212,7 @@ with st.sidebar:
         for label, value in _board.items()
     )
     st.markdown(
-        "<div class='rhgi-referendum-shell'>"
+        f"<div class='rhgi-referendum-shell{' rhgi-referendum-shell--flash' if int(st.session_state.get('referendum_live_flash_ticks', 0)) > 0 else ''}'>"
         "<div class='rhgi-referendum-title'>Sovereign Referendum · Polling Engine</div>"
         f"{_gauge_rows_html}"
         "</div>",
@@ -4678,7 +4803,7 @@ st.radio(
         "National coordinator clears the corridor filter."
     ),
 )
-components.html(_sovereign_achievements_carousel_html(), height=318, scrolling=False)
+components.html(_sovereign_achievements_carousel_html(), height=398, scrolling=False)
 
 metal_countdown_live_ph = st.empty()
 
