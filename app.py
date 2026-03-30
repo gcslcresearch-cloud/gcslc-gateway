@@ -41,6 +41,7 @@ from data_engine import ALL_LGA_RECORDS, STATE_COORDS, records_as_dicts
 OFFICE_IDENTITY = "OFFICE OF THE DG/RHGI"
 # Bump to force sovereign log wipe + executive 0/8 on next session attach (Management 8 STRIKE).
 _STRIKE_SESSION_EPOCH = "14314-EXEC-142-M8-20260328"
+QOD_DEFAULT = "On a scale of 1-5, how has the unification of the FX rate improved your business confidence compared to the previous era of round-tripping?"
 
 
 def _default_referendum_gauges() -> dict[str, int]:
@@ -284,7 +285,6 @@ SOVEREIGN_REFERENDUM_GAUGES = [
     ("Digital Economy", 88),
     ("Legacy Approval", 85),
 ]
-QOD_DEFAULT = "How do the artisans in your ward feel about the Lagos-Calabar Highway today?"
 _REFORM_KEYWORDS: dict[str, tuple[str, ...]] = {
     "Tax Reform": ("tax", "tax reform"),
     "Energy": ("energy", "power", "electricity"),
