@@ -140,6 +140,15 @@ DEEP_NAVY_SAFE = "#152a45"
 METALLIC_GOLD_TARGET = METALLIC_GOLD
 # 20.7M national vote mandate anchor (fixed reference).
 NATIONAL_VOTE_TARGET = 20_709_668
+# Prompt 229 — national election forensic baselines only (INEC-scale; not LGA/Kaduna).
+NATIONAL_FORENSIC_YEARS = [2015, 2019, 2023]
+NATIONAL_FORENSIC_APC_M = [15.42, 15.19, 8.79]
+NATIONAL_FORENSIC_PDP_M = [12.85, 11.26, 6.98]
+NATIONAL_FORENSIC_LP_M = [0.0, 0.0, 6.1]
+NATIONAL_FORENSIC_NNPP_M = [0.0, 0.0, 1.5]
+NATIONAL_FORENSIC_TURNOUT_PCT = [43.6, 34.7, 26.7]
+NATIONAL_FORENSIC_STAYHOME_M = [38.0, 53.25, 68.5]
+NATIONAL_FORENSIC_SILENT_MAJORITY_2023_M = 68.5
 PU_TOTAL = POLLING_UNITS_BASELINE
 HARVEST_FOOD_INFLATION_PCT = 12.12
 HARVEST_GROWTH_PCT = 4.4
@@ -977,6 +986,147 @@ def build_cien_audit_rows(dff: pd.DataFrame) -> list[dict]:
             }
         )
     return rows
+
+
+def build_national_election_forensic_figure() -> go.Figure:
+    """National trends: party vote lines + stay-at-home background bars (dual axis)."""
+    years = NATIONAL_FORENSIC_YEARS
+    stay = NATIONAL_FORENSIC_STAYHOME_M
+    fig = go.Figure()
+    fig.add_trace(
+        go.Bar(
+            x=years,
+            y=stay,
+            name="Stay-at-Home (silent majority)",
+            marker=dict(
+                color="rgba(21, 42, 69, 0.5)",
+                line=dict(width=1, color="rgba(212, 175, 55, 0.28)"),
+            ),
+            yaxis="y2",
+            width=2.2,
+            hovertemplate="%{x}<br>Stay-at-home: %{y:.2f}M<extra></extra>",
+        )
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=years,
+            y=NATIONAL_FORENSIC_APC_M,
+            name="APC",
+            mode="lines+markers",
+            line=dict(color=METALLIC_GOLD, width=3, shape="linear"),
+            marker=dict(
+                size=11,
+                color=METALLIC_GOLD,
+                symbol="circle",
+                line=dict(width=2, color="#FFD700"),
+            ),
+            hovertemplate="%{x} APC: %{y:.2f}M<extra></extra>",
+        )
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=years,
+            y=NATIONAL_FORENSIC_PDP_M,
+            name="PDP",
+            mode="lines+markers",
+            line=dict(color="rgba(120, 120, 120, 0.95)", width=2.6, shape="linear"),
+            marker=dict(size=9, color="rgba(100, 100, 100, 0.9)", line=dict(width=1, color="#666666")),
+            hovertemplate="%{x} PDP: %{y:.2f}M<extra></extra>",
+        )
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=years,
+            y=NATIONAL_FORENSIC_LP_M,
+            name="LP",
+            mode="lines+markers",
+            line=dict(color="rgba(74, 155, 95, 0.55)", width=2.4, shape="linear"),
+            marker=dict(size=8, color="rgba(90, 170, 110, 0.5)", line=dict(width=1, color="rgba(74,155,95,0.4)")),
+            hovertemplate="%{x} LP: %{y:.2f}M<extra></extra>",
+        )
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=years,
+            y=NATIONAL_FORENSIC_NNPP_M,
+            name="NNPP",
+            mode="lines+markers",
+            line=dict(color="rgba(90, 130, 200, 0.55)", width=2.4, shape="linear"),
+            marker=dict(size=8, color="rgba(110, 150, 220, 0.5)", line=dict(width=1, color="rgba(90,130,200,0.4)")),
+            hovertemplate="%{x} NNPP: %{y:.2f}M<extra></extra>",
+        )
+    )
+    fig.add_annotation(
+        text="The 20.7M Mandate targets the 68.5M silent majority.",
+        xref="paper",
+        yref="paper",
+        x=0.5,
+        y=0.97,
+        xanchor="center",
+        yanchor="top",
+        showarrow=False,
+        font=dict(family="Goldman, sans-serif", size=15, color="#ffffff"),
+        bgcolor="rgba(0, 0, 128, 0.72)",
+        bordercolor=METALLIC_GOLD,
+        borderwidth=1,
+        borderpad=8,
+    )
+    fig.update_layout(
+        template=None,
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0, 0, 128, 0.35)",
+        font=dict(family="Goldman, sans-serif", color="#ffffff", size=13),
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="center",
+            x=0.5,
+            bgcolor="rgba(0,0,128,0.55)",
+            bordercolor="rgba(212,175,55,0.35)",
+            borderwidth=1,
+        ),
+        margin=dict(t=100, b=56, l=64, r=64),
+        hovermode="x unified",
+        xaxis=dict(
+            title=dict(text="Election year", font=dict(color=GOLD)),
+            tickmode="array",
+            tickvals=years,
+            ticktext=[str(y) for y in years],
+            showgrid=True,
+            gridcolor="rgba(255,255,255,0.08)",
+            zeroline=False,
+            linecolor="rgba(255,255,255,0.35)",
+        ),
+        yaxis=dict(
+            title=dict(text="Certified party votes (millions)", font=dict(color=GOLD)),
+            range=[0, 18.5],
+            showgrid=True,
+            gridcolor="rgba(255,255,255,0.1)",
+            zerolinecolor="rgba(255,255,255,0.2)",
+            linecolor="rgba(255,255,255,0.35)",
+        ),
+        yaxis2=dict(
+            title=dict(text="Stay-at-home population (millions)", font=dict(color="#c8c8c8")),
+            overlaying="y",
+            side="right",
+            range=[24, 74],
+            showgrid=False,
+            zeroline=False,
+            linecolor="rgba(255,255,255,0.25)",
+        ),
+        title=dict(
+            text=(
+                f"National forensic baselines · Turnout "
+                f"{NATIONAL_FORENSIC_TURNOUT_PCT[0]}% / {NATIONAL_FORENSIC_TURNOUT_PCT[1]}% / "
+                f"{NATIONAL_FORENSIC_TURNOUT_PCT[2]}% (2015 / 2019 / 2023)"
+            ),
+            font=dict(family="Goldman, sans-serif", color=GOLD, size=16),
+            x=0.5,
+            xanchor="center",
+        ),
+    )
+    return fig
 
 
 def enrich_lga_map_metrics(lga_map_df: pd.DataFrame) -> pd.DataFrame:
@@ -3979,6 +4129,16 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
+with st.container(border=True):
+    _gold_heading("National Trends — Election Forensic (Nigeria-wide)")
+    st.caption(
+        "National INEC-scale series only — no state/LGA drill-down. "
+        "Stay-at-home band: **38.0M (2015) → 53.25M (2019, linear bridge) → 68.5M (2023)**. "
+        "LP/NNPP pre-2023 shown at 0M (major-party baseline). "
+        f"20.7M mandate reference: **{NATIONAL_VOTE_TARGET:,}**."
+    )
+    st.plotly_chart(build_national_election_forensic_figure(), use_container_width=True)
 
 _vol_df = dff_hub.copy()
 _decider_factor = 18.0 / 25.0
