@@ -45,6 +45,28 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
+components.html(
+    """
+    <script>
+      (function () {
+        function collapseSidebarOnMobile() {
+          if (window.innerWidth >= 450) return;
+          const sb = document.querySelector('[data-testid="stSidebar"]');
+          if (!sb) return;
+          const isExpanded = sb.getAttribute("aria-expanded") === "true";
+          if (!isExpanded) return;
+          const btn =
+            document.querySelector('button[aria-label*="sidebar" i]') ||
+            document.querySelector('button[title*="sidebar" i]');
+          if (btn) btn.click();
+        }
+        setTimeout(collapseSidebarOnMobile, 120);
+        window.addEventListener("resize", collapseSidebarOnMobile, { passive: true });
+      })();
+    </script>
+    """,
+    height=0,
+)
 if st.session_state.get("_strike_session_epoch") != _STRIKE_SESSION_EPOCH:
     st.session_state._strike_session_epoch = _STRIKE_SESSION_EPOCH
     st.session_state.sovereign_feed_log = [
@@ -202,6 +224,38 @@ EIGHT_R_DETERMINANTS = [
     ("Revitalize", "Proprietary Determinant — Revitalize: Calibrating coalition messaging to zone determinants."),
     ("Re-engineer", "Proprietary Determinant — Re-engineer: Re-scaling scenario lifts to scientific turnout bands."),
     ("Retain", "Proprietary Determinant — Retain: Locking mandate gains through post-election stewardship."),
+]
+RHGI_COMMAND_DIRECTORATES = [
+    "Strategy",
+    "Media",
+    "Women Affairs",
+    "Youth Mobilization",
+    "Policy & Research",
+    "Legal & Constitutional",
+    "Finance & Treasury",
+    "Operations",
+    "Logistics",
+    "Data Intelligence",
+    "Field Coordination",
+    "Security & Compliance",
+    "Digital Communications",
+    "Diaspora Relations",
+    "Intergovernmental Affairs",
+    "Infrastructure Monitoring",
+    "Civic Engagement",
+    "Volunteer Command",
+    "Crisis Response",
+    "Audit & Integrity",
+]
+SOVEREIGN_REFERENDUM_GAUGES = [
+    ("Tax Reform", 86),
+    ("Energy Sovereignty", 82),
+    ("Food Security", 80),
+    ("Education Access", 84),
+    ("Healthcare Access", 79),
+    ("Judicial Reform", 76),
+    ("Electoral Integrity", 91),
+    ("Digital Economy", 88),
 ]
 
 
@@ -549,6 +603,7 @@ def _sovereign_achievements_carousel_html() -> str:
 <html lang="en">
 <head>
   <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Goldman:wght@400;700&family=Great+Vibes&display=swap" rel="stylesheet" />
@@ -658,6 +713,33 @@ def _sovereign_achievements_carousel_html() -> str:
       color: #D4AF37;
       font-weight: 700;
     }
+    .rhgi-sc-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .rhgi-sc-btn {
+      appearance: none;
+      border: 1px solid rgba(212, 175, 55, 0.75);
+      background: rgba(0, 0, 128, 0.48);
+      color: #fdfcf8;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-family: 'Goldman', sans-serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      min-height: 46px;
+      min-width: 112px;
+      transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    }
+    .rhgi-sc-btn:hover {
+      transform: translateY(-1px);
+      background: rgba(0, 0, 128, 0.7);
+      box-shadow: 0 0 12px rgba(212, 175, 55, 0.35);
+    }
     .rhgi-sc-dots {
       display: flex;
       justify-content: center;
@@ -672,6 +754,46 @@ def _sovereign_achievements_carousel_html() -> str:
       border: 1px solid rgba(212, 175, 55, 0.55);
       box-shadow: 0 0 6px rgba(212, 175, 55, 0.2);
     }
+    @media (max-width: 900px) {
+      .rhgi-sc-title {
+        font-size: 22px !important;
+      }
+    }
+    @media (max-width: 450px) {
+      .rhgi-sc-root {
+        padding: 10px 11px 12px 11px;
+        border-radius: 12px;
+      }
+      .rhgi-sc-viewport {
+        height: 170px;
+      }
+      .rhgi-sc-panel {
+        padding: 12px 12px;
+      }
+      .rhgi-sc-title {
+        font-size: 22px !important;
+        line-height: 1.08;
+        margin-bottom: 8px;
+      }
+      .rhgi-sc-body {
+        font-size: 14px !important;
+        line-height: 1.36;
+      }
+      .rhgi-sc-kicker {
+        letter-spacing: 0.22em;
+        font-size: 0.58rem;
+      }
+      .rhgi-sc-actions {
+        gap: 6px;
+        margin-top: 7px;
+      }
+      .rhgi-sc-btn {
+        font-size: 0.68rem;
+        min-height: 44px;
+        min-width: 98px;
+        padding: 8px 10px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -685,6 +807,11 @@ def _sovereign_achievements_carousel_html() -> str:
             <strong>Lagos–Calabar Coastal Highway</strong> — Section 1 commissioning <strong>May 2026</strong>.
             <br /><strong>1,068 km Sokoto–Badagry Superhighway</strong> — national arterial spine.
           </p>
+          <div class="rhgi-sc-actions">
+            <button class="rhgi-sc-btn" type="button" data-action="wa">WhatsApp</button>
+            <button class="rhgi-sc-btn" type="button" data-action="sms">SMS</button>
+            <button class="rhgi-sc-btn" type="button" data-action="x">X</button>
+          </div>
         </div>
         <div class="rhgi-sc-panel">
           <h2 class="rhgi-sc-title">Fiscal Integrity</h2>
@@ -692,6 +819,11 @@ def _sovereign_achievements_carousel_html() -> str:
             <strong>Subsidy removal</strong> &amp; <strong>FX uniformity</strong> — end of corrupt round-tripping;
             sovereign price discovery on the Nigerian scale.
           </p>
+          <div class="rhgi-sc-actions">
+            <button class="rhgi-sc-btn" type="button" data-action="wa">WhatsApp</button>
+            <button class="rhgi-sc-btn" type="button" data-action="sms">SMS</button>
+            <button class="rhgi-sc-btn" type="button" data-action="x">X</button>
+          </div>
         </div>
         <div class="rhgi-sc-panel">
           <h2 class="rhgi-sc-title">Social Equity</h2>
@@ -699,6 +831,11 @@ def _sovereign_achievements_carousel_html() -> str:
             <strong>NELFUND</strong> — <strong>1.16M students</strong> supported.
             <br /><strong>NCGC</strong> — <strong>₦10B</strong> youth &amp; women guarantee corridor.
           </p>
+          <div class="rhgi-sc-actions">
+            <button class="rhgi-sc-btn" type="button" data-action="wa">WhatsApp</button>
+            <button class="rhgi-sc-btn" type="button" data-action="sms">SMS</button>
+            <button class="rhgi-sc-btn" type="button" data-action="x">X</button>
+          </div>
         </div>
         <div class="rhgi-sc-panel">
           <h2 class="rhgi-sc-title">Growth</h2>
@@ -706,6 +843,11 @@ def _sovereign_achievements_carousel_html() -> str:
             <strong>4.4% GDP Projection</strong> &amp;
             <strong>12.12% Food Inflation</strong> (Mar 2026).
           </p>
+          <div class="rhgi-sc-actions">
+            <button class="rhgi-sc-btn" type="button" data-action="wa">WhatsApp</button>
+            <button class="rhgi-sc-btn" type="button" data-action="sms">SMS</button>
+            <button class="rhgi-sc-btn" type="button" data-action="x">X</button>
+          </div>
         </div>
       </div>
     </div>
@@ -716,6 +858,74 @@ def _sovereign_achievements_carousel_html() -> str:
       <span class="rhgi-sc-dot"></span>
     </div>
   </div>
+  <script>
+    (function () {
+      const HASHTAGS = "#RenewedHope #RHGI";
+      const pageUrl = (() => {
+        try {
+          return window.parent && window.parent.location ? window.parent.location.href : window.location.href;
+        } catch (e) {
+          return "https://example.com";
+        }
+      })();
+
+      function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+        const words = text.split(" ");
+        let line = "";
+        for (let i = 0; i < words.length; i++) {
+          const test = line + words[i] + " ";
+          if (ctx.measureText(test).width > maxWidth && i > 0) {
+            ctx.fillText(line.trim(), x, y);
+            line = words[i] + " ";
+            y += lineHeight;
+          } else {
+            line = test;
+          }
+        }
+        ctx.fillText(line.trim(), x, y);
+        return y;
+      }
+
+      function onButtonClick(ev) {
+        const btn = ev.target.closest(".rhgi-sc-btn");
+        if (!btn) return;
+        const panel = btn.closest(".rhgi-sc-panel");
+        if (!panel) return;
+        const title = panel.querySelector(".rhgi-sc-title")?.textContent?.trim() || "Sovereign Achievement";
+        const body = panel.querySelector(".rhgi-sc-body")?.textContent?.replace(/\s+/g, " ").trim() || "";
+        const xText =
+          "The Sovereign Transformation: " +
+          title +
+          " is delivering results for the 20.7M Mandate. " +
+          HASHTAGS;
+        const shareText =
+          "RHGI Sovereign Achievement: " +
+          title +
+          ". " +
+          body +
+          " " +
+          HASHTAGS;
+        const action = btn.getAttribute("data-action");
+        if (action === "x") {
+          const url = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(xText) + "&url=" + encodeURIComponent(pageUrl);
+          window.open(url, "_blank", "noopener,noreferrer");
+          return;
+        }
+        if (action === "wa") {
+          const url = "https://wa.me/?text=" + encodeURIComponent(shareText + " " + pageUrl);
+          window.open(url, "_blank", "noopener,noreferrer");
+          return;
+        }
+        if (action === "sms") {
+          const smsBody = encodeURIComponent(shareText + " " + pageUrl);
+          const smsUrl = "sms:?&body=" + smsBody;
+          window.location.href = smsUrl;
+        }
+      }
+
+      document.addEventListener("click", onButtonClick);
+    })();
+  </script>
 </body>
 </html>
 """
@@ -2246,6 +2456,34 @@ st.markdown(
         overflow: visible;
       }
     }
+    @media (max-width: 900px) {
+      div[data-testid="stHorizontalBlock"] {
+        flex-direction: column !important;
+        gap: 0.45rem !important;
+      }
+      div[data-testid="stHorizontalBlock"] > div {
+        width: 100% !important;
+        min-width: 100% !important;
+        flex: 1 1 100% !important;
+      }
+      [data-testid="stPlotlyChart"],
+      [data-testid="stPlotlyChart"] > div,
+      [data-testid="stPlotlyChart"] .js-plotly-plot {
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      [data-testid="stPlotlyChart"] .modebar {
+        transform: scale(0.92);
+        transform-origin: top right;
+      }
+    }
+    @media (max-width: 450px) {
+      .rhgi-corridor-gold-heading,
+      .rhgi-gold-heading {
+        font-size: 22px !important;
+        line-height: 1.2;
+      }
+    }
     .rhgi-sovereign-marquee-wrap {
       width: 100%;
       overflow: hidden;
@@ -3151,6 +3389,89 @@ st.markdown(
       color: #ffffff !important;
       letter-spacing: 0.03em;
     }
+    .rhgi-command-shell {
+      border: 1px solid rgba(212, 175, 55, 0.55);
+      border-radius: 12px;
+      background: rgba(0, 0, 128, 0.68);
+      padding: 10px 12px;
+      margin: 10px 0;
+    }
+    .rhgi-command-title {
+      color: #D4AF37;
+      font-family: 'Goldman', sans-serif;
+      font-weight: 800;
+      font-size: 0.86rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      text-align: center;
+      text-shadow: 0 0 10px rgba(212, 175, 55, 0.35);
+    }
+    .rhgi-command-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .rhgi-command-item {
+      border: 1px solid rgba(0, 206, 209, 0.35);
+      border-radius: 8px;
+      padding: 6px 8px;
+      color: #ffffff;
+      font-size: 0.73rem;
+      line-height: 1.3;
+      background: rgba(0, 0, 64, 0.4);
+    }
+    .rhgi-referendum-shell {
+      border: 1px solid rgba(212, 175, 55, 0.6);
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(0,0,128,0.8), rgba(0,0,64,0.8));
+      padding: 10px 12px;
+      margin: 10px 0 4px 0;
+    }
+    .rhgi-referendum-title {
+      color: #D4AF37;
+      font-family: 'Goldman', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.07em;
+      text-align: center;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+    .rhgi-gauge-row {
+      margin-bottom: 7px;
+    }
+    .rhgi-gauge-label {
+      display: flex;
+      justify-content: space-between;
+      color: #ffffff;
+      font-size: 0.72rem;
+      margin-bottom: 3px;
+    }
+    .rhgi-gauge-track {
+      height: 9px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.18);
+      overflow: hidden;
+      border: 1px solid rgba(212, 175, 55, 0.4);
+    }
+    .rhgi-gauge-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #D4AF37 0%, #ffe8a3 50%, #D4AF37 100%);
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.45);
+    }
+    @media (max-width: 450px) {
+      .rhgi-command-grid {
+        grid-template-columns: 1fr;
+      }
+      .rhgi-command-item {
+        font-size: 0.8rem;
+      }
+      .rhgi-gauge-track {
+        height: 11px;
+      }
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -3516,6 +3837,32 @@ with st.sidebar:
                     st.warning("Add at least one Management 8 roster line (E.164 / local NG format) to send.")
                 else:
                     st.warning("No accepted numbers — use roster digits only (e.g. 2348036948675 or local 080…).")
+    _command_items_html = "".join(
+        f"<div class='rhgi-command-item'>{idx + 1}. {html.escape(name)}</div>"
+        for idx, name in enumerate(RHGI_COMMAND_DIRECTORATES)
+    )
+    st.markdown(
+        "<div class='rhgi-command-shell'>"
+        "<div class='rhgi-command-title'>RHGI Command Directory</div>"
+        f"<div class='rhgi-command-grid'>{_command_items_html}</div>"
+        "</div>",
+        unsafe_allow_html=True,
+    )
+    _gauge_rows_html = "".join(
+        "<div class='rhgi-gauge-row'>"
+        f"<div class='rhgi-gauge-label'><span>{html.escape(label)}</span><span>{value}%</span></div>"
+        "<div class='rhgi-gauge-track'>"
+        f"<div class='rhgi-gauge-fill' style='width:{max(0, min(100, int(value)))}%;'></div>"
+        "</div></div>"
+        for label, value in SOVEREIGN_REFERENDUM_GAUGES
+    )
+    st.markdown(
+        "<div class='rhgi-referendum-shell'>"
+        "<div class='rhgi-referendum-title'>Sovereign Referendum · Polling Engine</div>"
+        f"{_gauge_rows_html}"
+        "</div>",
+        unsafe_allow_html=True,
+    )
 
     st.markdown(
         '<p class="rhgi-sovereign-notepad-host" style="margin:12px 0 4px 0;color:#E6C35C;font-weight:800;font-size:0.82rem;letter-spacing:0.06em;">'
