@@ -42,6 +42,20 @@ OFFICE_IDENTITY = "OFFICE OF THE DG/RHGI"
 # Bump to force sovereign log wipe + executive 0/8 on next session attach (Management 8 STRIKE).
 _STRIKE_SESSION_EPOCH = "14314-EXEC-142-M8-20260328"
 
+
+def _default_referendum_gauges() -> dict[str, int]:
+    return {
+        "Tax Reform": 85,
+        "Energy": 82,
+        "Food Security": 80,
+        "Education": 84,
+        "Healthcare": 79,
+        "Judicial": 76,
+        "Electoral": 91,
+        "Digital Economy": 88,
+        "Legacy Approval": 85,
+    }
+
 st.set_page_config(
     page_title=OFFICE_IDENTITY,
     layout="wide",
@@ -273,12 +287,12 @@ SOVEREIGN_REFERENDUM_GAUGES = [
 QOD_DEFAULT = "How do the artisans in your ward feel about the Lagos-Calabar Highway today?"
 _REFORM_KEYWORDS: dict[str, tuple[str, ...]] = {
     "Tax Reform": ("tax", "tax reform"),
-    "Energy Sovereignty": ("energy", "power", "electricity"),
+    "Energy": ("energy", "power", "electricity"),
     "Food Security": ("food", "agri", "agriculture", "market"),
-    "Education Access": ("education", "school", "nelfund", "student"),
-    "Healthcare Access": ("health", "hospital", "clinic"),
-    "Judicial Reform": ("judicial", "court", "justice", "rule of law"),
-    "Electoral Integrity": ("electoral", "inec", "pvc", "vote integrity"),
+    "Education": ("education", "school", "nelfund", "student"),
+    "Healthcare": ("health", "hospital", "clinic"),
+    "Judicial": ("judicial", "court", "justice", "rule of law"),
+    "Electoral": ("electoral", "inec", "pvc", "vote integrity"),
     "Digital Economy": ("digital", "internet", "innovation", "tech"),
     "Legacy Approval": ("legacy", "mbu", "buhari", "sheikh dahiru", "bauchi"),
 }
@@ -594,10 +608,6 @@ def _dispatch_sovereign_notepad(text: str) -> tuple[list[str], list[str]]:
         except Exception as e:
             err.append(f"{label}: {e}")
     return ok, err
-
-
-def _default_referendum_gauges() -> dict[str, int]:
-    return {k: int(v) for k, v in SOVEREIGN_REFERENDUM_GAUGES}
 
 
 def _extract_daily_pulse_updates(text: str) -> tuple[dict[str, int], Optional[str]]:
