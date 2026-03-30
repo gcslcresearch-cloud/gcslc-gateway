@@ -1017,11 +1017,18 @@ def _sovereign_achievements_carousel_html() -> str:
   <script>
     (function () {
       const HASHTAGS = "#RenewedHope #RHGI";
+      const CTA =
+        "Forward this to 5 people in your ward to protect the 20.7M mandate.";
+      const LIVE_DASHBOARD_URL = "http://127.0.0.1:8505";
       const pageUrl = (() => {
         try {
-          return window.parent && window.parent.location ? window.parent.location.href : window.location.href;
+          const resolved =
+            window.parent && window.parent.location
+              ? window.parent.location.href
+              : window.location.href;
+          return resolved || LIVE_DASHBOARD_URL;
         } catch (e) {
-          return "https://example.com";
+          return LIVE_DASHBOARD_URL;
         }
       })();
 
@@ -1055,27 +1062,37 @@ def _sovereign_achievements_carousel_html() -> str:
           "The Sovereign Transformation: " +
           title +
           " is delivering results for the 20.7M Mandate. " +
-          hashtags;
+          hashtags +
+          " " +
+          CTA;
         const shareText =
           "RHGI Sovereign Achievement: " +
           title +
           ". " +
           body +
           " " +
-          hashtags;
+          hashtags +
+          " " +
+          CTA;
         const action = btn.getAttribute("data-action");
         if (action === "x") {
-          const url = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(xText) + "&url=" + encodeURIComponent(pageUrl);
+          const url =
+            "https://twitter.com/intent/tweet?text=" +
+            encodeURIComponent(xText) +
+            "&url=" +
+            encodeURIComponent(pageUrl);
           window.open(url, "_blank", "noopener,noreferrer");
           return;
         }
         if (action === "wa") {
-          const url = "https://wa.me/?text=" + encodeURIComponent(shareText + " " + pageUrl);
+          const waPrefill =
+            "🚨 RHGI STRATEGIC ALERT: " + shareText + " " + LIVE_DASHBOARD_URL;
+          const url = "https://wa.me/?text=" + encodeURIComponent(waPrefill);
           window.open(url, "_blank", "noopener,noreferrer");
           return;
         }
         if (action === "sms") {
-          const smsBody = encodeURIComponent(shareText + " " + pageUrl);
+          const smsBody = encodeURIComponent(shareText + " " + LIVE_DASHBOARD_URL);
           const smsUrl = "sms:?&body=" + smsBody;
           window.location.href = smsUrl;
         }
