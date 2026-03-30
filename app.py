@@ -47,6 +47,105 @@ OFFICE_IDENTITY = "OFFICE OF THE DG/RHGI"
 _STRIKE_SESSION_EPOCH = "14314-EXEC-142-M8-20260328"
 QOD_DEFAULT = "On a scale of 1-5, how has the unification of the FX rate improved your business confidence compared to the previous era of round-tripping?"
 _GSHEET_POLL_INTERVAL_SEC = 60
+NARRATIVE_X_MBU_EMPATHY = (
+    "RHGI — Empathy & Love: Honoring the 8th President's legacy with dignity and heart. "
+    "UNIMAID renamed to Muhammadu Buhari University (MBU) as a symbol of empathy, national continuity, "
+    "and love for the Nigerian idea. The 20.7M Sovereign Mandate treats this as moral infrastructure — "
+    "recognition that leadership and compassion can be inscribed into stone. "
+    "#MBU #SheikhDahiruBauchi #RHGI"
+)
+NARRATIVE_X_SHEIKH_EMPATHY = (
+    "RHGI — Empathy & Love: Immortalizing a Titan of Faith with reverence and humility. "
+    "Azare Federal University of Medical Sciences renamed Sheikh Dahiru Usman Bauchi University — "
+    "honoring the revered Tijjaniyya leader and the light he carries across generations. "
+    "The 20.7M Mandate affirms that faith, scholarship, and service belong in the same sovereign sentence. "
+    "#MBU #SheikhDahiruBauchi #RHGI"
+)
+
+
+def _dashboard_public_url() -> str:
+    return (os.environ.get("RHGI_DASHBOARD_PUBLIC_URL") or "http://127.0.0.1:8505").strip()
+
+
+def _campaign_lens_key() -> str:
+    sel = str(st.session_state.get("campaign_immortalization_lens") or "General")
+    if sel.startswith("MBU"):
+        return "mbu"
+    if sel.startswith("Sheikh"):
+        return "sheikh"
+    return "general"
+
+
+def _campaign_push_whatsapp_text() -> str:
+    q = str(st.session_state.get("question_of_day_text", QOD_DEFAULT))
+    return _append_outreach_signature(
+        "🚨 RHGI STRATEGIC ALERT — Question of the Day\n"
+        + q
+        + "\n\nOpen the Sovereign dashboard: "
+        + _dashboard_public_url()
+    )
+
+
+def _campaign_trend_x_text() -> str:
+    u = _dashboard_public_url()
+    lk = _campaign_lens_key()
+    if lk == "mbu":
+        return NARRATIVE_X_MBU_EMPATHY + " " + u
+    if lk == "sheikh":
+        return NARRATIVE_X_SHEIKH_EMPATHY + " " + u
+    q = str(st.session_state.get("question_of_day_text", QOD_DEFAULT))
+    return f"{q} — The 20.7M Mandate is delivering. #MBU #SheikhDahiruBauchi #RHGI {u}"
+
+
+def _campaign_sms_blast_text() -> str:
+    q = str(st.session_state.get("question_of_day_text", QOD_DEFAULT))
+    return _append_outreach_signature(
+        "RHGI SMS Blast — Question of the Day\n" + q + "\nDashboard: " + _dashboard_public_url()
+    )
+
+
+def _campaign_action_bar_html() -> str:
+    _wa = quote(_campaign_push_whatsapp_text(), safe="")
+    _x = quote(_campaign_trend_x_text(), safe="")
+    _u = quote(_dashboard_public_url(), safe="")
+    _sms_href = "sms:?&body=" + quote(_campaign_sms_blast_text(), safe="")
+    _sms_js = json.dumps(_sms_href)
+    return f"""
+<style>
+  .rhgi-campaign-4 {{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    align-items: stretch;
+    margin: 8px 0 4px 0;
+  }}
+  .rhgi-campaign-4 button {{
+    flex: 1 1 42%;
+    min-height: 44px;
+    border: 2px solid rgba(212, 175, 55, 0.88);
+    border-radius: 10px;
+    background: rgba(0, 0, 128, 0.52);
+    color: #fdfcf8;
+    font-family: Goldman, Georgia, serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    transition: box-shadow 0.2s ease, filter 0.2s ease;
+  }}
+  .rhgi-campaign-4 button:hover {{
+    box-shadow: 0 0 14px rgba(212, 175, 55, 0.45);
+    filter: brightness(1.06);
+  }}
+</style>
+<div class="rhgi-campaign-4" role="group" aria-label="Campaign action bar">
+  <button type="button" onclick="window.open('https://wa.me/?text={_wa}','_blank','noopener,noreferrer')">Push to WhatsApp</button>
+  <button type="button" onclick="window.open('https://twitter.com/intent/tweet?text={_x}','_blank','noopener,noreferrer')">Trend on X</button>
+  <button type="button" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u={_u}','_blank','noopener,noreferrer')">Share to FB</button>
+  <button type="button" onclick="try{{window.top.location.href={_sms_js};}}catch(e){{window.location.href={_sms_js};}}">SMS Blast</button>
+</div>
+"""
 
 
 def _default_referendum_gauges() -> dict[str, int]:
@@ -155,6 +254,12 @@ if "gsheets_last_signature" not in st.session_state:
     st.session_state.gsheets_last_signature = ""
 if "referendum_live_flash_ticks" not in st.session_state:
     st.session_state.referendum_live_flash_ticks = 0
+if "gsheets_last_ingest_ts" not in st.session_state:
+    st.session_state.gsheets_last_ingest_ts = ""
+if "gsheets_last_heartbeat_ts" not in st.session_state:
+    st.session_state.gsheets_last_heartbeat_ts = ""
+if "gsheets_live_ok" not in st.session_state:
+    st.session_state.gsheets_live_ok = False
 
 # RHGI-SWAT-OPPOSITION-77 — global colors (strict DG / SWAT palette).
 # RHGI-GOLDMAN palette (mirrors :root CSS variables).
@@ -687,14 +792,8 @@ def _normalize_poll_column(name: str) -> str:
     return re.sub(r"[^a-z0-9]", "", str(name).strip().lower())
 
 
-def _fetch_latest_gsheet_poll_updates() -> tuple[dict[str, int], Optional[str], bool]:
-    if GSheetsConnection is None:
-        return {}, None, False
-    try:
-        conn = st.connection("gsheets", type=GSheetsConnection)
-        df_poll = conn.read(ttl=0)
-    except Exception:
-        return {}, None, False
+def _parse_gsheet_latest_row(df_poll: pd.DataFrame) -> tuple[dict[str, int], Optional[str], bool]:
+    """Parse the latest sheet row; returns (updates, qod, is_new_row)."""
     if df_poll is None or getattr(df_poll, "empty", True):
         return {}, None, False
     latest = df_poll.tail(1).iloc[0].to_dict()
@@ -740,9 +839,27 @@ def _fetch_latest_gsheet_poll_updates() -> tuple[dict[str, int], Optional[str], 
 
 
 def _gsheet_poll_ingest_fragment_inner() -> None:
-    updates, qod, changed_row = _fetch_latest_gsheet_poll_updates()
+    if GSheetsConnection is None:
+        st.session_state.gsheets_live_ok = False
+        return
+    try:
+        conn = st.connection("gsheets", type=GSheetsConnection)
+        df_poll = conn.read(ttl=0)
+    except Exception:
+        st.session_state.gsheets_live_ok = False
+        return
+    st.session_state.gsheets_live_ok = True
+    st.session_state.gsheets_last_heartbeat_ts = datetime.now(_LAGOS_TZ).strftime(
+        "%Y-%m-%d %H:%M:%S WAT"
+    )
+    if df_poll is None or getattr(df_poll, "empty", True):
+        return
+    updates, qod, changed_row = _parse_gsheet_latest_row(df_poll)
     if not changed_row:
         return
+    st.session_state.gsheets_last_ingest_ts = datetime.now(_LAGOS_TZ).strftime(
+        "%Y-%m-%d %H:%M:%S WAT"
+    )
     _apply_daily_pulse_updates(updates, "google sheet")
     if qod:
         st.session_state.question_of_day_text = qod
@@ -3786,6 +3903,24 @@ st.markdown(
       margin: 0 0 10px 0;
       text-shadow: 0 0 14px rgba(212, 175, 55, 0.35);
     }
+    .rhgi-gs-status {
+      font-family: 'Goldman', sans-serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.05em;
+      color: rgba(253, 252, 248, 0.9);
+      text-align: center;
+      margin: 0 0 12px 0;
+      line-height: 1.4;
+    }
+    .rhgi-gsheets-live-pulse {
+      color: #D4AF37;
+      font-weight: 800;
+      animation: rhgiGsLivePulse 2.4s ease-in-out infinite;
+    }
+    @keyframes rhgiGsLivePulse {
+      0%, 100% { opacity: 1; text-shadow: 0 0 6px rgba(212, 175, 55, 0.45); }
+      50% { opacity: 0.88; text-shadow: 0 0 16px rgba(212, 175, 55, 0.92); }
+    }
     @keyframes sovereignPulse {
       0% {
         transform: scale(1.0) translate(0, 0);
@@ -3823,6 +3958,13 @@ st.markdown(
 )
 
 with st.sidebar:
+    _gs_ing = st.session_state.get("gsheets_last_ingest_ts") or "—"
+    _gs_ok = bool(st.session_state.get("gsheets_live_ok", False))
+    st.markdown(
+        "<p class='rhgi-gs-status'>GSheets <span class='rhgi-gsheets-live-pulse'>LIVE</span>: "
+        f"{'Connected' if _gs_ok else 'Standby'} | Last Ingest: {html.escape(str(_gs_ing))}</p>",
+        unsafe_allow_html=True,
+    )
     if hasattr(st, "fragment"):
         _gsheet_ingest = st.fragment(run_every=timedelta(seconds=_GSHEET_POLL_INTERVAL_SEC))(
             _gsheet_poll_ingest_fragment_inner
@@ -4228,22 +4370,18 @@ with st.sidebar:
         f"<div class='rhgi-qod-calligraphy'>{html.escape(st.session_state.get('question_of_day_text', QOD_DEFAULT))}</div>",
         unsafe_allow_html=True,
     )
-    _qod_msg = _append_outreach_signature(
-        "RHGI Daily Question Broadcast · 23-LGA SWAT Teams\n"
-        + str(st.session_state.get("question_of_day_text", QOD_DEFAULT))
+    st.selectbox(
+        "Immortalization narrative (Trend on X)",
+        options=[
+            "General",
+            "MBU — Empathy & Love",
+            "Sheikh Dahiru — Empathy & Love",
+        ],
+        key="campaign_immortalization_lens",
+        label_visibility="collapsed",
     )
-    if st.button("Broadcast Question — WhatsApp", use_container_width=True, key="qod_wa_broadcast_btn"):
-        components.html(_wa_me_popup_html([_wa_me_url(DG_VERIFIED_E164, _qod_msg)]), height=0)
-        _append_sovereign_feed("QOD", "Question of the Day broadcast via WhatsApp relay.")
-        st.info("Broadcast packet opened on WhatsApp relay for 23-LGA SWAT teams.")
-    if st.button("Broadcast Question — SMS", use_container_width=True, key="qod_sms_broadcast_btn"):
-        _sms_url = "sms:?&body=" + quote(_qod_msg, safe="")
-        components.html(
-            f"<script>try{{window.top.location.href={json.dumps(_sms_url)};}}catch(e){{window.location.href={json.dumps(_sms_url)};}}</script>",
-            height=0,
-        )
-        _append_sovereign_feed("QOD", "Question of the Day broadcast via SMS relay.")
-        st.info("SMS composer opened for 23-LGA SWAT teams relay.")
+    st.caption("Narrative lens · MBU & Sheikh unlock Empathy & Love long-form on X")
+    components.html(_campaign_action_bar_html(), height=128, scrolling=False)
 
     st.markdown(
         '<p class="rhgi-sovereign-notepad-host" style="margin:12px 0 4px 0;color:#E6C35C;font-weight:800;font-size:0.82rem;letter-spacing:0.06em;">'
