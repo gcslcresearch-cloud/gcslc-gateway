@@ -3411,6 +3411,9 @@ st.markdown(
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 6px;
+      animation: sovereignPulse 12s ease-in-out infinite;
+      transform-origin: center center;
+      will-change: transform, filter;
     }
     .rhgi-command-item {
       border: 1px solid rgba(0, 206, 209, 0.35);
@@ -3427,6 +3430,9 @@ st.markdown(
       background: linear-gradient(180deg, rgba(0,0,128,0.8), rgba(0,0,64,0.8));
       padding: 10px 12px;
       margin: 10px 0 4px 0;
+      animation: sovereignPulse 12s ease-in-out infinite;
+      transform-origin: center center;
+      will-change: transform, filter;
     }
     .rhgi-referendum-title {
       color: #D4AF37;
@@ -3460,6 +3466,20 @@ st.markdown(
       border-radius: 999px;
       background: linear-gradient(90deg, #D4AF37 0%, #ffe8a3 50%, #D4AF37 100%);
       box-shadow: 0 0 10px rgba(212, 175, 55, 0.45);
+    }
+    @keyframes sovereignPulse {
+      0% {
+        transform: scale(1.0) translate(0, 0);
+        filter: brightness(100%);
+      }
+      50% {
+        transform: scale(1.02) translate(1px, -2px);
+        filter: brightness(115%);
+      }
+      100% {
+        transform: scale(1.0) translate(0, 0);
+        filter: brightness(100%);
+      }
     }
     @media (max-width: 450px) {
       .rhgi-command-grid {
