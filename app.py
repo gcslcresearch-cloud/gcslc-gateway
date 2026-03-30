@@ -268,6 +268,7 @@ SOVEREIGN_REFERENDUM_GAUGES = [
     ("Judicial Reform", 76),
     ("Electoral Integrity", 91),
     ("Digital Economy", 88),
+    ("Legacy Approval", 85),
 ]
 QOD_DEFAULT = "How do the artisans in your ward feel about the Lagos-Calabar Highway today?"
 _REFORM_KEYWORDS: dict[str, tuple[str, ...]] = {
@@ -279,6 +280,7 @@ _REFORM_KEYWORDS: dict[str, tuple[str, ...]] = {
     "Judicial Reform": ("judicial", "court", "justice", "rule of law"),
     "Electoral Integrity": ("electoral", "inec", "pvc", "vote integrity"),
     "Digital Economy": ("digital", "internet", "innovation", "tech"),
+    "Legacy Approval": ("legacy", "mbu", "buhari", "sheikh dahiru", "bauchi"),
 }
 
 
@@ -748,20 +750,22 @@ def _sovereign_achievements_carousel_html() -> str:
     }
     .rhgi-sc-track {
       display: flex;
-      width: 400%;
+      width: 600%;
       height: 100%;
-      animation: rhgiSovereignCarousel 24s cubic-bezier(0.45, 0.05, 0.25, 1) infinite;
+      animation: rhgiSovereignCarousel 44s cubic-bezier(0.45, 0.05, 0.25, 1) infinite;
     }
     @keyframes rhgiSovereignCarousel {
-      0%, 20% { transform: translateX(0); }
-      25%, 45% { transform: translateX(-25%); }
-      50%, 70% { transform: translateX(-50%); }
-      75%, 95% { transform: translateX(-75%); }
+      0%, 11% { transform: translateX(0); }
+      14%, 25% { transform: translateX(-16.6667%); }
+      28%, 39% { transform: translateX(-33.3333%); }
+      42%, 53% { transform: translateX(-50%); }
+      56%, 76% { transform: translateX(-66.6667%); }
+      79%, 98% { transform: translateX(-83.3333%); }
       100% { transform: translateX(0); }
     }
     .rhgi-sc-panel {
-      width: 25%;
-      flex: 0 0 25%;
+      width: 16.6667%;
+      flex: 0 0 16.6667%;
       height: 100%;
       padding: 18px 22px;
       display: flex;
@@ -793,6 +797,27 @@ def _sovereign_achievements_carousel_html() -> str:
       -webkit-text-fill-color: transparent;
       animation: rhgiScTitleShimmer 3.8s linear infinite;
       filter: drop-shadow(0 0 14px rgba(212, 175, 55, 0.35));
+    }
+    .rhgi-sc-panel--legacy {
+      border: 1px solid rgba(212, 175, 55, 0.42);
+      border-radius: 12px;
+      background: linear-gradient(125deg, rgba(0,0,128,0.58), rgba(0,0,64,0.62), rgba(212,175,55,0.16));
+      box-shadow: inset 0 0 20px rgba(212, 175, 55, 0.12);
+      animation: rhgiLegacyCardShimmer 8.5s ease-in-out infinite;
+    }
+    .rhgi-sc-panel--legacy .rhgi-sc-title {
+      font-family: 'Great Vibes', 'Alex Brush', cursive;
+      font-size: clamp(2rem, 4.4vw, 2.7rem);
+    }
+    @keyframes rhgiLegacyCardShimmer {
+      0%, 100% {
+        box-shadow: inset 0 0 20px rgba(212, 175, 55, 0.12), 0 0 10px rgba(212, 175, 55, 0.18);
+        filter: brightness(1);
+      }
+      50% {
+        box-shadow: inset 0 0 32px rgba(212, 175, 55, 0.22), 0 0 18px rgba(212, 175, 55, 0.35);
+        filter: brightness(1.08);
+      }
     }
     @keyframes rhgiScTitleShimmer {
       0% { background-position: 0% 50%; }
@@ -946,9 +971,33 @@ def _sovereign_achievements_carousel_html() -> str:
             <button class="rhgi-sc-btn" type="button" data-action="x">X</button>
           </div>
         </div>
+        <div class="rhgi-sc-panel rhgi-sc-panel--legacy" data-hashtags="#MBU #SheikhDahiruBauchi #RenewedHopeLegacy">
+          <h2 class="rhgi-sc-title">Muhammadu Buhari University (MBU)</h2>
+          <p class="rhgi-sc-body">
+            Honoring the 8th President&rsquo;s legacy. UNIMAID renamed to MBU as a symbol of empathy and national continuity.
+          </p>
+          <div class="rhgi-sc-actions">
+            <button class="rhgi-sc-btn" type="button" data-action="wa">WhatsApp</button>
+            <button class="rhgi-sc-btn" type="button" data-action="sms">SMS</button>
+            <button class="rhgi-sc-btn" type="button" data-action="x">X</button>
+          </div>
+        </div>
+        <div class="rhgi-sc-panel rhgi-sc-panel--legacy" data-hashtags="#MBU #SheikhDahiruBauchi #RenewedHopeLegacy">
+          <h2 class="rhgi-sc-title">Sheikh Dahiru Usman Bauchi University</h2>
+          <p class="rhgi-sc-body">
+            Immortalizing a Titan of Faith. Azare Federal University of Medical Sciences renamed in honor of the revered Tijjaniyya leader.
+          </p>
+          <div class="rhgi-sc-actions">
+            <button class="rhgi-sc-btn" type="button" data-action="wa">WhatsApp</button>
+            <button class="rhgi-sc-btn" type="button" data-action="sms">SMS</button>
+            <button class="rhgi-sc-btn" type="button" data-action="x">X</button>
+          </div>
+        </div>
       </div>
     </div>
     <div class="rhgi-sc-dots" aria-hidden="true">
+      <span class="rhgi-sc-dot"></span>
+      <span class="rhgi-sc-dot"></span>
       <span class="rhgi-sc-dot"></span>
       <span class="rhgi-sc-dot"></span>
       <span class="rhgi-sc-dot"></span>
@@ -990,18 +1039,20 @@ def _sovereign_achievements_carousel_html() -> str:
         if (!panel) return;
         const title = panel.querySelector(".rhgi-sc-title")?.textContent?.trim() || "Sovereign Achievement";
         const body = panel.querySelector(".rhgi-sc-body")?.textContent?.replace(/\s+/g, " ").trim() || "";
+        const panelTags = panel.getAttribute("data-hashtags");
+        const hashtags = panelTags && panelTags.trim() ? panelTags.trim() : HASHTAGS;
         const xText =
           "The Sovereign Transformation: " +
           title +
           " is delivering results for the 20.7M Mandate. " +
-          HASHTAGS;
+          hashtags;
         const shareText =
           "RHGI Sovereign Achievement: " +
           title +
           ". " +
           body +
           " " +
-          HASHTAGS;
+          hashtags;
         const action = btn.getAttribute("data-action");
         if (action === "x") {
           const url = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(xText) + "&url=" + encodeURIComponent(pageUrl);
