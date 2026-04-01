@@ -1546,6 +1546,12 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
 .lt-name { color: #FFD700 !important; }
 .lt-lga { color: rgba(255, 215, 0, 0.85) !important; }
 .lt-ward { color: rgba(255, 215, 0, 0.78) !important; font-weight: 700 !important; }
+.lt-phone {
+  color: #FFD700 !important;
+  font-weight: 800 !important;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
 .lt-sep { color: rgba(255, 215, 0, 0.38) !important; padding: 0 0.15rem; }
 
 .polling-prism-wrap {
@@ -2616,34 +2622,165 @@ def _nodal_stream_rail_html() -> str:
     )
 
 
-def _build_lake_master_ingest_ticker(n_lines: int = 32) -> str:
-    """Monospace gold live ticker when voter head is empty — lake filenames + master loop copy."""
-    pool = _kaduna_lake_preview_pool()
-    lines: list[str] = []
-    for _ in range(n_lines):
-        ts = (datetime.now() - timedelta(seconds=random.randint(0, 7200))).strftime("%H:%M:%S")
-        if pool:
-            name = random.choice(pool)
-            mid = f"AUTO-INGEST · {html.escape(name)}"
-            tail_lga = "KADUNA_Data_2027"
-            tail_ward = "LAKE INDEX"
+def _ticker_column_map(df: pd.DataFrame) -> dict[str, str]:
+    return {str(c).strip().lower().replace(" ", "_"): c for c in df.columns}
+
+
+_PHONE_COL_CANDIDATES: tuple[str, ...] = (
+    "phone",
+    "mobile",
+    "telephone",
+    "tel",
+    "msisdn",
+    "gsm",
+    "phone_number",
+    "phone_no",
+    "mobile_no",
+    "contact",
+    "whatsapp",
+    "number",
+)
+
+
+def _ticker_resolve_phone_column(norm: dict[str, str]) -> str | None:
+    for k in _PHONE_COL_CANDIDATES:
+        if k in norm:
+            return norm[k]
+    for nk, orig in norm.items():
+        if any(x in nk for x in ("phone", "mobile", "tel", "gsm", "msisdn", "contact", "whatsapp")):
+            return orig
+    return None
+
+
+def _ticker_resolve_name_parts(norm: dict[str, str], row: pd.Series) -> str:
+    def pick(*keys: str) -> str | None:
+        for k in keys:
+            if k in norm:
+                v = str(row[norm[k]]).strip()
+                if v:
+                    return v
+        return None
+
+    fn = pick("first_name", "firstname", "fname", "first")
+    ln = pick("last_name", "lastname", "surname", "lname", "last")
+    if fn and ln:
+        return f"{fn} {ln}"
+    one = pick("full_name", "name", "voter_name", "fullname")
+    if one:
+        return one
+    if fn:
+        return fn
+    if ln:
+        return ln
+    return "—"
+
+
+def _ticker_resolve_lga(norm: dict[str, str], row: pd.Series) -> str:
+    for k in ("lga", "lga_name", "ward_lga", "local_government", "lga_name_"):
+        if k in norm:
+            v = str(row[norm[k]]).strip()
+            if v:
+                return v
+    for nk, orig in norm.items():
+        if "lga" in nk:
+            v = str(row[orig]).strip()
+            if v:
+                return v
+    return "—"
+
+
+def _obfuscate_phone_ticker(raw: object) -> str:
+    """Sovereign display: first 6 digits + masked middle + last 2 (e.g. 234803XXX64)."""
+    digits = "".join(c for c in str(raw) if c.isdigit())
+    if not digits:
+        return "—"
+    if len(digits) <= 6:
+        return "X" * len(digits)
+    if len(digits) < 8:
+        return digits[:6] + "XX"
+    return digits[:6] + "X" * (len(digits) - 8) + digits[-2:]
+
+
+def _logistics_ticker_line(ts: str, name: str, lga: str, phone_obf: str) -> str:
+    """[TIME] | SYNCED | NAME | LGA | +PHONE | LIVE — monospace gold via CSS."""
+    return (
+        '<div class="logistics-line">'
+        f'<span class="lt-time">[{html.escape(ts)}]</span>'
+        '<span class="lt-sep">|</span>'
+        '<span class="status-synced">SYNCED</span>'
+        '<span class="lt-sep">|</span>'
+        f'<span class="lt-name">{html.escape(name)}</span>'
+        '<span class="lt-sep">|</span>'
+        f'<span class="lt-lga">{html.escape(lga)}</span>'
+        '<span class="lt-sep">|</span>'
+        f'<span class="lt-phone">+{html.escape(phone_obf)}</span>'
+        '<span class="lt-sep">|</span>'
+        '<span class="status-synced">LIVE</span>'
+        "</div>"
+    )
+
+
+def _read_ticker_sample_from_active_file(n_sample: int = 10) -> pd.DataFrame:
+    """Random sample (up to n_sample rows) from active bound file — CSV/XLSX, bounded read."""
+    p = VOTER_DB_CSV
+    if not p.is_file():
+        return pd.DataFrame()
+    if p.resolve() == _REPO_VOTER_DB_CSV and not os.environ.get("GCSLC_VOTER_DB"):
+        return pd.DataFrame()
+    try:
+        if p.suffix.lower() == ".csv":
+            raw = pd.read_csv(p, nrows=12_000)
+        elif p.suffix.lower() in (".xlsx", ".xls"):
+            try:
+                raw = pd.read_excel(p, nrows=12_000)
+            except TypeError:
+                raw = pd.read_excel(p).iloc[:12_000]
+            except ImportError:
+                return pd.DataFrame()
         else:
-            mid = f"MASTER INGESTION · {html.escape(str(KADUNA_DATA_2027_DIR))}"
-            tail_lga = "—"
-            tail_ward = "SCAN"
-        lines.append(
-            '<div class="logistics-line">'
-            f'<span class="lt-time">[{html.escape(ts)}]</span>'
-            '<span class="lt-sep">|</span>'
-            f'<span class="lt-name">{mid}</span>'
-            '<span class="lt-sep">|</span>'
-            f'<span class="lt-ward">{tail_ward}</span>'
-            '<span class="lt-sep">|</span>'
-            f'<span class="lt-lga">{html.escape(tail_lga)}</span>'
-            '<span class="lt-sep">|</span>'
-            '<span class="status-synced">LIVE</span>'
-            "</div>"
-        )
+            return pd.DataFrame()
+    except Exception:
+        return pd.DataFrame()
+    if raw.empty:
+        return pd.DataFrame()
+    k = min(max(1, int(n_sample)), len(raw))
+    return raw.sample(n=k, random_state=None)
+
+
+def _build_lake_master_ingest_ticker(n_lines: int = 32) -> str:
+    """Deep nodal extraction: 10-row random sample from active file; sovereign phone mask."""
+    sample = _read_ticker_sample_from_active_file(10)
+    lines: list[str] = []
+    if sample.empty:
+        pool = _kaduna_lake_preview_pool()
+        for _ in range(max(n_lines, 12)):
+            ts = (datetime.now() - timedelta(seconds=random.randint(0, 7200))).strftime("%H:%M:%S")
+            if pool:
+                mid = f"AUTO-INGEST · {html.escape(random.choice(pool))}"
+            else:
+                mid = f"MASTER INGESTION · {html.escape(str(KADUNA_DATA_2027_DIR))}"
+            lines.append(
+                _logistics_ticker_line(ts, mid, "—", "—")
+            )
+        body = "".join(lines)
+        return f'<div class="logistics-feed-outer"><div class="logistics-feed-track">{body + body}</div></div>'
+
+    rows: list[pd.Series] = [sample.iloc[i] for i in range(len(sample))]
+    norm = _ticker_column_map(sample)
+    phone_col = _ticker_resolve_phone_column(norm)
+
+    for _ in range(n_lines):
+        r = random.choice(rows)
+        ts = (datetime.now() - timedelta(seconds=random.randint(0, 7200))).strftime("%H:%M:%S")
+        name = _ticker_resolve_name_parts(norm, r)
+        lga = _ticker_resolve_lga(norm, r)
+        if phone_col is not None:
+            raw_phone = r[phone_col]
+            phone_disp = _obfuscate_phone_ticker(raw_phone)
+        else:
+            phone_disp = "—"
+        lines.append(_logistics_ticker_line(ts, name, lga, phone_disp))
+
     body = "".join(lines)
     dup = body + body
     return f'<div class="logistics-feed-outer"><div class="logistics-feed-track">{dup}</div></div>'
@@ -2659,29 +2796,13 @@ def _build_logistics_feed_html(df: pd.DataFrame, n_lines: int = 28) -> str:
         ts = (datetime.now() - timedelta(seconds=random.randint(0, 7200))).strftime("%H:%M:%S")
         fn = str(r["first_name"]).strip()
         ln = str(r["last_name"]).strip()
-        lga = str(r["lga"]).strip()
-        ward = ""
-        if "ward" in df.columns:
-            ward = str(r.get("ward", "")).strip()
-        line = (
-            '<div class="logistics-line">'
-            f'<span class="lt-time">[{html.escape(ts)}]</span>'
-            '<span class="lt-sep">|</span>'
-            f'<span class="lt-name">{html.escape(fn)} {html.escape(ln)}</span>'
-        )
-        if ward:
-            line += (
-                '<span class="lt-sep">|</span>'
-                f'<span class="lt-ward">{html.escape(ward)}</span>'
-            )
-        line += (
-            '<span class="lt-sep">|</span>'
-            f'<span class="lt-lga">{html.escape(lga)}</span>'
-            '<span class="lt-sep">|</span>'
-            '<span class="status-synced">LIVE</span>'
-            "</div>"
-        )
-        lines.append(line)
+        name = " ".join(x for x in (fn, ln) if x).strip() or "—"
+        lga = str(r["lga"]).strip() if "lga" in r.index else "—"
+        if "number" in r.index:
+            phone_disp = _obfuscate_phone_ticker(r["number"])
+        else:
+            phone_disp = "—"
+        lines.append(_logistics_ticker_line(ts, name, lga, phone_disp))
     body = "".join(lines)
     dup = body + body
     return rail + f'<div class="logistics-feed-outer"><div class="logistics-feed-track">{dup}</div></div>'
