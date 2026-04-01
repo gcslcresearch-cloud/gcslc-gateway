@@ -31,6 +31,10 @@ NATIONAL_MANDATE_TOTAL = 20_700_000
 KADUNA_NATIONAL_CONTRIBUTION_PCT = 7.25
 KADUNA_EMERALD = "#046A38"
 _VOTERS_PER_PU_KADUNA = KADUNA_VOTER_TARGET / float(PU_COUNT_KADUNA)
+# 2027 sovereign consolidation (D3): 1.5M goal ÷ 8,012 PUs → 187 voters/node requirement
+VOTERS_PER_PU_D3_REQUIREMENT = 187
+CONSOLIDATION_GOAL_2027 = KADUNA_VOTER_TARGET
+CONSOLIDATION_CONSTANT = KADUNA_VOTER_TARGET  # 1.5M consolidation constant (command target)
 BUFFER_20_7M_LABEL = "20.7M"
 
 CHANNEL_OPTIONS: list[str] = [
@@ -130,6 +134,35 @@ V_2023_APC = 730_002
 V_2023_PDP = 719_196
 V_2023_LP = 58_285
 V_2023_TOTAL = V_2023_APC + V_2023_PDP + V_2023_LP
+
+# D3 — Official historical audit (locked administrative figures: lead / total votes)
+HIST_D3_2015 = {"year": 2015, "lead": 1_120_000, "total": 1_610_000}
+HIST_D3_2019 = {"year": 2019, "lead": 993_000, "total": 1_660_000}
+HIST_D3_2023 = {"year": 2023, "lead": 554_000, "total": 1_360_000}
+HIST_D3_AUDIT_ROWS: list[dict[str, int]] = [HIST_D3_2015, HIST_D3_2019, HIST_D3_2023]
+D3_FRAGMENTATION_LEAKAGE_2019_2023 = HIST_D3_2019["total"] - HIST_D3_2023["total"]  # 300,000
+
+# Dual-track trend — Governorship = D3 lock; Presidential total = Gov + gap (2023 gap locked)
+DUAL_TRACK_PRES_GOV_GAP: dict[int, int] = {2015: 180_000, 2019: 175_000, 2023: 182_134}
+DUAL_TRACK_2023_PRES_GOV_TURNOUT_GAP = DUAL_TRACK_PRES_GOV_GAP[2023]  # 182,134 · OPPORTUNITY FOR CONSOLIDATION
+GOV_TREND_AUDIT: dict[int, dict[str, int]] = {
+    2015: {"total": HIST_D3_2015["total"], "lead": HIST_D3_2015["lead"]},
+    2019: {"total": HIST_D3_2019["total"], "lead": HIST_D3_2019["lead"]},
+    2023: {"total": HIST_D3_2023["total"], "lead": HIST_D3_2023["lead"]},
+}
+PRES_TREND_AUDIT: dict[int, dict[str, int]] = {
+    y: {
+        "total": GOV_TREND_AUDIT[y]["total"] + DUAL_TRACK_PRES_GOV_GAP[y],
+        "lead": max(
+            0,
+            int(round(GOV_TREND_AUDIT[y]["lead"] * (GOV_TREND_AUDIT[y]["total"] + DUAL_TRACK_PRES_GOV_GAP[y]) / GOV_TREND_AUDIT[y]["total"])),
+        ),
+    }
+    for y in (2015, 2019, 2023)
+}
+# 2027 command projection (consolidation constant on both tracks)
+PROJ_2027_PRES_LEAD = 935_000
+PROJ_2027_GOV_LEAD = 890_000
 
 LGA_TARGET = 23
 LGA_MAJORITY_NEED = 16
@@ -370,6 +403,21 @@ _CSS = """
 @keyframes sentiment-bar-pulse {
   0%, 100% { filter: brightness(1) drop-shadow(0 0 6px rgba(45, 212, 191, 0.35)); }
   50% { filter: brightness(1.12) drop-shadow(0 0 14px rgba(45, 212, 191, 0.65)); }
+}
+@keyframes sov-trend-2027-velocity-pulse {
+  0%, 100% {
+    color: #4ADE80 !important;
+    text-shadow: 0 0 10px rgba(74, 222, 128, 0.75);
+  }
+  50% {
+    color: #22C55E !important;
+    text-shadow: 0 0 22px rgba(34, 197, 94, 0.95), 0 0 36px rgba(22, 163, 74, 0.45);
+  }
+}
+@keyframes clinical-2027-green-shimmer {
+  0% { background-position: 0% 50%; box-shadow: 0 0 12px rgba(74, 222, 128, 0.35); }
+  50% { background-position: 100% 50%; box-shadow: 0 0 24px rgba(34, 197, 94, 0.65); }
+  100% { background-position: 200% 50%; box-shadow: 0 0 14px rgba(74, 222, 128, 0.45); }
 }
 
 /* Sidebar — Matte Charcoal + high-contrast gold / bright cyan (S24 / no ghosting) */
@@ -1331,6 +1379,150 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   padding: 0.55rem 0.65rem;
   margin-top: 0.55rem;
 }
+.d3-audit-wrap {
+  border-radius: 14px;
+  padding: 3px;
+  background: linear-gradient(120deg, #121212, #D4AF37, #00E5FF, #121212);
+  background-size: 260% 100%;
+  animation: prism-shimmer 16s linear infinite;
+  margin: 0.85rem 0 1rem 0;
+}
+.d3-audit-inner {
+  background: linear-gradient(180deg, #0a0a12 0%, #000028 100%);
+  border-radius: 11px;
+  padding: 0.75rem 0.9rem 0.9rem 0.9rem;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+}
+.d3-audit-inner h3 {
+  font-family: 'Goldman', sans-serif !important;
+  color: #FFD700 !important;
+  margin: 0 0 0.45rem 0;
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+}
+.d3-audit-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Goldman', sans-serif !important;
+  font-size: 0.78rem;
+  color: #00E5FF !important;
+  margin: 0 0 0.55rem 0;
+}
+.d3-audit-table th {
+  color: #FFD700 !important;
+  text-align: left;
+  padding: 0.35rem 0.45rem;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.35);
+}
+.d3-audit-table td {
+  padding: 0.32rem 0.45rem;
+  border-bottom: 1px solid rgba(0, 229, 255, 0.12);
+}
+.d3-red-variance {
+  color: #EF4444 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.04em;
+}
+.d3-consolidation-callout {
+  font-family: 'Goldman', sans-serif !important;
+  font-size: 0.74rem !important;
+  color: rgba(0, 229, 255, 0.92) !important;
+  margin: 0.35rem 0 0 0 !important;
+  line-height: 1.45 !important;
+}
+.d3-consolidation-callout strong {
+  color: #FFD700 !important;
+}
+.sov-trend-wrap {
+  border-radius: 14px;
+  padding: 3px;
+  background: #121212 !important;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  margin: 0.85rem 0 1rem 0;
+}
+.sov-trend-inner {
+  background: #121212 !important;
+  border-radius: 11px;
+  padding: 0.75rem 0.9rem 0.95rem 0.9rem;
+  border: 1px solid rgba(0, 229, 255, 0.2);
+}
+.sov-trend-gap-row td {
+  background: rgba(239, 68, 68, 0.12) !important;
+  border-top: 1px solid rgba(239, 68, 68, 0.45) !important;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.35) !important;
+  font-weight: 700 !important;
+}
+.sov-trend-gap-number {
+  color: #F87171 !important;
+  font-variant-numeric: tabular-nums;
+}
+.sov-trend-gap-opp {
+  color: #FFD700 !important;
+  letter-spacing: 0.04em;
+}
+.clinical-2027-gauge-wrap {
+  border-radius: 14px;
+  padding: 3px;
+  background: linear-gradient(120deg, #121212, #22C55E, #4ADE80, #121212);
+  background-size: 240% 100%;
+  animation: clinical-2027-green-shimmer 2.8s ease-in-out infinite;
+  margin-top: 0.55rem;
+}
+.clinical-2027-gauge-inner {
+  background: #121212 !important;
+  border-radius: 11px;
+  padding: 0.45rem 0.5rem 0.55rem 0.5rem;
+  border: 1px solid rgba(74, 222, 128, 0.35);
+}
+.clinical-2027-gauge-inner .stPlotlyChart {
+  margin-bottom: 0 !important;
+}
+.sov-trend-inner h3 {
+  font-family: 'Goldman', sans-serif !important;
+  color: #FFD700 !important;
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+}
+.sov-trend-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Goldman', sans-serif !important;
+  font-size: 0.74rem;
+  margin: 0 0 0.55rem 0;
+}
+.sov-trend-table th {
+  color: #FFD700 !important;
+  text-align: left;
+  padding: 0.32rem 0.4rem;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.35);
+}
+.sov-trend-table td {
+  padding: 0.28rem 0.4rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.sov-trend-pres-cell {
+  color: #FFD700 !important;
+  font-weight: 700 !important;
+}
+.sov-trend-gov-cell {
+  color: #00E5FF !important;
+  font-weight: 700 !important;
+}
+.sov-trend-2027-pulse {
+  animation: sov-trend-2027-velocity-pulse 1.25s ease-in-out infinite;
+  font-weight: 800 !important;
+}
+.sov-trend-foot {
+  font-family: 'Goldman', sans-serif !important;
+  font-size: 0.7rem !important;
+  color: rgba(0, 229, 255, 0.88) !important;
+  margin: 0.4rem 0 0 0 !important;
+  line-height: 1.45 !important;
+}
+.sov-trend-foot strong {
+  color: #FFD700 !important;
+}
 [data-testid="stSidebar"] .buffer-20m-gold {
   color: #FFD700 !important;
 }
@@ -1478,7 +1670,8 @@ def _render_live_outreach_panel() -> None:
         '<p class="live-audit-tag"><span class="status-live">LIVE</span> Nodal Audit · voter registry stream</p>'
         f'<p class="pu-tactical-line">Tactical Pulse (PU level · <span class="kaduna-anchor-emerald">Kaduna anchor</span>) · '
         f'<strong class="kaduna-anchor-emerald">{PU_COUNT_KADUNA:,}</strong> PUs · '
-        f'1.5M voter target across nodes · '
+        f'<strong>Consolidation constant {CONSOLIDATION_CONSTANT:,}</strong> · '
+        f'<strong>{VOTERS_PER_PU_D3_REQUIREMENT}</strong> voters/PU (D3) · '
         f'<code>KADUNA_Data_2027</code> · <code>{pu_path}</code> · '
         f'<span class="status-synced">{html.escape(path_tag)}</span></p>'
         f'<p class="outreach-csv-note">CSV payload: <strong>{src}</strong> · {live_row}</p>'
@@ -1503,7 +1696,9 @@ def _render_outreach_velocity_block() -> None:
             help="Authorize PUSH TO 1.5M NODES to arm live velocity toward 1.5M voters / 8,012 PUs",
         )
         st.caption(
-            f"Standby · Kaduna anchor {PU_COUNT_KADUNA:,} PUs · {_VOTERS_PER_PU_KADUNA:,.1f} voters/PU nominal"
+            f"D3 + Sovereign Trend baselines · standby · consolidation constant {CONSOLIDATION_CONSTANT:,} · "
+            f"{PU_COUNT_KADUNA:,} PUs · {VOTERS_PER_PU_D3_REQUIREMENT} voters/PU · "
+            f"nominal calc {_VOTERS_PER_PU_KADUNA:,.1f}"
         )
         st.markdown("</div>", unsafe_allow_html=True)
         return
@@ -1518,7 +1713,8 @@ def _render_outreach_velocity_block() -> None:
         delta=f"{pu_per_min:,} PU handshakes/min · LIVE",
     )
     st.caption(
-        f"1.5M voter target · {PU_COUNT_KADUNA:,} Kaduna PUs · KADUNA_Data_2027 · multi-channel switchboard"
+        f"D3 lock · consolidation constant {CONSOLIDATION_CONSTANT:,} · {PU_COUNT_KADUNA:,} PUs · "
+        f"{VOTERS_PER_PU_D3_REQUIREMENT} voters/PU · KADUNA_Data_2027 · multi-channel switchboard"
     )
     st.markdown("</div>", unsafe_allow_html=True)
 
@@ -1562,6 +1758,10 @@ def _render_national_contribution_gauge() -> None:
         use_container_width=True,
         key="cien_national_contribution_gauge",
         config={"displayModeBar": False, "responsive": True},
+    )
+    st.caption(
+        f"D3 historical audit locked · gold/cyan meters keyed to verified lead/total rows · "
+        f"{BUFFER_20_7M_LABEL} national mandate · {KADUNA_NATIONAL_CONTRIBUTION_PCT}% Kaduna contribution"
     )
 
 
@@ -1666,6 +1866,235 @@ def _render_sentiment_sidebar() -> None:
     )
     st.caption(subtitle)
     st.markdown("</div>", unsafe_allow_html=True)
+
+
+def _d3_lead_total_bar_figure() -> go.Figure:
+    """Gold (total) + cyan (lead) — D3 locked historical audit."""
+    years = [str(r["year"]) for r in HIST_D3_AUDIT_ROWS]
+    totals = [r["total"] for r in HIST_D3_AUDIT_ROWS]
+    leads = [r["lead"] for r in HIST_D3_AUDIT_ROWS]
+    fig = go.Figure()
+    fig.add_trace(
+        go.Bar(
+            name="Total votes",
+            x=years,
+            y=totals,
+            marker=dict(color="#D4AF37", line=dict(color="#FFD700", width=1)),
+        )
+    )
+    fig.add_trace(
+        go.Bar(
+            name="Lead votes",
+            x=years,
+            y=leads,
+            marker=dict(color="#00E5FF", line=dict(color="#00F5FF", width=1)),
+        )
+    )
+    fig.update_layout(
+        barmode="group",
+        paper_bgcolor=NAVY_DEEP,
+        plot_bgcolor=NAVY_DEEP,
+        font=dict(family="Goldman", color=GOLD),
+        title=dict(
+            text="D3 Historical Audit — Lead vs Total (verified baselines)",
+            font=dict(size=14, color=GOLD),
+        ),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, x=0.5, xanchor="center"),
+        yaxis=dict(title="Votes", gridcolor="#003350", tickformat=","),
+        xaxis=dict(title=""),
+        height=360,
+        margin=dict(t=56, b=40, l=48, r=24),
+    )
+    return fig
+
+
+def _d3_fragmentation_gap_figure() -> go.Figure:
+    """300k vote leakage 2019→2023 as red variance (waterfall)."""
+    fig = go.Figure(
+        go.Waterfall(
+            name="Fragmentation",
+            orientation="v",
+            measure=["absolute", "relative", "total"],
+            x=["2019 total (baseline)", "2019→2023 fragmentation", "2023 total (certified)"],
+            y=[
+                HIST_D3_2019["total"],
+                -D3_FRAGMENTATION_LEAKAGE_2019_2023,
+                HIST_D3_2023["total"],
+            ],
+            text=[
+                f"{HIST_D3_2019['total'] / 1e6:.2f}M",
+                f"-{D3_FRAGMENTATION_LEAKAGE_2019_2023 // 1000}k",
+                f"{HIST_D3_2023['total'] / 1e6:.2f}M",
+            ],
+            textposition="outside",
+            decreasing={"marker": {"color": "#DC2626"}},
+            increasing={"marker": {"color": "#22C55E"}},
+            totals={"marker": {"color": "#D4AF37"}},
+            connector={"line": {"color": "rgba(212,175,55,0.4)"}},
+        )
+    )
+    fig.update_layout(
+        title=dict(
+            text="Gap Analysis · 300k vote leakage (red variance)",
+            font=dict(family="Goldman", size=14, color=GOLD),
+        ),
+        paper_bgcolor=NAVY_DEEP,
+        plot_bgcolor=NAVY_DEEP,
+        font=dict(family="Goldman", color=GOLD),
+        height=360,
+        yaxis=dict(title="Votes", gridcolor="#003350", tickformat=","),
+        showlegend=False,
+        margin=dict(t=52, b=40, l=48, r=24),
+    )
+    return fig
+
+
+def _render_d3_historical_audit() -> None:
+    """D3 locked figures + consolidation goal + gap chart."""
+    rows_html = "".join(
+        f"<tr><td><strong>{r['year']}</strong></td>"
+        f"<td>{r['lead']:,}</td><td>{r['total']:,}</td></tr>"
+        for r in HIST_D3_AUDIT_ROWS
+    )
+    leak_k = D3_FRAGMENTATION_LEAKAGE_2019_2023 // 1000
+    st.markdown(
+        '<div class="d3-audit-wrap"><div class="d3-audit-inner">'
+        "<h3>D3 · OFFICIAL HISTORICAL AUDIT (LOCKED)</h3>"
+        '<table class="d3-audit-table">'
+        "<thead><tr><th>Year</th><th>Lead</th><th>Total</th></tr></thead>"
+        f"<tbody>{rows_html}</tbody></table>"
+        f'<p class="d3-red-variance">Fragmentation indicator · {leak_k}k vote leakage (2019→2023 total decline)</p>'
+        f"<p class=\"d3-consolidation-callout\"><strong>2027 Consolidation Constant:</strong> "
+        f"{CONSOLIDATION_CONSTANT:,} voters · <strong>{PU_COUNT_KADUNA:,}</strong> Kaduna PUs · "
+        f"<strong>{VOTERS_PER_PU_D3_REQUIREMENT}</strong> voters/PU (command lock)</p>"
+        "</div></div>",
+        unsafe_allow_html=True,
+    )
+    c1, c2 = st.columns(2)
+    with c1:
+        st.plotly_chart(
+            _d3_lead_total_bar_figure(),
+            use_container_width=True,
+            key="cien_d3_lead_total",
+            config={"displayModeBar": False, "responsive": True},
+        )
+    with c2:
+        st.plotly_chart(
+            _d3_fragmentation_gap_figure(),
+            use_container_width=True,
+            key="cien_d3_gap_waterfall",
+            config={"displayModeBar": False, "responsive": True},
+        )
+
+
+def _lead_share_pct(lead: int, total: int) -> str:
+    if total <= 0:
+        return "—"
+    return f"{100.0 * lead / total:.2f}%"
+
+
+def _sov_trend_dual_bars_figure() -> go.Figure:
+    """Presidential (gold) vs Governorship (cyan) total valid votes incl. 2027 consolidation projection."""
+    years = ["2015", "2019", "2023", "2027"]
+    pres_totals = [
+        PRES_TREND_AUDIT[2015]["total"],
+        PRES_TREND_AUDIT[2019]["total"],
+        PRES_TREND_AUDIT[2023]["total"],
+        CONSOLIDATION_CONSTANT,
+    ]
+    gov_totals = [
+        GOV_TREND_AUDIT[2015]["total"],
+        GOV_TREND_AUDIT[2019]["total"],
+        GOV_TREND_AUDIT[2023]["total"],
+        CONSOLIDATION_CONSTANT,
+    ]
+    fig = go.Figure()
+    fig.add_trace(
+        go.Bar(
+            name="Presidential · total valid",
+            x=years,
+            y=pres_totals,
+            marker=dict(color="#D4AF37", line=dict(color="#FFD700", width=1)),
+        )
+    )
+    fig.add_trace(
+        go.Bar(
+            name="Governorship · total valid",
+            x=years,
+            y=gov_totals,
+            marker=dict(color="#00E5FF", line=dict(color="#00F5FF", width=1)),
+        )
+    )
+    fig.update_layout(
+        barmode="group",
+        paper_bgcolor=NAVY_DEEP,
+        plot_bgcolor=NAVY_DEEP,
+        font=dict(family="Goldman", color=GOLD),
+        title=dict(
+            text="Dual-track totals · 2027 bars = consolidation constant (high-velocity command)",
+            font=dict(size=13, color=GOLD),
+        ),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, x=0.5, xanchor="center"),
+        yaxis=dict(title="Total valid votes", gridcolor="#003350", tickformat=","),
+        xaxis=dict(title=""),
+        height=360,
+        margin=dict(t=56, b=40, l=52, r=24),
+    )
+    return fig
+
+
+def _render_sovereign_trend_audit() -> None:
+    """Presidential vs Governorship trend table, 2023 leakage metric, 2027 consolidation + PU math."""
+    rows_parts: list[str] = []
+    for y in (2015, 2019, 2023):
+        p = PRES_TREND_AUDIT[y]
+        g = GOV_TREND_AUDIT[y]
+        rows_parts.append(
+            f"<tr><td><strong>{y}</strong></td><td class=\"sov-trend-pres-cell\">Presidential</td>"
+            f"<td class=\"sov-trend-pres-cell\">{p['total']:,}</td>"
+            f"<td class=\"sov-trend-pres-cell\">{p['lead']:,}</td>"
+            f"<td class=\"sov-trend-pres-cell\">{_lead_share_pct(p['lead'], p['total'])}</td></tr>"
+            f"<tr><td><strong>{y}</strong></td><td class=\"sov-trend-gov-cell\">Governorship</td>"
+            f"<td class=\"sov-trend-gov-cell\">{g['total']:,}</td>"
+            f"<td class=\"sov-trend-gov-cell\">{g['lead']:,}</td>"
+            f"<td class=\"sov-trend-gov-cell\">{_lead_share_pct(g['lead'], g['total'])}</td></tr>"
+        )
+    rows_parts.append(
+        "<tr><td><strong>2027</strong></td><td class=\"sov-trend-pres-cell\">Presidential (proj.)</td>"
+        f"<td class=\"sov-trend-pres-cell sov-trend-2027-pulse\">{CONSOLIDATION_CONSTANT:,}</td>"
+        f"<td class=\"sov-trend-pres-cell sov-trend-2027-pulse\">{PROJ_2027_PRES_LEAD:,}</td>"
+        f"<td class=\"sov-trend-pres-cell sov-trend-2027-pulse\">{_lead_share_pct(PROJ_2027_PRES_LEAD, CONSOLIDATION_CONSTANT)}</td></tr>"
+        "<tr><td><strong>2027</strong></td><td class=\"sov-trend-gov-cell\">Governorship (proj.)</td>"
+        f"<td class=\"sov-trend-gov-cell sov-trend-2027-pulse\">{CONSOLIDATION_CONSTANT:,}</td>"
+        f"<td class=\"sov-trend-gov-cell sov-trend-2027-pulse\">{PROJ_2027_GOV_LEAD:,}</td>"
+        f"<td class=\"sov-trend-gov-cell sov-trend-2027-pulse\">{_lead_share_pct(PROJ_2027_GOV_LEAD, CONSOLIDATION_CONSTANT)}</td></tr>"
+    )
+    rows_html = "".join(rows_parts)
+    gap = DUAL_TRACK_2023_PRES_GOV_TURNOUT_GAP
+    assert PRES_TREND_AUDIT[2023]["total"] - GOV_TREND_AUDIT[2023]["total"] == gap
+    st.markdown(
+        '<div class="sov-trend-wrap"><div class="sov-trend-inner">'
+        "<h3>Sovereign Trend Audit · Presidential vs Governorship</h3>"
+        '<table class="sov-trend-table">'
+        "<thead><tr><th>Year</th><th>Office</th><th>Total valid</th><th>Lead</th><th>Lead share</th></tr></thead>"
+        f"<tbody>{rows_html}</tbody></table>"
+        f'<p class="sov-trend-foot"><strong>Consolidation Constant:</strong> {CONSOLIDATION_CONSTANT:,} voters · '
+        f"<strong>{PU_COUNT_KADUNA:,}</strong> PUs · avg. <strong>{VOTERS_PER_PU_D3_REQUIREMENT}</strong> voters/PU · "
+        f"2023 Presidential−Governorship turnout gap = <strong>{gap:,}</strong> (see metric below)</p>"
+        "</div></div>",
+        unsafe_allow_html=True,
+    )
+    st.metric(
+        "OPPORTUNITY FOR CONSOLIDATION",
+        f"{gap:,}",
+        help="2023 gap between Presidential and Governorship total valid votes (turnout differential)",
+    )
+    st.plotly_chart(
+        _sov_trend_dual_bars_figure(),
+        use_container_width=True,
+        key="cien_sov_trend_dual",
+        config={"displayModeBar": False, "responsive": True},
+    )
 
 
 def _donut_purity(apc_v: int, pdp_v: int, lp_v: int, lift_pct: int, margin: int) -> go.Figure:
@@ -1968,6 +2397,9 @@ def main() -> None:
         "</div></div></div>",
         unsafe_allow_html=True,
     )
+
+    _render_d3_historical_audit()
+    _render_sovereign_trend_audit()
 
     st.markdown('<div class="prism-widget"><div class="prism-widget-inner">', unsafe_allow_html=True)
     st.markdown("#### Chairman · Turnout lift simulation", unsafe_allow_html=True)
