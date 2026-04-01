@@ -5,6 +5,9 @@ from __future__ import annotations
 
 import html
 import os
+import time
+from datetime import date, datetime, timedelta
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 import plotly.graph_objects as go
@@ -18,9 +21,25 @@ GOLD = "#D4AF37"
 CYAN = "#00E5FF"
 
 ORG_NAME = "Galadiman Ruwa Center for Strategic Leadership and Communication LTD/GTE"
+CHAIRMAN_LINE = "Chairman: Galadimanruwa"
+COMMANDER_LINE = "Commander: Galadiman Ruwa"
 MOTTO = (
     "We decode the Kaduna 2027 election based on our superior 15/15 scientific model."
 )
+
+# Timing hub targets (illustrative INEC-adjacent cadence)
+GUBER_PRIMARIES_DATE = date(2026, 11, 28)
+GENERAL_ELECTION_2027_DATE = date(2027, 3, 13)
+
+# Simulated outreach handshake rows (rotates every 3s in sidebar fragment)
+_HANDSHAKE_SCENARIOS: list[tuple[str, str]] = [
+    ("KD-VIN-88421-B", "Rigachikun Ward · PU 012"),
+    ("KD-VIN-12007-A", "Unguwan Shanu · PU 008"),
+    ("KD-VIN-55190-C", "Zaria City · PU 104"),
+    ("KD-VIN-33044-D", "Kafanchan Central · PU 021"),
+    ("KD-VIN-77219-E", "Kaura · PU 003"),
+    ("KD-VIN-99102-F", "Sabon Gari · PU 056"),
+]
 
 # 2023 governorship tight margin (statewide)
 V_2023_APC = 730_002
@@ -136,7 +155,19 @@ html, body, [data-testid="stAppViewContainer"] {
 .stApp, [data-testid="stAppViewContainer"] {
   background: linear-gradient(180deg, #000022 0%, #000033 55%, #000044 100%) !important;
 }
-.block-container { padding-top: 0.75rem !important; padding-bottom: 1.2rem !important; }
+/* Commander-level: clear Streamlit chrome overlap on title stack */
+header[data-testid="stHeader"] {
+  background: linear-gradient(180deg, rgba(0,0,34,0.97) 0%, rgba(0,0,51,0.88) 100%) !important;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.25) !important;
+}
+[data-testid="stDecoration"] { display: none !important; }
+.block-container {
+  padding-top: 3.25rem !important;
+  padding-bottom: 1.4rem !important;
+}
+@media (max-width: 768px) {
+  .block-container { padding-top: 3.75rem !important; }
+}
 
 .prism-widget {
   border-radius: 14px;
@@ -198,6 +229,180 @@ html, body, [data-testid="stAppViewContainer"] {
   font-weight: 700;
   letter-spacing: 0.1em;
 }
+.cien-chairman {
+  font-family: 'Goldman', sans-serif !important;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #FFD700 !important;
+  text-align: center;
+  margin: 0 0 0.25rem 0;
+  letter-spacing: 0.06em;
+}
+.cien-commander {
+  font-family: 'Goldman', sans-serif !important;
+  font-size: 0.74rem;
+  color: #00E5FF !important;
+  text-align: center;
+  margin: 0 0 0.55rem 0;
+  letter-spacing: 0.05em;
+}
+
+.timing-prism {
+  border-radius: 14px;
+  padding: 3px;
+  background: linear-gradient(120deg, #000033, #D4AF37, #00e5ff, #000033);
+  background-size: 280% 100%;
+  animation: prism-shimmer 14s linear infinite;
+  margin-bottom: 0.65rem;
+  height: 100%;
+}
+.timing-prism-inner {
+  background: linear-gradient(180deg, #000011 0%, #000044 100%);
+  border-radius: 11px;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  min-height: 118px;
+}
+.timing-prism-inner h4 {
+  font-family: 'Goldman', sans-serif !important;
+  color: #FFD700 !important;
+  margin: 0 0 0.45rem 0;
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+.timing-count {
+  font-family: 'Goldman', sans-serif !important;
+  color: #00E5FF !important;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.35;
+  font-variant-numeric: tabular-nums;
+}
+.timing-sub {
+  font-family: 'Goldman', sans-serif !important;
+  color: rgba(212, 175, 55, 0.85) !important;
+  font-size: 0.68rem;
+  text-align: center;
+  margin-top: 0.35rem;
+  letter-spacing: 0.04em;
+}
+
+.timing-shimmer {
+  border-radius: 14px;
+  padding: 3px;
+  background: linear-gradient(120deg, #2a2a3a, #FFD700, #D4AF37, #00e5ff, #2a2a3a);
+  background-size: 320% 100%;
+  animation: prism-shimmer 5s linear infinite;
+  margin-bottom: 0.65rem;
+  height: 100%;
+}
+.timing-shimmer-inner {
+  background: linear-gradient(180deg, #0a0a18 0%, #12122a 100%);
+  border-radius: 11px;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid rgba(255, 215, 0, 0.45);
+  min-height: 118px;
+}
+.timing-shimmer-inner h4 {
+  font-family: 'Goldman', sans-serif !important;
+  color: #D4AF37 !important;
+  margin: 0 0 0.45rem 0;
+  font-size: 0.82rem;
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+
+.sovereign-clock-box {
+  border-radius: 14px;
+  padding: 3px;
+  background: linear-gradient(120deg, #000033, #00e5ff, #D4AF37, #000033);
+  background-size: 260% 100%;
+  animation: prism-shimmer 9s linear infinite;
+  margin-bottom: 0.65rem;
+  height: 100%;
+}
+.sovereign-clock-inner {
+  background: linear-gradient(180deg, #000011 0%, #000044 100%);
+  border-radius: 11px;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid rgba(0, 229, 255, 0.35);
+  min-height: 118px;
+}
+.sovereign-clock-inner h4 {
+  font-family: 'Goldman', sans-serif !important;
+  color: #FFD700 !important;
+  margin: 0 0 0.4rem 0;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-align: center;
+}
+.clock-line {
+  font-family: 'Goldman', sans-serif !important;
+  font-size: 0.72rem;
+  color: #00E5FF !important;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.35rem;
+  padding: 0.12rem 0;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.12);
+}
+.clock-line span:last-child {
+  font-variant-numeric: tabular-nums;
+  color: #D4AF37 !important;
+}
+
+.direct-tactical-wrap {
+  border-radius: 12px;
+  padding: 3px;
+  background: linear-gradient(120deg, #000033, #D4AF37, #000033);
+  background-size: 240% 100%;
+  animation: prism-shimmer 11s linear infinite;
+  margin-bottom: 0.85rem;
+}
+.direct-tactical-inner {
+  background: linear-gradient(180deg, #000011 0%, #000033 100%);
+  border-radius: 9px;
+  padding: 0.75rem 0.65rem;
+  border: 1px solid rgba(212, 175, 55, 0.38);
+}
+.direct-tactical-inner h4 {
+  font-family: 'Goldman', sans-serif !important;
+  color: #FFD700 !important;
+  margin: 0 0 0.5rem 0;
+  font-size: 0.85rem;
+  text-align: center;
+  letter-spacing: 0.06em;
+}
+.dt-verified {
+  font-family: 'Goldman', sans-serif !important;
+  color: #D4AF37 !important;
+  font-size: 0.72rem;
+  text-align: center;
+  margin: 0 0 0.35rem 0;
+}
+.dt-verified strong { color: #FFD700 !important; font-size: 1.05em; }
+.dt-ticker {
+  font-family: 'Goldman', sans-serif !important;
+  font-size: 0.68rem;
+  color: #00ff88 !important;
+  text-align: center;
+  letter-spacing: 0.06em;
+  margin: 0 0 0.45rem 0;
+  animation: cien-pulse-gold 2.5s ease-in-out infinite;
+}
+.dt-handshake {
+  font-family: 'Goldman', sans-serif !important;
+  font-size: 0.66rem;
+  color: #00E5FF !important;
+  line-height: 1.45;
+  border-top: 1px solid rgba(0, 229, 255, 0.2);
+  padding-top: 0.45rem;
+  margin: 0;
+  text-align: center;
+}
+
 .section-prism {
   margin-top: 1rem;
   margin-bottom: 0.5rem;
@@ -315,6 +520,82 @@ html, body, [data-testid="stAppViewContainer"] {
 """
 
 
+def _format_countdown(target: date, tz_key: str) -> tuple[str, str]:
+    tz = ZoneInfo(tz_key)
+    end = datetime.combine(target, datetime.min.time(), tzinfo=tz)
+    now = datetime.now(tz)
+    if now >= end:
+        return "STRIKE WINDOW ACTIVE", target.strftime("%d %b %Y")
+    total_sec = max(0, int((end - now).total_seconds()))
+    days, rem = divmod(total_sec, 86400)
+    h, rem2 = divmod(rem, 3600)
+    m, s = divmod(rem2, 60)
+    main = f"{days}d {h:02d}h {m:02d}m {s:02d}s"
+    return main, target.strftime("%d %b %Y")
+
+
+@st.fragment(run_every=timedelta(seconds=1))
+def _render_timing_hub() -> None:
+    st.markdown(
+        '<div class="section-prism"><h3>THE TIMING HUB</h3></div>',
+        unsafe_allow_html=True,
+    )
+    pc, mc, cc = st.columns(3)
+    prim_main, prim_sub = _format_countdown(GUBER_PRIMARIES_DATE, "Africa/Lagos")
+    gen_main, gen_sub = _format_countdown(GENERAL_ELECTION_2027_DATE, "Africa/Lagos")
+    with pc:
+        st.markdown(
+            '<div class="timing-prism"><div class="timing-prism-inner">'
+            "<h4>Guber Primaries Countdown</h4>"
+            f'<div class="timing-count">{html.escape(prim_main)}</div>'
+            f'<div class="timing-sub">Primary strike · {html.escape(prim_sub)}</div>'
+            "</div></div>",
+            unsafe_allow_html=True,
+        )
+    with mc:
+        st.markdown(
+            '<div class="timing-shimmer"><div class="timing-shimmer-inner">'
+            "<h4>General Election 2027</h4>"
+            f'<div class="timing-count" style="color:#D4AF37">{html.escape(gen_main)}</div>'
+            f'<div class="timing-sub">Main strike · {html.escape(gen_sub)}</div>'
+            "</div></div>",
+            unsafe_allow_html=True,
+        )
+    with cc:
+        kad = datetime.now(ZoneInfo("Africa/Lagos"))
+        lon = datetime.now(ZoneInfo("Europe/London"))
+        ny = datetime.now(ZoneInfo("America/New_York"))
+        rows = "".join(
+            '<div class="clock-line"><span>'
+            f"{html.escape(label)}</span><span>"
+            f"{html.escape(dt.strftime('%a %d %b %Y · %H:%M:%S'))}</span></div>"
+            for label, dt in (
+                ("Kaduna (WAT)", kad),
+                ("London (GMT)", lon),
+                ("New York (EST)", ny),
+            )
+        )
+        st.markdown(
+            '<div class="sovereign-clock-box"><div class="sovereign-clock-inner">'
+            "<h4>The Pulse · Global Sovereign Clock</h4>"
+            f"{rows}"
+            "</div></div>",
+            unsafe_allow_html=True,
+        )
+
+
+@st.fragment(run_every=timedelta(seconds=3))
+def _render_tactical_handshake_line() -> None:
+    idx = int(time.time() // 3) % len(_HANDSHAKE_SCENARIOS)
+    vid, pu = _HANDSHAKE_SCENARIOS[idx]
+    st.markdown(
+        '<p class="dt-handshake">'
+        f"Reminding <strong>{html.escape(vid)}</strong> of "
+        f"<strong>{html.escape(pu)}</strong>…</p>",
+        unsafe_allow_html=True,
+    )
+
+
 def _donut_purity() -> go.Figure:
     fig = go.Figure(
         data=[
@@ -331,7 +612,7 @@ def _donut_purity() -> go.Figure:
     )
     fig.update_layout(
         title=dict(
-            text="The Purity Cycle — 2023 tight margin (statewide)",
+            text="The Winner/Loser Cycle — 2023 tight margin (statewide)",
             font=dict(family="Goldman", size=16, color=GOLD),
         ),
         paper_bgcolor=NAVY_DEEP,
@@ -437,20 +718,30 @@ def main() -> None:
     )
     st.markdown(f"<style>{_CSS}</style>", unsafe_allow_html=True)
 
-    # Sidebar strike
     with st.sidebar:
-        st.markdown("### Sidebar Strike")
         st.markdown(
-            f'<div class="sidebar-pool">{DENSITY_DB:,}</div>',
+            '<div class="direct-tactical-wrap"><div class="direct-tactical-inner">',
             unsafe_allow_html=True,
         )
-        st.caption("Voter Pool (pulsing)")
         st.markdown(
-            '<div class="sidebar-handshake">'
-            "<b>Outreach Pulse</b><br>"
-            "Executive-Load-142 handshake (field video): synchronized leadership load-in at "
-            "nodal hubs — confirms ward captains, data uplink, and ballot-box target packs before "
-            "each mobilization wave."
+            "<h4>Direct Tactical Pulse</h4>",
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            '<p class="dt-verified">Verified Kaduna Database: <strong>1,500,000</strong></p>',
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            '<p class="dt-ticker">SMS/WhatsApp Precision Strike: ACTIVE</p>',
+            unsafe_allow_html=True,
+        )
+        _render_tactical_handshake_line()
+        st.markdown("</div></div>", unsafe_allow_html=True)
+        st.markdown(
+            '<div class="sidebar-handshake" style="margin-top:0.5rem">'
+            "<b>Executive-Load-142</b><br>"
+            "Leadership handshake: ward captains, uplink, and ballot-box packs synchronized "
+            "before each mobilization wave."
             "</div>",
             unsafe_allow_html=True,
         )
@@ -459,6 +750,8 @@ def main() -> None:
         '<div class="prism-widget"><div class="prism-widget-inner">'
         '<div class="cien-identity-stack">'
         f'<p class="cien-title">{html.escape(ORG_NAME)}</p>'
+        f'<p class="cien-chairman">{html.escape(CHAIRMAN_LINE)}</p>'
+        f'<p class="cien-commander">{html.escape(COMMANDER_LINE)}</p>'
         f'<p class="cien-motto">{html.escape(MOTTO)}</p>'
         '<p class="cien-foundation">Foundational logic · '
         '<span class="cien-8r">8R Stealth Paradigm</span></p>'
@@ -466,14 +759,17 @@ def main() -> None:
         unsafe_allow_html=True,
     )
 
-    row1_c1, row1_c2 = st.columns([1.15, 1.0])
-    with row1_c1:
-        st.markdown('<div class="section-prism"><h3>TOP-LEVEL SOVEREIGNTY</h3></div>', unsafe_allow_html=True)
-        st.plotly_chart(_donut_purity(), use_container_width=True)
-    with row1_c2:
-        st.markdown('<div class="section-prism"><h3>THE 2/3RDS TRACKER</h3></div>', unsafe_allow_html=True)
-        st.markdown(
-            f"""
+    st.markdown(
+        '<div class="section-prism"><h3>WINNER / LOSER CYCLE</h3></div>',
+        unsafe_allow_html=True,
+    )
+    st.plotly_chart(_donut_purity(), use_container_width=True)
+
+    _render_timing_hub()
+
+    st.markdown('<div class="section-prism"><h3>THE 2/3RDS TRACKER</h3></div>', unsafe_allow_html=True)
+    st.markdown(
+        f"""
 <div class="twothirds-wrap">
   <div class="twothirds-label">
     <span>LGA majority path</span>
@@ -485,8 +781,8 @@ def main() -> None:
   </p>
 </div>
 """,
-            unsafe_allow_html=True,
-        )
+        unsafe_allow_html=True,
+    )
 
     st.markdown(
         '<div class="section-prism"><h3>SENATORIAL COMMAND GRID</h3></div>',
