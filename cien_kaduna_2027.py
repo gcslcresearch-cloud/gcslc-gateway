@@ -1588,13 +1588,11 @@ def main() -> None:
             "SEND ROSY BRIEFING TO NODE 0 (+1515)",
             _whatsapp_me_url(WA_NODE0_DIGITS),
             use_container_width=True,
-            key="cien_wa_node0",
         )
         st.link_button(
             "SEND ROSY BRIEFING TO NODE 1 (+1119)",
             _whatsapp_me_url(WA_NODE1_DIGITS),
             use_container_width=True,
-            key="cien_wa_node1",
         )
         st.caption("Opens WhatsApp with Rosy briefing text. Set GCSLC_WA_NODE0 / GCSLC_WA_NODE1 (digits only).")
         st.markdown("</div></div>", unsafe_allow_html=True)
