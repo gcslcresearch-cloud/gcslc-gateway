@@ -17,6 +17,7 @@ from zoneinfo import ZoneInfo
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
+import streamlit.components.v1 as components
 
 os.environ.setdefault("STREAMLIT_SERVER_PORT", "9099")
 os.environ.setdefault("STREAMLIT_SERVER_FILE_WATCHER_TYPE", "none")
@@ -168,6 +169,42 @@ def _toggle_strike_lane(option: str) -> None:
         st.session_state["cien_mc_channels"] = [x for x in cur if x != option]
     else:
         st.session_state["cien_mc_channels"] = cur + [option]
+
+
+def _render_strike_tile_kinetic_bridge() -> None:
+    """
+    Parent-window touch/click handshake for strike tiles (reduces perceived tap lag on mobile).
+    Best-effort: Streamlit component iframe may block parent DOM access; CSS still enforces touch-action.
+    """
+    components.html(
+        """
+<div style="height:0;width:0;overflow:hidden" aria-hidden="true">kinetic</div>
+<script>
+(function () {
+  function arm() {
+    try {
+      var doc = window.parent && window.parent.document;
+      if (!doc) return;
+      var sb = doc.querySelector('[data-testid="stSidebar"]');
+      if (!sb) return;
+      var mark = sb.querySelector('.broadcast-lane-mark');
+      if (!mark || !mark.nextElementSibling) return;
+      var root = mark.nextElementSibling;
+      root.querySelectorAll('[data-testid="column"] button').forEach(function (el) {
+        el.style.touchAction = 'manipulation';
+        el.style.webkitTapHighlightColor = 'rgba(0, 229, 255, 0.42)';
+        el.style.cursor = 'pointer';
+      });
+    } catch (e) {}
+  }
+  arm();
+  setTimeout(arm, 350);
+  setTimeout(arm, 1100);
+})();
+</script>
+        """,
+        height=0,
+    )
 
 
 def _format_reminder_for_lane(channel: str, raw: str) -> str:
@@ -2081,12 +2118,12 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
 
 @keyframes lane-cyan-pulse {
   0%, 100% {
-    box-shadow: 0 0 10px rgba(0, 229, 255, 0.38), inset 0 0 0 1px rgba(255, 215, 0, 0.08);
-    border-color: #00E5FF !important;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.55), 0 0 16px rgba(0, 229, 255, 0.55);
+    border-color: #000000 !important;
   }
   50% {
-    box-shadow: 0 0 22px rgba(0, 229, 255, 0.62), inset 0 0 0 1px rgba(255, 215, 0, 0.12);
-    border-color: #7df9ff !important;
+    box-shadow: 0 0 14px rgba(0, 0, 0, 0.45), 0 0 26px rgba(0, 229, 255, 0.85);
+    border-color: #0a0a0a !important;
   }
 }
 
@@ -2108,7 +2145,7 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   margin: 0 0 0.35rem 0 !important;
   line-height: 1.35 !important;
 }
-/* Clickable lane toggles: idle = red border, primed = pulsing cyan (#00E5FF) */
+/* Strike tiles: OFF = red field + gold text · ON (PRIMED) = cyan field + black text + pulse border */
 .broadcast-lane-mark {
   height: 0 !important;
   margin: 0 !important;
@@ -2119,22 +2156,76 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   min-height: 4.85rem !important;
   padding-top: 0.5rem !important;
   padding-bottom: 0.5rem !important;
-  background: #121212 !important;
-  color: #FFD700 !important;
   font-weight: 800 !important;
   font-family: 'Goldman', sans-serif !important;
   white-space: pre-line !important;
   line-height: 1.3 !important;
   border-radius: 10px !important;
-  border: 2px solid rgba(239, 68, 68, 0.72) !important;
-  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.45) !important;
+  touch-action: manipulation !important;
+  -webkit-tap-highlight-color: rgba(0, 229, 255, 0.35) !important;
+}
+.broadcast-lane-mark + div [data-testid="column"] [data-testid="baseButton-secondary"],
+.broadcast-lane-mark + div [data-testid="column"] [data-testid="stBaseButton-secondary"] {
+  background: #7f1d1d !important;
+  color: #FFD700 !important;
+  border: 2px solid rgba(255, 215, 0, 0.55) !important;
+  box-shadow: inset 0 0 14px rgba(0, 0, 0, 0.35) !important;
+}
+.broadcast-lane-mark + div [data-testid="column"] [data-testid="baseButton-secondary"] p,
+.broadcast-lane-mark + div [data-testid="column"] [data-testid="stBaseButton-secondary"] p {
+  color: #FFD700 !important;
 }
 .broadcast-lane-mark + div [data-testid="column"] [data-testid="baseButton-primary"],
 .broadcast-lane-mark + div [data-testid="column"] [data-testid="stBaseButton-primary"] {
-  border: 2px solid #00E5FF !important;
+  background: #00E5FF !important;
+  color: #000000 !important;
+  border: 2px solid #000000 !important;
   animation: lane-cyan-pulse 2.1s ease-in-out infinite !important;
-  color: #FFD700 !important;
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.45) !important;
+}
+.broadcast-lane-mark + div [data-testid="column"] [data-testid="baseButton-primary"] p,
+.broadcast-lane-mark + div [data-testid="column"] [data-testid="stBaseButton-primary"] p {
+  color: #000000 !important;
+}
+/* ₦50k wallet trigger — heavy OLED gold */
+.wallet-n50k-prominent {
+  margin: 0.4rem 0 0.15rem 0;
+}
+.wallet-n50k-prominent button {
+  min-height: 3.35rem !important;
   background: #121212 !important;
+  color: #FFD700 !important;
+  font-weight: 900 !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  letter-spacing: 0.05em !important;
+  border: 3px solid #FFD700 !important;
+  border-radius: 11px !important;
+  box-shadow: 0 0 18px rgba(255, 215, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+}
+.wallet-n50k-prominent button:hover {
+  border-color: #00E5FF !important;
+  color: #00E5FF !important;
+}
+/* CSV payload — gold lock for 1.5M audit (voter_db.csv emphasis) */
+.csv-payload-1-5m-audit {
+  text-align: center !important;
+  margin: 0.15rem 0 0.35rem 0 !important;
+}
+.csv-payload-1-5m-audit code {
+  color: #FFD700 !important;
+  font-weight: 900 !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-size: 0.72rem !important;
+  letter-spacing: 0.06em !important;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.35);
+  background: rgba(26, 26, 26, 0.95) !important;
+  border: 1px solid rgba(255, 215, 0, 0.45) !important;
+  padding: 0.2rem 0.45rem !important;
+  border-radius: 8px !important;
+}
+.csv-payload-1-5m-audit-voter-db code {
+  border-color: rgba(0, 229, 255, 0.35) !important;
+  box-shadow: 0 0 14px rgba(255, 215, 0, 0.22) !important;
 }
 [data-testid="stSidebar"] .chairman-reminder-active textarea {
   background: #1a1a1a !important;
@@ -4295,14 +4386,21 @@ def _render_broadcast_switchboard_kinetics_fragment() -> None:
     multi-channel preview, authority actions. Fragment reruns on local interaction without full-page refresh.
     """
     st.markdown("<h4>Broadcast Switchboard</h4>", unsafe_allow_html=True)
-    st.caption("CSV payload")
+    st.caption("CSV payload · 1.5M audit bind")
+    _csv_name = VOTER_DB_CSV.name
+    _csv_vdb = _csv_name.strip().lower() == "voter_db.csv"
+    _csv_cls = "csv-payload-1-5m-audit" + (" csv-payload-1-5m-audit-voter-db" if _csv_vdb else "")
     st.markdown(
-        f'<p class="csv-payload-compact"><code>{html.escape(VOTER_DB_CSV.name)}</code></p>',
+        f'<p class="{_csv_cls}"><code>{html.escape(_csv_name)}</code></p>',
         unsafe_allow_html=True,
+    )
+    st.caption(
+        f"Gold lock: **`{_csv_name}`** — bound CSV for 1.5M tactical ingest / audit "
+        f"({'(explicit `voter_db.csv` bind)' if _csv_vdb else '(lake scan / env path)'})."
     )
     st.markdown('<div class="channel-strike-board">', unsafe_allow_html=True)
     st.markdown(
-        '<p class="strike-lane-heading">Strike lanes · tap tiles to toggle (multi-select)</p>',
+        '<p class="strike-lane-heading">Strike tiles · st.button kinetic toggle · session_state instant</p>',
         unsafe_allow_html=True,
     )
     st.markdown('<div class="broadcast-lane-mark broadcast-lane-toggle-grid"></div>', unsafe_allow_html=True)
@@ -4312,8 +4410,8 @@ def _render_broadcast_switchboard_kinetics_fragment() -> None:
     with _lc1:
         _primed = CHANNEL_OPTION_PRIVATE in _sel
         if st.button(
-            "📱 SMS / WA\n(The Private Strike)"
-            + ("\n── PRIMED ──" if _primed else "\nTap to select"),
+            "STRIKE TILE\n📱 SMS / WA\n(The Private Strike)"
+            + ("\n── PRIMED ──" if _primed else "\nTAP · OFF"),
             key="cien_strike_toggle_private",
             use_container_width=True,
             type="primary" if _primed else "secondary",
@@ -4322,8 +4420,8 @@ def _render_broadcast_switchboard_kinetics_fragment() -> None:
     with _lc2:
         _primed = CHANNEL_OPTION_GRASSROOTS in _sel
         if st.button(
-            "🎥 Grassroots\n(TikTok · FB · IG)"
-            + ("\n── PRIMED ──" if _primed else "\nTap to select"),
+            "STRIKE TILE\n🎥 Grassroots\n(TikTok · FB · IG)"
+            + ("\n── PRIMED ──" if _primed else "\nTAP · OFF"),
             key="cien_strike_toggle_grass",
             use_container_width=True,
             type="primary" if _primed else "secondary",
@@ -4332,14 +4430,28 @@ def _render_broadcast_switchboard_kinetics_fragment() -> None:
     with _lc3:
         _primed = CHANNEL_OPTION_SOVEREIGN in _sel
         if st.button(
-            "🏛️ Sovereign\n(X · LinkedIn)"
-            + ("\n── PRIMED ──" if _primed else "\nTap to select"),
+            "STRIKE TILE\n🏛️ Sovereign\n(X · LinkedIn)"
+            + ("\n── PRIMED ──" if _primed else "\nTAP · OFF"),
             key="cien_strike_toggle_sov",
             use_container_width=True,
             type="primary" if _primed else "secondary",
         ):
             _toggle_strike_lane(CHANNEL_OPTION_SOVEREIGN)
-    st.caption("Idle = red border · PRIMED = pulsing cyan (#00E5FF).")
+    _render_strike_tile_kinetic_bridge()
+    _any_primed = len(_sel) > 0
+    if _any_primed:
+        st.markdown('<div class="wallet-n50k-prominent">', unsafe_allow_html=True)
+        if st.button(
+            "💳 Add ₦50,000 to Wallet",
+            key="cien_wallet_n50k_prominent",
+            use_container_width=True,
+            help="Payment trigger · primed strike lane detected — credits / wallet reconciliation.",
+        ):
+            st.session_state["cien_wallet_n50k_request_t0"] = time.monotonic()
+            st.session_state["cien_wallet_n50k_amount_ngn"] = 50_000
+            st.toast("₦50,000 wallet lane armed — finance handshake queued.", icon="💳")
+        st.markdown("</div>", unsafe_allow_html=True)
+    st.caption("OFF: red field + gold text · PRIMED: cyan #00E5FF field + black text + pulse border.")
     st.markdown("</div>", unsafe_allow_html=True)
     st.session_state.setdefault("cien_sender_id", DEFAULT_SENDER_ID)
     _sid_live = str(st.session_state.get("cien_sender_id", DEFAULT_SENDER_ID)).strip()
@@ -4422,28 +4534,17 @@ def _render_broadcast_switchboard_kinetics_fragment() -> None:
         st.caption("Whitespace only — add substantive reminder text to populate Slot A / Slot B.")
     if _has_chars:
         st.markdown('<div class="broadcast-authority-actions">', unsafe_allow_html=True)
-        _aw1, _aw2 = st.columns(2)
-        with _aw1:
-            if st.button(
-                "Add Credits / Wallet",
-                key="cien_add_credits_wallet",
-                use_container_width=True,
-                help="Credits / wallet lane — finance reconciliation (broadcast kinetics).",
-            ):
-                st.session_state["cien_wallet_credit_request_t0"] = time.monotonic()
-                st.toast("Wallet / credits lane armed — finance sync queued.", icon="💳")
-        with _aw2:
-            st.markdown('<div class="execute-master-strike-wrap">', unsafe_allow_html=True)
-            _exec_strike = st.button(
-                "🚀 EXECUTE MASTER STRIKE",
-                key="cien_execute_master_strike",
-                use_container_width=True,
-                help=(
-                    "Requires Chairman reminder text. Armed for the 06:00 WAT (Africa/Lagos) executive push; "
-                    "fires broadcast kinetics for selected strike lanes (Slot A SMS + Slot B WhatsApp ready above)."
-                ),
-            )
-            st.markdown("</div>", unsafe_allow_html=True)
+        st.markdown('<div class="execute-master-strike-wrap">', unsafe_allow_html=True)
+        _exec_strike = st.button(
+            "🚀 EXECUTE MASTER STRIKE",
+            key="cien_execute_master_strike",
+            use_container_width=True,
+            help=(
+                "Requires Chairman reminder text. Armed for the 06:00 WAT (Africa/Lagos) executive push; "
+                "fires broadcast kinetics for selected strike lanes (Slot A SMS + Slot B WhatsApp ready above)."
+            ),
+        )
+        st.markdown("</div>", unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
     if _exec_strike:
         _lanes = st.session_state.get("cien_mc_channels")
