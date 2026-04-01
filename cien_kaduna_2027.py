@@ -26,6 +26,21 @@ VOTER_DB_CSV = Path(os.environ.get("GCSLC_VOTER_DB", str(BASE_DIR / "voter_db.cs
 DEFAULT_EXEC_NODE0 = float(os.environ.get("GCSLC_EXEC_NODE0", "14314"))
 DEFAULT_EXEC_NODE1 = float(os.environ.get("GCSLC_EXEC_NODE1", "8507"))
 
+# WhatsApp wa.me — digits only (no +). Defaults encode Node tags +1515 / +1119 in trailing digits.
+WA_NODE0_DIGITS = os.environ.get("GCSLC_WA_NODE0", "2341515001515")
+WA_NODE1_DIGITS = os.environ.get("GCSLC_WA_NODE1", "2341119001119")
+ROSY_BRIEFING_WHATSAPP = (
+    "Rosy Briefing — GCSLC Executive Command (Kaduna 2027): Nodal sync GREEN. "
+    "Sovereign handshake protocol active. Please acknowledge receipt — His Excellency."
+)
+
+
+def _whatsapp_me_url(digits_raw: str) -> str:
+    digits = "".join(c for c in digits_raw if c.isdigit())
+    if not digits:
+        return "https://wa.me/"
+    return f"https://wa.me/{digits}?text={urllib.parse.quote(ROSY_BRIEFING_WHATSAPP, safe='')}"
+
 NAVY_DEEP = "#000033"
 GOLD = "#D4AF37"
 CYAN = "#00E5FF"
@@ -300,6 +315,80 @@ _CSS = """
   50% { filter: brightness(1.12) drop-shadow(0 0 14px rgba(45, 212, 191, 0.65)); }
 }
 
+/* Sidebar — Matte Charcoal + high-contrast gold / bright cyan (S24 / no ghosting) */
+[data-testid="stSidebar"] {
+  background-color: #121212 !important;
+  background-image: none !important;
+  border-right: 1px solid rgba(255, 215, 0, 0.22) !important;
+}
+[data-testid="stSidebar"] [data-testid="stSidebarContent"] {
+  background-color: #121212 !important;
+}
+[data-testid="stSidebar"] h1,
+[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3,
+[data-testid="stSidebar"] h4,
+[data-testid="stSidebar"] h5,
+[data-testid="stSidebar"] h6 {
+  color: #FFD700 !important;
+  font-weight: 700 !important;
+  text-shadow: none !important;
+}
+[data-testid="stSidebar"] p,
+[data-testid="stSidebar"] li,
+[data-testid="stSidebar"] .stMarkdown,
+[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p,
+[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] span,
+[data-testid="stSidebar"] .stCaption,
+[data-testid="stSidebar"] [data-testid="stWidgetLabel"] label,
+[data-testid="stSidebar"] [data-testid="stWidgetLabel"] span,
+[data-testid="stSidebar"] [data-testid="stMetricLabel"] *,
+[data-testid="stSidebar"] [data-testid="stMetricValue"] * {
+  color: #FFD700 !important;
+  font-weight: 700 !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  text-rendering: geometricPrecision !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+[data-testid="stSidebar"] a,
+[data-testid="stSidebar"] a:visited {
+  color: #00F5FF !important;
+  font-weight: 700 !important;
+  text-shadow: none !important;
+}
+[data-testid="stSidebar"] .status-live,
+[data-testid="stSidebar"] .status-synced {
+  color: #00F5FF !important;
+  text-shadow: none !important;
+}
+[data-testid="stSidebar"] textarea,
+[data-testid="stSidebar"] input {
+  color: #FFD700 !important;
+  font-weight: 600 !important;
+  background-color: #1a1a1a !important;
+  border-color: rgba(255, 215, 0, 0.35) !important;
+  -webkit-text-fill-color: #FFD700 !important;
+}
+[data-testid="stSidebar"] .stButton button {
+  font-weight: 700 !important;
+}
+[data-testid="stSidebar"] [data-testid="stLinkButton"] a {
+  color: #00F5FF !important;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+  border: 1px solid rgba(0, 245, 255, 0.45) !important;
+  border-radius: 8px !important;
+  padding: 0.35rem 0.5rem !important;
+  display: block !important;
+  text-align: center !important;
+  background: rgba(26, 26, 26, 0.95) !important;
+}
+[data-testid="stSidebar"] [data-testid="stLinkButton"] {
+  margin-bottom: 0.35rem !important;
+}
+
 html, body, [data-testid="stAppViewContainer"] {
   font-family: 'Goldman', sans-serif !important;
   background-color: #000033 !important;
@@ -393,6 +482,19 @@ header[data-testid="stHeader"] {
     word-break: break-word;
   }
   .sovereign-clock-inner { min-height: 0 !important; padding: 0.45rem 0.5rem !important; }
+  /* Main canvas: crisp type on OLED (no ghosted halos on body copy) */
+  .main [data-testid="stMarkdownContainer"] p,
+  .main [data-testid="stMarkdownContainer"] h1,
+  .main [data-testid="stMarkdownContainer"] h2,
+  .main [data-testid="stMarkdownContainer"] h3,
+  .main [data-testid="stMarkdownContainer"] h4,
+  .main [data-testid="stMarkdownContainer"] li,
+  .main [data-testid="stMarkdownContainer"] span,
+  .main [data-testid="stCaption"],
+  .main [data-testid="stMetricLabel"] *,
+  .main [data-testid="stMetricValue"] * {
+    text-shadow: none !important;
+  }
 }
 
 /* Collapsed sidebar: SVG bolt (S24 / emoji-safe) */
@@ -922,7 +1024,7 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   font-size: 0.68rem;
   color: #00E5FF !important;
   padding: 0.38rem 0.6rem;
-  border-bottom: 1px solid rgba(212, 175, 55, 0.08);
+  border-bottom: 1px solid rgba(255, 215, 0, 0.22);
   line-height: 1.45;
   white-space: nowrap;
   overflow: hidden;
@@ -988,6 +1090,50 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   color: #00E5FF !important;
   margin: 0 0 0.45rem 0;
   line-height: 1.45;
+}
+
+.wa-gateway-wrap {
+  border-radius: 12px;
+  padding: 3px;
+  background: linear-gradient(120deg, #121212, #FFD700, #00F5FF, #121212);
+  background-size: 280% 100%;
+  animation: prism-shimmer 14s linear infinite;
+  margin: 0.75rem 0 0.55rem 0;
+}
+.wa-gateway-inner {
+  background: #121212;
+  border-radius: 9px;
+  padding: 0.65rem 0.55rem 0.75rem 0.55rem;
+  border: 1px solid rgba(255, 215, 0, 0.4);
+}
+.wa-gateway-inner h4 {
+  font-family: 'Goldman', sans-serif !important;
+  color: #FFD700 !important;
+  text-align: center;
+  font-size: 0.76rem;
+  letter-spacing: 0.1em;
+  margin: 0 0 0.5rem 0;
+}
+
+.exec-forensic-muted {
+  margin-top: 0.5rem;
+  padding-top: 0.35rem;
+  border-top: 1px solid rgba(212, 175, 55, 0.22);
+}
+.exec-forensic-muted .forensic-hint {
+  font-family: 'Goldman', sans-serif !important;
+  font-size: 0.65rem !important;
+  color: rgba(212, 175, 55, 0.75) !important;
+  margin: 0 0 0.4rem 0 !important;
+}
+.exec-forensic-muted [data-testid="stExpander"] {
+  border: 1px solid rgba(212, 175, 55, 0.25) !important;
+  border-radius: 10px !important;
+  background: rgba(0, 0, 34, 0.35) !important;
+}
+.exec-forensic-muted [data-testid="stMetricValue"],
+.exec-forensic-muted [data-testid="stMetricLabel"] {
+  font-size: 0.78rem !important;
 }
 """
 
@@ -1305,80 +1451,74 @@ def _render_zone_detail(zone_key: str) -> None:
     st.markdown("</div></div>", unsafe_allow_html=True)
 
 
-def _render_executive_test_module() -> None:
-    """Chairman (Node 0) vs His Excellency (Node 1) — parity, blend, ratio. Defaults: env or UI."""
+def _render_executive_variance_forensic() -> None:
+    """Forensic variance lock at bottom of main — low visual weight; expander default collapsed."""
     st.session_state.setdefault("cien_exec_n0", DEFAULT_EXEC_NODE0)
     st.session_state.setdefault("cien_exec_n1", DEFAULT_EXEC_NODE1)
     st.session_state.setdefault("cien_exec_tol", 0.0)
 
+    st.markdown('<div class="exec-forensic-muted">', unsafe_allow_html=True)
     st.markdown(
-        '<div class="exec-test-prism-wrap"><div class="exec-test-prism-inner">',
+        '<p class="forensic-hint">Variance lock · Node registers (GCSLC_EXEC_NODE0 / GCSLC_EXEC_NODE1)</p>',
         unsafe_allow_html=True,
     )
-    st.markdown("<h3>Executive Test Module</h3>", unsafe_allow_html=True)
-    st.markdown(
-        '<p class="exec-node-banner">Chairman · <span class="status-live">Node 0</span>'
-        " &nbsp;|&nbsp; His Excellency · <span class=\"status-live\">Node 1</span></p>",
-        unsafe_allow_html=True,
-    )
-    st.caption(
-        "Override registers with GCSLC_EXEC_NODE0 and GCSLC_EXEC_NODE1, or edit below (MacBook / S24)."
-    )
-    e0, e1, et = st.columns(3)
-    with e0:
-        n0 = st.number_input(
-            "Node 0 (Chairman)",
-            min_value=0.0,
-            max_value=1e15,
-            step=1.0,
-            format="%.0f",
-            key="cien_exec_n0",
-        )
-    with e1:
-        n1 = st.number_input(
-            "Node 1 (His Excellency)",
-            min_value=0.0,
-            max_value=1e15,
-            step=1.0,
-            format="%.0f",
-            key="cien_exec_n1",
-        )
-    with et:
-        tol = st.number_input(
-            "Parity tolerance (±)",
-            min_value=0.0,
-            max_value=1e15,
-            step=1.0,
-            format="%.0f",
-            key="cien_exec_tol",
-        )
+    with st.expander("Forensic alignment · Executive variance (Node 0 / Node 1)", expanded=False):
+        st.caption("Same mathematics as prior executive test — kept below Purity / 2/3rds command focus.")
+        e0, e1, et = st.columns(3)
+        with e0:
+            n0 = st.number_input(
+                "Node 0 (Chairman)",
+                min_value=0.0,
+                max_value=1e15,
+                step=1.0,
+                format="%.0f",
+                key="cien_exec_n0",
+            )
+        with e1:
+            n1 = st.number_input(
+                "Node 1 (His Excellency)",
+                min_value=0.0,
+                max_value=1e15,
+                step=1.0,
+                format="%.0f",
+                key="cien_exec_n1",
+            )
+        with et:
+            tol = st.number_input(
+                "Parity tolerance (±)",
+                min_value=0.0,
+                max_value=1e15,
+                step=1.0,
+                format="%.0f",
+                key="cien_exec_tol",
+            )
 
-    f0, f1 = float(n0), float(n1)
-    delta = f1 - f0
-    blended = (f0 + f1) / 2.0
-    synced = abs(delta) <= float(tol)
-    em1, em2, em3 = st.columns(3)
-    with em1:
-        st.metric("Node delta (1 − 0)", f"{delta:+,.0f}")
-    with em2:
-        st.metric("Blended executive register", f"{blended:,.2f}")
-    with em3:
-        ratio = (f1 / f0) if f0 else float("nan")
-        st.metric("Node 1 ÷ Node 0", f"{ratio:.6f}" if f0 else "—")
+        f0, f1 = float(n0), float(n1)
+        delta = f1 - f0
+        blended = (f0 + f1) / 2.0
+        synced = abs(delta) <= float(tol)
+        em1, em2, em3 = st.columns(3)
+        with em1:
+            st.metric("Node delta (1 − 0)", f"{delta:+,.0f}")
+        with em2:
+            st.metric("Blended executive register", f"{blended:,.2f}")
+        with em3:
+            ratio = (f1 / f0) if f0 else float("nan")
+            st.metric("Node 1 ÷ Node 0", f"{ratio:.6f}" if f0 else "—")
 
-    if synced:
-        st.markdown(
-            '<p class="live-audit-tag" style="margin:0.5rem 0 0 0;">'
-            '<span class="status-synced">EXEC_NODES_SYNCED</span> · within tolerance</p>',
-            unsafe_allow_html=True,
-        )
-    else:
-        st.markdown(
-            '<p class="live-audit-tag" style="margin:0.5rem 0 0 0;">'
-            '<span class="status-live">VARIANCE_LOCK</span> · |Δ| exceeds tolerance corridor</p>',
-            unsafe_allow_html=True,
-        )
-    st.markdown("</div></div>", unsafe_allow_html=True)
+        if synced:
+            st.markdown(
+                '<p class="live-audit-tag" style="margin:0.35rem 0 0 0;">'
+                '<span class="status-synced">EXEC_NODES_SYNCED</span> · within tolerance</p>',
+                unsafe_allow_html=True,
+            )
+        else:
+            st.markdown(
+                '<p class="live-audit-tag" style="margin:0.35rem 0 0 0;">'
+                '<span class="status-live">VARIANCE_LOCK</span> · |Δ| exceeds tolerance corridor</p>',
+                unsafe_allow_html=True,
+            )
+    st.markdown("</div>", unsafe_allow_html=True)
 
 
 def main() -> None:
@@ -1437,6 +1577,28 @@ def main() -> None:
         _render_sentiment_sidebar()
         st.markdown("</div></div>", unsafe_allow_html=True)
         st.markdown(
+            '<div class="wa-gateway-wrap"><div class="wa-gateway-inner">',
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            "<h4>EXECUTIVE WHATSAPP GATEWAY</h4>",
+            unsafe_allow_html=True,
+        )
+        st.link_button(
+            "SEND ROSY BRIEFING TO NODE 0 (+1515)",
+            _whatsapp_me_url(WA_NODE0_DIGITS),
+            use_container_width=True,
+            key="cien_wa_node0",
+        )
+        st.link_button(
+            "SEND ROSY BRIEFING TO NODE 1 (+1119)",
+            _whatsapp_me_url(WA_NODE1_DIGITS),
+            use_container_width=True,
+            key="cien_wa_node1",
+        )
+        st.caption("Opens WhatsApp with Rosy briefing text. Set GCSLC_WA_NODE0 / GCSLC_WA_NODE1 (digits only).")
+        st.markdown("</div></div>", unsafe_allow_html=True)
+        st.markdown(
             '<div class="sidebar-handshake" style="margin-top:0.5rem">'
             "<b>Executive-Load-142</b><br>"
             "Leadership handshake: ward captains, uplink, and ballot-box packs synchronized "
@@ -1457,8 +1619,6 @@ def main() -> None:
         "</div></div></div>",
         unsafe_allow_html=True,
     )
-
-    _render_executive_test_module()
 
     st.markdown('<div class="prism-widget"><div class="prism-widget-inner">', unsafe_allow_html=True)
     st.markdown("#### Chairman · Turnout lift simulation", unsafe_allow_html=True)
@@ -1609,6 +1769,8 @@ def main() -> None:
         if st.button("Dismiss proprietary determinant", key="dismiss_r8"):
             st.session_state["cien_r8"] = None
             st.rerun()
+
+    _render_executive_variance_forensic()
 
     st.caption(
         f"CIEN Kaduna 2027 · live ingest {VOTER_DB_CSV.name} (override with GCSLC_VOTER_DB) · "
