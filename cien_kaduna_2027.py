@@ -26,32 +26,26 @@ VOTER_DB_CSV = Path(os.environ.get("GCSLC_VOTER_DB", str(BASE_DIR / "voter_db.cs
 DEFAULT_EXEC_NODE0 = float(os.environ.get("GCSLC_EXEC_NODE0", "14314"))
 DEFAULT_EXEC_NODE1 = float(os.environ.get("GCSLC_EXEC_NODE1", "8507"))
 
-# WhatsApp wa.me — literal E.164 digits only (no +). Hard-coded; do not derive from node-ID math.
-WA_WHATSAPP_NODE0_CHAIRMAN = "2348099111515"
-WA_WHATSAPP_NODE1_EXECUTIVE = "2348099111119"
-WA_WHATSAPP_NODE2_VALIDATOR = "2348037649077"
-WA_WHATSAPP_NODE3_CONTROL = "2348079000900"
 EXECUTIVE_BRIEFING_WHATSAPP = (
     "The CIEN Kaduna 2027 Command Center is active. This digital fortress is built to ensure our 15/15 victory "
     "through precision and detail. Standing by for your sovereign signal. "
     "— Dr. Jaafaru Sa'ad (Galadiman Ruwa)"
 )
-
-
-def _whatsapp_me_url(phone_digits_literal: str) -> str:
-    """https://wa.me/[NUMBER]?text=[MESSAGE] — use the exact digit string provided (no transforms)."""
-    return (
-        f"https://wa.me/{phone_digits_literal}"
-        f"?text={urllib.parse.quote(EXECUTIVE_BRIEFING_WHATSAPP, safe='')}"
-    )
+# Single URL-encode of the briefing for ?text= (phone paths below are fixed literals; no digit math).
+_EXEC_BRIEFING_TEXT_ENCODED = urllib.parse.quote(EXECUTIVE_BRIEFING_WHATSAPP, safe="")
+# Full hrefs: https://wa.me/[DIGITS]?text=… — digits contiguous, no + or spaces in the number segment.
+WA_ME_HREF_NODE0_CHAIRMAN = "https://wa.me/2348099111515?text=" + _EXEC_BRIEFING_TEXT_ENCODED
+WA_ME_HREF_NODE1_EXECUTIVE = "https://wa.me/2348099111119?text=" + _EXEC_BRIEFING_TEXT_ENCODED
+WA_ME_HREF_NODE2_VALIDATOR = "https://wa.me/2348037649077?text=" + _EXEC_BRIEFING_TEXT_ENCODED
+WA_ME_HREF_NODE3_CONTROL = "https://wa.me/2348079000900?text=" + _EXEC_BRIEFING_TEXT_ENCODED
 
 
 def _executive_wa_gateway_sidebar_html() -> str:
-    """Galadima Center: four stacked wa.me links, identical briefing per node."""
-    u0 = html.escape(_whatsapp_me_url(WA_WHATSAPP_NODE0_CHAIRMAN), quote=True)
-    u1 = html.escape(_whatsapp_me_url(WA_WHATSAPP_NODE1_EXECUTIVE), quote=True)
-    u2 = html.escape(_whatsapp_me_url(WA_WHATSAPP_NODE2_VALIDATOR), quote=True)
-    u3 = html.escape(_whatsapp_me_url(WA_WHATSAPP_NODE3_CONTROL), quote=True)
+    """Galadima Center: four stacked wa.me links; hrefs are module-level literals + encoded briefing only."""
+    u0 = html.escape(WA_ME_HREF_NODE0_CHAIRMAN, quote=True)
+    u1 = html.escape(WA_ME_HREF_NODE1_EXECUTIVE, quote=True)
+    u2 = html.escape(WA_ME_HREF_NODE2_VALIDATOR, quote=True)
+    u3 = html.escape(WA_ME_HREF_NODE3_CONTROL, quote=True)
     return f"""
 <div class="wa-gateway-wrap"><div class="wa-gateway-inner">
   <p class="wa-galadima-header">Galadima Center</p>
