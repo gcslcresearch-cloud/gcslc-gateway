@@ -5,3 +5,4 @@ pydeck
 pandas
 plotly
 pytz
+openpyxl

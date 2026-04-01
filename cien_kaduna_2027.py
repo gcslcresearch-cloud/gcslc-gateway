@@ -381,7 +381,7 @@ PARADIGMS_8R: list[dict[str, str]] = [
 
 def _normalize_voter_df(raw: pd.DataFrame) -> pd.DataFrame:
     if raw.empty:
-        return pd.DataFrame(columns=["first_name", "last_name", "lga", "ward", "number"])
+        return pd.DataFrame(columns=["first_name", "last_name", "lga", "ward", "pu_id", "number"])
     norm = {str(c).strip().lower().replace(" ", "_"): c for c in raw.columns}
 
     def col(*candidates: str) -> str | None:
@@ -394,16 +394,19 @@ def _normalize_voter_df(raw: pd.DataFrame) -> pd.DataFrame:
     c_ln = col("last_name", "lastname", "surname", "lname")
     c_lga = col("lga", "lga_name", "ward_lga")
     c_ward = col("ward", "ward_name", "wardname", "ward_code", "polling_ward")
+    c_pu = col("pu_id", "polling_unit", "polling_unit_id", "polling_unit_code", "pu", "unit_id", "unit")
     c_num = col("number", "phone", "msisdn", "phone_number")
     if not (c_fn and c_ln and c_lga):
-        return pd.DataFrame(columns=["first_name", "last_name", "lga", "ward", "number"])
+        return pd.DataFrame(columns=["first_name", "last_name", "lga", "ward", "pu_id", "number"])
     ward_series = raw[c_ward].astype(str).fillna("") if c_ward else pd.Series([""] * len(raw), index=raw.index)
+    pu_series = raw[c_pu].astype(str).fillna("") if c_pu else pd.Series([""] * len(raw), index=raw.index)
     out = pd.DataFrame(
         {
             "first_name": raw[c_fn].astype(str).fillna(""),
             "last_name": raw[c_ln].astype(str).fillna(""),
             "lga": raw[c_lga].astype(str).fillna(""),
             "ward": ward_series,
+            "pu_id": pu_series,
             "number": raw[c_num].astype(str).fillna("") if c_num else "",
         }
     )
@@ -450,7 +453,7 @@ _VOTER_DB_HEAD_DEFAULT = 256
 _SWOT_CSV_MAX_ROWS = 200_000
 
 
-_EMPTY_VOTER_COLS = ["first_name", "last_name", "lga", "ward", "number"]
+_EMPTY_VOTER_COLS = ["first_name", "last_name", "lga", "ward", "pu_id", "number"]
 
 
 @st.cache_data(show_spinner=False)
@@ -1552,6 +1555,19 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.04em;
 }
+.lt-pu {
+  color: rgba(255, 215, 0, 0.92) !important;
+  font-weight: 800 !important;
+}
+.lt-verified {
+  color: #22D3EE !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.05em;
+}
+.lt-unverified {
+  color: rgba(255, 215, 0, 0.6) !important;
+  font-weight: 700 !important;
+}
 .lt-sep { color: rgba(255, 215, 0, 0.38) !important; padding: 0 0.15rem; }
 
 .polling-prism-wrap {
@@ -2641,6 +2657,18 @@ _PHONE_COL_CANDIDATES: tuple[str, ...] = (
     "number",
 )
 
+_PU_COL_CANDIDATES: tuple[str, ...] = (
+    "pu_id",
+    "polling_unit",
+    "polling_unit_id",
+    "polling_unit_code",
+    "polling_unit_name",
+    "pu_code",
+    "pu",
+    "unit",
+    "unit_id",
+)
+
 
 def _ticker_resolve_phone_column(norm: dict[str, str]) -> str | None:
     for k in _PHONE_COL_CANDIDATES:
@@ -2648,6 +2676,16 @@ def _ticker_resolve_phone_column(norm: dict[str, str]) -> str | None:
             return norm[k]
     for nk, orig in norm.items():
         if any(x in nk for x in ("phone", "mobile", "tel", "gsm", "msisdn", "contact", "whatsapp")):
+            return orig
+    return None
+
+
+def _ticker_resolve_pu_column(norm: dict[str, str]) -> str | None:
+    for k in _PU_COL_CANDIDATES:
+        if k in norm:
+            return norm[k]
+    for nk, orig in norm.items():
+        if any(x in nk for x in ("pu", "polling_unit", "unit_id", "polling", "poll_unit")):
             return orig
     return None
 
@@ -2701,8 +2739,15 @@ def _obfuscate_phone_ticker(raw: object) -> str:
     return digits[:6] + "X" * (len(digits) - 8) + digits[-2:]
 
 
-def _logistics_ticker_line(ts: str, name: str, lga: str, phone_obf: str) -> str:
-    """[TIME] | SYNCED | NAME | LGA | +PHONE | LIVE — monospace gold via CSS."""
+def _is_verified_phone(raw: object) -> bool:
+    digits = "".join(c for c in str(raw) if c.isdigit())
+    return len(digits) >= 10
+
+
+def _logistics_ticker_line(ts: str, name: str, lga: str, pu_id: str, phone_obf: str, verified: bool) -> str:
+    """[TIME] | SYNCED | NAME | LGA | PU-ID | +PHONE | VERIFIED | LIVE."""
+    ver = "VERIFIED" if verified else "UNVERIFIED"
+    ver_cls = "lt-verified" if verified else "lt-unverified"
     return (
         '<div class="logistics-line">'
         f'<span class="lt-time">[{html.escape(ts)}]</span>'
@@ -2713,15 +2758,50 @@ def _logistics_ticker_line(ts: str, name: str, lga: str, phone_obf: str) -> str:
         '<span class="lt-sep">|</span>'
         f'<span class="lt-lga">{html.escape(lga)}</span>'
         '<span class="lt-sep">|</span>'
+        f'<span class="lt-pu">{html.escape(pu_id)}</span>'
+        '<span class="lt-sep">|</span>'
         f'<span class="lt-phone">+{html.escape(phone_obf)}</span>'
+        '<span class="lt-sep">|</span>'
+        f'<span class="{ver_cls}">{ver}</span>'
         '<span class="lt-sep">|</span>'
         '<span class="status-synced">LIVE</span>'
         "</div>"
     )
 
 
+@st.cache_data(ttl=90, show_spinner=False)
+def _load_lga_cien_realtime_audit_rows(max_rows_per_file: int = 50) -> pd.DataFrame:
+    """Deep-scan: read first 50 rows from each LGA .xlsx file via openpyxl."""
+    d = KADUNA_DATA_2027_DIR
+    if not d.is_dir():
+        return pd.DataFrame()
+    frames: list[pd.DataFrame] = []
+    files = sorted(p for p in d.iterdir() if p.is_file() and p.suffix.lower() == ".xlsx")
+    for p in files:
+        try:
+            raw = pd.read_excel(p, nrows=max_rows_per_file, engine="openpyxl")
+        except Exception:
+            continue
+        if raw.empty:
+            continue
+        raw["__audit_source_file"] = p.name
+        raw["__audit_source_lga"] = p.stem.replace("_", " ").strip()
+        frames.append(raw)
+    if not frames:
+        return pd.DataFrame()
+    return pd.concat(frames, ignore_index=True)
+
+
 def _read_ticker_sample_from_active_file(n_sample: int = 10) -> pd.DataFrame:
-    """Random sample (up to n_sample rows) from active bound file — CSV/XLSX, bounded read."""
+    """
+    National handshake ticker source:
+    - Preferred: deep-scan first 50 rows per LGA .xlsx (openpyxl), then sample.
+    - Fallback: active bound file sample.
+    """
+    deep = _load_lga_cien_realtime_audit_rows(50)
+    if not deep.empty:
+        k = min(max(1, int(n_sample)), len(deep))
+        return deep.sample(n=k, random_state=None)
     p = VOTER_DB_CSV
     if not p.is_file():
         return pd.DataFrame()
@@ -2732,9 +2812,9 @@ def _read_ticker_sample_from_active_file(n_sample: int = 10) -> pd.DataFrame:
             raw = pd.read_csv(p, nrows=12_000)
         elif p.suffix.lower() in (".xlsx", ".xls"):
             try:
-                raw = pd.read_excel(p, nrows=12_000)
+                raw = pd.read_excel(p, nrows=12_000, engine="openpyxl")
             except TypeError:
-                raw = pd.read_excel(p).iloc[:12_000]
+                raw = pd.read_excel(p, engine="openpyxl").iloc[:12_000]
             except ImportError:
                 return pd.DataFrame()
         else:
@@ -2760,7 +2840,7 @@ def _build_lake_master_ingest_ticker(n_lines: int = 32) -> str:
             else:
                 mid = f"MASTER INGESTION · {html.escape(str(KADUNA_DATA_2027_DIR))}"
             lines.append(
-                _logistics_ticker_line(ts, mid, "—", "—")
+                _logistics_ticker_line(ts, mid, "—", "PU-UNKNOWN", "—", False)
             )
         body = "".join(lines)
         return f'<div class="logistics-feed-outer"><div class="logistics-feed-track">{body + body}</div></div>'
@@ -2768,18 +2848,24 @@ def _build_lake_master_ingest_ticker(n_lines: int = 32) -> str:
     rows: list[pd.Series] = [sample.iloc[i] for i in range(len(sample))]
     norm = _ticker_column_map(sample)
     phone_col = _ticker_resolve_phone_column(norm)
+    pu_col = _ticker_resolve_pu_column(norm)
 
     for _ in range(n_lines):
         r = random.choice(rows)
         ts = (datetime.now() - timedelta(seconds=random.randint(0, 7200))).strftime("%H:%M:%S")
         name = _ticker_resolve_name_parts(norm, r)
         lga = _ticker_resolve_lga(norm, r)
+        pu_id = str(r[pu_col]).strip() if pu_col is not None else "PU-UNKNOWN"
+        if not pu_id:
+            pu_id = "PU-UNKNOWN"
         if phone_col is not None:
             raw_phone = r[phone_col]
             phone_disp = _obfuscate_phone_ticker(raw_phone)
+            verified = _is_verified_phone(raw_phone)
         else:
             phone_disp = "—"
-        lines.append(_logistics_ticker_line(ts, name, lga, phone_disp))
+            verified = False
+        lines.append(_logistics_ticker_line(ts, name, lga, pu_id, phone_disp, verified))
 
     body = "".join(lines)
     dup = body + body
@@ -2798,11 +2884,17 @@ def _build_logistics_feed_html(df: pd.DataFrame, n_lines: int = 28) -> str:
         ln = str(r["last_name"]).strip()
         name = " ".join(x for x in (fn, ln) if x).strip() or "—"
         lga = str(r["lga"]).strip() if "lga" in r.index else "—"
+        pu_id = str(r["pu_id"]).strip() if "pu_id" in r.index else "PU-UNKNOWN"
+        if not pu_id:
+            pu_id = "PU-UNKNOWN"
         if "number" in r.index:
-            phone_disp = _obfuscate_phone_ticker(r["number"])
+            phone_raw = r["number"]
+            phone_disp = _obfuscate_phone_ticker(phone_raw)
+            verified = _is_verified_phone(phone_raw)
         else:
             phone_disp = "—"
-        lines.append(_logistics_ticker_line(ts, name, lga, phone_disp))
+            verified = False
+        lines.append(_logistics_ticker_line(ts, name, lga, pu_id, phone_disp, verified))
     body = "".join(lines)
     dup = body + body
     return rail + f'<div class="logistics-feed-outer"><div class="logistics-feed-track">{dup}</div></div>'
