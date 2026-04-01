@@ -26,12 +26,15 @@ VOTER_DB_CSV = Path(os.environ.get("GCSLC_VOTER_DB", str(BASE_DIR / "voter_db.cs
 DEFAULT_EXEC_NODE0 = float(os.environ.get("GCSLC_EXEC_NODE0", "14314"))
 DEFAULT_EXEC_NODE1 = float(os.environ.get("GCSLC_EXEC_NODE1", "8507"))
 
-# WhatsApp wa.me — digits only (no +). Defaults encode Node tags +1515 / +1119 in trailing digits.
+# WhatsApp wa.me — digits only (no +). Executive nodes 0–2; override via GCSLC_WA_NODE0/1/3.
 WA_NODE0_DIGITS = os.environ.get("GCSLC_WA_NODE0", "2341515001515")
 WA_NODE1_DIGITS = os.environ.get("GCSLC_WA_NODE1", "2341119001119")
-ROSY_BRIEFING_WHATSAPP = (
-    "Rosy Briefing — GCSLC Executive Command (Kaduna 2027): Nodal sync GREEN. "
-    "Sovereign handshake protocol active. Please acknowledge receipt — His Excellency."
+# Strategic Node 3 (0807 900 0900 → E.164)
+WA_NODE3_DIGITS = os.environ.get("GCSLC_WA_NODE3", "2348079000900")
+EXECUTIVE_BRIEFING_WHATSAPP = (
+    "The CIEN Kaduna 2027 Command Center is active. This digital fortress is built to ensure our 15/15 victory "
+    "through precision and detail. Standing by for your sovereign signal. "
+    "— Dr. Jaafaru Sa'ad (Galadiman Ruwa)"
 )
 
 
@@ -39,7 +42,27 @@ def _whatsapp_me_url(digits_raw: str) -> str:
     digits = "".join(c for c in digits_raw if c.isdigit())
     if not digits:
         return "https://wa.me/"
-    return f"https://wa.me/{digits}?text={urllib.parse.quote(ROSY_BRIEFING_WHATSAPP, safe='')}"
+    return f"https://wa.me/{digits}?text={urllib.parse.quote(EXECUTIVE_BRIEFING_WHATSAPP, safe='')}"
+
+
+def _executive_wa_gateway_sidebar_html() -> str:
+    """Single HTML block: Galadima Center header + three stacked wa.me links (same briefing for all nodes)."""
+    u0 = html.escape(_whatsapp_me_url(WA_NODE0_DIGITS), quote=True)
+    u1 = html.escape(_whatsapp_me_url(WA_NODE1_DIGITS), quote=True)
+    u3 = html.escape(_whatsapp_me_url(WA_NODE3_DIGITS), quote=True)
+    return f"""
+<div class="wa-gateway-wrap"><div class="wa-gateway-inner">
+  <p class="wa-galadima-header">Galadima Center</p>
+  <p class="wa-gateway-sub">Executive WhatsApp Gateway</p>
+  <div class="wa-gateway-btn-stack">
+    <a class="wa-sidebar-wa-link" href="{u0}" target="_blank" rel="noopener noreferrer">SEND BRIEFING TO NODE 0 (+1515)</a>
+    <a class="wa-sidebar-wa-link" href="{u1}" target="_blank" rel="noopener noreferrer">SEND BRIEFING TO NODE 1 (+1119)</a>
+    <a class="wa-sidebar-wa-link" href="{u3}" target="_blank" rel="noopener noreferrer">SEND BRIEFING TO STRATEGIC NODE (+0900)</a>
+  </div>
+  <p class="wa-safety-protocol">Safety: these three nodes are the only active outbound briefing targets until you manually authorize &quot;PUSH TO 1.5M NODES&quot;.</p>
+  <p class="wa-env-hint">Override numbers with GCSLC_WA_NODE0 / GCSLC_WA_NODE1 / GCSLC_WA_NODE3 (digits only).</p>
+</div></div>
+"""
 
 NAVY_DEEP = "#000033"
 GOLD = "#D4AF37"
@@ -1114,6 +1137,75 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   letter-spacing: 0.1em;
   margin: 0 0 0.5rem 0;
 }
+.wa-galadima-header {
+  font-family: 'Goldman', sans-serif !important;
+  color: #FFD700 !important;
+  text-align: center;
+  font-size: 0.84rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin: 0 0 0.2rem 0;
+  font-weight: 700 !important;
+  text-shadow: none !important;
+}
+.wa-gateway-sub {
+  font-family: 'Goldman', sans-serif !important;
+  color: #00F5FF !important;
+  text-align: center;
+  font-size: 0.68rem;
+  margin: 0 0 0.55rem 0;
+  letter-spacing: 0.07em;
+  font-weight: 700 !important;
+  text-shadow: none !important;
+}
+.wa-gateway-btn-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.42rem;
+  align-items: stretch;
+  width: 100%;
+}
+[data-testid="stSidebar"] .wa-sidebar-wa-link {
+  display: block !important;
+  color: #00F5FF !important;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+  border: 1px solid rgba(0, 245, 255, 0.45) !important;
+  border-radius: 8px !important;
+  padding: 0.42rem 0.55rem !important;
+  text-align: center !important;
+  background: rgba(26, 26, 26, 0.95) !important;
+  font-family: 'Goldman', sans-serif !important;
+  font-size: 0.72rem !important;
+  text-shadow: none !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  line-height: 1.3 !important;
+}
+[data-testid="stSidebar"] .wa-sidebar-wa-link:hover {
+  border-color: rgba(255, 215, 0, 0.5) !important;
+  color: #FFD700 !important;
+}
+.wa-env-hint {
+  font-family: 'Goldman', sans-serif !important;
+  font-size: 0.58rem !important;
+  color: rgba(255, 215, 0, 0.78) !important;
+  margin: 0.4rem 0 0 0 !important;
+  text-align: center !important;
+  text-shadow: none !important;
+  line-height: 1.38 !important;
+}
+.wa-safety-protocol {
+  font-family: 'Goldman', sans-serif !important;
+  font-size: 0.62rem !important;
+  color: rgba(0, 245, 255, 0.92) !important;
+  line-height: 1.45 !important;
+  margin: 0.55rem 0 0 0 !important;
+  text-align: center !important;
+  text-shadow: none !important;
+  border-top: 1px solid rgba(255, 215, 0, 0.2);
+  padding-top: 0.45rem !important;
+}
 
 .exec-forensic-muted {
   margin-top: 0.5rem;
@@ -1576,26 +1668,7 @@ def main() -> None:
             }
         _render_sentiment_sidebar()
         st.markdown("</div></div>", unsafe_allow_html=True)
-        st.markdown(
-            '<div class="wa-gateway-wrap"><div class="wa-gateway-inner">',
-            unsafe_allow_html=True,
-        )
-        st.markdown(
-            "<h4>EXECUTIVE WHATSAPP GATEWAY</h4>",
-            unsafe_allow_html=True,
-        )
-        st.link_button(
-            "SEND ROSY BRIEFING TO NODE 0 (+1515)",
-            _whatsapp_me_url(WA_NODE0_DIGITS),
-            use_container_width=True,
-        )
-        st.link_button(
-            "SEND ROSY BRIEFING TO NODE 1 (+1119)",
-            _whatsapp_me_url(WA_NODE1_DIGITS),
-            use_container_width=True,
-        )
-        st.caption("Opens WhatsApp with Rosy briefing text. Set GCSLC_WA_NODE0 / GCSLC_WA_NODE1 (digits only).")
-        st.markdown("</div></div>", unsafe_allow_html=True)
+        st.markdown(_executive_wa_gateway_sidebar_html(), unsafe_allow_html=True)
         st.markdown(
             '<div class="sidebar-handshake" style="margin-top:0.5rem">'
             "<b>Executive-Load-142</b><br>"
