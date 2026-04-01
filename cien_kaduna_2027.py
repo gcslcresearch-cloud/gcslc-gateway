@@ -27,16 +27,6 @@ KADUNA_DATA_2027_DIR = Path(os.environ.get("GCSLC_KADUNA_DATA_2027", str(_DESKTO
 # Never auto-mount repo voter_db.csv — saves RAM; set GCSLC_VOTER_DB to bind a file explicitly.
 _REPO_VOTER_DB_CSV = (BASE_DIR / "voter_db.csv").resolve()
 
-
-def _resolve_voter_db_csv() -> Path:
-    env = os.environ.get("GCSLC_VOTER_DB")
-    if env:
-        return Path(env).expanduser().resolve()
-    return (KADUNA_DATA_2027_DIR / "voter_db.csv").resolve()
-
-
-VOTER_DB_CSV = _resolve_voter_db_csv()
-
 # Bounded lake walk — never enumerate millions of dentries into session / UI state.
 KADUNA_LAKE_SCAN_CAP = 2000
 KADUNA_LAKE_SKIP_FILES = frozenset(
@@ -391,7 +381,7 @@ PARADIGMS_8R: list[dict[str, str]] = [
 
 def _normalize_voter_df(raw: pd.DataFrame) -> pd.DataFrame:
     if raw.empty:
-        return pd.DataFrame(columns=["first_name", "last_name", "lga", "number"])
+        return pd.DataFrame(columns=["first_name", "last_name", "lga", "ward", "number"])
     norm = {str(c).strip().lower().replace(" ", "_"): c for c in raw.columns}
 
     def col(*candidates: str) -> str | None:
@@ -403,18 +393,56 @@ def _normalize_voter_df(raw: pd.DataFrame) -> pd.DataFrame:
     c_fn = col("first_name", "firstname", "fname")
     c_ln = col("last_name", "lastname", "surname", "lname")
     c_lga = col("lga", "lga_name", "ward_lga")
+    c_ward = col("ward", "ward_name", "wardname", "ward_code", "polling_ward")
     c_num = col("number", "phone", "msisdn", "phone_number")
     if not (c_fn and c_ln and c_lga):
-        return pd.DataFrame(columns=["first_name", "last_name", "lga", "number"])
+        return pd.DataFrame(columns=["first_name", "last_name", "lga", "ward", "number"])
+    ward_series = raw[c_ward].astype(str).fillna("") if c_ward else pd.Series([""] * len(raw), index=raw.index)
     out = pd.DataFrame(
         {
             "first_name": raw[c_fn].astype(str).fillna(""),
             "last_name": raw[c_ln].astype(str).fillna(""),
             "lga": raw[c_lga].astype(str).fillna(""),
+            "ward": ward_series,
             "number": raw[c_num].astype(str).fillna("") if c_num else "",
         }
     )
     return out[out["first_name"].str.len() > 0]
+
+
+@st.cache_data(ttl=90, show_spinner=False)
+def _discover_first_valid_csv_in_lake_dir() -> str | None:
+    """First lexicographic .csv under the lake that yields at least one normalized voter row."""
+    d = KADUNA_DATA_2027_DIR
+    if not d.is_dir():
+        return None
+    candidates = sorted(p for p in d.iterdir() if p.is_file() and p.suffix.lower() == ".csv")
+    for p in candidates:
+        if p.resolve() == _REPO_VOTER_DB_CSV and not os.environ.get("GCSLC_VOTER_DB"):
+            continue
+        try:
+            sniff = pd.read_csv(p, nrows=96)
+            if sniff.empty or len(sniff.columns) == 0:
+                continue
+            norm = _normalize_voter_df(sniff)
+            if not norm.empty:
+                return str(p.resolve())
+        except Exception:
+            continue
+    return None
+
+
+def _resolve_voter_db_csv() -> Path:
+    env = os.environ.get("GCSLC_VOTER_DB")
+    if env:
+        return Path(env).expanduser().resolve()
+    discovered = _discover_first_valid_csv_in_lake_dir()
+    if discovered:
+        return Path(discovered)
+    return (KADUNA_DATA_2027_DIR / "voter_db.csv").resolve()
+
+
+VOTER_DB_CSV = _resolve_voter_db_csv()
 
 
 # UI / sidebar: keep only a small head in RAM (1.5M-safe virtualized ingest).
@@ -422,18 +450,21 @@ _VOTER_DB_HEAD_DEFAULT = 256
 _SWOT_CSV_MAX_ROWS = 200_000
 
 
+_EMPTY_VOTER_COLS = ["first_name", "last_name", "lga", "ward", "number"]
+
+
 @st.cache_data(show_spinner=False)
 def _load_voter_db(csv_path: str, nrows: int = _VOTER_DB_HEAD_DEFAULT) -> pd.DataFrame:
     p = Path(csv_path)
     if not p.is_file():
-        return pd.DataFrame(columns=["first_name", "last_name", "lga", "number"])
+        return pd.DataFrame(columns=_EMPTY_VOTER_COLS)
     if p.resolve() == _REPO_VOTER_DB_CSV and not os.environ.get("GCSLC_VOTER_DB"):
-        return pd.DataFrame(columns=["first_name", "last_name", "lga", "number"])
+        return pd.DataFrame(columns=_EMPTY_VOTER_COLS)
     try:
         cap = max(8, min(int(nrows), 50_000))
         raw = pd.read_csv(p, nrows=cap)
     except Exception:
-        return pd.DataFrame(columns=["first_name", "last_name", "lga", "number"])
+        return pd.DataFrame(columns=_EMPTY_VOTER_COLS)
     return _normalize_voter_df(raw)
 
 
@@ -1370,19 +1401,71 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
 .det-modal .det-prop { color: #FFD700 !important; font-size: 0.78rem; font-weight: 700; margin-bottom: 0.35rem; }
 .det-modal p { color: #00E5FF !important; margin: 0; font-size: 0.82rem; line-height: 1.5; }
 
+@keyframes nodal-bar-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scaleY(1);
+    box-shadow: 0 0 6px rgba(34, 211, 238, 0.45);
+  }
+  50% {
+    opacity: 0.72;
+    transform: scaleY(1.28);
+    box-shadow: 0 0 14px rgba(6, 182, 212, 0.85);
+  }
+}
+.nodal-stream-rail {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.45rem;
+  margin: 0 0 0.45rem 0;
+  padding: 0.38rem 0.55rem;
+  border-radius: 8px;
+  border: 1px solid rgba(34, 211, 238, 0.42);
+  background: #121212 !important;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+}
+.nodal-stream-label {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-size: 0.58rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.12em !important;
+  color: #22D3EE !important;
+  text-shadow: 0 0 10px rgba(34, 211, 238, 0.35);
+  flex: 1;
+  text-align: left;
+}
+.nodal-stream-bars {
+  display: flex;
+  gap: 5px;
+  align-items: flex-end;
+  height: 16px;
+}
+.nodal-stream-bar {
+  width: 5px;
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #22D3EE, #06B6D4);
+  animation: nodal-bar-pulse 1.05s ease-in-out infinite;
+}
+.nodal-stream-bar:nth-child(1) { animation-delay: 0s; }
+.nodal-stream-bar:nth-child(2) { animation-delay: 0.12s; }
+.nodal-stream-bar:nth-child(3) { animation-delay: 0.24s; }
+.nodal-stream-bar:nth-child(4) { animation-delay: 0.36s; }
+.nodal-stream-bar:nth-child(5) { animation-delay: 0.48s; }
+
 .outreach-command-wrap {
   border-radius: 14px;
-  padding: 3px;
-  background: linear-gradient(120deg, #000033, #D4AF37, #000033);
-  background-size: 240% 100%;
-  animation: prism-shimmer 14s linear infinite;
+  padding: 2px;
+  background: #121212 !important;
+  border: 1px solid rgba(255, 215, 0, 0.28);
   margin: 1rem 0 0.85rem 0;
 }
 .outreach-command-inner {
-  background: linear-gradient(180deg, #000011 0%, #000044 100%);
+  background: #121212 !important;
   border-radius: 11px;
   padding: 0.85rem 1rem;
-  border: 1px solid rgba(212, 175, 55, 0.4);
+  border: 1px solid rgba(255, 215, 0, 0.22);
 }
 .outreach-command-inner h3 {
   font-family: 'Goldman', sans-serif !important;
@@ -1462,6 +1545,7 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
 .lt-time { color: rgba(255, 215, 0, 0.62) !important; font-variant-numeric: tabular-nums; }
 .lt-name { color: #FFD700 !important; }
 .lt-lga { color: rgba(255, 215, 0, 0.85) !important; }
+.lt-ward { color: rgba(255, 215, 0, 0.78) !important; font-weight: 700 !important; }
 .lt-sep { color: rgba(255, 215, 0, 0.38) !important; padding: 0 0.15rem; }
 
 .polling-prism-wrap {
@@ -1487,8 +1571,9 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   margin-top: 0.45rem;
   padding: 0.35rem 0.15rem 0.15rem 0.15rem;
   border-radius: 10px;
-  border: 1px solid rgba(45, 212, 191, 0.3);
-  animation: sentiment-bar-pulse 2.4s ease-in-out infinite;
+  border: 1px solid rgba(34, 211, 238, 0.28);
+  background: #121212 !important;
+  animation: none;
 }
 
 .exec-test-prism-wrap {
@@ -2519,35 +2604,87 @@ def _render_kaduna_lake_virtualized_expander() -> None:
             st.caption(f"Lake index pull {elapsed:.2f}s — loading shimmer shown while indexing.")
 
 
-def _build_logistics_feed_html(df: pd.DataFrame, n_lines: int = 28) -> str:
+def _nodal_stream_rail_html() -> str:
+    return (
+        '<div class="nodal-stream-rail" aria-label="Nodal stream">'
+        '<span class="nodal-stream-label">NODAL STREAM: ACTIVE</span>'
+        '<span class="nodal-stream-bars" aria-hidden="true">'
+        '<span class="nodal-stream-bar"></span><span class="nodal-stream-bar"></span>'
+        '<span class="nodal-stream-bar"></span><span class="nodal-stream-bar"></span>'
+        '<span class="nodal-stream-bar"></span>'
+        "</span></div>"
+    )
+
+
+def _build_lake_master_ingest_ticker(n_lines: int = 32) -> str:
+    """Monospace gold live ticker when voter head is empty — lake filenames + master loop copy."""
+    pool = _kaduna_lake_preview_pool()
     lines: list[str] = []
-    if df.empty:
+    for _ in range(n_lines):
+        ts = (datetime.now() - timedelta(seconds=random.randint(0, 7200))).strftime("%H:%M:%S")
+        if pool:
+            name = random.choice(pool)
+            mid = f"AUTO-INGEST · {html.escape(name)}"
+            tail_lga = "KADUNA_Data_2027"
+            tail_ward = "LAKE INDEX"
+        else:
+            mid = f"MASTER INGESTION · {html.escape(str(KADUNA_DATA_2027_DIR))}"
+            tail_lga = "—"
+            tail_ward = "SCAN"
         lines.append(
-            '<div class="logistics-line logistics-line-empty">'
-            f"Ingest path: <code>{html.escape(str(VOTER_DB_CSV))}</code> — "
-            "<span class=\"status-live\">OFFLINE</span> · add rows to activate stream.</div>"
+            '<div class="logistics-line">'
+            f'<span class="lt-time">[{html.escape(ts)}]</span>'
+            '<span class="lt-sep">|</span>'
+            f'<span class="lt-name">{mid}</span>'
+            '<span class="lt-sep">|</span>'
+            f'<span class="lt-ward">{tail_ward}</span>'
+            '<span class="lt-sep">|</span>'
+            f'<span class="lt-lga">{html.escape(tail_lga)}</span>'
+            '<span class="lt-sep">|</span>'
+            '<span class="status-synced">LIVE</span>'
+            "</div>"
         )
-    else:
-        for _ in range(n_lines):
-            r = df.sample(n=1).iloc[0]
-            ts = (datetime.now() - timedelta(seconds=random.randint(0, 7200))).strftime("%H:%M:%S")
-            fn = str(r["first_name"]).strip()
-            ln = str(r["last_name"]).strip()
-            lga = str(r["lga"]).strip()
-            lines.append(
-                '<div class="logistics-line">'
-                f'<span class="lt-time">[{html.escape(ts)}]</span>'
-                '<span class="lt-sep">|</span>'
-                f'<span class="lt-name">{html.escape(fn)} {html.escape(ln)}</span>'
-                '<span class="lt-sep">|</span>'
-                f'<span class="lt-lga">{html.escape(lga)}</span>'
-                '<span class="lt-sep">|</span>'
-                '<span class="status-synced">Status: SYNCED</span>'
-                "</div>"
-            )
     body = "".join(lines)
     dup = body + body
     return f'<div class="logistics-feed-outer"><div class="logistics-feed-track">{dup}</div></div>'
+
+
+def _build_logistics_feed_html(df: pd.DataFrame, n_lines: int = 28) -> str:
+    rail = _nodal_stream_rail_html() if KADUNA_DATA_2027_DIR.is_dir() else ""
+    lines: list[str] = []
+    if df.empty:
+        return rail + _build_lake_master_ingest_ticker(n_lines=max(n_lines, 28))
+    for _ in range(n_lines):
+        r = df.sample(n=1).iloc[0]
+        ts = (datetime.now() - timedelta(seconds=random.randint(0, 7200))).strftime("%H:%M:%S")
+        fn = str(r["first_name"]).strip()
+        ln = str(r["last_name"]).strip()
+        lga = str(r["lga"]).strip()
+        ward = ""
+        if "ward" in df.columns:
+            ward = str(r.get("ward", "")).strip()
+        line = (
+            '<div class="logistics-line">'
+            f'<span class="lt-time">[{html.escape(ts)}]</span>'
+            '<span class="lt-sep">|</span>'
+            f'<span class="lt-name">{html.escape(fn)} {html.escape(ln)}</span>'
+        )
+        if ward:
+            line += (
+                '<span class="lt-sep">|</span>'
+                f'<span class="lt-ward">{html.escape(ward)}</span>'
+            )
+        line += (
+            '<span class="lt-sep">|</span>'
+            f'<span class="lt-lga">{html.escape(lga)}</span>'
+            '<span class="lt-sep">|</span>'
+            '<span class="status-synced">LIVE</span>'
+            "</div>"
+        )
+        lines.append(line)
+    body = "".join(lines)
+    dup = body + body
+    return rail + f'<div class="logistics-feed-outer"><div class="logistics-feed-track">{dup}</div></div>'
 
 
 @st.fragment(run_every=timedelta(seconds=4))
@@ -2561,10 +2698,14 @@ def _render_live_outreach_panel() -> None:
     n = len(vdf)
     src = html.escape(VOTER_DB_CSV.name)
     live_row = (
-        f'<span class="status-live">LIVE INGESTION</span> · head {n:,} rows in RAM · '
-        '<span class="status-synced">VIRTUALIZED</span>'
+        f'<span class="status-live">AUTO-INGEST</span> · bound <code>{src}</code> · head {n:,} rows · '
+        '<span class="status-synced">MASTER LOOP</span>'
         if n
-        else '<span class="status-live">STANDBY</span> — bind CSV via GCSLC_VOTER_DB or place voter_db.csv in Desktop lake'
+        else (
+            f'<span class="status-live">AUTO-INGEST</span> · scanning '
+            f"<code>{html.escape(str(KADUNA_DATA_2027_DIR))}</code> for first valid CSV · "
+            f"<code>{src}</code>"
+        )
     )
     pu_path = html.escape(str(KADUNA_DATA_2027_DIR))
     path_tag = "PATH OK" if KADUNA_DATA_2027_DIR.is_dir() else "FOLDER PENDING"
@@ -2577,7 +2718,7 @@ def _render_live_outreach_panel() -> None:
     st.markdown(
         '<div class="outreach-command-wrap"><div class="outreach-command-inner">'
         "<h3>1.5M Voter Tactical Outreach · Multi-Channel Hub</h3>"
-        '<p class="live-audit-tag"><span class="status-live">LIVE</span> Nodal Audit · virtualized registry head</p>'
+        '<p class="live-audit-tag"><span class="status-live">LIVE</span> Nodal Audit · AUTO-INGEST registry head</p>'
         f'{slow_note}'
         f'<p class="pu-tactical-line">Tactical Pulse (PU level · <span class="kaduna-anchor-emerald">Kaduna anchor</span>) · '
         f'<strong class="kaduna-anchor-emerald">{PU_COUNT_KADUNA:,}</strong> PUs · '
@@ -2587,7 +2728,7 @@ def _render_live_outreach_panel() -> None:
         f'<span class="status-synced">{html.escape(path_tag)}</span></p>'
         f'<p class="outreach-csv-note">CSV payload: <strong>{src}</strong> · {live_row}</p>'
         '<p class="outreach-csv-note" style="margin-bottom:0.5rem;">'
-        "Logistics ticker: monospace gold · virtualized head only · full lake roller in sidebar expander."
+        "Logistics ticker: monospace gold · names · ward · LGA · NODAL STREAM rail when PATH OK."
         "</p>"
         f"{_build_logistics_feed_html(vdf)}"
         "</div></div>",
@@ -2760,8 +2901,9 @@ def _render_live_nodal_sidebar_line() -> None:
     vdf = _load_voter_db(str(VOTER_DB_CSV), nrows=96)
     if vdf.empty:
         st.markdown(
-            '<p class="dt-handshake">Live Nodal Audit: <span class="status-live">STANDBY</span> — '
-            f"point <code>{html.escape(VOTER_DB_CSV.name)}</code> alongside the app.</p>",
+            '<p class="dt-handshake">Live Nodal Audit: <span class="status-live">AUTO-INGEST</span> — '
+            f"master loop · <code>{html.escape(VOTER_DB_CSV.name)}</code> · "
+            f"<span class=\"status-synced\">NODAL STREAM: ACTIVE</span></p>",
             unsafe_allow_html=True,
         )
         return
@@ -2769,12 +2911,15 @@ def _render_live_nodal_sidebar_line() -> None:
     fn = str(r["first_name"]).strip()
     ln = str(r["last_name"]).strip()
     lga = str(r["lga"]).strip()
+    ward = str(r["ward"]).strip() if "ward" in r.index else ""
     pu_id = 1 + (abs(hash((fn, ln, lga))) % PU_COUNT_KADUNA)
+    ward_bit = f" · <span class=\"kaduna-pu-node\">{html.escape(ward)}</span>" if ward else ""
     st.markdown(
         '<p class="dt-handshake">Live Nodal Audit · <span class="status-synced">SYNCED</span> · '
         f'<span class="kaduna-pu-node">PU-{pu_id:05d}</span> · '
         f"{html.escape(fn)} {html.escape(ln)} · "
-        f"{html.escape(lga)}</p>",
+        f"{html.escape(lga)}"
+        f"{ward_bit}</p>",
         unsafe_allow_html=True,
     )
 
@@ -2785,7 +2930,9 @@ def _render_sentiment_sidebar() -> None:
     targets = st.session_state.get("cien_poll_targets")
     if t0 is None or targets is None:
         y, n_, u = 34.0, 33.0, 33.0
-        subtitle = "Awaiting PUSH to 1.5M nodes"
+        subtitle = "NODAL STREAM: ACTIVE · Awaiting PUSH to 1.5M nodes"
+        bar_colors = ["#22D3EE", "#06B6D4", "#67E8F9"]
+        bar_lines = ["#0e7490", "#0e7490", "#0e7490"]
     else:
         elapsed = time.monotonic() - float(t0)
         ty = float(targets["Yes"])
@@ -2801,26 +2948,28 @@ def _render_sentiment_sidebar() -> None:
         else:
             y, n_, u = ty, tn, tu
             subtitle = "Scientific projection · stabilized"
+        bar_colors = [TURQ, "#D4AF37", "#8899aa"]
+        bar_lines = ["#000033", "#000033", "#000033"]
     fig = go.Figure(
         data=[
             go.Bar(
                 x=["Yes", "No", "Undecided"],
                 y=[y, n_, u],
                 marker=dict(
-                    color=[TURQ, "#D4AF37", "#8899aa"],
-                    line=dict(color="#000033", width=1),
+                    color=bar_colors,
+                    line=dict(color=bar_lines, width=1),
                 ),
             )
         ]
     )
     fig.update_layout(
         title=dict(text="Live Sentiment Analysis", font=dict(family="Goldman", size=12, color=GOLD)),
-        paper_bgcolor=NAVY_DEEP,
-        plot_bgcolor=NAVY_DEEP,
+        paper_bgcolor="#121212",
+        plot_bgcolor="#121212",
         font=dict(family="Goldman", color=GOLD),
         height=210,
         margin=dict(t=32, b=28, l=36, r=12),
-        yaxis=dict(range=[0, 100], title="%", gridcolor="#003350"),
+        yaxis=dict(range=[0, 100], title="%", gridcolor="rgba(34, 211, 238, 0.18)"),
         xaxis=dict(title=""),
         showlegend=False,
     )
