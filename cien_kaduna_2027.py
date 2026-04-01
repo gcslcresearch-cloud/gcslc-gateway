@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import base64
 import html
 import math
 import os
@@ -21,6 +22,31 @@ os.environ.setdefault("STREAMLIT_SERVER_PORT", "9099")
 os.environ.setdefault("STREAMLIT_SERVER_FILE_WATCHER_TYPE", "none")
 
 BASE_DIR = Path(__file__).resolve().parent
+VERIFY_IMG_NAMES = ("image_0.png", "image_1.png")
+
+
+def _resolve_verification_png(filename: str) -> Path | None:
+    """Sidebar verification thumbnails: repo assets/, repo root, optional GCSLC_VERIFY_IMG_DIR."""
+    override = os.environ.get(f"GCSLC_VERIFY_{filename.replace('.', '_').upper()}")
+    if override:
+        p = Path(override).expanduser().resolve()
+        if p.is_file():
+            return p
+    extra = os.environ.get("GCSLC_VERIFY_IMG_DIR")
+    roots = [BASE_DIR / "assets", BASE_DIR]
+    if extra:
+        roots.insert(0, Path(extra).expanduser().resolve())
+    for root in roots:
+        cand = root / filename
+        if cand.is_file():
+            return cand
+    return None
+
+
+def _png_data_uri(path: Path) -> str:
+    return "data:image/png;base64," + base64.b64encode(path.read_bytes()).decode("ascii")
+
+
 # Single-source lock: Desktop KADUNA_Data_2027 (override only via GCSLC_KADUNA_DATA_2027).
 _DESKTOP_KADUNA_2027 = Path.home() / "Desktop" / "KADUNA_Data_2027"
 KADUNA_DATA_2027_DIR = Path(os.environ.get("GCSLC_KADUNA_DATA_2027", str(_DESKTOP_KADUNA_2027))).resolve()
@@ -163,40 +189,30 @@ def _format_master_reminder_all_lanes(raw: str) -> dict[str, str]:
 DEFAULT_EXEC_NODE0 = float(os.environ.get("GCSLC_EXEC_NODE0", "14314"))
 DEFAULT_EXEC_NODE1 = float(os.environ.get("GCSLC_EXEC_NODE1", "8507"))
 
-EXECUTIVE_BRIEFING_WHATSAPP = (
-    "The CIEN Kaduna 2027 Command Center is active. This digital fortress is built to ensure our 15/15 victory "
-    "through precision and detail. Standing by for your sovereign signal. "
-    "— Dr. Jaafaru Sa'ad (Galadiman Ruwa)"
+# Executive Gateway — verified handshake nodes (final override). wa.me digits only, no + or spaces.
+EXECUTIVE_HANDSHAKE_MAP: tuple[dict[str, str], ...] = (
+    {
+        "node_id": "0",
+        "pillar": "Strategy",
+        "name": "Dr. Fabian Okoye",
+        "wa_me_id": "2348037861894",
+        "label": "SA Research & Strategy",
+    },
+    {
+        "node_id": "1",
+        "pillar": "Execution",
+        "name": "Chief of Staff",
+        "wa_me_id": "2348033701212",
+        "label": "Command Hub",
+    },
+    {
+        "node_id": "2",
+        "pillar": "Outreach",
+        "name": "Dr. Abdul Ishaq",
+        "wa_me_id": "2348037004981",
+        "label": "SA Stakeholders",
+    },
 )
-# Single URL-encode of the briefing for ?text= (phone paths below are fixed literals; no digit math).
-_EXEC_BRIEFING_TEXT_ENCODED = urllib.parse.quote(EXECUTIVE_BRIEFING_WHATSAPP, safe="")
-# Full hrefs: https://wa.me/[DIGITS]?text=… — digits contiguous, no + or spaces in the number segment.
-WA_ME_HREF_NODE0_CHAIRMAN = "https://wa.me/2348099111515?text=" + _EXEC_BRIEFING_TEXT_ENCODED
-WA_ME_HREF_NODE1_EXECUTIVE = "https://wa.me/2348099111119?text=" + _EXEC_BRIEFING_TEXT_ENCODED
-WA_ME_HREF_NODE2_VALIDATOR = "https://wa.me/2348037649077?text=" + _EXEC_BRIEFING_TEXT_ENCODED
-WA_ME_HREF_NODE3_CONTROL = "https://wa.me/2348079000900?text=" + _EXEC_BRIEFING_TEXT_ENCODED
-
-
-def _executive_wa_gateway_sidebar_html() -> str:
-    """Galadima Center: four stacked wa.me links; hrefs are module-level literals + encoded briefing only."""
-    u0 = html.escape(WA_ME_HREF_NODE0_CHAIRMAN, quote=True)
-    u1 = html.escape(WA_ME_HREF_NODE1_EXECUTIVE, quote=True)
-    u2 = html.escape(WA_ME_HREF_NODE2_VALIDATOR, quote=True)
-    u3 = html.escape(WA_ME_HREF_NODE3_CONTROL, quote=True)
-    return f"""
-<div class="wa-gateway-wrap"><div class="wa-gateway-inner">
-  <p class="wa-galadima-header">Galadima Center</p>
-  <p class="wa-gateway-sub">Executive WhatsApp Gateway</p>
-  <div class="wa-gateway-btn-stack">
-    <a class="wa-sidebar-wa-link" href="{u0}" target="_blank" rel="noopener noreferrer">SEND BRIEFING · NODE 0 (Chairman)</a>
-    <a class="wa-sidebar-wa-link" href="{u1}" target="_blank" rel="noopener noreferrer">SEND BRIEFING · NODE 1 (Executive)</a>
-    <a class="wa-sidebar-wa-link" href="{u2}" target="_blank" rel="noopener noreferrer">SEND BRIEFING · NODE 2 (Validator)</a>
-    <a class="wa-sidebar-wa-link" href="{u3}" target="_blank" rel="noopener noreferrer">SEND BRIEFING · NODE 3 (Control)</a>
-  </div>
-  <p class="wa-safety-protocol">Safety: these four nodes are the only active outbound briefing targets until you manually authorize &quot;PUSH TO 1.5M NODES&quot;.</p>
-  <p class="wa-env-hint">WhatsApp targets are fixed in source (no env override).</p>
-</div></div>
-"""
 
 NAVY_DEEP = "#000033"
 GOLD = "#D4AF37"
@@ -633,6 +649,57 @@ MASTER_2027 = _zone_2027_projection(
 )
 
 
+def _executive_dashboard_summary_plain() -> str:
+    """Pre-formatted WhatsApp body: 1.5M dashboard + Victory Donut projection figures."""
+    m = MASTER_2027
+    return (
+        "CIEN KADUNA 2027 · 1.5M DASHBOARD SUMMARY\n"
+        "Galadiman Ruwa Center (GCSLC) — Executive Gateway\n\n"
+        f"• Command target / DB lock: {KADUNA_VOTER_TARGET:,} verified records\n"
+        f"• PU lattice: {PU_COUNT_KADUNA:,} nodes · D3 lock: {VOTERS_PER_PU_D3_REQUIREMENT} voters/PU\n"
+        f"• Consolidation constant: {CONSOLIDATION_CONSTANT:,}\n"
+        "• Victory Donut (2027 projection): APC 1.5M anchor vs opposition nodes\n"
+        f"  – PDP (projected): {m['PDP']:,}\n"
+        f"  – LP (projected): {m['LP']:,}\n"
+        f"  – APC (projected baseline): {m['APC']:,}\n"
+        f"• 1.5M density factor: ×{DENSITY_FACTOR:.4f}\n"
+        f"• LGA command grid: {LGA_TARGET} LGAs · majority path {LGA_MAJORITY_NEED}/{LGA_TARGET}\n"
+        "• OLED command UI: #121212 matte · monospace gold + cyan pulse\n\n"
+        "Acknowledge when read — operational cadence only."
+    )
+
+
+def _executive_handshake_gateway_sidebar_html() -> str:
+    """Three cyan-pulsing wa.me links — same 1.5M dashboard text; node-specific destination."""
+    enc = urllib.parse.quote(_executive_dashboard_summary_plain(), safe="")
+    parts: list[str] = []
+    for i, e in enumerate(EXECUTIVE_HANDSHAKE_MAP):
+        url = f"https://wa.me/{e['wa_me_id']}?text={enc}"
+        delay = f"{i * 0.22}s"
+        crest = html.escape(f"NODE {e['node_id']} · {e['pillar'].upper()}")
+        nm = html.escape(e["name"])
+        lab = html.escape(e["label"])
+        parts.append(
+            f'<a class="exec-wa-pulse-btn" style="animation-delay:{delay}" '
+            f'href="{html.escape(url, quote=True)}" target="_blank" rel="noopener noreferrer">'
+            f'<span class="exec-wa-line exec-wa-crest">{crest}</span>'
+            f'<span class="exec-wa-line exec-wa-name">{nm}</span>'
+            f'<span class="exec-wa-line exec-wa-role">{lab}</span>'
+            '<span class="exec-wa-line exec-wa-cta">WHATSAPP · 1.5M DASHBOARD SUMMARY</span>'
+            "</a>"
+        )
+    stack = "".join(parts)
+    return (
+        '<div class="exec-handshake-wrap"><div class="exec-handshake-inner">'
+        '<p class="exec-handshake-title">EXECUTIVE GATEWAY · VICTORY DONUT</p>'
+        '<p class="exec-handshake-sub">Hard-wired handshake map · tap any node to open WhatsApp with the full '
+        "1.5M dashboard summary (paired with the main Victory Donut command target).</p>"
+        f'<div class="exec-wa-btn-stack">{stack}</div>'
+        '<p class="exec-handshake-foot">Sovereign lane · matte #121212 · monospace gold</p>'
+        "</div></div>"
+    )
+
+
 def _html_sovereign_roller_ticker(rolled: int) -> str:
     """High-velocity scrolling lines: Ward/LGA rollups + KADUNA_Data_2027 lake path."""
     vdf = _load_voter_db(str(VOTER_DB_CSV))
@@ -774,6 +841,31 @@ _CSS = """
   0% { background-position: 0% 50%; box-shadow: 0 0 12px rgba(74, 222, 128, 0.35); }
   50% { background-position: 100% 50%; box-shadow: 0 0 24px rgba(34, 197, 94, 0.65); }
   100% { background-position: 200% 50%; box-shadow: 0 0 14px rgba(74, 222, 128, 0.45); }
+}
+@keyframes verify-node-pulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 8px rgba(255, 215, 0, 0.45), 0 0 2px rgba(0, 229, 255, 0.55); filter: brightness(1); }
+  50% { transform: scale(1.06); box-shadow: 0 0 18px rgba(0, 229, 255, 0.65), 0 0 6px rgba(255, 215, 0, 0.55); filter: brightness(1.12); }
+}
+@keyframes exec-wa-cyan-pulse {
+  0%, 100% {
+    border-color: rgba(0, 229, 255, 0.45) !important;
+    box-shadow: 0 0 8px rgba(0, 229, 255, 0.35), inset 0 0 0 1px rgba(255, 215, 0, 0.12);
+    color: #00E5FF !important;
+  }
+  50% {
+    border-color: rgba(255, 215, 0, 0.55) !important;
+    box-shadow: 0 0 18px rgba(0, 229, 255, 0.55), 0 0 8px rgba(255, 215, 0, 0.25);
+    color: #7df9ff !important;
+  }
+}
+@keyframes victory-donut-ring-shimmer {
+  0% { background-position: 0% 50%; box-shadow: 0 0 14px rgba(255, 215, 0, 0.35), 0 0 8px rgba(0, 229, 255, 0.25); }
+  50% { background-position: 100% 50%; box-shadow: 0 0 28px rgba(0, 229, 255, 0.55), 0 0 18px rgba(255, 215, 0, 0.45); }
+  100% { background-position: 200% 50%; box-shadow: 0 0 16px rgba(255, 215, 0, 0.4), 0 0 10px rgba(0, 229, 255, 0.35); }
+}
+@keyframes victory-donut-gold-breathe {
+  0%, 100% { filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.45)); }
+  50% { filter: drop-shadow(0 0 16px rgba(255, 215, 0, 0.85)) drop-shadow(0 0 8px rgba(0, 229, 255, 0.45)); }
 }
 
 /* Sidebar — Matte Charcoal + high-contrast gold / bright cyan (S24 / no ghosting) */
@@ -1530,7 +1622,7 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   box-shadow: inset 0 0 12px rgba(255, 215, 0, 0.06);
 }
 .logistics-feed-track {
-  animation: logistics-feed-scroll 22s linear infinite;
+  animation: logistics-feed-scroll 5s linear infinite;
 }
 .logistics-line {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
@@ -1575,29 +1667,81 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
 }
 .lt-sep { color: rgba(255, 215, 0, 0.38) !important; padding: 0 0.15rem; }
 
-.performance-anchor-wrap {
+.live-achievement-wrap {
   background: #121212 !important;
   border: 1px solid rgba(255, 215, 0, 0.28);
   border-radius: 10px;
-  padding: 0.48rem 0.55rem 0.55rem 0.55rem;
+  padding: 0.48rem 0.5rem 0.55rem 0.5rem;
   margin: 0.55rem 0 0.4rem 0;
 }
-.performance-anchor-title {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
-  color: #FFD700 !important;
-  font-size: 0.62rem !important;
-  font-weight: 800 !important;
-  letter-spacing: 0.12em !important;
-  margin: 0 0 0.35rem 0 !important;
-  text-align: center !important;
+.live-achievement-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.35rem;
+  margin-bottom: 0.35rem;
 }
-.performance-anchor-line {
+.live-achievement-title {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
   color: #FFD700 !important;
   font-size: 0.58rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.1em !important;
+  margin: 0 !important;
+  flex: 1 1 auto;
+  line-height: 1.35 !important;
+}
+.live-achievement-verify {
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+  flex-shrink: 0;
+}
+.live-verify-img {
+  width: 38px;
+  height: 38px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 229, 255, 0.45);
+  background: #0a0a0a;
+  animation: verify-node-pulse 2.4s ease-in-out infinite;
+}
+.live-verify-img:nth-child(2) {
+  animation-delay: 0.45s;
+}
+.live-verify-fallback {
+  display: inline-flex;
+  width: 38px;
+  height: 38px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px dashed rgba(255, 215, 0, 0.35);
+  color: #00E5FF !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-size: 0.55rem !important;
+  font-weight: 800 !important;
+  background: #0a0a0a;
+  animation: verify-node-pulse 2.4s ease-in-out infinite;
+}
+.live-achievement-line {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  color: #FFD700 !important;
+  font-size: 0.56rem !important;
   font-weight: 700 !important;
-  line-height: 1.4 !important;
-  margin: 0.18rem 0 !important;
+  line-height: 1.45 !important;
+  margin: 0.2rem 0 !important;
+  padding-left: 0.1rem;
+  border-left: 2px solid rgba(0, 229, 255, 0.35);
+}
+.live-achievement-sub {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  color: #00E5FF !important;
+  font-size: 0.5rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  margin: 0.35rem 0 0 0 !important;
+  opacity: 0.92 !important;
 }
 
 .polling-prism-wrap {
@@ -1747,6 +1891,103 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   text-shadow: none !important;
   border-top: 1px solid rgba(255, 215, 0, 0.2);
   padding-top: 0.45rem !important;
+}
+
+/* Executive handshake — three cyan-pulsing WhatsApp gateways (sidebar, #121212) */
+.exec-handshake-wrap {
+  border-radius: 12px;
+  padding: 2px;
+  background: linear-gradient(120deg, #121212, #00E5FF, #FFD700, #121212);
+  background-size: 260% 100%;
+  animation: victory-donut-ring-shimmer 4.5s ease-in-out infinite;
+  margin: 0.55rem 0 0.45rem 0;
+}
+.exec-handshake-inner {
+  background: #121212 !important;
+  border-radius: 10px;
+  padding: 0.52rem 0.5rem 0.58rem 0.5rem;
+  border: 1px solid rgba(0, 229, 255, 0.28);
+}
+.exec-handshake-title {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  color: #FFD700 !important;
+  font-size: 0.58rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.1em !important;
+  text-align: center !important;
+  margin: 0 0 0.32rem 0 !important;
+  line-height: 1.35 !important;
+}
+.exec-handshake-sub {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  color: rgba(255, 215, 0, 0.88) !important;
+  font-size: 0.52rem !important;
+  font-weight: 700 !important;
+  line-height: 1.42 !important;
+  margin: 0 0 0.42rem 0 !important;
+  text-align: center !important;
+}
+.exec-handshake-foot {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  color: rgba(0, 229, 255, 0.75) !important;
+  font-size: 0.48rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  text-align: center !important;
+  margin: 0.38rem 0 0 0 !important;
+}
+.exec-wa-btn-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.38rem;
+  align-items: stretch;
+  width: 100%;
+}
+[data-testid="stSidebar"] .exec-wa-pulse-btn {
+  display: block !important;
+  text-decoration: none !important;
+  border-radius: 9px !important;
+  padding: 0.4rem 0.48rem !important;
+  text-align: center !important;
+  background: rgba(10, 10, 10, 0.98) !important;
+  border: 1px solid rgba(0, 229, 255, 0.45) !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  animation: exec-wa-cyan-pulse 2.35s ease-in-out infinite !important;
+}
+[data-testid="stSidebar"] .exec-wa-pulse-btn:hover {
+  border-color: rgba(255, 215, 0, 0.55) !important;
+  color: #FFD700 !important;
+}
+.exec-wa-line {
+  display: block !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  line-height: 1.32 !important;
+}
+.exec-wa-crest {
+  color: #FFD700 !important;
+  font-size: 0.54rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.08em !important;
+}
+.exec-wa-name {
+  color: #FFD700 !important;
+  font-size: 0.62rem !important;
+  font-weight: 800 !important;
+  margin-top: 0.12rem !important;
+}
+.exec-wa-role {
+  color: rgba(0, 229, 255, 0.92) !important;
+  font-size: 0.56rem !important;
+  font-weight: 700 !important;
+  margin-top: 0.08rem !important;
+}
+.exec-wa-cta {
+  color: #00E5FF !important;
+  font-size: 0.5rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.1em !important;
+  margin-top: 0.18rem !important;
 }
 
 /* 20.7M buffer — gold on matte black (OLED) */
@@ -2287,19 +2528,20 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
 .clinical-2027-gauge-wrap {
   border-radius: 14px;
   padding: 3px;
-  background: linear-gradient(120deg, #121212, #22C55E, #4ADE80, #121212);
+  background: linear-gradient(120deg, #121212, #FFD700, #00E5FF, #121212);
   background-size: 240% 100%;
-  animation: clinical-2027-green-shimmer 2.8s ease-in-out infinite;
+  animation: victory-donut-ring-shimmer 2.8s ease-in-out infinite;
   margin-top: 0.55rem;
 }
 .clinical-2027-gauge-inner {
   background: #121212 !important;
   border-radius: 11px;
   padding: 0.45rem 0.5rem 0.55rem 0.5rem;
-  border: 1px solid rgba(74, 222, 128, 0.35);
+  border: 1px solid rgba(0, 229, 255, 0.35);
 }
 .clinical-2027-gauge-inner .stPlotlyChart {
   margin-bottom: 0 !important;
+  animation: victory-donut-gold-breathe 2.6s ease-in-out infinite;
 }
 .sov-trend-inner h3 {
   font-family: 'Goldman', sans-serif !important;
@@ -2656,13 +2898,38 @@ def _render_kaduna_lake_virtualized_expander() -> None:
             st.caption(f"Lake index pull {elapsed:.2f}s — loading shimmer shown while indexing.")
 
 
-def _performance_anchor_sidebar_html() -> str:
+def _live_achievement_monitor_sidebar_html() -> str:
+    """Uba Sani Hospital Pulse — verification thumbnails + achievement lines (OLED / #121212)."""
+    imgs_html: list[str] = []
+    for i, name in enumerate(VERIFY_IMG_NAMES):
+        p = _resolve_verification_png(name)
+        if p is not None:
+            try:
+                uri = _png_data_uri(p)
+                delay = "0s" if i == 0 else "0.45s"
+                imgs_html.append(
+                    f'<img class="live-verify-img" style="animation-delay:{delay}" '
+                    f'src="{html.escape(uri, quote=True)}" alt="" />'
+                )
+            except OSError:
+                imgs_html.append('<span class="live-verify-fallback" title="Add image_0.png">◇</span>')
+        else:
+            tag = "0" if i == 0 else "1"
+            imgs_html.append(
+                f'<span class="live-verify-fallback" title="Place {html.escape(name)} in assets/">V{tag}</span>'
+            )
+    verify_col = '<div class="live-achievement-verify">' + "".join(imgs_html) + "</div>"
     return (
-        '<div class="performance-anchor-wrap">'
-        '<p class="performance-anchor-title">PERFORMANCE ANCHOR (2023-DATE)</p>'
-        '<p class="performance-anchor-line">EDUCATION: 104 SCHOOLS</p>'
-        '<p class="performance-anchor-line">HEALTH: 255 PHCs SYNC</p>'
-        '<p class="performance-anchor-line">AGRO: 900 FERTILIZER TRUCKS</p>'
+        '<div class="live-achievement-wrap">'
+        '<div class="live-achievement-head">'
+        '<p class="live-achievement-title">LIVE ACHIEVEMENT MONITOR (2023-DATE)<br/>'
+        "<span style=\"color:#00E5FF;font-weight:800;\">Uba Sani Hospital Pulse</span></p>"
+        f"{verify_col}"
+        "</div>"
+        '<p class="live-achievement-line">Bola Tinubu Specialist Hospital (300 Beds)</p>'
+        '<p class="live-achievement-line">23 LGAs Road Projects (785km)</p>'
+        '<p class="live-achievement-line">300k Children Back in School</p>'
+        '<p class="live-achievement-sub">Visual verification nodes · pulse active</p>'
         "</div>"
     )
 
@@ -2969,7 +3236,7 @@ def _build_logistics_feed_html(df: pd.DataFrame, n_lines: int = 28) -> str:
     return rail + f'<div class="logistics-feed-outer"><div class="logistics-feed-track">{dup}</div></div>'
 
 
-@st.fragment(run_every=timedelta(seconds=4))
+@st.fragment(run_every=timedelta(seconds=5))
 def _render_live_outreach_panel() -> None:
     ph = st.empty()
     ph.markdown(_command_loading_shimmer_html(), unsafe_allow_html=True)
@@ -3053,57 +3320,103 @@ def _render_outreach_velocity_block() -> None:
     st.markdown("</div>", unsafe_allow_html=True)
 
 
+def _victory_donut_figure() -> go.Figure:
+    """
+    Victory Donut: 1.5M verified database anchor vs consolidated 2027 opposition nodes
+    (MASTER_2027 PDP/LP + micro ADC/SDP tail). OLED: #121212, monospace gold + cyan.
+    """
+    m = MASTER_2027
+    mono = "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace"
+    apc_anchor = int(KADUNA_VOTER_TARGET)
+    pdp_v = int(m["PDP"])
+    lp_v = int(m["LP"])
+    adc_v = max(1, pdp_v // 88)
+    sdp_v = max(1, lp_v // 42)
+    labels = [
+        "APC · 1.5M DB lock",
+        "PDP",
+        "LP",
+        "ADC",
+        "SDP",
+    ]
+    values = [apc_anchor, pdp_v, lp_v, adc_v, sdp_v]
+    colors = ["#FFD700", "#00B8D9", "#5EEAD4", "#8899AA", "#64748B"]
+    pull = [0.0, 0.07, 0.07, 0.14, 0.14]
+    fig = go.Figure(
+        data=[
+            go.Pie(
+                labels=labels,
+                values=values,
+                hole=0.58,
+                sort=False,
+                direction="clockwise",
+                rotation=68,
+                pull=pull,
+                domain=dict(x=[0.02, 0.62], y=[0.08, 0.92]),
+                marker=dict(colors=colors, line=dict(color="#121212", width=2)),
+                textinfo="none",
+                hovertemplate="<b>%{label}</b><br>%{value:,} votes · %{percent}<extra></extra>",
+            )
+        ]
+    )
+    fig.update_layout(
+        title=dict(
+            text="Victory Donut · 2027 Command Target<br><sup>1.5M DB anchor vs zone-projected opposition (PDP · LP · micro)</sup>",
+            font=dict(family=mono, size=13, color="#FFD700"),
+        ),
+        paper_bgcolor="#121212",
+        plot_bgcolor="#121212",
+        font=dict(family=mono, color="#FFD700"),
+        uniformtext=dict(minsize=8, mode="hide"),
+        showlegend=True,
+        legend=dict(
+            orientation="v",
+            yanchor="middle",
+            y=0.5,
+            x=0.645,
+            xanchor="left",
+            font=dict(family=mono, size=10, color="#FFD700"),
+            bgcolor="rgba(18,18,18,0.9)",
+            bordercolor="rgba(0,229,255,0.28)",
+            borderwidth=1,
+        ),
+        margin=dict(t=56, b=20, l=8, r=8),
+        height=300,
+        annotations=[
+            dict(
+                text=(
+                    f"<b style='color:#FFD700;font-size:18px'>{KADUNA_VOTER_TARGET:,}</b><br>"
+                    "<span style='color:#00E5FF;font-size:9px;letter-spacing:0.14em'>COMMAND · DB</span>"
+                ),
+                x=0.32,
+                y=0.5,
+                xref="paper",
+                yref="paper",
+                xanchor="center",
+                yanchor="middle",
+                showarrow=False,
+            )
+        ],
+    )
+    return fig
+
+
 def _render_2027_kaduna_anchor_gauge() -> None:
-    """High-velocity clinical gauge: 1.5M Kaduna anchor ↔ 8,012 PUs ↔ 187 voters/PU."""
+    """2027 Command Target → Victory Donut (1.5M anchor vs consolidated opposition nodes)."""
     st.markdown(
         '<div class="clinical-2027-gauge-wrap"><div class="clinical-2027-gauge-inner">',
         unsafe_allow_html=True,
     )
-    fig = go.Figure(
-        go.Indicator(
-            mode="gauge+number",
-            value=CONSOLIDATION_CONSTANT,
-            number={
-                "valueformat": ",d",
-                "font": {"size": 30, "color": "#4ADE80", "family": "Goldman"},
-            },
-            title={
-                "text": "2027 KADUNA ANCHOR<br><sup>8,012 PU nodes · 187 voters / PU</sup>",
-                "font": {"size": 13, "color": GOLD, "family": "Goldman"},
-            },
-            gauge={
-                "axis": {"range": [0, 2_000_000], "tickwidth": 1, "tickcolor": "rgba(74,222,128,0.55)"},
-                "bar": {"color": "#22C55E"},
-                "bgcolor": "rgba(18,18,18,0.95)",
-                "borderwidth": 1,
-                "bordercolor": "rgba(74, 222, 128, 0.45)",
-                "steps": [
-                    {"range": [0, CONSOLIDATION_CONSTANT], "color": "rgba(34, 197, 94, 0.2)"},
-                ],
-                "threshold": {
-                    "line": {"color": "#FFD700", "width": 3},
-                    "thickness": 0.88,
-                    "value": CONSOLIDATION_CONSTANT,
-                },
-            },
-        )
-    )
-    fig.update_layout(
-        height=268,
-        paper_bgcolor="#121212",
-        plot_bgcolor="#121212",
-        margin=dict(t=52, b=8, l=20, r=20),
-        font=dict(family="Goldman", color=GOLD),
-    )
     st.plotly_chart(
-        fig,
+        _victory_donut_figure(),
         use_container_width=True,
-        key="cien_kaduna_anchor_2027_gauge",
+        key="cien_kaduna_anchor_2027_victory_donut",
         config={"displayModeBar": False, "responsive": True},
     )
     st.caption(
-        f"Clinical formula: {CONSOLIDATION_CONSTANT:,} total target ÷ {PU_COUNT_KADUNA:,} PUs = "
-        f"{VOTERS_PER_PU_D3_REQUIREMENT} voters per PU (command lock)"
+        f"OLED lock · Matte #121212 · 1.5M database anchor vs MASTER_2027 opposition "
+        f"(density ×{DENSITY_FACTOR:.4f}) · {CONSOLIDATION_CONSTANT:,} ÷ {PU_COUNT_KADUNA:,} PUs = "
+        f"{VOTERS_PER_PU_D3_REQUIREMENT} voters/PU"
     )
     st.markdown("</div></div>", unsafe_allow_html=True)
 
@@ -3919,8 +4232,8 @@ def main() -> None:
             }
         _render_sentiment_sidebar()
         st.markdown("</div></div>", unsafe_allow_html=True)
-        st.markdown(_executive_wa_gateway_sidebar_html(), unsafe_allow_html=True)
-        st.markdown(_performance_anchor_sidebar_html(), unsafe_allow_html=True)
+        st.markdown(_live_achievement_monitor_sidebar_html(), unsafe_allow_html=True)
+        st.markdown(_executive_handshake_gateway_sidebar_html(), unsafe_allow_html=True)
         _render_kaduna_lake_virtualized_expander()
         st.markdown(
             '<div class="sidebar-handshake" style="margin-top:0.5rem">'
