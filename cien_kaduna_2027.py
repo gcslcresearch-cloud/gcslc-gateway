@@ -153,30 +153,21 @@ def _migrate_mc_channels_session() -> None:
         if m in CHANNEL_OPTIONS and m not in seen:
             seen.add(m)
             out.append(m)
-    st.session_state["cien_mc_channels"] = out or list(CHANNEL_OPTIONS)
+    st.session_state["cien_mc_channels"] = out
 
 
-def _channel_lane_tiles_html(selected: list[str] | None) -> str:
-    """Broadcast Switchboard lane cards — cyan border/glow when lane is selected (multiselect)."""
-    if not isinstance(selected, list):
-        selected = list(CHANNEL_OPTIONS)
-    sel = set(selected)
-
-    def one(option: str, emoji: str, title: str, sub: str) -> str:
-        active = " channel-lane-tile-active" if option in sel else ""
-        return (
-            f'<div class="channel-lane-tile{active}">'
-            f'<span class="channel-lane-emoji" aria-hidden="true">{emoji}</span>'
-            f'<span class="channel-lane-title">{html.escape(title)}</span>'
-            f'<span class="channel-lane-sub">{html.escape(sub)}</span></div>'
-        )
-
-    inner = (
-        one(CHANNEL_OPTION_PRIVATE, "📱", "SMS / WA", "The Private Strike")
-        + one(CHANNEL_OPTION_GRASSROOTS, "🎥", "Grassroots", "TikTok · FB · IG")
-        + one(CHANNEL_OPTION_SOVEREIGN, "🏛️", "Sovereign", "X · LinkedIn")
-    )
-    return f'<div class="channel-lane-icons-row">{inner}</div>'
+def _toggle_strike_lane(option: str) -> None:
+    """Multi-select toggle for broadcast strike lanes (session-backed)."""
+    if option not in CHANNEL_OPTIONS:
+        return
+    cur = st.session_state.get("cien_mc_channels")
+    if not isinstance(cur, list):
+        cur = []
+    cur = [x for x in cur if isinstance(x, str) and x in CHANNEL_OPTIONS]
+    if option in cur:
+        st.session_state["cien_mc_channels"] = [x for x in cur if x != option]
+    else:
+        st.session_state["cien_mc_channels"] = cur + [option]
 
 
 def _format_reminder_for_lane(channel: str, raw: str) -> str:
@@ -2088,6 +2079,17 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   letter-spacing: 0.08em;
 }
 
+@keyframes lane-cyan-pulse {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(0, 229, 255, 0.38), inset 0 0 0 1px rgba(255, 215, 0, 0.08);
+    border-color: #00E5FF !important;
+  }
+  50% {
+    box-shadow: 0 0 22px rgba(0, 229, 255, 0.62), inset 0 0 0 1px rgba(255, 215, 0, 0.12);
+    border-color: #7df9ff !important;
+  }
+}
+
 /* Channel selector — matte #121212, bold gold labels (S24 / OLED) */
 .channel-strike-board {
   background: #121212 !important;
@@ -2096,52 +2098,77 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   padding: 0.45rem 0.5rem 0.55rem 0.5rem;
   margin: 0.35rem 0 0.45rem 0;
 }
-.channel-lane-icons-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 0.35rem;
-  margin: 0 0 0.45rem 0;
+.strike-lane-heading {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  color: #FFD700 !important;
+  font-size: 0.56rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.1em !important;
+  text-align: center !important;
+  margin: 0 0 0.35rem 0 !important;
+  line-height: 1.35 !important;
 }
-.channel-lane-tile {
+/* Clickable lane toggles: idle = red border, primed = pulsing cyan (#00E5FF) */
+.broadcast-lane-mark {
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+.broadcast-lane-mark + div [data-testid="column"] button {
+  min-height: 4.85rem !important;
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
   background: #121212 !important;
-  border: 1px solid rgba(212, 175, 55, 0.42);
-  border-radius: 8px;
-  padding: 0.38rem 0.32rem;
-  text-align: center;
-  font-family: 'Goldman', sans-serif !important;
-}
-.channel-lane-emoji {
-  font-size: 1.15rem;
-  line-height: 1.2;
-  display: block;
-  margin-bottom: 0.12rem;
-}
-.channel-lane-title {
   color: #FFD700 !important;
   font-weight: 800 !important;
-  font-size: 0.62rem !important;
-  letter-spacing: 0.04em;
-  line-height: 1.25;
-  display: block;
+  font-family: 'Goldman', sans-serif !important;
+  white-space: pre-line !important;
+  line-height: 1.3 !important;
+  border-radius: 10px !important;
+  border: 2px solid rgba(239, 68, 68, 0.72) !important;
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.45) !important;
 }
-.channel-lane-sub {
-  color: rgba(255, 215, 0, 0.78) !important;
-  font-weight: 700 !important;
-  font-size: 0.56rem !important;
-  margin-top: 0.08rem;
-  line-height: 1.2;
-  display: block;
-}
-.channel-lane-tile-active {
+.broadcast-lane-mark + div [data-testid="column"] [data-testid="baseButton-primary"],
+.broadcast-lane-mark + div [data-testid="column"] [data-testid="stBaseButton-primary"] {
   border: 2px solid #00E5FF !important;
-  box-shadow:
-    0 0 14px rgba(0, 229, 255, 0.48),
-    0 0 6px rgba(0, 229, 255, 0.22),
-    inset 0 0 0 1px rgba(255, 215, 0, 0.14) !important;
-}
-[data-testid="stSidebar"] .channel-lane-tile-active .channel-lane-title {
+  animation: lane-cyan-pulse 2.1s ease-in-out infinite !important;
   color: #FFD700 !important;
-  text-shadow: 0 0 10px rgba(0, 229, 255, 0.42);
+  background: #121212 !important;
+}
+[data-testid="stSidebar"] .chairman-reminder-active textarea {
+  background: #1a1a1a !important;
+  color: #FFD700 !important;
+  -webkit-text-fill-color: #FFD700 !important;
+  caret-color: #00E5FF !important;
+  border: 1px solid rgba(255, 215, 0, 0.52) !important;
+  opacity: 1 !important;
+  font-weight: 600 !important;
+}
+[data-testid="stSidebar"] .chairman-reminder-active [data-testid="stWidgetLabel"] label,
+[data-testid="stSidebar"] .chairman-reminder-active [data-testid="stWidgetLabel"] span {
+  color: #FFD700 !important;
+  font-weight: 800 !important;
+}
+.broadcast-authority-actions {
+  margin: 0.4rem 0 0.25rem 0;
+}
+.broadcast-authority-actions [data-testid="column"] button {
+  min-height: 3.15rem !important;
+  border-width: 3px !important;
+  border-radius: 11px !important;
+  font-weight: 900 !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  letter-spacing: 0.07em !important;
+  background: #121212 !important;
+  color: #FFD700 !important;
+  border-color: #FFD700 !important;
+  box-shadow: 0 0 14px rgba(255, 215, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+}
+.broadcast-authority-actions [data-testid="column"] button:hover {
+  border-color: #00E5FF !important;
+  color: #00E5FF !important;
+  box-shadow: 0 0 18px rgba(0, 229, 255, 0.28) !important;
 }
 [data-testid="stSidebar"] .execute-master-strike-wrap {
   margin-top: 0.45rem;
@@ -4261,6 +4288,177 @@ def _render_executive_variance_forensic() -> None:
     st.markdown("</div>", unsafe_allow_html=True)
 
 
+@st.fragment()
+def _render_broadcast_switchboard_kinetics_fragment() -> None:
+    """
+    Broadcast Switchboard: clickable strike-lane toggles, Chairman reminder, dual-track payloads,
+    multi-channel preview, authority actions. Fragment reruns on local interaction without full-page refresh.
+    """
+    st.markdown("<h4>Broadcast Switchboard</h4>", unsafe_allow_html=True)
+    st.caption("CSV payload")
+    st.markdown(
+        f'<p class="csv-payload-compact"><code>{html.escape(VOTER_DB_CSV.name)}</code></p>',
+        unsafe_allow_html=True,
+    )
+    st.markdown('<div class="channel-strike-board">', unsafe_allow_html=True)
+    st.markdown(
+        '<p class="strike-lane-heading">Strike lanes · tap tiles to toggle (multi-select)</p>',
+        unsafe_allow_html=True,
+    )
+    st.markdown('<div class="broadcast-lane-mark broadcast-lane-toggle-grid"></div>', unsafe_allow_html=True)
+    _mc_raw = st.session_state.get("cien_mc_channels")
+    _sel = set(_mc_raw if isinstance(_mc_raw, list) else [])
+    _lc1, _lc2, _lc3 = st.columns(3)
+    with _lc1:
+        _primed = CHANNEL_OPTION_PRIVATE in _sel
+        if st.button(
+            "📱 SMS / WA\n(The Private Strike)"
+            + ("\n── PRIMED ──" if _primed else "\nTap to select"),
+            key="cien_strike_toggle_private",
+            use_container_width=True,
+            type="primary" if _primed else "secondary",
+        ):
+            _toggle_strike_lane(CHANNEL_OPTION_PRIVATE)
+    with _lc2:
+        _primed = CHANNEL_OPTION_GRASSROOTS in _sel
+        if st.button(
+            "🎥 Grassroots\n(TikTok · FB · IG)"
+            + ("\n── PRIMED ──" if _primed else "\nTap to select"),
+            key="cien_strike_toggle_grass",
+            use_container_width=True,
+            type="primary" if _primed else "secondary",
+        ):
+            _toggle_strike_lane(CHANNEL_OPTION_GRASSROOTS)
+    with _lc3:
+        _primed = CHANNEL_OPTION_SOVEREIGN in _sel
+        if st.button(
+            "🏛️ Sovereign\n(X · LinkedIn)"
+            + ("\n── PRIMED ──" if _primed else "\nTap to select"),
+            key="cien_strike_toggle_sov",
+            use_container_width=True,
+            type="primary" if _primed else "secondary",
+        ):
+            _toggle_strike_lane(CHANNEL_OPTION_SOVEREIGN)
+    st.caption("Idle = red border · PRIMED = pulsing cyan (#00E5FF).")
+    st.markdown("</div>", unsafe_allow_html=True)
+    st.session_state.setdefault("cien_sender_id", DEFAULT_SENDER_ID)
+    _sid_live = str(st.session_state.get("cien_sender_id", DEFAULT_SENDER_ID)).strip()
+    _sender_glow = " sender-id-gold-glow-active" if _sid_live == DEFAULT_SENDER_ID else ""
+    st.markdown(
+        f'<div class="sender-id-gold-glow-wrap{_sender_glow}">',
+        unsafe_allow_html=True,
+    )
+    st.text_input(
+        "Sender ID (SMS lock)",
+        key="cien_sender_id",
+        max_chars=32,
+        help=f"Default {DEFAULT_SENDER_ID!r}. Gold glow = active sender lock for SMS Slot A.",
+    )
+    st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown('<div class="chairman-reminder-active">', unsafe_allow_html=True)
+    st.text_area(
+        "Chairman Reminder (Master Election Day)",
+        key="cien_master_reminder",
+        height=80,
+        placeholder="Type here — field is live; wallet & master strike appear after your first character.",
+    )
+    st.markdown("</div>", unsafe_allow_html=True)
+    _rem = (st.session_state.get("cien_master_reminder") or "").strip()
+    _has_chars = len(st.session_state.get("cien_master_reminder") or "") >= 1
+    _sid_for_payload = str(st.session_state.get("cien_sender_id", DEFAULT_SENDER_ID)).strip() or DEFAULT_SENDER_ID
+    _slot_a = _build_dual_track_slot_a_sms_single_bubble(_rem, _sid_for_payload) if _rem else ""
+    _slot_b = _build_dual_track_slot_b_whatsapp_high_fidelity(_rem) if _rem else ""
+    st.markdown('<div class="dual-track-payload-wrap">', unsafe_allow_html=True)
+    st.markdown(
+        '<p class="dual-track-payload-title">DUAL-TRACK PAYLOAD ENGINE</p>',
+        unsafe_allow_html=True,
+    )
+    st.markdown("**Slot A · SMS** — Single bubble (compressed)")
+    if _slot_a:
+        st.code(_slot_a, language=None)
+        _enc_a, _lim_a = _sms_payload_encoding_and_limit(_slot_a)
+        st.caption(f"Segment: {_enc_a} · limit {_lim_a} chars · current {len(_slot_a)}")
+        if len(_slot_a) > _lim_a:
+            st.warning(
+                f"Slot A (SMS_Payload) exceeds {_lim_a} characters ({_enc_a}). "
+                f"Current length: {len(_slot_a)}. Shorten the Chairman reminder or trim for delivery."
+            )
+    else:
+        st.caption("Enter a Chairman reminder to generate Slot A.")
+    st.markdown("**Slot B · WhatsApp** — High-fidelity + hospital image")
+    if _slot_b:
+        st.code(_slot_b, language=None)
+        _hp_prev = _resolve_verification_png("image_0.png")
+        if _hp_prev is not None:
+            st.caption("Hospital / achievement preview — attach with Slot B sends")
+            st.image(str(_hp_prev), width=176)
+        else:
+            st.caption("Add `assets/image_0.png` for hospital image preview.")
+    else:
+        st.caption("Enter a Chairman reminder to generate Slot B.")
+    st.markdown("</div>", unsafe_allow_html=True)
+    _all_fm = _format_master_reminder_all_lanes(_rem)
+    with st.expander("Multi-channel payloads (preview)", expanded=bool(_rem)):
+        if not _rem:
+            st.caption("Type a reminder above to generate channel-ready copy.")
+        else:
+            st.caption("All three strike lanes — SMS/WA, Grassroots, Sovereign — formatted simultaneously.")
+            for lab, body in _all_fm.items():
+                st.markdown(
+                    f'<p class="payload-preview-head">{html.escape(lab)}</p>',
+                    unsafe_allow_html=True,
+                )
+                st.code(body, language=None)
+    try:
+        _wat = datetime.now(ZoneInfo("Africa/Lagos")).strftime("%H:%M %Z")
+    except Exception:
+        _wat = datetime.now().strftime("%H:%M local")
+    st.caption(
+        f"Executive verification: **06:00 WAT** (Africa/Lagos) — authority bar unlocks on first keystroke; "
+        f"06:00 push-ready when reminder has content. Dashboard time: {_wat}."
+    )
+    _exec_strike = False
+    if _has_chars and not _rem:
+        st.caption("Whitespace only — add substantive reminder text to populate Slot A / Slot B.")
+    if _has_chars:
+        st.markdown('<div class="broadcast-authority-actions">', unsafe_allow_html=True)
+        _aw1, _aw2 = st.columns(2)
+        with _aw1:
+            if st.button(
+                "Add Credits / Wallet",
+                key="cien_add_credits_wallet",
+                use_container_width=True,
+                help="Credits / wallet lane — finance reconciliation (broadcast kinetics).",
+            ):
+                st.session_state["cien_wallet_credit_request_t0"] = time.monotonic()
+                st.toast("Wallet / credits lane armed — finance sync queued.", icon="💳")
+        with _aw2:
+            st.markdown('<div class="execute-master-strike-wrap">', unsafe_allow_html=True)
+            _exec_strike = st.button(
+                "🚀 EXECUTE MASTER STRIKE",
+                key="cien_execute_master_strike",
+                use_container_width=True,
+                help=(
+                    "Requires Chairman reminder text. Armed for the 06:00 WAT (Africa/Lagos) executive push; "
+                    "fires broadcast kinetics for selected strike lanes (Slot A SMS + Slot B WhatsApp ready above)."
+                ),
+            )
+            st.markdown("</div>", unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+    if _exec_strike:
+        _lanes = st.session_state.get("cien_mc_channels")
+        _lane_txt = ", ".join(_lanes) if isinstance(_lanes, list) and _lanes else "—"
+        st.session_state["cien_last_master_strike_ts"] = time.monotonic()
+        st.session_state["cien_last_master_strike_reminder"] = _rem
+        st.session_state["cien_last_master_strike_sender"] = _sid_for_payload
+        st.session_state["cien_last_master_strike_slot_a"] = _slot_a
+        st.session_state["cien_last_master_strike_slot_b"] = _slot_b
+        st.success(
+            f"Master strike executed · 06:00 WAT push lane armed · sender `{_sid_for_payload}` · "
+            f"primed lanes: {_lane_txt}. Slot A/B payloads locked for outbound routing."
+        )
+
+
 def main() -> None:
     st.set_page_config(
         page_title="CIEN Kaduna 2027 · GCSLC",
@@ -4305,125 +4503,7 @@ def main() -> None:
             '<div class="polling-prism-wrap"><div class="polling-prism-inner broadcast-switchboard-inner">',
             unsafe_allow_html=True,
         )
-        st.markdown("<h4>Broadcast Switchboard</h4>", unsafe_allow_html=True)
-        st.caption("CSV payload")
-        st.markdown(
-            f'<p class="csv-payload-compact"><code>{html.escape(VOTER_DB_CSV.name)}</code></p>',
-            unsafe_allow_html=True,
-        )
-        st.markdown('<div class="channel-strike-board">', unsafe_allow_html=True)
-        st.markdown('<div class="channel-selector-gold-label">', unsafe_allow_html=True)
-        st.multiselect(
-            "Strike lanes (select active channels)",
-            CHANNEL_OPTIONS,
-            key="cien_mc_channels",
-            placeholder="Choose lanes for outbound routing",
-        )
-        st.markdown("</div>", unsafe_allow_html=True)
-        _mc_sel = st.session_state.get("cien_mc_channels")
-        st.markdown(
-            _channel_lane_tiles_html(_mc_sel if isinstance(_mc_sel, list) else None),
-            unsafe_allow_html=True,
-        )
-        st.caption("Active lanes: cyan border · primed for broadcast kinetics.")
-        st.markdown("</div>", unsafe_allow_html=True)
-        st.session_state.setdefault("cien_sender_id", DEFAULT_SENDER_ID)
-        _sid_live = str(st.session_state.get("cien_sender_id", DEFAULT_SENDER_ID)).strip()
-        _sender_glow = " sender-id-gold-glow-active" if _sid_live == DEFAULT_SENDER_ID else ""
-        st.markdown(
-            f'<div class="sender-id-gold-glow-wrap{_sender_glow}">',
-            unsafe_allow_html=True,
-        )
-        st.text_input(
-            "Sender ID (SMS lock)",
-            key="cien_sender_id",
-            max_chars=32,
-            help=f"Default {DEFAULT_SENDER_ID!r}. Gold glow = active sender lock for SMS Slot A.",
-        )
-        st.markdown("</div>", unsafe_allow_html=True)
-        st.text_area(
-            "Master Election Day Reminder",
-            key="cien_master_reminder",
-            height=80,
-            placeholder="Chairman reminder — preview below formats for all three strike lanes at once.",
-        )
-        _rem = (st.session_state.get("cien_master_reminder") or "").strip()
-        _sid_for_payload = str(st.session_state.get("cien_sender_id", DEFAULT_SENDER_ID)).strip() or DEFAULT_SENDER_ID
-        _slot_a = _build_dual_track_slot_a_sms_single_bubble(_rem, _sid_for_payload) if _rem else ""
-        _slot_b = _build_dual_track_slot_b_whatsapp_high_fidelity(_rem) if _rem else ""
-        st.markdown('<div class="dual-track-payload-wrap">', unsafe_allow_html=True)
-        st.markdown(
-            '<p class="dual-track-payload-title">DUAL-TRACK PAYLOAD ENGINE</p>',
-            unsafe_allow_html=True,
-        )
-        st.markdown("**Slot A · SMS** — Single bubble (compressed)")
-        if _slot_a:
-            st.code(_slot_a, language=None)
-            _enc_a, _lim_a = _sms_payload_encoding_and_limit(_slot_a)
-            st.caption(f"Segment: {_enc_a} · limit {_lim_a} chars · current {len(_slot_a)}")
-            if len(_slot_a) > _lim_a:
-                st.warning(
-                    f"Slot A (SMS_Payload) exceeds {_lim_a} characters ({_enc_a}). "
-                    f"Current length: {len(_slot_a)}. Shorten the Chairman reminder or trim for delivery."
-                )
-        else:
-            st.caption("Enter a Chairman reminder to generate Slot A.")
-        st.markdown("**Slot B · WhatsApp** — High-fidelity + hospital image")
-        if _slot_b:
-            st.code(_slot_b, language=None)
-            _hp_prev = _resolve_verification_png("image_0.png")
-            if _hp_prev is not None:
-                st.caption("Hospital / achievement preview — attach with Slot B sends")
-                st.image(str(_hp_prev), width=176)
-            else:
-                st.caption("Add `assets/image_0.png` for hospital image preview.")
-        else:
-            st.caption("Enter a Chairman reminder to generate Slot B.")
-        st.markdown("</div>", unsafe_allow_html=True)
-        _all_fm = _format_master_reminder_all_lanes(_rem)
-        with st.expander("Multi-channel payloads (preview)", expanded=bool(_rem)):
-            if not _rem:
-                st.caption("Type a reminder above to generate channel-ready copy.")
-            else:
-                st.caption("All three strike lanes — SMS/WA, Grassroots, Sovereign — formatted simultaneously.")
-                for lab, body in _all_fm.items():
-                    st.markdown(
-                        f'<p class="payload-preview-head">{html.escape(lab)}</p>',
-                        unsafe_allow_html=True,
-                    )
-                    st.code(body, language=None)
-        try:
-            _wat = datetime.now(ZoneInfo("Africa/Lagos")).strftime("%H:%M %Z")
-        except Exception:
-            _wat = datetime.now().strftime("%H:%M local")
-        st.caption(
-            f"Executive verification: **06:00 WAT** (Africa/Lagos) push window — strike is live when reminder "
-            f"text is set. Dashboard time: {_wat}."
-        )
-        st.markdown('<div class="execute-master-strike-wrap">', unsafe_allow_html=True)
-        _exec_strike = st.button(
-            "🚀 EXECUTE MASTER STRIKE",
-            disabled=not bool(_rem),
-            key="cien_execute_master_strike",
-            use_container_width=True,
-            help=(
-                "Requires Chairman reminder text. Armed for the 06:00 WAT (Africa/Lagos) executive push; "
-                "fires broadcast kinetics for selected strike lanes (Slot A SMS + Slot B WhatsApp ready above)."
-            ),
-        )
-        st.markdown("</div>", unsafe_allow_html=True)
-        if _exec_strike:
-            _lanes = st.session_state.get("cien_mc_channels")
-            _lane_txt = ", ".join(_lanes) if isinstance(_lanes, list) and _lanes else "—"
-            st.session_state["cien_last_master_strike_ts"] = time.monotonic()
-            st.session_state["cien_last_master_strike_reminder"] = _rem
-            st.session_state["cien_last_master_strike_sender"] = _sid_for_payload
-            st.session_state["cien_last_master_strike_slot_a"] = _slot_a
-            st.session_state["cien_last_master_strike_slot_b"] = _slot_b
-            st.success(
-                f"Master strike executed · 06:00 WAT push lane armed · sender `{_sid_for_payload}` · "
-                f"primed lanes: {_lane_txt}. Slot A/B payloads locked for outbound routing."
-            )
+        _render_broadcast_switchboard_kinetics_fragment()
         _render_opposition_threat_radar_sidebar()
         st.text_area(
             "Broadcast Strategic Question",
