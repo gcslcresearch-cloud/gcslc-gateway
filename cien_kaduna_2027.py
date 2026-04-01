@@ -24,6 +24,21 @@ BASE_DIR = Path(__file__).resolve().parent
 VOTER_DB_CSV = Path(os.environ.get("GCSLC_VOTER_DB", str(BASE_DIR / "voter_db.csv")))
 # Tactical PU register + state data lake (override path if the folder lives elsewhere)
 KADUNA_DATA_2027_DIR = Path(os.environ.get("GCSLC_KADUNA_DATA_2027", str(BASE_DIR / "KADUNA_Data_2027")))
+
+
+@st.cache_data(ttl=45, show_spinner=False)
+def _kaduna_data_2027_inventory() -> list[str]:
+    """File names under KADUNA_Data_2027 for sovereign roller ticker (ingestion lake)."""
+    d = KADUNA_DATA_2027_DIR
+    if not d.is_dir():
+        return []
+    try:
+        names = sorted(p.name for p in d.iterdir() if p.is_file())
+    except OSError:
+        return []
+    return names[:240]
+
+
 # Kaduna anchor (not national PU total)
 PU_COUNT_KADUNA = 8_012
 KADUNA_VOTER_TARGET = 1_500_000
@@ -37,11 +52,55 @@ CONSOLIDATION_GOAL_2027 = KADUNA_VOTER_TARGET
 CONSOLIDATION_CONSTANT = KADUNA_VOTER_TARGET  # 1.5M consolidation constant (command target)
 BUFFER_20_7M_LABEL = "20.7M"
 
+CHANNEL_OPTION_PRIVATE = "📱 SMS/WA (The Private Strike)"
+CHANNEL_OPTION_GRASSROOTS = "🎥 Grassroots (TikTok/FB/IG)"
+CHANNEL_OPTION_SOVEREIGN = "🏛️ Sovereign (X/LinkedIn)"
 CHANNEL_OPTIONS: list[str] = [
-    "WhatsApp/SMS (Primary)",
-    "TikTok (Mass Mobilization)",
-    "X / FB / IG (Public Pulse)",
+    CHANNEL_OPTION_PRIVATE,
+    CHANNEL_OPTION_GRASSROOTS,
+    CHANNEL_OPTION_SOVEREIGN,
 ]
+# Legacy multiselect values → re-mapped lanes (session migration)
+LEGACY_CHANNEL_MAP: dict[str, str] = {
+    "WhatsApp/SMS (Primary)": CHANNEL_OPTION_PRIVATE,
+    "TikTok (Mass Mobilization)": CHANNEL_OPTION_GRASSROOTS,
+    "X / FB / IG (Public Pulse)": CHANNEL_OPTION_SOVEREIGN,
+}
+
+
+def _migrate_mc_channels_session() -> None:
+    raw = st.session_state.get("cien_mc_channels")
+    if not isinstance(raw, list):
+        st.session_state["cien_mc_channels"] = list(CHANNEL_OPTIONS)
+        return
+    seen: set[str] = set()
+    out: list[str] = []
+    for x in raw:
+        if not isinstance(x, str):
+            continue
+        m = LEGACY_CHANNEL_MAP.get(x, x)
+        if m in CHANNEL_OPTIONS and m not in seen:
+            seen.add(m)
+            out.append(m)
+    st.session_state["cien_mc_channels"] = out or list(CHANNEL_OPTIONS)
+
+
+def _format_reminder_for_lane(channel: str, raw: str) -> str:
+    """Single-lane formatted payload (Chairman reminder)."""
+    brand = "CIEN Kaduna 2027"
+    if channel == CHANNEL_OPTION_PRIVATE:
+        return f"【{brand}】{raw}\n— Reply CONFIRM · Polling Unit ready."
+    if channel == CHANNEL_OPTION_GRASSROOTS:
+        return f"{raw} · {brand} #Kaduna2027 #Galadima #VoteSmart #Grassroots #15of15"
+    if channel == CHANNEL_OPTION_SOVEREIGN:
+        return f"[Sovereign] {raw} · {brand} #Kaduna2027 #CIEN #LinkedIn #X"
+    if channel == "WhatsApp/SMS (Primary)":
+        return _format_reminder_for_lane(CHANNEL_OPTION_PRIVATE, raw)
+    if channel == "TikTok (Mass Mobilization)":
+        return _format_reminder_for_lane(CHANNEL_OPTION_GRASSROOTS, raw)
+    if channel == "X / FB / IG (Public Pulse)":
+        return _format_reminder_for_lane(CHANNEL_OPTION_SOVEREIGN, raw)
+    return f"{brand}: {raw}"
 
 
 def _format_master_reminder_for_channels(raw: str, channels: list[str]) -> dict[str, str]:
@@ -49,18 +108,15 @@ def _format_master_reminder_for_channels(raw: str, channels: list[str]) -> dict[
     raw = (raw or "").strip()
     if not raw:
         return {c: "" for c in channels}
-    brand = "CIEN Kaduna 2027"
-    out: dict[str, str] = {}
-    for c in channels:
-        if c == "WhatsApp/SMS (Primary)":
-            out[c] = f"【{brand}】{raw}\n— Reply CONFIRM · Polling Unit ready."
-        elif c == "TikTok (Mass Mobilization)":
-            out[c] = f"{raw} · {brand} #Kaduna2027 #Galadima #VoteSmart #15of15"
-        elif c == "X / FB / IG (Public Pulse)":
-            out[c] = f"[Public Pulse] {raw} · {brand} #Kaduna2027 #CIEN"
-        else:
-            out[c] = f"{brand}: {raw}"
-    return out
+    return {c: _format_reminder_for_lane(c, raw) for c in channels}
+
+
+def _format_master_reminder_all_lanes(raw: str) -> dict[str, str]:
+    """Always produce all three strike-lane payloads (preview / parity)."""
+    raw = (raw or "").strip()
+    if not raw:
+        return {c: "" for c in CHANNEL_OPTIONS}
+    return {c: _format_reminder_for_lane(c, raw) for c in CHANNEL_OPTIONS}
 
 
 # Executive Test Module — Node 0 (Chairman) / Node 1 (His Excellency); override via env or UI
@@ -160,10 +216,6 @@ PRES_TREND_AUDIT: dict[int, dict[str, int]] = {
     }
     for y in (2015, 2019, 2023)
 }
-# 2027 command projection (consolidation constant on both tracks)
-PROJ_2027_PRES_LEAD = 935_000
-PROJ_2027_GOV_LEAD = 890_000
-
 LGA_TARGET = 23
 LGA_MAJORITY_NEED = 16
 DENSITY_DB = 1_500_000
@@ -326,6 +378,135 @@ def _load_voter_db(csv_path: str) -> pd.DataFrame:
         return pd.DataFrame(columns=["first_name", "last_name", "lga", "number"])
     return _normalize_voter_df(raw)
 
+
+@st.cache_data(show_spinner=False)
+def _load_voter_raw_for_swot(csv_path: str) -> pd.DataFrame:
+    """Full CSV for SWOT opposition scan (optional party / trend columns)."""
+    p = Path(csv_path)
+    if not p.is_file():
+        return pd.DataFrame()
+    try:
+        return pd.read_csv(p)
+    except Exception:
+        return pd.DataFrame()
+
+
+# 2023 governorship razor-thin benchmark (APC − PDP), per tactical directive
+MARGIN_2023_APC_PDP = V_2023_APC - V_2023_PDP  # 10,806
+NEON_WARNING_ORANGE = "#FF6B35"
+OPPOSITION_PULSE_PARTIES: tuple[str, ...] = ("PDP", "LP", "ADC", "SDP")
+
+
+def _df_norm_col_map(raw: pd.DataFrame) -> dict[str, str]:
+    return {str(c).strip().lower().replace(" ", "_"): c for c in raw.columns}
+
+
+def _opposition_growth_pulse_flags(raw: pd.DataFrame) -> dict[str, bool]:
+    """
+    Red pulse when the 1.5M voter CSV shows Growth for an opposition node.
+    Uses optional columns: node_trend / trend / signal / growth / status + party / affiliation.
+    If a trend column has 'growth' but no party column, all four opposition lights go red.
+    """
+    out = {p: False for p in OPPOSITION_PULSE_PARTIES}
+    if raw.empty or len(raw.columns) == 0:
+        return out
+    norm = _df_norm_col_map(raw)
+    trend_keys = (
+        "node_trend",
+        "trend",
+        "signal",
+        "swot_signal",
+        "opposition_signal",
+        "growth",
+        "status",
+        "pulse",
+    )
+    party_keys = (
+        "party",
+        "party_affiliation",
+        "opposition_node",
+        "node_party",
+        "affiliation",
+        "swot_party",
+        "opposition",
+    )
+    trend_col = next((norm[k] for k in trend_keys if k in norm), None)
+    party_col = next((norm[k] for k in party_keys if k in norm), None)
+    if not trend_col:
+        return out
+    mask = raw[trend_col].astype(str).str.lower().str.contains("growth", na=False)
+    sub = raw.loc[mask]
+    if sub.empty:
+        return out
+    if party_col:
+        for _, row in sub.iterrows():
+            pv = str(row[party_col]).strip().upper().replace(" ", "")
+            for p in OPPOSITION_PULSE_PARTIES:
+                if p in pv or pv == p:
+                    out[p] = True
+    else:
+        for p in OPPOSITION_PULSE_PARTIES:
+            out[p] = True
+    return out
+
+
+def _allocate_kaduna_pu_counts() -> list[int]:
+    """Split PU_COUNT_KADUNA across LGAs by ballot_boxes weight."""
+    weights = [int(r[3]) for r in LGA_ROWS]
+    s = float(sum(weights))
+    n = PU_COUNT_KADUNA
+    fracs = [w / s * n for w in weights]
+    counts = [int(x) for x in fracs]
+    rem = n - sum(counts)
+    order = sorted(range(len(weights)), key=lambda i: fracs[i] - counts[i], reverse=True)
+    for k in range(rem):
+        counts[order[k % len(order)]] += 1
+    return counts
+
+
+def _build_pu_swot_registry() -> pd.DataFrame:
+    """Synthetic 8,012 PU nodes: deterministic margin; battleground if margin < 50."""
+    counts = _allocate_kaduna_pu_counts()
+    rows: list[dict[str, object]] = []
+    pu_seq = 0
+    for idx, count in enumerate(counts):
+        lga, base_lat, base_lon, _, _ = LGA_ROWS[idx]
+        for j in range(count):
+            pu_seq += 1
+            seed = (0xC1E7_2027 << 16) ^ (idx * 7919) ^ (j * 104729)
+            rng = random.Random(seed)
+            dlat = rng.uniform(-0.09, 0.09)
+            dlon = rng.uniform(-0.09, 0.09)
+            margin_votes = int(rng.randint(0, 180))
+            rows.append(
+                {
+                    "pu_id": pu_seq,
+                    "LGA": lga,
+                    "lat": base_lat + dlat,
+                    "lon": base_lon + dlon,
+                    "margin_votes": margin_votes,
+                    "battleground": margin_votes < 50,
+                }
+            )
+    return pd.DataFrame(rows)
+
+
+@st.cache_data(show_spinner=False)
+def _pu_swot_registry_cached() -> pd.DataFrame:
+    return _build_pu_swot_registry()
+
+
+def _sovereign_shift_velocity_parts() -> tuple[float, float, float, str]:
+    """PDP peel, LP peel, APC capture (votes) from 2023 → 1.5M-density 2027 projection."""
+    pdp_loss = max(0.0, float(V_2023_PDP - MASTER_2027["PDP"]))
+    lp_loss = max(0.0, float(V_2023_LP - MASTER_2027["LP"]))
+    apc_gain = max(0.0, float(MASTER_2027["APC"] - V_2023_APC))
+    tot = pdp_loss + lp_loss + apc_gain
+    if tot <= 0:
+        return 0.0, 0.0, 0.0, "Projection parity — no modeled peel (check baselines)."
+    return pdp_loss, lp_loss, apc_gain, ""
+
+
 # LGA name, lat, lon, ballot boxes (targets), nodal_strength / 25
 LGA_ROWS: list[tuple[str, float, float, int, int]] = [
     ("Birnin Gwari", 10.6456, 6.5403, 312, 17),
@@ -356,6 +537,87 @@ LGA_ROWS: list[tuple[str, float, float, int, int]] = [
 MASTER_2027 = _zone_2027_projection(
     {"APC": V_2023_APC, "PDP": V_2023_PDP, "LP": V_2023_LP}
 )
+
+
+def _html_sovereign_roller_ticker(rolled: int) -> str:
+    """High-velocity scrolling lines: Ward/LGA rollups + KADUNA_Data_2027 lake path."""
+    vdf = _load_voter_db(str(VOTER_DB_CSV))
+    files = _kaduna_data_2027_inventory()
+    lake = html.escape(KADUNA_DATA_2027_DIR.name)
+    path_ok = KADUNA_DATA_2027_DIR.is_dir()
+    n_lines = 42
+    tick = int(time.monotonic() * 4) & 0xFFFF
+    lines: list[str] = []
+    denom = max(12, n_lines)
+    base = rolled // denom if rolled else 0
+    for i in range(n_lines):
+        if not vdf.empty:
+            ri = (i + tick) % len(vdf)
+            lga = str(vdf.iloc[ri]["lga"]).strip() or "KADUNA"
+        else:
+            lga = LGA_ROWS[(i + tick) % len(LGA_ROWS)][0]
+        wn = 1 + (i * 13 + tick) % 19
+        chunk = base + (i % 11) * max(0, rolled // 12000) + (i % 5) * 3
+        if rolled <= 0:
+            chunk = 0
+        else:
+            chunk = max(1, min(chunk, rolled))
+        fn = files[(i + tick) % len(files)] if files else "—"
+        tag = "INGEST_LIVE" if path_ok else "LAKE_PENDING"
+        ts = (datetime.now() - timedelta(seconds=min(7200, i * 2))).strftime("%H:%M:%S")
+        lines.append(
+            '<div class="sovereign-roller-line">'
+            f'<span class="sr-ts">[{html.escape(ts)}]</span> '
+            f"<strong>{html.escape(lga)}</strong> · Ward {wn} · "
+            f'<span class="sr-roll">+{chunk:,}</span> rollup · '
+            f"<code>{lake}/{html.escape(fn)}</code> · "
+            f'<span class="sr-tag">{html.escape(tag)}</span></div>'
+        )
+    body = "".join(lines)
+    dup = body + body
+    return (
+        '<div class="sovereign-roller-feed-outer">'
+        f'<div class="sovereign-roller-feed-track">{dup}</div></div>'
+    )
+
+
+def _render_sovereign_ingestion_monitor_sidebar() -> None:
+    """Slider-driven 1.5M rollup + sovereign roller ticker (sidebar)."""
+    st.markdown('<div class="sovereign-ingest-wrap">', unsafe_allow_html=True)
+    st.markdown(
+        '<p class="sovereign-ingest-title">SOVEREIGN INGESTION MONITOR</p>'
+        "<p class=\"sovereign-ingest-sub\">1.5M command pool · Ward/LGA roll-up · "
+        f"<code>{html.escape(KADUNA_DATA_2027_DIR.name)}</code> data lake</p>",
+        unsafe_allow_html=True,
+    )
+    st.slider(
+        "Chairman rollup sweep (% of 1.5M target)",
+        min_value=0,
+        max_value=100,
+        value=72,
+        key="cien_sovereign_roller_pct",
+        help="Simulated sovereign ingestion sweep toward the 1,500,000 voter anchor.",
+    )
+    pct = int(st.session_state.get("cien_sovereign_roller_pct", 0))
+    rolled = int(round(KADUNA_VOTER_TARGET * (pct / 100.0)))
+    st.markdown(
+        '<div class="sovereign-roll-total">'
+        '<span class="srt-label">ROLLED INGEST (SIM)</span>'
+        f'<span class="srt-val">{rolled:,}</span>'
+        f'<span class="srt-of"> / {KADUNA_VOTER_TARGET:,}</span>'
+        "</div>",
+        unsafe_allow_html=True,
+    )
+    _render_sovereign_roller_ticker_fragment()
+    st.markdown("</div>", unsafe_allow_html=True)
+
+
+@st.fragment(run_every=timedelta(milliseconds=480))
+def _render_sovereign_roller_ticker_fragment() -> None:
+    pct = int(st.session_state.get("cien_sovereign_roller_pct", 0))
+    rolled = int(round(KADUNA_VOTER_TARGET * (pct / 100.0)))
+    st.markdown(_html_sovereign_roller_ticker(rolled), unsafe_allow_html=True)
+
 
 _CSS = """
 @import url('https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap');
@@ -1319,6 +1581,327 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   text-align: center;
   letter-spacing: 0.08em;
 }
+
+/* Channel selector — matte #121212, bold gold labels (S24 / OLED) */
+.channel-strike-board {
+  background: #121212 !important;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 215, 0, 0.28);
+  padding: 0.45rem 0.5rem 0.55rem 0.5rem;
+  margin: 0.35rem 0 0.45rem 0;
+}
+.channel-lane-icons-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.35rem;
+  margin: 0 0 0.45rem 0;
+}
+.channel-lane-tile {
+  background: #121212 !important;
+  border: 1px solid rgba(212, 175, 55, 0.42);
+  border-radius: 8px;
+  padding: 0.38rem 0.32rem;
+  text-align: center;
+  font-family: 'Goldman', sans-serif !important;
+}
+.channel-lane-emoji {
+  font-size: 1.15rem;
+  line-height: 1.2;
+  display: block;
+  margin-bottom: 0.12rem;
+}
+.channel-lane-title {
+  color: #FFD700 !important;
+  font-weight: 800 !important;
+  font-size: 0.62rem !important;
+  letter-spacing: 0.04em;
+  line-height: 1.25;
+  display: block;
+}
+.channel-lane-sub {
+  color: rgba(255, 215, 0, 0.78) !important;
+  font-weight: 700 !important;
+  font-size: 0.56rem !important;
+  margin-top: 0.08rem;
+  line-height: 1.2;
+  display: block;
+}
+.channel-selector-gold-label label,
+.channel-selector-gold-label span {
+  color: #FFD700 !important;
+  font-weight: 800 !important;
+  font-family: 'Goldman', sans-serif !important;
+  font-size: 0.72rem !important;
+  letter-spacing: 0.05em !important;
+}
+[data-testid="stSidebar"] div[data-baseweb="tag"] {
+  background: #1a1a1a !important;
+  color: #FFD700 !important;
+  border: 1px solid rgba(255, 215, 0, 0.82) !important;
+  font-family: 'Goldman', sans-serif !important;
+  font-weight: 700 !important;
+}
+[data-testid="stSidebar"] div[data-baseweb="tag"] span,
+[data-testid="stSidebar"] div[data-baseweb="tag"] svg {
+  color: #FFD700 !important;
+  fill: #FFD700 !important;
+}
+[data-testid="stSidebar"] [data-baseweb="select"] > div {
+  background-color: #121212 !important;
+  border-color: rgba(255, 215, 0, 0.45) !important;
+}
+[data-testid="stSidebar"] .channel-strike-board [data-testid="stMarkdownContainer"] p {
+  color: #FFD700 !important;
+  font-weight: 700 !important;
+}
+
+/* Sovereign sidebar stack — OLED matte #121212 · bold gold · zero halos */
+.sovereign-sidebar-oled-stack {
+  background: #121212 !important;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 10px;
+  padding: 0.42rem 0.45rem 0.5rem 0.45rem;
+  margin: 0.5rem 0 0.35rem 0;
+}
+.sovereign-ingest-wrap {
+  background: #121212 !important;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.18);
+  padding: 0 0 0.45rem 0;
+  margin: 0 0 0.4rem 0;
+}
+.sovereign-ingest-title {
+  font-family: 'Goldman', sans-serif !important;
+  color: #FFD700 !important;
+  font-weight: 800 !important;
+  font-size: 0.74rem !important;
+  letter-spacing: 0.12em !important;
+  text-align: center !important;
+  margin: 0 0 0.25rem 0 !important;
+  text-shadow: none !important;
+}
+.sovereign-ingest-sub {
+  font-family: 'Goldman', sans-serif !important;
+  color: rgba(0, 229, 255, 0.88) !important;
+  font-size: 0.58rem !important;
+  text-align: center !important;
+  margin: 0 0 0.4rem 0 !important;
+  line-height: 1.35 !important;
+}
+.sovereign-ingest-sub code {
+  color: #FFD700 !important;
+  font-weight: 700 !important;
+  word-break: break-all;
+}
+.sovereign-roll-total {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.25rem 0.45rem;
+  font-family: 'Goldman', sans-serif !important;
+  margin: 0.35rem 0 0.4rem 0 !important;
+}
+.sovereign-roll-total .srt-label {
+  color: #FFD700 !important;
+  font-weight: 800 !important;
+  font-size: 0.58rem !important;
+  letter-spacing: 0.1em !important;
+}
+.sovereign-roll-total .srt-val {
+  color: #00E5FF !important;
+  font-weight: 800 !important;
+  font-size: 1.05rem !important;
+  font-variant-numeric: tabular-nums;
+}
+.sovereign-roll-total .srt-of {
+  color: rgba(255, 215, 0, 0.82) !important;
+  font-weight: 700 !important;
+  font-size: 0.62rem !important;
+}
+@keyframes sovereign-roller-scroll {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+.sovereign-roller-feed-outer {
+  height: 148px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 215, 0, 0.28);
+  border-radius: 8px;
+  background: #121212 !important;
+}
+.sovereign-roller-feed-track {
+  animation: sovereign-roller-scroll 7.5s linear infinite;
+}
+.sovereign-roller-line {
+  font-family: 'Goldman', sans-serif !important;
+  font-size: 0.62rem !important;
+  color: #00E5FF !important;
+  padding: 0.32rem 0.5rem;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.12);
+  line-height: 1.38 !important;
+}
+.sovereign-roller-line strong {
+  color: #FFD700 !important;
+  font-weight: 800 !important;
+}
+.sovereign-roller-line code {
+  color: rgba(255, 215, 0, 0.85) !important;
+  font-size: 0.56rem !important;
+  word-break: break-all;
+}
+.sovereign-roller-line .sr-ts { color: rgba(0, 229, 255, 0.65) !important; font-weight: 700 !important; }
+.sovereign-roller-line .sr-roll { color: #FFD700 !important; font-weight: 800 !important; }
+.sovereign-roller-line .sr-tag {
+  color: #2DD4BF !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.05em;
+}
+
+/* Opposition Threat Radar — kinetic / vibrational / static (no halos) */
+.threat-radar-wrap {
+  background: #121212 !important;
+  border: none !important;
+  border-radius: 0;
+  padding: 0.35rem 0.15rem 0.45rem 0.15rem;
+  margin: 0 !important;
+}
+.threat-radar-oled .threat-radar-title {
+  font-family: 'Goldman', sans-serif !important;
+  color: #FFD700 !important;
+  font-weight: 800 !important;
+  font-size: 0.72rem !important;
+  letter-spacing: 0.12em !important;
+  text-align: center !important;
+  margin: 0 0 0.35rem 0 !important;
+  text-shadow: none !important;
+}
+.sovereign-margin-shield {
+  border: 1px solid rgba(239, 68, 68, 0.55);
+  border-radius: 8px;
+  background: #0a0a0a !important;
+  padding: 0.38rem 0.45rem 0.42rem 0.45rem;
+  margin: 0 0 0.45rem 0 !important;
+  text-align: center !important;
+}
+.sovereign-margin-shield .sms-label {
+  display: block;
+  font-family: 'Goldman', sans-serif !important;
+  color: #FFD700 !important;
+  font-weight: 800 !important;
+  font-size: 0.58rem !important;
+  letter-spacing: 0.14em !important;
+  margin-bottom: 0.12rem !important;
+  text-shadow: none !important;
+}
+.sovereign-margin-shield .sms-val {
+  display: block;
+  font-family: 'Goldman', sans-serif !important;
+  color: #EF4444 !important;
+  font-weight: 800 !important;
+  font-size: 1.25rem !important;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.15;
+  text-shadow: none !important;
+}
+.sovereign-margin-shield .sms-sub {
+  display: block;
+  font-family: 'Goldman', sans-serif !important;
+  color: rgba(255, 215, 0, 0.75) !important;
+  font-size: 0.54rem !important;
+  font-weight: 700 !important;
+  margin-top: 0.15rem !important;
+}
+.threat-radar-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  margin: 0.26rem 0;
+  font-family: 'Goldman', sans-serif !important;
+}
+.radar-led {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 0.2rem;
+  box-shadow: none !important;
+}
+.radar-led-pdp-kinetic {
+  background: #7F1D1D;
+  border: 1px solid #DC2626;
+  animation: radar-pdp-kinetic 0.85s ease-in-out infinite;
+}
+.radar-led-lp-vibe {
+  background: #083344;
+  border: 1px solid #00E5FF;
+  animation: radar-lp-vibrational 0.95s ease-in-out infinite;
+}
+.radar-led-spoiler-static {
+  background: #B45309;
+  border: 1px solid #F59E0B;
+  animation: none !important;
+}
+@keyframes radar-pdp-kinetic {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.22); opacity: 0.82; }
+}
+@keyframes radar-lp-vibrational {
+  0%, 100% { transform: scale(1) translateX(0); opacity: 1; }
+  25% { transform: scale(1.06) translateX(0.5px); opacity: 0.9; }
+  50% { transform: scale(0.94) translateX(-0.5px); opacity: 1; }
+  75% { transform: scale(1.04) translateX(0.5px); opacity: 0.92; }
+}
+.radar-row-text {
+  color: #FFD700 !important;
+  font-weight: 800 !important;
+  font-size: 0.66rem !important;
+  line-height: 1.35 !important;
+  text-shadow: none !important;
+}
+.radar-row-text .radar-emoji-hint {
+  font-weight: 800 !important;
+}
+.radar-row-sub {
+  display: block;
+  color: rgba(255, 215, 0, 0.78) !important;
+  font-weight: 700 !important;
+  font-size: 0.56rem !important;
+  margin-top: 0.06rem;
+  text-shadow: none !important;
+}
+
+.sovereign-2027-anchor {
+  border-top: 1px solid rgba(255, 215, 0, 0.2);
+  margin-top: 0.4rem !important;
+  padding: 0.4rem 0.35rem 0.1rem 0.35rem !important;
+  text-align: center !important;
+  font-family: 'Goldman', sans-serif !important;
+}
+.sovereign-2027-anchor .s27-head {
+  display: block;
+  color: #FFD700 !important;
+  font-weight: 800 !important;
+  font-size: 0.62rem !important;
+  letter-spacing: 0.12em !important;
+  margin-bottom: 0.2rem !important;
+  text-shadow: none !important;
+}
+.sovereign-2027-anchor .s27-line {
+  display: block;
+  color: rgba(0, 229, 255, 0.9) !important;
+  font-weight: 700 !important;
+  font-size: 0.58rem !important;
+  line-height: 1.4 !important;
+}
+
+.payload-preview-head {
+  font-family: 'Goldman', sans-serif !important;
+  color: #FFD700 !important;
+  font-weight: 800 !important;
+  font-size: 0.72rem !important;
+  margin: 0.35rem 0 0.15rem 0 !important;
+}
+
 .csv-payload-compact {
   margin: 0 !important;
   font-size: 0.7rem !important;
@@ -1530,6 +2113,152 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   color: #00F5FF !important;
 }
 
+/* Razor-thin SWOT pulse — neon warning orange headers (live intelligence) */
+.swot-sidebar-wrap {
+  background: #121212 !important;
+  border: 1px solid rgba(255, 107, 53, 0.45);
+  border-radius: 10px;
+  padding: 0.5rem 0.55rem 0.6rem 0.55rem;
+  margin: 0.5rem 0 0.55rem 0;
+}
+[data-testid="stSidebar"] .swot-sidebar-wrap .swot-section-title {
+  font-family: 'Goldman', sans-serif !important;
+  color: #FF6B35 !important;
+  font-size: 0.72rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.12em !important;
+  margin: 0 0 0.35rem 0 !important;
+  text-align: center !important;
+  text-shadow: 0 0 10px rgba(255, 107, 53, 0.55), 0 0 20px rgba(255, 80, 0, 0.25) !important;
+}
+.swot-benchmark-line {
+  font-family: 'Goldman', sans-serif !important;
+  font-size: 0.62rem !important;
+  color: rgba(0, 229, 255, 0.88) !important;
+  text-align: center !important;
+  margin: 0 0 0.45rem 0 !important;
+  line-height: 1.35 !important;
+}
+.swot-benchmark-line strong {
+  color: #FFD700 !important;
+}
+.swot-lights-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.35rem 0.5rem;
+  align-items: center;
+}
+.swot-light-row {
+  display: flex;
+  align-items: center;
+  font-family: 'Goldman', sans-serif !important;
+  font-size: 0.68rem !important;
+  font-weight: 700 !important;
+  color: #FFD700 !important;
+}
+.swot-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 0.4rem;
+  flex-shrink: 0;
+}
+@keyframes swot-pulse-red {
+  0%, 100% {
+    background: #EF4444;
+    box-shadow: 0 0 6px #EF4444, 0 0 14px rgba(239, 68, 68, 0.55);
+    transform: scale(1);
+  }
+  50% {
+    background: #DC2626;
+    box-shadow: 0 0 14px #F87171, 0 0 26px rgba(248, 113, 113, 0.75);
+    transform: scale(1.12);
+  }
+}
+@keyframes swot-pulse-stable {
+  0%, 100% { opacity: 0.88; }
+  50% { opacity: 1; }
+}
+.swot-dot-red {
+  background: #EF4444;
+  animation: swot-pulse-red 1.15s ease-in-out infinite;
+}
+.swot-dot-stable {
+  background: #2DD4BF;
+  animation: swot-pulse-stable 2.2s ease-in-out infinite;
+  box-shadow: 0 0 6px rgba(45, 212, 191, 0.45);
+}
+.swot-foot {
+  font-family: 'Goldman', sans-serif !important;
+  font-size: 0.58rem !important;
+  color: rgba(255, 215, 0, 0.72) !important;
+  margin: 0.45rem 0 0 0 !important;
+  text-align: center !important;
+  line-height: 1.35 !important;
+}
+
+.swot-main-section {
+  border-radius: 14px;
+  padding: 3px;
+  background: #121212 !important;
+  border: 1px solid rgba(255, 107, 53, 0.35);
+  margin: 0.85rem 0 0.65rem 0;
+}
+.swot-main-inner {
+  background: #121212 !important;
+  border-radius: 11px;
+  padding: 0.75rem 0.9rem 0.85rem 0.9rem;
+  border: 1px solid rgba(255, 107, 53, 0.22);
+}
+.swot-main-inner h3 {
+  font-family: 'Goldman', sans-serif !important;
+  color: #FF6B35 !important;
+  margin: 0 0 0.5rem 0 !important;
+  font-size: 1rem !important;
+  letter-spacing: 0.08em !important;
+  text-shadow: none !important;
+}
+.sovereign-shift-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: 'Goldman', sans-serif !important;
+  font-size: 0.72rem !important;
+  color: #00E5FF !important;
+  margin-bottom: 0.35rem !important;
+}
+.sovereign-shift-track {
+  display: flex;
+  height: 22px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 215, 0, 0.28);
+  background: #0a0a0a;
+}
+.sovereign-shift-seg-pdp {
+  background: linear-gradient(90deg, #0891B2, #06B6D4);
+  transition: width 0.4s ease;
+}
+.sovereign-shift-seg-lp {
+  background: linear-gradient(90deg, #6366F1, #818CF8);
+  transition: width 0.4s ease;
+}
+.sovereign-shift-seg-apc {
+  background: linear-gradient(90deg, #D4AF37, #FBBF24);
+  transition: width 0.4s ease;
+}
+.sovereign-shift-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1rem;
+  margin-top: 0.45rem !important;
+  font-family: 'Goldman', sans-serif !important;
+  font-size: 0.66rem !important;
+  color: rgba(255, 215, 0, 0.85) !important;
+}
+.sovereign-shift-legend span strong { color: #00E5FF !important; }
+
 .exec-forensic-muted {
   margin-top: 0.5rem;
   padding-top: 0.35rem;
@@ -1719,28 +2448,83 @@ def _render_outreach_velocity_block() -> None:
     st.markdown("</div>", unsafe_allow_html=True)
 
 
+def _render_2027_kaduna_anchor_gauge() -> None:
+    """High-velocity clinical gauge: 1.5M Kaduna anchor ↔ 8,012 PUs ↔ 187 voters/PU."""
+    st.markdown(
+        '<div class="clinical-2027-gauge-wrap"><div class="clinical-2027-gauge-inner">',
+        unsafe_allow_html=True,
+    )
+    fig = go.Figure(
+        go.Indicator(
+            mode="gauge+number",
+            value=CONSOLIDATION_CONSTANT,
+            number={
+                "valueformat": ",d",
+                "font": {"size": 30, "color": "#4ADE80", "family": "Goldman"},
+            },
+            title={
+                "text": "2027 KADUNA ANCHOR<br><sup>8,012 PU nodes · 187 voters / PU</sup>",
+                "font": {"size": 13, "color": GOLD, "family": "Goldman"},
+            },
+            gauge={
+                "axis": {"range": [0, 2_000_000], "tickwidth": 1, "tickcolor": "rgba(74,222,128,0.55)"},
+                "bar": {"color": "#22C55E"},
+                "bgcolor": "rgba(18,18,18,0.95)",
+                "borderwidth": 1,
+                "bordercolor": "rgba(74, 222, 128, 0.45)",
+                "steps": [
+                    {"range": [0, CONSOLIDATION_CONSTANT], "color": "rgba(34, 197, 94, 0.2)"},
+                ],
+                "threshold": {
+                    "line": {"color": "#FFD700", "width": 3},
+                    "thickness": 0.88,
+                    "value": CONSOLIDATION_CONSTANT,
+                },
+            },
+        )
+    )
+    fig.update_layout(
+        height=268,
+        paper_bgcolor="#121212",
+        plot_bgcolor="#121212",
+        margin=dict(t=52, b=8, l=20, r=20),
+        font=dict(family="Goldman", color=GOLD),
+    )
+    st.plotly_chart(
+        fig,
+        use_container_width=True,
+        key="cien_kaduna_anchor_2027_gauge",
+        config={"displayModeBar": False, "responsive": True},
+    )
+    st.caption(
+        f"Clinical formula: {CONSOLIDATION_CONSTANT:,} total target ÷ {PU_COUNT_KADUNA:,} PUs = "
+        f"{VOTERS_PER_PU_D3_REQUIREMENT} voters per PU (command lock)"
+    )
+    st.markdown("</div></div>", unsafe_allow_html=True)
+
+
 def _render_national_contribution_gauge() -> None:
-    """15/15 — Kaduna anchoring 7.25% of the 20.7M national mandate."""
+    """15/15 national sync — Kaduna share of 20.7M mandate."""
     fig = go.Figure(
         go.Indicator(
             mode="gauge+number",
             value=KADUNA_NATIONAL_CONTRIBUTION_PCT,
             number={"suffix": "%", "valueformat": ".2f"},
             title={
-                "text": "National Contribution<br><sup>20.7M mandate · Kaduna anchor</sup>",
-                "font": {"size": 14, "color": GOLD, "family": "Goldman"},
+                "text": "15/15 NATIONAL SYNC<br><sup>KADUNA → 7.25% OF 20.7M NATIONAL</sup>",
+                "font": {"size": 13, "color": GOLD, "family": "Goldman"},
             },
             gauge={
                 "axis": {"range": [0, 15], "tickwidth": 1, "tickcolor": "rgba(212,175,55,0.45)"},
                 "bar": {"color": KADUNA_EMERALD},
-                "bgcolor": "rgba(0,0,34,0.75)",
+                "bgcolor": "rgba(18,18,18,0.92)",
                 "borderwidth": 1,
                 "bordercolor": "rgba(212,175,55,0.35)",
                 "steps": [
                     {"range": [0, KADUNA_NATIONAL_CONTRIBUTION_PCT], "color": "rgba(4, 106, 56, 0.35)"},
                 ],
                 "threshold": {
-                    "line": {"color": GOLD, "width": 3},
+                    "line": {"color": CYAN, "width": 3},
                     "thickness": 0.85,
                     "value": KADUNA_NATIONAL_CONTRIBUTION_PCT,
                 },
@@ -1748,8 +2532,9 @@ def _render_national_contribution_gauge() -> None:
         )
     )
     fig.update_layout(
-        height=240,
-        paper_bgcolor=NAVY_DEEP,
+        height=268,
+        paper_bgcolor="#121212",
+        plot_bgcolor="#121212",
         margin=dict(t=56, b=24, l=28, r=28),
         font=dict(family="Goldman", color=GOLD),
     )
@@ -1760,8 +2545,8 @@ def _render_national_contribution_gauge() -> None:
         config={"displayModeBar": False, "responsive": True},
     )
     st.caption(
-        f"D3 historical audit locked · gold/cyan meters keyed to verified lead/total rows · "
-        f"{BUFFER_20_7M_LABEL} national mandate · {KADUNA_NATIONAL_CONTRIBUTION_PCT}% Kaduna contribution"
+        f"Matte black (#121212) clinical readout · {BUFFER_20_7M_LABEL} national envelope · "
+        f"Kaduna sovereign contribution {KADUNA_NATIONAL_CONTRIBUTION_PCT}%"
     )
 
 
@@ -1866,6 +2651,89 @@ def _render_sentiment_sidebar() -> None:
     )
     st.caption(subtitle)
     st.markdown("</div>", unsafe_allow_html=True)
+
+
+def _html_opposition_threat_radar() -> str:
+    """Kinetic SWOT: PDP deep red, LP cyan vibrational, ADC/SDP amber static; margin shield redline."""
+    shield = f"{MARGIN_2023_APC_PDP:,}"
+    pu = f"{PU_COUNT_KADUNA:,}"
+    sync = VOTERS_PER_PU_D3_REQUIREMENT
+    tgt = f"{KADUNA_VOTER_TARGET:,}"
+    return (
+        '<div class="threat-radar-wrap threat-radar-oled">'
+        '<p class="threat-radar-title">OPPOSITION THREAT RADAR</p>'
+        '<div class="sovereign-margin-shield">'
+        '<span class="sms-label">SOVEREIGN MARGIN SHIELD</span>'
+        f'<span class="sms-val">{shield}</span>'
+        '<span class="sms-sub">Permanent redline · 2023 APC−PDP razor corridor</span>'
+        "</div>"
+        '<div class="threat-radar-row">'
+        '<span class="radar-led radar-led-pdp-kinetic" aria-hidden="true"></span>'
+        '<div><span class="radar-row-text">PDP · deep red · kinetic threat</span>'
+        '<span class="radar-row-sub">11k-class margin pressure · governorship lock</span></div>'
+        "</div>"
+        '<div class="threat-radar-row">'
+        '<span class="radar-led radar-led-lp-vibe" aria-hidden="true"></span>'
+        '<div><span class="radar-row-text">LP · cyan · vibrational pulse</span>'
+        '<span class="radar-row-sub">Youth node · harmonic watch</span></div>'
+        "</div>"
+        '<div class="threat-radar-row">'
+        '<span class="radar-led radar-led-spoiler-static" aria-hidden="true"></span>'
+        '<div><span class="radar-row-text">ADC · amber · static spoiler</span>'
+        '<span class="radar-row-sub">Spoiler lane · fragmentation</span></div>'
+        "</div>"
+        '<div class="threat-radar-row">'
+        '<span class="radar-led radar-led-spoiler-static" aria-hidden="true"></span>'
+        '<div><span class="radar-row-text">SDP · amber · static spoiler</span>'
+        '<span class="radar-row-sub">Spoiler lane · coalition drift</span></div>'
+        "</div>"
+        '<div class="sovereign-2027-anchor">'
+        '<span class="s27-head">2027 PROJECTION ANCHOR</span>'
+        f'<span class="s27-line">{pu} PU target · {sync} syncs/node → {tgt} voters</span>'
+        '<span class="s27-line">Command: align every node to 187 handshakes per PU lattice</span>'
+        "</div>"
+        "</div>"
+    )
+
+
+@st.fragment(run_every=timedelta(seconds=6))
+def _render_opposition_threat_radar_sidebar() -> None:
+    st.markdown(_html_opposition_threat_radar(), unsafe_allow_html=True)
+
+
+def _render_razor_thin_swot_shift_block() -> None:
+    """Main-panel matte black block: Sovereign Shift / node capture velocity bar."""
+    pdp_l, lp_l, apc_g, hint = _sovereign_shift_velocity_parts()
+    tot = pdp_l + lp_l + apc_g
+    if tot <= 0:
+        w_pdp = w_lp = w_apc = 0.0
+    else:
+        w_pdp = 100.0 * pdp_l / tot
+        w_lp = 100.0 * lp_l / tot
+        w_apc = 100.0 * apc_g / tot
+    src = html.escape(VOTER_DB_CSV.name)
+    st.markdown(
+        '<div class="swot-main-section"><div class="swot-main-inner">'
+        "<h3>RAZOR-THIN SWOT · NODE CAPTURE VELOCITY</h3>"
+        '<div class="sovereign-shift-label-row"><span>Sovereign Shift</span>'
+        '<span style="color:rgba(255,107,53,0.92);font-size:0.68rem;letter-spacing:0.06em;">LIVE INTELLIGENCE</span></div>'
+        '<div class="sovereign-shift-label-row" style="margin-bottom:0.3rem;"><span>1.5M database → razor-thin peel</span>'
+        f"<span>{src}</span></div>"
+        '<div class="sovereign-shift-track">'
+        f'<div class="sovereign-shift-seg-pdp" style="width:{w_pdp:.2f}%;"></div>'
+        f'<div class="sovereign-shift-seg-lp" style="width:{w_lp:.2f}%;"></div>'
+        f'<div class="sovereign-shift-seg-apc" style="width:{w_apc:.2f}%;"></div>'
+        "</div>"
+        '<div class="sovereign-shift-legend">'
+        f"<span><strong>PDP node peel</strong> · {pdp_l:,.0f}</span>"
+        f"<span><strong>LP node peel</strong> · {lp_l:,.0f}</span>"
+        f"<span><strong>APC capture</strong> · {apc_g:,.0f}</span>"
+        "</div>"
+        "</div></div>",
+        unsafe_allow_html=True,
+    )
+    if hint:
+        st.caption(hint)
 
 
 def _d3_lead_total_bar_figure() -> go.Figure:
@@ -1994,7 +2862,7 @@ def _lead_share_pct(lead: int, total: int) -> str:
 
 
 def _sov_trend_dual_bars_figure() -> go.Figure:
-    """Presidential (gold) vs Governorship (cyan) total valid votes incl. 2027 consolidation projection."""
+    """Presidential (gold) vs Governorship (cyan); 2027 projection bars = shimmering green pair."""
     years = ["2015", "2019", "2023", "2027"]
     pres_totals = [
         PRES_TREND_AUDIT[2015]["total"],
@@ -2008,13 +2876,17 @@ def _sov_trend_dual_bars_figure() -> go.Figure:
         GOV_TREND_AUDIT[2023]["total"],
         CONSOLIDATION_CONSTANT,
     ]
+    pres_colors = ["#D4AF37", "#D4AF37", "#D4AF37", "#4ADE80"]
+    gov_colors = ["#00E5FF", "#00E5FF", "#00E5FF", "#34D399"]
+    pres_lines = ["#FFD700", "#FFD700", "#FFD700", "#22C55E"]
+    gov_lines = ["#00F5FF", "#00F5FF", "#00F5FF", "#16A34A"]
     fig = go.Figure()
     fig.add_trace(
         go.Bar(
             name="Presidential · total valid",
             x=years,
             y=pres_totals,
-            marker=dict(color="#D4AF37", line=dict(color="#FFD700", width=1)),
+            marker=dict(color=pres_colors, line=dict(color=pres_lines, width=1)),
         )
     )
     fig.add_trace(
@@ -2022,7 +2894,7 @@ def _sov_trend_dual_bars_figure() -> go.Figure:
             name="Governorship · total valid",
             x=years,
             y=gov_totals,
-            marker=dict(color="#00E5FF", line=dict(color="#00F5FF", width=1)),
+            marker=dict(color=gov_colors, line=dict(color=gov_lines, width=1)),
         )
     )
     fig.update_layout(
@@ -2031,7 +2903,7 @@ def _sov_trend_dual_bars_figure() -> go.Figure:
         plot_bgcolor=NAVY_DEEP,
         font=dict(family="Goldman", color=GOLD),
         title=dict(
-            text="Dual-track totals · 2027 bars = consolidation constant (high-velocity command)",
+            text="Dual-track totals · 2027 = clinical anchor (green projection)",
             font=dict(size=13, color=GOLD),
         ),
         legend=dict(orientation="h", yanchor="bottom", y=1.02, x=0.5, xanchor="center"),
@@ -2044,7 +2916,7 @@ def _sov_trend_dual_bars_figure() -> go.Figure:
 
 
 def _render_sovereign_trend_audit() -> None:
-    """Presidential vs Governorship trend table, 2023 leakage metric, 2027 consolidation + PU math."""
+    """2015/2019/2023 dual-track table + 2023 Sovereign Gap row; charts carry 2027 projection."""
     rows_parts: list[str] = []
     for y in (2015, 2019, 2023):
         p = PRES_TREND_AUDIT[y]
@@ -2059,35 +2931,33 @@ def _render_sovereign_trend_audit() -> None:
             f"<td class=\"sov-trend-gov-cell\">{g['lead']:,}</td>"
             f"<td class=\"sov-trend-gov-cell\">{_lead_share_pct(g['lead'], g['total'])}</td></tr>"
         )
-    rows_parts.append(
-        "<tr><td><strong>2027</strong></td><td class=\"sov-trend-pres-cell\">Presidential (proj.)</td>"
-        f"<td class=\"sov-trend-pres-cell sov-trend-2027-pulse\">{CONSOLIDATION_CONSTANT:,}</td>"
-        f"<td class=\"sov-trend-pres-cell sov-trend-2027-pulse\">{PROJ_2027_PRES_LEAD:,}</td>"
-        f"<td class=\"sov-trend-pres-cell sov-trend-2027-pulse\">{_lead_share_pct(PROJ_2027_PRES_LEAD, CONSOLIDATION_CONSTANT)}</td></tr>"
-        "<tr><td><strong>2027</strong></td><td class=\"sov-trend-gov-cell\">Governorship (proj.)</td>"
-        f"<td class=\"sov-trend-gov-cell sov-trend-2027-pulse\">{CONSOLIDATION_CONSTANT:,}</td>"
-        f"<td class=\"sov-trend-gov-cell sov-trend-2027-pulse\">{PROJ_2027_GOV_LEAD:,}</td>"
-        f"<td class=\"sov-trend-gov-cell sov-trend-2027-pulse\">{_lead_share_pct(PROJ_2027_GOV_LEAD, CONSOLIDATION_CONSTANT)}</td></tr>"
-    )
-    rows_html = "".join(rows_parts)
     gap = DUAL_TRACK_2023_PRES_GOV_TURNOUT_GAP
     assert PRES_TREND_AUDIT[2023]["total"] - GOV_TREND_AUDIT[2023]["total"] == gap
+    rows_parts.append(
+        "<tr class=\"sov-trend-gap-row\">"
+        "<td><strong>2023</strong></td>"
+        "<td class=\"sov-trend-gap-label\">Sovereign Gap (Pres − Gov total valid)</td>"
+        f"<td class=\"sov-trend-gap-number\">+{gap:,}</td>"
+        '<td colspan="2" class="sov-trend-gap-opp">OPPORTUNITY FOR CONSOLIDATION</td>'
+        "</tr>"
+    )
+    rows_html = "".join(rows_parts)
     st.markdown(
         '<div class="sov-trend-wrap"><div class="sov-trend-inner">'
         "<h3>Sovereign Trend Audit · Presidential vs Governorship</h3>"
         '<table class="sov-trend-table">'
-        "<thead><tr><th>Year</th><th>Office</th><th>Total valid</th><th>Lead</th><th>Lead share</th></tr></thead>"
+        "<thead><tr><th>Year</th><th>Office</th><th>Total valid votes</th>"
+        "<th>Lead votes</th><th>Lead party share</th></tr></thead>"
         f"<tbody>{rows_html}</tbody></table>"
-        f'<p class="sov-trend-foot"><strong>Consolidation Constant:</strong> {CONSOLIDATION_CONSTANT:,} voters · '
-        f"<strong>{PU_COUNT_KADUNA:,}</strong> PUs · avg. <strong>{VOTERS_PER_PU_D3_REQUIREMENT}</strong> voters/PU · "
-        f"2023 Presidential−Governorship turnout gap = <strong>{gap:,}</strong> (see metric below)</p>"
+        f'<p class="sov-trend-foot"><strong>2027 clinical projection</strong> (1.5M anchor · {PU_COUNT_KADUNA:,} PUs · '
+        f"{VOTERS_PER_PU_D3_REQUIREMENT} voters/PU) lives in the <strong>high-velocity gauge</strong> below.</p>"
         "</div></div>",
         unsafe_allow_html=True,
     )
     st.metric(
-        "OPPORTUNITY FOR CONSOLIDATION",
-        f"{gap:,}",
-        help="2023 gap between Presidential and Governorship total valid votes (turnout differential)",
+        "Sovereign Gap 2023 · OPPORTUNITY FOR CONSOLIDATION",
+        f"+{gap:,}",
+        help="Presidential minus Governorship total valid votes, 2023 — consolidation upside",
     )
     st.plotly_chart(
         _sov_trend_dual_bars_figure(),
@@ -2133,7 +3003,9 @@ def _micro_strike_map() -> go.Figure:
         LGA_ROWS,
         columns=["LGA", "lat", "lon", "ballot_boxes", "nodal"],
     )
-    texts = [
+    pu_df = _pu_swot_registry_cached()
+    n_bg = int(pu_df["battleground"].sum())
+    lga_texts = [
         (
             f"<b>{row.LGA}</b><br>Golden Coordinates: {row.lat:.4f}°N, {row.lon:.4f}°E<br>"
             f"Nodal Strength: {row.nodal}/25 Ballot Box targets<br>"
@@ -2141,12 +3013,47 @@ def _micro_strike_map() -> go.Figure:
         )
         for _, row in df.iterrows()
     ]
-    fig = go.Figure(
+    bg = pu_df.loc[pu_df["battleground"]].copy()
+    bg_hover = [
+        (
+            f"<b>PU-{int(r.pu_id):05d}</b> · {html.escape(str(r.LGA))}<br>"
+            f"Razor margin: {int(r.margin_votes)} votes<br>"
+            f"<span style='color:{NEON_WARNING_ORANGE}'>BATTLEGROUND (&lt;50)</span>"
+        )
+        for r in bg.itertuples(index=False)
+    ]
+    fig = go.Figure()
+    fig.add_trace(
+        go.Scattergeo(
+            lat=pu_df["lat"],
+            lon=pu_df["lon"],
+            mode="markers",
+            marker=dict(size=2, color="rgba(0, 229, 255, 0.18)", line=dict(width=0)),
+            hoverinfo="skip",
+            name=f"{PU_COUNT_KADUNA:,} PU lattice",
+        )
+    )
+    fig.add_trace(
+        go.Scattergeo(
+            lat=bg["lat"],
+            lon=bg["lon"],
+            mode="markers",
+            text=bg_hover,
+            hoverinfo="text",
+            marker=dict(
+                size=5,
+                color=NEON_WARNING_ORANGE,
+                line=dict(width=1, color=GOLD),
+            ),
+            name=f"Battleground PUs (margin &lt; 50) · {n_bg:,}",
+        )
+    )
+    fig.add_trace(
         go.Scattergeo(
             lat=df["lat"],
             lon=df["lon"],
             mode="markers",
-            text=texts,
+            text=lga_texts,
             hoverinfo="text",
             marker=dict(
                 size=11,
@@ -2172,13 +3079,17 @@ def _micro_strike_map() -> go.Figure:
     )
     fig.update_layout(
         title=dict(
-            text="Micro-Strike Map — Nigeria viewport · Golden Coordinates · Kaduna 23 LGAs",
-            font=dict(family="Goldman", size=15, color=GOLD),
+            text=(
+                f"Micro-Strike Map · {PU_COUNT_KADUNA:,} PU SWOT overlay · "
+                f"neon orange = battleground (margin &lt; 50) · {n_bg:,} flagged"
+            ),
+            font=dict(family="Goldman", size=14, color=GOLD),
         ),
         paper_bgcolor=NAVY_DEEP,
         font=dict(family="Goldman", color=GOLD),
-        height=520,
-        margin=dict(l=0, r=0, t=48, b=0),
+        legend=dict(orientation="h", yanchor="bottom", y=-0.08, x=0.5, xanchor="center"),
+        height=560,
+        margin=dict(l=0, r=0, t=52, b=36),
     )
     return fig
 
@@ -2290,6 +3201,7 @@ def main() -> None:
     )
     st.markdown(f"<style>{_CSS}</style>", unsafe_allow_html=True)
     st.session_state.setdefault("cien_mc_channels", list(CHANNEL_OPTIONS))
+    _migrate_mc_channels_session()
 
     with st.sidebar:
         st.caption(
@@ -2326,35 +3238,54 @@ def main() -> None:
             unsafe_allow_html=True,
         )
         st.markdown("<h4>Broadcast Switchboard</h4>", unsafe_allow_html=True)
-        sb_csv, sb_ch = st.columns(2)
-        with sb_csv:
-            st.caption("CSV payload")
-            st.markdown(
-                f'<p class="csv-payload-compact"><code>{html.escape(VOTER_DB_CSV.name)}</code></p>',
-                unsafe_allow_html=True,
-            )
-        with sb_ch:
-            st.multiselect(
-                "Channel selector",
-                CHANNEL_OPTIONS,
-                key="cien_mc_channels",
-            )
+        st.caption("CSV payload")
+        st.markdown(
+            f'<p class="csv-payload-compact"><code>{html.escape(VOTER_DB_CSV.name)}</code></p>',
+            unsafe_allow_html=True,
+        )
+        st.markdown('<div class="channel-strike-board">', unsafe_allow_html=True)
+        st.markdown(
+            '<div class="channel-lane-icons-row">'
+            '<div class="channel-lane-tile"><span class="channel-lane-emoji" aria-hidden="true">📱</span>'
+            '<span class="channel-lane-title">SMS / WA</span>'
+            '<span class="channel-lane-sub">The Private Strike</span></div>'
+            '<div class="channel-lane-tile"><span class="channel-lane-emoji" aria-hidden="true">🎥</span>'
+            '<span class="channel-lane-title">Grassroots</span>'
+            '<span class="channel-lane-sub">TikTok · FB · IG</span></div>'
+            '<div class="channel-lane-tile"><span class="channel-lane-emoji" aria-hidden="true">🏛️</span>'
+            '<span class="channel-lane-title">Sovereign</span>'
+            '<span class="channel-lane-sub">X · LinkedIn</span></div>'
+            "</div>",
+            unsafe_allow_html=True,
+        )
+        st.markdown('<div class="channel-selector-gold-label">', unsafe_allow_html=True)
+        st.multiselect(
+            "Strike lanes (select active channels)",
+            CHANNEL_OPTIONS,
+            key="cien_mc_channels",
+            placeholder="Choose lanes for outbound routing",
+        )
+        st.markdown("</div></div>", unsafe_allow_html=True)
         st.text_area(
             "Master Election Day Reminder",
             key="cien_master_reminder",
             height=80,
-            placeholder="Chairman Election Day reminder — auto-formatted for every selected channel.",
+            placeholder="Chairman reminder — preview below formats for all three strike lanes at once.",
         )
-        _ch_sel = st.session_state.get("cien_mc_channels") or list(CHANNEL_OPTIONS)
         _rem = (st.session_state.get("cien_master_reminder") or "").strip()
-        _fm = _format_master_reminder_for_channels(_rem, _ch_sel)
+        _all_fm = _format_master_reminder_all_lanes(_rem)
         with st.expander("Multi-channel payloads (preview)", expanded=bool(_rem)):
             if not _rem:
                 st.caption("Type a reminder above to generate channel-ready copy.")
             else:
-                for lab, body in _fm.items():
-                    st.markdown(f"**{html.escape(lab)}**")
+                st.caption("All three strike lanes — SMS/WA, Grassroots, Sovereign — formatted simultaneously.")
+                for lab, body in _all_fm.items():
+                    st.markdown(
+                        f'<p class="payload-preview-head">{html.escape(lab)}</p>',
+                        unsafe_allow_html=True,
+                    )
                     st.code(body, language=None)
+        _render_opposition_threat_radar_sidebar()
         st.text_area(
             "Broadcast Strategic Question",
             key="cien_bcast_q",
@@ -2455,12 +3386,14 @@ def main() -> None:
 
     _render_live_outreach_panel()
     st.markdown(
-        '<div class="section-prism"><h3>OUTREACH VELOCITY · NATIONAL CONTRIBUTION (15/15)</h3></div>',
+        '<div class="section-prism"><h3>OUTREACH VELOCITY · 2027 KADUNA ANCHOR · 15/15 NATIONAL SYNC</h3></div>',
         unsafe_allow_html=True,
     )
-    _ov_l, _ov_r = st.columns([1, 1])
+    _ov_l, _ov_m, _ov_r = st.columns([1, 1, 1])
     with _ov_l:
         _render_outreach_velocity_block()
+    with _ov_m:
+        _render_2027_kaduna_anchor_gauge()
     with _ov_r:
         _render_national_contribution_gauge()
 
@@ -2488,8 +3421,13 @@ def main() -> None:
         st.session_state["cien_zone"] = "Master Aggregate"
     _render_zone_detail(st.session_state["cien_zone"])
 
+    _render_razor_thin_swot_shift_block()
     st.markdown(
-        '<div class="section-prism"><h3>MICRO-STRIKE MAP</h3></div>',
+        '<div class="swot-main-section" style="margin-top:0.2rem;"><div class="swot-main-inner" style="padding:0.5rem 0.85rem 0.6rem 0.85rem;">'
+        "<h3 style=\"margin:0 !important;\">MICRO-STRIKE MAP · 2027 PROJECTIONS</h3>"
+        '<p style="margin:0.35rem 0 0 0;font-size:0.72rem;color:#00E5FF;font-family:Goldman,sans-serif;">'
+        "SWOT lattice: all 8,012 PUs (cyan mist) · battleground = razor margin &lt; 50 votes (neon orange).</p>"
+        "</div></div>",
         unsafe_allow_html=True,
     )
     map_df = pd.DataFrame(
