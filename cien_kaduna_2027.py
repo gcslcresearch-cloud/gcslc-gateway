@@ -21,22 +21,72 @@ os.environ.setdefault("STREAMLIT_SERVER_PORT", "9099")
 os.environ.setdefault("STREAMLIT_SERVER_FILE_WATCHER_TYPE", "none")
 
 BASE_DIR = Path(__file__).resolve().parent
-VOTER_DB_CSV = Path(os.environ.get("GCSLC_VOTER_DB", str(BASE_DIR / "voter_db.csv")))
-# Tactical PU register + state data lake (override path if the folder lives elsewhere)
-KADUNA_DATA_2027_DIR = Path(os.environ.get("GCSLC_KADUNA_DATA_2027", str(BASE_DIR / "KADUNA_Data_2027")))
+# Single-source lock: Desktop KADUNA_Data_2027 (override only via GCSLC_KADUNA_DATA_2027).
+_DESKTOP_KADUNA_2027 = Path.home() / "Desktop" / "KADUNA_Data_2027"
+KADUNA_DATA_2027_DIR = Path(os.environ.get("GCSLC_KADUNA_DATA_2027", str(_DESKTOP_KADUNA_2027))).resolve()
+# Never auto-mount repo voter_db.csv — saves RAM; set GCSLC_VOTER_DB to bind a file explicitly.
+_REPO_VOTER_DB_CSV = (BASE_DIR / "voter_db.csv").resolve()
 
 
-@st.cache_data(ttl=45, show_spinner=False)
-def _kaduna_data_2027_inventory() -> list[str]:
-    """File names under KADUNA_Data_2027 for sovereign roller ticker (ingestion lake)."""
+def _resolve_voter_db_csv() -> Path:
+    env = os.environ.get("GCSLC_VOTER_DB")
+    if env:
+        return Path(env).expanduser().resolve()
+    return (KADUNA_DATA_2027_DIR / "voter_db.csv").resolve()
+
+
+VOTER_DB_CSV = _resolve_voter_db_csv()
+
+# Bounded lake walk — never enumerate millions of dentries into session / UI state.
+KADUNA_LAKE_SCAN_CAP = 2000
+KADUNA_LAKE_SKIP_FILES = frozenset(
+    name.lower()
+    for name in (
+        "voter_db.csv",
+        ".ds_store",
+        "thumbs.db",
+        "desktop.ini",
+    )
+)
+
+
+@st.cache_data(ttl=120, show_spinner=False)
+def _kaduna_lake_preview_pool() -> list[str]:
+    """Collect at most KADUNA_LAKE_SCAN_CAP filenames (unordered scan → sorted) — virtualized roller source."""
     d = KADUNA_DATA_2027_DIR
     if not d.is_dir():
         return []
+    names: list[str] = []
     try:
-        names = sorted(p.name for p in d.iterdir() if p.is_file())
+        with os.scandir(d) as it:
+            for ent in it:
+                if len(names) >= KADUNA_LAKE_SCAN_CAP:
+                    break
+                try:
+                    if not ent.is_file(follow_symlinks=False):
+                        continue
+                except OSError:
+                    continue
+                n = ent.name
+                if n.startswith(".") or n.lower() in KADUNA_LAKE_SKIP_FILES:
+                    continue
+                names.append(n)
     except OSError:
         return []
-    return names[:240]
+    names.sort()
+    return names
+
+
+def _lake_display_slice(pool: list[str], window: int, use_tail: bool) -> list[str]:
+    """Head-only or head+tail window; never materializes beyond len(pool)."""
+    if not pool:
+        return []
+    w = max(1, min(int(window), len(pool)))
+    if not use_tail or len(pool) <= w:
+        return pool[:w]
+    head_n = max(1, w // 2)
+    tail_n = w - head_n
+    return pool[:head_n] + pool[-tail_n:]
 
 
 # Kaduna anchor (not national PU total)
@@ -367,13 +417,21 @@ def _normalize_voter_df(raw: pd.DataFrame) -> pd.DataFrame:
     return out[out["first_name"].str.len() > 0]
 
 
-@st.cache_data(show_spinner="Ingesting voter_db.csv…")
-def _load_voter_db(csv_path: str) -> pd.DataFrame:
+# UI / sidebar: keep only a small head in RAM (1.5M-safe virtualized ingest).
+_VOTER_DB_HEAD_DEFAULT = 256
+_SWOT_CSV_MAX_ROWS = 200_000
+
+
+@st.cache_data(show_spinner=False)
+def _load_voter_db(csv_path: str, nrows: int = _VOTER_DB_HEAD_DEFAULT) -> pd.DataFrame:
     p = Path(csv_path)
     if not p.is_file():
         return pd.DataFrame(columns=["first_name", "last_name", "lga", "number"])
+    if p.resolve() == _REPO_VOTER_DB_CSV and not os.environ.get("GCSLC_VOTER_DB"):
+        return pd.DataFrame(columns=["first_name", "last_name", "lga", "number"])
     try:
-        raw = pd.read_csv(p)
+        cap = max(8, min(int(nrows), 50_000))
+        raw = pd.read_csv(p, nrows=cap)
     except Exception:
         return pd.DataFrame(columns=["first_name", "last_name", "lga", "number"])
     return _normalize_voter_df(raw)
@@ -381,12 +439,14 @@ def _load_voter_db(csv_path: str) -> pd.DataFrame:
 
 @st.cache_data(show_spinner=False)
 def _load_voter_raw_for_swot(csv_path: str) -> pd.DataFrame:
-    """Full CSV for SWOT opposition scan (optional party / trend columns)."""
+    """Capped CSV read for optional party/trend columns (memory-safe vs full 1.5M)."""
     p = Path(csv_path)
     if not p.is_file():
         return pd.DataFrame()
+    if p.resolve() == _REPO_VOTER_DB_CSV and not os.environ.get("GCSLC_VOTER_DB"):
+        return pd.DataFrame()
     try:
-        return pd.read_csv(p)
+        return pd.read_csv(p, nrows=_SWOT_CSV_MAX_ROWS)
     except Exception:
         return pd.DataFrame()
 
@@ -1378,18 +1438,19 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
 .logistics-feed-outer {
   height: 200px;
   overflow: hidden;
-  border: 1px solid rgba(45, 212, 191, 0.35);
+  border: 1px solid rgba(255, 215, 0, 0.28);
   border-radius: 10px;
-  background: rgba(0, 0, 34, 0.82);
-  box-shadow: inset 0 0 16px rgba(45, 212, 191, 0.08);
+  background: #121212 !important;
+  box-shadow: inset 0 0 12px rgba(255, 215, 0, 0.06);
 }
 .logistics-feed-track {
   animation: logistics-feed-scroll 22s linear infinite;
 }
 .logistics-line {
-  font-family: 'Goldman', sans-serif !important;
-  font-size: 0.68rem;
-  color: #00E5FF !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+  font-size: 0.62rem !important;
+  font-weight: 700 !important;
+  color: #FFD700 !important;
   padding: 0.38rem 0.6rem;
   border-bottom: 1px solid rgba(255, 215, 0, 0.22);
   line-height: 1.45;
@@ -1397,11 +1458,11 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.logistics-line-empty { color: #D4AF37 !important; white-space: normal; }
-.lt-time { color: #D4AF37 !important; font-variant-numeric: tabular-nums; }
-.lt-name { color: #fff8dc !important; }
-.lt-lga { color: #7df9ff !important; }
-.lt-sep { color: rgba(212, 175, 55, 0.45) !important; padding: 0 0.15rem; }
+.logistics-line-empty { color: #FFD700 !important; white-space: normal; }
+.lt-time { color: rgba(255, 215, 0, 0.62) !important; font-variant-numeric: tabular-nums; }
+.lt-name { color: #FFD700 !important; }
+.lt-lga { color: rgba(255, 215, 0, 0.85) !important; }
+.lt-sep { color: rgba(255, 215, 0, 0.38) !important; padding: 0 0.15rem; }
 
 .polling-prism-wrap {
   border-radius: 14px;
@@ -1722,6 +1783,39 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   0% { transform: translateY(0); }
   100% { transform: translateY(-50%); }
 }
+@keyframes cc-shimmer-sweep {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+.cc-load-shimmer {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+  font-size: 0.62rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.18em !important;
+  color: #FFD700 !important;
+  text-align: center !important;
+  padding: 0.45rem 0.5rem !important;
+  margin: 0 0 0.45rem 0 !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(255, 215, 0, 0.35) !important;
+  background: linear-gradient(90deg, #121212 0%, #2a2410 35%, #FFD700 50%, #2a2410 65%, #121212 100%) !important;
+  background-size: 220% 100% !important;
+  animation: cc-shimmer-sweep 1.1s linear infinite !important;
+}
+.cc-load-shimmer-inline {
+  margin: 0.35rem 0 !important;
+  padding: 0.32rem 0.4rem !important;
+  font-size: 0.56rem !important;
+}
+.lake-roller-meta {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+  font-size: 0.56rem !important;
+  font-weight: 700 !important;
+  color: #FFD700 !important;
+  text-align: center !important;
+  margin: 0 0 0.35rem 0 !important;
+  line-height: 1.35 !important;
+}
 .sovereign-roller-feed-outer {
   height: 148px;
   overflow: hidden;
@@ -1733,26 +1827,36 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   animation: sovereign-roller-scroll 7.5s linear infinite;
 }
 .sovereign-roller-line {
-  font-family: 'Goldman', sans-serif !important;
-  font-size: 0.62rem !important;
-  color: #00E5FF !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+  font-size: 0.6rem !important;
+  font-weight: 700 !important;
+  color: #FFD700 !important;
   padding: 0.32rem 0.5rem;
   border-bottom: 1px solid rgba(255, 215, 0, 0.12);
   line-height: 1.38 !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .sovereign-roller-line strong {
   color: #FFD700 !important;
   font-weight: 800 !important;
 }
 .sovereign-roller-line code {
-  color: rgba(255, 215, 0, 0.85) !important;
-  font-size: 0.56rem !important;
+  color: #FFD700 !important;
+  font-size: 0.58rem !important;
+  font-weight: 700 !important;
   word-break: break-all;
 }
-.sovereign-roller-line .sr-ts { color: rgba(0, 229, 255, 0.65) !important; font-weight: 700 !important; }
+.sovereign-roller-line .lr-idx {
+  color: rgba(255, 215, 0, 0.55) !important;
+  font-weight: 800 !important;
+  margin-right: 0.35rem;
+}
+.sovereign-roller-line .sr-ts { color: rgba(255, 215, 0, 0.55) !important; font-weight: 700 !important; }
 .sovereign-roller-line .sr-roll { color: #FFD700 !important; font-weight: 800 !important; }
 .sovereign-roller-line .sr-tag {
-  color: #2DD4BF !important;
+  color: #FFD700 !important;
   font-weight: 800 !important;
   letter-spacing: 0.05em;
 }
@@ -2350,7 +2454,72 @@ def _render_timing_hub() -> None:
         )
 
 
-def _build_logistics_feed_html(df: pd.DataFrame, n_lines: int = 42) -> str:
+def _command_loading_shimmer_html(*, compact: bool = False) -> str:
+    cls = "cc-load-shimmer" + (" cc-load-shimmer-inline" if compact else "")
+    return (
+        f'<div class="{cls}" role="status" aria-live="polite">'
+        "COMMAND CENTER · HYDRATING VIRTUALIZED HEAD…"
+        "</div>"
+    )
+
+
+def _build_lake_roller_html(names: list[str], pool_len: int) -> str:
+    esc = html.escape
+    if not names:
+        return (
+            '<p class="lake-roller-meta">LAKE OFFLINE · verify ~/Desktop/KADUNA_Data_2027 exists</p>'
+            '<div class="sovereign-roller-feed-outer"><div class="sovereign-roller-feed-track">'
+            '<div class="sovereign-roller-line"><code>NO FILES IN BOUNDED SCAN</code></div>'
+            '<div class="sovereign-roller-line"><code>NO FILES IN BOUNDED SCAN</code></div>'
+            "</div></div>"
+        )
+    lines = "".join(
+        f'<div class="sovereign-roller-line"><span class="lr-idx">[{i + 1:04d}]</span><code>{esc(n)}</code></div>'
+        for i, n in enumerate(names)
+    )
+    dup = lines + lines
+    meta = (
+        f'<p class="lake-roller-meta">VIRTUALIZED · showing {len(names)} / pool {pool_len} '
+        f"(cap {KADUNA_LAKE_SCAN_CAP}) · {esc(str(KADUNA_DATA_2027_DIR))}</p>"
+    )
+    return meta + (
+        f'<div class="sovereign-roller-feed-outer"><div class="sovereign-roller-feed-track">{dup}</div></div>'
+    )
+
+
+def _render_kaduna_lake_virtualized_expander() -> None:
+    """Bounded filename roller — slider widens window; folder never fully loaded into session."""
+    st.session_state.setdefault("cien_lake_roller_n", 72)
+    st.session_state.setdefault("cien_lake_roller_tail", False)
+    with st.expander("1.5M virtualized roller · KADUNA_Data_2027", expanded=False):
+        st.caption(
+            f"Single-source lock: {KADUNA_DATA_2027_DIR} · repo voter_db.csv ignored unless GCSLC_VOTER_DB is set."
+        )
+        st.slider(
+            "Names in feed (head / head+tail)",
+            min_value=50,
+            max_value=200,
+            value=72,
+            step=5,
+            key="cien_lake_roller_n",
+            help="Only a bounded scan (2k files max) is held in cache — not the full lake.",
+        )
+        st.checkbox("Head + tail slice", value=False, key="cien_lake_roller_tail")
+        ph = st.empty()
+        ph.markdown(_command_loading_shimmer_html(compact=True), unsafe_allow_html=True)
+        t0 = time.perf_counter()
+        pool = _kaduna_lake_preview_pool()
+        elapsed = time.perf_counter() - t0
+        ph.empty()
+        vis = int(st.session_state.get("cien_lake_roller_n", 72))
+        use_tail = bool(st.session_state.get("cien_lake_roller_tail", False))
+        shown = _lake_display_slice(pool, vis, use_tail)
+        st.markdown(_build_lake_roller_html(shown, len(pool)), unsafe_allow_html=True)
+        if elapsed > 0.5:
+            st.caption(f"Lake index pull {elapsed:.2f}s — loading shimmer shown while indexing.")
+
+
+def _build_logistics_feed_html(df: pd.DataFrame, n_lines: int = 28) -> str:
     lines: list[str] = []
     if df.empty:
         lines.append(
@@ -2381,32 +2550,45 @@ def _build_logistics_feed_html(df: pd.DataFrame, n_lines: int = 42) -> str:
     return f'<div class="logistics-feed-outer"><div class="logistics-feed-track">{dup}</div></div>'
 
 
-@st.fragment(run_every=timedelta(seconds=2))
+@st.fragment(run_every=timedelta(seconds=4))
 def _render_live_outreach_panel() -> None:
-    vdf = _load_voter_db(str(VOTER_DB_CSV))
+    ph = st.empty()
+    ph.markdown(_command_loading_shimmer_html(), unsafe_allow_html=True)
+    t0 = time.perf_counter()
+    vdf = _load_voter_db(str(VOTER_DB_CSV), nrows=_VOTER_DB_HEAD_DEFAULT)
+    elapsed = time.perf_counter() - t0
+    ph.empty()
     n = len(vdf)
     src = html.escape(VOTER_DB_CSV.name)
     live_row = (
-        f'<span class="status-live">LIVE INGESTION</span> · {n:,} rows · <span class="status-synced">SYNCED</span>'
+        f'<span class="status-live">LIVE INGESTION</span> · head {n:,} rows in RAM · '
+        '<span class="status-synced">VIRTUALIZED</span>'
         if n
-        else '<span class="status-live">STANDBY</span> — awaiting voter_db.csv'
+        else '<span class="status-live">STANDBY</span> — bind CSV via GCSLC_VOTER_DB or place voter_db.csv in Desktop lake'
     )
-    pu_path = html.escape(str(KADUNA_DATA_2027_DIR.resolve()))
-    path_tag = "PATH OK" if KADUNA_DATA_2027_DIR.exists() else "FOLDER PENDING"
+    pu_path = html.escape(str(KADUNA_DATA_2027_DIR))
+    path_tag = "PATH OK" if KADUNA_DATA_2027_DIR.is_dir() else "FOLDER PENDING"
+    slow_note = ""
+    if elapsed > 0.5:
+        slow_note = (
+            f'<p class="outreach-csv-note" style="margin:0 0 0.45rem 0;">'
+            f"<strong>Loading</strong> shimmer armed — CSV head took {elapsed:.2f}s.</p>"
+        )
     st.markdown(
         '<div class="outreach-command-wrap"><div class="outreach-command-inner">'
         "<h3>1.5M Voter Tactical Outreach · Multi-Channel Hub</h3>"
-        '<p class="live-audit-tag"><span class="status-live">LIVE</span> Nodal Audit · voter registry stream</p>'
+        '<p class="live-audit-tag"><span class="status-live">LIVE</span> Nodal Audit · virtualized registry head</p>'
+        f'{slow_note}'
         f'<p class="pu-tactical-line">Tactical Pulse (PU level · <span class="kaduna-anchor-emerald">Kaduna anchor</span>) · '
         f'<strong class="kaduna-anchor-emerald">{PU_COUNT_KADUNA:,}</strong> PUs · '
         f'<strong>Consolidation constant {CONSOLIDATION_CONSTANT:,}</strong> · '
         f'<strong>{VOTERS_PER_PU_D3_REQUIREMENT}</strong> voters/PU (D3) · '
-        f'<code>KADUNA_Data_2027</code> · <code>{pu_path}</code> · '
+        f'<code>~/Desktop/KADUNA_Data_2027</code> · <code>{pu_path}</code> · '
         f'<span class="status-synced">{html.escape(path_tag)}</span></p>'
         f'<p class="outreach-csv-note">CSV payload: <strong>{src}</strong> · {live_row}</p>'
         '<p class="outreach-csv-note" style="margin-bottom:0.5rem;">'
-        "Logistics feed: <strong>[Time]</strong> | <strong>First Last</strong> | <strong>LGA</strong> | "
-        '<span class="status-synced">Status: SYNCED</span></p>'
+        "Logistics ticker: monospace gold · virtualized head only · full lake roller in sidebar expander."
+        "</p>"
         f"{_build_logistics_feed_html(vdf)}"
         "</div></div>",
         unsafe_allow_html=True,
@@ -2573,9 +2755,9 @@ def _render_pu_box_pack_sync_block() -> None:
             st.rerun()
 
 
-@st.fragment(run_every=timedelta(seconds=3))
+@st.fragment(run_every=timedelta(seconds=5))
 def _render_live_nodal_sidebar_line() -> None:
-    vdf = _load_voter_db(str(VOTER_DB_CSV))
+    vdf = _load_voter_db(str(VOTER_DB_CSV), nrows=96)
     if vdf.empty:
         st.markdown(
             '<p class="dt-handshake">Live Nodal Audit: <span class="status-live">STANDBY</span> — '
@@ -3307,6 +3489,7 @@ def main() -> None:
         _render_sentiment_sidebar()
         st.markdown("</div></div>", unsafe_allow_html=True)
         st.markdown(_executive_wa_gateway_sidebar_html(), unsafe_allow_html=True)
+        _render_kaduna_lake_virtualized_expander()
         st.markdown(
             '<div class="sidebar-handshake" style="margin-top:0.5rem">'
             "<b>Executive-Load-142</b><br>"
@@ -3384,7 +3567,6 @@ def main() -> None:
         unsafe_allow_html=True,
     )
 
-    _render_live_outreach_panel()
     st.markdown(
         '<div class="section-prism"><h3>OUTREACH VELOCITY · 2027 KADUNA ANCHOR · 15/15 NATIONAL SYNC</h3></div>',
         unsafe_allow_html=True,
@@ -3498,11 +3680,14 @@ def main() -> None:
             st.session_state["cien_r8"] = None
             st.rerun()
 
+    _render_live_outreach_panel()
+
     _render_executive_variance_forensic()
 
     st.caption(
-        f"CIEN Kaduna 2027 · live ingest {VOTER_DB_CSV.name} (override with GCSLC_VOTER_DB) · "
-        f"port {os.environ.get('STREAMLIT_SERVER_PORT', '9099')} · "
+        f"CIEN Kaduna 2027 · virtualized voter head · {VOTER_DB_CSV.name} @ {VOTER_DB_CSV.parent} "
+        f"(GCSLC_VOTER_DB overrides; repo voter_db.csv not auto-mounted) · "
+        f"lake ~/Desktop/KADUNA_Data_2027 · port {os.environ.get('STREAMLIT_SERVER_PORT', '9099')} · "
         "Scientific model narrative for strategic planning only."
     )
 
