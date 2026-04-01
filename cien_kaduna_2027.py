@@ -26,11 +26,11 @@ VOTER_DB_CSV = Path(os.environ.get("GCSLC_VOTER_DB", str(BASE_DIR / "voter_db.cs
 DEFAULT_EXEC_NODE0 = float(os.environ.get("GCSLC_EXEC_NODE0", "14314"))
 DEFAULT_EXEC_NODE1 = float(os.environ.get("GCSLC_EXEC_NODE1", "8507"))
 
-# WhatsApp wa.me — digits only (no +). Executive nodes 0–2; override via GCSLC_WA_NODE0/1/3.
-WA_NODE0_DIGITS = os.environ.get("GCSLC_WA_NODE0", "2341515001515")
-WA_NODE1_DIGITS = os.environ.get("GCSLC_WA_NODE1", "2341119001119")
-# Strategic Node 3 (0807 900 0900 → E.164)
-WA_NODE3_DIGITS = os.environ.get("GCSLC_WA_NODE3", "2348079000900")
+# WhatsApp wa.me — literal E.164 digits only (no +). Hard-coded; do not derive from node-ID math.
+WA_WHATSAPP_NODE0_CHAIRMAN = "2348099111515"
+WA_WHATSAPP_NODE1_EXECUTIVE = "2348099111119"
+WA_WHATSAPP_NODE2_VALIDATOR = "2348037649077"
+WA_WHATSAPP_NODE3_CONTROL = "2348079000900"
 EXECUTIVE_BRIEFING_WHATSAPP = (
     "The CIEN Kaduna 2027 Command Center is active. This digital fortress is built to ensure our 15/15 victory "
     "through precision and detail. Standing by for your sovereign signal. "
@@ -38,29 +38,32 @@ EXECUTIVE_BRIEFING_WHATSAPP = (
 )
 
 
-def _whatsapp_me_url(digits_raw: str) -> str:
-    digits = "".join(c for c in digits_raw if c.isdigit())
-    if not digits:
-        return "https://wa.me/"
-    return f"https://wa.me/{digits}?text={urllib.parse.quote(EXECUTIVE_BRIEFING_WHATSAPP, safe='')}"
+def _whatsapp_me_url(phone_digits_literal: str) -> str:
+    """https://wa.me/[NUMBER]?text=[MESSAGE] — use the exact digit string provided (no transforms)."""
+    return (
+        f"https://wa.me/{phone_digits_literal}"
+        f"?text={urllib.parse.quote(EXECUTIVE_BRIEFING_WHATSAPP, safe='')}"
+    )
 
 
 def _executive_wa_gateway_sidebar_html() -> str:
-    """Single HTML block: Galadima Center header + three stacked wa.me links (same briefing for all nodes)."""
-    u0 = html.escape(_whatsapp_me_url(WA_NODE0_DIGITS), quote=True)
-    u1 = html.escape(_whatsapp_me_url(WA_NODE1_DIGITS), quote=True)
-    u3 = html.escape(_whatsapp_me_url(WA_NODE3_DIGITS), quote=True)
+    """Galadima Center: four stacked wa.me links, identical briefing per node."""
+    u0 = html.escape(_whatsapp_me_url(WA_WHATSAPP_NODE0_CHAIRMAN), quote=True)
+    u1 = html.escape(_whatsapp_me_url(WA_WHATSAPP_NODE1_EXECUTIVE), quote=True)
+    u2 = html.escape(_whatsapp_me_url(WA_WHATSAPP_NODE2_VALIDATOR), quote=True)
+    u3 = html.escape(_whatsapp_me_url(WA_WHATSAPP_NODE3_CONTROL), quote=True)
     return f"""
 <div class="wa-gateway-wrap"><div class="wa-gateway-inner">
   <p class="wa-galadima-header">Galadima Center</p>
   <p class="wa-gateway-sub">Executive WhatsApp Gateway</p>
   <div class="wa-gateway-btn-stack">
-    <a class="wa-sidebar-wa-link" href="{u0}" target="_blank" rel="noopener noreferrer">SEND BRIEFING TO NODE 0 (+1515)</a>
-    <a class="wa-sidebar-wa-link" href="{u1}" target="_blank" rel="noopener noreferrer">SEND BRIEFING TO NODE 1 (+1119)</a>
-    <a class="wa-sidebar-wa-link" href="{u3}" target="_blank" rel="noopener noreferrer">SEND BRIEFING TO STRATEGIC NODE (+0900)</a>
+    <a class="wa-sidebar-wa-link" href="{u0}" target="_blank" rel="noopener noreferrer">SEND BRIEFING · NODE 0 (Chairman)</a>
+    <a class="wa-sidebar-wa-link" href="{u1}" target="_blank" rel="noopener noreferrer">SEND BRIEFING · NODE 1 (Executive)</a>
+    <a class="wa-sidebar-wa-link" href="{u2}" target="_blank" rel="noopener noreferrer">SEND BRIEFING · NODE 2 (Validator)</a>
+    <a class="wa-sidebar-wa-link" href="{u3}" target="_blank" rel="noopener noreferrer">SEND BRIEFING · NODE 3 (Control)</a>
   </div>
-  <p class="wa-safety-protocol">Safety: these three nodes are the only active outbound briefing targets until you manually authorize &quot;PUSH TO 1.5M NODES&quot;.</p>
-  <p class="wa-env-hint">Override numbers with GCSLC_WA_NODE0 / GCSLC_WA_NODE1 / GCSLC_WA_NODE3 (digits only).</p>
+  <p class="wa-safety-protocol">Safety: these four nodes are the only active outbound briefing targets until you manually authorize &quot;PUSH TO 1.5M NODES&quot;.</p>
+  <p class="wa-env-hint">WhatsApp targets are fixed in source (no env override).</p>
 </div></div>
 """
 
