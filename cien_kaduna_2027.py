@@ -1564,11 +1564,41 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   font-weight: 800 !important;
   letter-spacing: 0.05em;
 }
+.lt-weak {
+  color: #67E8F9 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.05em;
+}
 .lt-unverified {
   color: rgba(255, 215, 0, 0.6) !important;
   font-weight: 700 !important;
 }
 .lt-sep { color: rgba(255, 215, 0, 0.38) !important; padding: 0 0.15rem; }
+
+.performance-anchor-wrap {
+  background: #121212 !important;
+  border: 1px solid rgba(255, 215, 0, 0.28);
+  border-radius: 10px;
+  padding: 0.48rem 0.55rem 0.55rem 0.55rem;
+  margin: 0.55rem 0 0.4rem 0;
+}
+.performance-anchor-title {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  color: #FFD700 !important;
+  font-size: 0.62rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.12em !important;
+  margin: 0 0 0.35rem 0 !important;
+  text-align: center !important;
+}
+.performance-anchor-line {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  color: #FFD700 !important;
+  font-size: 0.58rem !important;
+  font-weight: 700 !important;
+  line-height: 1.4 !important;
+  margin: 0.18rem 0 !important;
+}
 
 .polling-prism-wrap {
   border-radius: 14px;
@@ -2626,6 +2656,17 @@ def _render_kaduna_lake_virtualized_expander() -> None:
             st.caption(f"Lake index pull {elapsed:.2f}s — loading shimmer shown while indexing.")
 
 
+def _performance_anchor_sidebar_html() -> str:
+    return (
+        '<div class="performance-anchor-wrap">'
+        '<p class="performance-anchor-title">PERFORMANCE ANCHOR (2023-DATE)</p>'
+        '<p class="performance-anchor-line">EDUCATION: 104 SCHOOLS</p>'
+        '<p class="performance-anchor-line">HEALTH: 255 PHCs SYNC</p>'
+        '<p class="performance-anchor-line">AGRO: 900 FERTILIZER TRUCKS</p>'
+        "</div>"
+    )
+
+
 def _nodal_stream_rail_html() -> str:
     return (
         '<div class="nodal-stream-rail" aria-label="Nodal stream">'
@@ -2714,7 +2755,7 @@ def _ticker_resolve_name_parts(norm: dict[str, str], row: pd.Series) -> str:
 
 
 def _ticker_resolve_lga(norm: dict[str, str], row: pd.Series) -> str:
-    for k in ("lga", "lga_name", "ward_lga", "local_government", "lga_name_"):
+    for k in ("lga", "lga_name", "ward_lga", "local_government", "lga_name_", "__audit_source_lga"):
         if k in norm:
             v = str(row[norm[k]]).strip()
             if v:
@@ -2744,27 +2785,39 @@ def _is_verified_phone(raw: object) -> bool:
     return len(digits) >= 10
 
 
-def _logistics_ticker_line(ts: str, name: str, lga: str, pu_id: str, phone_obf: str, verified: bool) -> str:
-    """[TIME] | SYNCED | NAME | LGA | PU-ID | +PHONE | VERIFIED | LIVE."""
-    ver = "VERIFIED" if verified else "UNVERIFIED"
-    ver_cls = "lt-verified" if verified else "lt-unverified"
+def _phone_integrity_status(raw: object) -> tuple[str, str]:
+    """
+    Nodal Integrity status lock:
+    - ACTIVE: >= 10 digits
+    - WEAK SIGNAL: 7-9 digits
+    - REVIEW: < 7 digits or missing
+    """
+    digits = "".join(c for c in str(raw) if c.isdigit())
+    n = len(digits)
+    if n >= 10:
+        return ("ACTIVE", "lt-verified")
+    if n >= 7:
+        return ("WEAK SIGNAL", "lt-weak")
+    return ("REVIEW", "lt-unverified")
+
+
+def _logistics_ticker_line(name: str, lga: str, pu_id: str, phone_obf: str, status: str, status_cls: str) -> str:
+    """National model: [NAME] | [LGA] | PU-ID:[ID] | VERIFIED:[PHONE] | [STATUS]."""
+    safe_name = name or "UNKNOWN NAME"
+    safe_lga = lga or "UNKNOWN LGA"
+    safe_pu = pu_id or "PU-UNMAPPED"
+    safe_phone = phone_obf or "000000XXX00"
     return (
         '<div class="logistics-line">'
-        f'<span class="lt-time">[{html.escape(ts)}]</span>'
+        f'<span class="lt-name">{html.escape(safe_name)}</span>'
         '<span class="lt-sep">|</span>'
-        '<span class="status-synced">SYNCED</span>'
+        f'<span class="lt-lga">{html.escape(safe_lga)}</span>'
         '<span class="lt-sep">|</span>'
-        f'<span class="lt-name">{html.escape(name)}</span>'
+        f'<span class="lt-pu">PU-ID: {html.escape(safe_pu)}</span>'
         '<span class="lt-sep">|</span>'
-        f'<span class="lt-lga">{html.escape(lga)}</span>'
+        f'<span class="lt-phone">VERIFIED: +{html.escape(safe_phone)}</span>'
         '<span class="lt-sep">|</span>'
-        f'<span class="lt-pu">{html.escape(pu_id)}</span>'
-        '<span class="lt-sep">|</span>'
-        f'<span class="lt-phone">+{html.escape(phone_obf)}</span>'
-        '<span class="lt-sep">|</span>'
-        f'<span class="{ver_cls}">{ver}</span>'
-        '<span class="lt-sep">|</span>'
-        '<span class="status-synced">LIVE</span>'
+        f'<span class="{status_cls}">{html.escape(status)}</span>'
         "</div>"
     )
 
@@ -2777,6 +2830,23 @@ def _load_lga_cien_realtime_audit_rows(max_rows_per_file: int = 50) -> pd.DataFr
         return pd.DataFrame()
     frames: list[pd.DataFrame] = []
     files = sorted(p for p in d.iterdir() if p.is_file() and p.suffix.lower() == ".xlsx")
+    # Sovereign sync priority: critical LGAs first, then the rest of the lake.
+    priority_lgas = [x[0] for x in LGA_ROWS]
+    priority_map = {
+        "".join(ch for ch in name.lower() if ch.isalnum()): idx
+        for idx, name in enumerate(priority_lgas)
+    }
+
+    def _priority_key(p: Path) -> tuple[int, int, str]:
+        stem_norm = "".join(ch for ch in p.stem.lower() if ch.isalnum())
+        best_idx = len(priority_map)
+        for lga_norm, idx in priority_map.items():
+            if lga_norm and lga_norm in stem_norm:
+                best_idx = min(best_idx, idx)
+        is_non_priority = 0 if best_idx < len(priority_map) else 1
+        return (is_non_priority, best_idx, p.name.lower())
+
+    files = sorted(files, key=_priority_key)
     for p in files:
         try:
             raw = pd.read_excel(p, nrows=max_rows_per_file, engine="openpyxl")
@@ -2834,14 +2904,11 @@ def _build_lake_master_ingest_ticker(n_lines: int = 32) -> str:
     if sample.empty:
         pool = _kaduna_lake_preview_pool()
         for _ in range(max(n_lines, 12)):
-            ts = (datetime.now() - timedelta(seconds=random.randint(0, 7200))).strftime("%H:%M:%S")
             if pool:
                 mid = f"AUTO-INGEST · {html.escape(random.choice(pool))}"
             else:
                 mid = f"MASTER INGESTION · {html.escape(str(KADUNA_DATA_2027_DIR))}"
-            lines.append(
-                _logistics_ticker_line(ts, mid, "—", "PU-UNKNOWN", "—", False)
-            )
+            lines.append(_logistics_ticker_line(mid, "KADUNA STATE", "PU-UNMAPPED", "000000XXX00", "REVIEW", "lt-unverified"))
         body = "".join(lines)
         return f'<div class="logistics-feed-outer"><div class="logistics-feed-track">{body + body}</div></div>'
 
@@ -2852,7 +2919,6 @@ def _build_lake_master_ingest_ticker(n_lines: int = 32) -> str:
 
     for _ in range(n_lines):
         r = random.choice(rows)
-        ts = (datetime.now() - timedelta(seconds=random.randint(0, 7200))).strftime("%H:%M:%S")
         name = _ticker_resolve_name_parts(norm, r)
         lga = _ticker_resolve_lga(norm, r)
         pu_id = str(r[pu_col]).strip() if pu_col is not None else "PU-UNKNOWN"
@@ -2861,11 +2927,13 @@ def _build_lake_master_ingest_ticker(n_lines: int = 32) -> str:
         if phone_col is not None:
             raw_phone = r[phone_col]
             phone_disp = _obfuscate_phone_ticker(raw_phone)
-            verified = _is_verified_phone(raw_phone)
+            if phone_disp == "—":
+                phone_disp = "000000XXX00"
+            status, status_cls = _phone_integrity_status(raw_phone)
         else:
-            phone_disp = "—"
-            verified = False
-        lines.append(_logistics_ticker_line(ts, name, lga, pu_id, phone_disp, verified))
+            phone_disp = "000000XXX00"
+            status, status_cls = ("REVIEW", "lt-unverified")
+        lines.append(_logistics_ticker_line(name, lga, pu_id, phone_disp, status, status_cls))
 
     body = "".join(lines)
     dup = body + body
@@ -2879,22 +2947,23 @@ def _build_logistics_feed_html(df: pd.DataFrame, n_lines: int = 28) -> str:
         return rail + _build_lake_master_ingest_ticker(n_lines=max(n_lines, 28))
     for _ in range(n_lines):
         r = df.sample(n=1).iloc[0]
-        ts = (datetime.now() - timedelta(seconds=random.randint(0, 7200))).strftime("%H:%M:%S")
         fn = str(r["first_name"]).strip()
         ln = str(r["last_name"]).strip()
-        name = " ".join(x for x in (fn, ln) if x).strip() or "—"
-        lga = str(r["lga"]).strip() if "lga" in r.index else "—"
+        name = " ".join(x for x in (fn, ln) if x).strip() or "UNKNOWN NAME"
+        lga = str(r["lga"]).strip() if "lga" in r.index else "UNKNOWN LGA"
         pu_id = str(r["pu_id"]).strip() if "pu_id" in r.index else "PU-UNKNOWN"
         if not pu_id:
             pu_id = "PU-UNKNOWN"
         if "number" in r.index:
             phone_raw = r["number"]
             phone_disp = _obfuscate_phone_ticker(phone_raw)
-            verified = _is_verified_phone(phone_raw)
+            if phone_disp == "—":
+                phone_disp = "000000XXX00"
+            status, status_cls = _phone_integrity_status(phone_raw)
         else:
-            phone_disp = "—"
-            verified = False
-        lines.append(_logistics_ticker_line(ts, name, lga, pu_id, phone_disp, verified))
+            phone_disp = "000000XXX00"
+            status, status_cls = ("REVIEW", "lt-unverified")
+        lines.append(_logistics_ticker_line(name, lga, pu_id, phone_disp, status, status_cls))
     body = "".join(lines)
     dup = body + body
     return rail + f'<div class="logistics-feed-outer"><div class="logistics-feed-track">{dup}</div></div>'
@@ -3851,6 +3920,7 @@ def main() -> None:
         _render_sentiment_sidebar()
         st.markdown("</div></div>", unsafe_allow_html=True)
         st.markdown(_executive_wa_gateway_sidebar_html(), unsafe_allow_html=True)
+        st.markdown(_performance_anchor_sidebar_html(), unsafe_allow_html=True)
         _render_kaduna_lake_virtualized_expander()
         st.markdown(
             '<div class="sidebar-handshake" style="margin-top:0.5rem">'
