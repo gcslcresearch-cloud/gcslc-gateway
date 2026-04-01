@@ -1622,7 +1622,7 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   box-shadow: inset 0 0 12px rgba(255, 215, 0, 0.06);
 }
 .logistics-feed-track {
-  animation: logistics-feed-scroll 5s linear infinite;
+  animation: logistics-feed-scroll 12s linear infinite;
 }
 .logistics-line {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
@@ -3277,7 +3277,8 @@ def _render_live_outreach_panel() -> None:
         f'<span class="status-synced">{html.escape(path_tag)}</span></p>'
         f'<p class="outreach-csv-note">CSV payload: <strong>{src}</strong> · {live_row}</p>'
         '<p class="outreach-csv-note" style="margin-bottom:0.5rem;">'
-        "Logistics ticker: monospace gold · names · ward · LGA · NODAL STREAM rail when PATH OK."
+        "Logistics ticker: monospace gold · names · LGA · nodal integrity — 12s scroll glide · "
+        "5s panel refresh (live data). NODAL STREAM rail when PATH OK."
         "</p>"
         f"{_build_logistics_feed_html(vdf)}"
         "</div></div>",
