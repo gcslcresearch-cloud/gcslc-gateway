@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import html
+import math
 import os
 import random
 import time
@@ -21,6 +22,42 @@ os.environ.setdefault("STREAMLIT_SERVER_FILE_WATCHER_TYPE", "none")
 
 BASE_DIR = Path(__file__).resolve().parent
 VOTER_DB_CSV = Path(os.environ.get("GCSLC_VOTER_DB", str(BASE_DIR / "voter_db.csv")))
+# Tactical PU register + state data lake (override path if the folder lives elsewhere)
+KADUNA_DATA_2027_DIR = Path(os.environ.get("GCSLC_KADUNA_DATA_2027", str(BASE_DIR / "KADUNA_Data_2027")))
+# Kaduna anchor (not national PU total)
+PU_COUNT_KADUNA = 8_012
+KADUNA_VOTER_TARGET = 1_500_000
+NATIONAL_MANDATE_TOTAL = 20_700_000
+KADUNA_NATIONAL_CONTRIBUTION_PCT = 7.25
+KADUNA_EMERALD = "#046A38"
+_VOTERS_PER_PU_KADUNA = KADUNA_VOTER_TARGET / float(PU_COUNT_KADUNA)
+BUFFER_20_7M_LABEL = "20.7M"
+
+CHANNEL_OPTIONS: list[str] = [
+    "WhatsApp/SMS (Primary)",
+    "TikTok (Mass Mobilization)",
+    "X / FB / IG (Public Pulse)",
+]
+
+
+def _format_master_reminder_for_channels(raw: str, channels: list[str]) -> dict[str, str]:
+    """Chairman reminder → channel-specific copy (same core message, channel-native formatting)."""
+    raw = (raw or "").strip()
+    if not raw:
+        return {c: "" for c in channels}
+    brand = "CIEN Kaduna 2027"
+    out: dict[str, str] = {}
+    for c in channels:
+        if c == "WhatsApp/SMS (Primary)":
+            out[c] = f"【{brand}】{raw}\n— Reply CONFIRM · Polling Unit ready."
+        elif c == "TikTok (Mass Mobilization)":
+            out[c] = f"{raw} · {brand} #Kaduna2027 #Galadima #VoteSmart #15of15"
+        elif c == "X / FB / IG (Public Pulse)":
+            out[c] = f"[Public Pulse] {raw} · {brand} #Kaduna2027 #CIEN"
+        else:
+            out[c] = f"{brand}: {raw}"
+    return out
+
 
 # Executive Test Module — Node 0 (Chairman) / Node 1 (His Excellency); override via env or UI
 DEFAULT_EXEC_NODE0 = float(os.environ.get("GCSLC_EXEC_NODE0", "14314"))
@@ -1204,6 +1241,103 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   padding-top: 0.45rem !important;
 }
 
+/* 20.7M buffer — gold on matte black (OLED) */
+.buffer-20m-matte {
+  background: #121212 !important;
+  border: 1px solid rgba(255, 215, 0, 0.38);
+  border-radius: 10px;
+  padding: 0.42rem 0.55rem;
+  margin: 0.35rem 0 0.55rem 0;
+  text-align: center;
+}
+.buffer-20m-gold {
+  font-family: 'Goldman', sans-serif !important;
+  color: #FFD700 !important;
+  font-weight: 700 !important;
+  font-size: 0.78rem !important;
+  letter-spacing: 0.1em !important;
+  margin: 0 !important;
+  text-shadow: none !important;
+}
+.buffer-20m-live {
+  color: #00F5FF !important;
+  font-weight: 700 !important;
+}
+.broadcast-switchboard-inner h4 {
+  font-family: 'Goldman', sans-serif !important;
+  color: #FFD700 !important;
+  font-size: 0.82rem !important;
+  margin: 0 0 0.45rem 0 !important;
+  text-align: center;
+  letter-spacing: 0.08em;
+}
+.csv-payload-compact {
+  margin: 0 !important;
+  font-size: 0.7rem !important;
+}
+.csv-payload-compact code {
+  color: #00E5FF !important;
+  font-weight: 600 !important;
+  word-break: break-all;
+}
+.pu-tactical-line {
+  font-family: 'Goldman', sans-serif !important;
+  font-size: 0.74rem !important;
+  color: rgba(0, 229, 255, 0.92) !important;
+  margin: 0 0 0.55rem 0 !important;
+  line-height: 1.45 !important;
+}
+.pu-tactical-line code {
+  color: #D4AF37 !important;
+  font-size: 0.68rem !important;
+}
+.kaduna-anchor-emerald {
+  color: #046A38 !important;
+  font-weight: 800 !important;
+  text-shadow: none !important;
+}
+.pu-box-pack-line {
+  font-family: 'Goldman', sans-serif !important;
+  font-size: 0.64rem !important;
+  margin: 0.4rem 0 0.25rem 0 !important;
+  line-height: 1.4 !important;
+  border-top: 1px solid rgba(4, 106, 56, 0.35);
+  padding-top: 0.4rem !important;
+}
+.kaduna-emerald-label {
+  color: #FFD700 !important;
+}
+.pu-box-sealed {
+  color: #046A38 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.06em;
+}
+.pu-box-await {
+  color: #00F5FF !important;
+  font-weight: 700 !important;
+}
+.kaduna-pu-node {
+  color: #046A38 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.04em;
+}
+[data-testid="stSidebar"] .kaduna-pu-node {
+  color: #046A38 !important;
+}
+.outreach-velocity-wrap {
+  border-radius: 12px;
+  border: 1px solid rgba(255, 215, 0, 0.28);
+  background: rgba(0, 0, 34, 0.55);
+  padding: 0.55rem 0.65rem;
+  margin-top: 0.55rem;
+}
+[data-testid="stSidebar"] .buffer-20m-gold {
+  color: #FFD700 !important;
+}
+[data-testid="stSidebar"] .buffer-20m-live {
+  color: #00F5FF !important;
+}
+
 .exec-forensic-muted {
   margin-top: 0.5rem;
   padding-top: 0.35rem;
@@ -1336,11 +1470,18 @@ def _render_live_outreach_panel() -> None:
         if n
         else '<span class="status-live">STANDBY</span> — awaiting voter_db.csv'
     )
+    pu_path = html.escape(str(KADUNA_DATA_2027_DIR.resolve()))
+    path_tag = "PATH OK" if KADUNA_DATA_2027_DIR.exists() else "FOLDER PENDING"
     st.markdown(
         '<div class="outreach-command-wrap"><div class="outreach-command-inner">'
-        "<h3>1.5M Voter Tactical Outreach · Logistics Command</h3>"
+        "<h3>1.5M Voter Tactical Outreach · Multi-Channel Hub</h3>"
         '<p class="live-audit-tag"><span class="status-live">LIVE</span> Nodal Audit · voter registry stream</p>'
-        f'<p class="outreach-csv-note">Source: <strong>{src}</strong> · {live_row}</p>'
+        f'<p class="pu-tactical-line">Tactical Pulse (PU level · <span class="kaduna-anchor-emerald">Kaduna anchor</span>) · '
+        f'<strong class="kaduna-anchor-emerald">{PU_COUNT_KADUNA:,}</strong> PUs · '
+        f'1.5M voter target across nodes · '
+        f'<code>KADUNA_Data_2027</code> · <code>{pu_path}</code> · '
+        f'<span class="status-synced">{html.escape(path_tag)}</span></p>'
+        f'<p class="outreach-csv-note">CSV payload: <strong>{src}</strong> · {live_row}</p>'
         '<p class="outreach-csv-note" style="margin-bottom:0.5rem;">'
         "Logistics feed: <strong>[Time]</strong> | <strong>First Last</strong> | <strong>LGA</strong> | "
         '<span class="status-synced">Status: SYNCED</span></p>'
@@ -1348,6 +1489,103 @@ def _render_live_outreach_panel() -> None:
         "</div></div>",
         unsafe_allow_html=True,
     )
+
+
+@st.fragment(run_every=timedelta(milliseconds=450))
+def _render_outreach_velocity_block() -> None:
+    """Real-time outreach velocity after manual PUSH — 1.5M voters across 8,012 Kaduna PU nodes."""
+    t0 = st.session_state.get("cien_push_velocity_t0")
+    st.markdown('<div class="outreach-velocity-wrap">', unsafe_allow_html=True)
+    if t0 is None:
+        st.metric(
+            "Outreach Velocity (voters/min)",
+            "—",
+            help="Authorize PUSH TO 1.5M NODES to arm live velocity toward 1.5M voters / 8,012 PUs",
+        )
+        st.caption(
+            f"Standby · Kaduna anchor {PU_COUNT_KADUNA:,} PUs · {_VOTERS_PER_PU_KADUNA:,.1f} voters/PU nominal"
+        )
+        st.markdown("</div>", unsafe_allow_html=True)
+        return
+    elapsed = time.monotonic() - float(t0)
+    ramp = 1.0 - math.exp(-elapsed / 5.0)
+    peak_pu_per_min = min(float(PU_COUNT_KADUNA) * 0.08, 640.0)
+    pu_per_min = max(0, int(peak_pu_per_min * ramp + random.uniform(0, 7)))
+    voters_per_min = max(0, int(pu_per_min * _VOTERS_PER_PU_KADUNA))
+    st.metric(
+        "Outreach Velocity",
+        f"{voters_per_min:,} voters/min",
+        delta=f"{pu_per_min:,} PU handshakes/min · LIVE",
+    )
+    st.caption(
+        f"1.5M voter target · {PU_COUNT_KADUNA:,} Kaduna PUs · KADUNA_Data_2027 · multi-channel switchboard"
+    )
+    st.markdown("</div>", unsafe_allow_html=True)
+
+
+def _render_national_contribution_gauge() -> None:
+    """15/15 — Kaduna anchoring 7.25% of the 20.7M national mandate."""
+    fig = go.Figure(
+        go.Indicator(
+            mode="gauge+number",
+            value=KADUNA_NATIONAL_CONTRIBUTION_PCT,
+            number={"suffix": "%", "valueformat": ".2f"},
+            title={
+                "text": "National Contribution<br><sup>20.7M mandate · Kaduna anchor</sup>",
+                "font": {"size": 14, "color": GOLD, "family": "Goldman"},
+            },
+            gauge={
+                "axis": {"range": [0, 15], "tickwidth": 1, "tickcolor": "rgba(212,175,55,0.45)"},
+                "bar": {"color": KADUNA_EMERALD},
+                "bgcolor": "rgba(0,0,34,0.75)",
+                "borderwidth": 1,
+                "bordercolor": "rgba(212,175,55,0.35)",
+                "steps": [
+                    {"range": [0, KADUNA_NATIONAL_CONTRIBUTION_PCT], "color": "rgba(4, 106, 56, 0.35)"},
+                ],
+                "threshold": {
+                    "line": {"color": GOLD, "width": 3},
+                    "thickness": 0.85,
+                    "value": KADUNA_NATIONAL_CONTRIBUTION_PCT,
+                },
+            },
+        )
+    )
+    fig.update_layout(
+        height=240,
+        paper_bgcolor=NAVY_DEEP,
+        margin=dict(t=56, b=24, l=28, r=28),
+        font=dict(family="Goldman", color=GOLD),
+    )
+    st.plotly_chart(
+        fig,
+        use_container_width=True,
+        key="cien_national_contribution_gauge",
+        config={"displayModeBar": False, "responsive": True},
+    )
+
+
+def _render_pu_box_pack_sync_block() -> None:
+    """Live Nodal Audit — PU box-pack status; SEALED after Ward Captain acknowledgment."""
+    st.session_state.setdefault("cien_ward_acknowledged", False)
+    ack = bool(st.session_state.get("cien_ward_acknowledged"))
+    status_html = (
+        '<span class="pu-box-sealed">SEALED</span>'
+        if ack
+        else '<span class="pu-box-await">AWAITING WARD ACK</span>'
+    )
+    st.markdown(
+        '<p class="pu-box-pack-line kaduna-emerald-label">PU Box-Pack Status · ' + status_html + "</p>",
+        unsafe_allow_html=True,
+    )
+    if not ack:
+        if st.button(
+            "Ward Captain · acknowledge synchronization",
+            key="cien_ward_ack_btn",
+            use_container_width=True,
+        ):
+            st.session_state["cien_ward_acknowledged"] = True
+            st.rerun()
 
 
 @st.fragment(run_every=timedelta(seconds=3))
@@ -1361,10 +1599,15 @@ def _render_live_nodal_sidebar_line() -> None:
         )
         return
     r = vdf.sample(n=1).iloc[0]
+    fn = str(r["first_name"]).strip()
+    ln = str(r["last_name"]).strip()
+    lga = str(r["lga"]).strip()
+    pu_id = 1 + (abs(hash((fn, ln, lga))) % PU_COUNT_KADUNA)
     st.markdown(
         '<p class="dt-handshake">Live Nodal Audit · <span class="status-synced">SYNCED</span> · '
-        f"{html.escape(str(r['first_name']))} {html.escape(str(r['last_name']))} · "
-        f"{html.escape(str(r['lga']))}</p>",
+        f'<span class="kaduna-pu-node">PU-{pu_id:05d}</span> · '
+        f"{html.escape(fn)} {html.escape(ln)} · "
+        f"{html.escape(lga)}</p>",
         unsafe_allow_html=True,
     )
 
@@ -1617,6 +1860,7 @@ def main() -> None:
         initial_sidebar_state="expanded",
     )
     st.markdown(f"<style>{_CSS}</style>", unsafe_allow_html=True)
+    st.session_state.setdefault("cien_mc_channels", list(CHANNEL_OPTIONS))
 
     with st.sidebar:
         st.caption(
@@ -1641,11 +1885,47 @@ def main() -> None:
             unsafe_allow_html=True,
         )
         _render_live_nodal_sidebar_line()
+        _render_pu_box_pack_sync_block()
         st.markdown("</div></div>", unsafe_allow_html=True)
         st.markdown(
-            '<div class="polling-prism-wrap"><div class="polling-prism-inner">',
+            '<div class="buffer-20m-matte"><p class="buffer-20m-gold">'
+            f"{BUFFER_20_7M_LABEL} Buffer · <span class=\"buffer-20m-live\">SECURE · LIVE</span></p></div>",
             unsafe_allow_html=True,
         )
+        st.markdown(
+            '<div class="polling-prism-wrap"><div class="polling-prism-inner broadcast-switchboard-inner">',
+            unsafe_allow_html=True,
+        )
+        st.markdown("<h4>Broadcast Switchboard</h4>", unsafe_allow_html=True)
+        sb_csv, sb_ch = st.columns(2)
+        with sb_csv:
+            st.caption("CSV payload")
+            st.markdown(
+                f'<p class="csv-payload-compact"><code>{html.escape(VOTER_DB_CSV.name)}</code></p>',
+                unsafe_allow_html=True,
+            )
+        with sb_ch:
+            st.multiselect(
+                "Channel selector",
+                CHANNEL_OPTIONS,
+                key="cien_mc_channels",
+            )
+        st.text_area(
+            "Master Election Day Reminder",
+            key="cien_master_reminder",
+            height=80,
+            placeholder="Chairman Election Day reminder — auto-formatted for every selected channel.",
+        )
+        _ch_sel = st.session_state.get("cien_mc_channels") or list(CHANNEL_OPTIONS)
+        _rem = (st.session_state.get("cien_master_reminder") or "").strip()
+        _fm = _format_master_reminder_for_channels(_rem, _ch_sel)
+        with st.expander("Multi-channel payloads (preview)", expanded=bool(_rem)):
+            if not _rem:
+                st.caption("Type a reminder above to generate channel-ready copy.")
+            else:
+                for lab, body in _fm.items():
+                    st.markdown(f"**{html.escape(lab)}**")
+                    st.code(body, language=None)
         st.text_area(
             "Broadcast Strategic Question",
             key="cien_bcast_q",
@@ -1658,6 +1938,7 @@ def main() -> None:
             n = random.randint(18, min(40, 100 - y - 6))
             u = float(100 - y - n)
             st.session_state["cien_poll_mono_t0"] = time.monotonic()
+            st.session_state["cien_push_velocity_t0"] = time.monotonic()
             st.session_state["cien_poll_targets"] = {
                 "Yes": float(y),
                 "No": float(n),
@@ -1741,6 +2022,15 @@ def main() -> None:
     )
 
     _render_live_outreach_panel()
+    st.markdown(
+        '<div class="section-prism"><h3>OUTREACH VELOCITY · NATIONAL CONTRIBUTION (15/15)</h3></div>',
+        unsafe_allow_html=True,
+    )
+    _ov_l, _ov_r = st.columns([1, 1])
+    with _ov_l:
+        _render_outreach_velocity_block()
+    with _ov_r:
+        _render_national_contribution_gauge()
 
     st.markdown(
         '<div class="section-prism"><h3>SENATORIAL COMMAND GRID</h3></div>',
