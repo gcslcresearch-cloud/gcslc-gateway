@@ -151,6 +151,29 @@ def _migrate_mc_channels_session() -> None:
     st.session_state["cien_mc_channels"] = out or list(CHANNEL_OPTIONS)
 
 
+def _channel_lane_tiles_html(selected: list[str] | None) -> str:
+    """Broadcast Switchboard lane cards — cyan border/glow when lane is selected (multiselect)."""
+    if not isinstance(selected, list):
+        selected = list(CHANNEL_OPTIONS)
+    sel = set(selected)
+
+    def one(option: str, emoji: str, title: str, sub: str) -> str:
+        active = " channel-lane-tile-active" if option in sel else ""
+        return (
+            f'<div class="channel-lane-tile{active}">'
+            f'<span class="channel-lane-emoji" aria-hidden="true">{emoji}</span>'
+            f'<span class="channel-lane-title">{html.escape(title)}</span>'
+            f'<span class="channel-lane-sub">{html.escape(sub)}</span></div>'
+        )
+
+    inner = (
+        one(CHANNEL_OPTION_PRIVATE, "📱", "SMS / WA", "The Private Strike")
+        + one(CHANNEL_OPTION_GRASSROOTS, "🎥", "Grassroots", "TikTok · FB · IG")
+        + one(CHANNEL_OPTION_SOVEREIGN, "🏛️", "Sovereign", "X · LinkedIn")
+    )
+    return f'<div class="channel-lane-icons-row">{inner}</div>'
+
+
 def _format_reminder_for_lane(channel: str, raw: str) -> str:
     """Single-lane formatted payload (Chairman reminder)."""
     brand = "CIEN Kaduna 2027"
@@ -2065,6 +2088,42 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   line-height: 1.2;
   display: block;
 }
+.channel-lane-tile-active {
+  border: 2px solid #00E5FF !important;
+  box-shadow:
+    0 0 14px rgba(0, 229, 255, 0.48),
+    0 0 6px rgba(0, 229, 255, 0.22),
+    inset 0 0 0 1px rgba(255, 215, 0, 0.14) !important;
+}
+[data-testid="stSidebar"] .channel-lane-tile-active .channel-lane-title {
+  color: #FFD700 !important;
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.42);
+}
+[data-testid="stSidebar"] .execute-master-strike-wrap {
+  margin-top: 0.45rem;
+  margin-bottom: 0.15rem;
+}
+[data-testid="stSidebar"] .execute-master-strike-wrap button {
+  background: #121212 !important;
+  color: #FFD700 !important;
+  font-weight: 800 !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  letter-spacing: 0.06em !important;
+  border: 2px solid #FFD700 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.22) !important;
+}
+[data-testid="stSidebar"] .execute-master-strike-wrap button:hover:not(:disabled) {
+  border-color: #00E5FF !important;
+  box-shadow: 0 0 16px rgba(0, 229, 255, 0.35) !important;
+  color: #00E5FF !important;
+}
+[data-testid="stSidebar"] .execute-master-strike-wrap button:disabled {
+  border-color: rgba(255, 215, 0, 0.32) !important;
+  color: rgba(255, 215, 0, 0.42) !important;
+  box-shadow: none !important;
+  opacity: 0.72 !important;
+}
 .channel-selector-gold-label label,
 .channel-selector-gold-label span {
   color: #FFD700 !important;
@@ -3353,7 +3412,7 @@ def _victory_donut_figure() -> go.Figure:
                 direction="clockwise",
                 rotation=68,
                 pull=pull,
-                domain=dict(x=[0.02, 0.62], y=[0.08, 0.92]),
+                domain=dict(x=[0.0, 0.52], y=[0.08, 0.92]),
                 marker=dict(colors=colors, line=dict(color="#121212", width=2)),
                 textinfo="none",
                 hovertemplate="<b>%{label}</b><br>%{value:,} votes · %{percent}<extra></extra>",
@@ -3374,22 +3433,22 @@ def _victory_donut_figure() -> go.Figure:
             orientation="v",
             yanchor="middle",
             y=0.5,
-            x=0.645,
+            x=0.555,
             xanchor="left",
             font=dict(family=mono, size=10, color="#FFD700"),
             bgcolor="rgba(18,18,18,0.9)",
             bordercolor="rgba(0,229,255,0.28)",
             borderwidth=1,
         ),
-        margin=dict(t=56, b=20, l=8, r=8),
+        margin=dict(t=56, b=20, l=22, r=24),
         height=300,
         annotations=[
             dict(
                 text=(
-                    f"<b style='color:#FFD700;font-size:18px'>{KADUNA_VOTER_TARGET:,}</b><br>"
-                    "<span style='color:#00E5FF;font-size:9px;letter-spacing:0.14em'>COMMAND · DB</span>"
+                    f"<b style='color:#FFD700;font-size:17px'>{KADUNA_VOTER_TARGET:,}</b><br>"
+                    "<span style='color:#00E5FF;font-size:9px;letter-spacing:0.12em'>COMMAND · DB</span>"
                 ),
-                x=0.32,
+                x=0.26,
                 y=0.5,
                 xref="paper",
                 yref="paper",
@@ -4171,20 +4230,6 @@ def main() -> None:
             unsafe_allow_html=True,
         )
         st.markdown('<div class="channel-strike-board">', unsafe_allow_html=True)
-        st.markdown(
-            '<div class="channel-lane-icons-row">'
-            '<div class="channel-lane-tile"><span class="channel-lane-emoji" aria-hidden="true">📱</span>'
-            '<span class="channel-lane-title">SMS / WA</span>'
-            '<span class="channel-lane-sub">The Private Strike</span></div>'
-            '<div class="channel-lane-tile"><span class="channel-lane-emoji" aria-hidden="true">🎥</span>'
-            '<span class="channel-lane-title">Grassroots</span>'
-            '<span class="channel-lane-sub">TikTok · FB · IG</span></div>'
-            '<div class="channel-lane-tile"><span class="channel-lane-emoji" aria-hidden="true">🏛️</span>'
-            '<span class="channel-lane-title">Sovereign</span>'
-            '<span class="channel-lane-sub">X · LinkedIn</span></div>'
-            "</div>",
-            unsafe_allow_html=True,
-        )
         st.markdown('<div class="channel-selector-gold-label">', unsafe_allow_html=True)
         st.multiselect(
             "Strike lanes (select active channels)",
@@ -4192,7 +4237,14 @@ def main() -> None:
             key="cien_mc_channels",
             placeholder="Choose lanes for outbound routing",
         )
-        st.markdown("</div></div>", unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+        _mc_sel = st.session_state.get("cien_mc_channels")
+        st.markdown(
+            _channel_lane_tiles_html(_mc_sel if isinstance(_mc_sel, list) else None),
+            unsafe_allow_html=True,
+        )
+        st.caption("Active lanes: cyan border · primed for broadcast kinetics.")
+        st.markdown("</div>", unsafe_allow_html=True)
         st.text_area(
             "Master Election Day Reminder",
             key="cien_master_reminder",
@@ -4212,6 +4264,24 @@ def main() -> None:
                         unsafe_allow_html=True,
                     )
                     st.code(body, language=None)
+        st.markdown('<div class="execute-master-strike-wrap">', unsafe_allow_html=True)
+        _exec_strike = st.button(
+            "🚀 EXECUTE MASTER STRIKE",
+            disabled=not bool(_rem),
+            key="cien_execute_master_strike",
+            use_container_width=True,
+            help="Requires Chairman reminder text. Activates broadcast kinetics for selected strike lanes.",
+        )
+        st.markdown("</div>", unsafe_allow_html=True)
+        if _exec_strike:
+            _lanes = st.session_state.get("cien_mc_channels")
+            _lane_txt = ", ".join(_lanes) if isinstance(_lanes, list) and _lanes else "—"
+            st.session_state["cien_last_master_strike_ts"] = time.monotonic()
+            st.session_state["cien_last_master_strike_reminder"] = _rem
+            st.success(
+                f"Master strike executed · primed lanes: {_lane_txt}. "
+                "Payloads above are ready for outbound routing."
+            )
         _render_opposition_threat_radar_sidebar()
         st.text_area(
             "Broadcast Strategic Question",
