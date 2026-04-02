@@ -124,6 +124,15 @@ DEFAULT_SENDER_ID = str(os.environ.get("GCSLC_DEFAULT_SENDER_ID", "Galadiman_R")
 SMS_SEGMENT_LIMIT_GSM = 160
 SMS_SEGMENT_LIMIT_UNICODE = 70
 
+# Secure payment / wallet (GCSLC) — configure checkout & bank via env
+GCSLC_WALLET_STRIKE_TOPUP_NGN = 50_000
+GCSLC_PAYMENT_PURPOSE_URBAN_CORE = "Urban-Core Strike (5 LGAs)"
+GCSLC_PAYSTACK_CHECKOUT_URL = str(os.environ.get("GCSLC_PAYSTACK_CHECKOUT_URL", "")).strip()
+GCSLC_FLUTTERWAVE_CHECKOUT_URL = str(os.environ.get("GCSLC_FLUTTERWAVE_CHECKOUT_URL", "")).strip()
+GCSLC_PAYMENT_PUBLIC_LINK = str(os.environ.get("GCSLC_PAYMENT_PUBLIC_LINK", "")).strip()
+GCSLC_BANK_ACCOUNT_NUMBER = str(os.environ.get("GCSLC_BANK_ACCOUNT_NUMBER", "")).strip()
+GCSLC_BANK_NAME = str(os.environ.get("GCSLC_BANK_NAME", "GCSLC Treasury — set GCSLC_BANK_NAME")).strip()
+
 CHANNEL_OPTION_PRIVATE = "📱 SMS/WA (The Private Strike)"
 CHANNEL_OPTION_GRASSROOTS = "🎥 Grassroots (TikTok/FB/IG)"
 CHANNEL_OPTION_SOVEREIGN = "🏛️ Sovereign (X/LinkedIn)"
@@ -204,6 +213,138 @@ def _render_strike_tile_kinetic_bridge() -> None:
 </script>
         """,
         height=0,
+    )
+
+
+def _gcslc_wallet_balance_int() -> int:
+    try:
+        return int(st.session_state.get("cien_wallet_balance", 0) or 0)
+    except (TypeError, ValueError):
+        return 0
+
+
+def _resolve_gcslc_logo_path() -> Path | None:
+    for name in ("gcslc_logo.png", "GCSLC_logo.png", "logo.png"):
+        p = BASE_DIR / "assets" / name
+        if p.is_file():
+            return p
+    return None
+
+
+def _gcslc_apply_payment_confirmed() -> None:
+    st.session_state["cien_wallet_balance"] = int(GCSLC_WALLET_STRIKE_TOPUP_NGN)
+    st.session_state["finance_handshake_queued"] = False
+    st.session_state["cien_payment_modal_blocked"] = False
+
+
+def _gcslc_render_payment_brand_header() -> None:
+    _lp = _resolve_gcslc_logo_path()
+    if _lp is not None:
+        st.image(str(_lp), width=160)
+    else:
+        st.markdown(
+            '<div class="gcslc-logo-fallback" aria-label="GCSLC">'
+            "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 56' width='200' height='56'>"
+            "<rect width='200' height='56' rx='10' fill='#121212' stroke='#FFD700' stroke-width='2'/>"
+            "<text x='100' y='36' text-anchor='middle' fill='#FFD700' font-family='Arial Black, sans-serif' "
+            "font-size='22' font-weight='800'>GCSLC</text></svg></div>",
+            unsafe_allow_html=True,
+        )
+    st.markdown(
+        '<div class="gcslc-payment-logo-wrap">'
+        '<span class="gcslc-secure-txn-badge">Secure Transaction</span></div>',
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        f"<h3 style='margin:0.35rem 0 0.15rem 0;color:#FFD700;'>₦{GCSLC_WALLET_STRIKE_TOPUP_NGN:,.2f}</h3>",
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        f"<p style='margin:0;color:#00E5FF;font-weight:700;'>{html.escape(GCSLC_PAYMENT_PURPOSE_URBAN_CORE)}</p>",
+        unsafe_allow_html=True,
+    )
+
+
+def _gcslc_render_payment_provider_row() -> None:
+    st.caption("Providers · opens in a new browser tab where configured.")
+    r1, r2, r3 = st.columns(3)
+    with r1:
+        if GCSLC_PAYSTACK_CHECKOUT_URL:
+            st.link_button("Paystack checkout", GCSLC_PAYSTACK_CHECKOUT_URL, use_container_width=True)
+        else:
+            st.caption("Paystack URL unset (`GCSLC_PAYSTACK_CHECKOUT_URL`).")
+    with r2:
+        if GCSLC_FLUTTERWAVE_CHECKOUT_URL:
+            st.link_button("Flutterwave checkout", GCSLC_FLUTTERWAVE_CHECKOUT_URL, use_container_width=True)
+        else:
+            st.caption("Flutterwave URL unset (`GCSLC_FLUTTERWAVE_CHECKOUT_URL`).")
+    with r3:
+        if GCSLC_PAYMENT_PUBLIC_LINK:
+            st.link_button("GCSLC payment link", GCSLC_PAYMENT_PUBLIC_LINK, use_container_width=True)
+        else:
+            st.caption("Public link unset (`GCSLC_PAYMENT_PUBLIC_LINK`).")
+
+
+def _gcslc_render_bank_transfer_block() -> None:
+    acct = GCSLC_BANK_ACCOUNT_NUMBER.strip() or "— set GCSLC_BANK_ACCOUNT_NUMBER —"
+    st.markdown("**Direct bank transfer**")
+    st.code(f"{GCSLC_BANK_NAME}\nAccount: {acct}", language=None)
+
+
+def _gcslc_render_payment_sheet(*, confirm_key_suffix: str) -> None:
+    _gcslc_render_payment_brand_header()
+    _gcslc_render_payment_provider_row()
+    _gcslc_render_bank_transfer_block()
+    st.divider()
+    if st.button(
+        "✅ Payment completed — credit ₦50,000 to wallet",
+        key=f"cien_payment_confirmed_{confirm_key_suffix}",
+        use_container_width=True,
+        type="primary",
+    ):
+        _gcslc_apply_payment_confirmed()
+        st.rerun()
+    if st.button(
+        "Pop-up blocked — show cyan wiring in sidebar",
+        key=f"cien_payment_modal_blocked_ack_{confirm_key_suffix}",
+        use_container_width=True,
+    ):
+        st.session_state["cien_payment_modal_blocked"] = True
+        st.session_state["finance_handshake_queued"] = True
+        st.rerun()
+
+
+@st.dialog("GCSLC · Secure Payment")
+def _gcslc_secure_payment_modal() -> None:
+    """Pop-up payment sheet (Paystack / Flutterwave / bank) — finance_handshake_queued path."""
+    _gcslc_render_payment_sheet(confirm_key_suffix="dialog")
+
+
+def _render_payment_sidebar_cyan_fallback() -> None:
+    if not st.session_state.get("cien_payment_modal_blocked"):
+        return
+    if _gcslc_wallet_balance_int() >= GCSLC_WALLET_STRIKE_TOPUP_NGN:
+        return
+    acct = GCSLC_BANK_ACCOUNT_NUMBER.strip() or "CONFIGURE GCSLC_BANK_ACCOUNT_NUMBER"
+    link = (
+        GCSLC_PAYMENT_PUBLIC_LINK
+        or GCSLC_PAYSTACK_CHECKOUT_URL
+        or GCSLC_FLUTTERWAVE_CHECKOUT_URL
+        or ""
+    )
+    link_disp = link if link else "CONFIGURE GCSLC_PAYMENT_PUBLIC_LINK (or Paystack / Flutterwave URL)"
+    href = link if link.lower().startswith(("http://", "https://")) else "#"
+    st.markdown(
+        '<div class="payment-fallback-cyan">'
+        '<p class="pfc-title">POP-UP BLOCKED · DIRECT FUNDING</p>'
+        f'<p class="pfc-label">Account number</p>'
+        f'<p class="pfc-acct">{html.escape(acct)}</p>'
+        f'<p class="pfc-label">Payment link</p>'
+        f'<p class="pfc-link"><a href="{html.escape(href, quote=True)}" target="_blank" rel="noopener noreferrer">'
+        f"{html.escape(link_disp)}</a></p>"
+        f'<p class="pfc-foot">Complete payment, then use <strong>Payment completed</strong> in the secure sheet.</p>'
+        "</div>",
+        unsafe_allow_html=True,
     )
 
 
@@ -2285,6 +2426,75 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   color: rgba(255, 215, 0, 0.42) !important;
   box-shadow: none !important;
   opacity: 0.72 !important;
+}
+[data-testid="stSidebar"] .execute-master-strike-wrap.execute-strike-wallet-funded button {
+  background: linear-gradient(180deg, #2a2200, #121212) !important;
+  color: #FFD700 !important;
+  border-color: #FFD700 !important;
+  box-shadow: 0 0 22px rgba(255, 215, 0, 0.55), 0 0 42px rgba(255, 215, 0, 0.2) !important;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+}
+[data-testid="stSidebar"] .execute-master-strike-wrap.execute-strike-wallet-funded button:hover:not(:disabled) {
+  border-color: #00E5FF !important;
+  box-shadow: 0 0 24px rgba(0, 229, 255, 0.48) !important;
+  color: #00E5FF !important;
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.35);
+}
+.gcslc-payment-logo-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+  margin-bottom: 0.2rem;
+}
+.gcslc-secure-txn-badge {
+  display: inline-block;
+  padding: 0.22rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #1a1200 !important;
+  background: linear-gradient(135deg, #ffec80, #ffd700, #e6ac00);
+  border: 1px solid rgba(255, 215, 0, 0.95);
+  box-shadow: 0 0 16px rgba(255, 215, 0, 0.5);
+}
+[data-testid="stSidebar"] .payment-fallback-cyan {
+  margin: 0.65rem 0 0.45rem 0;
+  padding: 0.7rem 0.55rem;
+  border-radius: 11px;
+  border: 1px solid rgba(0, 229, 255, 0.5);
+  background: rgba(0, 229, 255, 0.07);
+}
+[data-testid="stSidebar"] .payment-fallback-cyan .pfc-title {
+  color: #00e5ff !important;
+  font-weight: 900;
+  font-size: 0.8rem;
+  letter-spacing: 0.07em;
+  margin: 0 0 0.55rem 0;
+}
+[data-testid="stSidebar"] .payment-fallback-cyan .pfc-label {
+  color: rgba(0, 229, 255, 0.78) !important;
+  font-size: 0.66rem;
+  margin: 0.4rem 0 0.12rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+[data-testid="stSidebar"] .payment-fallback-cyan .pfc-acct,
+[data-testid="stSidebar"] .payment-fallback-cyan .pfc-link,
+[data-testid="stSidebar"] .payment-fallback-cyan .pfc-link a {
+  color: #00e5ff !important;
+  font-size: 1.4rem !important;
+  font-weight: 800 !important;
+  line-height: 1.28 !important;
+  margin: 0;
+  word-break: break-all;
+}
+[data-testid="stSidebar"] .payment-fallback-cyan .pfc-foot {
+  color: rgba(255, 255, 255, 0.74) !important;
+  font-size: 0.73rem;
+  margin: 0.6rem 0 0 0;
 }
 .channel-selector-gold-label label,
 .channel-selector-gold-label span {
@@ -4445,11 +4655,13 @@ def _render_broadcast_switchboard_kinetics_fragment() -> None:
             "💳 Add ₦50,000 to Wallet",
             key="cien_wallet_n50k_prominent",
             use_container_width=True,
-            help="Payment trigger · primed strike lane detected — credits / wallet reconciliation.",
+            help="Payment trigger · primed strike lane detected — opens secure payment (st.dialog) + finance handshake.",
         ):
+            st.session_state["finance_handshake_queued"] = True
+            st.session_state["cien_payment_modal_blocked"] = False
             st.session_state["cien_wallet_n50k_request_t0"] = time.monotonic()
-            st.session_state["cien_wallet_n50k_amount_ngn"] = 50_000
-            st.toast("₦50,000 wallet lane armed — finance handshake queued.", icon="💳")
+            st.session_state["cien_wallet_n50k_amount_ngn"] = int(GCSLC_WALLET_STRIKE_TOPUP_NGN)
+            st.toast("Finance handshake queued — secure payment modal opens next.", icon="💳")
         st.markdown("</div>", unsafe_allow_html=True)
     st.caption("OFF: red field + gold text · PRIMED: cyan #00E5FF field + black text + pulse border.")
     st.markdown("</div>", unsafe_allow_html=True)
@@ -4529,12 +4741,31 @@ def _render_broadcast_switchboard_kinetics_fragment() -> None:
         f"Executive verification: **06:00 WAT** (Africa/Lagos) — authority bar unlocks on first keystroke; "
         f"06:00 push-ready when reminder has content. Dashboard time: {_wat}."
     )
+    _wbal_now = _gcslc_wallet_balance_int()
+    _pay_queued = bool(st.session_state.get("finance_handshake_queued"))
+    _pay_blocked = bool(st.session_state.get("cien_payment_modal_blocked"))
+    _pay_due = _pay_queued and _wbal_now < GCSLC_WALLET_STRIKE_TOPUP_NGN
+    if _pay_due and not _pay_blocked:
+        _gcslc_secure_payment_modal()
+    if _pay_due and _pay_blocked:
+        with st.expander(
+            "💳 SECURE PAYMENT · ₦50,000 (inline sheet — pop-up blocked)",
+            expanded=True,
+        ):
+            _gcslc_render_payment_sheet(confirm_key_suffix="inline")
+    _render_payment_sidebar_cyan_fallback()
     _exec_strike = False
     if _has_chars and not _rem:
         st.caption("Whitespace only — add substantive reminder text to populate Slot A / Slot B.")
     if _has_chars:
         st.markdown('<div class="broadcast-authority-actions">', unsafe_allow_html=True)
-        st.markdown('<div class="execute-master-strike-wrap">', unsafe_allow_html=True)
+        _exec_funded = (
+            " execute-strike-wallet-funded" if _wbal_now >= GCSLC_WALLET_STRIKE_TOPUP_NGN else ""
+        )
+        st.markdown(
+            f'<div class="execute-master-strike-wrap{_exec_funded}">',
+            unsafe_allow_html=True,
+        )
         _exec_strike = st.button(
             "🚀 EXECUTE MASTER STRIKE",
             key="cien_execute_master_strike",
@@ -4569,6 +4800,9 @@ def main() -> None:
     st.markdown(f"<style>{_CSS}</style>", unsafe_allow_html=True)
     st.session_state.setdefault("cien_mc_channels", list(CHANNEL_OPTIONS))
     _migrate_mc_channels_session()
+    st.session_state.setdefault("cien_wallet_balance", 0)
+    st.session_state.setdefault("finance_handshake_queued", False)
+    st.session_state.setdefault("cien_payment_modal_blocked", False)
 
     with st.sidebar:
         st.caption(
