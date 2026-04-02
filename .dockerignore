@@ -1,0 +1,8 @@
+.git
+.venv
+__pycache__
+*.pyc
+.DS_Store
+node_modules
+.kaduna_master_voters.csv
+.kaduna_audit_feed.csv
