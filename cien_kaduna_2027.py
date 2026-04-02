@@ -152,6 +152,16 @@ GCSLC_LAUNCH_PRIORITY_NAMES: tuple[str, ...] = (
     "06:00 WAT Push Authority",
     "Urban-Core Strike Coordinator",
 )
+# Final 06:00 WAT dawn strike — injected when target lock + wallet funded (binds to 12,765 nodes)
+CIEN_DAWN_STRIKE_SLOT_A_SMS_TEXT = (
+    "300k children back in school. 785km of roads. 255 PHCs. From the 300-bed Tinubu Hospital to your "
+    "ward, the 15/15 mandate is now a MATHEMATICAL CERTAINTY. Progress is here. — GCSLC Hub"
+)
+CIEN_DAWN_STRIKE_SLOT_B_BODY_CORE = (
+    "300k children back in school. 785km of roads. 255 PHCs. From the 300-bed Tinubu Hospital to your "
+    "ward, the 15/15 mandate is now a *MATHEMATICAL CERTAINTY*. Progress is here. — GCSLC Hub"
+)
+CIEN_DAWN_STRIKE_WHATSAPP_IMAGE = "1004079752.png"
 GCSLC_PAYSTACK_CHECKOUT_URL = str(os.environ.get("GCSLC_PAYSTACK_CHECKOUT_URL", "")).strip()
 GCSLC_FLUTTERWAVE_CHECKOUT_URL = str(os.environ.get("GCSLC_FLUTTERWAVE_CHECKOUT_URL", "")).strip()
 GCSLC_PAYMENT_PUBLIC_LINK = str(os.environ.get("GCSLC_PAYMENT_PUBLIC_LINK", "")).strip()
@@ -247,6 +257,47 @@ def _gcslc_wallet_balance_int() -> int:
         return int(st.session_state.get("cien_wallet_balance", 0) or 0)
     except (TypeError, ValueError):
         return 0
+
+
+def _gcslc_dawn_payload_active() -> bool:
+    """True when ₦50k wallet + launch lock — injects final dawn SMS/WA payloads (no chairman reminder required)."""
+    if _gcslc_wallet_balance_int() < int(GCSLC_WALLET_STRIKE_TOPUP_NGN):
+        return False
+    tl = st.session_state.get("cien_launch_target_lock")
+    if not isinstance(tl, dict):
+        return False
+    try:
+        return int(tl.get("nodes") or 0) >= 1
+    except (TypeError, ValueError):
+        return False
+
+
+def _resolve_dawn_strike_payload_png() -> Path | None:
+    """Bola Tinubu Specialist Hospital + 1.5M shield graphic for Slot B."""
+    for name in (CIEN_DAWN_STRIKE_WHATSAPP_IMAGE, "image_0.png"):
+        p = BASE_DIR / "assets" / name
+        if p.is_file():
+            return p
+    return None
+
+
+def _build_dawn_strike_slot_b_whatsapp() -> str:
+    return (
+        "🏥 *CIEN Kaduna 2027* — Galadiman Ruwa Command\n\n"
+        f"{CIEN_DAWN_STRIKE_SLOT_B_BODY_CORE}\n\n"
+        f"📎 *Attach with send:* `assets/{CIEN_DAWN_STRIKE_WHATSAPP_IMAGE}` — "
+        "Bola Tinubu Specialist Hospital · 1.5M Gold Shield.\n\n"
+        "#Kaduna2027 #Galadima #VoteSmart #15of15 🎯"
+    )
+
+
+def _render_dawn_payload_sidebar_status_bar() -> None:
+    if not _gcslc_dawn_payload_active():
+        return
+    st.markdown(
+        '<div class="dawn-payload-sidebar-bar">PAYLOADS BOUND • READY FOR DAWN</div>',
+        unsafe_allow_html=True,
+    )
 
 
 def _gcslc_apply_payment_confirmed() -> None:
@@ -2835,6 +2886,21 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   color: #ffd700 !important;
   text-shadow: 0 0 10px rgba(255, 215, 0, 0.45);
 }
+[data-testid="stSidebar"] .dawn-payload-sidebar-bar {
+  margin: 0.55rem 0 0.6rem 0;
+  padding: 0.65rem 0.5rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 215, 0, 0.58);
+  background: linear-gradient(90deg, rgba(55, 44, 0, 0.96), rgba(14, 14, 14, 0.99));
+  box-shadow: 0 0 22px rgba(255, 215, 0, 0.32);
+  color: #ffd700 !important;
+  font-weight: 900;
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-align: center;
+  text-transform: uppercase;
+  text-shadow: 0 0 14px rgba(255, 215, 0, 0.42);
+}
 [data-testid="stSidebar"] .zenith-payment-sticky-wrap {
   position: sticky;
   bottom: 0;
@@ -5076,41 +5142,83 @@ def _render_broadcast_switchboard_kinetics_fragment() -> None:
     _rem = (st.session_state.get("cien_master_reminder") or "").strip()
     _has_chars = len(st.session_state.get("cien_master_reminder") or "") >= 1
     _sid_for_payload = str(st.session_state.get("cien_sender_id", DEFAULT_SENDER_ID)).strip() or DEFAULT_SENDER_ID
-    _slot_a = _build_dual_track_slot_a_sms_single_bubble(_rem, _sid_for_payload) if _rem else ""
-    _slot_b = _build_dual_track_slot_b_whatsapp_high_fidelity(_rem) if _rem else ""
+    _dawn = _gcslc_dawn_payload_active()
+    _payload_ready = _dawn or (_has_chars and _rem)
+    if _dawn:
+        _slot_a = CIEN_DAWN_STRIKE_SLOT_A_SMS_TEXT
+        _slot_b = _build_dawn_strike_slot_b_whatsapp()
+    else:
+        _slot_a = _build_dual_track_slot_a_sms_single_bubble(_rem, _sid_for_payload) if _rem else ""
+        _slot_b = _build_dual_track_slot_b_whatsapp_high_fidelity(_rem) if _rem else ""
     st.markdown('<div class="dual-track-payload-wrap">', unsafe_allow_html=True)
     st.markdown(
-        '<p class="dual-track-payload-title">DUAL-TRACK PAYLOAD ENGINE</p>',
+        '<p class="dual-track-payload-title">'
+        + (
+            "FINAL 06:00 STRIKE · DAWN PAYLOAD (INJECTED)"
+            if _dawn
+            else "DUAL-TRACK PAYLOAD ENGINE"
+        )
+        + "</p>",
         unsafe_allow_html=True,
     )
-    st.markdown("**Slot A · SMS** — Single bubble (compressed)")
+    if _dawn:
+        _tl = st.session_state.get("cien_launch_target_lock")
+        _pn = list(GCSLC_LAUNCH_PRIORITY_NAMES)
+        if isinstance(_tl, dict) and isinstance(_tl.get("priority_names_10"), list) and _tl["priority_names_10"]:
+            _pn = [str(x) for x in _tl["priority_names_10"]]
+        st.caption(
+            f"Bound to **{html.escape(GCSLC_STRIKE_NODES_ARMED_LABEL)}** locked nodes · "
+            f"first-wave priority tags ({len(_pn)}): {html.escape(', '.join(_pn))}."
+        )
+    st.markdown("**Slot A · SMS** — Single bubble (compressed)" if not _dawn else "**Slot A · SMS** — Final dawn payload")
     if _slot_a:
         st.code(_slot_a, language=None)
         _enc_a, _lim_a = _sms_payload_encoding_and_limit(_slot_a)
         st.caption(f"Segment: {_enc_a} · limit {_lim_a} chars · current {len(_slot_a)}")
-        if len(_slot_a) > _lim_a:
+        if len(_slot_a) > _lim_a and not _dawn:
             st.warning(
                 f"Slot A (SMS_Payload) exceeds {_lim_a} characters ({_enc_a}). "
                 f"Current length: {len(_slot_a)}. Shorten the Chairman reminder or trim for delivery."
             )
+        elif len(_slot_a) > _lim_a and _dawn:
+            st.info(
+                f"Final dawn SMS is long ({len(_slot_a)} chars / {_enc_a}) — expect multi-segment delivery."
+            )
     else:
         st.caption("Enter a Chairman reminder to generate Slot A.")
-    st.markdown("**Slot B · WhatsApp** — High-fidelity + hospital image")
+    st.markdown(
+        "**Slot B · WhatsApp** — High-fidelity + hospital image"
+        if not _dawn
+        else "**Slot B · WhatsApp** — *MATHEMATICAL CERTAINTY* bold + hospital graphic"
+    )
     if _slot_b:
         st.code(_slot_b, language=None)
-        _hp_prev = _resolve_verification_png("image_0.png")
+        _hp_prev = _resolve_dawn_strike_payload_png() if _dawn else _resolve_verification_png("image_0.png")
         if _hp_prev is not None:
-            st.caption("Hospital / achievement preview — attach with Slot B sends")
+            st.caption(
+                "Hospital / achievement preview — attach with Slot B sends"
+                if not _dawn
+                else f"Preview · `assets/{CIEN_DAWN_STRIKE_WHATSAPP_IMAGE}` — Bola Tinubu Specialist Hospital · 1.5M Gold Shield"
+            )
             st.image(str(_hp_prev), width=176)
         else:
-            st.caption("Add `assets/image_0.png` for hospital image preview.")
+            st.caption(
+                f"Add `assets/{CIEN_DAWN_STRIKE_WHATSAPP_IMAGE}` — Bola Tinubu Specialist Hospital graphic."
+                if _dawn
+                else "Add `assets/image_0.png` for hospital image preview."
+            )
     else:
         st.caption("Enter a Chairman reminder to generate Slot B.")
     st.markdown("</div>", unsafe_allow_html=True)
     _all_fm = _format_master_reminder_all_lanes(_rem)
-    with st.expander("Multi-channel payloads (preview)", expanded=bool(_rem)):
-        if not _rem:
+    with st.expander("Multi-channel payloads (preview)", expanded=bool(_rem or _dawn)):
+        if not _rem and not _dawn:
             st.caption("Type a reminder above to generate channel-ready copy.")
+        elif _dawn and not _rem:
+            st.caption(
+                "Dawn strike: Slot A/B above are injected. Enter a Chairman reminder for lane-specific "
+                "SMS/WA/Grassroots/Sovereign previews below."
+            )
         else:
             st.caption("All three strike lanes — SMS/WA, Grassroots, Sovereign — formatted simultaneously.")
             for lab, body in _all_fm.items():
@@ -5129,9 +5237,9 @@ def _render_broadcast_switchboard_kinetics_fragment() -> None:
     )
     _wbal_now = _gcslc_wallet_balance_int()
     _exec_strike = False
-    if _has_chars and not _rem:
+    if _has_chars and not _rem and not _dawn:
         st.caption("Whitespace only — add substantive reminder text to populate Slot A / Slot B.")
-    if _has_chars:
+    if _payload_ready:
         st.markdown('<div class="broadcast-authority-actions">', unsafe_allow_html=True)
         _exec_funded = (
             " execute-strike-wallet-funded" if _wbal_now >= GCSLC_WALLET_STRIKE_TOPUP_NGN else ""
@@ -5180,10 +5288,29 @@ def _render_broadcast_switchboard_kinetics_fragment() -> None:
         st.session_state["cien_last_master_strike_sender"] = _sid_for_payload
         st.session_state["cien_last_master_strike_slot_a"] = _slot_a
         st.session_state["cien_last_master_strike_slot_b"] = _slot_b
-        st.success(
-            f"Master strike executed · 06:00 WAT push lane armed · sender `{_sid_for_payload}` · "
-            f"primed lanes: {_lane_txt}. Slot A/B payloads locked for outbound routing."
-        )
+        if _dawn:
+            _pnw = list(GCSLC_LAUNCH_PRIORITY_NAMES)
+            _tl = st.session_state.get("cien_launch_target_lock")
+            if isinstance(_tl, dict) and isinstance(_tl.get("priority_names_10"), list) and _tl["priority_names_10"]:
+                _pnw = [str(x) for x in _tl["priority_names_10"]]
+            st.session_state["cien_dawn_strike_last_binding"] = {
+                "nodes": int(GCSLC_STRIKE_NODES_ARMED_COUNT),
+                "priority_first_wave": _pnw,
+                "slot_a": _slot_a,
+                "slot_b": _slot_b,
+                "wat": "06:00",
+                "zone": "Africa/Lagos",
+            }
+            st.success(
+                f"Dawn strike armed · payloads bound to **{GCSLC_STRIKE_NODES_ARMED_LABEL}** nodes · "
+                f"first wave priority tags ({len(_pnw)}) · 06:00 WAT · sender `{_sid_for_payload}` · "
+                f"lanes: {_lane_txt}."
+            )
+        else:
+            st.success(
+                f"Master strike executed · 06:00 WAT push lane armed · sender `{_sid_for_payload}` · "
+                f"primed lanes: {_lane_txt}. Slot A/B payloads locked for outbound routing."
+            )
 
 
 def main() -> None:
@@ -5239,6 +5366,7 @@ def main() -> None:
         _pay_dlg_reopen = st.session_state.pop("cien_payment_dialog_reopen", False)
         if _pay_dlg_req or _pay_dlg_reopen:
             _gcslc_live_checkout_dialog()
+        _render_dawn_payload_sidebar_status_bar()
         _render_opposition_threat_radar_sidebar()
         st.text_area(
             "Broadcast Strategic Question",
