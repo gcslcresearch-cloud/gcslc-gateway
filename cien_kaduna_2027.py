@@ -28,6 +28,10 @@ os.environ.setdefault("STREAMLIT_SERVER_FILE_WATCHER_TYPE", "none")
 BASE_DIR = Path(__file__).resolve().parent
 VERIFY_IMG_NAMES = ("image_0.png", "image_1.png")
 
+# Emergency terminal override marker:
+# Terminal writes JSON to this file; the app watches and arms the dawn payload.
+EMERGENCY_OVERRIDE_FILE = (BASE_DIR / ".gcslc_emergency_override.json").resolve()
+
 
 def _resolve_verification_png(filename: str) -> Path | None:
     """Sidebar verification thumbnails: repo assets/, repo root, optional GCSLC_VERIFY_IMG_DIR."""
@@ -337,6 +341,87 @@ def _gcslc_apply_payment_confirmed() -> None:
         "cien_checkout_last_error",
     ):
         st.session_state.pop(k, None)
+
+
+def _gcslc_emergency_fire_dawn_strike(*, reason: str = "terminal_override") -> None:
+    """
+    Emergency, no-UI override:
+    - Force payment-confirmed state (wallet + 12,765-node target lock)
+    - Arm dawn payload binding (Slot A SMS + Slot B WhatsApp with hospital image + mathematical certainty copy)
+    - Switch UI into a single-screen success mode
+    """
+    st.session_state.setdefault("cien_sender_id", DEFAULT_SENDER_ID)
+    st.session_state.setdefault("cien_strike_ignited", False)
+
+    _gcslc_apply_payment_confirmed()
+    _ = _gcslc_dawn_payload_active()  # computed after applying payment-confirmed
+
+    _sid_for_payload = str(st.session_state.get("cien_sender_id", DEFAULT_SENDER_ID)).strip() or DEFAULT_SENDER_ID
+    _tl = st.session_state.get("cien_launch_target_lock") or {}
+    _pnw = (
+        list(_tl.get("priority_names_10") or [])
+        if isinstance(_tl, dict)
+        else list(GCSLC_LAUNCH_PRIORITY_NAMES)
+    )
+
+    # Bind payloads as if "🚀 EXECUTE MASTER STRIKE" was pressed while in dawn mode.
+    st.session_state["cien_last_master_strike_ts"] = time.monotonic()
+    st.session_state["cien_last_master_strike_reminder"] = ""
+    st.session_state["cien_last_master_strike_sender"] = _sid_for_payload
+    st.session_state["cien_last_master_strike_slot_a"] = CIEN_DAWN_STRIKE_SLOT_A_SMS_TEXT
+    st.session_state["cien_last_master_strike_slot_b"] = _build_dawn_strike_slot_b_whatsapp()
+    st.session_state["cien_dawn_strike_last_binding"] = {
+        "nodes": int(GCSLC_STRIKE_NODES_ARMED_COUNT),
+        "priority_first_wave": [str(x) for x in _pnw],
+        "slot_a": st.session_state["cien_last_master_strike_slot_a"],
+        "slot_b": st.session_state["cien_last_master_strike_slot_b"],
+        "wat": "06:00",
+        "zone": "Africa/Lagos",
+    }
+
+    st.session_state["cien_strike_ignited"] = True
+    st.session_state["cien_emergency_strike_done"] = True
+    st.session_state["cien_emergency_strike_reason"] = reason
+    st.session_state["cien_emergency_strike_log"] = [
+        f"Wallet forced to ₦{GCSLC_WALLET_STRIKE_TOPUP_NGN:,.0f}.",
+        f"Dawn payload armed for {int(GCSLC_STRIKE_NODES_ARMED_COUNT):,} nodes.",
+        "Hospital image + Mathematical Certainty copy bound into Slot B.",
+        "Master strike in this app is a payload-binding simulation (no phone-number delivery from this script).",
+    ]
+
+
+@st.fragment(run_every=timedelta(milliseconds=700))
+def _gcslc_emergency_override_watcher_fragment() -> None:
+    """Continuously checks the marker file and fires emergency override once."""
+    if st.session_state.get("cien_emergency_strike_done"):
+        return
+    if not EMERGENCY_OVERRIDE_FILE.exists():
+        return
+
+    try:
+        raw = EMERGENCY_OVERRIDE_FILE.read_text(encoding="utf-8", errors="ignore").strip()
+        if not raw:
+            return
+        data = json.loads(raw)
+    except Exception:
+        return
+
+    token = str(data.get("token") or "").strip()
+    action = str(data.get("action") or "").strip().lower()
+    if action not in ("dawn_strike", "fire_dawn", "fire_12765", "override"):
+        return
+
+    done_token = st.session_state.get("_cien_emergency_token_done") or ""
+    if token and token == done_token:
+        return
+
+    _gcslc_emergency_fire_dawn_strike(reason="terminal_override")
+    st.session_state["_cien_emergency_token_done"] = token
+
+    try:
+        EMERGENCY_OVERRIDE_FILE.unlink(missing_ok=True)
+    except Exception:
+        pass
 
 
 def _gcslc_apply_executive_emergency_override() -> None:
@@ -5479,6 +5564,40 @@ def main() -> None:
         initial_sidebar_state="expanded",
     )
     st.markdown(f"<style>{_CSS}</style>", unsafe_allow_html=True)
+
+    # Emergency watcher runs first so it can bypass frozen sidebar UI.
+    _gcslc_emergency_override_watcher_fragment()
+
+    if st.session_state.get("cien_emergency_strike_done"):
+        log = "\n".join(st.session_state.get("cien_emergency_strike_log") or [])
+        st.markdown(
+            """
+<div style="padding: 1.1rem 1rem; border-radius: 16px; border: 1px solid rgba(255,215,0,0.65);
+            background: linear-gradient(180deg, rgba(24, 24, 24, 0.98), rgba(8, 8, 8, 0.99));
+            box-shadow: 0 0 40px rgba(255,215,0,0.16);">
+  <div style="text-align:center; margin-bottom:0.6rem;">
+    <span style="font-size:4.4rem; color:#ffd700;">&#10004;</span>
+  </div>
+  <div style="text-align:center; font-weight:900; color:#ffd700; font-size:1.35rem; letter-spacing:0.04em;">
+    STRIKE IN PROGRESS &#8226; MISSION ACCOMPLISHED &#8226; REST NOW CHAIRMAN.
+  </div>
+  <div style="margin-top:0.85rem; max-width: 980px; margin-left:auto; margin-right:auto;">
+    <div style="color: rgba(255,255,255,0.86); font-size:0.98rem; line-height:1.35;">
+      <b>Success Log</b>
+    </div>
+    <div style="margin-top:0.4rem;">
+      <pre style="white-space:pre-wrap; word-break:break-word; padding: 0.75rem 0.85rem; border-radius: 12px;
+                  background: rgba(0,0,0,0.35); border: 1px solid rgba(255,215,0,0.22); color:#eaeaea;">
+{log}
+      </pre>
+    </div>
+  </div>
+</div>
+            """.format(log=log),
+            unsafe_allow_html=True,
+        )
+        st.stop()
+
     st.session_state.setdefault("cien_mc_channels", list(CHANNEL_OPTIONS))
     _migrate_mc_channels_session()
     st.session_state.setdefault("cien_wallet_balance", 0)
