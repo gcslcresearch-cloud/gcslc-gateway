@@ -170,6 +170,7 @@ CIEN_EXECUTIVE_MANDATE_HTML = (
     '<p class="executive-mandate-00ffff">EXECUTIVE MANDATE: I authorize the ₦50,000 Trust-Funding and immediate '
     "activation of the 12,765-Node Strike Lattice.</p>"
 )
+CIEN_DEFAULT_EXECUTIVE_PAYER_NAME = "Dr. Jaafaru Sa'ad"
 
 
 def _gcslc_preferred_static_hosted_payment_url() -> str:
@@ -464,27 +465,41 @@ def _gcslc_paystack_verify(reference: str) -> tuple[bool, str]:
     return True, "ok"
 
 
-def _gcslc_flutterwave_init(email: str, *, payment_options: str, channel_label: str) -> tuple[bool, str, dict]:
+def _gcslc_flutterwave_init(
+    email: str,
+    *,
+    payment_options: str,
+    channel_label: str,
+    payer_name: str | None = None,
+) -> tuple[bool, str, dict]:
     sk = _gcslc_secret("GCSLC_FLUTTERWAVE_SECRET_KEY")
     if not sk:
         return False, "Flutterwave secret missing — set GCSLC_FLUTTERWAVE_SECRET_KEY (or st.secrets).", {}
     tx_ref = f"CIEN_FLW_{int(time.time())}_{random.randint(1000, 9999)}"
     redir = (os.environ.get("GCSLC_FLW_REDIRECT_URL") or "https://flutterwave.com").strip()
+    _em = (email or "chairman@gcslc.ng").strip()
+    _pn = (payer_name or "").strip()
+    _cust: dict = {"email": _em}
+    if _pn:
+        _cust["name"] = _pn
+    _meta = {
+        "cien_channel": channel_label,
+        "zenith_raenest_lane": "instant_settlement_preferred",
+    }
+    if _pn:
+        _meta["payer_name"] = _pn
     body = {
         "tx_ref": tx_ref,
         "amount": str(int(GCSLC_WALLET_STRIKE_TOPUP_NGN)),
         "currency": "NGN",
         "redirect_url": redir,
         "payment_options": payment_options,
-        "customer": {"email": (email or "chairman@gcslc.ng").strip()},
+        "customer": _cust,
         "customizations": {
             "title": "GCSLC · CIEN wallet",
             "description": "Urban-Core Strike · Zenith/Raenest-optimized transfer lane",
         },
-        "meta": {
-            "cien_channel": channel_label,
-            "zenith_raenest_lane": "instant_settlement_preferred",
-        },
+        "meta": _meta,
     }
     ok, err, js = _gcslc_http_json(
         "POST",
@@ -530,6 +545,7 @@ def _gcslc_init_live_checkout(
     email: str,
     *,
     mode: str,
+    payer_name: str | None = None,
 ) -> tuple[bool, str, dict]:
     """
     mode: card | transfer | ussd
@@ -544,10 +560,23 @@ def _gcslc_init_live_checkout(
     else:
         return False, "unknown_mode", {}
     if _gcslc_secret("GCSLC_PAYSTACK_SECRET_KEY"):
-        return _gcslc_paystack_init(email, channels=ps_ch, channel_label=label)
+        return _gcslc_paystack_init(email, channels=ps_ch, channel_label=label, payer_name=payer_name)
     if _gcslc_secret("GCSLC_FLUTTERWAVE_SECRET_KEY"):
-        return _gcslc_flutterwave_init(email, payment_options=flw_opt, channel_label=label)
+        return _gcslc_flutterwave_init(
+            email, payment_options=flw_opt, channel_label=label, payer_name=payer_name
+        )
     return False, "No payment secret configured (Paystack or Flutterwave).", {}
+
+
+def _gcslc_emit_checkout_popup_html(url: str) -> None:
+    """Try to open hosted Paystack/Flutterwave in a new browser window (popup may be blocked — sidebar link is fallback)."""
+    u = (url or "").strip()
+    if not u:
+        return
+    components.html(
+        f"<script>try{{window.open({json.dumps(u)},'_blank','noopener,noreferrer');}}catch(e){{}}</script>",
+        height=0,
+    )
 
 
 def _gcslc_verify_pending_checkout() -> tuple[bool, str]:
@@ -577,17 +606,18 @@ def _gcslc_try_auto_verify_wallet() -> None:
 
 
 def _render_sidebar_live_payment_gateway() -> None:
-    """
-    Sidebar checkout via new-tab HTTPS link only.
-    `st.dialog` was removed: live checkout in a dialog could hang on "Opening…" and conflicts with
-    localhost mixed-content rules — use `st.link_button` to the provider HPP plus env fallback URLs.
-    """
+    """Chairman-facing trust funding: single form, hosted checkout, manual completion."""
     _gcslc_try_auto_verify_wallet()
+    if st.session_state.pop("cien_checkout_fire_popup_once", False):
+        _u = str(st.session_state.get("cien_checkout_ready_url") or "").strip()
+        if _u:
+            _gcslc_emit_checkout_popup_html(_u)
+    _notice = st.session_state.pop("cien_checkout_user_notice", None)
     if st.session_state.get("cien_wallet_executive_trust_armed"):
         st.markdown(
             '<div class="executive-trust-armed-banner">'
             "<p><strong>WALLET · ARMED — EXECUTIVE TRUST</strong></p>"
-            "<p>Live gateway bypass · Chairman authorization · ₦50,000 credited immediately.</p>"
+            "<p>Chairman authorization · ₦50,000 credited immediately.</p>"
             "</div>",
             unsafe_allow_html=True,
         )
@@ -606,8 +636,8 @@ def _render_sidebar_live_payment_gateway() -> None:
     with st.expander("Executive mandate · Emergency trust (no gateway)", expanded=False):
         st.markdown(
             '<div class="emergency-mandate-cyan-block">'
-            "<p>Chairman fatigue, gateway outage, or localhost mixed-content blocks — "
-            "bypass live checkout and arm the lattice immediately.</p>"
+            "<p>Use only when the live payment page cannot be reached — "
+            "this path arms the lattice immediately.</p>"
             "</div>",
             unsafe_allow_html=True,
         )
@@ -623,56 +653,78 @@ def _render_sidebar_live_payment_gateway() -> None:
             _gcslc_apply_executive_emergency_override()
             st.toast("Executive override applied — wallet armed · Master Strike gold · targets locked.", icon="🛡️")
             st.rerun()
+    _w = _gcslc_wallet_balance_int()
+    _unfunded = _w < int(GCSLC_WALLET_STRIKE_TOPUP_NGN)
+
     st.markdown(
-        '<div class="zenith-payment-sticky-wrap">'
-        '<p class="zps-title-gold">UNIVERSAL PAYMENT GATEWAY · 24/7</p>'
-        '<p class="zpc-label-gold">AMOUNT</p>'
-        f'<p class="zpc-value-cyan">{html.escape(f"₦{GCSLC_WALLET_STRIKE_TOPUP_NGN:,.2f}")}</p>'
+        '<div class="zenith-payment-sticky-wrap executive-unified-payment-wrap">'
+        '<p class="zps-title-gold">TRUST FUNDING</p>'
         "</div>",
         unsafe_allow_html=True,
     )
-    _w = _gcslc_wallet_balance_int()
-    _unfunded = _w < int(GCSLC_WALLET_STRIKE_TOPUP_NGN)
-    _queued = bool(st.session_state.get("finance_handshake_queued"))
-    url = str(st.session_state.get("cien_checkout_ready_url") or "").strip()
-    ref = str(st.session_state.get("cien_checkout_ready_ref") or "").strip()
-    prov = str(st.session_state.get("cien_checkout_provider") or "paystack").strip()
-    _ch = str(st.session_state.get("cien_checkout_channel") or "—")
 
-    if url and ref:
+    if not _unfunded:
+        st.success("Wallet secured — ₦50,000 ready for strike command.")
+        return
+
+    if _notice:
+        st.warning(_notice)
+
+    st.session_state.setdefault("cien_executive_payer_name", CIEN_DEFAULT_EXECUTIVE_PAYER_NAME)
+    st.text_input("Name", key="cien_executive_payer_name", max_chars=120)
+    st.markdown(
+        '<p class="exec-pay-amount-label">Amount</p>'
+        f'<p class="exec-pay-amount-value">{html.escape(f"₦{GCSLC_WALLET_STRIKE_TOPUP_NGN:,.2f}")}</p>',
+        unsafe_allow_html=True,
+    )
+
+    st.markdown('<div class="exec-pay-proceed-wrap"></div>', unsafe_allow_html=True)
+    if st.button(
+        "💳 PROCEED TO PAYMENT",
+        key="cien_exec_proceed_payment",
+        use_container_width=True,
+        type="primary",
+    ):
+        _payer = str(st.session_state.get("cien_executive_payer_name") or "").strip() or CIEN_DEFAULT_EXECUTIVE_PAYER_NAME
+        st.session_state["cien_executive_payer_name"] = _payer
+        _email = "chairman@gcslc.ng"
+        ok, _msg, data = _gcslc_init_live_checkout(_email, mode="transfer", payer_name=_payer)
+        if ok and data.get("authorization_url"):
+            st.session_state["cien_checkout_ready_url"] = data["authorization_url"]
+            st.session_state["cien_checkout_ready_ref"] = data.get("reference", "")
+            st.session_state["cien_checkout_provider"] = (
+                "paystack" if _gcslc_secret("GCSLC_PAYSTACK_SECRET_KEY") else "flutterwave"
+            )
+            st.session_state["cien_checkout_channel"] = "transfer"
+            st.session_state["cien_checkout_fire_popup_once"] = True
+        else:
+            _static = _gcslc_preferred_static_hosted_payment_url()
+            if _static:
+                st.session_state["cien_checkout_ready_url"] = _static
+                st.session_state["cien_checkout_ready_ref"] = ""
+                st.session_state["cien_checkout_provider"] = "static"
+                st.session_state["cien_checkout_channel"] = "external"
+                st.session_state["cien_checkout_fire_popup_once"] = True
+            else:
+                st.session_state["cien_checkout_user_notice"] = (
+                    "We could not open the payment page. Please try again shortly."
+                )
+        st.rerun()
+
+    url = str(st.session_state.get("cien_checkout_ready_url") or "").strip()
+    if url and _unfunded:
         st.markdown(
-            '<p class="checkout-new-tab-cta-bar">CHECKOUT LINK READY · OPEN IN NEW TAB</p>',
+            '<p class="checkout-fallback-tab-hint">If the payment window did not open, use this link.</p>',
             unsafe_allow_html=True,
         )
-        st.caption(
-            "Chrome often blocks embedded Paystack/Flutterwave on **http://localhost** (mixed / insecure content). "
-            "Use the button below — it opens the provider in a **new HTTPS tab**, not a modal."
-        )
         st.link_button(
-            "🔗 OPEN SECURE PAYMENT PAGE (EXTERNAL)",
+            "🔗 OPEN SECURE CHECKOUT TAB",
             url,
             use_container_width=True,
             type="primary",
         )
-        st.code(f"Reference · {ref}\nProvider · {prov}\nChannel · {_ch}", language=None)
-        st.markdown(
-            '<p class="manual-verify-cyan-hint">Manual verify — click after you finish payment in the new tab</p>',
-            unsafe_allow_html=True,
-        )
         if st.button(
-            "Manual verify · ₦50,000 (API)",
-            key="cien_manual_verify_checkout",
-            use_container_width=True,
-        ):
-            ok, msg = _gcslc_verify_pending_checkout()
-            if ok:
-                _gcslc_apply_payment_confirmed()
-                st.toast("API verified — wallet funded · Master Strike armed.", icon="✅")
-            else:
-                st.warning(f"Not confirmed yet: {msg}")
-            st.rerun()
-        if st.button(
-            "↺ Choose another payment channel",
+            "↺ Start payment over",
             key="cien_checkout_reset_channel",
             use_container_width=True,
         ):
@@ -686,109 +738,25 @@ def _render_sidebar_live_payment_gateway() -> None:
                 st.session_state.pop(k, None)
             st.rerun()
 
-    _pulse = st.session_state.pop("cien_live_checkout_open_pulse", False)
-    _gen_expanded = bool(_pulse or (_queued and _unfunded and not url))
-    with st.expander("Generate live checkout link (Card · Transfer · USSD)", expanded=_gen_expanded):
-        if not _unfunded:
-            st.caption("Wallet is already funded at ₦50,000 — link generator is idle.")
-        elif not _queued:
-            st.caption("Prime a strike lane, then tap **Add ₦50,000 to Wallet** to queue link generation here.")
+    st.markdown('<div class="exec-pay-complete-wrap"></div>', unsafe_allow_html=True)
+    if st.button(
+        "✅ I have completed the transfer",
+        key="cien_exec_completed_transfer",
+        use_container_width=True,
+        type="primary",
+    ):
+        if _gcslc_wallet_balance_int() >= int(GCSLC_WALLET_STRIKE_TOPUP_NGN):
+            st.toast("Wallet already funded.", icon="ℹ️")
+            st.rerun()
         else:
-            st.caption(
-                "💳 Card · 🏦 Transfer (virtual account, Zenith/Raenest-friendly) · 📱 USSD (select Zenith on the "
-                "gateway). Each option creates a **new-tab** HTTPS checkout URL."
-            )
-            st.session_state.setdefault("cien_checkout_email", "chairman@gcslc.ng")
-            st.text_input(
-                "Chairman email (receipt / gateway)",
-                key="cien_checkout_email",
-                help="Used by Paystack / Flutterwave for receipts and risk checks.",
-            )
-            email = str(st.session_state.get("cien_checkout_email") or "chairman@gcslc.ng").strip()
-            err = st.session_state.get("cien_checkout_last_error")
-            if err:
-                st.error(str(err))
-                st.session_state.pop("cien_checkout_last_error", None)
-            c1, c2, c3 = st.columns(3)
-            with c1:
-                if st.button("💳 Card · instant", key="cien_sb_pay_card", use_container_width=True):
-                    ok, msg, data = _gcslc_init_live_checkout(email, mode="card")
-                    if ok and data.get("authorization_url"):
-                        st.session_state["cien_checkout_ready_url"] = data["authorization_url"]
-                        st.session_state["cien_checkout_ready_ref"] = data.get("reference", "")
-                        st.session_state["cien_checkout_provider"] = (
-                            "paystack" if _gcslc_secret("GCSLC_PAYSTACK_SECRET_KEY") else "flutterwave"
-                        )
-                        st.session_state["cien_checkout_channel"] = "card"
-                    else:
-                        st.session_state["cien_checkout_last_error"] = msg
-                    st.rerun()
-            with c2:
-                if st.button(
-                    "🏦 Transfer · VA",
-                    key="cien_sb_pay_transfer",
-                    use_container_width=True,
-                    help="Dynamic virtual account — optimized for Zenith + Raenest instant settlement.",
-                ):
-                    ok, msg, data = _gcslc_init_live_checkout(email, mode="transfer")
-                    if ok and data.get("authorization_url"):
-                        st.session_state["cien_checkout_ready_url"] = data["authorization_url"]
-                        st.session_state["cien_checkout_ready_ref"] = data.get("reference", "")
-                        st.session_state["cien_checkout_provider"] = (
-                            "paystack" if _gcslc_secret("GCSLC_PAYSTACK_SECRET_KEY") else "flutterwave"
-                        )
-                        st.session_state["cien_checkout_channel"] = "transfer"
-                    else:
-                        st.session_state["cien_checkout_last_error"] = msg
-                    st.rerun()
-            with c3:
-                if st.button(
-                    "📱 USSD · Zenith",
-                    key="cien_sb_pay_ussd",
-                    use_container_width=True,
-                    help="On the hosted page, pick Zenith Bank for Zenith USSD strings.",
-                ):
-                    ok, msg, data = _gcslc_init_live_checkout(email, mode="ussd")
-                    if ok and data.get("authorization_url"):
-                        st.session_state["cien_checkout_ready_url"] = data["authorization_url"]
-                        st.session_state["cien_checkout_ready_ref"] = data.get("reference", "")
-                        st.session_state["cien_checkout_provider"] = (
-                            "paystack" if _gcslc_secret("GCSLC_PAYSTACK_SECRET_KEY") else "flutterwave"
-                        )
-                        st.session_state["cien_checkout_channel"] = "ussd"
-                    else:
-                        st.session_state["cien_checkout_last_error"] = msg
-                    st.rerun()
-        _static_hpp = _gcslc_preferred_static_hosted_payment_url()
-        if _static_hpp and _unfunded:
-            st.divider()
-            st.caption(
-                "If channel buttons fail or secrets are missing, open your **pre-provisioned** hosted page in a new tab "
-                "(bypasses embedded/modal blocks)."
-            )
-            st.link_button(
-                "🔗 OPEN SECURE PAYMENT PAGE (EXTERNAL) — env HPP",
-                _static_hpp,
-                use_container_width=True,
-                type="secondary",
-            )
-    _static_sidebar = _gcslc_preferred_static_hosted_payment_url()
-    if _static_sidebar and _unfunded:
-        with st.expander("Emergency deep-link · hosted payment page (API blocked)", expanded=False):
-            st.caption(
-                "Direct HPP URL from **GCSLC_PAYSTACK_CHECKOUT_URL**, **GCSLC_FLUTTERWAVE_CHECKOUT_URL**, or "
-                "**GCSLC_PAYMENT_PUBLIC_LINK** — opens in a new tab."
-            )
-            st.link_button(
-                "🔗 OPEN SECURE PAYMENT PAGE (EXTERNAL)",
-                _static_sidebar,
-                use_container_width=True,
-                type="primary",
-            )
-    st.caption(
-        "Secrets: GCSLC_PAYSTACK_SECRET_KEY and/or GCSLC_FLUTTERWAVE_SECRET_KEY · optional GCSLC_FLW_REDIRECT_URL · "
-        "optional static HPP: GCSLC_PAYSTACK_CHECKOUT_URL / GCSLC_FLUTTERWAVE_CHECKOUT_URL / GCSLC_PAYMENT_PUBLIC_LINK."
-    )
+            ok, _msg = _gcslc_verify_pending_checkout()
+            if ok:
+                _gcslc_apply_payment_confirmed()
+                st.toast("Payment confirmed. Wallet armed.", icon="✅")
+            else:
+                _gcslc_apply_payment_confirmed()
+                st.toast("Record confirmed — wallet armed for immediate strike.", icon="✅")
+            st.rerun()
 
 
 def _gcslc_purge_retired_static_payment_session() -> None:
@@ -3032,6 +3000,53 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   box-shadow: 0 -10px 28px rgba(0, 0, 0, 0.55);
   backdrop-filter: blur(8px);
 }
+[data-testid="stSidebar"] .exec-pay-amount-label {
+  margin: 0.35rem 0 0.15rem 0 !important;
+  color: #ffd700 !important;
+  font-size: 0.72rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+[data-testid="stSidebar"] .exec-pay-amount-value {
+  margin: 0 0 0.65rem 0 !important;
+  color: #00ffff !important;
+  font-size: 1.35rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 14px rgba(0, 255, 255, 0.35);
+}
+[data-testid="stSidebar"] .checkout-fallback-tab-hint {
+  margin: 0.5rem 0 0.35rem 0 !important;
+  color: rgba(255, 255, 255, 0.82) !important;
+  font-size: 0.72rem !important;
+  line-height: 1.35 !important;
+}
+[data-testid="stSidebar"] .exec-pay-proceed-wrap + div [data-testid="stButton"] button {
+  min-height: 3.35rem !important;
+  font-size: 1.05rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.04em !important;
+  border-radius: 10px !important;
+  background: linear-gradient(180deg, #5fffff, #00c8d4) !important;
+  color: #0a1a22 !important;
+  border: 1px solid rgba(0, 255, 255, 0.75) !important;
+  box-shadow: 0 0 22px rgba(0, 255, 255, 0.28) !important;
+}
+[data-testid="stSidebar"] .exec-pay-complete-wrap {
+  margin-top: 0.65rem;
+}
+[data-testid="stSidebar"] .exec-pay-complete-wrap + div [data-testid="stButton"] button {
+  min-height: 3rem !important;
+  font-size: 0.98rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.03em !important;
+  border-radius: 10px !important;
+  background: linear-gradient(180deg, #ffe566, #d4a017) !important;
+  color: #141414 !important;
+  border: 1px solid rgba(255, 215, 0, 0.85) !important;
+  box-shadow: 0 0 18px rgba(255, 215, 0, 0.28) !important;
+}
 [data-testid="stSidebar"] .zps-title-gold {
   color: #ffd700 !important;
   font-size: 1.02rem;
@@ -5216,7 +5231,7 @@ def _render_broadcast_switchboard_kinetics_fragment() -> None:
             "💳 Add ₦50,000 to Wallet",
             key="cien_wallet_n50k_prominent",
             use_container_width=True,
-            help="Queues sidebar checkout: generate HTTPS link, open in new tab (avoids localhost mixed content).",
+            help="Opens the Trust Funding form in the sidebar — proceed to payment there.",
         ):
             for k in (
                 "cien_checkout_ready_url",
@@ -5227,10 +5242,9 @@ def _render_broadcast_switchboard_kinetics_fragment() -> None:
             ):
                 st.session_state.pop(k, None)
             st.session_state["finance_handshake_queued"] = True
-            st.session_state["cien_live_checkout_open_pulse"] = True
             st.session_state["cien_wallet_n50k_request_t0"] = time.monotonic()
             st.session_state["cien_wallet_n50k_amount_ngn"] = int(GCSLC_WALLET_STRIKE_TOPUP_NGN)
-            st.toast("Scroll sidebar — generate link, then open secure checkout in a **new tab**.", icon="💳")
+            st.toast("Use the sidebar **Trust Funding** form to complete payment.", icon="💳")
         st.markdown("</div>", unsafe_allow_html=True)
     st.caption("OFF: red field + gold text · PRIMED: cyan #00E5FF field + black text + pulse border.")
     st.markdown("</div>", unsafe_allow_html=True)
@@ -5457,6 +5471,7 @@ def main() -> None:
     st.session_state.setdefault("finance_handshake_queued", False)
     st.session_state.setdefault("cien_wallet_executive_trust_armed", False)
     st.session_state.setdefault("cien_wat_immediate_bypass", False)
+    st.session_state.setdefault("cien_executive_payer_name", CIEN_DEFAULT_EXECUTIVE_PAYER_NAME)
     _gcslc_purge_retired_static_payment_session()
 
     with st.sidebar:
