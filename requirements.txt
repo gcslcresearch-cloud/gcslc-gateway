@@ -1,9 +1,23 @@
-gradio
-streamlit
+# CIEN Kaduna 2027 / GCSLC Sovereign Gateway — Hugging Face Spaces & Streamlit Cloud
+# Install: pip install -r requirements.txt
+
+streamlit>=1.28.0
+requests>=2.31.0
+pandas>=2.0.0
+plotly>=5.18.0
+pyarrow>=14.0.0
+openpyxl>=3.1.0
+pytz
+numpy>=1.24.0
+
+# Optional maps / legacy panels (safe to keep for other entrypoints)
 folium
 pydeck
-pandas
-plotly
-pytz
-openpyxl
-pyarrow
+
+# Optional: Gradio if you run parallel demos from this repo
+gradio>=4.0.0
+
+# Paystack: this app uses Paystack REST + Bearer secret (see cien_kaduna_2027.py).
+# Official SDK (optional — only if you refactor init/verify to use the library):
+# pip install paystackapi
+# paystackapi>=2.0.0

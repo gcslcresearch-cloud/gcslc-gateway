@@ -15,10 +15,12 @@ import urllib.parse
 import urllib.request
 from datetime import date, datetime, timedelta
 from pathlib import Path
+from typing import Any
 from zoneinfo import ZoneInfo
 
 import pandas as pd
 import plotly.graph_objects as go
+import requests
 import streamlit as st
 import streamlit.components.v1 as components
 
@@ -42,7 +44,7 @@ def _resolve_verification_png(filename: str) -> Path | None:
         if p.is_file():
             return p
     extra = os.environ.get("GCSLC_VERIFY_IMG_DIR")
-    roots = [BASE_DIR / "assets", BASE_DIR]
+    roots = [_gcslc_assets_dir(), BASE_DIR / "assets", BASE_DIR]
     if extra:
         roots.insert(0, Path(extra).expanduser().resolve())
     for root in roots:
@@ -218,6 +220,14 @@ CIEN_DAWN_STRIKE_WHATSAPP_IMAGE = "1004079752.png"
 CIEN_DEFAULT_EXECUTIVE_PAYER_NAME = "Dr. Jaafaru Sa'ad"
 
 
+def _gcslc_assets_dir() -> Path:
+    """Cloud/HF: set `GCSLC_ASSETS_DIR` to the mounted `assets/` path; defaults to `<app>/assets`."""
+    p = _gcslc_config_str("GCSLC_ASSETS_DIR", "")
+    if p:
+        return Path(p).expanduser().resolve()
+    return (BASE_DIR / "assets").resolve()
+
+
 def _gcslc_preferred_static_hosted_payment_url() -> str:
     """First configured hosted payment URL (st.secrets or env) — use when API init fails or secrets are missing."""
     for key in ("GCSLC_PAYSTACK_CHECKOUT_URL", "GCSLC_FLUTTERWAVE_CHECKOUT_URL", "GCSLC_PAYMENT_PUBLIC_LINK"):
@@ -322,7 +332,7 @@ def _gcslc_wallet_balance_int() -> int:
 
 def _gcslc_dawn_payload_active() -> bool:
     """True when ₦50k wallet + launch lock — injects final dawn SMS/WA payloads (no chairman reminder required)."""
-    if _gcslc_wallet_balance_int() < int(GCSLC_WALLET_STRIKE_TOPUP_NGN):
+    if _gcslc_wallet_balance_int() < int(_gcslc_wallet_strike_topup_ngn()):
         return False
     tl = st.session_state.get("cien_launch_target_lock")
     if not isinstance(tl, dict):
@@ -336,17 +346,24 @@ def _gcslc_dawn_payload_active() -> bool:
 def _resolve_dawn_strike_payload_png() -> Path | None:
     """Bola Tinubu Specialist Hospital + 1.5M shield graphic for Slot B."""
     for name in (CIEN_DAWN_STRIKE_WHATSAPP_IMAGE, "image_0.png"):
-        p = BASE_DIR / "assets" / name
-        if p.is_file():
-            return p
+        for root in (_gcslc_assets_dir(), BASE_DIR / "assets", BASE_DIR):
+            p = root / name
+            if p.is_file():
+                return p
     return None
 
 
 def _build_dawn_strike_slot_b_whatsapp() -> str:
+    _prefix = _gcslc_config_str("GCSLC_ASSETS_PUBLIC_PREFIX", "").strip().rstrip("/")
+    _attach = (
+        f"{_prefix}/{CIEN_DAWN_STRIKE_WHATSAPP_IMAGE}"
+        if _prefix
+        else f"assets/{CIEN_DAWN_STRIKE_WHATSAPP_IMAGE}"
+    )
     return (
         "🏥 *CIEN Kaduna 2027* — Galadiman Ruwa Command\n\n"
         f"{CIEN_DAWN_STRIKE_SLOT_B_BODY_CORE}\n\n"
-        f"📎 *Attach with send:* `assets/{CIEN_DAWN_STRIKE_WHATSAPP_IMAGE}` — "
+        f"📎 *Attach with send:* `{_attach}` — "
         "Bola Tinubu Specialist Hospital · 1.5M Gold Shield.\n\n"
         "#Kaduna2027 #Galadima #VoteSmart #15of15 🎯"
     )
@@ -362,14 +379,14 @@ def _render_dawn_payload_sidebar_status_bar() -> None:
 
 
 def _gcslc_apply_payment_confirmed() -> None:
-    st.session_state["cien_wallet_balance"] = int(GCSLC_WALLET_STRIKE_TOPUP_NGN)
+    st.session_state["cien_wallet_balance"] = int(_gcslc_wallet_strike_topup_ngn())
     st.session_state["finance_handshake_queued"] = False
     st.session_state["cien_wallet_executive_trust_armed"] = False
     st.session_state["cien_wat_immediate_bypass"] = True
     st.session_state["cien_launch_target_lock"] = {
         "wat_clock": "06:00",
         "wat_zone": "Africa/Lagos",
-        "nodes": int(GCSLC_STRIKE_NODES_ARMED_COUNT),
+        "nodes": int(_gcslc_strike_nodes_armed_count()),
         "lga_urban_core_5": list(GCSLC_URBAN_CORE_5_LGAS),
         "priority_names_10": list(GCSLC_LAUNCH_PRIORITY_NAMES),
         "locked_mono": time.monotonic(),
@@ -382,6 +399,8 @@ def _gcslc_apply_payment_confirmed() -> None:
         "cien_checkout_last_error",
     ):
         st.session_state.pop(k, None)
+    _gcslc_maybe_cloud_webhook_payment_confirmed()
+    _gcslc_save_chairman_state()
 
 
 def _gcslc_emergency_fire_dawn_strike(*, reason: str = "terminal_override") -> None:
@@ -412,7 +431,7 @@ def _gcslc_emergency_fire_dawn_strike(*, reason: str = "terminal_override") -> N
     st.session_state["cien_last_master_strike_slot_a"] = CIEN_DAWN_STRIKE_SLOT_A_SMS_TEXT
     st.session_state["cien_last_master_strike_slot_b"] = _build_dawn_strike_slot_b_whatsapp()
     st.session_state["cien_dawn_strike_last_binding"] = {
-        "nodes": int(GCSLC_STRIKE_NODES_ARMED_COUNT),
+        "nodes": int(_gcslc_strike_nodes_armed_count()),
         "priority_first_wave": [str(x) for x in _pnw],
         "slot_a": st.session_state["cien_last_master_strike_slot_a"],
         "slot_b": st.session_state["cien_last_master_strike_slot_b"],
@@ -424,8 +443,8 @@ def _gcslc_emergency_fire_dawn_strike(*, reason: str = "terminal_override") -> N
     st.session_state["cien_emergency_strike_done"] = True
     st.session_state["cien_emergency_strike_reason"] = reason
     st.session_state["cien_emergency_strike_log"] = [
-        f"Wallet forced to ₦{GCSLC_WALLET_STRIKE_TOPUP_NGN:,.0f}.",
-        f"Dawn payload armed for {int(GCSLC_STRIKE_NODES_ARMED_COUNT):,} nodes.",
+        f"Wallet forced to ₦{_gcslc_wallet_strike_topup_ngn():,.0f}.",
+        f"Dawn payload armed for {_gcslc_strike_nodes_armed_label()} nodes.",
         "Hospital image + Mathematical Certainty copy bound into Slot B.",
         "Master strike in this app is a payload-binding simulation (no phone-number delivery from this script).",
     ]
@@ -467,7 +486,7 @@ def _gcslc_emergency_override_watcher_fragment() -> None:
 
 def _gcslc_apply_executive_emergency_override() -> None:
     """Immediate ₦50k wallet credit + target lock — no gateway ping (Chairman fatigue / outage)."""
-    st.session_state["cien_wallet_balance"] = int(GCSLC_WALLET_STRIKE_TOPUP_NGN)
+    st.session_state["cien_wallet_balance"] = int(_gcslc_wallet_strike_topup_ngn())
     st.session_state["cien_wallet_executive_trust_armed"] = True
     st.session_state["cien_wat_immediate_bypass"] = True
     st.session_state["finance_handshake_queued"] = False
@@ -482,24 +501,136 @@ def _gcslc_apply_executive_emergency_override() -> None:
     st.session_state["cien_launch_target_lock"] = {
         "wat_clock": "06:00",
         "wat_zone": "Africa/Lagos",
-        "nodes": int(GCSLC_STRIKE_NODES_ARMED_COUNT),
+        "nodes": int(_gcslc_strike_nodes_armed_count()),
         "lga_urban_core_5": list(GCSLC_URBAN_CORE_5_LGAS),
         "priority_names_10": list(GCSLC_LAUNCH_PRIORITY_NAMES),
         "locked_mono": time.monotonic(),
     }
+    _gcslc_save_chairman_state()
 
 
 def _gcslc_secret(name: str) -> str:
-    v = (os.environ.get(name) or "").strip()
-    if v:
-        return v
+    """API keys and tokens: prefer `st.secrets` (HF / Streamlit Cloud), then environment variables."""
     try:
         sec = getattr(st, "secrets", None)
         if sec is not None and name in sec:
             return str(sec[name]).strip()
     except Exception:
         pass
-    return ""
+    return (os.environ.get(name) or "").strip()
+
+
+def _gcslc_paystack_secret_key() -> str:
+    """Paystack secret: `GCSLC_PAYSTACK_SECRET_KEY` or alias `GCSLC_PAYSTACK_SECRET` (HF Secrets)."""
+    return _gcslc_secret("GCSLC_PAYSTACK_SECRET_KEY") or _gcslc_secret("GCSLC_PAYSTACK_SECRET")
+
+
+_CHAIRMAN_STATE_KEYS: tuple[str, ...] = (
+    "cien_wallet_balance",
+    "cien_launch_target_lock",
+    "cien_wat_immediate_bypass",
+    "cien_wallet_executive_trust_armed",
+    "finance_handshake_queued",
+    "cien_poll_targets",
+    "cien_poll_question",
+    "cien_poll_mono_t0",
+    "cien_push_velocity_t0",
+    "cien_sovereign_roller_pct",
+    "cien_mc_channels",
+    "cien_zone",
+)
+
+
+def _gcslc_chairman_state_path() -> Path:
+    p = _gcslc_config_str("GCSLC_STATE_JSON_PATH", "")
+    if p:
+        return Path(p).expanduser().resolve()
+    return (BASE_DIR / ".cache" / "gcslc_chairman_state.json").resolve()
+
+
+def _gcslc_persistence_enabled() -> bool:
+    return _gcslc_config_str("GCSLC_PERSISTENCE_ENABLED", "1").strip().lower() not in ("0", "false", "no", "off")
+
+
+def _gcslc_load_chairman_state() -> None:
+    if not _gcslc_persistence_enabled():
+        return
+    path = _gcslc_chairman_state_path()
+    if not path.is_file():
+        return
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return
+    if not isinstance(data, dict):
+        return
+    for k in _CHAIRMAN_STATE_KEYS:
+        if k in data:
+            st.session_state[k] = data[k]
+
+
+def _gcslc_save_chairman_state() -> None:
+    if not _gcslc_persistence_enabled():
+        return
+    path = _gcslc_chairman_state_path()
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+    except Exception:
+        return
+    out: dict[str, Any] = {}
+    for k in _CHAIRMAN_STATE_KEYS:
+        if k in st.session_state:
+            out[k] = st.session_state[k]
+    try:
+        path.write_text(json.dumps(out, indent=2, default=str), encoding="utf-8")
+    except Exception:
+        pass
+
+
+def _gcslc_cloud_send(
+    *,
+    payload: dict[str, Any],
+    topic: str = "outbound",
+    timeout: float = 45.0,
+) -> tuple[bool, str, str]:
+    """
+    Outbound webhook from the app server (Hugging Face egress) to your API (Whapi/Twilio proxy/custom).
+    Configure `GCSLC_CLOUD_WEBHOOK_URL` (+ optional `GCSLC_CLOUD_WEBHOOK_TOKEN`) in st.secrets or env.
+    """
+    url = _gcslc_config_str("GCSLC_CLOUD_WEBHOOK_URL", "").strip()
+    if not url:
+        return False, "missing_GCSLC_CLOUD_WEBHOOK_URL", ""
+    tok = _gcslc_secret("GCSLC_CLOUD_WEBHOOK_TOKEN")
+    body = {"topic": topic, "payload": payload, "ts": time.time()}
+    headers = {"Content-Type": "application/json"}
+    if tok:
+        headers["Authorization"] = f"Bearer {tok}"
+    try:
+        r = requests.post(url, json=body, headers=headers, timeout=timeout)
+        return r.ok, r.text[:4000], str(r.status_code)
+    except Exception as e:
+        return False, str(e), ""
+
+
+def _gcslc_maybe_cloud_webhook_payment_confirmed() -> None:
+    """Optional: POST to `GCSLC_CLOUD_WEBHOOK_URL` when wallet strike is armed (set `GCSLC_CLOUD_WEBHOOK_ON_PAYMENT=1`)."""
+    if _gcslc_config_str("GCSLC_CLOUD_WEBHOOK_ON_PAYMENT", "").strip().lower() not in (
+        "1",
+        "true",
+        "yes",
+        "on",
+    ):
+        return
+    if not _gcslc_config_str("GCSLC_CLOUD_WEBHOOK_URL", "").strip():
+        return
+    _gcslc_cloud_send(
+        topic="payment_confirmed",
+        payload={
+            "event": "payment_confirmed",
+            "wallet_ngn": int(_gcslc_wallet_strike_topup_ngn()),
+            "nodes_armed": int(_gcslc_strike_nodes_armed_count()),
+        },
+    )
 
 
 def _gcslc_http_json(
@@ -529,7 +660,7 @@ def _gcslc_http_json(
 
 
 def _gcslc_paystack_amount_kobo() -> int:
-    return int(GCSLC_WALLET_STRIKE_TOPUP_NGN) * 100
+    return int(_gcslc_wallet_strike_topup_ngn()) * 100
 
 
 def _gcslc_paystack_init(
@@ -539,9 +670,13 @@ def _gcslc_paystack_init(
     channel_label: str,
     payer_name: str | None = None,
 ) -> tuple[bool, str, dict]:
-    sk = _gcslc_secret("GCSLC_PAYSTACK_SECRET_KEY")
+    sk = _gcslc_paystack_secret_key()
     if not sk:
-        return False, "Paystack secret missing — set GCSLC_PAYSTACK_SECRET_KEY (or st.secrets).", {}
+        return (
+            False,
+            "Paystack secret missing — set GCSLC_PAYSTACK_SECRET_KEY or GCSLC_PAYSTACK_SECRET (st.secrets / env).",
+            {},
+        )
     ref = f"CIEN_PS_{int(time.time())}_{random.randint(1000, 9999)}"
     _meta: dict = {
         "purpose": "Urban-Core Strike wallet top-up",
@@ -578,7 +713,7 @@ def _gcslc_paystack_init(
 
 
 def _gcslc_paystack_verify(reference: str) -> tuple[bool, str]:
-    sk = _gcslc_secret("GCSLC_PAYSTACK_SECRET_KEY")
+    sk = _gcslc_paystack_secret_key()
     if not sk or not (reference or "").strip():
         return False, "missing_secret_or_ref"
     url = "https://api.paystack.co/transaction/verify/" + urllib.parse.quote(reference.strip(), safe="")
@@ -621,7 +756,7 @@ def _gcslc_flutterwave_init(
         _meta["payer_name"] = _pn
     body = {
         "tx_ref": tx_ref,
-        "amount": str(int(GCSLC_WALLET_STRIKE_TOPUP_NGN)),
+        "amount": str(int(_gcslc_wallet_strike_topup_ngn())),
         "currency": "NGN",
         "redirect_url": redir,
         "payment_options": payment_options,
@@ -667,7 +802,7 @@ def _gcslc_flutterwave_verify(tx_ref: str) -> tuple[bool, str]:
         amt = float(data.get("amount", 0) or 0)
     except (TypeError, ValueError):
         amt = 0.0
-    if amt + 0.01 < float(GCSLC_WALLET_STRIKE_TOPUP_NGN):
+    if amt + 0.01 < float(_gcslc_wallet_strike_topup_ngn()):
         return False, "amount_mismatch"
     return True, "ok"
 
@@ -690,7 +825,7 @@ def _gcslc_init_live_checkout(
         ps_ch, flw_opt, label = ["ussd"], "ussd", "ussd_zenith"
     else:
         return False, "unknown_mode", {}
-    if _gcslc_secret("GCSLC_PAYSTACK_SECRET_KEY"):
+    if _gcslc_paystack_secret_key():
         return _gcslc_paystack_init(email, channels=ps_ch, channel_label=label, payer_name=payer_name)
     if _gcslc_secret("GCSLC_FLUTTERWAVE_SECRET_KEY"):
         return _gcslc_flutterwave_init(
@@ -710,7 +845,7 @@ def _gcslc_verify_pending_checkout() -> tuple[bool, str]:
 
 
 def _gcslc_try_auto_verify_wallet() -> None:
-    if _gcslc_wallet_balance_int() >= int(GCSLC_WALLET_STRIKE_TOPUP_NGN):
+    if _gcslc_wallet_balance_int() >= int(_gcslc_wallet_strike_topup_ngn()):
         return
     ref = st.session_state.get("cien_checkout_ready_ref")
     if not ref:
@@ -754,7 +889,7 @@ def _gcslc_resolve_checkout_url_for_sidebar() -> tuple[str, str]:
         st.session_state["cien_checkout_ready_url"] = data["authorization_url"]
         st.session_state["cien_checkout_ready_ref"] = data.get("reference", "")
         st.session_state["cien_checkout_provider"] = (
-            "paystack" if _gcslc_secret("GCSLC_PAYSTACK_SECRET_KEY") else "flutterwave"
+            "paystack" if _gcslc_paystack_secret_key() else "flutterwave"
         )
         st.session_state["cien_checkout_channel"] = "transfer"
         return str(data["authorization_url"]), ""
@@ -763,23 +898,155 @@ def _gcslc_resolve_checkout_url_for_sidebar() -> tuple[str, str]:
     return "", msg or "Could not initialize payment link."
 
 
+def _gcslc_transmit_to_whatsapp() -> dict[str, Any]:
+    """
+    Last-mile WhatsApp transmit via Twilio or Whapi.cloud (credentials in `st.secrets` or env).
+
+    Payload: Mathematical Certainty text (`_build_dawn_strike_slot_b_whatsapp`) + hospital image
+    via **public HTTPS** `GCSLC_STRIKE_MEDIA_PUBLIC_URL` (e.g. CDN copy of `assets/1004079752.png`).
+
+    Targets: up to `GCSLC_STRIKE_DELIVERY_MAX_PER_CALL` rows from the voter DB phone column, plus
+    comma-separated `GCSLC_PRIORITY_WHATSAPP_NUMBERS` (10 priority command lines / nodes).
+    For 12,765 recipients, run from a background worker or raise limits — Streamlit requests time out.
+    """
+    from gcslc_strike_delivery import (
+        load_phone_column_from_parquet,
+        twilio_whatsapp_send,
+        whapi_send_message_json,
+    )
+
+    out: dict[str, Any] = {
+        "gateway": _gcslc_config_str("GCSLC_WHATSAPP_GATEWAY", "twilio").strip().lower(),
+        "node_attempts": 0,
+        "priority_attempts": 0,
+        "node_ok": 0,
+        "priority_ok": 0,
+        "errors": [],
+    }
+    try:
+        max_batch = int(_gcslc_config_str("GCSLC_STRIKE_DELIVERY_MAX_PER_CALL", "50"))
+    except Exception:
+        max_batch = 50
+    max_batch = max(1, min(max_batch, 500))
+
+    body = _build_dawn_strike_slot_b_whatsapp()
+    media_url = _gcslc_config_str("GCSLC_STRIKE_MEDIA_PUBLIC_URL", "").strip()
+    pri_raw = _gcslc_config_str("GCSLC_PRIORITY_WHATSAPP_NUMBERS", "")
+    priority_to = [x.strip() for x in pri_raw.split(",") if x.strip()][:24]
+
+    gw = str(out["gateway"])
+    p = _resolve_voter_db_path()
+
+    def _send_twilio(to_raw: str) -> tuple[bool, str]:
+        sid = _gcslc_secret("TWILIO_ACCOUNT_SID")
+        tok = _gcslc_secret("TWILIO_AUTH_TOKEN")
+        from_wa = (
+            _gcslc_config_str("TWILIO_WHATSAPP_FROM", "").strip()
+            or _gcslc_config_str("GCSLC_0809_WHATSAPP_FROM", "").strip()
+        )
+        to_wa = to_raw.strip()
+        if not to_wa.startswith("whatsapp:"):
+            to_wa = f"whatsapp:{to_wa}" if to_wa.startswith("+") else f"whatsapp:+{to_wa}"
+        ok, err, _js = twilio_whatsapp_send(
+            account_sid=sid,
+            auth_token=tok,
+            from_whatsapp=from_wa,
+            to_whatsapp=to_wa,
+            body=body,
+            media_url=media_url or None,
+        )
+        return ok, err
+
+    def _send_whapi(to_raw: str) -> tuple[bool, str]:
+        token = _gcslc_secret("GCSLC_WHAPI_TOKEN") or _gcslc_secret("GCSLC_0809_API_TOKEN")
+        base = _gcslc_config_str("GCSLC_WHAPI_BASE", "https://gate.whapi.cloud")
+        ok, err, _js = whapi_send_message_json(
+            api_token=token,
+            api_base=base,
+            to_phone=to_raw.strip(),
+            body=body,
+            media_url=media_url or None,
+        )
+        return ok, err
+
+    send = _send_twilio if gw != "whapi" else _send_whapi
+
+    pri_cap = min(10, len(priority_to), max_batch)
+    for t in priority_to[:pri_cap]:
+        out["priority_attempts"] += 1
+        ok, err = send(t)
+        if ok:
+            out["priority_ok"] += 1
+        else:
+            out["errors"].append(f"priority:{t[:18]}…:{err[:160]}")
+
+    remaining = max(0, max_batch - out["priority_attempts"])
+    if remaining <= 0:
+        out["ok"] = len(out["errors"]) == 0
+        return out
+
+    if p.is_file() and p.suffix.lower() in (".parquet", ".pq"):
+        nums = load_phone_column_from_parquet(
+            p,
+            max_rows=min(_gcslc_strike_nodes_armed_count(), remaining),
+        )
+        for to in nums:
+            out["node_attempts"] += 1
+            ok, err = send(to)
+            if ok:
+                out["node_ok"] += 1
+            else:
+                out["errors"].append(f"node:{to[:18]}…:{err[:160]}")
+            if out["node_attempts"] >= remaining:
+                break
+    elif p.is_file() and p.suffix.lower() == ".csv":
+        try:
+            sniff = pd.read_csv(p, nrows=min(_gcslc_strike_nodes_armed_count(), remaining))
+            col = None
+            for c in sniff.columns:
+                cl = str(c).strip().lower().replace(" ", "_")
+                if cl in ("phone", "msisdn", "phone_number", "mobile", "whatsapp", "wa_number"):
+                    col = c
+                    break
+            if col is not None:
+                for to in sniff[col].astype(str).tolist():
+                    to = str(to).strip()
+                    if not to:
+                        continue
+                    out["node_attempts"] += 1
+                    ok, err = send(to)
+                    if ok:
+                        out["node_ok"] += 1
+                    else:
+                        out["errors"].append(f"node:{to[:18]}…:{err[:160]}")
+                    if out["node_attempts"] >= remaining:
+                        break
+        except Exception as e:
+            out["errors"].append(f"csv_read:{str(e)[:200]}")
+
+    out["ok"] = len(out["errors"]) == 0
+    return out
+
+
 def _render_sovereign_payment_handshake(pay_url: str) -> None:
-    """Live HTTPS deploy: `st.link_button` + optional `st.dialog` (no mixed-content pop-up)."""
+    """Universal Payment Gateway: `st.dialog` (embedded checkout + new tab) + `st.link_button` on HTTPS hosts."""
     u = (pay_url or "").strip()
     if not u:
         return
-    st.link_button(
-        "🔗 OPEN SECURE PAYMENT PAGE (EXTERNAL)",
-        u,
-        use_container_width=True,
-        type="primary",
-    )
+    safe = html.escape(u, quote=True)
     if hasattr(st, "dialog"):
         @st.dialog("Universal Payment Gateway")
         def _ugw_modal() -> None:
             st.markdown(
-                "Hosted **Paystack** / **Flutterwave** opens in a **new browser tab** when you tap the button below. "
-                "On a **live HTTPS** URL (Hugging Face / Streamlit Cloud), this avoids mixed-content blocking."
+                "Hosted **Paystack** / **Flutterwave** — on a **secure https://** app URL the checkout session "
+                "opens cleanly (embedded frame if allowed, otherwise use the new-tab button)."
+            )
+            components.html(
+                f'<iframe title="Hosted checkout" src="{safe}" '
+                'style="width:100%;min-height:520px;border:0;border-radius:12px;background:#0b0b0b;" '
+                'referrerpolicy="no-referrer-when-downgrade" loading="lazy" '
+                'allow="payment *; fullscreen"></iframe>',
+                height=540,
             )
             st.link_button(
                 "Open hosted checkout (new tab)",
@@ -787,13 +1054,28 @@ def _render_sovereign_payment_handshake(pay_url: str) -> None:
                 use_container_width=True,
                 type="primary",
             )
+            st.caption(
+                "If the frame is blank, the provider may block iframe embedding (X-Frame-Options). "
+                "The new-tab link always works on HTTPS."
+            )
 
         if st.button(
             "🧾 OPEN PAYMENT GATEWAY (MODAL)",
             key="cien_open_payment_dialog",
             use_container_width=True,
+            type="primary",
         ):
             _ugw_modal()
+        st.caption(
+            "Paystack secret is read from **Streamlit / HF Secrets** (`GCSLC_PAYSTACK_SECRET` or "
+            "`GCSLC_PAYSTACK_SECRET_KEY`) — no manual paste in the browser."
+        )
+    st.link_button(
+        "🔗 OPEN SECURE PAYMENT PAGE (EXTERNAL)",
+        u,
+        use_container_width=True,
+        type="secondary",
+    )
 
 
 def _render_sidebar_live_payment_gateway() -> None:
@@ -804,7 +1086,7 @@ def _render_sidebar_live_payment_gateway() -> None:
         st.markdown(
             '<div class="executive-trust-armed-banner">'
             "<p><strong>WALLET · ARMED — EXECUTIVE TRUST</strong></p>"
-            "<p>Chairman authorization · ₦50,000 credited immediately.</p>"
+            f"<p>Chairman authorization · ₦{_gcslc_wallet_strike_topup_ngn():,.0f} credited immediately.</p>"
             "</div>",
             unsafe_allow_html=True,
         )
@@ -815,7 +1097,7 @@ def _render_sidebar_live_payment_gateway() -> None:
         st.markdown(
             '<div class="launch-target-lock-sidebar">'
             "<p><strong>TARGET LOCK · 06:00 WAT</strong></p>"
-            f"<p>{html.escape(GCSLC_STRIKE_NODES_ARMED_LABEL)} nodes · "
+            f"<p>{html.escape(_gcslc_strike_nodes_armed_label())} nodes · "
             f"{len(_lgas)} LGAs · {len(_nms)} priority names · launch window locked.</p>"
             "</div>",
             unsafe_allow_html=True,
@@ -828,10 +1110,10 @@ def _render_sidebar_live_payment_gateway() -> None:
             "</div>",
             unsafe_allow_html=True,
         )
-        st.markdown(CIEN_EXECUTIVE_MANDATE_HTML, unsafe_allow_html=True)
+        st.markdown(_cien_executive_mandate_html(), unsafe_allow_html=True)
         _ack = st.checkbox("I confirm the Executive Mandate above.", key="cien_emergency_override_ack")
         if st.button(
-            "⚡ ARM NOW · ₦50,000 · TARGET LOCK",
+            f"⚡ ARM NOW · ₦{_gcslc_wallet_strike_topup_ngn():,.0f} · TARGET LOCK",
             key="cien_emergency_override_arm",
             use_container_width=True,
             disabled=not _ack,
@@ -841,7 +1123,7 @@ def _render_sidebar_live_payment_gateway() -> None:
             st.toast("Executive override applied — wallet armed · Master Strike gold · targets locked.", icon="🛡️")
             st.rerun()
     _w = _gcslc_wallet_balance_int()
-    _unfunded = _w < int(GCSLC_WALLET_STRIKE_TOPUP_NGN)
+    _unfunded = _w < int(_gcslc_wallet_strike_topup_ngn())
 
     st.markdown(
         '<div class="zenith-payment-sticky-wrap executive-unified-payment-wrap">'
@@ -851,7 +1133,7 @@ def _render_sidebar_live_payment_gateway() -> None:
     )
 
     if not _unfunded:
-        st.success("Wallet secured — ₦50,000 ready for strike command.")
+        st.success(f"Wallet secured — ₦{_gcslc_wallet_strike_topup_ngn():,.0f} ready for strike command.")
         return
 
     if _notice:
@@ -861,7 +1143,7 @@ def _render_sidebar_live_payment_gateway() -> None:
     st.text_input("Name", key="cien_executive_payer_name", max_chars=120)
     st.markdown(
         '<p class="exec-pay-amount-label">Amount</p>'
-        f'<p class="exec-pay-amount-value">{html.escape(f"₦{GCSLC_WALLET_STRIKE_TOPUP_NGN:,.2f}")}</p>',
+        f'<p class="exec-pay-amount-value">{html.escape(f"₦{_gcslc_wallet_strike_topup_ngn():,.2f}")}</p>',
         unsafe_allow_html=True,
     )
 
@@ -890,7 +1172,7 @@ def _render_sidebar_live_payment_gateway() -> None:
     ):
         _gcslc_apply_payment_confirmed()
         st.toast(
-            f"{GCSLC_STRIKE_NODES_ARMED_LABEL} lattice armed — strike command ready.",
+            f"{_gcslc_strike_nodes_armed_label()} lattice armed — strike command ready.",
             icon="⚡",
         )
         st.rerun()
@@ -1227,11 +1509,55 @@ def _normalize_voter_df(raw: pd.DataFrame) -> pd.DataFrame:
 
 @st.cache_data(ttl=90, show_spinner=False)
 def _voter_db_max_rows() -> int:
-    """Upper bound for voter head loads in RAM (cloud-safe). Override via GCSLC_VOTER_DB_MAX_ROWS."""
+    """Upper bound for voter head loads in RAM (cloud-safe). Override via GCSLC_VOTER_DB_MAX_ROWS in Secrets or env."""
     try:
-        return max(8, min(int(os.environ.get("GCSLC_VOTER_DB_MAX_ROWS", "256")), 50_000))
+        raw = _gcslc_config_str("GCSLC_VOTER_DB_MAX_ROWS", "256")
+        return max(8, min(int(raw), 50_000))
     except Exception:
         return 256
+
+
+_VOTER_DB_CACHE_DIR = (BASE_DIR / ".cache" / "voter_db").resolve()
+
+
+def _refresh_voter_db_path_global() -> None:
+    """Re-resolve `VOTER_DB_CSV` after optional HTTPS download (private S3 / presigned URL)."""
+    global VOTER_DB_CSV
+    VOTER_DB_CSV = _resolve_voter_db_path()
+
+
+def _ensure_private_voter_db_artifact() -> None:
+    """
+    If `GCSLC_VOTER_DB_HTTPS_URL` is set in st.secrets or env, download the artifact into `.cache/voter_db/`
+    and point `GCSLC_VOTER_DB_PARQUET` or `GCSLC_VOTER_DB` at the local file (keeps large DB out of GitHub).
+    Use a presigned S3 URL or any HTTPS direct link (Google Drive export links may expire).
+    Optional: `GCSLC_VOTER_DB_DOWNLOAD_BEARER` for Authorization: Bearer ...
+    """
+    url = _gcslc_config_str("GCSLC_VOTER_DB_HTTPS_URL", "").strip()
+    if not url:
+        return
+    low = url.lower()
+    if not (low.startswith("https://") or low.startswith("http://")):
+        return
+    _VOTER_DB_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    ext = ".parquet"
+    if ".csv" in url.split("?", 1)[0].lower():
+        ext = ".csv"
+    dest = (_VOTER_DB_CACHE_DIR / f"voter_db_private{ext}").resolve()
+    try:
+        req = urllib.request.Request(url, method="GET")
+        bear = _gcslc_config_str("GCSLC_VOTER_DB_DOWNLOAD_BEARER", "")
+        if bear:
+            req.add_header("Authorization", f"Bearer {bear}")
+        with urllib.request.urlopen(req, timeout=180) as resp:
+            dest.write_bytes(resp.read())
+        if dest.suffix.lower() in (".parquet", ".pq"):
+            os.environ["GCSLC_VOTER_DB_PARQUET"] = str(dest)
+        else:
+            os.environ["GCSLC_VOTER_DB"] = str(dest)
+        _refresh_voter_db_path_global()
+    except Exception:
+        return
 
 
 def _read_voter_parquet_head(p: Path, cap: int) -> pd.DataFrame:
@@ -5453,7 +5779,7 @@ def _render_broadcast_switchboard_kinetics_fragment() -> None:
     if _any_primed:
         st.markdown('<div class="wallet-n50k-prominent">', unsafe_allow_html=True)
         if st.button(
-            "💳 Add ₦50,000 to Wallet",
+            f"💳 Add ₦{_gcslc_wallet_strike_topup_ngn():,.0f} to Wallet",
             key="cien_wallet_n50k_prominent",
             use_container_width=True,
             help="Opens the Trust Funding form in the sidebar — proceed to payment there.",
@@ -5468,7 +5794,7 @@ def _render_broadcast_switchboard_kinetics_fragment() -> None:
                 st.session_state.pop(k, None)
             st.session_state["finance_handshake_queued"] = True
             st.session_state["cien_wallet_n50k_request_t0"] = time.monotonic()
-            st.session_state["cien_wallet_n50k_amount_ngn"] = int(GCSLC_WALLET_STRIKE_TOPUP_NGN)
+            st.session_state["cien_wallet_n50k_amount_ngn"] = int(_gcslc_wallet_strike_topup_ngn())
             st.toast("Use the sidebar **Trust Funding** form to complete payment.", icon="💳")
         st.markdown("</div>", unsafe_allow_html=True)
     st.caption("OFF: red field + gold text · PRIMED: cyan #00E5FF field + black text + pulse border.")
@@ -5500,7 +5826,7 @@ def _render_broadcast_switchboard_kinetics_fragment() -> None:
     _sid_for_payload = str(st.session_state.get("cien_sender_id", DEFAULT_SENDER_ID)).strip() or DEFAULT_SENDER_ID
     _wbal_now = _gcslc_wallet_balance_int()
     _bypass = bool(st.session_state.get("cien_wat_immediate_bypass"))
-    _funded_ok = _wbal_now >= int(GCSLC_WALLET_STRIKE_TOPUP_NGN)
+    _funded_ok = _wbal_now >= int(_gcslc_wallet_strike_topup_ngn())
     _dawn = _gcslc_dawn_payload_active()
     _payload_ready = _dawn or (_has_chars and _rem) or (_bypass and _funded_ok)
     if _dawn:
@@ -5526,7 +5852,7 @@ def _render_broadcast_switchboard_kinetics_fragment() -> None:
         if isinstance(_tl, dict) and isinstance(_tl.get("priority_names_10"), list) and _tl["priority_names_10"]:
             _pn = [str(x) for x in _tl["priority_names_10"]]
         st.caption(
-            f"Bound to **{html.escape(GCSLC_STRIKE_NODES_ARMED_LABEL)}** locked nodes · "
+            f"Bound to **{html.escape(_gcslc_strike_nodes_armed_label())}** locked nodes · "
             f"first-wave priority tags ({len(_pn)}): {html.escape(', '.join(_pn))}."
         )
     st.markdown("**Slot A · SMS** — Single bubble (compressed)" if not _dawn else "**Slot A · SMS** — Final dawn payload")
@@ -5606,30 +5932,30 @@ def _render_broadcast_switchboard_kinetics_fragment() -> None:
     if _payload_ready:
         st.markdown('<div class="broadcast-authority-actions">', unsafe_allow_html=True)
         _exec_funded = (
-            " execute-strike-wallet-funded" if _wbal_now >= GCSLC_WALLET_STRIKE_TOPUP_NGN else ""
+            " execute-strike-wallet-funded" if _wbal_now >= _gcslc_wallet_strike_topup_ngn() else ""
         )
         st.markdown(
             f'<div class="execute-master-strike-wrap{_exec_funded}">',
             unsafe_allow_html=True,
         )
-        if _wbal_now >= GCSLC_WALLET_STRIKE_TOPUP_NGN:
+        if _wbal_now >= _gcslc_wallet_strike_topup_ngn():
             st.markdown(
                 f'<p class="strike-nodes-armed-status">'
-                f'<span class="strike-nodes-armed-glow">{html.escape(GCSLC_STRIKE_NODES_ARMED_LABEL)} Nodes Armed</span>'
+                f'<span class="strike-nodes-armed-glow">{html.escape(_gcslc_strike_nodes_armed_label())} Nodes Armed</span>'
                 f"</p>",
                 unsafe_allow_html=True,
             )
         _tl = st.session_state.get("cien_launch_target_lock")
         if (
             isinstance(_tl, dict)
-            and _wbal_now >= GCSLC_WALLET_STRIKE_TOPUP_NGN
+            and _wbal_now >= _gcslc_wallet_strike_topup_ngn()
             and _tl.get("nodes")
         ):
             _lg = html.escape(", ".join(str(x) for x in (_tl.get("lga_urban_core_5") or [])[:5]))
             st.markdown(
                 f'<div class="launch-target-lock-strip">'
                 f"<strong>06:00 AM WAT (Africa/Lagos)</strong> · "
-                f"{html.escape(GCSLC_STRIKE_NODES_ARMED_LABEL)} target nodes <span class=\"ltl-locked\">LOCKED</span> · "
+                f"{html.escape(_gcslc_strike_nodes_armed_label())} target nodes <span class=\"ltl-locked\">LOCKED</span> · "
                 f"5 LGAs: {_lg} · 10 priority command names armed for push.</div>",
                 unsafe_allow_html=True,
             )
@@ -5664,7 +5990,7 @@ def _render_broadcast_switchboard_kinetics_fragment() -> None:
             if isinstance(_tl, dict) and isinstance(_tl.get("priority_names_10"), list) and _tl["priority_names_10"]:
                 _pnw = [str(x) for x in _tl["priority_names_10"]]
             st.session_state["cien_dawn_strike_last_binding"] = {
-                "nodes": int(GCSLC_STRIKE_NODES_ARMED_COUNT),
+                "nodes": int(_gcslc_strike_nodes_armed_count()),
                 "priority_first_wave": _pnw,
                 "slot_a": _slot_a,
                 "slot_b": _slot_b,
@@ -5672,7 +5998,7 @@ def _render_broadcast_switchboard_kinetics_fragment() -> None:
                 "zone": "Africa/Lagos",
             }
             st.success(
-                f"Dawn strike armed · payloads bound to **{GCSLC_STRIKE_NODES_ARMED_LABEL}** nodes · "
+                f"Dawn strike armed · payloads bound to **{_gcslc_strike_nodes_armed_label()}** nodes · "
                 f"first wave priority tags ({len(_pnw)}) · 06:00 WAT · sender `{_sid_for_payload}` · "
                 f"lanes: {_lane_txt}."
             )
@@ -5689,6 +6015,7 @@ def main() -> None:
         layout="wide",
         initial_sidebar_state="expanded",
     )
+    _ensure_private_voter_db_artifact()
     st.markdown(f"<style>{_CSS}</style>", unsafe_allow_html=True)
 
     # Emergency watcher runs first so it can bypass frozen sidebar UI.
@@ -5732,6 +6059,7 @@ def main() -> None:
     st.session_state.setdefault("cien_wat_immediate_bypass", False)
     st.session_state.setdefault("cien_executive_payer_name", CIEN_DEFAULT_EXECUTIVE_PAYER_NAME)
     _gcslc_purge_retired_static_payment_session()
+    _gcslc_load_chairman_state()
 
     with st.sidebar:
         st.caption(
@@ -5987,6 +6315,8 @@ def main() -> None:
     _render_live_outreach_panel()
 
     _render_executive_variance_forensic()
+
+    _gcslc_save_chairman_state()
 
     st.caption(
         f"CIEN Kaduna 2027 · virtualized voter head · {VOTER_DB_CSV.name} @ {VOTER_DB_CSV.parent} "
