@@ -27,6 +27,7 @@ os.environ.setdefault("STREAMLIT_SERVER_FILE_WATCHER_TYPE", "none")
 
 BASE_DIR = Path(__file__).resolve().parent
 VERIFY_IMG_NAMES = ("image_0.png", "image_1.png")
+_REPO_VOTER_PARQUET = (BASE_DIR / "voter_db.parquet").resolve()
 
 # Emergency terminal override marker:
 # Terminal writes JSON to this file; the app watches and arms the dawn payload.
@@ -101,6 +102,11 @@ def _kaduna_lake_preview_pool() -> list[str]:
     return names
 
 
+def _kaduna_data_2027_inventory() -> list[str]:
+    """Filenames under the Kaduna data lake (bounded pool) — used by sovereign roller ticker."""
+    return _kaduna_lake_preview_pool()
+
+
 def _lake_display_slice(pool: list[str], window: int, use_tail: bool) -> list[str]:
     """Head-only or head+tail window; never materializes beyond len(pool)."""
     if not pool:
@@ -131,10 +137,53 @@ DEFAULT_SENDER_ID = str(os.environ.get("GCSLC_DEFAULT_SENDER_ID", "Galadiman_R")
 SMS_SEGMENT_LIMIT_GSM = 160
 SMS_SEGMENT_LIMIT_UNICODE = 70
 
-# Secure payment / wallet (GCSLC) — live Paystack / Flutterwave only (no static treasury account)
-GCSLC_WALLET_STRIKE_TOPUP_NGN = 50_000
-GCSLC_STRIKE_NODES_ARMED_COUNT = 12_765
-GCSLC_STRIKE_NODES_ARMED_LABEL = f"{GCSLC_STRIKE_NODES_ARMED_COUNT:,}"
+
+def _gcslc_config_str(name: str, default: str = "") -> str:
+    """Non-secret config: prefer `st.secrets` (private cloud), then environment variables."""
+    try:
+        sec = getattr(st, "secrets", None)
+        if sec is not None and name in sec:
+            v = str(sec[name]).strip()
+            if v:
+                return v
+    except Exception:
+        pass
+    return (os.environ.get(name) or "").strip() or default
+
+
+def _gcslc_wallet_strike_topup_ngn() -> int:
+    """Trust-funding amount (NGN). Set `GCSLC_WALLET_STRIKE_TOPUP_NGN` in Secrets or env — not hardcoded."""
+    raw = _gcslc_config_str("GCSLC_WALLET_STRIKE_TOPUP_NGN", "50000")
+    try:
+        v = int(float(str(raw).replace(",", "").strip()))
+        return max(1, min(v, 999_999_999))
+    except Exception:
+        return 50_000
+
+
+def _gcslc_strike_nodes_armed_count() -> int:
+    raw = _gcslc_config_str("GCSLC_STRIKE_NODES_ARMED_COUNT", "12765")
+    try:
+        v = int(float(str(raw).replace(",", "").strip()))
+        return max(1, min(v, 10_000_000))
+    except Exception:
+        return 12_765
+
+
+def _gcslc_strike_nodes_armed_label() -> str:
+    return f"{_gcslc_strike_nodes_armed_count():,}"
+
+
+def _cien_executive_mandate_html() -> str:
+    n = _gcslc_wallet_strike_topup_ngn()
+    nodes = _gcslc_strike_nodes_armed_label()
+    return (
+        '<p class="executive-mandate-00ffff">EXECUTIVE MANDATE: I authorize the '
+        f"₦{n:,.0f} Trust-Funding and immediate activation of the {nodes}-Node Strike Lattice.</p>"
+    )
+
+
+# Secure payment / wallet (GCSLC) — live Paystack / Flutterwave; amounts from Secrets/env above
 # 06:00 WAT urban-core lattice (5 LGAs) — aligns with Urban-Core Strike command grid
 GCSLC_URBAN_CORE_5_LGAS: tuple[str, ...] = (
     "Kaduna North",
@@ -166,24 +215,16 @@ CIEN_DAWN_STRIKE_SLOT_B_BODY_CORE = (
     "ward, the 15/15 mandate is now a *MATHEMATICAL CERTAINTY*. Progress is here. — GCSLC Hub"
 )
 CIEN_DAWN_STRIKE_WHATSAPP_IMAGE = "1004079752.png"
-GCSLC_PAYSTACK_CHECKOUT_URL = str(os.environ.get("GCSLC_PAYSTACK_CHECKOUT_URL", "")).strip()
-GCSLC_FLUTTERWAVE_CHECKOUT_URL = str(os.environ.get("GCSLC_FLUTTERWAVE_CHECKOUT_URL", "")).strip()
-GCSLC_PAYMENT_PUBLIC_LINK = str(os.environ.get("GCSLC_PAYMENT_PUBLIC_LINK", "")).strip()
-# Cyan executive mandate (HTML sidebar block — checkbox is short confirm only)
-CIEN_EXECUTIVE_MANDATE_HTML = (
-    '<p class="executive-mandate-00ffff">EXECUTIVE MANDATE: I authorize the ₦50,000 Trust-Funding and immediate '
-    "activation of the 12,765-Node Strike Lattice.</p>"
-)
 CIEN_DEFAULT_EXECUTIVE_PAYER_NAME = "Dr. Jaafaru Sa'ad"
 
 
 def _gcslc_preferred_static_hosted_payment_url() -> str:
-    """First configured hosted payment URL (env) — use when API init fails or secrets are missing."""
-    for u in (GCSLC_PAYSTACK_CHECKOUT_URL, GCSLC_FLUTTERWAVE_CHECKOUT_URL, GCSLC_PAYMENT_PUBLIC_LINK):
-        s = (u or "").strip()
-        low = s.lower()
+    """First configured hosted payment URL (st.secrets or env) — use when API init fails or secrets are missing."""
+    for key in ("GCSLC_PAYSTACK_CHECKOUT_URL", "GCSLC_FLUTTERWAVE_CHECKOUT_URL", "GCSLC_PAYMENT_PUBLIC_LINK"):
+        u = _gcslc_config_str(key, "")
+        low = u.lower()
         if low.startswith("http://") or low.startswith("https://"):
-            return s
+            return u
     return ""
 # Intentionally empty defaults — static account logic removed (avoids name-enquiry / stale session issues)
 GCSLC_BANK_ACCOUNT_NUMBER = str(os.environ.get("GCSLC_BANK_ACCOUNT_NUMBER") or "").strip()
@@ -687,7 +728,7 @@ def _gcslc_try_auto_verify_wallet() -> None:
 def _gcslc_resolve_checkout_url_for_sidebar() -> tuple[str, str]:
     """
     Resolve hosted Paystack/Flutterwave URL (static env first, else one API init per attempt).
-    Returns (url, error_message). Popup-free: caller renders <a target="_blank">.
+    Returns (url, error_message). Caller opens in a new tab (st.link_button / modal) — no window.open pop-up.
     """
     u = str(st.session_state.get("cien_checkout_ready_url") or "").strip()
     if u:
@@ -720,6 +761,39 @@ def _gcslc_resolve_checkout_url_for_sidebar() -> tuple[str, str]:
     st.session_state["cien_checkout_init_failed"] = True
     st.session_state["cien_checkout_last_error"] = msg
     return "", msg or "Could not initialize payment link."
+
+
+def _render_sovereign_payment_handshake(pay_url: str) -> None:
+    """Live HTTPS deploy: `st.link_button` + optional `st.dialog` (no mixed-content pop-up)."""
+    u = (pay_url or "").strip()
+    if not u:
+        return
+    st.link_button(
+        "🔗 OPEN SECURE PAYMENT PAGE (EXTERNAL)",
+        u,
+        use_container_width=True,
+        type="primary",
+    )
+    if hasattr(st, "dialog"):
+        @st.dialog("Universal Payment Gateway")
+        def _ugw_modal() -> None:
+            st.markdown(
+                "Hosted **Paystack** / **Flutterwave** opens in a **new browser tab** when you tap the button below. "
+                "On a **live HTTPS** URL (Hugging Face / Streamlit Cloud), this avoids mixed-content blocking."
+            )
+            st.link_button(
+                "Open hosted checkout (new tab)",
+                u,
+                use_container_width=True,
+                type="primary",
+            )
+
+        if st.button(
+            "🧾 OPEN PAYMENT GATEWAY (MODAL)",
+            key="cien_open_payment_dialog",
+            use_container_width=True,
+        ):
+            _ugw_modal()
 
 
 def _render_sidebar_live_payment_gateway() -> None:
@@ -792,8 +866,8 @@ def _render_sidebar_live_payment_gateway() -> None:
     )
 
     st.markdown(
-        '<p class="checkout-deep-link-hint">Hosted Paystack / Flutterwave opens in a <strong>new browser tab</strong> '
-        "(not a pop-up).</p>",
+        '<p class="checkout-deep-link-hint">On a <strong>live HTTPS</strong> deploy, hosted Paystack / Flutterwave '
+        "opens in a <strong>new browser tab</strong> via the buttons below (no mixed-content pop-up).</p>",
         unsafe_allow_html=True,
     )
 
@@ -801,14 +875,7 @@ def _render_sidebar_live_payment_gateway() -> None:
     if pay_err:
         st.warning(pay_err)
     if pay_url:
-        _href = html.escape(pay_url, quote=True)
-        st.markdown(
-            f'<a class="gcslc-external-payment-deep-link" href="{_href}" '
-            'target="_blank" rel="noopener noreferrer">'
-            "🔗 OPEN SECURE PAYMENT PAGE (EXTERNAL)"
-            "</a>",
-            unsafe_allow_html=True,
-        )
+        _render_sovereign_payment_handshake(pay_url)
     st.caption(
         "Change payer name or need a fresh hosted link? Rerun the app from the menu, or set "
         "GCSLC_PAYSTACK_CHECKOUT_URL / GCSLC_FLUTTERWAVE_CHECKOUT_URL for a static checkout URL."
@@ -1159,6 +1226,44 @@ def _normalize_voter_df(raw: pd.DataFrame) -> pd.DataFrame:
 
 
 @st.cache_data(ttl=90, show_spinner=False)
+def _voter_db_max_rows() -> int:
+    """Upper bound for voter head loads in RAM (cloud-safe). Override via GCSLC_VOTER_DB_MAX_ROWS."""
+    try:
+        return max(8, min(int(os.environ.get("GCSLC_VOTER_DB_MAX_ROWS", "256")), 50_000))
+    except Exception:
+        return 256
+
+
+def _read_voter_parquet_head(p: Path, cap: int) -> pd.DataFrame:
+    """Read only the first row groups up to cap rows (avoids loading huge Parquet into RAM)."""
+    try:
+        import pyarrow.parquet as pq  # type: ignore
+    except Exception:
+        try:
+            df = pd.read_parquet(p)
+            return df.head(cap)
+        except Exception:
+            return pd.DataFrame()
+    try:
+        pf = pq.ParquetFile(p)
+        chunks: list[pd.DataFrame] = []
+        n = 0
+        for batch in pf.iter_batches(batch_size=min(8192, cap)):
+            chunks.append(batch.to_pandas())
+            n += batch.num_rows
+            if n >= cap:
+                break
+        if not chunks:
+            return pd.DataFrame()
+        raw = pd.concat(chunks, ignore_index=True).head(cap)
+        return raw
+    except Exception:
+        try:
+            return pd.read_parquet(p).head(cap)
+        except Exception:
+            return pd.DataFrame()
+
+
 def _discover_first_valid_csv_in_lake_dir() -> str | None:
     """First lexicographic .csv under the lake that yields at least one normalized voter row."""
     d = KADUNA_DATA_2027_DIR
@@ -1180,7 +1285,14 @@ def _discover_first_valid_csv_in_lake_dir() -> str | None:
     return None
 
 
-def _resolve_voter_db_csv() -> Path:
+def _resolve_voter_db_path() -> Path:
+    """
+    Prefer Parquet in cloud deploys (GCSLC_VOTER_DB_PARQUET), else explicit CSV (GCSLC_VOTER_DB),
+    else first valid CSV in lake, else default voter_db.csv path.
+    """
+    pq_env = os.environ.get("GCSLC_VOTER_DB_PARQUET")
+    if pq_env:
+        return Path(pq_env).expanduser().resolve()
     env = os.environ.get("GCSLC_VOTER_DB")
     if env:
         return Path(env).expanduser().resolve()
@@ -1190,7 +1302,7 @@ def _resolve_voter_db_csv() -> Path:
     return (KADUNA_DATA_2027_DIR / "voter_db.csv").resolve()
 
 
-VOTER_DB_CSV = _resolve_voter_db_csv()
+VOTER_DB_CSV = _resolve_voter_db_path()
 
 
 # UI / sidebar: keep only a small head in RAM (1.5M-safe virtualized ingest).
@@ -1206,11 +1318,17 @@ def _load_voter_db(csv_path: str, nrows: int = _VOTER_DB_HEAD_DEFAULT) -> pd.Dat
     p = Path(csv_path)
     if not p.is_file():
         return pd.DataFrame(columns=_EMPTY_VOTER_COLS)
-    if p.resolve() == _REPO_VOTER_DB_CSV and not os.environ.get("GCSLC_VOTER_DB"):
+    if p.suffix.lower() in (".parquet", ".pq"):
+        if p.resolve() == _REPO_VOTER_PARQUET and not os.environ.get("GCSLC_VOTER_DB_PARQUET"):
+            return pd.DataFrame(columns=_EMPTY_VOTER_COLS)
+    elif p.resolve() == _REPO_VOTER_DB_CSV and not os.environ.get("GCSLC_VOTER_DB"):
         return pd.DataFrame(columns=_EMPTY_VOTER_COLS)
     try:
-        cap = max(8, min(int(nrows), 50_000))
-        raw = pd.read_csv(p, nrows=cap)
+        cap = max(8, min(int(nrows), _voter_db_max_rows(), 50_000))
+        if p.suffix.lower() in (".parquet", ".pq"):
+            raw = _read_voter_parquet_head(p, cap)
+        else:
+            raw = pd.read_csv(p, nrows=cap)
     except Exception:
         return pd.DataFrame(columns=_EMPTY_VOTER_COLS)
     return _normalize_voter_df(raw)
@@ -1222,6 +1340,14 @@ def _load_voter_raw_for_swot(csv_path: str) -> pd.DataFrame:
     p = Path(csv_path)
     if not p.is_file():
         return pd.DataFrame()
+    if p.suffix.lower() in (".parquet", ".pq"):
+        if p.resolve() == _REPO_VOTER_PARQUET and not os.environ.get("GCSLC_VOTER_DB_PARQUET"):
+            return pd.DataFrame()
+        try:
+            raw = _read_voter_parquet_head(p, _SWOT_CSV_MAX_ROWS)
+            return raw if not raw.empty else pd.DataFrame()
+        except Exception:
+            return pd.DataFrame()
     if p.resolve() == _REPO_VOTER_DB_CSV and not os.environ.get("GCSLC_VOTER_DB"):
         return pd.DataFrame()
     try:

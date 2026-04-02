@@ -6,3 +6,4 @@ pandas
 plotly
 pytz
 openpyxl
+pyarrow
