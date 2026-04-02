@@ -126,12 +126,14 @@ SMS_SEGMENT_LIMIT_UNICODE = 70
 
 # Secure payment / wallet (GCSLC) — configure checkout & bank via env
 GCSLC_WALLET_STRIKE_TOPUP_NGN = 50_000
-GCSLC_PAYMENT_PURPOSE_URBAN_CORE = "Urban-Core Strike (5 LGAs)"
 GCSLC_PAYSTACK_CHECKOUT_URL = str(os.environ.get("GCSLC_PAYSTACK_CHECKOUT_URL", "")).strip()
 GCSLC_FLUTTERWAVE_CHECKOUT_URL = str(os.environ.get("GCSLC_FLUTTERWAVE_CHECKOUT_URL", "")).strip()
 GCSLC_PAYMENT_PUBLIC_LINK = str(os.environ.get("GCSLC_PAYMENT_PUBLIC_LINK", "")).strip()
 GCSLC_BANK_ACCOUNT_NUMBER = str(os.environ.get("GCSLC_BANK_ACCOUNT_NUMBER", "")).strip()
 GCSLC_BANK_NAME = str(os.environ.get("GCSLC_BANK_NAME", "GCSLC Treasury — set GCSLC_BANK_NAME")).strip()
+# Sidebar hard-print (Zenith) — st.dialog disabled to stop modal flicker
+GCSLC_ZENITH_COORDINATES_BANK = "Zenith Bank"
+GCSLC_ZENITH_COORDINATES_ACCOUNT_DISPLAY = "1017582522 (GCSLC Treasury)"
 
 CHANNEL_OPTION_PRIVATE = "📱 SMS/WA (The Private Strike)"
 CHANNEL_OPTION_GRASSROOTS = "🎥 Grassroots (TikTok/FB/IG)"
@@ -223,129 +225,34 @@ def _gcslc_wallet_balance_int() -> int:
         return 0
 
 
-def _resolve_gcslc_logo_path() -> Path | None:
-    for name in ("gcslc_logo.png", "GCSLC_logo.png", "logo.png"):
-        p = BASE_DIR / "assets" / name
-        if p.is_file():
-            return p
-    return None
-
-
 def _gcslc_apply_payment_confirmed() -> None:
     st.session_state["cien_wallet_balance"] = int(GCSLC_WALLET_STRIKE_TOPUP_NGN)
     st.session_state["finance_handshake_queued"] = False
-    st.session_state["cien_payment_modal_blocked"] = False
 
 
-def _gcslc_render_payment_brand_header() -> None:
-    _lp = _resolve_gcslc_logo_path()
-    if _lp is not None:
-        st.image(str(_lp), width=160)
-    else:
-        st.markdown(
-            '<div class="gcslc-logo-fallback" aria-label="GCSLC">'
-            "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 56' width='200' height='56'>"
-            "<rect width='200' height='56' rx='10' fill='#121212' stroke='#FFD700' stroke-width='2'/>"
-            "<text x='100' y='36' text-anchor='middle' fill='#FFD700' font-family='Arial Black, sans-serif' "
-            "font-size='22' font-weight='800'>GCSLC</text></svg></div>",
-            unsafe_allow_html=True,
-        )
+def _render_sidebar_zenith_payment_station() -> None:
+    """Always-on sidebar: Zenith coordinates (gold/cyan) + payment-complete (no st.dialog — avoids flicker)."""
+    _amt = f"₦{GCSLC_WALLET_STRIKE_TOPUP_NGN:,.2f}"
     st.markdown(
-        '<div class="gcslc-payment-logo-wrap">'
-        '<span class="gcslc-secure-txn-badge">Secure Transaction</span></div>',
+        '<div class="zenith-payment-sticky-wrap">'
+        '<p class="zps-title-gold">ZENITH COORDINATES · GCSLC TREASURY</p>'
+        '<p class="zpc-label-gold">BANK</p>'
+        f'<p class="zpc-value-cyan">{html.escape(GCSLC_ZENITH_COORDINATES_BANK)}</p>'
+        '<p class="zpc-label-gold">ACCOUNT</p>'
+        f'<p class="zpc-value-cyan">{html.escape(GCSLC_ZENITH_COORDINATES_ACCOUNT_DISPLAY)}</p>'
+        '<p class="zpc-label-gold">AMOUNT</p>'
+        f'<p class="zpc-value-cyan">{html.escape(_amt)}</p>'
+        "</div>",
         unsafe_allow_html=True,
     )
-    st.markdown(
-        f"<h3 style='margin:0.35rem 0 0.15rem 0;color:#FFD700;'>₦{GCSLC_WALLET_STRIKE_TOPUP_NGN:,.2f}</h3>",
-        unsafe_allow_html=True,
-    )
-    st.markdown(
-        f"<p style='margin:0;color:#00E5FF;font-weight:700;'>{html.escape(GCSLC_PAYMENT_PURPOSE_URBAN_CORE)}</p>",
-        unsafe_allow_html=True,
-    )
-
-
-def _gcslc_render_payment_provider_row() -> None:
-    st.caption("Providers · opens in a new browser tab where configured.")
-    r1, r2, r3 = st.columns(3)
-    with r1:
-        if GCSLC_PAYSTACK_CHECKOUT_URL:
-            st.link_button("Paystack checkout", GCSLC_PAYSTACK_CHECKOUT_URL, use_container_width=True)
-        else:
-            st.caption("Paystack URL unset (`GCSLC_PAYSTACK_CHECKOUT_URL`).")
-    with r2:
-        if GCSLC_FLUTTERWAVE_CHECKOUT_URL:
-            st.link_button("Flutterwave checkout", GCSLC_FLUTTERWAVE_CHECKOUT_URL, use_container_width=True)
-        else:
-            st.caption("Flutterwave URL unset (`GCSLC_FLUTTERWAVE_CHECKOUT_URL`).")
-    with r3:
-        if GCSLC_PAYMENT_PUBLIC_LINK:
-            st.link_button("GCSLC payment link", GCSLC_PAYMENT_PUBLIC_LINK, use_container_width=True)
-        else:
-            st.caption("Public link unset (`GCSLC_PAYMENT_PUBLIC_LINK`).")
-
-
-def _gcslc_render_bank_transfer_block() -> None:
-    acct = GCSLC_BANK_ACCOUNT_NUMBER.strip() or "— set GCSLC_BANK_ACCOUNT_NUMBER —"
-    st.markdown("**Direct bank transfer**")
-    st.code(f"{GCSLC_BANK_NAME}\nAccount: {acct}", language=None)
-
-
-def _gcslc_render_payment_sheet(*, confirm_key_suffix: str) -> None:
-    _gcslc_render_payment_brand_header()
-    _gcslc_render_payment_provider_row()
-    _gcslc_render_bank_transfer_block()
-    st.divider()
     if st.button(
         "✅ Payment completed — credit ₦50,000 to wallet",
-        key=f"cien_payment_confirmed_{confirm_key_suffix}",
+        key="cien_payment_confirmed_sidebar",
         use_container_width=True,
         type="primary",
     ):
         _gcslc_apply_payment_confirmed()
         st.rerun()
-    if st.button(
-        "Pop-up blocked — show cyan wiring in sidebar",
-        key=f"cien_payment_modal_blocked_ack_{confirm_key_suffix}",
-        use_container_width=True,
-    ):
-        st.session_state["cien_payment_modal_blocked"] = True
-        st.session_state["finance_handshake_queued"] = True
-        st.rerun()
-
-
-@st.dialog("GCSLC · Secure Payment")
-def _gcslc_secure_payment_modal() -> None:
-    """Pop-up payment sheet (Paystack / Flutterwave / bank) — finance_handshake_queued path."""
-    _gcslc_render_payment_sheet(confirm_key_suffix="dialog")
-
-
-def _render_payment_sidebar_cyan_fallback() -> None:
-    if not st.session_state.get("cien_payment_modal_blocked"):
-        return
-    if _gcslc_wallet_balance_int() >= GCSLC_WALLET_STRIKE_TOPUP_NGN:
-        return
-    acct = GCSLC_BANK_ACCOUNT_NUMBER.strip() or "CONFIGURE GCSLC_BANK_ACCOUNT_NUMBER"
-    link = (
-        GCSLC_PAYMENT_PUBLIC_LINK
-        or GCSLC_PAYSTACK_CHECKOUT_URL
-        or GCSLC_FLUTTERWAVE_CHECKOUT_URL
-        or ""
-    )
-    link_disp = link if link else "CONFIGURE GCSLC_PAYMENT_PUBLIC_LINK (or Paystack / Flutterwave URL)"
-    href = link if link.lower().startswith(("http://", "https://")) else "#"
-    st.markdown(
-        '<div class="payment-fallback-cyan">'
-        '<p class="pfc-title">POP-UP BLOCKED · DIRECT FUNDING</p>'
-        f'<p class="pfc-label">Account number</p>'
-        f'<p class="pfc-acct">{html.escape(acct)}</p>'
-        f'<p class="pfc-label">Payment link</p>'
-        f'<p class="pfc-link"><a href="{html.escape(href, quote=True)}" target="_blank" rel="noopener noreferrer">'
-        f"{html.escape(link_disp)}</a></p>"
-        f'<p class="pfc-foot">Complete payment, then use <strong>Payment completed</strong> in the secure sheet.</p>'
-        "</div>",
-        unsafe_allow_html=True,
-    )
 
 
 def _format_reminder_for_lane(channel: str, raw: str) -> str:
@@ -2440,61 +2347,43 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   color: #00E5FF !important;
   text-shadow: 0 0 10px rgba(0, 229, 255, 0.35);
 }
-.gcslc-payment-logo-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.4rem;
-  margin-bottom: 0.2rem;
+[data-testid="stSidebar"] .zenith-payment-sticky-wrap {
+  position: sticky;
+  bottom: 0;
+  z-index: 60;
+  margin-top: 0.85rem;
+  margin-bottom: 0.35rem;
+  padding: 0.85rem 0.55rem 0.65rem 0.55rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 215, 0, 0.52);
+  background: linear-gradient(180deg, rgba(22, 22, 22, 0.98), rgba(8, 8, 8, 0.99));
+  box-shadow: 0 -10px 28px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(8px);
 }
-.gcslc-secure-txn-badge {
-  display: inline-block;
-  padding: 0.22rem 0.7rem;
-  border-radius: 999px;
-  font-size: 0.7rem;
-  font-weight: 800;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  color: #1a1200 !important;
-  background: linear-gradient(135deg, #ffec80, #ffd700, #e6ac00);
-  border: 1px solid rgba(255, 215, 0, 0.95);
-  box-shadow: 0 0 16px rgba(255, 215, 0, 0.5);
-}
-[data-testid="stSidebar"] .payment-fallback-cyan {
-  margin: 0.65rem 0 0.45rem 0;
-  padding: 0.7rem 0.55rem;
-  border-radius: 11px;
-  border: 1px solid rgba(0, 229, 255, 0.5);
-  background: rgba(0, 229, 255, 0.07);
-}
-[data-testid="stSidebar"] .payment-fallback-cyan .pfc-title {
-  color: #00e5ff !important;
+[data-testid="stSidebar"] .zps-title-gold {
+  color: #ffd700 !important;
+  font-size: 1.02rem;
   font-weight: 900;
-  font-size: 0.8rem;
-  letter-spacing: 0.07em;
-  margin: 0 0 0.55rem 0;
+  letter-spacing: 0.08em;
+  text-align: center;
+  margin: 0 0 0.65rem 0;
+  text-shadow: 0 0 14px rgba(255, 215, 0, 0.38);
 }
-[data-testid="stSidebar"] .payment-fallback-cyan .pfc-label {
-  color: rgba(0, 229, 255, 0.78) !important;
-  font-size: 0.66rem;
-  margin: 0.4rem 0 0.12rem 0;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+[data-testid="stSidebar"] .zpc-label-gold {
+  color: #ffd700 !important;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  margin: 0.48rem 0 0.12rem 0;
 }
-[data-testid="stSidebar"] .payment-fallback-cyan .pfc-acct,
-[data-testid="stSidebar"] .payment-fallback-cyan .pfc-link,
-[data-testid="stSidebar"] .payment-fallback-cyan .pfc-link a {
+[data-testid="stSidebar"] .zpc-value-cyan {
   color: #00e5ff !important;
-  font-size: 1.4rem !important;
-  font-weight: 800 !important;
-  line-height: 1.28 !important;
+  font-size: 1.68rem;
+  font-weight: 800;
+  line-height: 1.22;
   margin: 0;
-  word-break: break-all;
-}
-[data-testid="stSidebar"] .payment-fallback-cyan .pfc-foot {
-  color: rgba(255, 255, 255, 0.74) !important;
-  font-size: 0.73rem;
-  margin: 0.6rem 0 0 0;
+  word-break: break-word;
+  text-shadow: 0 0 16px rgba(0, 229, 255, 0.32);
 }
 .channel-selector-gold-label label,
 .channel-selector-gold-label span {
@@ -4658,7 +4547,6 @@ def _render_broadcast_switchboard_kinetics_fragment() -> None:
             help="Payment trigger · primed strike lane detected — opens secure payment (st.dialog) + finance handshake.",
         ):
             st.session_state["finance_handshake_queued"] = True
-            st.session_state["cien_payment_modal_blocked"] = False
             st.session_state["cien_wallet_n50k_request_t0"] = time.monotonic()
             st.session_state["cien_wallet_n50k_amount_ngn"] = int(GCSLC_WALLET_STRIKE_TOPUP_NGN)
             st.toast("Finance handshake queued — secure payment modal opens next.", icon="💳")
@@ -4742,18 +4630,6 @@ def _render_broadcast_switchboard_kinetics_fragment() -> None:
         f"06:00 push-ready when reminder has content. Dashboard time: {_wat}."
     )
     _wbal_now = _gcslc_wallet_balance_int()
-    _pay_queued = bool(st.session_state.get("finance_handshake_queued"))
-    _pay_blocked = bool(st.session_state.get("cien_payment_modal_blocked"))
-    _pay_due = _pay_queued and _wbal_now < GCSLC_WALLET_STRIKE_TOPUP_NGN
-    if _pay_due and not _pay_blocked:
-        _gcslc_secure_payment_modal()
-    if _pay_due and _pay_blocked:
-        with st.expander(
-            "💳 SECURE PAYMENT · ₦50,000 (inline sheet — pop-up blocked)",
-            expanded=True,
-        ):
-            _gcslc_render_payment_sheet(confirm_key_suffix="inline")
-    _render_payment_sidebar_cyan_fallback()
     _exec_strike = False
     if _has_chars and not _rem:
         st.caption("Whitespace only — add substantive reminder text to populate Slot A / Slot B.")
@@ -4802,7 +4678,6 @@ def main() -> None:
     _migrate_mc_channels_session()
     st.session_state.setdefault("cien_wallet_balance", 0)
     st.session_state.setdefault("finance_handshake_queued", False)
-    st.session_state.setdefault("cien_payment_modal_blocked", False)
 
     with st.sidebar:
         st.caption(
@@ -4871,6 +4746,7 @@ def main() -> None:
             "</div>",
             unsafe_allow_html=True,
         )
+        _render_sidebar_zenith_payment_station()
 
     st.markdown(
         '<div class="prism-widget"><div class="prism-widget-inner">'
