@@ -129,7 +129,29 @@ SMS_SEGMENT_LIMIT_UNICODE = 70
 
 # Secure payment / wallet (GCSLC) — live Paystack / Flutterwave only (no static treasury account)
 GCSLC_WALLET_STRIKE_TOPUP_NGN = 50_000
-GCSLC_STRIKE_NODES_ARMED_LABEL = "12,765"
+GCSLC_STRIKE_NODES_ARMED_COUNT = 12_765
+GCSLC_STRIKE_NODES_ARMED_LABEL = f"{GCSLC_STRIKE_NODES_ARMED_COUNT:,}"
+# 06:00 WAT urban-core lattice (5 LGAs) — aligns with Urban-Core Strike command grid
+GCSLC_URBAN_CORE_5_LGAS: tuple[str, ...] = (
+    "Kaduna North",
+    "Kaduna South",
+    "Chikun",
+    "Igabi",
+    "Zaria",
+)
+# 10 priority nodal / executive names for launch lock manifest
+GCSLC_LAUNCH_PRIORITY_NAMES: tuple[str, ...] = (
+    "Dr. Fabian Okoye",
+    "Chief of Staff",
+    "Dr. Abdul Ishaq",
+    "Galadiman Ruwa Command",
+    "Node-14314 Chairman Lock",
+    "Node-8507 Executive Lock",
+    "Ward Captain Uplink",
+    "Ballot-Box Pack Sync",
+    "06:00 WAT Push Authority",
+    "Urban-Core Strike Coordinator",
+)
 GCSLC_PAYSTACK_CHECKOUT_URL = str(os.environ.get("GCSLC_PAYSTACK_CHECKOUT_URL", "")).strip()
 GCSLC_FLUTTERWAVE_CHECKOUT_URL = str(os.environ.get("GCSLC_FLUTTERWAVE_CHECKOUT_URL", "")).strip()
 GCSLC_PAYMENT_PUBLIC_LINK = str(os.environ.get("GCSLC_PAYMENT_PUBLIC_LINK", "")).strip()
@@ -230,6 +252,7 @@ def _gcslc_wallet_balance_int() -> int:
 def _gcslc_apply_payment_confirmed() -> None:
     st.session_state["cien_wallet_balance"] = int(GCSLC_WALLET_STRIKE_TOPUP_NGN)
     st.session_state["finance_handshake_queued"] = False
+    st.session_state["cien_wallet_executive_trust_armed"] = False
     for k in (
         "cien_checkout_ready_url",
         "cien_checkout_ready_ref",
@@ -239,6 +262,31 @@ def _gcslc_apply_payment_confirmed() -> None:
         "cien_checkout_last_error",
     ):
         st.session_state.pop(k, None)
+
+
+def _gcslc_apply_executive_emergency_override() -> None:
+    """Immediate ₦50k wallet credit + target lock — no gateway ping (Chairman fatigue / outage)."""
+    st.session_state["cien_wallet_balance"] = int(GCSLC_WALLET_STRIKE_TOPUP_NGN)
+    st.session_state["cien_wallet_executive_trust_armed"] = True
+    st.session_state["finance_handshake_queued"] = False
+    st.session_state.pop("cien_payment_dialog_requested", None)
+    st.session_state.pop("cien_payment_dialog_reopen", None)
+    for k in (
+        "cien_checkout_ready_url",
+        "cien_checkout_ready_ref",
+        "cien_checkout_provider",
+        "cien_checkout_channel",
+        "cien_checkout_last_error",
+    ):
+        st.session_state.pop(k, None)
+    st.session_state["cien_launch_target_lock"] = {
+        "wat_clock": "06:00",
+        "wat_zone": "Africa/Lagos",
+        "nodes": int(GCSLC_STRIKE_NODES_ARMED_COUNT),
+        "lga_urban_core_5": list(GCSLC_URBAN_CORE_5_LGAS),
+        "priority_names_10": list(GCSLC_LAUNCH_PRIORITY_NAMES),
+        "locked_mono": time.monotonic(),
+    }
 
 
 def _gcslc_secret(name: str) -> str:
@@ -557,6 +605,42 @@ def _gcslc_live_checkout_dialog() -> None:
 def _render_sidebar_live_payment_gateway() -> None:
     """24/7 sidebar companion: pending checkout + manual verify (no static treasury account)."""
     _gcslc_try_auto_verify_wallet()
+    if st.session_state.get("cien_wallet_executive_trust_armed"):
+        st.markdown(
+            '<div class="executive-trust-armed-banner">'
+            "<p><strong>WALLET · ARMED — EXECUTIVE TRUST</strong></p>"
+            "<p>Live gateway bypass · Chairman authorization · ₦50,000 credited immediately.</p>"
+            "</div>",
+            unsafe_allow_html=True,
+        )
+    _lock = st.session_state.get("cien_launch_target_lock")
+    if isinstance(_lock, dict) and _lock.get("nodes"):
+        _lgas = _lock.get("lga_urban_core_5") or []
+        _nms = _lock.get("priority_names_10") or []
+        st.markdown(
+            '<div class="launch-target-lock-sidebar">'
+            "<p><strong>TARGET LOCK · 06:00 WAT</strong></p>"
+            f"<p>{html.escape(GCSLC_STRIKE_NODES_ARMED_LABEL)} nodes · "
+            f"{len(_lgas)} LGAs · {len(_nms)} priority names · launch window locked.</p>"
+            "</div>",
+            unsafe_allow_html=True,
+        )
+    with st.expander("🛡️ Emergency override (no gateway)", expanded=False):
+        st.caption("Use when live checkout will not open. Arms wallet to ₦50,000 and locks the 06:00 WAT target lattice.")
+        _ack = st.checkbox(
+            "I authorize EXECUTIVE TRUST — immediate ₦50,000 credit + target lock",
+            key="cien_emergency_override_ack",
+        )
+        if st.button(
+            "⚡ ARM NOW · ₦50,000 · TARGET LOCK",
+            key="cien_emergency_override_arm",
+            use_container_width=True,
+            disabled=not _ack,
+            type="primary",
+        ):
+            _gcslc_apply_executive_emergency_override()
+            st.toast("Executive override applied — wallet armed · Master Strike gold · targets locked.", icon="🛡️")
+            st.rerun()
     st.markdown(
         '<div class="zenith-payment-sticky-wrap">'
         '<p class="zps-title-gold">UNIVERSAL PAYMENT GATEWAY · 24/7</p>'
@@ -2706,6 +2790,50 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   text-shadow: 0 0 14px rgba(255, 215, 0, 0.55), 0 0 28px rgba(255, 215, 0, 0.28);
+}
+[data-testid="stSidebar"] .executive-trust-armed-banner {
+  margin: 0 0 0.55rem 0;
+  padding: 0.55rem 0.45rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 215, 0, 0.65);
+  background: linear-gradient(135deg, rgba(42, 34, 0, 0.95), rgba(18, 18, 18, 0.98));
+  box-shadow: 0 0 18px rgba(255, 215, 0, 0.35);
+}
+[data-testid="stSidebar"] .executive-trust-armed-banner p {
+  margin: 0.15rem 0;
+  color: #ffd700 !important;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  font-weight: 700;
+}
+[data-testid="stSidebar"] .launch-target-lock-sidebar {
+  margin: 0 0 0.55rem 0;
+  padding: 0.5rem 0.45rem;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 229, 255, 0.45);
+  background: rgba(0, 229, 255, 0.08);
+}
+[data-testid="stSidebar"] .launch-target-lock-sidebar p {
+  margin: 0.12rem 0;
+  color: #00e5ff !important;
+  font-size: 0.7rem;
+  line-height: 1.35;
+}
+[data-testid="stSidebar"] .launch-target-lock-strip {
+  margin: 0.35rem 0 0.45rem 0;
+  padding: 0.45rem 0.4rem;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 229, 255, 0.4);
+  background: rgba(0, 229, 255, 0.06);
+  color: #00e5ff !important;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.4;
+  text-align: center;
+}
+[data-testid="stSidebar"] .launch-target-lock-strip .ltl-locked {
+  color: #ffd700 !important;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.45);
 }
 [data-testid="stSidebar"] .zenith-payment-sticky-wrap {
   position: sticky;
@@ -5019,6 +5147,20 @@ def _render_broadcast_switchboard_kinetics_fragment() -> None:
                 f"</p>",
                 unsafe_allow_html=True,
             )
+        _tl = st.session_state.get("cien_launch_target_lock")
+        if (
+            isinstance(_tl, dict)
+            and _wbal_now >= GCSLC_WALLET_STRIKE_TOPUP_NGN
+            and _tl.get("nodes")
+        ):
+            _lg = html.escape(", ".join(str(x) for x in (_tl.get("lga_urban_core_5") or [])[:5]))
+            st.markdown(
+                f'<div class="launch-target-lock-strip">'
+                f"<strong>06:00 AM WAT (Africa/Lagos)</strong> · "
+                f"{html.escape(GCSLC_STRIKE_NODES_ARMED_LABEL)} target nodes <span class=\"ltl-locked\">LOCKED</span> · "
+                f"5 LGAs: {_lg} · 10 priority command names armed for push.</div>",
+                unsafe_allow_html=True,
+            )
         _exec_strike = st.button(
             "🚀 EXECUTE MASTER STRIKE",
             key="cien_execute_master_strike",
@@ -5055,6 +5197,7 @@ def main() -> None:
     _migrate_mc_channels_session()
     st.session_state.setdefault("cien_wallet_balance", 0)
     st.session_state.setdefault("finance_handshake_queued", False)
+    st.session_state.setdefault("cien_wallet_executive_trust_armed", False)
     _gcslc_purge_retired_static_payment_session()
 
     with st.sidebar:
