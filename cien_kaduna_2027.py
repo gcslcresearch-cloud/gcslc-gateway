@@ -153,6 +153,50 @@ def _gcslc_config_str(name: str, default: str = "") -> str:
     return (os.environ.get(name) or "").strip() or default
 
 
+def _gcslc_integration_secret(key: str) -> str | None:
+    """Secure credential entry for universal platform integrations (payment, WhatsApp, SMS).
+
+    Resolution order:
+    1. ``st.secrets[key]`` (Streamlit Cloud / local ``.streamlit/secrets.toml``)
+    2. ``st.secrets["integrations"][key]`` when ``integrations`` is a mapping
+    3. ``os.environ[key]`` (export in shell, systemd, Docker, or deployment platform)
+
+    Values are never logged, echoed, or written to disk by this helper. Returns ``None``
+    when the key is absent or empty — callers must gate any future send/charge logic.
+    """
+    try:
+        sec = getattr(st, "secrets", None)
+        if sec is not None:
+            if key in sec:
+                v = str(sec[key]).strip()
+                if v:
+                    return v
+            nest = sec.get("integrations") if hasattr(sec, "get") else None
+            if isinstance(nest, dict) and key in nest:
+                v = str(nest[key]).strip()
+                if v:
+                    return v
+    except Exception:
+        pass
+    env_val = (os.environ.get(key) or "").strip()
+    return env_val if env_val else None
+
+
+def gcslc_payment_gateway_key() -> str | None:
+    """Payment provider secret (e.g. universal checkout / gateway API key)."""
+    return _gcslc_integration_secret("PAYMENT_GATEWAY_KEY")
+
+
+def gcslc_whatsapp_token() -> str | None:
+    """WhatsApp Business / Cloud API token for platform messaging integration."""
+    return _gcslc_integration_secret("WHATSAPP_TOKEN")
+
+
+def gcslc_sms_service_sid() -> str | None:
+    """SMS provider Messaging Service SID (e.g. Twilio Conversations / Messaging SID)."""
+    return _gcslc_integration_secret("SMS_SERVICE_SID")
+
+
 def _gcslc_wallet_strike_topup_ngn() -> int:
     """Trust-funding amount (NGN). Set `GCSLC_WALLET_STRIKE_TOPUP_NGN` in Secrets or env — not hardcoded."""
     raw = _gcslc_config_str("GCSLC_WALLET_STRIKE_TOPUP_NGN", "50000")
@@ -186,6 +230,10 @@ def _cien_executive_mandate_html() -> str:
 
 
 # Secure payment / wallet (GCSLC) — live Paystack / Flutterwave; amounts from Secrets/env above
+# Universal platform integration secrets (no network I/O here): resolve via
+# ``gcslc_payment_gateway_key()``, ``gcslc_whatsapp_token()``, ``gcslc_sms_service_sid()``
+# backed by ``PAYMENT_GATEWAY_KEY``, ``WHATSAPP_TOKEN``, ``SMS_SERVICE_SID`` in
+# ``.streamlit/secrets.toml`` or the process environment.
 # 06:00 WAT urban-core lattice (5 LGAs) — aligns with Urban-Core Strike command grid
 GCSLC_URBAN_CORE_5_LGAS: tuple[str, ...] = (
     "Kaduna North",
