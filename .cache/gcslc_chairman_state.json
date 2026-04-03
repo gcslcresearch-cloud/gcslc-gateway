@@ -1,0 +1,37 @@
+{
+  "cien_wallet_balance": 50000,
+  "cien_launch_target_lock": {
+    "wat_clock": "06:00",
+    "wat_zone": "Africa/Lagos",
+    "nodes": 12765,
+    "lga_urban_core_5": [
+      "Kaduna North",
+      "Kaduna South",
+      "Chikun",
+      "Igabi",
+      "Zaria"
+    ],
+    "priority_names_10": [
+      "Dr. Fabian Okoye",
+      "Chief of Staff",
+      "Dr. Abdul Ishaq",
+      "Galadiman Ruwa Command",
+      "Node-14314 Chairman Lock",
+      "Node-8507 Executive Lock",
+      "Ward Captain Uplink",
+      "Ballot-Box Pack Sync",
+      "06:00 WAT Push Authority",
+      "Urban-Core Strike Coordinator"
+    ],
+    "locked_mono": 3728.55120756
+  },
+  "cien_wat_immediate_bypass": true,
+  "cien_wallet_executive_trust_armed": true,
+  "finance_handshake_queued": false,
+  "cien_mc_channels": [
+    "\ud83d\udcf1 SMS/WA (The Private Strike)",
+    "\ud83c\udfa5 Grassroots (TikTok/FB/IG)",
+    "\ud83c\udfdb\ufe0f Sovereign (X/LinkedIn)"
+  ],
+  "cien_zone": "Master Aggregate"
+}

@@ -14,6 +14,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from datetime import date, datetime, timedelta
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 from zoneinfo import ZoneInfo
@@ -139,17 +140,42 @@ DEFAULT_SENDER_ID = str(os.environ.get("GCSLC_DEFAULT_SENDER_ID", "Galadiman_R")
 SMS_SEGMENT_LIMIT_GSM = 160
 SMS_SEGMENT_LIMIT_UNICODE = 70
 
+# Set once per interpreter: ``load_if_toml_exists()`` is the supported no-throw probe; calling
+# ``st.secrets.get`` when no secrets.toml / mount exists still runs ``_parse()`` and raises.
+_gcslc_streamlit_secrets_store_ready: bool | None = None
+
+
+def _gcslc_streamlit_secrets_get(key: str) -> Any | None:
+    """Read ``st.secrets`` via ``.get`` only after a successful store probe — no subscripts, no nagging errors."""
+    global _gcslc_streamlit_secrets_store_ready
+    sec = getattr(st, "secrets", None)
+    if sec is None:
+        return None
+    lif = getattr(sec, "load_if_toml_exists", None)
+    if callable(lif):
+        if _gcslc_streamlit_secrets_store_ready is None:
+            _gcslc_streamlit_secrets_store_ready = bool(lif())
+        if not _gcslc_streamlit_secrets_store_ready:
+            return None
+        return sec.get(key, None)
+    # Older Streamlit: fall back to dict-like ``.get`` only.
+    getter = getattr(sec, "get", None)
+    if not callable(getter):
+        return None
+    try:
+        return getter(key, None)
+    except (KeyError, OSError):
+        # Missing store / missing key: ``StreamlitSecretNotFoundError`` subclasses ``FileNotFoundError``.
+        return None
+
 
 def _gcslc_config_str(name: str, default: str = "") -> str:
     """Non-secret config: prefer `st.secrets` (private cloud), then environment variables."""
-    try:
-        sec = getattr(st, "secrets", None)
-        if sec is not None and name in sec:
-            v = str(sec[name]).strip()
-            if v:
-                return v
-    except Exception:
-        pass
+    raw = _gcslc_streamlit_secrets_get(name)
+    if raw is not None:
+        v = str(raw).strip()
+        if v:
+            return v
     return (os.environ.get(name) or "").strip() or default
 
 
@@ -157,27 +183,25 @@ def _gcslc_integration_secret(key: str) -> str | None:
     """Secure credential entry for universal platform integrations (payment, WhatsApp, SMS).
 
     Resolution order:
-    1. ``st.secrets[key]`` (Streamlit Cloud / local ``.streamlit/secrets.toml``)
-    2. ``st.secrets["integrations"][key]`` when ``integrations`` is a mapping
+    1. ``st.secrets.get(key)`` (Streamlit Cloud / local ``.streamlit/secrets.toml``)
+    2. ``st.secrets.get("integrations", {}).get(key)`` when ``integrations`` is a mapping
     3. ``os.environ[key]`` (export in shell, systemd, Docker, or deployment platform)
 
     Values are never logged, echoed, or written to disk by this helper. Returns ``None``
     when the key is absent or empty — callers must gate any future send/charge logic.
     """
-    try:
-        sec = getattr(st, "secrets", None)
-        if sec is not None:
-            if key in sec:
-                v = str(sec[key]).strip()
-                if v:
-                    return v
-            nest = sec.get("integrations") if hasattr(sec, "get") else None
-            if isinstance(nest, dict) and key in nest:
-                v = str(nest[key]).strip()
-                if v:
-                    return v
-    except Exception:
-        pass
+    raw = _gcslc_streamlit_secrets_get(key)
+    if raw is not None:
+        v = str(raw).strip()
+        if v:
+            return v
+    nest = _gcslc_streamlit_secrets_get("integrations")
+    if isinstance(nest, Mapping):
+        nested = nest.get(key, None)
+        if nested is not None:
+            v = str(nested).strip()
+            if v:
+                return v
     env_val = (os.environ.get(key) or "").strip()
     return env_val if env_val else None
 
@@ -185,6 +209,11 @@ def _gcslc_integration_secret(key: str) -> str | None:
 def gcslc_payment_gateway_key() -> str | None:
     """Payment provider secret (e.g. universal checkout / gateway API key)."""
     return _gcslc_integration_secret("PAYMENT_GATEWAY_KEY")
+
+
+def gcslc_termii_api_key() -> str | None:
+    """Termii (or compatible) SMS/API key — same resolution as other integration secrets."""
+    return _gcslc_integration_secret("TERMII_API_KEY")
 
 
 def gcslc_whatsapp_token() -> str | None:
@@ -231,8 +260,9 @@ def _cien_executive_mandate_html() -> str:
 
 # Secure payment / wallet (GCSLC) — live Paystack / Flutterwave; amounts from Secrets/env above
 # Universal platform integration secrets (no network I/O here): resolve via
-# ``gcslc_payment_gateway_key()``, ``gcslc_whatsapp_token()``, ``gcslc_sms_service_sid()``
-# backed by ``PAYMENT_GATEWAY_KEY``, ``WHATSAPP_TOKEN``, ``SMS_SERVICE_SID`` in
+# ``gcslc_payment_gateway_key()``, ``gcslc_termii_api_key()``, ``gcslc_whatsapp_token()``,
+# ``gcslc_sms_service_sid()`` backed by ``PAYMENT_GATEWAY_KEY``, ``TERMII_API_KEY``,
+# ``WHATSAPP_TOKEN``, ``SMS_SERVICE_SID`` in
 # ``.streamlit/secrets.toml`` or the process environment.
 # 06:00 WAT urban-core lattice (5 LGAs) — aligns with Urban-Core Strike command grid
 GCSLC_URBAN_CORE_5_LGAS: tuple[str, ...] = (
@@ -559,12 +589,11 @@ def _gcslc_apply_executive_emergency_override() -> None:
 
 def _gcslc_secret(name: str) -> str:
     """API keys and tokens: prefer `st.secrets` (HF / Streamlit Cloud), then environment variables."""
-    try:
-        sec = getattr(st, "secrets", None)
-        if sec is not None and name in sec:
-            return str(sec[name]).strip()
-    except Exception:
-        pass
+    raw = _gcslc_streamlit_secrets_get(name)
+    if raw is not None:
+        s = str(raw).strip()
+        if s:
+            return s
     return (os.environ.get(name) or "").strip()
 
 
@@ -1126,6 +1155,37 @@ def _render_sovereign_payment_handshake(pay_url: str) -> None:
     )
 
 
+def _gcslc_checkout_err_looks_like_pending_secrets(msg: str) -> bool:
+    m = (msg or "").lower()
+    return any(
+        x in m
+        for x in (
+            "secret missing",
+            "no payment secret",
+            "configure paystack",
+            "configure paystack / flutterwave",
+            "missing_secret",
+        )
+    )
+
+
+def _render_integration_secrets_status_banner() -> None:
+    """Soft notice while optional universal keys propagate — avoids alarming empty-state UX."""
+    missing: list[str] = []
+    if not gcslc_payment_gateway_key():
+        missing.append("PAYMENT_GATEWAY_KEY")
+    if not gcslc_termii_api_key():
+        missing.append("TERMII_API_KEY")
+    if not missing:
+        return
+    st.info(
+        "**Integration keys still synchronizing:** "
+        + ", ".join(f"`{k}`" for k in missing)
+        + " — not visible to this process yet. After saving platform Secrets, allow a moment for redeploy; "
+        "simulation, charts, and Paystack/Flutterwave paths that use their own keys keep working."
+    )
+
+
 def _render_sidebar_live_payment_gateway() -> None:
     """Chairman-facing trust funding: deep-link hosted checkout (new tab) + manual arm strike."""
     _gcslc_try_auto_verify_wallet()
@@ -1203,7 +1263,14 @@ def _render_sidebar_live_payment_gateway() -> None:
 
     pay_url, pay_err = _gcslc_resolve_checkout_url_for_sidebar()
     if pay_err:
-        st.warning(pay_err)
+        if _gcslc_checkout_err_looks_like_pending_secrets(pay_err):
+            st.info(
+                "**Payment provider secrets are not loaded yet** (or Paystack/Flutterwave keys are unset). "
+                "If you just updated Secrets, wait for sync/redeploy — or use **Executive mandate · Emergency trust** above. "
+                f"Detail: {pay_err}"
+            )
+        else:
+            st.warning(pay_err)
     if pay_url:
         _render_sovereign_payment_handshake(pay_url)
     st.caption(
@@ -6177,6 +6244,7 @@ def main() -> None:
             "</div>",
             unsafe_allow_html=True,
         )
+        _render_integration_secrets_status_banner()
         _render_sidebar_live_payment_gateway()
 
     st.markdown(
