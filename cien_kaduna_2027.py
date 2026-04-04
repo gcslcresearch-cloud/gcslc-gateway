@@ -1198,24 +1198,19 @@ def _gcslc_checkout_err_looks_like_pending_secrets(msg: str) -> bool:
     )
 
 
+def _gcslc_render_sovereign_gateway_sync_hint() -> None:
+    """Single neutral line — no ``st.error`` / ``st.warning`` / ``st.status`` (avoids red or amber Streamlit chrome)."""
+    st.markdown(
+        '<div class="gcslc-sovereign-gateway-sync">Synchronizing Sovereign Gateway…</div>',
+        unsafe_allow_html=True,
+    )
+
+
 def _render_integration_secrets_status_banner() -> None:
-    """Soft notice while optional universal keys propagate — avoids alarming empty-state UX."""
-    missing: list[str] = []
-    if not gcslc_payment_gateway_key():
-        missing.append("`GCSLC_PAYMENT_GATEWAY_KEY` (or `PAYMENT_GATEWAY_KEY`)")
-    if not gcslc_termii_api_key():
-        missing.append("`GCSLC_TERMII_API_KEY` (or `TERMII_API_KEY`)")
-    if not missing:
+    """Former 'secrets missing' path: only a muted sync hint (dashboard stays clean while cloud secrets propagate)."""
+    if gcslc_payment_gateway_key() and gcslc_termii_api_key():
         return
-    with st.status("Integration secrets", expanded=False) as _istat:
-        _istat.update(label="Optional keys — checking cloud sync…", state="running")
-        _istat.markdown(
-            "**Not loaded in this process yet:** "
-            + ", ".join(missing)
-            + ". After saving platform Secrets, allow a short redeploy or refresh; "
-            "simulation, charts, and Paystack/Flutterwave paths that use their own `GCSLC_*` secrets keep working."
-        )
-        _istat.update(label="Optional integration keys may still be synchronizing — rest of dashboard is live", state="complete")
+    _gcslc_render_sovereign_gateway_sync_hint()
 
 
 def _render_sidebar_live_payment_gateway() -> None:
@@ -1296,16 +1291,9 @@ def _render_sidebar_live_payment_gateway() -> None:
     pay_url, pay_err = _gcslc_resolve_checkout_url_for_sidebar()
     if pay_err:
         if _gcslc_checkout_err_looks_like_pending_secrets(pay_err):
-            with st.status("Hosted checkout", expanded=False) as _pstat:
-                _pstat.update(label="Payment handshake still catching up…", state="running")
-                _pstat.markdown(
-                    "**Paystack / Flutterwave secrets or network path not ready yet** — "
-                    "common right after a Secrets change or during cold cloud egress. "
-                    "Wait for sync/redeploy, set static `GCSLC_PAYSTACK_CHECKOUT_URL` / `GCSLC_FLUTTERWAVE_CHECKOUT_URL`, "
-                    "or use **Executive mandate · Emergency trust** above."
-                )
-                _pstat.caption(f"Detail: {html.escape(str(pay_err))}")
-                _pstat.update(label="Checkout link pending — dashboard remains usable", state="complete")
+            # Integration banner already shows the same hint when optional keys are absent.
+            if gcslc_payment_gateway_key() and gcslc_termii_api_key():
+                _gcslc_render_sovereign_gateway_sync_hint()
         else:
             st.info(f"**Hosted checkout:** {html.escape(str(pay_err))}")
     if pay_url:
@@ -1836,7 +1824,7 @@ def _load_voter_raw_for_swot(csv_path: str) -> pd.DataFrame:
 
 # 2023 governorship razor-thin benchmark (APC − PDP), per tactical directive
 MARGIN_2023_APC_PDP = V_2023_APC - V_2023_PDP  # 10,806
-NEON_WARNING_ORANGE = "#FF6B35"
+NEON_WARNING_ORANGE = "#94A3B8"  # Slate & grey (neutralized battleground accent)
 OPPOSITION_PULSE_PARTIES: tuple[str, ...] = ("PDP", "LP", "ADC", "SDP")
 
 
@@ -2115,6 +2103,19 @@ def _render_sovereign_roller_ticker_fragment() -> None:
 
 _CSS = """
 @import url('https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap');
+
+/* Optional secrets / cloud handshake — neutral slate (never error red / warning amber). */
+.gcslc-sovereign-gateway-sync {
+  color: #5c6b7a;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  padding: 0.4rem 0.65rem;
+  margin: 0.2rem 0 0.35rem 0;
+  border-left: 3px solid #8b9bab;
+  background: rgba(91, 107, 122, 0.09);
+  border-radius: 0 4px 4px 0;
+}
 
 @keyframes cien-pulse-gold {
   0%, 100% { transform: scale(1); opacity: 1; filter: brightness(1); }
@@ -3383,7 +3384,7 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   margin: 0 0 0.35rem 0 !important;
   line-height: 1.35 !important;
 }
-/* Strike tiles: OFF = red field + gold text · ON (PRIMED) = cyan field + black text + pulse border */
+/* Strike tiles: OFF = slate field + gold text · ON (PRIMED) = cyan field + black text + pulse border */
 .broadcast-lane-mark {
   height: 0 !important;
   margin: 0 !important;
@@ -3404,9 +3405,9 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
 }
 .broadcast-lane-mark + div [data-testid="column"] [data-testid="baseButton-secondary"],
 .broadcast-lane-mark + div [data-testid="column"] [data-testid="stBaseButton-secondary"] {
-  background: #7f1d1d !important;
+  background: #1e293b !important;
   color: #FFD700 !important;
-  border: 2px solid rgba(255, 215, 0, 0.55) !important;
+  border: 2px solid rgba(148, 163, 184, 0.45) !important;
   box-shadow: inset 0 0 14px rgba(0, 0, 0, 0.35) !important;
 }
 .broadcast-lane-mark + div [data-testid="column"] [data-testid="baseButton-secondary"] p,
@@ -4006,7 +4007,7 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   text-shadow: none !important;
 }
 .sovereign-margin-shield {
-  border: 1px solid rgba(239, 68, 68, 0.55);
+  border: 1px solid rgba(100, 116, 139, 0.55);
   border-radius: 8px;
   background: #0a0a0a !important;
   padding: 0.38rem 0.45rem 0.42rem 0.45rem;
@@ -4026,7 +4027,7 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
 .sovereign-margin-shield .sms-val {
   display: block;
   font-family: 'Goldman', sans-serif !important;
-  color: #EF4444 !important;
+  color: #cbd5e1 !important;
   font-weight: 800 !important;
   font-size: 1.25rem !important;
   font-variant-numeric: tabular-nums;
@@ -4057,8 +4058,8 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   box-shadow: none !important;
 }
 .radar-led-pdp-kinetic {
-  background: #7F1D1D;
-  border: 1px solid #DC2626;
+  background: #334155;
+  border: 1px solid #64748b;
   animation: radar-pdp-kinetic 0.85s ease-in-out infinite;
 }
 .radar-led-lp-vibe {
@@ -4231,8 +4232,8 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   padding: 0.32rem 0.45rem;
   border-bottom: 1px solid rgba(0, 229, 255, 0.12);
 }
-.d3-red-variance {
-  color: #EF4444 !important;
+.d3-slate-variance {
+  color: #94a3b8 !important;
   font-weight: 800 !important;
   letter-spacing: 0.04em;
 }
@@ -4260,13 +4261,13 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   border: 1px solid rgba(0, 229, 255, 0.2);
 }
 .sov-trend-gap-row td {
-  background: rgba(239, 68, 68, 0.12) !important;
-  border-top: 1px solid rgba(239, 68, 68, 0.45) !important;
+  background: rgba(100, 116, 139, 0.14) !important;
+  border-top: 1px solid rgba(148, 163, 184, 0.45) !important;
   border-bottom: 1px solid rgba(255, 215, 0, 0.35) !important;
   font-weight: 700 !important;
 }
 .sov-trend-gap-number {
-  color: #F87171 !important;
+  color: #cbd5e1 !important;
   font-variant-numeric: tabular-nums;
 }
 .sov-trend-gap-opp {
@@ -4344,23 +4345,23 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   color: #00F5FF !important;
 }
 
-/* Razor-thin SWOT pulse — neon warning orange headers (live intelligence) */
+/* Razor-thin SWOT pulse — slate & grey headers (live intelligence) */
 .swot-sidebar-wrap {
   background: #121212 !important;
-  border: 1px solid rgba(255, 107, 53, 0.45);
+  border: 1px solid rgba(100, 116, 139, 0.45);
   border-radius: 10px;
   padding: 0.5rem 0.55rem 0.6rem 0.55rem;
   margin: 0.5rem 0 0.55rem 0;
 }
 [data-testid="stSidebar"] .swot-sidebar-wrap .swot-section-title {
   font-family: 'Goldman', sans-serif !important;
-  color: #FF6B35 !important;
+  color: #94a3b8 !important;
   font-size: 0.72rem !important;
   font-weight: 800 !important;
   letter-spacing: 0.12em !important;
   margin: 0 0 0.35rem 0 !important;
   text-align: center !important;
-  text-shadow: 0 0 10px rgba(255, 107, 53, 0.55), 0 0 20px rgba(255, 80, 0, 0.25) !important;
+  text-shadow: 0 0 8px rgba(148, 163, 184, 0.35), 0 0 16px rgba(71, 85, 105, 0.22) !important;
 }
 .swot-benchmark-line {
   font-family: 'Goldman', sans-serif !important;
@@ -4395,15 +4396,15 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   margin-right: 0.4rem;
   flex-shrink: 0;
 }
-@keyframes swot-pulse-red {
+@keyframes swot-pulse-slate {
   0%, 100% {
-    background: #EF4444;
-    box-shadow: 0 0 6px #EF4444, 0 0 14px rgba(239, 68, 68, 0.55);
+    background: #64748b;
+    box-shadow: 0 0 6px rgba(100, 116, 139, 0.65), 0 0 14px rgba(71, 85, 105, 0.45);
     transform: scale(1);
   }
   50% {
-    background: #DC2626;
-    box-shadow: 0 0 14px #F87171, 0 0 26px rgba(248, 113, 113, 0.75);
+    background: #475569;
+    box-shadow: 0 0 14px rgba(148, 163, 184, 0.55), 0 0 22px rgba(71, 85, 105, 0.4);
     transform: scale(1.12);
   }
 }
@@ -4411,9 +4412,9 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   0%, 100% { opacity: 0.88; }
   50% { opacity: 1; }
 }
-.swot-dot-red {
-  background: #EF4444;
-  animation: swot-pulse-red 1.15s ease-in-out infinite;
+.swot-dot-slate {
+  background: #64748b;
+  animation: swot-pulse-slate 1.15s ease-in-out infinite;
 }
 .swot-dot-stable {
   background: #2DD4BF;
@@ -4433,18 +4434,18 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   border-radius: 14px;
   padding: 3px;
   background: #121212 !important;
-  border: 1px solid rgba(255, 107, 53, 0.35);
+  border: 1px solid rgba(100, 116, 139, 0.35);
   margin: 0.85rem 0 0.65rem 0;
 }
 .swot-main-inner {
   background: #121212 !important;
   border-radius: 11px;
   padding: 0.75rem 0.9rem 0.85rem 0.9rem;
-  border: 1px solid rgba(255, 107, 53, 0.22);
+  border: 1px solid rgba(100, 116, 139, 0.22);
 }
 .swot-main-inner h3 {
   font-family: 'Goldman', sans-serif !important;
-  color: #FF6B35 !important;
+  color: #94a3b8 !important;
   margin: 0 0 0.5rem 0 !important;
   font-size: 1rem !important;
   letter-spacing: 0.08em !important;
@@ -5391,7 +5392,7 @@ def _render_razor_thin_swot_shift_block() -> None:
         '<div class="swot-main-section"><div class="swot-main-inner">'
         "<h3>RAZOR-THIN SWOT · NODE CAPTURE VELOCITY</h3>"
         '<div class="sovereign-shift-label-row"><span>Sovereign Shift</span>'
-        '<span style="color:rgba(255,107,53,0.92);font-size:0.68rem;letter-spacing:0.06em;">LIVE INTELLIGENCE</span></div>'
+        '<span style="color:rgba(148,163,184,0.92);font-size:0.68rem;letter-spacing:0.06em;">LIVE INTELLIGENCE</span></div>'
         '<div class="sovereign-shift-label-row" style="margin-bottom:0.3rem;"><span>1.5M database → razor-thin peel</span>'
         f"<span>{src}</span></div>"
         '<div class="sovereign-shift-track">'
@@ -5452,7 +5453,7 @@ def _d3_lead_total_bar_figure() -> go.Figure:
 
 
 def _d3_fragmentation_gap_figure() -> go.Figure:
-    """300k vote leakage 2019→2023 as red variance (waterfall)."""
+    """300k vote leakage 2019→2023 as slate variance (waterfall)."""
     fig = go.Figure(
         go.Waterfall(
             name="Fragmentation",
@@ -5470,7 +5471,7 @@ def _d3_fragmentation_gap_figure() -> go.Figure:
                 f"{HIST_D3_2023['total'] / 1e6:.2f}M",
             ],
             textposition="outside",
-            decreasing={"marker": {"color": "#DC2626"}},
+            decreasing={"marker": {"color": "#64748b"}},
             increasing={"marker": {"color": "#22C55E"}},
             totals={"marker": {"color": "#D4AF37"}},
             connector={"line": {"color": "rgba(212,175,55,0.4)"}},
@@ -5478,7 +5479,7 @@ def _d3_fragmentation_gap_figure() -> go.Figure:
     )
     fig.update_layout(
         title=dict(
-            text="Gap Analysis · 300k vote leakage (red variance)",
+            text="Gap Analysis · 300k vote leakage (slate variance)",
             font=dict(family="Goldman", size=14, color=GOLD),
         ),
         paper_bgcolor=NAVY_DEEP,
@@ -5506,7 +5507,7 @@ def _render_d3_historical_audit() -> None:
         '<table class="d3-audit-table">'
         "<thead><tr><th>Year</th><th>Lead</th><th>Total</th></tr></thead>"
         f"<tbody>{rows_html}</tbody></table>"
-        f'<p class="d3-red-variance">Fragmentation indicator · {leak_k}k vote leakage (2019→2023 total decline)</p>'
+        f'<p class="d3-slate-variance">Fragmentation indicator · {leak_k}k vote leakage (2019→2023 total decline)</p>'
         f"<p class=\"d3-consolidation-callout\"><strong>2027 Consolidation Constant:</strong> "
         f"{CONSOLIDATION_CONSTANT:,} voters · <strong>{PU_COUNT_KADUNA:,}</strong> Kaduna PUs · "
         f"<strong>{VOTERS_PER_PU_D3_REQUIREMENT}</strong> voters/PU (command lock)</p>"
