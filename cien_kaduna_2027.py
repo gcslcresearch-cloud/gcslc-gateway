@@ -1271,7 +1271,7 @@ def _render_universal_payment_gateway_module(
             '<div class="gcslc-upg-module gcslc-upg-module--ready">'
             '<p class="upg-head">Universal Payment Gateway</p>'
             '<p class="upg-handshake">Wallet secured · GCSLC gateway session complete</p>'
-            '<p class="upg-sub">Paystack / Flutterwave channels idle. Strike lattice authorized.</p>'
+            '<p class="upg-sub">Universal Payment Gateway · <strong>ACTIVE</strong> · strike lattice authorized</p>'
             "</div>",
             unsafe_allow_html=True,
         )
@@ -1323,6 +1323,37 @@ def _sovereign_offline_sidebar_html(detail: str) -> str:
         f'<p class="gso-body">{html.escape(detail)}</p>'
         "</div>"
     )
+
+
+def _gcslc_exec_open_paystack_vault(*, mode: str = "card") -> None:
+    """
+    Direct Paystack / hosted-card vault open — ignores strike-lane “idle” priming state,
+    does not queue Trust Funding sidebar redirects or toast pop-ups.
+    """
+    st.session_state["cien_mc_channels"] = list(CHANNEL_OPTIONS)
+    st.session_state["finance_handshake_queued"] = False
+    url = (_gcslc_arm_live_checkout_handshake(mode=mode) or "").strip()
+    if not url:
+        st.markdown(
+            _sovereign_offline_sidebar_html(
+                "No live vault URL was returned. Provision gateway credentials or a static hosted checkout URL."
+            ),
+            unsafe_allow_html=True,
+        )
+        return
+    webbrowser.open(url, new=2)
+    components.html(
+        f"<script>window.open({json.dumps(url)}, '_blank');</script>",
+        height=0,
+        width=0,
+    )
+    safe = html.escape(url, quote=True)
+    st.markdown(
+        f'<div class="gcslc-vault-markdown-link"><a href="{safe}" target="_blank" rel="noopener noreferrer">'
+        "Open Paystack secure vault (new tab)</a></div>",
+        unsafe_allow_html=True,
+    )
+    st.rerun()
 
 
 def _render_sidebar_live_payment_gateway() -> None:
@@ -1411,38 +1442,7 @@ def _render_sidebar_live_payment_gateway() -> None:
         use_container_width=True,
         type="primary",
     ):
-        if not (
-            gcslc_payment_gateway_key()
-            or _gcslc_effective_paystack_secret()
-            or _gcslc_effective_flutterwave_secret()
-            or _gcslc_preferred_static_hosted_payment_url()
-        ):
-            st.markdown(
-                _sovereign_offline_sidebar_html(
-                    "Sovereign payment rails are not provisioned for this session. "
-                    "Reconnect when live credentials are available in the deployment vault."
-                ),
-                unsafe_allow_html=True,
-            )
-        else:
-            url = _gcslc_arm_live_checkout_handshake(mode="card")
-            if url:
-                st.toast("Live checkout ready — opening secure tab.", icon="💳")
-                webbrowser.open(url, new=2)
-                components.html(
-                    f"<script>window.open({json.dumps(url)}, '_blank');</script>",
-                    height=0,
-                    width=0,
-                )
-                st.rerun()
-            else:
-                st.markdown(
-                    _sovereign_offline_sidebar_html(
-                        "Handshake completed without a hosted checkout URL. "
-                        "Sovereign checkout remains offline until the gateway responds."
-                    ),
-                    unsafe_allow_html=True,
-                )
+        _gcslc_exec_open_paystack_vault(mode="card")
 
     pay_url = str(st.session_state.get("cien_checkout_ready_url") or "").strip()
     if pay_url:
@@ -4751,6 +4751,40 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
 .exec-forensic-muted [data-testid="stMetricLabel"] {
   font-size: 0.78rem !important;
 }
+.gcslc-sovereign-offline {
+  border: 1px solid rgba(100, 116, 139, 0.5);
+  background: rgba(15, 23, 42, 0.75);
+  border-radius: 10px;
+  padding: 0.5rem 0.45rem;
+  margin: 0.4rem 0 0.35rem 0;
+  text-align: center;
+}
+.gcslc-sovereign-offline .gso-title {
+  font-weight: 800 !important;
+  color: #d4af37 !important;
+  letter-spacing: 0.12em !important;
+  font-size: 0.75rem !important;
+  margin: 0 0 0.25rem 0 !important;
+}
+.gcslc-sovereign-offline .gso-body {
+  color: #94a3b8 !important;
+  font-size: 0.7rem !important;
+  margin: 0 !important;
+  line-height: 1.4 !important;
+}
+.gcslc-vault-markdown-link {
+  text-align: center;
+  margin: 0.35rem 0;
+}
+.gcslc-vault-markdown-link a {
+  color: #d4af37 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.06em !important;
+  text-decoration: none !important;
+}
+.gcslc-vault-markdown-link a:hover {
+  text-decoration: underline !important;
+}
 """
 
 _CSS = _CSS.replace("__TACTICAL_BOLT_SVG__", _tactical_bolt_svg_data_url())
@@ -6265,28 +6299,16 @@ def _render_broadcast_switchboard_kinetics_fragment() -> None:
         ):
             _toggle_strike_lane(CHANNEL_OPTION_SOVEREIGN)
     _render_strike_tile_kinetic_bridge()
-    _any_primed = len(_sel) > 0
-    if _any_primed:
-        st.markdown('<div class="wallet-n50k-prominent">', unsafe_allow_html=True)
-        if st.button(
-            f"💳 Add ₦{_gcslc_wallet_strike_topup_ngn():,.0f} to Wallet",
-            key="cien_wallet_n50k_prominent",
-            use_container_width=True,
-            help="Opens the Trust Funding form in the sidebar — proceed to payment there.",
-        ):
-            for k in (
-                "cien_checkout_ready_url",
-                "cien_checkout_ready_ref",
-                "cien_checkout_provider",
-                "cien_checkout_channel",
-                "cien_checkout_last_error",
-            ):
-                st.session_state.pop(k, None)
-            st.session_state["finance_handshake_queued"] = True
-            st.session_state["cien_wallet_n50k_request_t0"] = time.monotonic()
-            st.session_state["cien_wallet_n50k_amount_ngn"] = int(_gcslc_wallet_strike_topup_ngn())
-            st.toast("Use the sidebar **Trust Funding** form to complete payment.", icon="💳")
-        st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown('<div class="wallet-n50k-prominent">', unsafe_allow_html=True)
+    if st.button(
+        f"ARM NOW · OPEN PAYSTACK VAULT · ₦{_gcslc_wallet_strike_topup_ngn():,.0f}",
+        key="cien_wallet_n50k_prominent",
+        use_container_width=True,
+        type="primary",
+        help="Direct handshake — hosted Paystack / card vault opens in a new tab (no sidebar redirect).",
+    ):
+        _gcslc_exec_open_paystack_vault(mode="card")
+    st.markdown("</div>", unsafe_allow_html=True)
     st.caption("OFF: red field + gold text · PRIMED: cyan #00E5FF field + black text + pulse border.")
     st.markdown("</div>", unsafe_allow_html=True)
     st.session_state.setdefault("cien_sender_id", DEFAULT_SENDER_ID)
