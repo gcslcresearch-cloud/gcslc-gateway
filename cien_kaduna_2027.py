@@ -316,7 +316,7 @@ def _gcslc_assets_dir() -> Path:
 
 
 def _gcslc_preferred_static_hosted_payment_url() -> str:
-    """First configured hosted payment URL (st.secrets or env) — use when API init fails or secrets are missing."""
+    """First configured hosted payment URL (st.secrets or env) — use when API init fails or env is not yet bound."""
     for key in ("GCSLC_PAYSTACK_CHECKOUT_URL", "GCSLC_FLUTTERWAVE_CHECKOUT_URL", "GCSLC_PAYMENT_PUBLIC_LINK"):
         u = _gcslc_config_str(key, "")
         low = u.lower()
@@ -1210,7 +1210,7 @@ def _render_sovereign_payment_handshake(pay_url: str) -> None:
 
 
 def _render_universal_payment_gateway_module(*, funded: bool, pay_url_ready: bool) -> None:
-    """Slate & grey universal gateway shell — professional status (no secrets-missing / integration-banner logic)."""
+    """Slate & grey universal gateway shell — professional status (integration-banner logic retired)."""
     if funded:
         st.markdown(
             '<div class="gcslc-upg-module gcslc-upg-module--ready">'
