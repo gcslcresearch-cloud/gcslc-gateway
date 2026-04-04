@@ -2,9 +2,9 @@
 # HF’s Streamlit Docker template expects `streamlit_app.py` at the repo root.
 # Local dev may still use: python3 -m streamlit run cien_kaduna_2027.py --server.port 9099
 #
-# PAYMENT_GATEWAY_KEY / TERMII_API_KEY: warm the secrets store before importing the app so
-# Streamlit never surfaces a red error bar from ``st.secrets`` when no local secrets.toml exists.
-# Missing keys are handled in cien_kaduna_2027 with ``load_if_toml_exists`` + ``.get`` (info banner only).
+# GCSLC_PAYMENT_GATEWAY_KEY / PAYMENT_GATEWAY_KEY and GCSLC_TERMII_API_KEY / TERMII_API_KEY: warm the
+# secrets store before importing the app so Streamlit never surfaces a red error bar from ``st.secrets``
+# when no local secrets.toml exists. Resolution + soft UI live in cien_kaduna_2027.
 
 import streamlit as st
 

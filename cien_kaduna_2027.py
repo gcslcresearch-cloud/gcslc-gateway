@@ -182,7 +182,7 @@ def _gcslc_config_str(name: str, default: str = "") -> str:
 def _gcslc_integration_secret(key: str) -> str | None:
     """Secure credential entry for universal platform integrations (payment, WhatsApp, SMS).
 
-    Resolution order:
+    Resolution order (per *key* name, e.g. ``GCSLC_PAYMENT_GATEWAY_KEY`` or ``PAYMENT_GATEWAY_KEY``):
     1. ``st.secrets.get(key)`` (Streamlit Cloud / local ``.streamlit/secrets.toml``)
     2. ``st.secrets.get("integrations", {}).get(key)`` when ``integrations`` is a mapping
     3. ``os.environ[key]`` (export in shell, systemd, Docker, or deployment platform)
@@ -206,14 +206,23 @@ def _gcslc_integration_secret(key: str) -> str | None:
     return env_val if env_val else None
 
 
+def _gcslc_integration_secret_any(*keys: str) -> str | None:
+    """First non-empty integration secret among several names (canonical ``GCSLC_*`` first, then HF aliases)."""
+    for k in keys:
+        v = _gcslc_integration_secret(k)
+        if v:
+            return v
+    return None
+
+
 def gcslc_payment_gateway_key() -> str | None:
-    """Payment provider secret (e.g. universal checkout / gateway API key)."""
-    return _gcslc_integration_secret("PAYMENT_GATEWAY_KEY")
+    """Universal payment gateway key — dashboard ``GCSLC_PAYMENT_GATEWAY_KEY``, alias ``PAYMENT_GATEWAY_KEY``."""
+    return _gcslc_integration_secret_any("GCSLC_PAYMENT_GATEWAY_KEY", "PAYMENT_GATEWAY_KEY")
 
 
 def gcslc_termii_api_key() -> str | None:
-    """Termii (or compatible) SMS/API key — same resolution as other integration secrets."""
-    return _gcslc_integration_secret("TERMII_API_KEY")
+    """Termii (or compatible) API key — ``GCSLC_TERMII_API_KEY``, alias ``TERMII_API_KEY``."""
+    return _gcslc_integration_secret_any("GCSLC_TERMII_API_KEY", "TERMII_API_KEY")
 
 
 def gcslc_whatsapp_token() -> str | None:
@@ -260,10 +269,10 @@ def _cien_executive_mandate_html() -> str:
 
 # Secure payment / wallet (GCSLC) — live Paystack / Flutterwave; amounts from Secrets/env above
 # Universal platform integration secrets (no network I/O here): resolve via
-# ``gcslc_payment_gateway_key()``, ``gcslc_termii_api_key()``, ``gcslc_whatsapp_token()``,
-# ``gcslc_sms_service_sid()`` backed by ``PAYMENT_GATEWAY_KEY``, ``TERMII_API_KEY``,
-# ``WHATSAPP_TOKEN``, ``SMS_SERVICE_SID`` in
-# ``.streamlit/secrets.toml`` or the process environment.
+# ``gcslc_payment_gateway_key()`` (``GCSLC_PAYMENT_GATEWAY_KEY`` / ``PAYMENT_GATEWAY_KEY``),
+# ``gcslc_termii_api_key()`` (``GCSLC_TERMII_API_KEY`` / ``TERMII_API_KEY``),
+# ``gcslc_whatsapp_token()``, ``gcslc_sms_service_sid()`` for ``WHATSAPP_TOKEN``, ``SMS_SERVICE_SID``
+# in ``.streamlit/secrets.toml``, nested ``[integrations]``, or the process environment.
 # 06:00 WAT urban-core lattice (5 LGAs) — aligns with Urban-Core Strike command grid
 GCSLC_URBAN_CORE_5_LGAS: tuple[str, ...] = (
     "Kaduna North",
@@ -1156,6 +1165,7 @@ def _render_sovereign_payment_handshake(pay_url: str) -> None:
 
 
 def _gcslc_checkout_err_looks_like_pending_secrets(msg: str) -> bool:
+    """True when checkout failure is likely missing secrets, sync delay, or cold cloud handshake — not a hard fault."""
     m = (msg or "").lower()
     return any(
         x in m
@@ -1165,6 +1175,25 @@ def _gcslc_checkout_err_looks_like_pending_secrets(msg: str) -> bool:
             "configure paystack",
             "configure paystack / flutterwave",
             "missing_secret",
+            "flutterwave secret missing",
+            "paystack secret missing",
+            "timeout",
+            "timed out",
+            "temporarily unavailable",
+            "connection refused",
+            "connection reset",
+            "could not initialize",
+            "payment link unavailable",
+            "name or service not known",
+            "nodename nor servname",
+            "ssl",
+            "certificate",
+            "503",
+            "502",
+            "504",
+            "429",
+            "handshake",
+            "egress",
         )
     )
 
@@ -1173,17 +1202,20 @@ def _render_integration_secrets_status_banner() -> None:
     """Soft notice while optional universal keys propagate — avoids alarming empty-state UX."""
     missing: list[str] = []
     if not gcslc_payment_gateway_key():
-        missing.append("PAYMENT_GATEWAY_KEY")
+        missing.append("`GCSLC_PAYMENT_GATEWAY_KEY` (or `PAYMENT_GATEWAY_KEY`)")
     if not gcslc_termii_api_key():
-        missing.append("TERMII_API_KEY")
+        missing.append("`GCSLC_TERMII_API_KEY` (or `TERMII_API_KEY`)")
     if not missing:
         return
-    st.info(
-        "**Integration keys still synchronizing:** "
-        + ", ".join(f"`{k}`" for k in missing)
-        + " — not visible to this process yet. After saving platform Secrets, allow a moment for redeploy; "
-        "simulation, charts, and Paystack/Flutterwave paths that use their own keys keep working."
-    )
+    with st.status("Integration secrets", expanded=False) as _istat:
+        _istat.update(label="Optional keys — checking cloud sync…", state="running")
+        _istat.markdown(
+            "**Not loaded in this process yet:** "
+            + ", ".join(missing)
+            + ". After saving platform Secrets, allow a short redeploy or refresh; "
+            "simulation, charts, and Paystack/Flutterwave paths that use their own `GCSLC_*` secrets keep working."
+        )
+        _istat.update(label="Optional integration keys may still be synchronizing — rest of dashboard is live", state="complete")
 
 
 def _render_sidebar_live_payment_gateway() -> None:
@@ -1245,7 +1277,7 @@ def _render_sidebar_live_payment_gateway() -> None:
         return
 
     if _notice:
-        st.warning(_notice)
+        st.info(_notice)
 
     st.session_state.setdefault("cien_executive_payer_name", CIEN_DEFAULT_EXECUTIVE_PAYER_NAME)
     st.text_input("Name", key="cien_executive_payer_name", max_chars=120)
@@ -1264,13 +1296,18 @@ def _render_sidebar_live_payment_gateway() -> None:
     pay_url, pay_err = _gcslc_resolve_checkout_url_for_sidebar()
     if pay_err:
         if _gcslc_checkout_err_looks_like_pending_secrets(pay_err):
-            st.info(
-                "**Payment provider secrets are not loaded yet** (or Paystack/Flutterwave keys are unset). "
-                "If you just updated Secrets, wait for sync/redeploy — or use **Executive mandate · Emergency trust** above. "
-                f"Detail: {pay_err}"
-            )
+            with st.status("Hosted checkout", expanded=False) as _pstat:
+                _pstat.update(label="Payment handshake still catching up…", state="running")
+                _pstat.markdown(
+                    "**Paystack / Flutterwave secrets or network path not ready yet** — "
+                    "common right after a Secrets change or during cold cloud egress. "
+                    "Wait for sync/redeploy, set static `GCSLC_PAYSTACK_CHECKOUT_URL` / `GCSLC_FLUTTERWAVE_CHECKOUT_URL`, "
+                    "or use **Executive mandate · Emergency trust** above."
+                )
+                _pstat.caption(f"Detail: {html.escape(str(pay_err))}")
+                _pstat.update(label="Checkout link pending — dashboard remains usable", state="complete")
         else:
-            st.warning(pay_err)
+            st.info(f"**Hosted checkout:** {html.escape(str(pay_err))}")
     if pay_url:
         _render_sovereign_payment_handshake(pay_url)
     st.caption(
