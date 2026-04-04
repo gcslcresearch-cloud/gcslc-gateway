@@ -26,7 +26,8 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 os.environ.setdefault("STREAMLIT_SERVER_PORT", "9099")
-os.environ.setdefault("STREAMLIT_SERVER_FILE_WATCHER_TYPE", "none")
+# Local dev (e.g. port 9099): poll so edits reload; set to "none" in prod if needed.
+os.environ.setdefault("STREAMLIT_SERVER_FILE_WATCHER_TYPE", "poll")
 
 BASE_DIR = Path(__file__).resolve().parent
 VERIFY_IMG_NAMES = ("image_0.png", "image_1.png")
@@ -1226,10 +1227,11 @@ def _render_sovereign_payment_handshake(pay_url: str, *, show_external_link: boo
 def _render_universal_payment_gateway_module(
     *,
     funded: bool,
-    pay_url_ready: bool,
-    pay_url: str = "",
+    pay_url: str | None = None,
 ) -> None:
-    """Slate & grey UPG shell — live checkout control inside the module (PAYMENT_GATEWAY_KEY / provider init)."""
+    """Slate UPG shell + native ``st.link_button`` wired to the resolved Paystack/Flutterwave URL."""
+    # Placeholder href when disabled (Streamlit requires a string; button is non-interactive).
+    _upg_href_placeholder = "https://paystack.com/"
     if funded:
         st.markdown(
             '<div class="gcslc-upg-module gcslc-upg-module--ready">'
@@ -1241,39 +1243,44 @@ def _render_universal_payment_gateway_module(
         )
         return
     u = (pay_url or "").strip()
-    if pay_url_ready and u:
-        safe = html.escape(u, quote=True)
-        st.markdown(
-            '<div class="gcslc-upg-module gcslc-upg-module--live">'
-            '<p class="upg-head">Universal Payment Gateway · Live</p>'
-            '<p class="upg-handshake">GCSLC Secure Handshake Active</p>'
-            '<p class="upg-sub">Hosted checkout URL bound via <code>PAYMENT_GATEWAY_KEY</code> '
-            "(or Paystack / Flutterwave secrets). Opens provider checkout in a new window.</p>"
-            f'<a class="gcslc-upg-checkout-btn" href="{safe}" target="_blank" rel="noopener noreferrer" '
-            'title="Open Paystack or Flutterwave checkout">'
-            "Paystack / Flutterwave · Open checkout</a>"
-            "</div>",
-            unsafe_allow_html=True,
-        )
-        return
+    has_live_url = bool(u)
     st.markdown(
         '<div class="gcslc-upg-module gcslc-upg-module--live">'
         '<p class="upg-head">Universal Payment Gateway · Live</p>'
         '<p class="upg-handshake">GCSLC Secure Handshake Active</p>'
-        '<p class="upg-sub">No checkout URL yet — initialize or refresh the session using your payer name above and '
-        "<code>PAYMENT_GATEWAY_KEY</code> / provider secrets.</p>"
-        "</div>",
+        + (
+            '<p class="upg-sub">Hosted checkout URL is bound from <code>PAYMENT_GATEWAY_KEY</code> '
+            "/ provider init — use the control below (opens in a new tab).</p>"
+            if has_live_url
+            else '<p class="upg-sub">Awaiting hosted authorization URL from Paystack / Flutterwave '
+            "(<code>PAYMENT_GATEWAY_KEY</code> / provider secrets).</p>"
+        )
+        + "</div>",
         unsafe_allow_html=True,
     )
-    if st.button(
-        "Initialize / refresh checkout session",
-        key="cien_upg_init_checkout_session",
+    st.link_button(
+        "Paystack / Flutterwave · Open checkout" if has_live_url else "Initializing Handshake...",
+        u if has_live_url else _upg_href_placeholder,
+        disabled=not has_live_url,
         use_container_width=True,
-        type="primary",
-        help="Clears cached checkout state and re-runs Paystack/Flutterwave initialize with the current payer name.",
-    ):
-        _gcslc_reset_checkout_session_for_reinit()
-        st.rerun()
+        type="primary" if has_live_url else "secondary",
+        key="cien_upg_checkout_link",
+        help=(
+            "Opens the hosted checkout URL returned by initialize (Paystack or Flutterwave)."
+            if has_live_url
+            else "Waiting for a non-empty checkout URL from the gateway handshake."
+        ),
+    )
+    if not has_live_url:
+        if st.button(
+            "Initialize / refresh checkout session",
+            key="cien_upg_init_checkout_session",
+            use_container_width=True,
+            type="primary",
+            help="Clears cached checkout state and re-runs Paystack/Flutterwave initialize with the current payer name.",
+        ):
+            _gcslc_reset_checkout_session_for_reinit()
+            st.rerun()
 
 
 def _render_sidebar_live_payment_gateway() -> None:
@@ -1331,7 +1338,7 @@ def _render_sidebar_live_payment_gateway() -> None:
     )
 
     if not _unfunded:
-        _render_universal_payment_gateway_module(funded=True, pay_url_ready=False)
+        _render_universal_payment_gateway_module(funded=True)
         st.success(f"Wallet secured — ₦{_gcslc_wallet_strike_topup_ngn():,.0f} ready for strike command.")
         return
 
@@ -1353,11 +1360,7 @@ def _render_sidebar_live_payment_gateway() -> None:
     )
 
     pay_url, _ = _gcslc_resolve_checkout_url_for_sidebar()
-    _render_universal_payment_gateway_module(
-        funded=False,
-        pay_url_ready=bool(pay_url),
-        pay_url=pay_url,
-    )
+    _render_universal_payment_gateway_module(funded=False, pay_url=pay_url)
 
     if pay_url:
         _render_sovereign_payment_handshake(pay_url, show_external_link=False)
@@ -2212,30 +2215,6 @@ _CSS = """
 }
 .gcslc-upg-module--live {
   border-color: rgba(100, 116, 139, 0.58);
-}
-a.gcslc-upg-checkout-btn {
-  display: block;
-  box-sizing: border-box;
-  width: 100%;
-  margin-top: 0.55rem;
-  padding: 0.45rem 0.5rem;
-  text-align: center;
-  text-decoration: none !important;
-  font-size: 0.72rem !important;
-  font-weight: 800 !important;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #f1f5f9 !important;
-  background: linear-gradient(180deg, rgba(71, 85, 105, 0.95) 0%, rgba(51, 65, 85, 0.98) 100%);
-  border: 1px solid rgba(148, 163, 184, 0.45);
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-  transition: background 0.15s ease, border-color 0.15s ease;
-}
-a.gcslc-upg-checkout-btn:hover {
-  color: #fff !important;
-  border-color: rgba(148, 163, 184, 0.65);
-  background: linear-gradient(180deg, rgba(100, 116, 139, 0.95) 0%, rgba(71, 85, 105, 0.98) 100%);
 }
 
 @keyframes cien-pulse-gold {
