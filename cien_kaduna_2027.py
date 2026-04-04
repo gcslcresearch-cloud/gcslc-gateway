@@ -1248,9 +1248,7 @@ def _render_sovereign_payment_handshake(pay_url: str, *, show_external_link: boo
             type="secondary",
         ):
             _ugw_modal()
-        st.caption(
-            "Universal **`PAYMENT_GATEWAY_KEY`** / **`GCSLC_PAYMENT_GATEWAY_KEY`** or provider-specific secrets."
-        )
+        st.caption("Hosted checkout is bound to the live gateway session configured for this deployment.")
     if show_external_link:
         st.link_button(
             "🔗 OPEN SECURE PAYMENT PAGE (EXTERNAL)",
@@ -1285,11 +1283,9 @@ def _render_universal_payment_gateway_module(
         '<p class="upg-head">Universal Payment Gateway · Live</p>'
         '<p class="upg-handshake">GCSLC Secure Handshake Active</p>'
         + (
-            '<p class="upg-sub">Hosted checkout URL is bound from <code>PAYMENT_GATEWAY_KEY</code> '
-            "/ provider init — use the control below (opens in a new tab).</p>"
+            '<p class="upg-sub">Live hosted checkout is active — use the control below (opens in a new tab).</p>'
             if has_live_url
-            else '<p class="upg-sub">Awaiting hosted authorization URL from Paystack / Flutterwave '
-            "(<code>PAYMENT_GATEWAY_KEY</code> / provider secrets).</p>"
+            else "<p class=\"upg-sub\">Awaiting hosted authorization URL from the payment gateway.</p>"
         )
         + "</div>",
         unsafe_allow_html=True,
@@ -1317,6 +1313,16 @@ def _render_universal_payment_gateway_module(
         ):
             _gcslc_reset_checkout_session_for_reinit()
             st.rerun()
+
+
+def _sovereign_offline_sidebar_html(detail: str) -> str:
+    """Non-alarming slate banner (no Streamlit red warning chrome)."""
+    return (
+        '<div class="gcslc-sovereign-offline">'
+        '<p class="gso-title">Sovereign Offline</p>'
+        f'<p class="gso-body">{html.escape(detail)}</p>'
+        "</div>"
+    )
 
 
 def _render_sidebar_live_payment_gateway() -> None:
@@ -1370,8 +1376,7 @@ def _render_sidebar_live_payment_gateway() -> None:
         '<div class="zenith-payment-sticky-wrap executive-unified-payment-wrap upg-zenith-slate">'
         '<div class="upg-electrified-prism">'
         '<div class="upg-electrified-label">💳 UNIVERSAL PAYMENT GATEWAY</div>'
-        '<p class="upg-electrified-sub">Live Paystack / Flutterwave handshake via '
-        "<code>st.secrets['PAYMENT_GATEWAY_KEY']</code> (or provider secrets) · card channel</p>"
+        '<p class="upg-electrified-sub">Direct sovereign handshake · live Paystack checkout opens in a new tab</p>'
         "</div></div>",
         unsafe_allow_html=True,
     )
@@ -1393,18 +1398,18 @@ def _render_sidebar_live_payment_gateway() -> None:
     )
 
     st.markdown(
-        '<p class="checkout-deep-link-hint">Tap <strong>ARM NOW</strong> to initialize a hosted checkout URL; '
-        "your browser should open a new tab. Use the link below if the pop-up was blocked.</p>",
+        '<p class="checkout-deep-link-hint">Use <strong>ARM NOW</strong> for a direct handshake. '
+        "If a new tab does not appear, use the link below.</p>",
         unsafe_allow_html=True,
     )
 
     pay_url = str(st.session_state.get("cien_checkout_ready_url") or "").strip()
+    st.markdown('<div class="gcslc-upg-arm-slot"></div>', unsafe_allow_html=True)
     if st.button(
-        "ARM NOW • SECURE CHECKOUT",
+        "ARM NOW · DIRECT HANDSHAKE",
         key="cien_arm_now_live_handshake",
         use_container_width=True,
         type="primary",
-        help="Initializes Paystack/Flutterwave via PAYMENT_GATEWAY_KEY (Streamlit Secrets) and opens checkout.",
     ):
         if not (
             gcslc_payment_gateway_key()
@@ -1412,14 +1417,17 @@ def _render_sidebar_live_payment_gateway() -> None:
             or _gcslc_effective_flutterwave_secret()
             or _gcslc_preferred_static_hosted_payment_url()
         ):
-            st.warning(
-                "Set **`PAYMENT_GATEWAY_KEY`** in **st.secrets** (or Paystack / Flutterwave secret keys, "
-                "or `GCSLC_PAYSTACK_CHECKOUT_URL` / `GCSLC_FLUTTERWAVE_CHECKOUT_URL`) to run the handshake."
+            st.markdown(
+                _sovereign_offline_sidebar_html(
+                    "Sovereign payment rails are not provisioned for this session. "
+                    "Reconnect when live credentials are available in the deployment vault."
+                ),
+                unsafe_allow_html=True,
             )
         else:
             url = _gcslc_arm_live_checkout_handshake(mode="card")
             if url:
-                st.info("Checkout handshake ready — opening secure payment tab…")
+                st.toast("Live checkout ready — opening secure tab.", icon="💳")
                 webbrowser.open(url, new=2)
                 components.html(
                     f"<script>window.open({json.dumps(url)}, '_blank');</script>",
@@ -1428,24 +1436,25 @@ def _render_sidebar_live_payment_gateway() -> None:
                 )
                 st.rerun()
             else:
-                st.warning(
-                    "Handshake did not return a checkout URL — confirm **`PAYMENT_GATEWAY_KEY`** is a valid "
-                    "Paystack **`sk_test_** / **`sk_live_**` secret (or Flutterwave **FLWSECK**)."
+                st.markdown(
+                    _sovereign_offline_sidebar_html(
+                        "Handshake completed without a hosted checkout URL. "
+                        "Sovereign checkout remains offline until the gateway responds."
+                    ),
+                    unsafe_allow_html=True,
                 )
 
     pay_url = str(st.session_state.get("cien_checkout_ready_url") or "").strip()
     if pay_url:
         st.link_button(
-            "Open Paystack / Flutterwave checkout (new tab)",
+            "Open live checkout (new tab)",
             pay_url,
             use_container_width=True,
-            type="primary",
+            type="secondary",
             key="cien_upg_reopen_checkout_tab",
         )
         _render_sovereign_payment_handshake(pay_url, show_external_link=False)
-    st.caption(
-        "Need a fresh session? Click **ARM NOW** again (or set GCSLC_PAYSTACK_CHECKOUT_URL for a static URL)."
-    )
+    st.caption("Re-arm with **ARM NOW** when you need a fresh checkout session.")
 
     st.markdown('<div class="exec-pay-complete-wrap"></div>', unsafe_allow_html=True)
     if st.button(
@@ -2208,7 +2217,8 @@ def _html_sovereign_roller_ticker(rolled: int) -> str:
     lake = html.escape(KADUNA_DATA_2027_DIR.name)
     path_ok = KADUNA_DATA_2027_DIR.is_dir()
     n_lines = 42
-    tick = int(time.monotonic() * 4) & 0xFFFF
+    # ~5× slower row phase than prior (paired with 37.5s CSS scroll + slower fragment).
+    tick = int(time.monotonic() * 0.8) & 0xFFFF
     lines: list[str] = []
     denom = max(12, n_lines)
     base = rolled // denom if rolled else 0
@@ -2274,7 +2284,7 @@ def _render_sovereign_ingestion_monitor_sidebar() -> None:
     st.markdown("</div>", unsafe_allow_html=True)
 
 
-@st.fragment(run_every=timedelta(milliseconds=480))
+@st.fragment(run_every=timedelta(milliseconds=2400))
 def _render_sovereign_roller_ticker_fragment() -> None:
     pct = int(st.session_state.get("cien_sovereign_roller_pct", 0))
     rolled = int(round(KADUNA_VOTER_TARGET * (pct / 100.0)))
@@ -4181,7 +4191,7 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   background: #121212 !important;
 }
 .sovereign-roller-feed-track {
-  animation: sovereign-roller-scroll 7.5s linear infinite;
+  animation: sovereign-roller-scroll 37.5s linear infinite;
 }
 .sovereign-roller-line {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
@@ -4777,6 +4787,67 @@ _ELECTRIFIED_SOVEREIGN_SIDEBAR_CSS = """
   margin: 0;
   opacity: 0.92;
   line-height: 1.35;
+}
+[data-testid='stSidebar'] .gcslc-sidebar-identity-anchor {
+  text-align: center;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.35);
+  padding: 0 0 0.5rem 0;
+  margin: 0 0 0.4rem 0;
+}
+[data-testid='stSidebar'] .gcslc-sidebar-identity-anchor p {
+  font-family: 'Goldman', sans-serif !important;
+  color: #FFD700 !important;
+  margin: 0.12rem 0 !important;
+  font-size: 0.62rem !important;
+  line-height: 1.3 !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em !important;
+}
+[data-testid='stSidebar'] .gcslc-sidebar-identity-anchor .gcslc-id-org {
+  font-size: 0.58rem !important;
+  color: rgba(255, 215, 0, 0.88) !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase;
+}
+[data-testid='stSidebar'] .gcslc-sovereign-offline {
+  border: 1px solid rgba(100, 116, 139, 0.5);
+  background: rgba(15, 23, 42, 0.75);
+  border-radius: 10px;
+  padding: 0.5rem 0.45rem;
+  margin: 0.4rem 0 0.35rem 0;
+  text-align: center;
+}
+[data-testid='stSidebar'] .gcslc-sovereign-offline .gso-title {
+  font-family: 'Goldman', sans-serif !important;
+  color: #d4af37 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.14em !important;
+  font-size: 0.65rem !important;
+  margin: 0 0 0.28rem 0 !important;
+}
+[data-testid='stSidebar'] .gcslc-sovereign-offline .gso-body {
+  font-family: 'Goldman', sans-serif !important;
+  color: #94a3b8 !important;
+  font-size: 0.6rem !important;
+  margin: 0 !important;
+  line-height: 1.4 !important;
+}
+[data-testid='stSidebar'] .gcslc-upg-arm-slot + div [data-testid="stButton"] button {
+  font-family: 'Goldman', sans-serif !important;
+  letter-spacing: 0.12em !important;
+  font-weight: 800 !important;
+  min-height: 2.85rem !important;
+  border-radius: 8px !important;
+  background: linear-gradient(180deg, #e8d48b, #b8962e) !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(212, 175, 55, 0.9) !important;
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.38) !important;
+  text-transform: uppercase !important;
+  font-size: 0.72rem !important;
+}
+[data-testid='stSidebar'] .gcslc-upg-arm-slot + div [data-testid="stButton"] button:hover {
+  filter: brightness(1.05);
+  box-shadow: 0 0 26px rgba(212, 175, 55, 0.48) !important;
 }
 </style>
 """
@@ -6483,6 +6554,13 @@ def main() -> None:
     st.markdown(_ELECTRIFIED_SOVEREIGN_SIDEBAR_CSS, unsafe_allow_html=True)
 
     with st.sidebar:
+        st.markdown(
+            '<div class="gcslc-sidebar-identity-anchor">'
+            "<p><strong>Galadiman Ruwa Center For Strategic Leadership and Communication</strong></p>"
+            '<p class="gcslc-id-org">GCSLC LTD/GTE</p>'
+            "</div>",
+            unsafe_allow_html=True,
+        )
         st.caption(
             "Sidebar is collapsible. When closed, the header shows a gold bolt (SVG) tactical alert — "
             "the 1.5M outreach simulation keeps running."
