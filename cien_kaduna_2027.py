@@ -1029,6 +1029,20 @@ def _gcslc_resolve_checkout_url_for_sidebar() -> tuple[str, str]:
     return "", ""
 
 
+def _gcslc_reset_checkout_session_for_reinit() -> None:
+    """Clear checkout session so the next run re-calls Paystack/Flutterwave init (PAYMENT_GATEWAY_KEY path)."""
+    for k in (
+        "cien_checkout_init_failed",
+        "_cien_checkout_init_done",
+        "cien_checkout_ready_url",
+        "cien_checkout_ready_ref",
+        "cien_checkout_provider",
+        "cien_checkout_channel",
+        "cien_checkout_last_error",
+    ):
+        st.session_state.pop(k, None)
+
+
 def _gcslc_transmit_to_whatsapp() -> dict[str, Any]:
     """
     Last-mile WhatsApp transmit via Twilio or Whapi.cloud (credentials in `st.secrets` or env).
@@ -1159,8 +1173,8 @@ def _gcslc_transmit_to_whatsapp() -> dict[str, Any]:
     return out
 
 
-def _render_sovereign_payment_handshake(pay_url: str) -> None:
-    """Universal Payment Gateway: `st.dialog` (embedded checkout + new tab) + `st.link_button` on HTTPS hosts."""
+def _render_sovereign_payment_handshake(pay_url: str, *, show_external_link: bool = True) -> None:
+    """Optional embedded modal + external link. Primary checkout lives in the Slate UPG module when ``show_external_link`` is False."""
     u = (pay_url or "").strip()
     if not u:
         return
@@ -1191,26 +1205,31 @@ def _render_sovereign_payment_handshake(pay_url: str) -> None:
             )
 
         if st.button(
-            "🧾 OPEN PAYMENT GATEWAY (MODAL)",
+            "🧾 EMBEDDED CHECKOUT (MODAL)",
             key="cien_open_payment_dialog",
             use_container_width=True,
-            type="primary",
+            type="secondary",
         ):
             _ugw_modal()
         st.caption(
-            "Provider keys resolve from **HF / Streamlit Secrets** — universal "
-            "`PAYMENT_GATEWAY_KEY` / `GCSLC_PAYMENT_GATEWAY_KEY`, or Paystack / Flutterwave-specific secrets."
+            "Universal **`PAYMENT_GATEWAY_KEY`** / **`GCSLC_PAYMENT_GATEWAY_KEY`** or provider-specific secrets."
         )
-    st.link_button(
-        "🔗 OPEN SECURE PAYMENT PAGE (EXTERNAL)",
-        u,
-        use_container_width=True,
-        type="secondary",
-    )
+    if show_external_link:
+        st.link_button(
+            "🔗 OPEN SECURE PAYMENT PAGE (EXTERNAL)",
+            u,
+            use_container_width=True,
+            type="secondary",
+        )
 
 
-def _render_universal_payment_gateway_module(*, funded: bool, pay_url_ready: bool) -> None:
-    """Slate & grey universal gateway shell — professional status (integration-banner logic retired)."""
+def _render_universal_payment_gateway_module(
+    *,
+    funded: bool,
+    pay_url_ready: bool,
+    pay_url: str = "",
+) -> None:
+    """Slate & grey UPG shell — live checkout control inside the module (PAYMENT_GATEWAY_KEY / provider init)."""
     if funded:
         st.markdown(
             '<div class="gcslc-upg-module gcslc-upg-module--ready">'
@@ -1221,26 +1240,40 @@ def _render_universal_payment_gateway_module(*, funded: bool, pay_url_ready: boo
             unsafe_allow_html=True,
         )
         return
-    if pay_url_ready:
+    u = (pay_url or "").strip()
+    if pay_url_ready and u:
+        safe = html.escape(u, quote=True)
         st.markdown(
-            '<div class="gcslc-upg-module">'
-            '<p class="upg-head">Universal Payment Gateway</p>'
+            '<div class="gcslc-upg-module gcslc-upg-module--live">'
+            '<p class="upg-head">Universal Payment Gateway · Live</p>'
             '<p class="upg-handshake">GCSLC Secure Handshake Active</p>'
-            '<p class="upg-sub">Hosted checkout session ready — complete payment below (HTTPS).</p>'
+            '<p class="upg-sub">Hosted checkout URL bound via <code>PAYMENT_GATEWAY_KEY</code> '
+            "(or Paystack / Flutterwave secrets). Opens provider checkout in a new window.</p>"
+            f'<a class="gcslc-upg-checkout-btn" href="{safe}" target="_blank" rel="noopener noreferrer" '
+            'title="Open Paystack or Flutterwave checkout">'
+            "Paystack / Flutterwave · Open checkout</a>"
             "</div>",
             unsafe_allow_html=True,
         )
         return
     st.markdown(
-        '<div class="gcslc-upg-module">'
-        '<p class="upg-head">Universal Payment Gateway</p>'
+        '<div class="gcslc-upg-module gcslc-upg-module--live">'
+        '<p class="upg-head">Universal Payment Gateway · Live</p>'
         '<p class="upg-handshake">GCSLC Secure Handshake Active</p>'
-        '<p class="upg-sub">Initializing secure session with Paystack / Flutterwave via '
-        "<code>PAYMENT_GATEWAY_KEY</code> / <code>GCSLC_PAYMENT_GATEWAY_KEY</code> "
-        "(or provider-specific secrets). No error surface — cloud keys propagate silently.</p>"
+        '<p class="upg-sub">No checkout URL yet — initialize or refresh the session using your payer name above and '
+        "<code>PAYMENT_GATEWAY_KEY</code> / provider secrets.</p>"
         "</div>",
         unsafe_allow_html=True,
     )
+    if st.button(
+        "Initialize / refresh checkout session",
+        key="cien_upg_init_checkout_session",
+        use_container_width=True,
+        type="primary",
+        help="Clears cached checkout state and re-runs Paystack/Flutterwave initialize with the current payer name.",
+    ):
+        _gcslc_reset_checkout_session_for_reinit()
+        st.rerun()
 
 
 def _render_sidebar_live_payment_gateway() -> None:
@@ -1320,10 +1353,14 @@ def _render_sidebar_live_payment_gateway() -> None:
     )
 
     pay_url, _ = _gcslc_resolve_checkout_url_for_sidebar()
-    _render_universal_payment_gateway_module(funded=False, pay_url_ready=bool(pay_url))
+    _render_universal_payment_gateway_module(
+        funded=False,
+        pay_url_ready=bool(pay_url),
+        pay_url=pay_url,
+    )
 
     if pay_url:
-        _render_sovereign_payment_handshake(pay_url)
+        _render_sovereign_payment_handshake(pay_url, show_external_link=False)
     st.caption(
         "Change payer name or need a fresh hosted link? Rerun the app from the menu, or set "
         "GCSLC_PAYSTACK_CHECKOUT_URL / GCSLC_FLUTTERWAVE_CHECKOUT_URL for a static checkout URL."
@@ -2172,6 +2209,33 @@ _CSS = """
   background: rgba(15, 23, 42, 0.6);
   padding: 0.08rem 0.2rem;
   border-radius: 4px;
+}
+.gcslc-upg-module--live {
+  border-color: rgba(100, 116, 139, 0.58);
+}
+a.gcslc-upg-checkout-btn {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  margin-top: 0.55rem;
+  padding: 0.45rem 0.5rem;
+  text-align: center;
+  text-decoration: none !important;
+  font-size: 0.72rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #f1f5f9 !important;
+  background: linear-gradient(180deg, rgba(71, 85, 105, 0.95) 0%, rgba(51, 65, 85, 0.98) 100%);
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+a.gcslc-upg-checkout-btn:hover {
+  color: #fff !important;
+  border-color: rgba(148, 163, 184, 0.65);
+  background: linear-gradient(180deg, rgba(100, 116, 139, 0.95) 0%, rgba(71, 85, 105, 0.98) 100%);
 }
 
 @keyframes cien-pulse-gold {
