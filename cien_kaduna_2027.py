@@ -1051,6 +1051,13 @@ def _gcslc_arm_live_checkout_handshake(*, mode: str = "card") -> str:
     ``gcslc_payment_gateway_key()``) or dedicated provider secrets. Returns hosted ``authorization_url`` or "".
     """
     _gcslc_reset_checkout_session_for_reinit()
+    static = _gcslc_preferred_static_hosted_payment_url()
+    if static:
+        st.session_state["cien_checkout_ready_url"] = static
+        st.session_state["cien_checkout_provider"] = "static"
+        st.session_state["cien_checkout_ready_ref"] = ""
+        st.session_state["cien_checkout_channel"] = "external"
+        return static
     if not (
         gcslc_payment_gateway_key()
         or _gcslc_effective_paystack_secret()
@@ -1403,10 +1410,11 @@ def _render_sidebar_live_payment_gateway() -> None:
             gcslc_payment_gateway_key()
             or _gcslc_effective_paystack_secret()
             or _gcslc_effective_flutterwave_secret()
+            or _gcslc_preferred_static_hosted_payment_url()
         ):
             st.warning(
-                "Set **`PAYMENT_GATEWAY_KEY`** in **st.secrets** (or Paystack / Flutterwave secret keys) "
-                "to run the live handshake."
+                "Set **`PAYMENT_GATEWAY_KEY`** in **st.secrets** (or Paystack / Flutterwave secret keys, "
+                "or `GCSLC_PAYSTACK_CHECKOUT_URL` / `GCSLC_FLUTTERWAVE_CHECKOUT_URL`) to run the handshake."
             )
         else:
             url = _gcslc_arm_live_checkout_handshake(mode="card")
