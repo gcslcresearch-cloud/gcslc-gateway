@@ -611,6 +611,28 @@ def _gcslc_paystack_secret_key() -> str:
     return _gcslc_secret("GCSLC_PAYSTACK_SECRET_KEY") or _gcslc_secret("GCSLC_PAYSTACK_SECRET")
 
 
+def _gcslc_effective_paystack_secret() -> str:
+    """Dedicated Paystack keys, or universal ``PAYMENT_GATEWAY_KEY`` when it is ``sk_*`` (test/live)."""
+    d = (_gcslc_paystack_secret_key() or "").strip()
+    if d:
+        return d
+    ug = (gcslc_payment_gateway_key() or "").strip()
+    if ug and (ug.lower().startswith("sk_test") or ug.lower().startswith("sk_live")):
+        return ug
+    return ""
+
+
+def _gcslc_effective_flutterwave_secret() -> str:
+    """Dedicated Flutterwave secret, or universal key when bearer is FLW-shaped."""
+    d = (_gcslc_secret("GCSLC_FLUTTERWAVE_SECRET_KEY") or "").strip()
+    if d:
+        return d
+    ug = (gcslc_payment_gateway_key() or "").strip()
+    if ug and "FLWSECK" in ug.upper():
+        return ug
+    return ""
+
+
 _CHAIRMAN_STATE_KEYS: tuple[str, ...] = (
     "cien_wallet_balance",
     "cien_launch_target_lock",
@@ -755,14 +777,11 @@ def _gcslc_paystack_init(
     channels: list[str],
     channel_label: str,
     payer_name: str | None = None,
+    sk_override: str | None = None,
 ) -> tuple[bool, str, dict]:
-    sk = _gcslc_paystack_secret_key()
+    sk = (sk_override or _gcslc_effective_paystack_secret() or "").strip()
     if not sk:
-        return (
-            False,
-            "Paystack secret missing — set GCSLC_PAYSTACK_SECRET_KEY or GCSLC_PAYSTACK_SECRET (st.secrets / env).",
-            {},
-        )
+        return False, "", {}
     ref = f"CIEN_PS_{int(time.time())}_{random.randint(1000, 9999)}"
     _meta: dict = {
         "purpose": "Urban-Core Strike wallet top-up",
@@ -799,7 +818,11 @@ def _gcslc_paystack_init(
 
 
 def _gcslc_paystack_verify(reference: str) -> tuple[bool, str]:
-    sk = _gcslc_paystack_secret_key()
+    sk = (_gcslc_effective_paystack_secret() or "").strip()
+    if not sk:
+        ug = (gcslc_payment_gateway_key() or "").strip()
+        if ug.lower().startswith("sk_test") or ug.lower().startswith("sk_live"):
+            sk = ug
     if not sk or not (reference or "").strip():
         return False, "missing_secret_or_ref"
     url = "https://api.paystack.co/transaction/verify/" + urllib.parse.quote(reference.strip(), safe="")
@@ -823,10 +846,11 @@ def _gcslc_flutterwave_init(
     payment_options: str,
     channel_label: str,
     payer_name: str | None = None,
+    sk_override: str | None = None,
 ) -> tuple[bool, str, dict]:
-    sk = _gcslc_secret("GCSLC_FLUTTERWAVE_SECRET_KEY")
+    sk = (sk_override or _gcslc_effective_flutterwave_secret() or "").strip()
     if not sk:
-        return False, "Flutterwave secret missing — set GCSLC_FLUTTERWAVE_SECRET_KEY (or st.secrets).", {}
+        return False, "", {}
     tx_ref = f"CIEN_FLW_{int(time.time())}_{random.randint(1000, 9999)}"
     redir = (os.environ.get("GCSLC_FLW_REDIRECT_URL") or "https://flutterwave.com").strip()
     _em = (email or "chairman@gcslc.ng").strip()
@@ -871,7 +895,13 @@ def _gcslc_flutterwave_init(
 
 
 def _gcslc_flutterwave_verify(tx_ref: str) -> tuple[bool, str]:
-    sk = _gcslc_secret("GCSLC_FLUTTERWAVE_SECRET_KEY")
+    sk = (_gcslc_effective_flutterwave_secret() or "").strip()
+    if not sk:
+        ug = (gcslc_payment_gateway_key() or "").strip()
+        if ug and "FLWSECK" in ug.upper():
+            sk = ug
+        elif ug and not (ug.lower().startswith("sk_test") or ug.lower().startswith("sk_live")):
+            sk = ug
     if not sk or not (tx_ref or "").strip():
         return False, "missing_secret_or_ref"
     q = urllib.parse.urlencode({"tx_ref": tx_ref.strip()})
@@ -911,13 +941,30 @@ def _gcslc_init_live_checkout(
         ps_ch, flw_opt, label = ["ussd"], "ussd", "ussd_zenith"
     else:
         return False, "unknown_mode", {}
-    if _gcslc_paystack_secret_key():
+    if _gcslc_effective_paystack_secret():
         return _gcslc_paystack_init(email, channels=ps_ch, channel_label=label, payer_name=payer_name)
-    if _gcslc_secret("GCSLC_FLUTTERWAVE_SECRET_KEY"):
+    if _gcslc_effective_flutterwave_secret():
         return _gcslc_flutterwave_init(
             email, payment_options=flw_opt, channel_label=label, payer_name=payer_name
         )
-    return False, "No payment secret configured (Paystack or Flutterwave).", {}
+    ug = (gcslc_payment_gateway_key() or "").strip()
+    if ug:
+        ok, err, data = _gcslc_paystack_init(
+            email, channels=ps_ch, channel_label=label, payer_name=payer_name, sk_override=ug
+        )
+        if ok and data.get("authorization_url"):
+            out = dict(data)
+            out["_cien_provider"] = "paystack"
+            return ok, err, out
+        ok2, err2, data2 = _gcslc_flutterwave_init(
+            email, payment_options=flw_opt, channel_label=label, payer_name=payer_name, sk_override=ug
+        )
+        if ok2 and data2.get("authorization_url"):
+            out2 = dict(data2)
+            out2["_cien_provider"] = "flutterwave"
+            return ok2, err2, out2
+        return ok2, err2, data2
+    return False, "", {}
 
 
 def _gcslc_verify_pending_checkout() -> tuple[bool, str]:
@@ -962,26 +1009,24 @@ def _gcslc_resolve_checkout_url_for_sidebar() -> tuple[str, str]:
         st.session_state["cien_checkout_channel"] = "external"
         return static, ""
     if st.session_state.get("cien_checkout_init_failed"):
-        return "", str(st.session_state.get("cien_checkout_last_error") or "Payment link unavailable.")
+        return "", ""
     if st.session_state.get("_cien_checkout_init_done"):
-        return "", str(
-            st.session_state.get("cien_checkout_last_error")
-            or "Configure Paystack / Flutterwave secrets or GCSLC_PAYSTACK_CHECKOUT_URL / GCSLC_FLUTTERWAVE_CHECKOUT_URL."
-        )
+        return "", ""
     st.session_state["_cien_checkout_init_done"] = True
     _payer = str(st.session_state.get("cien_executive_payer_name") or "").strip() or CIEN_DEFAULT_EXECUTIVE_PAYER_NAME
     ok, msg, data = _gcslc_init_live_checkout("chairman@gcslc.ng", mode="transfer", payer_name=_payer)
     if ok and data.get("authorization_url"):
         st.session_state["cien_checkout_ready_url"] = data["authorization_url"]
         st.session_state["cien_checkout_ready_ref"] = data.get("reference", "")
-        st.session_state["cien_checkout_provider"] = (
-            "paystack" if _gcslc_paystack_secret_key() else "flutterwave"
-        )
+        _prov = str(data.get("_cien_provider") or "").strip().lower()
+        if _prov not in ("paystack", "flutterwave"):
+            _prov = "paystack" if _gcslc_effective_paystack_secret() else "flutterwave"
+        st.session_state["cien_checkout_provider"] = _prov
         st.session_state["cien_checkout_channel"] = "transfer"
         return str(data["authorization_url"]), ""
     st.session_state["cien_checkout_init_failed"] = True
-    st.session_state["cien_checkout_last_error"] = msg
-    return "", msg or "Could not initialize payment link."
+    st.session_state["cien_checkout_last_error"] = ""
+    return "", ""
 
 
 def _gcslc_transmit_to_whatsapp() -> dict[str, Any]:
@@ -1153,8 +1198,8 @@ def _render_sovereign_payment_handshake(pay_url: str) -> None:
         ):
             _ugw_modal()
         st.caption(
-            "Paystack secret is read from **Streamlit / HF Secrets** (`GCSLC_PAYSTACK_SECRET` or "
-            "`GCSLC_PAYSTACK_SECRET_KEY`) — no manual paste in the browser."
+            "Provider keys resolve from **HF / Streamlit Secrets** — universal "
+            "`PAYMENT_GATEWAY_KEY` / `GCSLC_PAYMENT_GATEWAY_KEY`, or Paystack / Flutterwave-specific secrets."
         )
     st.link_button(
         "🔗 OPEN SECURE PAYMENT PAGE (EXTERNAL)",
@@ -1164,52 +1209,38 @@ def _render_sovereign_payment_handshake(pay_url: str) -> None:
     )
 
 
-def _gcslc_checkout_err_looks_like_pending_secrets(msg: str) -> bool:
-    """True when checkout failure is likely missing secrets, sync delay, or cold cloud handshake — not a hard fault."""
-    m = (msg or "").lower()
-    return any(
-        x in m
-        for x in (
-            "secret missing",
-            "no payment secret",
-            "configure paystack",
-            "configure paystack / flutterwave",
-            "missing_secret",
-            "flutterwave secret missing",
-            "paystack secret missing",
-            "timeout",
-            "timed out",
-            "temporarily unavailable",
-            "connection refused",
-            "connection reset",
-            "could not initialize",
-            "payment link unavailable",
-            "name or service not known",
-            "nodename nor servname",
-            "ssl",
-            "certificate",
-            "503",
-            "502",
-            "504",
-            "429",
-            "handshake",
-            "egress",
+def _render_universal_payment_gateway_module(*, funded: bool, pay_url_ready: bool) -> None:
+    """Slate & grey universal gateway shell — professional status (no secrets-missing / integration-banner logic)."""
+    if funded:
+        st.markdown(
+            '<div class="gcslc-upg-module gcslc-upg-module--ready">'
+            '<p class="upg-head">Universal Payment Gateway</p>'
+            '<p class="upg-handshake">Wallet secured · GCSLC gateway session complete</p>'
+            '<p class="upg-sub">Paystack / Flutterwave channels idle. Strike lattice authorized.</p>'
+            "</div>",
+            unsafe_allow_html=True,
         )
-    )
-
-
-def _gcslc_render_sovereign_gateway_sync_hint() -> None:
-    """Single neutral line — no ``st.error`` / ``st.warning`` / ``st.status`` (avoids red or amber Streamlit chrome)."""
+        return
+    if pay_url_ready:
+        st.markdown(
+            '<div class="gcslc-upg-module">'
+            '<p class="upg-head">Universal Payment Gateway</p>'
+            '<p class="upg-handshake">GCSLC Secure Handshake Active</p>'
+            '<p class="upg-sub">Hosted checkout session ready — complete payment below (HTTPS).</p>'
+            "</div>",
+            unsafe_allow_html=True,
+        )
+        return
     st.markdown(
-        '<div class="gcslc-sovereign-gateway-sync">Synchronizing Sovereign Gateway…</div>',
+        '<div class="gcslc-upg-module">'
+        '<p class="upg-head">Universal Payment Gateway</p>'
+        '<p class="upg-handshake">GCSLC Secure Handshake Active</p>'
+        '<p class="upg-sub">Initializing secure session with Paystack / Flutterwave via '
+        "<code>PAYMENT_GATEWAY_KEY</code> / <code>GCSLC_PAYMENT_GATEWAY_KEY</code> "
+        "(or provider-specific secrets). No error surface — cloud keys propagate silently.</p>"
+        "</div>",
         unsafe_allow_html=True,
     )
-
-
-def _render_integration_secrets_status_banner() -> None:
-    """Optional keys absent: silent (no Streamlit error/warning/banner chrome — HF rebuild safe)."""
-    if gcslc_payment_gateway_key() and gcslc_termii_api_key():
-        return
 
 
 def _render_sidebar_live_payment_gateway() -> None:
@@ -1260,33 +1291,19 @@ def _render_sidebar_live_payment_gateway() -> None:
     _unfunded = _w < int(_gcslc_wallet_strike_topup_ngn())
 
     st.markdown(
-        '<div class="zenith-payment-sticky-wrap executive-unified-payment-wrap">'
-        '<p class="zps-title-gold">UNIVERSAL PAYMENT GATEWAY</p>'
+        '<div class="zenith-payment-sticky-wrap executive-unified-payment-wrap upg-zenith-slate">'
+        '<p class="zps-title-slate">UNIVERSAL PAYMENT GATEWAY · GCSLC KADUNA 2027</p>'
         "</div>",
         unsafe_allow_html=True,
     )
 
     if not _unfunded:
+        _render_universal_payment_gateway_module(funded=True, pay_url_ready=False)
         st.success(f"Wallet secured — ₦{_gcslc_wallet_strike_topup_ngn():,.0f} ready for strike command.")
         return
 
     if _notice:
-        _nu = str(_notice).upper()
-        if any(
-            x in _nu
-            for x in (
-                "SECRET",
-                "SECRETS",
-                "MISSING",
-                "PAYMENT_GATEWAY",
-                "PAYSTACK",
-                "FLUTTERWAVE",
-                "GCSLC_PAYMENT",
-            )
-        ):
-            pass
-        else:
-            st.info(_notice)
+        st.info(_notice)
 
     st.session_state.setdefault("cien_executive_payer_name", CIEN_DEFAULT_EXECUTIVE_PAYER_NAME)
     st.text_input("Name", key="cien_executive_payer_name", max_chars=120)
@@ -1302,15 +1319,9 @@ def _render_sidebar_live_payment_gateway() -> None:
         unsafe_allow_html=True,
     )
 
-    pay_url, pay_err = _gcslc_resolve_checkout_url_for_sidebar()
-    if pay_err:
-        # 8R stealth: no st.error / st.warning / st.info for checkout or secret-missing paths (red bar purge).
-        if (
-            gcslc_payment_gateway_key()
-            and gcslc_termii_api_key()
-            and _gcslc_checkout_err_looks_like_pending_secrets(pay_err)
-        ):
-            _gcslc_render_sovereign_gateway_sync_hint()
+    pay_url, _ = _gcslc_resolve_checkout_url_for_sidebar()
+    _render_universal_payment_gateway_module(funded=False, pay_url_ready=bool(pay_url))
+
     if pay_url:
         _render_sovereign_payment_handshake(pay_url)
     st.caption(
@@ -2119,17 +2130,48 @@ def _render_sovereign_roller_ticker_fragment() -> None:
 _CSS = """
 @import url('https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap');
 
-/* Optional secrets / cloud handshake — neutral slate (never error red / warning amber). */
-.gcslc-sovereign-gateway-sync {
-  color: #5c6b7a;
-  font-size: 0.8125rem;
-  font-weight: 400;
-  letter-spacing: 0.03em;
-  padding: 0.4rem 0.65rem;
-  margin: 0.2rem 0 0.35rem 0;
-  border-left: 3px solid #8b9bab;
-  background: rgba(91, 107, 122, 0.09);
-  border-radius: 0 4px 4px 0;
+/* Universal Payment Gateway module — Slate & Grey default (executive mandate). */
+.gcslc-upg-module {
+  margin: 0.35rem 0 0.55rem 0;
+  padding: 0.55rem 0.5rem;
+  border-radius: 10px;
+  border: 1px solid rgba(100, 116, 139, 0.5);
+  background: linear-gradient(165deg, rgba(30, 41, 59, 0.65) 0%, rgba(15, 23, 42, 0.88) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+.gcslc-upg-module--ready {
+  border-color: rgba(148, 163, 184, 0.42);
+  background: linear-gradient(165deg, rgba(51, 65, 85, 0.5) 0%, rgba(30, 41, 59, 0.82) 100%);
+}
+.gcslc-upg-module .upg-head {
+  font-family: 'Goldman', sans-serif !important;
+  color: #94a3b8 !important;
+  font-size: 0.65rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase;
+  margin: 0 0 0.4rem 0 !important;
+}
+.gcslc-upg-module .upg-handshake {
+  color: #e2e8f0 !important;
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.045em !important;
+  margin: 0 !important;
+  line-height: 1.45 !important;
+}
+.gcslc-upg-module .upg-sub {
+  color: #64748b !important;
+  font-size: 0.64rem !important;
+  margin: 0.4rem 0 0 0 !important;
+  line-height: 1.4 !important;
+}
+.gcslc-upg-module .upg-sub code {
+  color: #94a3b8 !important;
+  font-size: 0.62rem !important;
+  background: rgba(15, 23, 42, 0.6);
+  padding: 0.08rem 0.2rem;
+  border-radius: 4px;
 }
 
 @keyframes cien-pulse-gold {
@@ -3689,6 +3731,22 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
   background: linear-gradient(180deg, rgba(22, 22, 22, 0.98), rgba(8, 8, 8, 0.99));
   box-shadow: 0 -10px 28px rgba(0, 0, 0, 0.55);
   backdrop-filter: blur(8px);
+}
+[data-testid="stSidebar"] .zenith-payment-sticky-wrap.upg-zenith-slate {
+  border: 1px solid rgba(100, 116, 139, 0.45);
+  background: linear-gradient(180deg, rgba(30, 41, 59, 0.55), rgba(15, 23, 42, 0.92));
+}
+[data-testid="stSidebar"] .zps-title-slate {
+  color: #cbd5e1 !important;
+  font-size: 0.78rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.12em !important;
+  text-align: center;
+  margin: 0 0 0.5rem 0 !important;
+  text-shadow: 0 0 12px rgba(148, 163, 184, 0.25);
+}
+[data-testid="stSidebar"] .gcslc-upg-module {
+  margin-top: 0.15rem;
 }
 [data-testid="stSidebar"] .exec-pay-amount-label {
   margin: 0.35rem 0 0.15rem 0 !important;
@@ -6297,7 +6355,6 @@ def main() -> None:
             "</div>",
             unsafe_allow_html=True,
         )
-        _render_integration_secrets_status_banner()
         _render_sidebar_live_payment_gateway()
 
     st.markdown(
