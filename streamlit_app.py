@@ -10,7 +10,10 @@ import streamlit as st
 
 _lif = getattr(st.secrets, "load_if_toml_exists", None)
 if callable(_lif):
-    _lif()
+    try:
+        _lif()
+    except Exception:
+        pass
 
 from cien_kaduna_2027 import main
 

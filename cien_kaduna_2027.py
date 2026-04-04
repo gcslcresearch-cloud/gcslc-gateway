@@ -1207,10 +1207,9 @@ def _gcslc_render_sovereign_gateway_sync_hint() -> None:
 
 
 def _render_integration_secrets_status_banner() -> None:
-    """Former 'secrets missing' path: only a muted sync hint (dashboard stays clean while cloud secrets propagate)."""
+    """Optional keys absent: silent (no Streamlit error/warning/banner chrome — HF rebuild safe)."""
     if gcslc_payment_gateway_key() and gcslc_termii_api_key():
         return
-    _gcslc_render_sovereign_gateway_sync_hint()
 
 
 def _render_sidebar_live_payment_gateway() -> None:
@@ -1272,7 +1271,22 @@ def _render_sidebar_live_payment_gateway() -> None:
         return
 
     if _notice:
-        st.info(_notice)
+        _nu = str(_notice).upper()
+        if any(
+            x in _nu
+            for x in (
+                "SECRET",
+                "SECRETS",
+                "MISSING",
+                "PAYMENT_GATEWAY",
+                "PAYSTACK",
+                "FLUTTERWAVE",
+                "GCSLC_PAYMENT",
+            )
+        ):
+            pass
+        else:
+            st.info(_notice)
 
     st.session_state.setdefault("cien_executive_payer_name", CIEN_DEFAULT_EXECUTIVE_PAYER_NAME)
     st.text_input("Name", key="cien_executive_payer_name", max_chars=120)
@@ -1290,12 +1304,13 @@ def _render_sidebar_live_payment_gateway() -> None:
 
     pay_url, pay_err = _gcslc_resolve_checkout_url_for_sidebar()
     if pay_err:
-        if _gcslc_checkout_err_looks_like_pending_secrets(pay_err):
-            # Integration banner already shows the same hint when optional keys are absent.
-            if gcslc_payment_gateway_key() and gcslc_termii_api_key():
-                _gcslc_render_sovereign_gateway_sync_hint()
-        else:
-            st.info(f"**Hosted checkout:** {html.escape(str(pay_err))}")
+        # 8R stealth: no st.error / st.warning / st.info for checkout or secret-missing paths (red bar purge).
+        if (
+            gcslc_payment_gateway_key()
+            and gcslc_termii_api_key()
+            and _gcslc_checkout_err_looks_like_pending_secrets(pay_err)
+        ):
+            _gcslc_render_sovereign_gateway_sync_hint()
     if pay_url:
         _render_sovereign_payment_handshake(pay_url)
     st.caption(
