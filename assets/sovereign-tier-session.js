@@ -47,7 +47,13 @@
   }
 
   function init() {
+    try {
+      if (new URLSearchParams(global.location.search || '').get('mode') === 'chairman') {
+        localStorage.setItem(KEY_CHAIRMAN_GATE, '1');
+      }
+    } catch (e) {}
     unlockUi();
+    global.GCSLC_CHAIRMAN_IMMUNITY = isChairmanMode();
   }
 
   if (document.readyState === 'loading') {

@@ -1388,6 +1388,10 @@
         filter: none;
         transform: none;
       }
+      .sovereign-manifesto-type {
+        animation: none !important;
+        filter: none;
+      }
     }
 
     /* Bridge handoff — digital unveiling of the 8R paradigm into the internal dashboard */
@@ -1398,6 +1402,66 @@
     }
     html.mirror-8r-handoff .sovereign-app-layer {
       animation: mirror-8r-paradigm-out 0.95s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+
+    /* NRRFC manifesto — slow typewriter, shimmering cyan, prism-frame glow */
+    .sovereign-manifesto {
+      max-width: min(52rem, 94vw);
+      margin: 0 auto clamp(0.65rem, 2.2vw, 1.25rem);
+      padding: clamp(1rem, 2.8vw, 1.5rem) clamp(1rem, 2.5vw, 1.35rem);
+      text-align: center;
+    }
+    .sovereign-manifesto.prism-frame {
+      box-shadow:
+        0 0 0 1px rgba(0, 255, 255, 0.22),
+        0 0 32px rgba(0, 255, 255, 0.12),
+        0 8px 40px rgba(0, 0, 0, 0.35),
+        inset 0 0 28px rgba(0, 229, 255, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+    .sovereign-manifesto-type {
+      margin: 0;
+      font-family: 'Goldman', 'Segoe UI', sans-serif;
+      font-weight: 700;
+      font-size: clamp(0.66rem, 1.62vw, 0.86rem);
+      letter-spacing: 0.035em;
+      line-height: 1.68;
+      color: #00ffff;
+      text-shadow:
+        0 0 10px rgba(0, 255, 255, 0.5),
+        0 0 26px rgba(0, 255, 255, 0.28),
+        0 0 52px rgba(0, 229, 255, 0.14);
+      animation: sovereign-manifesto-cyan-shimmer 5.2s ease-in-out infinite;
+    }
+    @keyframes sovereign-manifesto-cyan-shimmer {
+      0%, 100% { filter: brightness(1) saturate(1.05); }
+      50% { filter: brightness(1.14) saturate(1.12); }
+    }
+    .sovereign-manifesto-type[data-typing="true"]::after {
+      content: '';
+      display: inline-block;
+      width: 0.1em;
+      height: 1.05em;
+      margin-left: 0.08em;
+      vertical-align: -0.14em;
+      background: #00ffff;
+      box-shadow: 0 0 12px rgba(0, 255, 255, 0.85);
+      animation: sovereign-manifesto-caret 0.95s step-end infinite;
+    }
+    @keyframes sovereign-manifesto-caret {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+    .sovereign-manifesto-visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
   </style>
 </head>
@@ -1416,6 +1480,10 @@
   <div class="ip-shield-overlay" aria-hidden="true"></div>
 
   <div class="shell">
+    <section class="sovereign-manifesto prism-frame" aria-labelledby="sovereignManifestoHeading" aria-label="TO THE SOVEREIGN ARCHITECTS: The fuel for the next era of AI is not code—it is the Carbon, Germanium, and Silicon derivatives of the Abuja-Zaria-Kano (AZK) Corridor. We are presenting a mathematical path to liquidate Nigeria’s ₦55 Trillion domestic debt by capturing 10% of the Global Big Tech $700B Capex. We are ready for Sovereign Partnership.">
+      <h2 id="sovereignManifestoHeading" class="sovereign-manifesto-visually-hidden">NRRFC sovereign manifesto</h2>
+      <p class="sovereign-manifesto-type" id="sovereignManifestoTypewriter" data-typing="true" aria-live="polite"></p>
+    </section>
     <header class="hero">
       <h1 class="gcslc-identity hero-title-os">Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE</h1>
       <p class="hero-8r-narrative">
@@ -1460,7 +1528,7 @@
           </div>
         </div>
         <div class="strike-center">
-          <form class="form-panel prism-frame" id="mirrorForm" autocomplete="on" novalidate>
+          <form class="form-panel prism-frame" id="mirrorForm" autocomplete="on" novalidate data-cloud-intake="formsubmit-ajax" data-intake-email-endpoint="https://formsubmit.co/ajax/chairman@galadimanruwacenter.org" data-intake-primary="chairman@galadimanruwacenter.org">
             <h2>Organization intake</h2>
             <div class="form-row">
               <label for="orgName">Organization</label>
@@ -1490,8 +1558,9 @@
               <div class="form-executive-support" aria-label="Executive support contacts">
                 <h3>Executive support</h3>
                 <div class="form-executive-support-links">
-                  <a href="mailto:info@galadimanruwacenter.org?subject=Executive%20Support%20%E2%80%94%20GCSLC%20Sovereign%20Mirror">info@galadimanruwacenter.org</a>
-                  <a href="mailto:gcslc.research@gmail.com?subject=Executive%20Support%20%E2%80%94%20GCSLC%20Sovereign%20Mirror">gcslc.research@gmail.com</a>
+                  <a href="mailto:chairman@galadimanruwacenter.org?subject=Executive%20Support%20%E2%80%94%20GCSLC%20Sovereign%20Mirror">chairman@galadimanruwacenter.org</a>
+                  <a href="mailto:info@galadimanruwacenter.org?cc=chairman%40galadimanruwacenter.org&amp;subject=Executive%20Support%20%E2%80%94%20GCSLC%20Sovereign%20Mirror">info@galadimanruwacenter.org</a>
+                  <a href="mailto:gcslc.research@gmail.com?cc=chairman%40galadimanruwacenter.org&amp;subject=Executive%20Support%20%E2%80%94%20GCSLC%20Sovereign%20Mirror">gcslc.research@gmail.com</a>
                   <a href="https://wa.me/2348099111515" target="_blank" rel="noopener noreferrer">WhatsApp: +234 809 911 1515</a>
                 </div>
               </div>
@@ -1557,6 +1626,45 @@
   </div>
 
   <script src="assets/sovereign-tier-session.js"></script>
+  <script>
+    (function () {
+      var MANIFESTO_COPY =
+        "TO THE SOVEREIGN ARCHITECTS: The fuel for the next era of AI is not code—it is the Carbon, Germanium, and Silicon derivatives of the Abuja-Zaria-Kano (AZK) Corridor. " +
+        "We are presenting a mathematical path to liquidate Nigeria's ₦55 Trillion domestic debt by capturing 10% of the Global Big Tech $700B Capex. " +
+        "We are ready for Sovereign Partnership.";
+      function runManifestoTypewriter() {
+        var el = document.getElementById("sovereignManifestoTypewriter");
+        if (!el) return;
+        var reduce = false;
+        try {
+          reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        } catch (e) {}
+        if (reduce) {
+          el.textContent = MANIFESTO_COPY;
+          el.removeAttribute("data-typing");
+          return;
+        }
+        var i = 0;
+        function tick() {
+          if (i > MANIFESTO_COPY.length) {
+            el.removeAttribute("data-typing");
+            return;
+          }
+          el.textContent = MANIFESTO_COPY.slice(0, i);
+          i += 1;
+          var ch = MANIFESTO_COPY.charAt(i - 1);
+          var delay = ch === " " ? 72 : ch === "." || ch === "," || ch === "—" ? 96 : 54;
+          window.setTimeout(tick, delay);
+        }
+        tick();
+      }
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", runManifestoTypewriter);
+      } else {
+        runManifestoTypewriter();
+      }
+    })();
+  </script>
   <script>
     (function () {
       var KEY_V = 'gcslc_sovereign_bridge_v1';
@@ -1693,6 +1801,47 @@
       updateHands();
       setInterval(updateHands, 1000);
 
+      var GCSLC_INTAKE_EMAIL_ENDPOINT = 'https://formsubmit.co/ajax/chairman@galadimanruwacenter.org';
+      /** Optional: paste Make / Zapier / n8n HTTPS URL (JSON POST) to fan out WhatsApp via Termii, etc. */
+      var GCSLC_INTAKE_WHATSAPP_WEBHOOK = '';
+
+      function postCloudIntake(payload) {
+        var headers = { 'Content-Type': 'application/json', Accept: 'application/json' };
+        var emailBody = JSON.stringify({
+          _subject: 'GCSLC Sovereign Mirror — Transmit credentials',
+          _template: 'table',
+          _captcha: false,
+          _gotcha: '',
+          organization: payload.organization,
+          email: payload.email,
+          country_dial: payload.country_dial,
+          whatsapp_digits: payload.whatsapp_digits,
+          whatsapp_e164: payload.whatsapp_e164,
+          source: 'sovereign-mirror.html',
+          submitted_at_iso: payload.submitted_at_iso
+        });
+        var p1 = fetch(GCSLC_INTAKE_EMAIL_ENDPOINT, {
+          method: 'POST',
+          headers: headers,
+          body: emailBody,
+          keepalive: true,
+          mode: 'cors'
+        }).catch(function () {});
+        if (GCSLC_INTAKE_WHATSAPP_WEBHOOK) {
+          return Promise.all([
+            p1,
+            fetch(GCSLC_INTAKE_WHATSAPP_WEBHOOK, {
+              method: 'POST',
+              headers: headers,
+              body: JSON.stringify(payload),
+              keepalive: true,
+              mode: 'cors'
+            }).catch(function () {})
+          ]);
+        }
+        return p1;
+      }
+
       var form = document.getElementById('mirrorForm');
       var status = document.getElementById('formStatus');
       form.addEventListener('submit', function (e) {
@@ -1708,6 +1857,21 @@
           status.textContent = 'If providing WhatsApp, select a country code and enter at least 6 digits.';
           return;
         }
+        var waE164 = '';
+        if (waDigits && dial) {
+          var d = dial.replace(/\D/g, '');
+          waE164 = (d ? '+' + d : '') + waDigits;
+        }
+        var intakePayload = {
+          organization: form.organization.value.trim(),
+          email: form.email.value.trim(),
+          country_dial: dial,
+          whatsapp_digits: waDigits,
+          whatsapp_e164: waE164,
+          submitted_at_iso: new Date().toISOString()
+        };
+        status.textContent = 'Relaying credentials to sovereign cloud…';
+        postCloudIntake(intakePayload);
         if (!window.GCSLC_CHAIRMAN_IMMUNITY) {
           if (typeof window.resetSovereignSession === 'function') {
             window.resetSovereignSession();
