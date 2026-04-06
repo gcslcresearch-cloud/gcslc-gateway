@@ -5,9 +5,15 @@
 (function (global) {
   'use strict';
 
+  var KEY_VISITOR_BRIDGE = 'gcslc_sovereign_bridge_v1';
+  var KEY_CHAIRMAN_GATE = 'gcslc_gate_chairman_v1';
+
   function isChairmanMode() {
     try {
-      return new URLSearchParams(global.location.search || '').get('mode') === 'chairman';
+      if (new URLSearchParams(global.location.search || '').get('mode') === 'chairman') {
+        return true;
+      }
+      return localStorage.getItem(KEY_CHAIRMAN_GATE) === '1';
     } catch (e) {
       return false;
     }
@@ -62,9 +68,13 @@
     lock: function () {},
     armFreshThirtyMinuteSession: armFreshThirtyMinuteSession,
     visitorLogout: function () {
+      try {
+        localStorage.removeItem(KEY_VISITOR_BRIDGE);
+        localStorage.removeItem(KEY_CHAIRMAN_GATE);
+      } catch (e) {}
       resetSovereignSession();
       unlockUi();
-      global.location.reload();
+      global.location.href = 'sovereign-mirror.html';
     },
     unlockUi: unlockUi,
     isChairmanMode: function () {

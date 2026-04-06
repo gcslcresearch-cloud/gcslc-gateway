@@ -1382,6 +1382,22 @@
         -webkit-background-clip: border-box;
         background-clip: border-box;
       }
+      html.mirror-8r-handoff .sovereign-app-layer {
+        animation: none !important;
+        opacity: 1;
+        filter: none;
+        transform: none;
+      }
+    }
+
+    /* Bridge handoff — digital unveiling of the 8R paradigm into the internal dashboard */
+    @keyframes mirror-8r-paradigm-out {
+      0% { opacity: 1; filter: blur(0) brightness(1); transform: scale(1); }
+      38% { opacity: 1; filter: blur(0) brightness(1.1); transform: scale(1.012); }
+      100% { opacity: 0; filter: blur(18px) brightness(1.58); transform: scale(1.075); }
+    }
+    html.mirror-8r-handoff .sovereign-app-layer {
+      animation: mirror-8r-paradigm-out 0.95s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
     }
   </style>
 </head>
@@ -1465,7 +1481,7 @@
                 <input type="tel" class="wa-phone" id="whatsapp" name="whatsapp" placeholder="Phone number (digits)" maxlength="24">
               </div>
             </div>
-            <button type="submit" class="btn-submit">Transmit credentials</button>
+            <button type="submit" class="btn-submit" title="After validation, opens the internal dashboard at app.html (hub: sovereign-gateway.html)">Transmit credentials</button>
             <div class="form-sovereign-footer">
               <p class="session-bar session-bar--form" role="status">
                 <span class="session-bar-tiers">Access Tier 1 (15m) | Extension Tier 2 (15m)</span>
@@ -1541,6 +1557,48 @@
   </div>
 
   <script src="assets/sovereign-tier-session.js"></script>
+  <script>
+    (function () {
+      var KEY_V = 'gcslc_sovereign_bridge_v1';
+      var KEY_C = 'gcslc_gate_chairman_v1';
+      var DASH = 'app.html';
+      function bridgeKind() {
+        try {
+          if (new URLSearchParams(location.search).get('mode') === 'chairman') return 'chairman';
+          if (localStorage.getItem(KEY_C) === '1') return 'chairman';
+          if (localStorage.getItem(KEY_V) === '1') return 'visitor';
+        } catch (e) {}
+        return null;
+      }
+      function handoffToDashboard(kind) {
+        try {
+          sessionStorage.setItem('gcslc_just_bridged', '1');
+        } catch (e) {}
+        document.documentElement.classList.add('mirror-8r-handoff');
+        var url = DASH + (kind === 'chairman' ? '?mode=chairman' : '');
+        setTimeout(function () {
+          window.location.href = url;
+        }, 920);
+      }
+      var kind = bridgeKind();
+      if (kind) {
+        function runFastlane() {
+          if (kind === 'chairman') {
+            try {
+              localStorage.setItem(KEY_C, '1');
+            } catch (e) {}
+          }
+          handoffToDashboard(kind);
+        }
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', runFastlane);
+        } else {
+          runFastlane();
+        }
+      }
+      window.GCSLC_MIRROR_HANDOFF = { handoffToDashboard: handoffToDashboard, KEY_V: KEY_V, KEY_C: KEY_C, DASH: DASH };
+    })();
+  </script>
   <script>
     (function () {
       var lo = document.getElementById('sovereignLogoutBtn');
@@ -1658,12 +1716,23 @@
             window.GCSLC_SOVEREIGN_SESSION.armFreshThirtyMinuteSession();
           }
         }
+        try {
+          localStorage.setItem('gcslc_sovereign_bridge_v1', '1');
+        } catch (e) {}
         status.textContent = '';
-        stage.classList.add('mirror-exit');
-        setTimeout(function () {
-          status.textContent = 'Transmission queued — executive desk will confirm.';
-          stage.classList.remove('mirror-exit');
-        }, 1400);
+        if (window.GCSLC_MIRROR_HANDOFF && typeof window.GCSLC_MIRROR_HANDOFF.handoffToDashboard === 'function') {
+          window.GCSLC_MIRROR_HANDOFF.handoffToDashboard(
+            window.GCSLC_CHAIRMAN_IMMUNITY ? 'chairman' : 'visitor'
+          );
+        } else {
+          try {
+            sessionStorage.setItem('gcslc_just_bridged', '1');
+          } catch (e2) {}
+          document.documentElement.classList.add('mirror-8r-handoff');
+          setTimeout(function () {
+            window.location.href = 'app.html' + (window.GCSLC_CHAIRMAN_IMMUNITY ? '?mode=chairman' : '');
+          }, 920);
+        }
       });
     })();
 
