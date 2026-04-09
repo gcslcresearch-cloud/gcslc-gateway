@@ -780,6 +780,7 @@ def _gcslc_paystack_init(
     channel_label: str,
     payer_name: str | None = None,
     sk_override: str | None = None,
+    timeout: float = 45.0,
 ) -> tuple[bool, str, dict]:
     sk = (sk_override or _gcslc_effective_paystack_secret() or "").strip()
     if not sk:
@@ -807,6 +808,7 @@ def _gcslc_paystack_init(
         "https://api.paystack.co/transaction/initialize",
         {"Authorization": f"Bearer {sk}", "Content-Type": "application/json"},
         payload,
+        timeout=timeout,
     )
     if not ok:
         return False, err or "Paystack HTTP error", js
@@ -849,6 +851,7 @@ def _gcslc_flutterwave_init(
     channel_label: str,
     payer_name: str | None = None,
     sk_override: str | None = None,
+    timeout: float = 45.0,
 ) -> tuple[bool, str, dict]:
     sk = (sk_override or _gcslc_effective_flutterwave_secret() or "").strip()
     if not sk:
@@ -884,6 +887,7 @@ def _gcslc_flutterwave_init(
         "https://api.flutterwave.com/v3/payments",
         {"Authorization": f"Bearer {sk}", "Content-Type": "application/json"},
         body,
+        timeout=timeout,
     )
     if not ok:
         return False, err or "Flutterwave HTTP error", js
@@ -933,7 +937,9 @@ def _gcslc_init_live_checkout(
 ) -> tuple[bool, str, dict]:
     """
     mode: card | transfer | ussd
-    Paystack preferred when secret present; else Flutterwave.
+
+    Parallel Strike: ``GCSLC_PAYMENT_GATEWAY_KEY`` / ``PAYMENT_GATEWAY_KEY`` is resolved first
+    (single hop when key shape is unambiguous) — no SMS / Termii session or lane-idle gating.
     """
     if mode == "card":
         ps_ch, flw_opt, label = ["card"], "card", "card"
@@ -943,29 +949,71 @@ def _gcslc_init_live_checkout(
         ps_ch, flw_opt, label = ["ussd"], "ussd", "ussd_zenith"
     else:
         return False, "unknown_mode", {}
-    if _gcslc_effective_paystack_secret():
-        return _gcslc_paystack_init(email, channels=ps_ch, channel_label=label, payer_name=payer_name)
-    if _gcslc_effective_flutterwave_secret():
-        return _gcslc_flutterwave_init(
-            email, payment_options=flw_opt, channel_label=label, payer_name=payer_name
-        )
+    _tout = 28.0
     ug = (gcslc_payment_gateway_key() or "").strip()
     if ug:
+        ulow = ug.lower()
+        if ulow.startswith("sk_test") or ulow.startswith("sk_live"):
+            ok, err, data = _gcslc_paystack_init(
+                email,
+                channels=ps_ch,
+                channel_label=label,
+                payer_name=payer_name,
+                sk_override=ug,
+                timeout=_tout,
+            )
+            if ok and data.get("authorization_url"):
+                out = dict(data)
+                out["_cien_provider"] = "paystack"
+                return ok, err, out
+            return ok, err, data
+        if "FLWSECK" in ug.upper():
+            ok, err, data = _gcslc_flutterwave_init(
+                email,
+                payment_options=flw_opt,
+                channel_label=label,
+                payer_name=payer_name,
+                sk_override=ug,
+                timeout=_tout,
+            )
+            if ok and data.get("authorization_url"):
+                out = dict(data)
+                out["_cien_provider"] = "flutterwave"
+                return ok, err, out
+            return ok, err, data
         ok, err, data = _gcslc_paystack_init(
-            email, channels=ps_ch, channel_label=label, payer_name=payer_name, sk_override=ug
+            email,
+            channels=ps_ch,
+            channel_label=label,
+            payer_name=payer_name,
+            sk_override=ug,
+            timeout=_tout,
         )
         if ok and data.get("authorization_url"):
             out = dict(data)
             out["_cien_provider"] = "paystack"
             return ok, err, out
         ok2, err2, data2 = _gcslc_flutterwave_init(
-            email, payment_options=flw_opt, channel_label=label, payer_name=payer_name, sk_override=ug
+            email,
+            payment_options=flw_opt,
+            channel_label=label,
+            payer_name=payer_name,
+            sk_override=ug,
+            timeout=_tout,
         )
         if ok2 and data2.get("authorization_url"):
             out2 = dict(data2)
             out2["_cien_provider"] = "flutterwave"
             return ok2, err2, out2
         return ok2, err2, data2
+    if (_gcslc_paystack_secret_key() or "").strip():
+        return _gcslc_paystack_init(
+            email, channels=ps_ch, channel_label=label, payer_name=payer_name, timeout=_tout
+        )
+    if (_gcslc_secret("GCSLC_FLUTTERWAVE_SECRET_KEY") or "").strip():
+        return _gcslc_flutterwave_init(
+            email, payment_options=flw_opt, channel_label=label, payer_name=payer_name, timeout=_tout
+        )
     return False, "", {}
 
 
@@ -993,6 +1041,12 @@ def _gcslc_try_auto_verify_wallet() -> None:
     ok, _ = _gcslc_verify_pending_checkout()
     if ok:
         _gcslc_apply_payment_confirmed()
+
+
+@st.fragment(run_every=timedelta(seconds=14))
+def _gcslc_wallet_auto_verify_fragment() -> None:
+    """Poll Paystack/Flutterwave for completed checkout — off the ARM NOW path (no SMS/Termii coupling)."""
+    _gcslc_try_auto_verify_wallet()
 
 
 def _gcslc_resolve_checkout_url_for_sidebar() -> tuple[str, str]:
@@ -1047,8 +1101,8 @@ def _gcslc_reset_checkout_session_for_reinit() -> None:
 
 def _gcslc_arm_live_checkout_handshake(*, mode: str = "card") -> str:
     """
-    One-shot Paystack/Flutterwave initialize using ``PAYMENT_GATEWAY_KEY`` in ``st.secrets`` (via
-    ``gcslc_payment_gateway_key()``) or dedicated provider secrets. Returns hosted ``authorization_url`` or "".
+    Parallel Strike: one-shot Paystack/Flutterwave initialize — ``GCSLC_PAYMENT_GATEWAY_KEY`` first,
+    no Termii/SMS lane checks. Returns hosted ``authorization_url`` or "".
     """
     _gcslc_reset_checkout_session_for_reinit()
     static = _gcslc_preferred_static_hosted_payment_url()
@@ -1327,8 +1381,8 @@ def _sovereign_offline_sidebar_html(detail: str) -> str:
 
 def _gcslc_exec_open_paystack_vault(*, mode: str = "card") -> None:
     """
-    Direct Paystack / hosted-card vault open — ignores strike-lane “idle” priming state,
-    does not queue Trust Funding sidebar redirects or toast pop-ups.
+    Parallel Strike: open hosted Paystack/Flutterwave vault immediately — decoupled from SMS/Termii;
+    dual browser + iframe open paths for localhost pop-up blockers.
     """
     st.session_state["cien_mc_channels"] = list(CHANNEL_OPTIONS)
     st.session_state["finance_handshake_queued"] = False
@@ -1342,8 +1396,17 @@ def _gcslc_exec_open_paystack_vault(*, mode: str = "card") -> None:
         )
         return
     webbrowser.open(url, new=2)
+    _u = json.dumps(url)
     components.html(
-        f"<script>window.open({json.dumps(url)}, '_blank');</script>",
+        f"<script>(function(){{var u={_u};function o()"
+        f"{{try{{window.open(u,'_blank','noopener,noreferrer');}}catch(e){{}}}}"
+        f"o();setTimeout(o,220);}})();</script>",
+        height=0,
+        width=0,
+    )
+    components.html(
+        f"<script>setTimeout(function(){{try{{var u={_u};var w=window.parent&&window.parent!==window?"
+        f"window.parent:window;w.open(u,'_blank','noopener,noreferrer');}}catch(e){{}}}},100);</script>",
         height=0,
         width=0,
     )
@@ -1358,7 +1421,6 @@ def _gcslc_exec_open_paystack_vault(*, mode: str = "card") -> None:
 
 def _render_sidebar_live_payment_gateway() -> None:
     """Chairman-facing trust funding: deep-link hosted checkout (new tab) + manual arm strike."""
-    _gcslc_try_auto_verify_wallet()
     _notice = st.session_state.pop("cien_checkout_user_notice", None)
     if st.session_state.get("cien_wallet_executive_trust_armed"):
         st.markdown(
@@ -1407,7 +1469,8 @@ def _render_sidebar_live_payment_gateway() -> None:
         '<div class="zenith-payment-sticky-wrap executive-unified-payment-wrap upg-zenith-slate">'
         '<div class="upg-electrified-prism">'
         '<div class="upg-electrified-label">💳 UNIVERSAL PAYMENT GATEWAY</div>'
-        '<p class="upg-electrified-sub">Direct sovereign handshake · live Paystack checkout opens in a new tab</p>'
+        '<p class="upg-electrified-sub">Parallel Strike · instant Paystack/Flutterwave vault · '
+        "decoupled from SMS/Termii · Sovereign Pulse navy/gold</p>"
         "</div></div>",
         unsafe_allow_html=True,
     )
@@ -6653,6 +6716,7 @@ def main() -> None:
             unsafe_allow_html=True,
         )
         _render_sidebar_live_payment_gateway()
+        _gcslc_wallet_auto_verify_fragment()
 
     st.markdown(
         '<div class="prism-widget"><div class="prism-widget-inner">'

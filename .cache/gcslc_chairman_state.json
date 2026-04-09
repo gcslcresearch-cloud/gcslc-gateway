@@ -23,11 +23,12 @@
       "06:00 WAT Push Authority",
       "Urban-Core Strike Coordinator"
     ],
-    "locked_mono": 3728.55120756
+    "locked_mono": 13513.639881907
   },
   "cien_wat_immediate_bypass": true,
   "cien_wallet_executive_trust_armed": true,
   "finance_handshake_queued": false,
+  "cien_sovereign_roller_pct": 72,
   "cien_mc_channels": [
     "\ud83d\udcf1 SMS/WA (The Private Strike)",
     "\ud83c\udfa5 Grassroots (TikTok/FB/IG)",

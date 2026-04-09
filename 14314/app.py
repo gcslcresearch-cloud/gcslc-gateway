@@ -804,6 +804,19 @@ _SUNSET_SCALE = [[0, "#1A0033"], [0.5, "#B87333"], [1.0, "#FFD700"]]
 _LGA_MARKER_INNER = 8 * 1.15
 _LGA_MARKER_OUTLINE = 10 * 1.15
 
+# SSMI-NAVY-GOLD-HEAT-140 — North-East/North-West priority corridor anchors.
+PRIORITY_CORRIDOR_POINTS = [
+    {"label": "Bauchi · Azare — Spiritual Sovereignty Node", "lat": 11.6765, "lon": 10.1913},
+    {"label": "Borno · Maiduguri — Buhari Legacy Anchor", "lat": 11.8469, "lon": 13.1603},
+    {"label": "Katsina · Daura — MBU Honor Ripple Effect", "lat": 13.0316, "lon": 8.3235},
+]
+
+SOVEREIGN_NODES = [
+    {"node": "MBU (Azare) — Spiritual Sovereignty Node", "state": "Bauchi", "lat": 11.6765, "lon": 10.1913},
+    {"node": "Sheikh Dahiru Bauchi University", "state": "Bauchi", "lat": 10.3158, "lon": 9.8442},
+    {"node": "University of Maiduguri", "state": "Borno", "lat": 11.8053, "lon": 13.1422},
+    {"node": "Umaru Musa Yar'adua University", "state": "Katsina", "lat": 12.9908, "lon": 7.6018},
+]
 
 def build_k3_nw_triangle_trace() -> go.Scattermapbox:
     """North West Villa — K3 Geopolitical Corridor triangle (Katsina · Kano · Kaduna)."""
@@ -1477,6 +1490,8 @@ st.markdown(
       animation: rhgiSwingWarningFlash 1.15s ease-in-out infinite;
     }
     .rhgi-swing-title {
+      white-space: normal;
+      line-height: 1.35;
       margin: 0 0 8px 0;
       color: #ffffff;
       font-weight: 900;
@@ -1797,11 +1812,16 @@ st.markdown(
       overflow: hidden;
       white-space: nowrap;
       position: relative;
+      max-width: 100%;
+      border-radius: 8px;
+      background: rgba(0,0,128,0.28);
+      padding: 3px 0;
+      contain: paint;
     }
     .rhgi-sovereign-marquee-track {
       display: inline-flex;
       min-width: max-content;
-      animation: rhgiSovereignMarquee 30s linear infinite;
+      animation: rhgiSovereignMarquee 75s linear infinite;
       will-change: transform;
     }
     .rhgi-sovereign-marquee-seg {
@@ -1810,6 +1830,19 @@ st.markdown(
       color: #ffffff;
       font-weight: 800;
       letter-spacing: 0.01em;
+    }
+    .rhgi-sovereign-anchor-pin {
+      display: inline-block;
+      margin: 0 0 6px 0;
+      padding: 2px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(212,175,55,0.65);
+      color: #D4AF37;
+      background: rgba(0,0,128,0.65);
+      font-size: 0.74rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-shadow: 0 0 8px rgba(212,175,55,0.35);
     }
     .rhgi-corridor-foundation-shell {
       margin: 6px 0 10px 0;
@@ -3722,6 +3755,7 @@ _sovereign_ticker_segments = [
 ]
 _sovereign_ticker_text = "  ✦  ".join(_sovereign_ticker_segments)
 _sovereign_ticker_html = (
+    "<div class='rhgi-sovereign-anchor-pin'>SOVEREIGN TICKER ANCHOR</div>"
     "<div class='rhgi-sovereign-marquee-wrap'>"
     "<div class='rhgi-sovereign-marquee-track'>"
     f"<span class='rhgi-sovereign-marquee-seg'>{html.escape(_sovereign_ticker_text)}</span>"
@@ -3729,6 +3763,87 @@ _sovereign_ticker_html = (
     "</div>"
     "</div>"
 )
+
+_heritage_slider_html = """
+<style>
+  #rhgi-heritage-honor-wrap {
+    width: min(980px, 96%);
+    margin: 2px auto 12px auto;
+    display: flex;
+    justify-content: center;
+  }
+  #rhgi-heritage-honor {
+    width: 100%;
+    border-radius: 14px;
+    padding: 1px;
+    background: linear-gradient(108deg, #D4AF37 0%, #F8E7A3 24%, #D4AF37 50%, #FFF4BE 74%, #D4AF37 100%);
+    background-size: 220% 100%;
+    animation: rhgiHeritageGoldShimmer 8s linear infinite;
+    box-shadow: 0 0 20px rgba(212,175,55,0.5);
+  }
+  #rhgi-heritage-honor-inner {
+    border-radius: 13px;
+    padding: 12px 18px;
+    background: rgba(0,0,128,0.96);
+    border: 1px solid rgba(212,175,55,0.45);
+    text-align: center;
+  }
+  #rhgi-heritage-honor-title {
+    font-size: 0.74rem;
+    letter-spacing: 0.13em;
+    font-weight: 900;
+    color: #D4AF37;
+    margin-bottom: 6px;
+  }
+  #rhgi-heritage-honor-line {
+    color: #D4AF37;
+    font-family: 'Palace Script MT','Brush Script MT','Lucida Handwriting','Apple Chancery',cursive;
+    font-size: clamp(1.25rem, 2.7vw, 1.7rem);
+    font-weight: 700;
+    line-height: 1.25;
+    opacity: 1;
+    transition: opacity 1.8s ease-in-out;
+    will-change: opacity;
+    text-shadow: 0 0 8px rgba(212,175,55,0.45);
+  }
+  @keyframes rhgiHeritageGoldShimmer {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 220% 50%; }
+  }
+</style>
+<div id="rhgi-heritage-honor-wrap" aria-label="Heritage Honor slider">
+  <div id="rhgi-heritage-honor">
+    <div id="rhgi-heritage-honor-inner">
+      <div id="rhgi-heritage-honor-title">HERITAGE HONOR</div>
+      <div id="rhgi-heritage-honor-line">MBU Maiduguri</div>
+    </div>
+  </div>
+</div>
+<script>
+(() => {
+  const el = document.getElementById('rhgi-heritage-honor-line');
+  if (!el) return;
+  const slides = [
+    'MBU Maiduguri',
+    'Sheikh Dahiru Bauchi University'
+  ];
+  let idx = Number(window.__rhgiHeritageHonorIdx || 0) % slides.length;
+  el.textContent = slides[idx];
+  if (window.__rhgiHeritageHonorTimer) clearInterval(window.__rhgiHeritageHonorTimer);
+  window.__rhgiHeritageHonorTimer = setInterval(() => {
+    el.style.opacity = '0';
+    const next = (idx + 1) % slides.length;
+    window.setTimeout(() => {
+      idx = next;
+      window.__rhgiHeritageHonorIdx = idx;
+      el.textContent = slides[idx];
+      el.style.opacity = '1';
+    }, 900);
+  }, 12000);
+})();
+</script>
+"""
+st.markdown(_heritage_slider_html, unsafe_allow_html=True)
 
 st.markdown(
     f"""
@@ -4281,8 +4396,8 @@ with tab_global:
         _fig_center = {"lat": float(_mv["lat"]), "lon": float(_mv["lon"])}
         _fig_zoom = float(_mv.get("zoom", 10.2))
     else:
-        _fig_center = {"lat": 9.082, "lon": 8.6753}
-        _fig_zoom = 4.9
+        _fig_center = {"lat": 12.15, "lon": 10.55}
+        _fig_zoom = 5.8
     fig_lga = build_lga_winning_margin_figure(
         lga_map_df,
         zoom=_fig_zoom,
@@ -4321,6 +4436,37 @@ with tab_global:
                 customdata=_stability_heat_df[["crime_drop_pct"]].values,
             )
         )
+
+    _priority_df = pd.DataFrame(PRIORITY_CORRIDOR_POINTS)
+    fig_lga.add_trace(
+        go.Scattermapbox(
+            lat=_priority_df["lat"],
+            lon=_priority_df["lon"],
+            mode="lines+markers",
+            line=dict(color="#D4AF37", width=4),
+            marker=dict(size=11, color="#D4AF37"),
+            name="S24 Priority Corridor",
+            hovertemplate="%{customdata[0]}<extra></extra>",
+            customdata=_priority_df[["label"]].values,
+        )
+    )
+
+    _nodes_df = pd.DataFrame(SOVEREIGN_NODES)
+    fig_lga.add_trace(
+        go.Scattermapbox(
+            lat=_nodes_df["lat"],
+            lon=_nodes_df["lon"],
+            mode="markers+text",
+            text=["Sovereign Node", "Sovereign Node", "Buhari Legacy Anchor", "Daura Ripple Anchor"],
+            textposition="top center",
+            textfont=dict(color="#D4AF37", size=11),
+            marker=dict(size=14, color="#D4AF37", symbol="star"),
+            name="Universities · Sovereign Nodes",
+            hovertemplate="%{customdata[0]}<br>%{customdata[1]}<extra></extra>",
+            customdata=_nodes_df[["node", "state"]].values,
+        )
+    )
+
     st.plotly_chart(fig_lga, use_container_width=True)
     if st.session_state.get("map_view"):
         if st.button("Reset map to national (carto‑positron) view", key="reset_map_national_btn"):

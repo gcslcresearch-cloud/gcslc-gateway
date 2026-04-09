@@ -109,7 +109,7 @@ if not st.session_state.sovereign_authenticated:
             st.session_state.play_eagle_on_login = True
             st.rerun()
         else:
-            st.error("Invalid Sovereign Key. Access denied.")
+            pass
     st.markdown("---")
     st.caption("Galadiman Ruwa Center (GCSLC) LTD/GTE · Authorized personnel only.")
     st.stop()
