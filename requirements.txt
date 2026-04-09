@@ -1,7 +1,7 @@
 # CIEN Kaduna 2027 / GCSLC Sovereign Gateway — Hugging Face Spaces & Streamlit Cloud
 # Install: pip install -r requirements.txt
 
-streamlit>=1.28.0
+streamlit>=1.33.0
 requests>=2.31.0
 pandas>=2.0.0
 plotly>=5.18.0

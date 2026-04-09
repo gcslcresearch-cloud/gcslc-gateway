@@ -1009,6 +1009,12 @@ st.markdown(
       --sec-glow-alpha: 0.26;
       /* SSMI-109 — slow-motion prism ring (DG hub + 8R) */
       --prism-border-rotate: 32s;
+      /* VIDEO 1 BENCHMARK LOCK — SSMI-NATIONAL-STABILITY-158 */
+      --v1-sovereign-marquee: 75s;
+      --v1-heritage-refinery-marquee: 24s;
+      --v1-ticker-scroll: 30s;
+      --v1-lga-slow-roll: 140s;
+      --v1-wm-bubble-drift: 110s;
     }
     /* SSMI-103 — silver + white border sweep (1.5s cycle) */
     @keyframes rhgiMetalShimmer {
@@ -1873,7 +1879,7 @@ st.markdown(
     .rhgi-sovereign-marquee-track {
       display: inline-flex;
       min-width: max-content;
-      animation: rhgiSovereignMarquee 75s linear infinite;
+      animation: rhgiSovereignMarquee var(--v1-sovereign-marquee) linear infinite;
       will-change: transform;
     }
     .rhgi-sovereign-marquee-seg {
@@ -2065,7 +2071,7 @@ st.markdown(
       position: absolute; width: 260%; height: 260%; left: -80%; top: -80%;
       display: flex; flex-wrap: wrap; align-content: flex-start; gap: 2.2rem 3.2rem;
       transform: rotate(-14deg);
-      animation: wmBubbleDrift 110s ease-in-out infinite;
+      animation: wmBubbleDrift var(--v1-wm-bubble-drift) ease-in-out infinite;
     }
     .rhgi-wm-cell {
       font-size: clamp(2rem, 6.5vw, 3.4rem);
@@ -2364,7 +2370,7 @@ st.markdown(
     .rhgi-lga-marquee {
       display: flex;
       flex-direction: column;
-      animation: rhgiSlowRoll 140s linear infinite;
+      animation: rhgiSlowRoll var(--v1-lga-slow-roll) linear infinite;
     }
     .rhgi-lga-marquee:hover { animation-play-state: paused; }
     @keyframes rhgiSlowRoll {
@@ -2437,7 +2443,7 @@ st.markdown(
       display: inline-block;
       white-space: nowrap;
       padding: 10px 0;
-      animation: tickerScroll 30s linear infinite;
+      animation: tickerScroll var(--v1-ticker-scroll) linear infinite;
       color: var(--metallic-gold);
       font-weight: 600;
       letter-spacing: 0.04em;
@@ -3916,7 +3922,7 @@ _heritage_slider_html = """
   #rhgi-heritage-refinery-track {
     display: inline-flex;
     min-width: max-content;
-    animation: rhgiHeritageRefineryMarquee 24s linear infinite;
+    animation: rhgiHeritageRefineryMarquee var(--v1-heritage-refinery-marquee) linear infinite;
   }
   .rhgi-heritage-refinery-seg {
     color: #00FFFF;
