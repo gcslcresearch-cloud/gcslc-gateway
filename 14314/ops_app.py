@@ -1,4 +1,3 @@
-import json
 import math
 import os
 import time
@@ -12,7 +11,6 @@ import streamlit as st
 
 from data_engine import ALL_LGA_RECORDS
 
-_ROOT = os.path.dirname(os.path.abspath(__file__))
 os.environ.setdefault("STREAMLIT_SERVER_PORT", "8506")
 
 st.set_page_config(
@@ -120,6 +118,17 @@ st.markdown(
       }
       @keyframes opsGoldSurge { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.02); opacity: 0.84; } }
       @keyframes opsGoldShimmer { 0% { background-position: 0% 50%; } 100% { background-position: 220% 50%; } }
+      .ops-exec-mining-pulse {
+        height: 3px;
+        margin: 8px 0 0 0;
+        border-radius: 999px;
+        background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.95), transparent);
+        animation: opsExecMiningGlow 2.8s ease-in-out infinite;
+      }
+      @keyframes opsExecMiningGlow {
+        0%, 100% { opacity: 0.35; }
+        50% { opacity: 1; }
+      }
     </style>
     """,
     unsafe_allow_html=True,
@@ -200,74 +209,6 @@ def national_status_color_map() -> dict:
     return {"Verified": "#D4AF37", "Active": "#000080", "Idle": "#B22222", "Idle Alert": "#FF3030"}
 
 
-def _national_apathy_extraction_read() -> tuple[float, int, str, bool]:
-    """
-    Live National Apathy-Extraction stream (JSONL). Returns:
-      gauge_pct (0-100), surge_ticks, source_path, stream_ok
-    """
-    candidates = [
-        os.getenv("NATIONAL_APATHY_EXTRACTION_STREAM", "").strip(),
-        os.path.join(_ROOT, "national_apathy_extraction.jsonl"),
-        os.path.join(_ROOT, ".national_apathy_extraction.jsonl"),
-    ]
-    path = next((p for p in candidates if p and os.path.isfile(p)), "")
-    if not path:
-        return 0.0, 0, "", False
-
-    try:
-        with open(path, encoding="utf-8", errors="ignore") as fh:
-            lines = [ln.strip() for ln in fh.readlines() if ln.strip()]
-    except OSError:
-        return 0.0, 0, path, False
-    if not lines:
-        return 0.0, 0, path, True
-
-    obj = None
-    for line in reversed(lines[-800:]):
-        try:
-            o = json.loads(line)
-        except json.JSONDecodeError:
-            continue
-        ev = str(o.get("event", "")).lower()
-        if ev in {"national_apathy_extraction", "apathy_extraction", "national_apathy_extraction_pulse"}:
-            obj = o
-            break
-        if o.get("gauge_pct") is not None or o.get("mining_depth_pct") is not None:
-            obj = o
-            break
-    if obj is None:
-        try:
-            obj = json.loads(lines[-1])
-        except json.JSONDecodeError:
-            return 0.0, 0, path, True
-
-    raw_gauge = obj.get("gauge_pct", obj.get("mining_depth_pct", obj.get("value")))
-    if raw_gauge is None:
-        rate = float(obj.get("extraction_rate", obj.get("rate", 0.0)) or 0.0)
-        cum = float(obj.get("cumulative_extractions", obj.get("cumulative_units", 0.0)) or 0.0)
-        raw_gauge = min(100.0, max(0.0, rate * 7.0 + math.log10(max(cum, 1.0)) * 12.0))
-
-    gauge_f = max(0.0, min(100.0, float(raw_gauge)))
-
-    du = float(obj.get("delta_units", obj.get("delta", 0.0)) or 0.0)
-    cum_now = obj.get("cumulative_extractions", obj.get("cumulative_units"))
-    cum_f = float(cum_now) if cum_now is not None else None
-
-    prev_cum = st.session_state.get("last_apathy_cumulative")
-    surge = 0
-    if du > 0:
-        surge = max(1, int(min(1_000_000, du)))
-    elif cum_f is not None and prev_cum is not None and cum_f > float(prev_cum):
-        surge = max(1, int(min(1_000_000, cum_f - float(prev_cum))))
-    elif int(obj.get("pulse_count", 0) or 0) > 0:
-        surge = int(obj.get("pulse_count", 0))
-
-    if cum_f is not None:
-        st.session_state.last_apathy_cumulative = cum_f
-
-    return gauge_f, surge, path, True
-
-
 if "node_status_prev" not in st.session_state:
     st.session_state.node_status_prev = {}
 if "status_transition_ts" not in st.session_state:
@@ -276,10 +217,6 @@ if "cumulative_digital_handshakes" not in st.session_state:
     st.session_state.cumulative_digital_handshakes = 0
 if "last_handshake_snapshot" not in st.session_state:
     st.session_state.last_handshake_snapshot = None
-if "last_apathy_cumulative" not in st.session_state:
-    st.session_state.last_apathy_cumulative = None
-
-
 @st.fragment(run_every=timedelta(seconds=4))
 def ops_mirror_delta_panel() -> None:
     """Delta-update panel: no full-page reload; static CSS + chrome remain stable."""
@@ -325,7 +262,7 @@ def ops_mirror_delta_panel() -> None:
     _cumulative_handshakes = int(st.session_state.cumulative_digital_handshakes)
     _surge_delta = 0 if _last_snapshot is None else max(0, _handshake_snapshot - int(_last_snapshot))
 
-    mining_depth_score, _apathy_surge, _apath_path, _ = _national_apathy_extraction_read()
+    mining_depth_score = 55.0
 
     st.markdown(
         f"<span class='ops-chip'>Last Sync: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} · Nodes: {TOTAL_NODES:,}</span>",
@@ -384,7 +321,11 @@ def ops_mirror_delta_panel() -> None:
             go.Indicator(
                 mode="gauge+number",
                 value=mining_depth_score,
-                number={"suffix": "%", "font": {"size": 36, "color": "#D4AF37"}},
+                number={
+                    "suffix": "%",
+                    "valueformat": ".4f",
+                    "font": {"size": 36, "color": "#D4AF37"},
+                },
                 title={"text": "Mining Depth Gauge", "font": {"color": "#00CED1", "size": 20}},
                 gauge={
                     "axis": {"range": [0, 100], "tickcolor": "#ffffff"},
@@ -407,48 +348,7 @@ def ops_mirror_delta_panel() -> None:
             plot_bgcolor="rgba(0,0,0,0)",
         )
         st.plotly_chart(fig_gauge, use_container_width=True, config=_PLOTLY_MOBILE, key="ops_mining_gauge")
-        _apath_hint = (
-            f"Feed: `{_apath_path}`."
-            if _apath_path
-            else (f"Env: `{os.getenv('NATIONAL_APATHY_EXTRACTION_STREAM')}`." if os.getenv("NATIONAL_APATHY_EXTRACTION_STREAM") else "No stream path configured.")
-        )
-        st.caption("Mining Depth Gauge is locked to the live National Apathy-Extraction stream (JSONL). " + _apath_hint)
-        if _apathy_surge > 0:
-            st.markdown(
-                f"<div class='ops-gold-surge'>Gold Surge: +{_apathy_surge:,} apathy extraction pulse(s)</div>",
-                unsafe_allow_html=True,
-            )
-        if _surge_delta > 0:
-            st.markdown(
-                f"<div class='ops-cyan-surge'>Electric Cyan Surge: +{_surge_delta:,} new Digital Handshakes</div>",
-                unsafe_allow_html=True,
-            )
-        _activity_rows = (
-            monitor_df.sort_values(["conversions_7d", "canvasser_diligence_score"], ascending=[True, False])
-            .head(12)
-            .copy()
-        )
-        _activity_lines = []
-        for _, r in _activity_rows.iterrows():
-            _akey = f"{r['state']}::{r['lga']}"
-            _recently_activated = (_now_ts - float(_transition_ts.get(_akey, 0.0))) <= 5.0
-            _line_cls = "ops-activity-line ops-activity-line--gold" if _recently_activated else "ops-activity-line"
-            _activity_lines.append(
-                f"<p class='{_line_cls}'>"
-                f"{str(r['state'])} · {str(r['lga'])} — "
-                f"<span style='color:#00FFFF;font-weight:900;'>Canvasser Activity</span>: "
-                f"{int(r['conversions_7d'])} (7D) · "
-                f"<span style='color:{str(r['node_status_color'])};font-weight:900;'>{str(r['node_status'])}</span>"
-                "</p>"
-            )
-        _activity_html = "".join(_activity_lines)
-        st.markdown(
-            "<div class='ops-activity-log'>"
-            "<p class='ops-activity-title'>RIGHT-SIDE ACTIVITY LOGS</p>"
-            f"{_activity_html}"
-            "</div>",
-            unsafe_allow_html=True,
-        )
+        st.markdown("<div class='ops-exec-mining-pulse' aria-hidden='true'></div>", unsafe_allow_html=True)
 
     st.subheader("Canvasser Diligence Tracker — 144,000 Node State")
     status_df = monitor_df.groupby("node_status", as_index=False).agg(
