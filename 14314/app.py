@@ -3815,7 +3815,7 @@ _heritage_slider_html = """
   <div id="rhgi-heritage-honor">
     <div id="rhgi-heritage-honor-inner">
       <div id="rhgi-heritage-honor-title">HERITAGE HONOR</div>
-      <div id="rhgi-heritage-honor-line">MBU Maiduguri</div>
+      <div id="rhgi-heritage-honor-line">MBU (Maiduguri)</div>
     </div>
   </div>
 </div>
@@ -3824,8 +3824,8 @@ _heritage_slider_html = """
   const el = document.getElementById('rhgi-heritage-honor-line');
   if (!el) return;
   const slides = [
-    'MBU Maiduguri',
-    'Sheikh Dahiru Bauchi University'
+    'MBU (Maiduguri)',
+    'Sheikh Dahiru Bauchi (Azare)'
   ];
   let idx = Number(window.__rhgiHeritageHonorIdx || 0) % slides.length;
   el.textContent = slides[idx];
@@ -3843,7 +3843,6 @@ _heritage_slider_html = """
 })();
 </script>
 """
-st.markdown(_heritage_slider_html, unsafe_allow_html=True)
 
 st.markdown(
     f"""
@@ -4297,6 +4296,80 @@ with tab_global:
         margin=dict(t=36, b=48, l=72, r=36),
     )
     st.plotly_chart(fig_harvest, use_container_width=True)
+
+    # SSMI-BASELINE-RESTORE-142 — Heritage honors anchored above national forensic baselines.
+    st.markdown(_heritage_slider_html, unsafe_allow_html=True)
+
+    _gold_heading("National forensic baselines — turnout vs stay-at-home")
+    _baseline_years = ["2015", "2019", "2023"]
+    _baseline_turnout = [43.7, 34.8, 26.7]
+    _baseline_stay_home = [56.3, 65.2, 73.3]
+    fig_forensic_baseline = go.Figure()
+    fig_forensic_baseline.add_trace(
+        go.Bar(
+            x=_baseline_years,
+            y=_baseline_turnout,
+            name="National Turnout (%)",
+            marker_color="#D4AF37",
+            text=[f"{v:.1f}%" for v in _baseline_turnout],
+            textposition="outside",
+        )
+    )
+    fig_forensic_baseline.add_trace(
+        go.Bar(
+            x=_baseline_years,
+            y=_baseline_stay_home,
+            name="Stay-at-Home (%)",
+            marker_color="#1F5FBF",
+            text=[f"{v:.1f}%" for v in _baseline_stay_home],
+            textposition="outside",
+        )
+    )
+    fig_forensic_baseline.update_layout(
+        barmode="group",
+        template=None,
+        paper_bgcolor="rgba(0,0,128,0.32)",
+        plot_bgcolor="rgba(0,0,128,0.68)",
+        font=dict(family="Goldman, sans-serif", color="#ffffff", size=12),
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="left",
+            x=0.01,
+            bgcolor="rgba(0,0,128,0.55)",
+            bordercolor="rgba(212,175,55,0.35)",
+            borderwidth=1,
+        ),
+        xaxis=dict(
+            title=dict(text="Election Year", font=dict(family="Goldman, sans-serif", color="#D4AF37", size=12)),
+            tickfont=dict(family="Goldman, sans-serif", color="#ffffff", size=11),
+            showgrid=False,
+            linecolor="rgba(212,175,55,0.4)",
+        ),
+        yaxis=dict(
+            title=dict(text="Share of Registered Voters (%)", font=dict(family="Goldman, sans-serif", color="#D4AF37", size=12)),
+            tickfont=dict(family="Goldman, sans-serif", color="#ffffff", size=11),
+            range=[0, 100],
+            showgrid=True,
+            gridcolor="rgba(255,255,255,0.14)",
+            linecolor="rgba(212,175,55,0.4)",
+        ),
+        margin=dict(t=52, b=48, l=60, r=16),
+    )
+    fig_forensic_baseline.add_annotation(
+        x=0.5,
+        y=1.14,
+        xref="paper",
+        yref="paper",
+        showarrow=False,
+        text="The 20.7M Mandate targets the 68.5M silent majority.",
+        font=dict(family="Goldman, sans-serif", color="#D4AF37", size=13),
+        bgcolor="rgba(0,0,128,0.72)",
+        bordercolor="rgba(212,175,55,0.45)",
+        borderpad=5,
+    )
+    st.plotly_chart(fig_forensic_baseline, use_container_width=True)
 
     # POSITION 2 — Forensic audit shadow (independent 15/15 node counter)
     _forensic_verified = int((dff_hub["canvasser_ratio"] >= 15.0).sum())
