@@ -1,6 +1,7 @@
 import math
 import os
 from datetime import datetime, timezone
+from dataclasses import asdict, is_dataclass
 
 import pandas as pd
 import plotly.express as px
@@ -66,29 +67,45 @@ NODES_PER_LGA = TOTAL_NODES / TOTAL_LGAS
 WARDS_PER_LGA = 10
 
 
+def _record_to_dict(rec: object) -> dict:
+    """Normalize LGARecord/dataclass/object/dict to a dictionary."""
+    if isinstance(rec, dict):
+        return rec
+    if is_dataclass(rec):
+        return asdict(rec)
+    if hasattr(rec, "__dict__"):
+        return dict(vars(rec))
+    return {}
+
+
 def _to_df() -> pd.DataFrame:
     rows = []
     now = datetime.now(timezone.utc)
     t = now.timestamp()
     for i, rec in enumerate(ALL_LGA_RECORDS):
-        state = str(rec.get("state", "Unknown"))
-        lga = str(rec.get("lga", "Unknown"))
-        strike_priority = float(rec.get("strike_priority", 0.0))
-        turnout_rate = float(rec.get("turnout_2023_rate", 0.0))
+        recd = _record_to_dict(rec)
+        state = str(recd.get("state", "Unknown"))
+        lga = str(recd.get("lga", "Unknown"))
+        strike_priority = float(recd.get("strike_priority", 0.0))
+        turnout_rate = float(recd.get("turnout_2023_rate", 0.0))
         apathy_rate = max(0.02, 1.0 - turnout_rate)
         ward_clusters = max(6, int(round(WARDS_PER_LGA + strike_priority * 16)))
         assigned_nodes = int(round(NODES_PER_LGA))
         conversion_freq = max(0.6, min(8.8, (apathy_rate * 6.5) + (strike_priority * 1.9)))
         pulse = 0.5 + 0.5 * math.sin((t / 21.0) + (i * 0.17))
         diligence_score = max(0.0, min(100.0, (conversion_freq * 11.5) + (pulse * 16.0)))
+        conversions_7d = max(0, int(round(conversion_freq * 7.0 * (0.35 + (pulse * 0.9)))))
+        if conversions_7d == 0:
+            diligence_score = min(diligence_score, 24.0)
         rows.append(
             {
                 "state": state,
                 "lga": lga,
-                "zone": str(rec.get("zone", "")),
+                "zone": str(recd.get("zone", "")),
                 "ward_clusters": ward_clusters,
                 "assigned_nodes": assigned_nodes,
                 "apathy_conversion_freq": round(conversion_freq, 2),
+                "conversions_7d": conversions_7d,
                 "canvasser_diligence_score": round(diligence_score, 2),
                 "strike_priority": round(strike_priority, 3),
             }
@@ -105,11 +122,14 @@ monitor_df = load_monitor_df()
 monitor_df["cluster_share_pct"] = (
     100.0 * monitor_df["ward_clusters"] / max(float(monitor_df["ward_clusters"].sum()), 1.0)
 )
-monitor_df["node_status"] = monitor_df["canvasser_diligence_score"].apply(
-    lambda s: "Verified" if float(s) >= 76.0 else ("Active" if float(s) >= 52.0 else "Idle")
+monitor_df["node_status"] = monitor_df.apply(
+    lambda r: "Idle Alert" if int(r["conversions_7d"]) <= 0 else (
+        "Verified" if float(r["canvasser_diligence_score"]) >= 76.0 else ("Active" if float(r["canvasser_diligence_score"]) >= 52.0 else "Idle")
+    ),
+    axis=1,
 )
 monitor_df["node_status_color"] = monitor_df["node_status"].map(
-    {"Verified": "#D4AF37", "Active": "#000080", "Idle": "#B22222"}
+    {"Verified": "#D4AF37", "Active": "#000080", "Idle": "#B22222", "Idle Alert": "#FF3030"}
 )
 
 avg_diligence = float(monitor_df["canvasser_diligence_score"].mean())
@@ -128,10 +148,11 @@ c3.metric("Avg Apathy Conversion", f"{avg_conv_freq:.2f}/min")
 c4.metric("Canvasser Diligence Score", f"{avg_diligence:.2f}")
 _status_counts = monitor_df["node_status"].value_counts().to_dict()
 st.caption(
-    "Node color map · Gold=Verified · Navy=Active · Red=Idle "
+    "Node color map · Gold=Verified · Navy=Active · Red=Idle/Idle Alert "
     f"(Verified: {int(_status_counts.get('Verified', 0)):,}, "
     f"Active: {int(_status_counts.get('Active', 0)):,}, "
-    f"Idle: {int(_status_counts.get('Idle', 0)):,})"
+    f"Idle: {int(_status_counts.get('Idle', 0)):,}, "
+    f"Idle Alert(0 conversions/7d): {int(_status_counts.get('Idle Alert', 0)):,})"
 )
 
 zone_df = (
@@ -200,7 +221,7 @@ status_df = (
     monitor_df.groupby("node_status", as_index=False)
     .agg(ward_clusters=("ward_clusters", "sum"), assigned_nodes=("assigned_nodes", "sum"))
 )
-_status_order = ["Verified", "Active", "Idle"]
+_status_order = ["Verified", "Active", "Idle", "Idle Alert"]
 status_df["node_status"] = pd.Categorical(status_df["node_status"], categories=_status_order, ordered=True)
 status_df = status_df.sort_values("node_status")
 fig_status = px.bar(
@@ -208,7 +229,7 @@ fig_status = px.bar(
     x="node_status",
     y="assigned_nodes",
     color="node_status",
-    color_discrete_map={"Verified": "#D4AF37", "Active": "#000080", "Idle": "#B22222"},
+    color_discrete_map={"Verified": "#D4AF37", "Active": "#000080", "Idle": "#B22222", "Idle Alert": "#FF3030"},
     text="assigned_nodes",
     title="Node Activation State (Color-Coded)",
 )
@@ -225,6 +246,52 @@ fig_status.update_layout(
 fig_status.update_traces(texttemplate="%{text:,}", textposition="outside")
 st.plotly_chart(fig_status, use_container_width=True)
 
+_scroll_df = monitor_df.sort_values(["node_status", "canvasser_diligence_score"], ascending=[True, False]).head(180).copy()
+_rows = []
+for _, r in _scroll_df.iterrows():
+    _rows.append(
+        "<tr>"
+        f"<td>{r['state']}</td>"
+        f"<td>{r['lga']}</td>"
+        f"<td>{int(r['ward_clusters']):,}</td>"
+        f"<td>{int(r['assigned_nodes']):,}</td>"
+        f"<td>{float(r['apathy_conversion_freq']):.2f}</td>"
+        f"<td>{int(r['conversions_7d'])}</td>"
+        f"<td style='color:{r['node_status_color']};font-weight:900;'>{r['node_status']}</td>"
+        "</tr>"
+    )
+_scroll_tbody = "".join(_rows)
+st.markdown(
+    """
+    <style>
+      .ops-scroll-wrap { margin: 8px 0 14px 0; overflow: hidden; border-radius: 10px; border: 1px solid rgba(0,206,209,0.35); }
+      .ops-scroll-track { display: block; animation: opsScrollWard 42s linear infinite; }
+      .ops-scroll-table { width: 100%; border-collapse: collapse; background: rgba(0,0,128,0.32); }
+      .ops-scroll-table th, .ops-scroll-table td { padding: 6px 8px; font-size: 0.82rem; color: #ffffff; border-bottom: 1px solid rgba(255,255,255,0.08); }
+      .ops-scroll-table th { color: #00CED1; position: sticky; top: 0; background: rgba(0,0,80,0.9); }
+      @keyframes opsScrollWard { 0% { transform: translateY(0%);} 100% { transform: translateY(-50%);} }
+      .ops-red-pulse { color: #FF3030; text-shadow: 0 0 10px rgba(255,48,48,0.75); animation: opsRedPulse 1.1s ease-in-out infinite; }
+      @keyframes opsRedPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+st.markdown(
+    "<div class='ops-scroll-wrap'>"
+    "<div class='ops-scroll-track'>"
+    "<table class='ops-scroll-table'>"
+    "<thead><tr><th>State</th><th>LGA</th><th>Ward Clusters</th><th>Nodes</th><th>Apathy Conv./min</th><th>7D Conv.</th><th>Status</th></tr></thead>"
+    f"<tbody>{_scroll_tbody}{_scroll_tbody}</tbody>"
+    "</table>"
+    "</div>"
+    "</div>",
+    unsafe_allow_html=True,
+)
+st.markdown(
+    "<p class='ops-red-pulse'>Idle Alert protocol: any node with 0 conversions in 7 days is pulsing red.</p>",
+    unsafe_allow_html=True,
+)
+
 top_lgas = monitor_df.sort_values("canvasser_diligence_score", ascending=False).head(20).copy()
 top_lgas = top_lgas.rename(
     columns={
@@ -234,6 +301,7 @@ top_lgas = top_lgas.rename(
         "ward_clusters": "Ward Clusters",
         "assigned_nodes": "Assigned Nodes",
         "apathy_conversion_freq": "Apathy Conversion (/min)",
+        "conversions_7d": "Conversions (7D)",
         "canvasser_diligence_score": "Canvasser Diligence Score",
         "node_status": "Node Status",
     }
