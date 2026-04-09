@@ -1014,6 +1014,15 @@ st.markdown(
       --v1-ticker-scroll: 30s;
       --v1-lga-slow-roll: 140s;
       --v1-wm-bubble-drift: 110s;
+      /* SSMI-EMERGENCY-RESTORE-161 — lock primary layout width to reduce column shift */
+      --rhgi-main-max-width: min(1200px, 100%);
+    }
+    section.main .block-container {
+      max-width: var(--rhgi-main-max-width) !important;
+      margin-left: auto !important;
+      margin-right: auto !important;
+      box-sizing: border-box;
+      contain: layout style;
     }
     /* SSMI-103 — silver + white border sweep (1.5s cycle) */
     @keyframes rhgiMetalShimmer {
@@ -2776,61 +2785,6 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-st.markdown(
-    """
-    <style>
-      .rhgi-exec-mining-pulse {
-        height: 3px;
-        margin: 8px 0 0 0;
-        border-radius: 999px;
-        background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.95), transparent);
-        animation: rhgiExecMiningGlow 2.8s ease-in-out infinite;
-      }
-      @keyframes rhgiExecMiningGlow {
-        0%, 100% { opacity: 0.35; }
-        50% { opacity: 1; }
-      }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-_mining_exec_score = 55.0
-_m1, _m2 = st.columns([1.05, 1.1])
-with _m1:
-    st.markdown(
-        "<p style='font-family:Goldman,sans-serif;color:#D4AF37;font-weight:900;margin:8px 0 4px 0;'>MINING DEPTH · EXECUTIVE STATE</p>",
-        unsafe_allow_html=True,
-    )
-with _m2:
-    _fig_mining_exec = go.Figure(
-        go.Indicator(
-            mode="gauge+number",
-            value=_mining_exec_score,
-            number={"suffix": "%", "valueformat": ".4f", "font": {"size": 28, "color": "#D4AF37"}},
-            title={"text": "Mining Depth", "font": {"color": "#00CED1", "size": 16}},
-            gauge={
-                "axis": {"range": [0, 100], "tickcolor": "#ffffff"},
-                "bar": {"color": "#D4AF37"},
-                "bgcolor": "rgba(0,0,128,0.45)",
-                "borderwidth": 1,
-                "bordercolor": "rgba(0,206,209,0.7)",
-                "steps": [
-                    {"range": [0, 40], "color": "rgba(139,0,0,0.45)"},
-                    {"range": [40, 70], "color": "rgba(0,206,209,0.35)"},
-                    {"range": [70, 100], "color": "rgba(212,175,55,0.35)"},
-                ],
-            },
-        )
-    )
-    _fig_mining_exec.update_layout(
-        margin=dict(l=10, r=10, t=36, b=10),
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)",
-        height=300,
-    )
-    st.plotly_chart(_fig_mining_exec, use_container_width=True, key="mining_depth_8505_exec")
-st.markdown("<div class='rhgi-exec-mining-pulse' aria-hidden='true'></div>", unsafe_allow_html=True)
-
 with st.sidebar:
     st.header("Scientific controls")
     _convener_gate_ok = bool(st.session_state.get("convener_gate_ok", False))
@@ -3917,10 +3871,12 @@ _sovereign_ticker_html = (
 _heritage_slider_html = """
 <style>
   #rhgi-heritage-honor-wrap {
-    width: min(980px, 96%);
-    margin: 2px auto 12px auto;
-    display: flex;
-    justify-content: center;
+    width: 100%;
+    max-width: 100%;
+    margin: 2px 0 12px 0;
+    display: block;
+    box-sizing: border-box;
+    contain: layout style;
   }
   #rhgi-heritage-honor {
     width: 100%;
@@ -4272,79 +4228,6 @@ with tab_global:
     _axis_title_font = dict(family="Goldman, sans-serif", size=14, color=GOLD)
     _tick_font = dict(family="Goldman, sans-serif", size=12, color="#ffffff")
 
-    _gold_heading("National forensic baselines — turnout vs stay-at-home")
-    _baseline_years = ["2015", "2019", "2023"]
-    _baseline_turnout = [43.7, 34.8, 26.7]
-    _baseline_stay_home = [56.3, 65.2, 73.3]
-    fig_forensic_baseline = go.Figure()
-    fig_forensic_baseline.add_trace(
-        go.Bar(
-            x=_baseline_years,
-            y=_baseline_turnout,
-            name="National Turnout (%)",
-            marker_color="#D4AF37",
-            text=[f"{v:.1f}%" for v in _baseline_turnout],
-            textposition="outside",
-        )
-    )
-    fig_forensic_baseline.add_trace(
-        go.Bar(
-            x=_baseline_years,
-            y=_baseline_stay_home,
-            name="Stay-at-Home (%)",
-            marker_color="#1F5FBF",
-            text=[f"{v:.1f}%" for v in _baseline_stay_home],
-            textposition="outside",
-        )
-    )
-    fig_forensic_baseline.update_layout(
-        barmode="group",
-        template=None,
-        paper_bgcolor="rgba(0,0,128,0.32)",
-        plot_bgcolor="rgba(0,0,128,0.68)",
-        font=dict(family="Goldman, sans-serif", color="#ffffff", size=12),
-        legend=dict(
-            orientation="h",
-            yanchor="bottom",
-            y=1.02,
-            xanchor="left",
-            x=0.01,
-            bgcolor="rgba(0,0,128,0.55)",
-            bordercolor="rgba(212,175,55,0.35)",
-            borderwidth=1,
-        ),
-        xaxis=dict(
-            title=dict(text="Election Year", font=dict(family="Goldman, sans-serif", color="#D4AF37", size=12)),
-            tickfont=dict(family="Goldman, sans-serif", color="#ffffff", size=11),
-            showgrid=False,
-            linecolor="rgba(212,175,55,0.4)",
-        ),
-        yaxis=dict(
-            title=dict(text="Share of Registered Voters (%)", font=dict(family="Goldman, sans-serif", color="#D4AF37", size=12)),
-            tickfont=dict(family="Goldman, sans-serif", color="#ffffff", size=11),
-            range=[0, 100],
-            showgrid=True,
-            gridcolor="rgba(255,255,255,0.14)",
-            linecolor="rgba(212,175,55,0.4)",
-        ),
-        margin=dict(t=52, b=48, l=60, r=16),
-    )
-    fig_forensic_baseline.add_annotation(
-        x=0.5,
-        y=1.14,
-        xref="paper",
-        yref="paper",
-        showarrow=False,
-        text="The 20.7M Mandate targets the 68.5M silent majority.",
-        font=dict(family="Goldman, sans-serif", color="#D4AF37", size=13),
-        bgcolor="rgba(0,0,128,0.72)",
-        bordercolor="rgba(212,175,55,0.45)",
-        borderpad=5,
-    )
-    st.plotly_chart(fig_forensic_baseline, use_container_width=True)
-
-    st.markdown(_heritage_slider_html, unsafe_allow_html=True)
-
     _zone_l, _zone_r = st.columns([1.7, 1])
     with _zone_r:
         _feed_lines = "".join(
@@ -4553,6 +4436,79 @@ with tab_global:
         margin=dict(t=36, b=48, l=72, r=36),
     )
     st.plotly_chart(fig_harvest, use_container_width=True)
+
+    st.markdown(_heritage_slider_html, unsafe_allow_html=True)
+
+    _gold_heading("National forensic baselines — turnout vs stay-at-home")
+    _baseline_years = ["2015", "2019", "2023"]
+    _baseline_turnout = [43.7, 34.8, 26.7]
+    _baseline_stay_home = [56.3, 65.2, 73.3]
+    fig_forensic_baseline = go.Figure()
+    fig_forensic_baseline.add_trace(
+        go.Bar(
+            x=_baseline_years,
+            y=_baseline_turnout,
+            name="National Turnout (%)",
+            marker_color="#D4AF37",
+            text=[f"{v:.1f}%" for v in _baseline_turnout],
+            textposition="outside",
+        )
+    )
+    fig_forensic_baseline.add_trace(
+        go.Bar(
+            x=_baseline_years,
+            y=_baseline_stay_home,
+            name="Stay-at-Home (%)",
+            marker_color="#1F5FBF",
+            text=[f"{v:.1f}%" for v in _baseline_stay_home],
+            textposition="outside",
+        )
+    )
+    fig_forensic_baseline.update_layout(
+        barmode="group",
+        template=None,
+        paper_bgcolor="rgba(0,0,128,0.32)",
+        plot_bgcolor="rgba(0,0,128,0.68)",
+        font=dict(family="Goldman, sans-serif", color="#ffffff", size=12),
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="left",
+            x=0.01,
+            bgcolor="rgba(0,0,128,0.55)",
+            bordercolor="rgba(212,175,55,0.35)",
+            borderwidth=1,
+        ),
+        xaxis=dict(
+            title=dict(text="Election Year", font=dict(family="Goldman, sans-serif", color="#D4AF37", size=12)),
+            tickfont=dict(family="Goldman, sans-serif", color="#ffffff", size=11),
+            showgrid=False,
+            linecolor="rgba(212,175,55,0.4)",
+        ),
+        yaxis=dict(
+            title=dict(text="Share of Registered Voters (%)", font=dict(family="Goldman, sans-serif", color="#D4AF37", size=12)),
+            tickfont=dict(family="Goldman, sans-serif", color="#ffffff", size=11),
+            range=[0, 100],
+            showgrid=True,
+            gridcolor="rgba(255,255,255,0.14)",
+            linecolor="rgba(212,175,55,0.4)",
+        ),
+        margin=dict(t=52, b=48, l=60, r=16),
+    )
+    fig_forensic_baseline.add_annotation(
+        x=0.5,
+        y=1.14,
+        xref="paper",
+        yref="paper",
+        showarrow=False,
+        text="The 20.7M Mandate targets the 68.5M silent majority.",
+        font=dict(family="Goldman, sans-serif", color="#D4AF37", size=13),
+        bgcolor="rgba(0,0,128,0.72)",
+        bordercolor="rgba(212,175,55,0.45)",
+        borderpad=5,
+    )
+    st.plotly_chart(fig_forensic_baseline, use_container_width=True)
 
     _gold_heading("Corridor mood tracker — daily sentiment")
     _sent_scope = st.radio(

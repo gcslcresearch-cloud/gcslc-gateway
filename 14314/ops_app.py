@@ -149,12 +149,23 @@ _PLOTLY_MOBILE = {"displayModeBar": False, "responsive": True}
 
 
 def _record_to_dict(rec: object) -> dict:
+    """Normalize LGA records to plain string-key dicts (avoids AttributeError on mixed types)."""
+    if rec is None:
+        return {}
     if isinstance(rec, dict):
-        return rec
+        return {str(k): rec[k] for k in rec}
     if is_dataclass(rec):
-        return asdict(rec)
-    if hasattr(rec, "__dict__"):
-        return dict(vars(rec))
+        try:
+            return {str(k): v for k, v in asdict(rec).items()}
+        except Exception:
+            return {}
+    try:
+        if hasattr(rec, "__dict__"):
+            raw = vars(rec)
+            if isinstance(raw, dict):
+                return {str(k): v for k, v in raw.items()}
+    except Exception:
+        return {}
     return {}
 
 
@@ -193,7 +204,7 @@ def _to_df() -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-@st.cache_data(ttl=2)
+@st.cache_data(ttl=8)
 def load_monitor_df() -> pd.DataFrame:
     return _to_df()
 
@@ -217,10 +228,13 @@ if "cumulative_digital_handshakes" not in st.session_state:
     st.session_state.cumulative_digital_handshakes = 0
 if "last_handshake_snapshot" not in st.session_state:
     st.session_state.last_handshake_snapshot = None
-@st.fragment(run_every=timedelta(seconds=4))
+@st.fragment(run_every=timedelta(seconds=5))
 def ops_mirror_delta_panel() -> None:
     """Delta-update panel: no full-page reload; static CSS + chrome remain stable."""
     monitor_df = load_monitor_df()
+    monitor_df["zone"] = monitor_df["zone"].astype(str).fillna("")
+    monitor_df["state"] = monitor_df["state"].astype(str)
+    monitor_df["lga"] = monitor_df["lga"].astype(str)
     monitor_df["cluster_share_pct"] = (
         100.0 * monitor_df["ward_clusters"] / max(float(monitor_df["ward_clusters"].sum()), 1.0)
     )
@@ -234,7 +248,10 @@ def ops_mirror_delta_panel() -> None:
         ),
         axis=1,
     )
-    monitor_df["node_status_color"] = monitor_df["node_status"].map(national_status_color_map())
+    _status_cmap = national_status_color_map()
+    monitor_df["node_status_color"] = (
+        monitor_df["node_status"].astype(str).map(_status_cmap).fillna("#FFFFFF")
+    )
 
     _now_ts = time.time()
     _prev_status = dict(st.session_state.node_status_prev)
