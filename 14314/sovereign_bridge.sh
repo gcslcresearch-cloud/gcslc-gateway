@@ -6,7 +6,6 @@ LOG_DIR="$ROOT/14314"
 URL_FILE="$LOG_DIR/sovereign_urls.env"
 
 SUB_8505="${SOVEREIGN_SUBDOMAIN_8505:-sovereign-exec-8505}"
-SUB_8506="${SOVEREIGN_SUBDOMAIN_8506:-sovereign-ops-8506}"
 CONVENER_GATE="${CONVENER_GATE_KEY:-Camen@2027#}"
 
 start_tunnel() {
@@ -24,15 +23,14 @@ start_tunnel() {
 }
 
 start_tunnel 8505 "$SUB_8505"
-start_tunnel 8506 "$SUB_8506"
 
 {
   echo "SOVEREIGN_EXEC_URL=https://${SUB_8505}.loca.lt"
-  echo "SOVEREIGN_OPS_URL=https://${SUB_8506}.loca.lt"
+  echo "SOVEREIGN_OPS_URL=LOCAL_ONLY_8506"
   echo "SOVEREIGN_URL=https://${SUB_8505}.loca.lt"
   echo "CONVENER_GATE_KEY=${CONVENER_GATE}"
 } > "$URL_FILE"
 
 echo "Sovereign bridge initialized."
 echo "Executive URL: https://${SUB_8505}.loca.lt"
-echo "Operational URL: https://${SUB_8506}.loca.lt"
+echo "Operational URL: LOCAL_ONLY_8506"

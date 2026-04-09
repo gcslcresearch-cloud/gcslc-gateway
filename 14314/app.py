@@ -3916,7 +3916,7 @@ _heritage_slider_html = """
   #rhgi-heritage-refinery-track {
     display: inline-flex;
     min-width: max-content;
-    animation: rhgiHeritageRefineryMarquee 60s linear infinite;
+    animation: rhgiHeritageRefineryMarquee 24s linear infinite;
   }
   .rhgi-heritage-refinery-seg {
     color: #00FFFF;
@@ -3944,7 +3944,7 @@ _heritage_slider_html = """
   <div id="rhgi-heritage-honor">
     <div id="rhgi-heritage-honor-inner">
       <div id="rhgi-heritage-honor-title">HERITAGE HONOR</div>
-      <div id="rhgi-heritage-honor-line"><span class="rhgi-heritage-name-sweep">MBU (Maiduguri)</span></div>
+      <div id="rhgi-heritage-honor-line"><span class="rhgi-heritage-name-sweep">MBU (Maiduguri) University Honors • Sheikh Dahiru Bauchi University Honors</span></div>
       <div id="rhgi-heritage-refinery-ticker">
         <div id="rhgi-heritage-refinery-track">
           <span class="rhgi-heritage-refinery-seg">MBU (Maiduguri): Legacy Refinery narrative — strategic energy discipline, northern industrial continuity, and sovereign production memory.</span>
@@ -3958,25 +3958,12 @@ _heritage_slider_html = """
 </div>
 <script>
 (() => {
+  // Gold calligraphy lock: keep both university honors fixed in Video 1 mode.
   const el = document.getElementById('rhgi-heritage-honor-line');
   if (!el) return;
-  const slides = [
-    'MBU (Maiduguri)',
-    'Sheikh Dahiru Bauchi (Azare)'
-  ];
-  let idx = Number(window.__rhgiHeritageHonorIdx || 0) % slides.length;
-  el.innerHTML = `<span class="rhgi-heritage-name-sweep">${slides[idx]}</span>`;
+  el.innerHTML = "<span class='rhgi-heritage-name-sweep'>MBU (Maiduguri) University Honors • Sheikh Dahiru Bauchi University Honors</span>";
+  el.style.opacity = '1';
   if (window.__rhgiHeritageHonorTimer) clearInterval(window.__rhgiHeritageHonorTimer);
-  window.__rhgiHeritageHonorTimer = setInterval(() => {
-    el.style.opacity = '0';
-    const next = (idx + 1) % slides.length;
-    window.setTimeout(() => {
-      idx = next;
-      window.__rhgiHeritageHonorIdx = idx;
-      el.innerHTML = `<span class="rhgi-heritage-name-sweep">${slides[idx]}</span>`;
-      el.style.opacity = '1';
-    }, 680);
-  }, 7000);
 })();
 </script>
 """

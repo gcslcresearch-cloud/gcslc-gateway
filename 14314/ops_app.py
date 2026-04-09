@@ -1,6 +1,7 @@
 import math
 import os
 import time
+import json
 from datetime import datetime, timedelta, timezone
 from dataclasses import asdict, is_dataclass
 
@@ -188,6 +189,8 @@ if "last_handshake_snapshot" not in st.session_state:
     st.session_state.last_handshake_snapshot = None
 if "last_balloons_ts" not in st.session_state:
     st.session_state.last_balloons_ts = 0.0
+if "last_handshake_event_seq" not in st.session_state:
+    st.session_state.last_handshake_event_seq = 0
 
 monitor_df = load_monitor_df()
 monitor_df["cluster_share_pct"] = (
@@ -228,6 +231,52 @@ else:
 st.session_state.last_handshake_snapshot = _handshake_snapshot
 _cumulative_handshakes = int(st.session_state.cumulative_digital_handshakes)
 _surge_delta = 0 if _last_snapshot is None else max(0, _handshake_snapshot - int(_last_snapshot))
+
+
+def _read_live_handshake_events(max_lines: int = 400) -> int:
+    """
+    Read live handshake_event stream for Port 8506 and return newly observed
+    conversion signal count since previous render.
+    """
+    candidates = [
+        os.getenv("HANDSHAKE_EVENT_STREAM_8506", ""),
+        "/Users/user/Desktop/GCSLC_Sovereign_Gateway/14314/handshake_event_8506.jsonl",
+        "/Users/user/Desktop/GCSLC_Sovereign_Gateway/14314/.handshake_event_8506.jsonl",
+    ]
+    stream_file = next((p for p in candidates if p and os.path.isfile(p)), "")
+    if not stream_file:
+        return 0
+
+    rows = []
+    try:
+        with open(stream_file, "r", encoding="utf-8", errors="ignore") as fh:
+            rows = fh.readlines()[-max_lines:]
+    except OSError:
+        return 0
+
+    total = 0
+    for line in rows:
+        text = line.strip()
+        if not text:
+            continue
+        try:
+            event = json.loads(text)
+        except json.JSONDecodeError:
+            continue
+        if str(event.get("event", "")).lower() != "handshake_event":
+            continue
+        if int(event.get("port", 8506)) != 8506:
+            continue
+        if str(event.get("signal", "")).lower() != "conversion":
+            continue
+        total += 1
+
+    prev_total = int(st.session_state.last_handshake_event_seq)
+    st.session_state.last_handshake_event_seq = total
+    return max(0, total - prev_total)
+
+
+_gold_surge_delta = _read_live_handshake_events()
 
 st.markdown(
     f"<span class='ops-chip'>Last Sync: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} · Nodes: {TOTAL_NODES:,}</span>",
@@ -285,7 +334,10 @@ with right:
         0.0,
         min(
             100.0,
-            (avg_diligence * 0.52) + (avg_conv_freq * 2.4) + (math.log10(max(_cumulative_handshakes, 1)) * 12.0),
+            (avg_diligence * 0.52)
+            + (avg_conv_freq * 2.4)
+            + (math.log10(max(_cumulative_handshakes, 1)) * 12.0)
+            + min(9.0, _gold_surge_delta * 1.3),
         ),
     )
     fig_gauge = go.Figure(
@@ -314,7 +366,12 @@ with right:
         plot_bgcolor="rgba(0,0,0,0)",
     )
     st.plotly_chart(fig_gauge, use_container_width=True)
-    st.caption("Mining Depth sync is fed by live 8506 cumulative Digital Handshakes + diligence pulses.")
+    st.caption("Mining Depth sync is fed by live 8506 handshake_event conversion stream + diligence pulses.")
+    if _gold_surge_delta > 0:
+        st.markdown(
+            f"<div class='ops-gold-surge'>Gold Surge: +{_gold_surge_delta:,} conversion signal(s) received</div>",
+            unsafe_allow_html=True,
+        )
     if _surge_delta > 0:
         st.markdown(
             f"<div class='ops-cyan-surge'>Electric Cyan Surge: +{_surge_delta:,} new Digital Handshakes</div>",
@@ -413,6 +470,20 @@ st.markdown(
       @keyframes opsScrollWard { 0% { transform: translateY(0%);} 100% { transform: translateY(-50%);} }
       .ops-red-pulse { color: #FF3030; text-shadow: 0 0 10px rgba(255,48,48,0.75); animation: opsRedPulse 1.1s ease-in-out infinite; }
       @keyframes opsRedPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+      .ops-gold-surge {
+        margin: 8px 0 8px 0;
+        padding: 7px 10px;
+        border-radius: 8px;
+        border: 1px solid rgba(212,175,55,0.85);
+        color: #FFD700;
+        font-weight: 900;
+        text-shadow: 0 0 14px rgba(255,215,0,0.85);
+        background: linear-gradient(120deg, rgba(90,72,16,0.38), rgba(212,175,55,0.28), rgba(90,72,16,0.38));
+        background-size: 220% 100%;
+        animation: opsGoldSurge 0.95s ease-in-out infinite, opsGoldShimmer 1.8s linear infinite;
+      }
+      @keyframes opsGoldSurge { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.02); opacity: 0.84; } }
+      @keyframes opsGoldShimmer { 0% { background-position: 0% 50%; } 100% { background-position: 220% 50%; } }
     </style>
     """,
     unsafe_allow_html=True,
