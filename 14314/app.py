@@ -2941,16 +2941,16 @@ with st.sidebar:
             "<p class='rhgi-social-live-title'>HIGH-VELOCITY SIDEBAR BRIDGE</p>"
             "<div class='rhgi-social-live-icons'>"
             f"<a class='rhgi-social-live-icon' href='https://x.com/intent/tweet?text={_live_post_text}' target='_blank' rel='noopener noreferrer' title='X live-post handshake'>X</a>"
-            f"<a class='rhgi-social-live-icon' href='https://wa.me/{PRECISION_STRIKE_IKECHUKWU_E164}?text={_live_post_text}' target='_blank' rel='noopener noreferrer' title='WhatsApp handshake'>WA</a>"
-            f"<a class='rhgi-social-live-icon' href='https://t.me/share/url?url=https://wa.me/{PRECISION_STRIKE_IKECHUKWU_E164}&text={_live_post_text}' target='_blank' rel='noopener noreferrer' title='Telegram live-post handshake'>TG</a>"
+            f"<a class='rhgi-social-live-icon' href='https://www.facebook.com/sharer/sharer.php?u=https://wa.me/{PRECISION_STRIKE_IKECHUKWU_E164}' target='_blank' rel='noopener noreferrer' title='Facebook live-post handshake'>FB</a>"
+            f"<a class='rhgi-social-live-icon' href='https://www.linkedin.com/sharing/share-offsite/?url=https://wa.me/{PRECISION_STRIKE_IKECHUKWU_E164}' target='_blank' rel='noopener noreferrer' title='LinkedIn live-post handshake'>LI</a>"
             "</div>"
             "</div>",
             unsafe_allow_html=True,
         )
         st.markdown('<div class="rhgi-termii-global-trigger"></div>', unsafe_allow_html=True)
         if st.button("Global Push — Termii Node", use_container_width=True, type="primary", key="termii_global_push_btn"):
-            _append_sovereign_feed("TERMII", "Global Push triggered · immediate node activation signal issued.")
-            st.success("Global Push dispatched to Termii node activation queue.")
+            _append_sovereign_feed("TERMII", "Global Push triggered · 144,000-node immediate activation signal issued.")
+            st.success("Global Push dispatched to Termii node activation queue (144,000 nodes).")
 
         st.markdown(
             '<p class="rhgi-sidebar-cat rhgi-sidebar-cat--outreach" style="margin-top:14px;">'
@@ -3876,6 +3876,16 @@ _heritage_slider_html = """
     will-change: opacity;
     text-shadow: 0 0 8px rgba(212,175,55,0.45);
   }
+  .rhgi-heritage-name-sweep {
+    background: linear-gradient(110deg, #9B7A1F 0%, #F8E7A3 35%, #D4AF37 50%, #FFF5C8 64%, #9B7A1F 100%);
+    background-size: 220% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent !important;
+    -webkit-text-fill-color: transparent !important;
+    animation: rhgiHeritageNameMetalSweep 3s linear infinite;
+    text-shadow: none;
+  }
   #rhgi-heritage-refinery-ticker {
     margin-top: 7px;
     overflow: hidden;
@@ -3905,16 +3915,22 @@ _heritage_slider_html = """
     0% { transform: translateX(0%); }
     100% { transform: translateX(-50%); }
   }
+  @keyframes rhgiHeritageNameMetalSweep {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 220% 50%; }
+  }
 </style>
 <div id="rhgi-heritage-honor-wrap" aria-label="Heritage Honor slider">
   <div id="rhgi-heritage-honor">
     <div id="rhgi-heritage-honor-inner">
       <div id="rhgi-heritage-honor-title">HERITAGE HONOR</div>
-      <div id="rhgi-heritage-honor-line">MBU (Maiduguri)</div>
+      <div id="rhgi-heritage-honor-line"><span class="rhgi-heritage-name-sweep">MBU (Maiduguri)</span></div>
       <div id="rhgi-heritage-refinery-ticker">
         <div id="rhgi-heritage-refinery-track">
-          <span class="rhgi-heritage-refinery-seg">Legacy Refinery: corridor-grade civic energy, sovereign industry memory, and youth productivity pulse.</span>
-          <span class="rhgi-heritage-refinery-seg">Legacy Refinery: corridor-grade civic energy, sovereign industry memory, and youth productivity pulse.</span>
+          <span class="rhgi-heritage-refinery-seg">MBU (Maiduguri): Legacy Refinery narrative — strategic energy discipline, northern industrial continuity, and sovereign production memory.</span>
+          <span class="rhgi-heritage-refinery-seg">Sheikh Dahiru Bauchi (Azare): Legacy Refinery narrative — spiritual capital, civic legitimacy, and human-capital refinery for corridor stability.</span>
+          <span class="rhgi-heritage-refinery-seg">MBU (Maiduguri): Legacy Refinery narrative — strategic energy discipline, northern industrial continuity, and sovereign production memory.</span>
+          <span class="rhgi-heritage-refinery-seg">Sheikh Dahiru Bauchi (Azare): Legacy Refinery narrative — spiritual capital, civic legitimacy, and human-capital refinery for corridor stability.</span>
         </div>
       </div>
     </div>
@@ -3929,7 +3945,7 @@ _heritage_slider_html = """
     'Sheikh Dahiru Bauchi (Azare)'
   ];
   let idx = Number(window.__rhgiHeritageHonorIdx || 0) % slides.length;
-  el.textContent = slides[idx];
+  el.innerHTML = `<span class="rhgi-heritage-name-sweep">${slides[idx]}</span>`;
   if (window.__rhgiHeritageHonorTimer) clearInterval(window.__rhgiHeritageHonorTimer);
   window.__rhgiHeritageHonorTimer = setInterval(() => {
     el.style.opacity = '0';
@@ -3937,7 +3953,7 @@ _heritage_slider_html = """
     window.setTimeout(() => {
       idx = next;
       window.__rhgiHeritageHonorIdx = idx;
-      el.textContent = slides[idx];
+      el.innerHTML = `<span class="rhgi-heritage-name-sweep">${slides[idx]}</span>`;
       el.style.opacity = '1';
     }, 680);
   }, 7000);
@@ -4480,13 +4496,14 @@ with tab_global:
         horizontal=True,
         key="corridor_mood_scope",
     )
+    _mood_baseline_2023 = NATIONAL_TURNOUT_2023_PCT
     _dates = pd.date_range(end=datetime.now(_LAGOS_TZ).date(), periods=14, freq="D")
-    _base_yes = 59.0 if _sent_scope == "APC (Tinubu)" else 34.0
-    _base_no = 21.0 if _sent_scope == "APC (Tinubu)" else 43.0
-    _base_und = 20.0 if _sent_scope == "APC (Tinubu)" else 23.0
-    _yes = [max(4.0, min(92.0, _base_yes + ((i % 5) - 2) * 1.6 + (2.4 if i in (4, 10) else 0.0))) for i in range(14)]
-    _no = [max(4.0, min(92.0, _base_no + ((i % 4) - 1.5) * 1.5 + (2.0 if i in (8, 12) else 0.0))) for i in range(14)]
-    _und = [max(3.0, min(88.0, _base_und + ((i % 6) - 2.5) * 1.2 + (1.8 if i in (2, 11) else 0.0))) for i in range(14)]
+    _base_yes = (_mood_baseline_2023 + 33.0) if _sent_scope == "APC (Tinubu)" else (_mood_baseline_2023 + 9.0)
+    _base_no = (_mood_baseline_2023 + 6.0) if _sent_scope == "APC (Tinubu)" else (_mood_baseline_2023 + 18.0)
+    _base_und = (_mood_baseline_2023 + 4.0) if _sent_scope == "APC (Tinubu)" else (_mood_baseline_2023 + 8.0)
+    _yes = [max(_mood_baseline_2023, min(92.0, _base_yes + ((i % 5) - 2) * 1.6 + (2.4 if i in (4, 10) else 0.0))) for i in range(14)]
+    _no = [max(_mood_baseline_2023, min(92.0, _base_no + ((i % 4) - 1.5) * 1.5 + (2.0 if i in (8, 12) else 0.0))) for i in range(14)]
+    _und = [max(_mood_baseline_2023, min(88.0, _base_und + ((i % 6) - 2.5) * 1.2 + (1.8 if i in (2, 11) else 0.0))) for i in range(14)]
     fig_mood = go.Figure()
     fig_mood.add_trace(
         go.Scatter(
@@ -4494,8 +4511,8 @@ with tab_global:
             y=_yes,
             mode="lines+markers",
             name="Yes",
-            line=dict(color="#D4AF37", width=3),
-            marker=dict(size=6, color="#D4AF37"),
+            line=dict(color="#D4AF37", width=3, dash="solid"),
+            marker=dict(size=6, color="#D4AF37", line=dict(color="#FFF2B0", width=1)),
         )
     )
     fig_mood.add_trace(
@@ -4504,8 +4521,8 @@ with tab_global:
             y=_no,
             mode="lines+markers",
             name="No",
-            line=dict(color="#B22222", width=3),
-            marker=dict(size=6, color="#B22222"),
+            line=dict(color="#B22222", width=3, dash="dot"),
+            marker=dict(size=6, color="#B22222", line=dict(color="#FFD0D0", width=1)),
         )
     )
     fig_mood.add_trace(
@@ -4514,8 +4531,8 @@ with tab_global:
             y=_und,
             mode="lines+markers",
             name="Undecided",
-            line=dict(color="#00CED1", width=3),
-            marker=dict(size=6, color="#00CED1"),
+            line=dict(color="#00CED1", width=3, dash="dash"),
+            marker=dict(size=6, color="#00CED1", line=dict(color="#D9FFFF", width=1)),
         )
     )
     for _idx, _label, _color in [
@@ -4562,11 +4579,20 @@ with tab_global:
         yaxis=dict(
             title=dict(text="Sentiment share (%)", font=dict(family="Goldman, sans-serif", color="#D4AF37", size=12)),
             tickfont=dict(family="Goldman, sans-serif", color="#ffffff", size=10),
-            range=[0, 100],
+            range=[_mood_baseline_2023, 100],
             showgrid=True,
             gridcolor="rgba(255,255,255,0.12)",
         ),
         margin=dict(t=42, b=34, l=56, r=16),
+    )
+    fig_mood.add_hline(
+        y=_mood_baseline_2023,
+        line_color="#D4AF37",
+        line_dash="dash",
+        line_width=1,
+        annotation_text=f"2023 Election Baseline ({_mood_baseline_2023:.2f}%)",
+        annotation_position="top left",
+        annotation_font=dict(family="Goldman, sans-serif", color="#D4AF37", size=10),
     )
     st.plotly_chart(fig_mood, use_container_width=True)
 
