@@ -105,6 +105,12 @@ monitor_df = load_monitor_df()
 monitor_df["cluster_share_pct"] = (
     100.0 * monitor_df["ward_clusters"] / max(float(monitor_df["ward_clusters"].sum()), 1.0)
 )
+monitor_df["node_status"] = monitor_df["canvasser_diligence_score"].apply(
+    lambda s: "Verified" if float(s) >= 76.0 else ("Active" if float(s) >= 52.0 else "Idle")
+)
+monitor_df["node_status_color"] = monitor_df["node_status"].map(
+    {"Verified": "#D4AF37", "Active": "#000080", "Idle": "#B22222"}
+)
 
 avg_diligence = float(monitor_df["canvasser_diligence_score"].mean())
 avg_conv_freq = float(monitor_df["apathy_conversion_freq"].mean())
@@ -120,6 +126,13 @@ c1.metric("Total Nodes", f"{TOTAL_NODES:,}")
 c2.metric("Ward Clusters", f"{clusters_total:,}")
 c3.metric("Avg Apathy Conversion", f"{avg_conv_freq:.2f}/min")
 c4.metric("Canvasser Diligence Score", f"{avg_diligence:.2f}")
+_status_counts = monitor_df["node_status"].value_counts().to_dict()
+st.caption(
+    "Node color map · Gold=Verified · Navy=Active · Red=Idle "
+    f"(Verified: {int(_status_counts.get('Verified', 0)):,}, "
+    f"Active: {int(_status_counts.get('Active', 0)):,}, "
+    f"Idle: {int(_status_counts.get('Idle', 0)):,})"
+)
 
 zone_df = (
     monitor_df.groupby("zone", as_index=False)
@@ -182,6 +195,36 @@ with right:
     st.plotly_chart(fig_gauge, use_container_width=True)
     st.caption("Mining Depth sync is fed by live 8506 apathy-conversion and diligence pulses.")
 
+st.subheader("Canvasser Diligence Tracker — 144,000 Node State")
+status_df = (
+    monitor_df.groupby("node_status", as_index=False)
+    .agg(ward_clusters=("ward_clusters", "sum"), assigned_nodes=("assigned_nodes", "sum"))
+)
+_status_order = ["Verified", "Active", "Idle"]
+status_df["node_status"] = pd.Categorical(status_df["node_status"], categories=_status_order, ordered=True)
+status_df = status_df.sort_values("node_status")
+fig_status = px.bar(
+    status_df,
+    x="node_status",
+    y="assigned_nodes",
+    color="node_status",
+    color_discrete_map={"Verified": "#D4AF37", "Active": "#000080", "Idle": "#B22222"},
+    text="assigned_nodes",
+    title="Node Activation State (Color-Coded)",
+)
+fig_status.update_layout(
+    template=None,
+    paper_bgcolor="rgba(0,0,0,0)",
+    plot_bgcolor="rgba(0,0,128,0.2)",
+    font=dict(color="#ffffff"),
+    xaxis_title="Node Status",
+    yaxis_title="Assigned Nodes",
+    margin=dict(l=30, r=20, t=50, b=20),
+    showlegend=False,
+)
+fig_status.update_traces(texttemplate="%{text:,}", textposition="outside")
+st.plotly_chart(fig_status, use_container_width=True)
+
 top_lgas = monitor_df.sort_values("canvasser_diligence_score", ascending=False).head(20).copy()
 top_lgas = top_lgas.rename(
     columns={
@@ -192,6 +235,7 @@ top_lgas = top_lgas.rename(
         "assigned_nodes": "Assigned Nodes",
         "apathy_conversion_freq": "Apathy Conversion (/min)",
         "canvasser_diligence_score": "Canvasser Diligence Score",
+        "node_status": "Node Status",
     }
 )
 
