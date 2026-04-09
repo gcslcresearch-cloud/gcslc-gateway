@@ -1593,6 +1593,58 @@ st.markdown(
       border: 1px solid rgba(230, 195, 92, 0.85) !important;
       box-shadow: inset 0 0 16px rgba(139, 0, 0, 0.18);
     }
+    [data-testid="stSidebar"] .rhgi-social-live-shell {
+      margin-top: 10px;
+      border: 1px solid rgba(0, 206, 209, 0.7);
+      border-radius: 11px;
+      padding: 10px 12px;
+      background: linear-gradient(165deg, rgba(0,0,128,0.55) 0%, rgba(0,58,68,0.45) 100%);
+      box-shadow: inset 0 0 14px rgba(0, 255, 255, 0.16);
+    }
+    [data-testid="stSidebar"] .rhgi-social-live-title {
+      color: #00FFFF !important;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-align: center;
+      margin: 0 0 8px 0;
+      font-size: 0.78rem;
+      text-shadow: 0 0 12px rgba(0,255,255,0.65);
+    }
+    [data-testid="stSidebar"] .rhgi-social-live-icons {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      align-items: center;
+      margin: 4px 0 2px 0;
+      flex-wrap: wrap;
+    }
+    [data-testid="stSidebar"] .rhgi-social-live-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,255,255,0.8);
+      color: #00FFFF !important;
+      text-decoration: none;
+      font-weight: 900;
+      font-size: 0.9rem;
+      background: rgba(0, 24, 56, 0.85);
+      box-shadow: 0 0 12px rgba(0,255,255,0.45);
+    }
+    [data-testid="stSidebar"] .rhgi-social-live-icon:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 18px rgba(0,255,255,0.72);
+    }
+    [data-testid="stSidebar"] [data-testid="stVerticalBlock"]:has(.rhgi-termii-global-trigger) button[kind="primary"] {
+      border: 1px solid rgba(0,255,255,0.85) !important;
+      border-radius: 10px !important;
+      background: linear-gradient(180deg, rgba(0,68,88,0.98) 0%, rgba(0,122,136,0.98) 100%) !important;
+      color: #E0FFFF !important;
+      font-weight: 900 !important;
+      text-shadow: 0 0 10px rgba(0,255,255,0.72) !important;
+    }
     /* SSMI-NIGHT-DEPLOY-141 — Executive Sync primary: Cyber Cyan glow (tonight session) */
     @keyframes rhgiExecSyncCyanPulse {
       0%, 100% {
@@ -2881,6 +2933,24 @@ with st.sidebar:
             "</div>",
             unsafe_allow_html=True,
         )
+        _live_post_text = _quote_wa_message(
+            f"{OFFICE_IDENTITY} · Live post handshake · {STRIKE_LOAD_ID} · corridor activation pulse."
+        )
+        st.markdown(
+            "<div class='rhgi-social-live-shell'>"
+            "<p class='rhgi-social-live-title'>HIGH-VELOCITY SIDEBAR BRIDGE</p>"
+            "<div class='rhgi-social-live-icons'>"
+            f"<a class='rhgi-social-live-icon' href='https://x.com/intent/tweet?text={_live_post_text}' target='_blank' rel='noopener noreferrer' title='X live-post handshake'>X</a>"
+            f"<a class='rhgi-social-live-icon' href='https://wa.me/{PRECISION_STRIKE_IKECHUKWU_E164}?text={_live_post_text}' target='_blank' rel='noopener noreferrer' title='WhatsApp handshake'>WA</a>"
+            f"<a class='rhgi-social-live-icon' href='https://t.me/share/url?url=https://wa.me/{PRECISION_STRIKE_IKECHUKWU_E164}&text={_live_post_text}' target='_blank' rel='noopener noreferrer' title='Telegram live-post handshake'>TG</a>"
+            "</div>"
+            "</div>",
+            unsafe_allow_html=True,
+        )
+        st.markdown('<div class="rhgi-termii-global-trigger"></div>', unsafe_allow_html=True)
+        if st.button("Global Push — Termii Node", use_container_width=True, type="primary", key="termii_global_push_btn"):
+            _append_sovereign_feed("TERMII", "Global Push triggered · immediate node activation signal issued.")
+            st.success("Global Push dispatched to Termii node activation queue.")
 
         st.markdown(
             '<p class="rhgi-sidebar-cat rhgi-sidebar-cat--outreach" style="margin-top:14px;">'
@@ -3778,12 +3848,12 @@ _heritage_slider_html = """
     padding: 1px;
     background: linear-gradient(108deg, #D4AF37 0%, #F8E7A3 24%, #D4AF37 50%, #FFF4BE 74%, #D4AF37 100%);
     background-size: 220% 100%;
-    animation: rhgiHeritageGoldShimmer 8s linear infinite;
+    animation: rhgiHeritageGoldShimmer 3s linear infinite;
     box-shadow: 0 0 20px rgba(212,175,55,0.5);
   }
   #rhgi-heritage-honor-inner {
     border-radius: 13px;
-    padding: 12px 18px;
+    padding: 12px 18px 8px 18px;
     background: rgba(0,0,128,0.96);
     border: 1px solid rgba(212,175,55,0.45);
     text-align: center;
@@ -3798,17 +3868,42 @@ _heritage_slider_html = """
   #rhgi-heritage-honor-line {
     color: #D4AF37;
     font-family: 'Palace Script MT','Brush Script MT','Lucida Handwriting','Apple Chancery',cursive;
-    font-size: clamp(1.25rem, 2.7vw, 1.7rem);
+    font-size: clamp(1.2rem, 2.5vw, 1.65rem);
     font-weight: 700;
-    line-height: 1.25;
+    line-height: 1.22;
     opacity: 1;
-    transition: opacity 1.8s ease-in-out;
+    transition: opacity 1.35s ease-in-out;
     will-change: opacity;
     text-shadow: 0 0 8px rgba(212,175,55,0.45);
+  }
+  #rhgi-heritage-refinery-ticker {
+    margin-top: 7px;
+    overflow: hidden;
+    white-space: nowrap;
+    border-top: 1px solid rgba(0,255,255,0.22);
+    padding-top: 5px;
+  }
+  #rhgi-heritage-refinery-track {
+    display: inline-flex;
+    min-width: max-content;
+    animation: rhgiHeritageRefineryMarquee 28s linear infinite;
+  }
+  .rhgi-heritage-refinery-seg {
+    color: #00FFFF;
+    font-family: 'Palace Script MT','Brush Script MT','Lucida Handwriting','Apple Chancery',cursive;
+    font-size: 1.02rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    padding-right: 2.8rem;
+    text-shadow: 0 0 8px rgba(0,255,255,0.45);
   }
   @keyframes rhgiHeritageGoldShimmer {
     0% { background-position: 0% 50%; }
     100% { background-position: 220% 50%; }
+  }
+  @keyframes rhgiHeritageRefineryMarquee {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
   }
 </style>
 <div id="rhgi-heritage-honor-wrap" aria-label="Heritage Honor slider">
@@ -3816,6 +3911,12 @@ _heritage_slider_html = """
     <div id="rhgi-heritage-honor-inner">
       <div id="rhgi-heritage-honor-title">HERITAGE HONOR</div>
       <div id="rhgi-heritage-honor-line">MBU (Maiduguri)</div>
+      <div id="rhgi-heritage-refinery-ticker">
+        <div id="rhgi-heritage-refinery-track">
+          <span class="rhgi-heritage-refinery-seg">Legacy Refinery: corridor-grade civic energy, sovereign industry memory, and youth productivity pulse.</span>
+          <span class="rhgi-heritage-refinery-seg">Legacy Refinery: corridor-grade civic energy, sovereign industry memory, and youth productivity pulse.</span>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -3838,8 +3939,8 @@ _heritage_slider_html = """
       window.__rhgiHeritageHonorIdx = idx;
       el.textContent = slides[idx];
       el.style.opacity = '1';
-    }, 900);
-  }, 12000);
+    }, 680);
+  }, 7000);
 })();
 </script>
 """
@@ -4370,6 +4471,104 @@ with tab_global:
         borderpad=5,
     )
     st.plotly_chart(fig_forensic_baseline, use_container_width=True)
+
+    _gold_heading("Corridor mood tracker — daily sentiment")
+    _sent_scope = st.radio(
+        "Corridor mood scope",
+        options=["APC (Tinubu)", "ADC/Opposition"],
+        index=0,
+        horizontal=True,
+        key="corridor_mood_scope",
+    )
+    _dates = pd.date_range(end=datetime.now(_LAGOS_TZ).date(), periods=14, freq="D")
+    _base_yes = 59.0 if _sent_scope == "APC (Tinubu)" else 34.0
+    _base_no = 21.0 if _sent_scope == "APC (Tinubu)" else 43.0
+    _base_und = 20.0 if _sent_scope == "APC (Tinubu)" else 23.0
+    _yes = [max(4.0, min(92.0, _base_yes + ((i % 5) - 2) * 1.6 + (2.4 if i in (4, 10) else 0.0))) for i in range(14)]
+    _no = [max(4.0, min(92.0, _base_no + ((i % 4) - 1.5) * 1.5 + (2.0 if i in (8, 12) else 0.0))) for i in range(14)]
+    _und = [max(3.0, min(88.0, _base_und + ((i % 6) - 2.5) * 1.2 + (1.8 if i in (2, 11) else 0.0))) for i in range(14)]
+    fig_mood = go.Figure()
+    fig_mood.add_trace(
+        go.Scatter(
+            x=_dates,
+            y=_yes,
+            mode="lines+markers",
+            name="Yes",
+            line=dict(color="#D4AF37", width=3),
+            marker=dict(size=6, color="#D4AF37"),
+        )
+    )
+    fig_mood.add_trace(
+        go.Scatter(
+            x=_dates,
+            y=_no,
+            mode="lines+markers",
+            name="No",
+            line=dict(color="#B22222", width=3),
+            marker=dict(size=6, color="#B22222"),
+        )
+    )
+    fig_mood.add_trace(
+        go.Scatter(
+            x=_dates,
+            y=_und,
+            mode="lines+markers",
+            name="Undecided",
+            line=dict(color="#00CED1", width=3),
+            marker=dict(size=6, color="#00CED1"),
+        )
+    )
+    for _idx, _label, _color in [
+        (4, "Coastal", "rgba(0,206,209,0.12)"),
+        (8, "Superhighway", "rgba(212,175,55,0.12)"),
+        (11, "AZK", "rgba(178,34,34,0.10)"),
+    ]:
+        fig_mood.add_vrect(
+            x0=_dates[_idx],
+            x1=_dates[_idx],
+            fillcolor=_color,
+            line_width=1,
+            line_color="rgba(255,255,255,0.25)",
+        )
+        fig_mood.add_annotation(
+            x=_dates[_idx],
+            y=98,
+            text=f"{_label} spike",
+            showarrow=False,
+            font=dict(family="Goldman, sans-serif", color="#D4AF37", size=10),
+            bgcolor="rgba(0,0,128,0.55)",
+        )
+    fig_mood.update_layout(
+        template=None,
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,128,0.22)",
+        font=dict(family="Goldman, sans-serif", color="#ffffff", size=12),
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="left",
+            x=0.01,
+            bgcolor="rgba(0,0,128,0.55)",
+            bordercolor="rgba(212,175,55,0.35)",
+            borderwidth=1,
+        ),
+        xaxis=dict(
+            title=dict(text="Day", font=dict(family="Goldman, sans-serif", color="#D4AF37", size=12)),
+            tickfont=dict(family="Goldman, sans-serif", color="#ffffff", size=10),
+            showgrid=False,
+            linecolor="rgba(255,255,255,0.4)",
+        ),
+        yaxis=dict(
+            title=dict(text="Sentiment share (%)", font=dict(family="Goldman, sans-serif", color="#D4AF37", size=12)),
+            tickfont=dict(family="Goldman, sans-serif", color="#ffffff", size=10),
+            range=[0, 100],
+            showgrid=True,
+            gridcolor="rgba(255,255,255,0.12)",
+        ),
+        margin=dict(t=42, b=34, l=56, r=16),
+    )
+    st.plotly_chart(fig_mood, use_container_width=True)
 
     # POSITION 2 — Forensic audit shadow (independent 15/15 node counter)
     _forensic_verified = int((dff_hub["canvasser_ratio"] >= 15.0).sum())
