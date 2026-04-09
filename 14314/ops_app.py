@@ -50,6 +50,29 @@ st.markdown(
         font-weight: 800;
         margin-bottom: 8px;
       }
+      .ops-activity-log {
+        margin-top: 8px;
+        border: 1px solid rgba(0, 206, 209, 0.65);
+        border-radius: 10px;
+        padding: 10px 12px;
+        background: linear-gradient(165deg, rgba(0,0,128,0.55) 0%, rgba(0,40,80,0.48) 100%);
+        box-shadow:
+          0 0 18px rgba(0,206,209,0.35),
+          inset 0 0 20px rgba(0,206,209,0.16);
+      }
+      .ops-activity-title {
+        color: #00FFFF;
+        font-weight: 900;
+        font-size: 0.88rem;
+        letter-spacing: 0.08em;
+        margin: 0 0 8px 0;
+        text-shadow: 0 0 12px rgba(0,255,255,0.65);
+      }
+      .ops-activity-line {
+        color: #FFFFFF;
+        font-size: 0.8rem;
+        margin: 4px 0;
+      }
     </style>
     """,
     unsafe_allow_html=True,
@@ -113,7 +136,7 @@ def _to_df() -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-@st.cache_data(ttl=6)
+@st.cache_data(ttl=10)
 def load_monitor_df() -> pd.DataFrame:
     return _to_df()
 
@@ -215,6 +238,29 @@ with right:
     )
     st.plotly_chart(fig_gauge, use_container_width=True)
     st.caption("Mining Depth sync is fed by live 8506 apathy-conversion and diligence pulses.")
+    _activity_rows = (
+        monitor_df.sort_values(["conversions_7d", "canvasser_diligence_score"], ascending=[True, False])
+        .head(12)
+        .copy()
+    )
+    _activity_lines = "".join(
+        (
+            "<p class='ops-activity-line'>"
+            f"{str(r['state'])} · {str(r['lga'])} — "
+            f"<span style='color:#00FFFF;font-weight:900;'>Canvasser Activity</span>: "
+            f"{int(r['conversions_7d'])} (7D) · "
+            f"<span style='color:{str(r['node_status_color'])};font-weight:900;'>{str(r['node_status'])}</span>"
+            "</p>"
+        )
+        for _, r in _activity_rows.iterrows()
+    )
+    st.markdown(
+        "<div class='ops-activity-log'>"
+        "<p class='ops-activity-title'>RIGHT-SIDE ACTIVITY LOGS</p>"
+        f"{_activity_lines}"
+        "</div>",
+        unsafe_allow_html=True,
+    )
 
 st.subheader("Canvasser Diligence Tracker — 144,000 Node State")
 status_df = (
@@ -224,6 +270,9 @@ status_df = (
 _status_order = ["Verified", "Active", "Idle", "Idle Alert"]
 status_df["node_status"] = pd.Categorical(status_df["node_status"], categories=_status_order, ordered=True)
 status_df = status_df.sort_values("node_status")
+status_df["tooltip_note"] = status_df["node_status"].apply(
+    lambda s: "Diligence Alert: Yield < 18/25 Threshold" if str(s) in {"Idle", "Idle Alert"} else "Within diligence tolerance."
+)
 fig_status = px.bar(
     status_df,
     x="node_status",
@@ -244,6 +293,10 @@ fig_status.update_layout(
     showlegend=False,
 )
 fig_status.update_traces(texttemplate="%{text:,}", textposition="outside")
+fig_status.update_traces(
+    customdata=status_df[["tooltip_note"]].to_numpy(),
+    hovertemplate="<b>%{x}</b><br>Assigned Nodes: %{y:,}<br>%{customdata[0]}<extra></extra>",
+)
 st.plotly_chart(fig_status, use_container_width=True)
 
 _scroll_df = monitor_df.sort_values(["node_status", "canvasser_diligence_score"], ascending=[True, False]).head(180).copy()

@@ -3896,7 +3896,7 @@ _heritage_slider_html = """
   #rhgi-heritage-refinery-track {
     display: inline-flex;
     min-width: max-content;
-    animation: rhgiHeritageRefineryMarquee 28s linear infinite;
+    animation: rhgiHeritageRefineryMarquee 47s linear infinite;
   }
   .rhgi-heritage-refinery-seg {
     color: #00FFFF;
