@@ -1,9 +1,13 @@
 /**
  * GCSLC / AWC · K-GEC — session gate disabled: dashboard loads unlocked (no expiry lock).
  * Tier timer / Access Expired overlay logic removed per Tier 3 override.
+ * NRRFC 24h free pass: hides Access Expired / LW15954 modal for 24h from first page load (per browser).
  */
 (function (global) {
   'use strict';
+
+  var KEY_NRRFC_PASS_START = 'gcslc_nrrfc_free_pass_start_v1';
+  var MS_24H = 86400000;
 
   var KEY_VISITOR_BRIDGE = 'gcslc_sovereign_bridge_v1';
   var KEY_CHAIRMAN_GATE = 'gcslc_gate_chairman_v1';
@@ -33,6 +37,34 @@
     }
   }
 
+  function isNrrfc24hPassActive() {
+    try {
+      var raw = localStorage.getItem(KEY_NRRFC_PASS_START);
+      var t0 = raw ? parseInt(raw, 10) : NaN;
+      if (!raw || isNaN(t0)) {
+        t0 = Date.now();
+        localStorage.setItem(KEY_NRRFC_PASS_START, String(t0));
+      }
+      return Date.now() - t0 < MS_24H;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function applyNrrfcFreePassIfActive() {
+    try {
+      if (!isNrrfc24hPassActive()) return;
+      document.documentElement.classList.add('gcslc-nrrfc-free-pass');
+      unlockUi();
+      if (document.getElementById('gcslc-nrrfc-free-pass-style')) return;
+      var st = document.createElement('style');
+      st.id = 'gcslc-nrrfc-free-pass-style';
+      st.textContent =
+        '#sovereignTierExpiredModal{display:none!important;visibility:hidden!important;pointer-events:none!important;opacity:0!important;}';
+      (document.head || document.documentElement).appendChild(st);
+    } catch (e) {}
+  }
+
   /** Clears legacy timer keys (logout / intake parity); does not lock UI. */
   function resetSovereignSession() {
     try {
@@ -52,6 +84,7 @@
         localStorage.setItem(KEY_CHAIRMAN_GATE, '1');
       }
     } catch (e) {}
+    applyNrrfcFreePassIfActive();
     unlockUi();
     global.GCSLC_CHAIRMAN_IMMUNITY = isChairmanMode();
   }

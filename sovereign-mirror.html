@@ -1463,6 +1463,46 @@
       white-space: nowrap;
       border: 0;
     }
+
+    /* GWY — Generative Wealth Yield: visible core metric, methodology IP-protected (executive) */
+    .gwy-capex-escalation {
+      margin: 0.5rem 0 0.85rem;
+      padding: 0.55rem 0.65rem 0.65rem;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 255, 255, 0.28);
+      background: linear-gradient(165deg, rgba(8, 22, 42, 0.92), rgba(5, 10, 20, 0.88));
+      box-shadow: 0 0 18px rgba(0, 229, 255, 0.08), inset 0 0 20px rgba(0, 0, 0, 0.35);
+      text-align: center;
+      max-width: 16.5rem;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .gwy-capex-kicker {
+      display: block;
+      font-family: 'Goldman', 'Segoe UI', sans-serif;
+      font-size: clamp(0.5rem, 1.2vw, 0.62rem);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(0, 255, 255, 0.88);
+      margin-bottom: 0.35rem;
+    }
+    .gwy-capex-value {
+      display: block;
+      font-family: 'Goldman', 'Segoe UI', sans-serif;
+      font-weight: 700;
+      font-size: clamp(0.72rem, 1.85vw, 0.9rem);
+      color: var(--gold-bright);
+      letter-spacing: 0.04em;
+      text-shadow: 0 0 14px rgba(232, 197, 71, 0.35);
+    }
+    .gwy-capex-sub {
+      display: block;
+      margin-top: 0.45rem;
+      font-size: clamp(0.52rem, 1.25vw, 0.62rem);
+      line-height: 1.5;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+    }
   </style>
 </head>
 <body>
@@ -1517,6 +1557,11 @@
       <div class="sovereign-strike-row">
         <div class="strike-flank strike-flank--gwy">
           <p class="flank-head-goldman">GWY</p>
+          <div class="gwy-capex-escalation" title="NRRFC proprietary — Generative Wealth Yield (GWY) synthesis; AZK corridor / Capex capture model. Executive disclosure only.">
+            <span class="gwy-capex-kicker">Generative Wealth Yield</span>
+            <span class="gwy-capex-value">10% × $700B Big Tech Capex</span>
+            <span class="gwy-capex-sub">Core sovereign lever for the ₦55T liquidation thesis — methodology IP-protected; pitch metric for NRRFC partnership.</span>
+          </div>
           <div class="deck-placeholder deck-humanoid prism-frame">
             <div class="speech-bubble speech-bubble--diamond-narrative quote-goldman">
               <span class="exec-insight-shimmer">Thank you for stopping by. I need energy to thrive, function and augment human productivity. Come in to decode.</span>
@@ -1528,7 +1573,7 @@
           </div>
         </div>
         <div class="strike-center">
-          <form class="form-panel prism-frame" id="mirrorForm" autocomplete="on" novalidate data-cloud-intake="formsubmit-ajax" data-intake-email-endpoint="https://formsubmit.co/ajax/chairman@galadimanruwacenter.org" data-intake-primary="chairman@galadimanruwacenter.org">
+          <form class="form-panel prism-frame" id="mirrorForm" autocomplete="on" novalidate action="mailto:chairman@galadimanruwacenter.org?cc=gcslc.research@gmail.com&amp;subject=NRRFC%20Executive%20Access%20Request" method="get" enctype="text/plain" data-intake-primary="chairman@galadimanruwacenter.org">
             <h2>Organization intake</h2>
             <div class="form-row">
               <label for="orgName">Organization</label>
@@ -1549,7 +1594,7 @@
                 <input type="tel" class="wa-phone" id="whatsapp" name="whatsapp" placeholder="Phone number (digits)" maxlength="24">
               </div>
             </div>
-            <button type="submit" class="btn-submit" title="After validation, opens the internal dashboard at app.html (hub: sovereign-gateway.html)">Transmit credentials</button>
+            <button type="submit" class="btn-submit" title="Opens mail to Chairman (with cc) pre-filled from intake, then bridges to app.html">Transmit credentials</button>
             <div class="form-sovereign-footer">
               <p class="session-bar session-bar--form" role="status">
                 <span class="session-bar-tiers">Access Tier 1 (15m) | Extension Tier 2 (15m)</span>
@@ -1715,7 +1760,7 @@
           if (window.GCSLC_SOVEREIGN_SESSION && typeof window.GCSLC_SOVEREIGN_SESSION.visitorLogout === 'function') {
             window.GCSLC_SOVEREIGN_SESSION.visitorLogout();
           } else {
-            window.location.reload();
+            window.location.href = 'sovereign-mirror.html';
           }
         });
       }
@@ -1801,45 +1846,34 @@
       updateHands();
       setInterval(updateHands, 1000);
 
-      var GCSLC_INTAKE_EMAIL_ENDPOINT = 'https://formsubmit.co/ajax/chairman@galadimanruwacenter.org';
-      /** Optional: paste Make / Zapier / n8n HTTPS URL (JSON POST) to fan out WhatsApp via Termii, etc. */
-      var GCSLC_INTAKE_WHATSAPP_WEBHOOK = '';
-
-      function postCloudIntake(payload) {
-        var headers = { 'Content-Type': 'application/json', Accept: 'application/json' };
-        var emailBody = JSON.stringify({
-          _subject: 'GCSLC Sovereign Mirror — Transmit credentials',
-          _template: 'table',
-          _captcha: false,
-          _gotcha: '',
-          organization: payload.organization,
-          email: payload.email,
-          country_dial: payload.country_dial,
-          whatsapp_digits: payload.whatsapp_digits,
-          whatsapp_e164: payload.whatsapp_e164,
-          source: 'sovereign-mirror.html',
-          submitted_at_iso: payload.submitted_at_iso
-        });
-        var p1 = fetch(GCSLC_INTAKE_EMAIL_ENDPOINT, {
-          method: 'POST',
-          headers: headers,
-          body: emailBody,
-          keepalive: true,
-          mode: 'cors'
-        }).catch(function () {});
-        if (GCSLC_INTAKE_WHATSAPP_WEBHOOK) {
-          return Promise.all([
-            p1,
-            fetch(GCSLC_INTAKE_WHATSAPP_WEBHOOK, {
-              method: 'POST',
-              headers: headers,
-              body: JSON.stringify(payload),
-              keepalive: true,
-              mode: 'cors'
-            }).catch(function () {})
-          ]);
+      function openChairmanMailto(payload) {
+        var subject = 'NRRFC Executive Access Request';
+        var body =
+          'Organization: ' +
+          payload.organization +
+          '\nPrincipal email: ' +
+          payload.email +
+          '\nWhatsApp (E.164): ' +
+          (payload.whatsapp_e164 || '(not provided)') +
+          '\nDial / digits: ' +
+          (payload.country_dial || '') +
+          ' / ' +
+          (payload.whatsapp_digits || '') +
+          '\n---\nNRRFC executive access — Sovereign Mirror (sovereign-mirror.html)\nSubmitted (ISO): ' +
+          payload.submitted_at_iso;
+        var href =
+          'mailto:chairman@galadimanruwacenter.org' +
+          '?cc=' +
+          encodeURIComponent('gcslc.research@gmail.com') +
+          '&subject=' +
+          encodeURIComponent(subject) +
+          '&body=' +
+          encodeURIComponent(body);
+        try {
+          window.open(href, '_blank', 'noopener,noreferrer');
+        } catch (e) {
+          window.location.href = href;
         }
-        return p1;
       }
 
       var form = document.getElementById('mirrorForm');
@@ -1870,8 +1904,8 @@
           whatsapp_e164: waE164,
           submitted_at_iso: new Date().toISOString()
         };
-        status.textContent = 'Relaying credentials to sovereign cloud…';
-        postCloudIntake(intakePayload);
+        status.textContent = 'Opening secure mailto to Chairman…';
+        openChairmanMailto(intakePayload);
         if (!window.GCSLC_CHAIRMAN_IMMUNITY) {
           if (typeof window.resetSovereignSession === 'function') {
             window.resetSovereignSession();
