@@ -1,0 +1,834 @@
+
+  You can now view your Streamlit app in your browser.
+
+  URL: http://0.0.0.0:8505
+
+  For better performance, install the Watchdog module:
+
+  $ xcode-select --install
+  $ pip install watchdog
+            
+Sovereign audit: upstream returned 773 LGAs; missing vs 774 mandate was Kazaure (Jigawa) — injected if absent.
+Sovereign LGA audit (full list, state_code + name):
+  AB: Aba North
+  AB: Aba South
+  AB: Arochukwu
+  AB: Bende
+  AB: Ikwuano
+  AB: Isiala Ngwa North
+  AB: Isiala Ngwa South
+  AB: Isuikwuato
+  AB: Obi Ngwa
+  AB: Ohafia
+  AB: Osisioma
+  AB: Ugwunagbo
+  AB: Ukwa East
+  AB: Ukwa West
+  AB: Umu Nneochi
+  AB: Umuahia North
+  AB: Umuahia South
+  AD: Demsa
+  AD: Fufure
+  AD: Ganye
+  AD: Gayuk
+  AD: Gombi
+  AD: Grie
+  AD: Hong
+  AD: Jada
+  AD: Lamurde
+  AD: Madagali
+  AD: Maiha
+  AD: Mayo Belwa
+  AD: Michika
+  AD: Mubi North
+  AD: Mubi South
+  AD: Numan
+  AD: Shelleng
+  AD: Song
+  AD: Toungo
+  AD: Yola North
+  AD: Yola South
+  AK: Abak
+  AK: Eastern Obolo
+  AK: Eket
+  AK: Esit Eket
+  AK: Essien Udim
+  AK: Etim Ekpo
+  AK: Etinan
+  AK: Ibeno
+  AK: Ibesikpo Asutan
+  AK: Ibiono-Ibom
+  AK: Ika
+  AK: Ikono
+  AK: Ikot Abasi
+  AK: Ikot Ekpene
+  AK: Ini
+  AK: Itu
+  AK: Mbo
+  AK: Mkpat-Enin
+  AK: Nsit-Atai
+  AK: Nsit-Ibom
+  AK: Nsit-Ubium
+  AK: Obot Akara
+  AK: Okobo
+  AK: Onan
+  AK: Oron
+  AK: Oruk Anam
+  AK: Udung-Uko
+  AK: Ukanafun
+  AK: Uruan
+  AK: Urue-Offong/Oruko
+  AK: Uyo
+  AN: Aguata
+  AN: Anambra East
+  AN: Anambra West
+  AN: Anaocha
+  AN: Awka North
+  AN: Awka South
+  AN: Ayamelum
+  AN: Dunukofia
+  AN: Ekwusigo
+  AN: Idemili North
+  AN: Idemili South
+  AN: Ihiala
+  AN: Njikoka
+  AN: Nnewi North
+  AN: Nnewi South
+  AN: Ogbaru
+  AN: Onitsha North
+  AN: Onitsha South
+  AN: Orumba North
+  AN: Orumba South
+  AN: Oyi
+  BA: Alkaleri
+  BA: Bauchi
+  BA: Bogoro
+  BA: Damban
+  BA: Darazo
+  BA: Dass
+  BA: Gamawa
+  BA: Ganjuwa
+  BA: Giade
+  BA: Itas/Gadau
+  BA: Jama'are
+  BA: Katagum
+  BA: Kirfi
+  BA: Misau
+  BA: Ningi
+  BA: Shira
+  BA: Tafawa Balewa
+  BA: Toro
+  BA: Warji
+  BA: Zaki
+  BE: Ado
+  BE: Agatu
+  BE: Apa
+  BE: Buruku
+  BE: Gboko
+  BE: Guma
+  BE: Gwer East
+  BE: Gwer West
+  BE: Katsina-Ala
+  BE: Konshisha
+  BE: Kwande
+  BE: Logo
+  BE: Markudi
+  BE: Obi
+  BE: Ogbadibo
+  BE: Ohimini
+  BE: Oju
+  BE: Okpokwu
+  BE: Oturkpo
+  BE: Tarka
+  BE: Ukum
+  BE: Ushongo
+  BE: Vandeikya
+  BO: Abadam
+  BO: Askira/Uba
+  BO: Bama
+  BO: Bayo
+  BO: Biu
+  BO: Chibok
+  BO: Damboa
+  BO: Dikwa
+  BO: Gubio
+  BO: Guzamala
+  BO: Gwoza
+  BO: Hawul
+  BO: Jere
+  BO: Kaga
+  BO: Kala/Balge
+  BO: Konduga
+  BO: Kukawa
+  BO: Kwaya Kusar
+  BO: Mafa
+  BO: Magumeri
+  BO: Maiduguri
+  BO: Marte
+  BO: Mobbar
+  BO: Monguno
+  BO: Ngala
+  BO: Nganzai
+  BO: Shani
+  BY: Brass
+  BY: Ekeremor
+  BY: Kolokuma/Opokuma
+  BY: Nembe
+  BY: Ogbia
+  BY: Sagbama
+  BY: Southern Ijaw
+  BY: Yenagoa
+  CR: Abi
+  CR: Akamkpa
+  CR: Akpabuyo
+  CR: Bakassi
+  CR: Bekwarra
+  CR: Biase
+  CR: Boki
+  CR: Calabar Municipal
+  CR: Calabar South
+  CR: Etung
+  CR: Ikom
+  CR: Obanliku
+  CR: Obubra
+  CR: Obudu
+  CR: Odukpani
+  CR: Ogoja
+  CR: Yakuur
+  CR: Yala
+  DE: Aniocha North
+  DE: Aniocha South
+  DE: Bomadi
+  DE: Burutu
+  DE: Ethiope East
+  DE: Ethiope West
+  DE: Ika South
+  DE: Ika-North East
+  DE: Isoko North
+  DE: Isoko South
+  DE: Ndokwa East
+  DE: Ndokwa West
+  DE: Okpe
+  DE: Oshimili North
+  DE: Oshimili South
+  DE: Patani
+  DE: Sapele
+  DE: Udu
+  DE: Ughelli North
+  DE: Ughelli South
+  DE: Ukwuani
+  DE: Uwie
+  DE: Warri North
+  DE: Warri South
+  DE: Warri South West
+  EB: Abakaliki
+  EB: Afikpo North
+  EB: Afikpo South
+  EB: Ebonyi
+  EB: Ebonyi North
+  EB: Ebonyi South
+  EB: Ikwo
+  EB: Ishielu
+  EB: Ivo
+  EB: Izzi
+  EB: Ohaozara
+  EB: Ohaukwu
+  EB: Onicha
+  ED: Akoko-Edo
+  ED: Egor
+  ED: Esan Central
+  ED: Esan North-East
+  ED: Esan South-East
+  ED: Esan West
+  ED: Etsako Central
+  ED: Etsako East
+  ED: Etsako West
+  ED: Igueben
+  ED: Ikpoba Okha
+  ED: Oredo
+  ED: Orhionmwon
+  ED: Ovia North-East
+  ED: Ovia South-West
+  ED: Owan East
+  ED: Owan West
+  ED: Uhunmwonde
+  EK: Ado Ekiti
+  EK: Efon
+  EK: Ekiti East
+  EK: Ekiti South-West
+  EK: Ekiti West
+  EK: Emure
+  EK: Gbonyin
+  EK: Ido Osi
+  EK: Ijero
+  EK: Ikere
+  EK: Ikole
+  EK: Ilejemeje
+  EK: Irepodun/Ifelodun
+  EK: Ise/Orun
+  EK: Moba
+  EK: Oye
+  EN: Agwu
+  EN: Aninri
+  EN: Enugu East
+  EN: Enugu North
+  EN: Enugu South
+  EN: Ezeagu
+  EN: Igbo Etiti
+  EN: Igbo Eze North
+  EN: Igbo Eze South
+  EN: Isi Uzo
+  EN: Nkanu East
+  EN: Nkanu West
+  EN: Nsukka
+  EN: Oji River
+  EN: Udenu
+  EN: Udi
+  EN: Uzo Uwani
+  FC: Abaji
+  FC: Bwari
+  FC: Gwagwalada
+  FC: Kuje
+  FC: Kwali
+  FC: Municipal Area Council
+  GO: Akko
+  GO: Balanga
+  GO: Billiri
+  GO: Dukku
+  GO: Funakaye
+  GO: Gombe
+  GO: Kaltungo
+  GO: Kwami
+  GO: Nafada
+  GO: Shongom
+  GO: Yamaltu/Deba
+  IM: Aboh Mbaise
+  IM: Ahiazu Mbaise
+  IM: Ehime Mbano
+  IM: Ezinihitte
+  IM: Ideato North
+  IM: Ideato South
+  IM: Ihitte/Uboma
+  IM: Ikeduru
+  IM: Isiala Mbano
+  IM: Isu
+  IM: Mbaitoli
+  IM: Ngor Okpala
+  IM: Njaba
+  IM: Nkwerre
+  IM: Nwangele
+  IM: Obowo
+  IM: Oguta
+  IM: Ohaji/Egbema
+  IM: Okigwe
+  IM: Orlu
+  IM: Orsu
+  IM: Oru East
+  IM: Oru West
+  IM: Owerri Municipal
+  IM: Owerri North
+  IM: Owerri West
+  IM: Unuimo
+  JI: Auyo
+  JI: Babura
+  JI: Biriniwa
+  JI: Birnin Kudu
+  JI: Buji
+  JI: Dutse
+  JI: Gagarawa
+  JI: Garki
+  JI: Gumel
+  JI: Guri
+  JI: Gwaram
+  JI: Gwiwa
+  JI: Hadejia
+  JI: Jahun
+  JI: Kafin Hausa
+  JI: Kaugama
+  JI: Kazaure
+  JI: Kiri Kasama
+  JI: Kiyawa
+  JI: Maigatari
+  JI: Malam Madori
+  JI: Miga
+  JI: Ringim
+  JI: Roni
+  JI: Sule Tankarkar
+  JI: Taura
+  JI: Yankwashi
+  KD: Birnin Gwari
+  KD: Chikun
+  KD: Giwa
+  KD: Igabi
+  KD: Ikara
+  KD: Jaba
+  KD: Jema'a
+  KD: Kachia
+  KD: Kaduna North
+  KD: Kaduna South
+  KD: Kagarko
+  KD: Kajuru
+  KD: Kaura
+  KD: Kauru
+  KD: Kubau
+  KD: Kudan
+  KD: Lere
+  KD: Makarfi
+  KD: Sabon Gari
+  KD: Sanga
+  KD: Soba
+  KD: Zangon Kataf
+  KD: Zaria
+  KE: Aleiro
+  KE: Arewa Dandi
+  KE: Argungu
+  KE: Augie
+  KE: Bagudo
+  KE: Birnin Kebbi
+  KE: Bunza
+  KE: Dandi
+  KE: Fakai
+  KE: Gwandu
+  KE: Jega
+  KE: Kalgo
+  KE: Koko/Besse
+  KE: Maiyama
+  KE: Ngaski
+  KE: Sakaba
+  KE: Shanga
+  KE: Suru
+  KE: Wasagu/Danko
+  KE: Yauri
+  KE: Zuru
+  KN: Ajingi
+  KN: Albasu
+  KN: Bagwai
+  KN: Bebeji
+  KN: Bichi
+  KN: Bunkure
+  KN: Dala
+  KN: Dambatta
+  KN: Dawakin Kudu
+  KN: Dawakin Tofa
+  KN: Doguwa
+  KN: Fagge
+  KN: Gabasawa
+  KN: Garko
+  KN: Garun Mallam
+  KN: Gaya
+  KN: Gezawa
+  KN: Gwale
+  KN: Gwarzo
+  KN: Kabo
+  KN: Kano Municipal
+  KN: Karaye
+  KN: Kibiya
+  KN: Kiru
+  KN: Kumbotso
+  KN: Kunchi
+  KN: Kura
+  KN: Madobi
+  KN: Makoda
+  KN: Minjibir
+  KN: Nasarawa
+  KN: Rano
+  KN: Rimin Gado
+  KN: Rogo
+  KN: Shanono
+  KN: Sumaila
+  KN: Takai
+  KN: Tarauni
+  KN: Tofa
+  KN: Tsanyawa
+  KN: Tudun Wada
+  KN: Ungogo
+  KN: Warawa
+  KN: Wudil
+  KO: Adavi
+  KO: Ajaokuta
+  KO: Ankpa
+  KO: Bassa
+  KO: Dekina
+  KO: Ibaji
+  KO: Idah
+  KO: Igalamela Odolu
+  KO: Ijumu
+  KO: Kabba/Bunu
+  KO: Kogi
+  KO: Lokoja
+  KO: Mopa Muro
+  KO: Ofu
+  KO: Ogori/Magongo
+  KO: Okehi
+  KO: Okene
+  KO: Olamaboro
+  KO: Omala
+  KO: Yagba East
+  KO: Yagba West
+  KT: Bakori
+  KT: Batagarawa
+  KT: Batsari
+  KT: Baure
+  KT: Bindawa
+  KT: Charanchi
+  KT: Dan Musa
+  KT: Dandume
+  KT: Danja
+  KT: Daura
+  KT: Dutsi
+  KT: Dutsin Ma
+  KT: Faskari
+  KT: Funtua
+  KT: Ingawa
+  KT: Jibia
+  KT: Kafur
+  KT: Kaita
+  KT: Kankara
+  KT: Kankia
+  KT: Katsina
+  KT: Kurfi
+  KT: Kusada
+  KT: Mai'Adua
+  KT: Malumfashi
+  KT: Mani
+  KT: Mashi
+  KT: Matazu
+  KT: Musawa
+  KT: Rimi
+  KT: Sabuwa
+  KT: Safana
+  KT: Sandamu
+  KT: Zango
+  KW: Asa
+  KW: Baruten
+  KW: Edu
+  KW: Ekiti
+  KW: Ifelodun
+  KW: Ilorin East
+  KW: Ilorin South
+  KW: Ilorin West
+  KW: Irepodun
+  KW: Isin
+  KW: Kaiama
+  KW: Moro
+  KW: Offa
+  KW: Oke Ero
+  KW: Oyun
+  KW: Pategi
+  LA: Agege
+  LA: Ajeromi-Ifelodun
+  LA: Alimosho
+  LA: Amuwo-Odofin
+  LA: Apapa
+  LA: Badagry
+  LA: Epe
+  LA: Eti Osa
+  LA: Ibeju -Lekki
+  LA: Ifako-Ijaiye
+  LA: Ikeja
+  LA: Ikorodu
+  LA: Kosofe
+  LA: Lagos Island
+  LA: Lagos Mainland
+  LA: Mushin
+  LA: Ojo
+  LA: Oshodi-Isolo
+  LA: Shomolu
+  LA: Surulere
+  NA: Akwanga
+  NA: Awe
+  NA: Doma
+  NA: Karu
+  NA: Keana
+  NA: Keffi
+  NA: Kokona
+  NA: Lafia
+  NA: Nasarawa
+  NA: Nasarawa Egon
+  NA: Obi
+  NA: Toto
+  NA: Wamba
+  NI: Agaie
+  NI: Agwara
+  NI: Bida
+  NI: Borgu
+  NI: Bosso
+  NI: Chanchaga
+  NI: Edati
+  NI: Gbako
+  NI: Gurara
+  NI: Katcha
+  NI: Kontagora
+  NI: Lapai
+  NI: Lavun
+  NI: Magama
+  NI: Mariga
+  NI: Mashegu
+  NI: Mokwa
+  NI: Moya
+  NI: Paikoro
+2026-04-09 15:24:04.297 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-04-09 15:24:04.300 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-04-09 15:24:04.301 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-04-09 15:24:04.302 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+/Users/user/Desktop/GCSLC_Sovereign_Gateway/14314/app.py:911: DeprecationWarning: *scatter_mapbox* is deprecated! Use *scatter_map* instead. Learn more at: https://plotly.com/python/mapbox-to-maplibre/
+  fig_lga = px.scatter_mapbox(
+/Users/user/Desktop/GCSLC_Sovereign_Gateway/14314/app.py:911: DeprecationWarning: *scatter_mapbox* is deprecated! Use *scatter_map* instead. Learn more at: https://plotly.com/python/mapbox-to-maplibre/
+  fig_lga = px.scatter_mapbox(
+/Users/user/Desktop/GCSLC_Sovereign_Gateway/14314/app.py:911: DeprecationWarning: *scatter_mapbox* is deprecated! Use *scatter_map* instead. Learn more at: https://plotly.com/python/mapbox-to-maplibre/
+  fig_lga = px.scatter_mapbox(
+/Users/user/Desktop/GCSLC_Sovereign_Gateway/14314/app.py:911: DeprecationWarning: *scatter_mapbox* is deprecated! Use *scatter_map* instead. Learn more at: https://plotly.com/python/mapbox-to-maplibre/
+  fig_lga = px.scatter_mapbox(
+/Users/user/Desktop/GCSLC_Sovereign_Gateway/14314/app.py:940: DeprecationWarning: *scattermapbox* is deprecated! Use *scattermap* instead. Learn more at: https://plotly.com/python/mapbox-to-maplibre/
+  _lga_outline = go.Scattermapbox(
+/Users/user/Desktop/GCSLC_Sovereign_Gateway/14314/app.py:940: DeprecationWarning: *scattermapbox* is deprecated! Use *scattermap* instead. Learn more at: https://plotly.com/python/mapbox-to-maplibre/
+  _lga_outline = go.Scattermapbox(
+/Users/user/Desktop/GCSLC_Sovereign_Gateway/14314/app.py:826: DeprecationWarning: *scattermapbox* is deprecated! Use *scattermap* instead. Learn more at: https://plotly.com/python/mapbox-to-maplibre/
+  return go.Scattermapbox(
+/Users/user/Desktop/GCSLC_Sovereign_Gateway/14314/app.py:826: DeprecationWarning: *scattermapbox* is deprecated! Use *scattermap* instead. Learn more at: https://plotly.com/python/mapbox-to-maplibre/
+  return go.Scattermapbox(
+  NI: Rafi
+  NI: Rijau
+  NI: Shiroro
+  NI: Suleja
+  NI: Tafa
+  NI: Wushishi
+  OG: Abeokuta North
+  OG: Abeokuta South
+  OG: Ado-Odo/Ota
+  OG: Ewekoro
+  OG: Ifo
+  OG: Ijebu East
+  OG: Ijebu North
+  OG: Ijebu North-East
+  OG: Ijebu Ode
+  OG: Ikenne
+  OG: Imeko Afon
+  OG: Ipokia
+  OG: Obafemi Awode
+  OG: Odeda
+  OG: Odogbolu
+  OG: Ogun Waterside
+  OG: Remo North
+  OG: Shagamu
+  OG: Yewa North
+  OG: Yewa South
+  ON: Akoko North-East
+  ON: Akoko North-West
+  ON: Akoko South-East
+  ON: Akoko South-West
+  ON: Akure North
+  ON: Akure South
+  ON: Ese Odo
+  ON: Idanre
+  ON: Ifedore
+  ON: Ilaje
+  ON: Ile Oluji/Okeigbo
+  ON: Irele
+  ON: Odigbo
+  ON: Okitipupa
+  ON: Ondo East
+  ON: Ondo West
+  ON: Ose
+  ON: Owo
+  OS: Aiyedaade
+  OS: Aiyedire
+  OS: Atakunmosa East
+  OS: Atakunmosa West
+  OS: Boluwaduro
+  OS: Boripe
+  OS: Ede North
+  OS: Ede South
+  OS: Egbedoe
+  OS: Ejigbo
+  OS: Ife Central
+  OS: Ife East
+  OS: Ife North
+  OS: Ife South
+  OS: Ifedayo
+  OS: Ifelodun
+  OS: Ila
+  OS: Ilesa East
+  OS: Ilesa West
+  OS: Irepodun
+  OS: Irewole
+  OS: Isokan
+  OS: Iwo
+  OS: Obokun
+  OS: Odo Otin
+  OS: Ola Oluwa
+  OS: Olorunda
+  OS: Oriade
+  OS: Orolu
+  OS: Osogbo
+  OY: Afijio
+  OY: Akinyele
+  OY: Atiba
+  OY: Atisbo
+  OY: Egbeda
+  OY: Ibadan North
+  OY: Ibadan North-East
+  OY: Ibadan North-West
+  OY: Ibadan South-East
+  OY: Ibadan South-West
+  OY: Ibarapa Central
+  OY: Ibarapa East
+  OY: Ibarapa North
+  OY: Ido
+  OY: Irepo
+  OY: Iseyin
+  OY: Itesiwaju
+  OY: Iwajowa
+  OY: Kajola
+  OY: Lajelu
+  OY: Ogbomosho North
+  OY: Ogbomosho South
+  OY: Ogo Oluwa
+  OY: Olorunsogo
+  OY: Oluyole
+  OY: Ona Ara
+  OY: Orelope
+  OY: Ori Ire
+  OY: Oyo
+  OY: Oyo East
+  OY: Saki East
+  OY: Saki West
+  OY: Surulere
+  PL: Barkin Ladi
+  PL: Bassa
+  PL: Bokkos
+  PL: Jos East
+  PL: Jos North
+  PL: Jos South
+  PL: Kanam
+  PL: Kanke
+  PL: Langtang North
+  PL: Langtang South
+  PL: Mangu
+  PL: Mikang
+  PL: Pankshin
+  PL: Qua'an Pan
+  PL: Riyom
+  PL: Shedam
+  PL: Wase
+  RI: Abua/Odual
+  RI: Ahoada East
+  RI: Ahoada West
+  RI: Akuku-Toru
+  RI: Andoni
+  RI: Asari-Toru
+  RI: Bonny
+  RI: Degema
+  RI: Eleme
+  RI: Emuoha
+  RI: Etche
+  RI: Gokana
+  RI: Ikwerre
+  RI: Khana
+  RI: Obio/Akpor
+  RI: Ogba/Egbema/Ndoni
+  RI: Ogu/Bolo
+  RI: Okrika
+  RI: Omuma
+  RI: Opobo/Nkoro
+  RI: Oyigbo
+  RI: Port Harcourt
+  RI: Tai
+  SO: Binji
+  SO: Bodinga
+  SO: Dange Shuni
+  SO: Gada
+  SO: Goronyo
+  SO: Gudu
+  SO: Gwadabawa
+  SO: Illela
+  SO: Isa
+  SO: Kebbe
+  SO: Kware
+  SO: Rabah
+  SO: Sabon Birni
+  SO: Shagari
+  SO: Silame
+  SO: Sokoto North
+  SO: Sokoto South
+  SO: Tambuwal
+  SO: Tangaza
+  SO: Tureta
+  SO: Wamako
+  SO: Wurno
+  SO: Yabo
+  TA: Ardo Kola
+  TA: Bali
+  TA: Donga
+  TA: Gashaka
+  TA: Gassol
+  TA: Ibi
+  TA: Jalingo
+  TA: Karim Lamido
+  TA: Kumi
+  TA: Lau
+  TA: Sardauna
+  TA: Takum
+  TA: Ussa
+  TA: Wukari
+  TA: Yorro
+  TA: Zing
+  YO: Bade
+  YO: Bursari
+  YO: Damaturu
+  YO: Fika
+  YO: Fune
+  YO: Geidam
+  YO: Gujba
+  YO: Gulani
+  YO: Jakusko
+  YO: Karasuwa
+  YO: Machina
+  YO: Nangere
+  YO: Nguru
+  YO: Potiskum
+  YO: Tarmuwa
+  YO: Yunusari
+  YO: Yusufari
+  ZA: Anka
+  ZA: Bakura
+  ZA: Birnin Magaji/Kiyaw
+  ZA: Bukkuyum
+  ZA: Bungudu
+  ZA: Chafe
+  ZA: Gummi
+  ZA: Gusau
+  ZA: Kaura Namoda
+  ZA: Maradun
+  ZA: Maru
+  ZA: Shinkafi
+  ZA: Talata Mafara
+  ZA: Zurmi
+Sovereign Success: 774 LGAs Verified
+  Stopping...
+2026-04-09 16:28:27.127 Uncaught exception GET /_stcore/stream (127.0.0.1)
+HTTPServerRequest(protocol='http', host='0.0.0.0:8505', method='GET', uri='/_stcore/stream', version='HTTP/1.1', remote_ip='127.0.0.1')
+Traceback (most recent call last):
+  File "/Users/user/Library/Python/3.9/lib/python/site-packages/tornado/websocket.py", line 659, in _run_callback
+    result = callback(*args, **kwargs)
+  File "/Users/user/Library/Python/3.9/lib/python/site-packages/streamlit/web/server/browser_websocket_handler.py", line 268, in on_message
+    self._runtime.handle_backmsg(self._session_id, msg)
+  File "/Users/user/Library/Python/3.9/lib/python/site-packages/streamlit/runtime/runtime.py", line 488, in handle_backmsg
+    raise RuntimeStoppedError(f"Can't handle_backmsg (state={self._state})")
+streamlit.runtime.runtime.RuntimeStoppedError: Can't handle_backmsg (state=RuntimeState.STOPPING)

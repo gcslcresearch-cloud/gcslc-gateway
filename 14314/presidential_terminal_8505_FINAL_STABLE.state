@@ -1,0 +1,8 @@
+alias=presidential_terminal_8505_FINAL_STABLE
+timestamp=2026-04-09T16:29:09Z
+port_8505=up
+port_8506=up
+SOVEREIGN_EXEC_URL=https://sovereign-exec-8505.loca.lt
+SOVEREIGN_OPS_URL=LOCAL_ONLY_8506
+SOVEREIGN_URL=https://sovereign-exec-8505.loca.lt
+CONVENER_GATE_KEY=Camen@2027#
