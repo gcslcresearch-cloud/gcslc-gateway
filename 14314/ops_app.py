@@ -136,7 +136,7 @@ def _to_df() -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-@st.cache_data(ttl=10)
+@st.cache_data(ttl=12)
 def load_monitor_df() -> pd.DataFrame:
     return _to_df()
 
@@ -344,6 +344,31 @@ st.markdown(
     "<p class='ops-red-pulse'>Idle Alert protocol: any node with 0 conversions in 7 days is pulsing red.</p>",
     unsafe_allow_html=True,
 )
+_ne_df = monitor_df.loc[monitor_df["zone"] == "North East"].copy()
+_ne_target_met = (not _ne_df.empty) and (float(_ne_df["canvasser_diligence_score"].mean()) >= 72.0)
+if not _ne_target_met:
+    st.markdown(
+        """
+        <style>
+          .ops-ne-pulse {
+            margin: 6px 0 10px 0;
+            padding: 8px 10px;
+            border-radius: 9px;
+            border: 1px solid rgba(255, 48, 48, 0.75);
+            color: #FF3030;
+            font-weight: 900;
+            text-shadow: 0 0 12px rgba(255,48,48,0.78);
+            animation: opsNePulse 1.2s ease-in-out infinite;
+            background: rgba(64, 0, 0, 0.32);
+          }
+          @keyframes opsNePulse { 0%,100% { opacity: 1; } 50% { opacity: 0.42; } }
+        </style>
+        <div class="ops-ne-pulse">Northeast Resuscitation Active: corridors remain pulsing red until 18/25 target is met.</div>
+        """,
+        unsafe_allow_html=True,
+    )
+else:
+    st.success("Northeast corridors stabilized: 18/25 target met.")
 
 top_lgas = monitor_df.sort_values("canvasser_diligence_score", ascending=False).head(20).copy()
 top_lgas = top_lgas.rename(

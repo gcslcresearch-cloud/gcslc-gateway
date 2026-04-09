@@ -2773,6 +2773,26 @@ st.markdown(
 
 with st.sidebar:
     st.header("Scientific controls")
+    _convener_gate_ok = bool(st.session_state.get("convener_gate_ok", False))
+    st.markdown(
+        '<p class="rhgi-sidebar-cat rhgi-sidebar-cat--outreach" style="margin-top:6px;">Convener Bridge Gate</p>',
+        unsafe_allow_html=True,
+    )
+    _convener_gate_input = st.text_input(
+        "Convener Gate",
+        type="password",
+        placeholder="Enter gate key",
+        key="convener_gate_input",
+        help="Authorized key required for Convener welcome banner.",
+    )
+    if _convener_gate_input:
+        st.session_state.convener_gate_ok = (_convener_gate_input == "Camen@2027#")
+        _convener_gate_ok = bool(st.session_state.convener_gate_ok)
+    if _convener_gate_ok:
+        st.success("Welcome Convener")
+    else:
+        st.caption("Convener gate locked.")
+
     st.markdown(
         '<p class="rhgi-sidebar-cat rhgi-sidebar-cat--harvest">Category 1: Harvest Metrics</p>',
         unsafe_allow_html=True,
@@ -3896,7 +3916,7 @@ _heritage_slider_html = """
   #rhgi-heritage-refinery-track {
     display: inline-flex;
     min-width: max-content;
-    animation: rhgiHeritageRefineryMarquee 47s linear infinite;
+    animation: rhgiHeritageRefineryMarquee 60s linear infinite;
   }
   .rhgi-heritage-refinery-seg {
     color: #00FFFF;
