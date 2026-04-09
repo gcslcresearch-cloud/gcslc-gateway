@@ -1,12 +1,14 @@
 import math
 import os
-from datetime import datetime, timezone
+import time
+from datetime import datetime, timedelta, timezone
 from dataclasses import asdict, is_dataclass
 
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
+import streamlit.components.v1 as components
 
 from data_engine import ALL_LGA_RECORDS
 
@@ -73,6 +75,27 @@ st.markdown(
         font-size: 0.8rem;
         margin: 4px 0;
       }
+      .ops-activity-line--gold {
+        color: #D4AF37;
+        font-weight: 900;
+        text-shadow: 0 0 12px rgba(212,175,55,0.78);
+        background: rgba(212,175,55,0.12);
+        border-left: 3px solid rgba(212,175,55,0.75);
+        padding-left: 6px;
+        border-radius: 6px;
+      }
+      .ops-cyan-surge {
+        margin: 8px 0 8px 0;
+        padding: 7px 10px;
+        border-radius: 8px;
+        border: 1px solid rgba(0,255,255,0.8);
+        color: #00FFFF;
+        font-weight: 900;
+        text-shadow: 0 0 12px rgba(0,255,255,0.78);
+        animation: opsCyanPulse 1.05s ease-in-out infinite;
+        background: rgba(0,36,74,0.45);
+      }
+      @keyframes opsCyanPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.36; } }
     </style>
     """,
     unsafe_allow_html=True,
@@ -82,6 +105,20 @@ st.markdown("<h2 class='ops-title'>FIELD INTELLIGENCE MIRROR · PORT 8506</h2>",
 st.markdown(
     "<p class='ops-subtitle'>144,000 nodes · ward-cluster rendering · S24 operational watch</p>",
     unsafe_allow_html=True,
+)
+components.html(
+    """
+    <script>
+      setTimeout(() => {
+        if (window.parent && window.parent.location) {
+          window.parent.location.reload();
+        } else {
+          window.location.reload();
+        }
+      }, 1000);
+    </script>
+    """,
+    height=0,
 )
 
 TOTAL_NODES = 144_000
@@ -136,10 +173,21 @@ def _to_df() -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-@st.cache_data(ttl=12)
+@st.cache_data(ttl=1)
 def load_monitor_df() -> pd.DataFrame:
     return _to_df()
 
+
+if "node_status_prev" not in st.session_state:
+    st.session_state.node_status_prev = {}
+if "status_transition_ts" not in st.session_state:
+    st.session_state.status_transition_ts = {}
+if "cumulative_digital_handshakes" not in st.session_state:
+    st.session_state.cumulative_digital_handshakes = 0
+if "last_handshake_snapshot" not in st.session_state:
+    st.session_state.last_handshake_snapshot = None
+if "last_balloons_ts" not in st.session_state:
+    st.session_state.last_balloons_ts = 0.0
 
 monitor_df = load_monitor_df()
 monitor_df["cluster_share_pct"] = (
@@ -155,20 +203,43 @@ monitor_df["node_status_color"] = monitor_df["node_status"].map(
     {"Verified": "#D4AF37", "Active": "#000080", "Idle": "#B22222", "Idle Alert": "#FF3030"}
 )
 
+_now_ts = time.time()
+_prev_status = dict(st.session_state.node_status_prev)
+_transition_ts = dict(st.session_state.status_transition_ts)
+for _, _r in monitor_df.iterrows():
+    _key = f"{_r['state']}::{_r['lga']}"
+    _old = _prev_status.get(_key)
+    _new = str(_r["node_status"])
+    if (_old in {"Idle", "Idle Alert"}) and (_new == "Active"):
+        _transition_ts[_key] = _now_ts
+    _prev_status[_key] = _new
+st.session_state.node_status_prev = _prev_status
+st.session_state.status_transition_ts = _transition_ts
+
 avg_diligence = float(monitor_df["canvasser_diligence_score"].mean())
 avg_conv_freq = float(monitor_df["apathy_conversion_freq"].mean())
 clusters_total = int(monitor_df["ward_clusters"].sum())
+_handshake_snapshot = int(monitor_df["conversions_7d"].sum())
+_last_snapshot = st.session_state.last_handshake_snapshot
+if _last_snapshot is None:
+    st.session_state.cumulative_digital_handshakes = _handshake_snapshot
+else:
+    st.session_state.cumulative_digital_handshakes += max(0, _handshake_snapshot - int(_last_snapshot))
+st.session_state.last_handshake_snapshot = _handshake_snapshot
+_cumulative_handshakes = int(st.session_state.cumulative_digital_handshakes)
+_surge_delta = 0 if _last_snapshot is None else max(0, _handshake_snapshot - int(_last_snapshot))
 
 st.markdown(
     f"<span class='ops-chip'>Last Sync: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} · Nodes: {TOTAL_NODES:,}</span>",
     unsafe_allow_html=True,
 )
 
-c1, c2, c3, c4 = st.columns(4)
+c1, c2, c3, c4, c5 = st.columns(5)
 c1.metric("Total Nodes", f"{TOTAL_NODES:,}")
 c2.metric("Ward Clusters", f"{clusters_total:,}")
 c3.metric("Avg Apathy Conversion", f"{avg_conv_freq:.2f}/min")
 c4.metric("Canvasser Diligence Score", f"{avg_diligence:.2f}")
+c5.metric("Digital Handshakes (Cumulative)", f"{_cumulative_handshakes:,}", delta=f"+{_surge_delta:,}")
 _status_counts = monitor_df["node_status"].value_counts().to_dict()
 st.caption(
     "Node color map · Gold=Verified · Navy=Active · Red=Idle/Idle Alert "
@@ -210,7 +281,13 @@ with left:
     st.plotly_chart(fig_zone, use_container_width=True)
 
 with right:
-    mining_depth_score = max(0.0, min(100.0, (avg_diligence * 0.72) + (avg_conv_freq * 4.2)))
+    mining_depth_score = max(
+        0.0,
+        min(
+            100.0,
+            (avg_diligence * 0.52) + (avg_conv_freq * 2.4) + (math.log10(max(_cumulative_handshakes, 1)) * 12.0),
+        ),
+    )
     fig_gauge = go.Figure(
         go.Indicator(
             mode="gauge+number",
@@ -237,27 +314,38 @@ with right:
         plot_bgcolor="rgba(0,0,0,0)",
     )
     st.plotly_chart(fig_gauge, use_container_width=True)
-    st.caption("Mining Depth sync is fed by live 8506 apathy-conversion and diligence pulses.")
+    st.caption("Mining Depth sync is fed by live 8506 cumulative Digital Handshakes + diligence pulses.")
+    if _surge_delta > 0:
+        st.markdown(
+            f"<div class='ops-cyan-surge'>Electric Cyan Surge: +{_surge_delta:,} new Digital Handshakes</div>",
+            unsafe_allow_html=True,
+        )
+        if (_now_ts - float(st.session_state.last_balloons_ts)) > 8.0:
+            st.balloons()
+            st.session_state.last_balloons_ts = _now_ts
     _activity_rows = (
         monitor_df.sort_values(["conversions_7d", "canvasser_diligence_score"], ascending=[True, False])
         .head(12)
         .copy()
     )
-    _activity_lines = "".join(
-        (
-            "<p class='ops-activity-line'>"
+    _activity_lines = []
+    for _, r in _activity_rows.iterrows():
+        _akey = f"{r['state']}::{r['lga']}"
+        _recently_activated = (_now_ts - float(_transition_ts.get(_akey, 0.0))) <= 5.0
+        _line_cls = "ops-activity-line ops-activity-line--gold" if _recently_activated else "ops-activity-line"
+        _activity_lines.append(
+            f"<p class='{_line_cls}'>"
             f"{str(r['state'])} · {str(r['lga'])} — "
             f"<span style='color:#00FFFF;font-weight:900;'>Canvasser Activity</span>: "
             f"{int(r['conversions_7d'])} (7D) · "
             f"<span style='color:{str(r['node_status_color'])};font-weight:900;'>{str(r['node_status'])}</span>"
             "</p>"
         )
-        for _, r in _activity_rows.iterrows()
-    )
+    _activity_html = "".join(_activity_lines)
     st.markdown(
         "<div class='ops-activity-log'>"
         "<p class='ops-activity-title'>RIGHT-SIDE ACTIVITY LOGS</p>"
-        f"{_activity_lines}"
+        f"{_activity_html}"
         "</div>",
         unsafe_allow_html=True,
     )
