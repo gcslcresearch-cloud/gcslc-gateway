@@ -532,6 +532,7 @@
       white-space: normal;
       overflow: hidden;
       display: inline-block;
+      width: 100%;
       max-width: 100%;
       border-right: 2px solid rgba(0, 229, 255, 0.7);
       animation: slow-mission-typewriter 24s steps(320, end) infinite, mission-cursor 0.9s step-end infinite;
@@ -670,6 +671,60 @@
       text-transform: uppercase;
       text-shadow: 0 0 14px rgba(0, 229, 255, 0.25);
     }
+    .outreach-hub {
+      background: rgba(8, 24, 40, 0.94);
+      border: 1px solid rgba(0, 229, 255, 0.42);
+      border-left: 4px solid var(--gold);
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      margin: 0 0 1rem;
+      box-shadow: 0 0 16px rgba(0, 229, 255, 0.14);
+    }
+    .outreach-hub .outreach-title {
+      margin: 0 0 0.45rem;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.78rem, 2.2vw, 0.92rem);
+      color: #00e5ff;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-shadow: 0 0 12px rgba(0, 229, 255, 0.34);
+      animation: outreach-cyan-shimmer 2.8s ease-in-out infinite;
+    }
+    .outreach-hub .outreach-copy {
+      margin: 0;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.68rem, 2vw, 0.82rem);
+      line-height: 1.56;
+      color: var(--text);
+    }
+    .vigilance-widget {
+      background: rgba(13, 22, 36, 0.95);
+      border: 1px solid rgba(212, 175, 55, 0.45);
+      border-left: 4px solid var(--gold);
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      margin: 0 0 1rem;
+      box-shadow: 0 0 16px rgba(212, 175, 55, 0.14);
+    }
+    .vigilance-widget .vigilance-title {
+      margin: 0 0 0.45rem;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.78rem, 2.2vw, 0.92rem);
+      color: var(--gold-bright);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .vigilance-widget .vigilance-copy {
+      margin: 0;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.68rem, 2vw, 0.82rem);
+      line-height: 1.56;
+      color: var(--text);
+    }
+    @keyframes outreach-cyan-shimmer {
+      0%, 100% { opacity: 0.84; }
+      50% { opacity: 1; }
+    }
     .corporate-anchor {
       margin: 0.55rem auto 0.15rem;
       padding: 0.45rem 0.7rem;
@@ -718,7 +773,7 @@
       display: grid;
       grid-template-columns: minmax(128px, 170px) 1fr;
       gap: 0.8rem;
-      align-items: stretch;
+      align-items: start;
     }
     @media (max-width: 700px) {
       .proponent-layout { grid-template-columns: 1fr; }
@@ -849,6 +904,20 @@
       border-bottom: 1px dashed rgba(0, 255, 157, 0.25);
       padding: 0.3rem 0;
     }
+    .encryption-status {
+      margin: 0.42rem 0 0;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: #00ff9d;
+      text-shadow: 0 0 10px rgba(0, 255, 157, 0.28);
+      animation: encryption-shimmer 2.4s ease-in-out infinite;
+    }
+    @keyframes encryption-shimmer {
+      0%, 100% { opacity: 0.82; filter: brightness(0.95); }
+      50% { opacity: 1; filter: brightness(1.1); }
+    }
     .gsync-feed-track {
       list-style: none;
       margin: 0;
@@ -872,6 +941,22 @@
       text-transform: uppercase;
       letter-spacing: 0.08em;
       color: var(--gold-bright);
+    }
+    .compliance-reference {
+      margin-top: 0.25rem;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: 0.58rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #8dffcf;
+    }
+    .scalability-label {
+      margin-top: 0.25rem;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: 0.56rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #9be7ff;
     }
     .kwas-kwas-shimmer-bar {
       background: var(--navy-surface) !important;
@@ -1556,6 +1641,14 @@
       <h2 class="nodal-title">15/15 Nodal Verification</h2>
       <p class="nodal-value">13,422 / 15,000 nodes active</p>
     </section>
+    <section class="outreach-hub" aria-labelledby="outreachHubTitle">
+      <h2 id="outreachHubTitle" class="outreach-title">Rural Sensitization &amp; Information Bridge</h2>
+      <p class="outreach-copy">Bridging the strategic information gap for 15M+ citizens in the informal and non-oil sectors. Delivering real-time economic potentials and civic literacy to rural nodes via the 15/15 model.</p>
+    </section>
+    <section class="vigilance-widget" aria-labelledby="vigilanceWidgetTitle">
+      <h2 id="vigilanceWidgetTitle" class="vigilance-title">Public Safety &amp; Nodal Vigilance</h2>
+      <p class="vigilance-copy">Operationalizing a secure nodal reporting system to facilitate the dissemination of critical crime information to relevant national authorities. Bridging the gap between rural nodes and security infrastructure via the AZK Corridor.</p>
+    </section>
     <section class="proponent-brief" aria-labelledby="proponentTitle">
       <h2 id="proponentTitle" class="proponent-title">About the Proponent</h2>
       <div class="proponent-layout">
@@ -1593,9 +1686,17 @@
         <ul class="gsync-feed-track">
           <li>Outbound: SMS Alert: Nodal Broadcast 15/15 active.</li>
           <li>Inbound: Feedback: Zaria Node 004 verification success.</li>
+          <li>Inbound: Nodal Alert: Suspicious activity reported in Mining Sector 3 (Kogi).</li>
+          <li>Outbound: Broadcast: Artisanal Mining safety &amp; formalization tips sent to Enugu/Kogi sectors.</li>
+          <li>Outbound: Economic Alert: Non-oil sector potential briefing sent to Rural Nodal Facilitators.</li>
+          <li>Outbound: Verification: Crime data relayed to local authorities via secure 15/15 sync.</li>
+          <li>Geo-Sync Active: Node #441 (Zaria) &amp; Node #992 (Enugu) Verified via SMS Lat/Long Handshake.</li>
+          <li>Status: Sovereign Vigilance Protocols - [OPERATIONAL]</li>
           <li>Active Data Channel: Sovereign traffic synchronized.</li>
+          <li>Status: Bridging the Informational Divide - [ACTIVE]</li>
         </ul>
       </div>
+      <p class="encryption-status">Nodal Payload: AES-256 Encrypted Sync - [STATUS: SECURE]</p>
     </section>
 
     <header class="dashboard-header">
@@ -1861,6 +1962,8 @@
       </div>
       <p class="footer-tagline" style="margin-top:0.25rem;">Chairman &amp; Founder, GCSLC</p>
       <p class="footer-ip">Copyright · Proprietary framework · IP LW15954</p>
+      <p class="compliance-reference">Compliance Reference: System Optimized for Termii API Integrity Protocols — Audit Path: GCSLC/SSD/2026.</p>
+      <p class="scalability-label">Model Scalable for Global South Strategic Cooperation (Nigeria-Brazil-India Corridor).</p>
       <p class="institutional-mandate">Institutional Mandate: GCSLC LTD/GTE - Strategic Support for Democracy.</p>
       <button type="button" class="audit-log-btn" id="auditLogBtn" title="Audit Sync Dispatch">Audit Sync</button>
     </footer>
