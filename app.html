@@ -1,32 +1,15 @@
 <!DOCTYPE html>
+<!-- saved from url=(0030)http://localhost:8090/app.html -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050a15">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&amp;family=Great+Vibes&amp;display=swap" rel="stylesheet">
-  <title>GCSLC Sovereign · Live Terminal — NRRFC Coal Reserves &amp; NRRF Dashboard</title>
+  <title>GCSLC Sovereign · NRRFC — Nigeria Coal Reserves &amp; NRRF Dashboard</title>
   <meta name="application-name" content="GCSLC Sovereign · NRRFC">
   <meta name="description" content="GCSLC Sovereign: Nigeria Coal Reserves, debt-swap (10% Big Tech Capex vs domestic debt), coal-to-syngas vs diesel. NRRFC 2026.">
   <meta name="author" content="National Resources Revitalization Fusion Center (NRRFC) · GCSLC Sovereign">
   <meta property="og:title" content="GCSLC Sovereign · NRRFC — Coal Reserves &amp; NRRF Dashboard">
   <meta property="og:description" content="GCSLC Sovereign: Nigeria Coal Reserves, debt-swap comparison, coal-to-syngas vs diesel — NRRFC 2026.">
-  <script>
-    (function () {
-      try {
-        var p = new URLSearchParams(location.search);
-        if (p.get('mode') === 'chairman') {
-          document.documentElement.classList.add('gcslc-chairman-immunity');
-          localStorage.setItem('gcslc_gate_chairman_v1', '1');
-          return;
-        }
-        if (localStorage.getItem('gcslc_gate_chairman_v1') === '1') {
-          document.documentElement.classList.add('gcslc-chairman-immunity');
-        }
-      } catch (e) {}
-    })();
-  </script>
   <style>
     /* 8R Stealth palette: Uniform Deep Navy (#050a15) & Gold (#D4AF37) */
     :root {
@@ -42,21 +25,6 @@
       --danger: #e53e3e;
     }
     * { box-sizing: border-box; }
-    @keyframes app-8r-unveil-in {
-      from {
-        opacity: 0.18;
-        filter: blur(12px) saturate(0.88);
-        transform: translateY(10px) scale(0.988);
-      }
-      to {
-        opacity: 1;
-        filter: blur(0) saturate(1);
-        transform: translateY(0) scale(1);
-      }
-    }
-    html.app-8r-unveil .container {
-      animation: app-8r-unveil-in 1.05s cubic-bezier(0.22, 1, 0.36, 1) both;
-    }
     body {
       margin: 0;
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -64,17 +32,6 @@
       color: white;
       min-height: 100vh;
       line-height: 1.5;
-      -webkit-user-select: none;
-      user-select: none;
-    }
-    input, textarea, select {
-      -webkit-user-select: text;
-      user-select: text;
-    }
-    .modal-backdrop-app.is-open .modal-panel-app,
-    .modal-backdrop-app.is-open .modal-panel-app * {
-      -webkit-user-select: text;
-      user-select: text;
     }
     .container {
       max-width: 1200px;
@@ -157,7 +114,7 @@
       font-size: 0.85rem;
       margin-bottom: 1rem;
     }
-    .section-title.goldman-head { font-size: clamp(0.88rem, 2.3vw, 1rem); margin-bottom: 0.75rem; }
+    .section-title { font-size: 1rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--gold-dim); }
 
     /* Strategic Brief — below dashboard */
     .strategic-brief {
@@ -168,8 +125,12 @@
       padding: 1.5rem 1.75rem;
       margin-bottom: 1.5rem;
     }
-    .strategic-brief h2.goldman-head {
-      font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+    .strategic-brief h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
       margin: 0 0 1rem;
     }
     .strategic-brief p {
@@ -193,15 +154,6 @@
     th { color: var(--muted); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
     tr:last-child td { border-bottom: none; }
     tr:hover td { background: rgba(212, 175, 55, 0.08); }
-    .corridor-pulse-row td:nth-child(2),
-    .corridor-pulse-row td:nth-child(3),
-    .corridor-pulse-row td:nth-child(4) {
-      animation: corridor-cell-pulse 1.65s ease-in-out infinite;
-    }
-    @keyframes corridor-cell-pulse {
-      0%, 100% { color: var(--text); text-shadow: 0 0 4px rgba(212, 175, 55, 0.2); }
-      50% { color: var(--gold-bright); text-shadow: 0 0 12px rgba(212, 175, 55, 0.45); }
-    }
     .status { font-size: 0.75rem; text-transform: uppercase; }
     .status.active { color: var(--gold); }
     .status.reserve { color: var(--gold-bright); }
@@ -322,9 +274,13 @@
       padding: 1.25rem;
       margin-bottom: 1.5rem;
     }
-    .widget-panel h2.goldman-head {
-      font-size: clamp(0.88rem, 2.4vw, 1rem);
+    .widget-panel h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--gold-dim);
       margin: 0 0 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
     .debt-swap-grid, .nrrf-grid {
       display: grid;
@@ -361,8 +317,12 @@
       padding-top: 1rem;
       border-top: 1px solid var(--navy-border);
     }
-    .critical-mineral-yield h3.goldman-head {
-      font-size: clamp(0.82rem, 2.2vw, 0.95rem);
+    .critical-mineral-yield h3 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
       margin: 0 0 0.75rem;
     }
     .yield-formula {
@@ -382,8 +342,12 @@
       padding-top: 1rem;
       border-top: 1px solid var(--navy-border);
     }
-    .bar-chart-wrap h3.goldman-head {
-      font-size: clamp(0.82rem, 2.2vw, 0.95rem);
+    .bar-chart-wrap h3 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
       margin: 0 0 0.75rem;
     }
     .bar-chart {
@@ -439,7 +403,7 @@
       bottom: 0;
       z-index: 0;
       pointer-events: none;
-      opacity: 0.4;
+      opacity: 0.15;
       background: repeating-linear-gradient(
         0deg,
         transparent 0,
@@ -453,223 +417,12 @@
       position: absolute;
       left: 50%;
       top: 50%;
-      transform: translate(-50%, -50%) scale(var(--wm-scale, 1));
-      transition: transform 0.2s ease-out;
-      will-change: transform;
-      font-size: clamp(3.5rem, 28vw, 14rem);
+      transform: translate(-50%, -50%);
+      font-size: 2.2rem;
       font-weight: 800;
-      letter-spacing: 0.35em;
+      letter-spacing: 0.4em;
       color: var(--gold-dim);
-      opacity: 0.4;
-      white-space: nowrap;
-    }
-    /* Copyright / screenshot deterrence layer */
-    .ip-shield-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 25;
-      pointer-events: none;
-      background: repeating-linear-gradient(
-        -18deg,
-        transparent 0,
-        transparent 120px,
-        rgba(212, 175, 55, 0.02) 120px,
-        rgba(212, 175, 55, 0.02) 121px
-      );
-    }
-
-    /* Goldman metallic headers */
-    .goldman-head {
-      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      background: linear-gradient(135deg, #f0c14b 0%, #fff8e8 25%, #D4AF37 50%, #1a2744 85%, #4a6fa5 100%);
-      background-size: 200% 200%;
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: goldman-sheen 7s ease-in-out infinite;
-    }
-    @keyframes goldman-sheen {
-      0%, 100% { background-position: 0% 40%; }
-      50% { background-position: 100% 60%; }
-    }
-    .wow-spine-sub {
-      margin: 0.5rem 0 0;
-      font-size: clamp(0.72rem, 2.2vw, 0.92rem);
-      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
-      font-weight: 600;
-      line-height: 1.5;
-      text-align: center;
-      max-width: 54rem;
-      margin-left: auto;
-      margin-right: auto;
-      color: rgba(232, 238, 244, 0.94);
-      text-shadow: 0 0 20px rgba(212, 175, 55, 0.22);
-      animation: hook-pulse-terminal 4.2s ease-in-out infinite;
-    }
-    .cyan-typewriter {
-      color: #00e5ff;
-      text-shadow: 0 0 10px rgba(0, 229, 255, 0.34), 0 0 24px rgba(0, 229, 255, 0.2);
-      white-space: nowrap;
-      overflow: hidden;
-      display: inline-block;
-      max-width: 100%;
-      border-right: 2px solid rgba(0, 229, 255, 0.75);
-      animation: mission-typewriter 16s steps(220, end) infinite, mission-cursor 0.85s step-end infinite;
-    }
-    @keyframes mission-typewriter {
-      0%, 10% { width: 0; }
-      70%, 100% { width: 100%; }
-    }
-    @keyframes mission-cursor {
-      50% { border-right-color: transparent; }
-    }
-    .corporate-header-line {
-      margin: 0.55rem auto 0;
-      padding: 0.35rem 0.7rem;
-      max-width: 56rem;
-      border-radius: 8px;
-      border: 1px solid rgba(212, 175, 55, 0.5);
-      background: rgba(10, 21, 36, 0.9);
-      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
-      font-size: clamp(0.68rem, 2vw, 0.82rem);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--gold-bright);
-      text-align: center;
-    }
-    .authority-name-line {
-      margin: 0.48rem auto 0;
-      max-width: 56rem;
-      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
-      font-size: clamp(0.7rem, 2.1vw, 0.86rem);
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      text-align: center;
-      color: #f4dc91;
-      text-shadow: 0 0 14px rgba(232, 197, 71, 0.28);
-    }
-    .chairman-profile {
-      margin: 0 0 1rem;
-      padding: 0.95rem 1rem;
-      border-radius: 10px;
-      border: 1px solid rgba(212, 175, 55, 0.45);
-      background: rgba(9, 20, 34, 0.94);
-      box-shadow: 0 0 18px rgba(212, 175, 55, 0.14);
-    }
-    .layer-one-entrance {
-      margin: 0;
-      padding: 0;
-    }
-    .chairman-profile-layout {
-      display: grid;
-      grid-template-columns: minmax(128px, 164px) 1fr;
-      gap: 0.85rem;
-      align-items: start;
-    }
-    @media (max-width: 700px) {
-      .chairman-profile-layout { grid-template-columns: 1fr; }
-    }
-    .chairman-portrait-ring {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      margin: 0;
-      border-radius: 50%;
-      border: 2px solid var(--gold);
-      background: linear-gradient(145deg, rgba(26, 39, 68, 0.9), rgba(10, 19, 35, 0.96));
-      box-shadow: inset 0 1px 0 rgba(255, 248, 220, 0.2), 0 0 12px rgba(212, 175, 55, 0.2);
-      overflow: hidden;
-      position: relative;
-    }
-    .chairman-portrait-ring img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-    .chairman-portrait-placeholder {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
-      font-size: 0.6rem;
-      letter-spacing: 0.08em;
-      color: var(--gold-bright);
-      text-transform: uppercase;
-      text-align: center;
-      padding: 0.7rem;
-      background: radial-gradient(circle at 32% 28%, rgba(255, 248, 220, 0.16), rgba(10, 19, 35, 0.92) 70%);
-    }
-    .chairman-portrait-ring::after {
-      content: 'chairman_saad.jpg';
-      position: absolute;
-      left: 0.35rem;
-      right: 0.35rem;
-      bottom: 0.35rem;
-      font-size: 0.52rem;
-      text-align: center;
-      letter-spacing: 0.08em;
-      color: var(--gold-bright);
-      text-transform: uppercase;
-      background: rgba(5, 10, 21, 0.72);
-      border-radius: 4px;
-      padding: 0.12rem 0.25rem;
-      pointer-events: none;
-    }
-    .chairman-bio {
-      margin: 0;
-      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
-      font-size: clamp(0.7rem, 2vw, 0.84rem);
-      line-height: 1.6;
-      color: var(--text);
-    }
-    .slow-cyan-typewriter {
-      color: #00e5ff;
-      text-shadow: 0 0 12px rgba(0, 229, 255, 0.34), 0 0 26px rgba(0, 229, 255, 0.22);
-      white-space: normal;
-      overflow: hidden;
-      display: inline-block;
-      width: 100%;
-      max-width: 100%;
-      border-right: 2px solid rgba(0, 229, 255, 0.7);
-      animation: slow-typewriter 28s steps(360, end) infinite, mission-cursor 0.9s step-end infinite;
-    }
-    @keyframes slow-typewriter {
-      0%, 8% { width: 0; }
-      72%, 100% { width: 100%; }
-    }
-    @keyframes hook-pulse-terminal {
-      0%, 100% { opacity: 0.82; filter: brightness(0.98); }
-      50% { opacity: 1; filter: brightness(1.05); text-shadow: 0 0 22px rgba(212, 175, 55, 0.35), 0 0 32px rgba(0, 229, 255, 0.12); }
-    }
-    .footer-signature-metallic {
-      margin: 1.35rem 0 0;
-      text-align: center;
-      font-family: 'Great Vibes', cursive;
-      font-size: clamp(1.35rem, 4vw, 1.85rem);
-      font-weight: 400;
-      background: linear-gradient(90deg, #e8c547, #fff8dc, #D4AF37, #8a7340);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.45));
-      animation: signature-float-app 5s ease-in-out infinite;
-    }
-    @keyframes signature-float-app {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-4px); }
-    }
-    .footer-ip {
-      font-size: 0.62rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-top: 0.65rem;
+      opacity: 0.15;
     }
     .kwas-kwas-shimmer-bar {
       background: var(--navy-surface) !important;
@@ -686,29 +439,6 @@
     @keyframes kwas-kwas {
       0% { background-position: 0% center; }
       100% { background-position: 200% center; }
-    }
-    /* STRIKE 1968v34 — AKZ spine narrative: high-velocity gold / cyan */
-    .akz-spine-narrative {
-      background: linear-gradient(
-        90deg,
-        #00f0ff 0%,
-        #e8c547 14%,
-        #fff8dc 28%,
-        #00e5ff 42%,
-        #D4AF37 56%,
-        #7ee8ff 70%,
-        #fff0a3 84%,
-        #00f0ff 100%
-      );
-      background-size: 400% 100%;
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: akz-spine-velocity 1.1s linear infinite;
-    }
-    @keyframes akz-spine-velocity {
-      0% { background-position: 0% center; }
-      100% { background-position: 400% center; }
     }
     .footer-signature {
       margin: 1.5rem 0 0;
@@ -731,13 +461,13 @@
     .table-wrap.glassmorphism td { border-color: var(--navy-border); }
     .kpi.glassmorphism { border-radius: 10px; border-color: var(--navy-border); }
 
-    /* Falcon over Nigeria map + AZK Sovereign Spine + Corridor nodes */
+    /* Falcon over Nigeria map */
     .falcon-map-wrap {
       position: relative;
-      min-height: 220px;
+      min-height: 200px;
       margin-bottom: 1rem;
       border-radius: 12px;
-      overflow: visible;
+      overflow: hidden;
     }
     .nigeria-map-svg {
       position: absolute;
@@ -745,49 +475,9 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      opacity: 0.55;
+      opacity: 0.4;
     }
-    .nigeria-map-svg .nigeria-chart { width: 168px; height: auto; max-height: 200px; }
-    .sovereign-spine {
-      fill: none;
-      stroke: url(#spineGoldGrad);
-      stroke-width: 3.5;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      filter: drop-shadow(0 0 6px rgba(240, 193, 75, 0.9)) drop-shadow(0 0 14px rgba(212, 175, 55, 0.55));
-      animation: spine-glow 3.2s ease-in-out infinite;
-    }
-    @keyframes spine-glow {
-      0%, 100% { stroke-opacity: 0.95; filter: drop-shadow(0 0 4px rgba(240, 193, 75, 0.8)); }
-      50% { stroke-opacity: 1; filter: drop-shadow(0 0 12px rgba(255, 248, 220, 0.85)); }
-    }
-    .corridor-node {
-      fill: rgba(5, 10, 22, 0.9);
-      stroke: var(--gold-bright);
-      stroke-width: 1.8;
-      animation: corridor-pulse 2.1s ease-in-out infinite;
-    }
-    .corridor-node:nth-of-type(1) { animation-delay: 0s; }
-    .corridor-node:nth-of-type(2) { animation-delay: 0.25s; }
-    .corridor-node:nth-of-type(3) { animation-delay: 0.5s; }
-    .corridor-node:nth-of-type(4) { animation-delay: 0.75s; }
-    .corridor-node:nth-of-type(5) { animation-delay: 1s; }
-    @keyframes corridor-pulse {
-      0%, 100% { opacity: 0.75; stroke-width: 1.4; }
-      50% { opacity: 1; stroke-width: 2.6; filter: drop-shadow(0 0 6px var(--gold-bright)); }
-    }
-    .spine-label {
-      position: absolute;
-      top: 0.35rem;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 0.58rem;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--gold);
-      z-index: 4;
-      text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
-    }
+    .nigeria-map-svg .nigeria-outline { width: 140px; height: auto; }
     .falcon-sprite {
       position: absolute;
       width: 32px;
@@ -972,42 +662,15 @@
     .tz-bar-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem 0.45rem; }
     @media (min-width: 640px) { .tz-bar-inner { grid-template-columns: repeat(6, 1fr); } }
     .tz-cell {
-      text-align: center;
-      padding: 0.35rem 0.15rem;
-      min-width: 0;
-      position: relative;
-      border-radius: 10px;
-      border: 2px solid transparent;
-      background:
-        linear-gradient(180deg, rgba(6, 18, 36, 0.92), rgba(5, 10, 21, 0.88)) padding-box,
-        linear-gradient(
-          125deg,
-          #00f0ff 0%,
-          #0099cc 18%,
-          #e8c547 42%,
-          #fff8c4 55%,
-          #00d4e8 78%,
-          #00f0ff 100%
-        ) border-box;
-      background-size: 100% 100%, 320% 320%;
-      animation: cmd-tz-bluelaser-pulse 4.5s ease-in-out infinite;
-    }
-    @keyframes cmd-tz-bluelaser-pulse {
-      0%, 100% {
-        background-position: 0% 0%, 0% 40%;
-        box-shadow: 0 0 8px rgba(0, 240, 255, 0.25), inset 0 0 12px rgba(212, 175, 55, 0.06);
-      }
-      50% {
-        background-position: 0% 0%, 100% 60%;
-        box-shadow: 0 0 16px rgba(0, 229, 255, 0.45), 0 0 6px rgba(212, 175, 55, 0.35), inset 0 0 16px rgba(0, 200, 255, 0.08);
-      }
+      text-align: center; padding: 0.35rem 0.15rem; background: rgba(0, 40, 70, 0.35);
+      border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 10px; min-width: 0;
     }
     .tz-city { display: block; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: var(--gold-bright); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .tz-tag { display: block; font-size: 0.52rem; color: var(--muted); margin-top: 0.08rem; }
     .tz-time { font-family: ui-monospace, monospace; font-size: clamp(0.68rem, 2.2vw, 0.85rem); font-weight: 700; color: #00e5ff; margin-top: 0.15rem; text-shadow: 0 0 10px rgba(0, 229, 255, 0.35); }
     .ticker-outer { background: #030a12; border-bottom: 2px solid rgba(0, 229, 255, 0.32); overflow: hidden; padding: 0.35rem 0; }
     .ticker-label { max-width: 1200px; margin: 0 auto; padding: 0 0.65rem 0.15rem; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--gold-dim); }
-    .ticker-track { display: flex; width: max-content; animation: cmd-ticker-scroll 104s linear infinite; }
+    .ticker-track { display: flex; width: max-content; animation: cmd-ticker-scroll 16s linear infinite; }
     .ticker-track:hover { animation-play-state: paused; }
     @keyframes cmd-ticker-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
     .ticker-inner { display: flex; align-items: center; gap: 1.75rem; padding: 0 0.75rem; white-space: nowrap; }
@@ -1031,301 +694,58 @@
       box-shadow: 0 0 40px rgba(0, 255, 100, 0.12), inset 0 0 50px rgba(0, 40, 30, 0.45);
     }
     .modal-panel-app h4 { margin: 0 0 0.65rem; font-family: ui-monospace, monospace; font-size: 0.98rem; color: #00ff9d; text-shadow: 0 0 12px rgba(0, 255, 157, 0.35); min-height: 1.35em; }
-    .modal-panel-app h4.goldman-head {
-      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif !important;
-      font-size: clamp(0.9rem, 2.8vw, 1.05rem) !important;
-      font-weight: 700 !important;
-      letter-spacing: 0.06em !important;
-      text-transform: uppercase !important;
-      color: transparent !important;
-      -webkit-text-fill-color: transparent !important;
-      background: linear-gradient(135deg, #f0c14b 0%, #fff8e8 25%, #D4AF37 50%, #1a2744 85%, #4a6fa5 100%);
-      background-size: 200% 200%;
-      -webkit-background-clip: text !important;
-      background-clip: text !important;
-      animation: goldman-sheen 7s ease-in-out infinite;
-      text-shadow: none !important;
-      filter: drop-shadow(0 0 10px rgba(0, 255, 157, 0.22));
-    }
     .modal-panel-app #appModalBody { margin: 0; font-family: ui-monospace, monospace; font-size: 0.8rem; line-height: 1.6; color: rgba(180, 255, 210, 0.95); white-space: pre-wrap; min-height: 3.5em; }
     #appModalBody.cursor-blink::after { content: '▌'; color: #00ff9d; animation: cmd-cursor-blink 0.7s step-end infinite; }
     @keyframes cmd-cursor-blink { 50% { opacity: 0; } }
     .modal-close-app { margin-top: 0.85rem; width: 100%; padding: 0.6rem; font-family: ui-monospace, monospace; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; border-radius: 10px; border: 1px solid rgba(0, 255, 157, 0.4); background: rgba(0, 40, 30, 0.55); color: #00ff9d; cursor: pointer; }
-    .arb-calc-panel { max-width: 480px; max-height: min(90dvh, 620px); }
-    .arb-calc-panel .arb-lead { margin: 0 0 1rem; font-size: 0.82rem; line-height: 1.55; color: var(--text); }
-    .arb-calc-panel .arb-lead strong { color: var(--gold-bright); }
-    .arb-label { display: block; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 0.35rem; }
-    .arb-input {
-      width: 100%; box-sizing: border-box; padding: 0.55rem 0.65rem; margin-bottom: 1rem; border-radius: 8px;
-      border: 1px solid rgba(0, 255, 157, 0.35); background: rgba(0, 24, 36, 0.75); color: #00ff9d;
-      font-family: ui-monospace, monospace; font-size: 0.88rem;
-    }
-    .arb-multiplier-row {
-      display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem;
-      padding: 0.5rem 0.75rem; border-radius: 10px; background: rgba(0, 40, 70, 0.4); border: 1px solid rgba(0, 229, 255, 0.2);
-    }
-    .arb-mul-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
-    .arb-mul-value { font-size: 1.4rem; font-weight: 800; color: var(--gold-bright); }
-    .arb-viz-track { display: flex; height: 14px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(0, 229, 255, 0.25); background: rgba(0, 0, 0, 0.35); margin-bottom: 0.35rem; }
-    .arb-viz-capex { width: 10.417%; min-width: 4px; background: rgba(100, 120, 150, 0.85); }
-    .arb-viz-gain { flex: 1; background: linear-gradient(90deg, rgba(0, 229, 255, 0.45), rgba(212, 175, 55, 0.95)); }
-    .arb-viz-labels { display: flex; justify-content: space-between; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 0.75rem; }
-    .arb-result { margin: 0 0 0.65rem; font-size: 0.88rem; color: var(--text); }
-    .arb-result strong { color: var(--gold); font-family: ui-monospace, monospace; }
-    .arb-footnote { margin: 0 0 1rem; font-size: 0.72rem; line-height: 1.45; color: var(--muted); }
-    .arb-mailto {
-      display: block; text-align: center; margin-bottom: 0.75rem; padding: 0.55rem; font-size: 0.78rem; font-weight: 700; color: #00ff9d !important;
-      border: 1px solid rgba(0, 255, 157, 0.35); border-radius: 10px; text-decoration: none !important;
-    }
-    .exec-arb-btn {
-      margin-top: 0.5rem;
-      padding: 0.5rem 1rem;
-      font-weight: 700;
-      font-size: 0.82rem;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: var(--navy-bg);
-      background: linear-gradient(135deg, var(--gold-bright), var(--gold));
-      border: 1px solid var(--gold);
-      border-radius: 8px;
-      cursor: pointer;
-      font-family: inherit;
-    }
-    .exec-arb-btn:hover { filter: brightness(1.05); }
-    .dash-links { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; align-items: center; justify-content: center; }
     .ultimatum-corner { z-index: 1500; }
 
-    /* AWC / K-GEC Sovereign OS — session tier strip + 30m lock (sync with sovereign-mirror) */
-    .sovereign-tier-bar {
-      margin: 0 auto;
-      padding: 0.4rem 0.75rem 0.5rem;
-      text-align: center;
-      font-size: clamp(0.55rem, 1.5vw, 0.68rem);
-      font-weight: 800;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: rgba(232, 238, 244, 0.92);
-      border-bottom: 1px solid rgba(0, 229, 255, 0.2);
-      background: linear-gradient(90deg, rgba(0, 28, 48, 0.55), rgba(32, 24, 8, 0.4), rgba(0, 28, 48, 0.55));
-      background-size: 200% 100%;
-      animation: session-tier-shimmer 4s ease-in-out infinite;
-    }
-    @keyframes session-tier-shimmer {
-      0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-    }
-    .sovereign-tier-bar-kicker { display: block; font-size: 0.52rem; letter-spacing: 0.14em; color: var(--gold-dim); margin-bottom: 0.2rem; }
-    .sovereign-tier-bar-text { display: block; color: rgba(232, 238, 244, 0.95); }
-    .sovereign-tier-bar-sub {
-      display: block;
-      margin-top: 0.25rem;
-      font-size: clamp(0.52rem, 1.4vw, 0.62rem);
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: none;
-      color: #00e5ff;
-    }
-    .sovereign-tier-bar-wrap {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem 1rem;
-    }
-    .sovereign-tier-bar-copy { flex: 1 1 220px; min-width: 0; text-align: center; }
-    .btn-sovereign-logout {
-      appearance: none;
-      cursor: pointer;
-      font-family: inherit;
-      font-size: clamp(0.55rem, 1.45vw, 0.68rem);
-      font-weight: 800;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--gold-bright);
-      padding: 0.38rem 0.95rem;
-      border-radius: 999px;
-      border: 2px solid rgba(232, 197, 71, 0.6);
-      background: linear-gradient(165deg, rgba(28, 48, 72, 0.95), rgba(8, 20, 38, 0.98));
-      box-shadow: 0 0 16px rgba(232, 197, 71, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-      flex-shrink: 0;
-      transition: filter 0.2s ease, box-shadow 0.25s ease;
-    }
-    .btn-sovereign-logout:hover {
-      filter: brightness(1.08);
-      box-shadow: 0 0 22px rgba(255, 248, 220, 0.25), 0 0 36px rgba(232, 197, 71, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.09);
-    }
-    .btn-sovereign-logout:focus-visible {
-      outline: 2px solid rgba(0, 229, 255, 0.85);
-      outline-offset: 2px;
-    }
-    .sovereign-app-layer { min-height: 100dvh; }
-    html.sovereign-access-expired .sovereign-app-layer {
-      filter: blur(24px) saturate(0.7);
-      pointer-events: none;
-      user-select: none;
-      transition: filter 0.65s ease;
-    }
-    html.sovereign-access-expired body { overflow: hidden; }
-    .sovereign-tier-modal {
-      position: fixed; inset: 0; z-index: 50000;
-      display: none; align-items: center; justify-content: center; padding: 1.5rem;
-      background: rgba(2, 8, 14, 0.5);
-      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-    }
-    .sovereign-tier-modal.is-open { display: flex; }
-    html.gcslc-chairman-immunity .sovereign-app-layer {
-      filter: none !important;
-      pointer-events: auto !important;
-      user-select: auto;
-    }
-    html.gcslc-chairman-immunity.sovereign-access-expired .sovereign-app-layer {
-      filter: none !important;
-      pointer-events: auto !important;
-      user-select: auto;
-    }
-    html.gcslc-chairman-immunity.sovereign-access-expired body,
-    html.gcslc-chairman-immunity body {
-      overflow-x: hidden;
-    }
-    html.gcslc-chairman-immunity #sovereignTierExpiredModal {
-      display: none !important;
-      visibility: hidden !important;
-      pointer-events: none !important;
-    }
-    .sovereign-tier-modal-panel {
-      max-width: 440px; padding: 1.65rem 1.5rem; border-radius: 14px;
-      border: 2px solid rgba(232, 197, 71, 0.5);
-      background: linear-gradient(155deg, rgba(18, 40, 62, 0.98) 0%, rgba(4, 14, 26, 0.99) 45%, rgba(12, 28, 48, 0.98) 100%);
-      box-shadow: 0 0 50px rgba(0, 229, 255, 0.2), 0 0 80px rgba(232, 197, 71, 0.12), inset 0 0 48px rgba(26, 39, 68, 0.35);
-      text-align: center;
-    }
-    .sovereign-tier-modal-panel h2 {
-      margin: 0 0 0.75rem;
-      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
-      font-size: clamp(0.88rem, 2.6vw, 1.05rem);
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      line-height: 1.45;
-      background: linear-gradient(135deg, #fff0a3 0%, #e8c547 35%, #1a2744 70%, #6b8cc4 100%);
-      background-size: 200% 200%;
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      animation: goldman-sheen 7s ease-in-out infinite;
-    }
-    .sovereign-tier-modal-seal {
-      margin-top: 1rem;
-      display: inline-block;
-      padding: 0.25rem 0.65rem;
-      font-family: ui-monospace, monospace;
-      font-weight: 800;
-      font-size: 0.65rem;
-      letter-spacing: 0.2em;
-      color: var(--gold-bright);
-      border: 1px solid rgba(232, 197, 71, 0.45);
-      border-radius: 6px;
-    }
-    .footer-signature-row-app {
-      display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
-      gap: 0.75rem 1rem; margin: 0.75rem 0 0;
-    }
-    .footer-seal-app {
-      display: inline-flex; align-items: center; justify-content: center;
-      padding: 0.15rem 0.45rem;
-      font-family: ui-monospace, monospace;
-      font-weight: 800;
-      font-size: 0.58rem;
-      letter-spacing: 0.12em;
-      color: var(--gold-bright);
-      border: 1px solid rgba(232, 197, 71, 0.4);
-      border-radius: 4px;
-    }
-
     @media (prefers-reduced-motion: reduce) {
-      html.app-8r-unveil .container { animation: none !important; }
-      .bluelaser-scan, .bluelaser-edge, .satellite-scanlines, .ticker-track, .tz-cell, .wow-spine-sub, .corridor-pulse-row td, .footer-signature-metallic, .akz-spine-narrative { animation: none !important; }
-      .akz-spine-narrative {
-        background: none !important;
-        -webkit-text-fill-color: var(--gold-bright);
-        color: var(--gold-bright);
-      }
-      .tz-cell { background-position: 0% 0%, 0% 40%; }
+      .bluelaser-scan, .bluelaser-edge, .satellite-scanlines, .ticker-track { animation: none !important; }
       .ticker-track { flex-wrap: wrap; width: 100%; max-width: 1200px; margin: 0 auto; transform: none; }
       .ticker-inner { flex-wrap: wrap; white-space: normal; justify-content: center; gap: 0.5rem 1rem; }
     }
   </style>
 </head>
 <body>
-  <div class="sovereign-app-layer">
   <div class="bluelaser-stack" aria-hidden="true">
     <div class="bluelaser-scan"></div>
     <div class="bluelaser-edge"></div>
     <div class="bluelaser-vignette"></div>
   </div>
   <div class="satellite-scanlines" aria-hidden="true"></div>
-  <div class="ip-shield-overlay" aria-hidden="true"></div>
   <div class="cmd-shell">
     <div class="tz-bar cmd-tz-bar">
       <div class="tz-bar-inner" id="tzBar" aria-live="polite"></div>
     </div>
     <div class="ticker-outer cmd-ticker">
-      <div class="ticker-label">Live market pulse · March 2026 · Ge $8,597/kg · Si $1.81/lb · Fly ash $148/MT</div>
+      <div class="ticker-label">Material pulse · March 2026 benchmarks</div>
       <div class="ticker-track" id="tickerTrack">
         <div class="ticker-inner" id="tickerA"></div>
         <div class="ticker-inner" id="tickerB" aria-hidden="true"></div>
       </div>
     </div>
-    <div class="sovereign-tier-bar" role="status" aria-live="polite">
-      <div class="sovereign-tier-bar-wrap">
-        <div class="sovereign-tier-bar-copy">
-          <span class="sovereign-tier-bar-kicker">AWC / K-GEC Sovereign OS</span>
-          <span class="sovereign-tier-bar-text">Access Tier 1 (15m) | Extension Tier 2 (15m)</span>
-          <span class="sovereign-tier-bar-sub"><span class="sovereign-tier-which">Tier 1 active</span> · <span class="sovereign-tier-remaining">30:00</span> remaining</span>
-        </div>
-        <button type="button" class="btn-sovereign-logout" id="sovereignLogoutBtn" title="Return to sovereign-mirror.html and clear bridge session">Sovereign Logout</button>
-      </div>
-    </div>
   <div class="container">
     <div class="watermark-ribbon" aria-hidden="true"></div>
     <div class="main-data-area">
-    <!-- LAYER 1 START: ENTRANCE / THE GATE -->
-    <section class="layer-one-entrance" id="layerOneEntrance" aria-label="Layer 1 Entrance">
-      <!-- Authority Branding: Gold Medallion + Full Name + Falcon-Class Welcome -->
-      <header class="authority-header">
-        <div class="gold-medallion kwas-kwas-shimmer-medallion" aria-hidden="true">
-          <span class="medallion-inner">GCSLC</span>
-        </div>
-        <h1 class="org-name goldman-head">Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE</h1>
-        <p class="ngecc-brainbox kwas-kwas-shimmer">Nigerian Green Energy and Chemicals Corporation (NGECC) — Special Strategic Mission Vehicle (SSMV)</p>
-        <p class="wow-spine-sub cyan-typewriter">MISSION MANDATE: Beyond the AZK Corridor, we are operationalizing the 15/15 Grassroots Model for Civic Responsibility and the Formalization of Artisanal Mining. This terminal facilitates International Investor Outreach for global conglomerates to participate in Nigeria’s National Resource Revitalization.</p>
-        <p class="authority-name-line">Dr. Jaafaru Sa’ad, Galadiman Ruwa Zazzau.</p>
-        <p class="corporate-header-line">Galadiman Ruwa Nigeria Ltd — Primary Strategic Industrial Holding Entity</p>
-        <p class="falcon-welcome kwas-kwas-shimmer">Falcon-Class Sovereign Gateway: Seizing the 9.6× Wealth Multiplier</p>
-        <p class="institutional-status kwas-kwas-shimmer">Institutional Status: CAC Name Reservation Approved (GCSLC LTD/GTE)</p>
-      </header>
-      <section class="chairman-profile" aria-label="Chairman Nodal Profile">
-        <div class="chairman-profile-layout">
-          <figure class="chairman-portrait-ring">
-            <div class="chairman-portrait-placeholder" aria-label="Chairman portrait placeholder">chairman_saad.jpg</div>
-          </figure>
-          <p class="chairman-bio slow-cyan-typewriter">Dr. Jaafaru Sa’ad, Galadiman Ruwa Zazzau — Sovereign Proponent of the 8R Stealth Paradigm. Doctor of the University in Business Administration (DBA), Commonwealth University, Belize. He integrates global academic excellence with a prestigious traditional mandate to drive Strategic Support for Democracy (SSD) and national economic growth.</p>
-        </div>
-      </section>
-    </section>
-    <!-- LAYER 1 END: ENTRANCE / THE GATE -->
+    <!-- Authority Branding: Gold Medallion + Full Name + Falcon-Class Welcome -->
+    <header class="authority-header">
+      <div class="gold-medallion kwas-kwas-shimmer-medallion" aria-hidden="true">
+        <span class="medallion-inner">GCSLC</span>
+      </div>
+      <h1 class="org-name kwas-kwas-shimmer">Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC) LTD/GTE</h1>
+      <p class="ngecc-brainbox kwas-kwas-shimmer">Nigerian Green Energy and Chemicals Corporation (NGECC) — Special Strategic Mission Vehicle (SSMV)</p>
+      <p class="falcon-welcome kwas-kwas-shimmer">Falcon-Class Sovereign Gateway: Seizing the 9.6× Wealth Multiplier</p>
+      <p class="institutional-status kwas-kwas-shimmer">Institutional Status: CAC Name Reservation Approved (GCSLC LTD/GTE)</p>
+    </header>
 
     <header class="dashboard-header">
-      <p class="institution-name goldman-head">National Resources Revitalization Fusion Center <small>(NRRFC)</small></p>
-      <p class="paradigm-anchor">Spine &amp; Corridor duality · AZK institutional spine · Five-node coal corridor</p>
-      <h2 class="section-heading goldman-head">Nigeria Coal Reserves — Real-Time Dashboard</h2>
+      <p class="institution-name">National Resources Revitalization Fusion Center <small>(NRRFC)</small></p>
+      <p class="paradigm-anchor">Powered by the 8R Stealth Paradigm Convergence and its Determinants</p>
+      <h2 class="section-heading kwas-kwas-shimmer">Nigeria Coal Reserves — Real-Time Dashboard</h2>
       <p class="subtitle">Galadiman Ruwa · GCSLC Sovereign · Energy solution for global AI data centers</p>
       <span class="badge">Power potential for AI DCs</span>
-      <p class="subtitle dash-links" style="margin-top: 0.75rem;">
-        <a href="sovereign-gateway.html" style="color: var(--gold-bright); font-weight: 600;">Sovereign Gateway — Live Terminal</a>
-        <button type="button" class="exec-arb-btn" id="execBtn" aria-haspopup="dialog" aria-controls="arbModal">Sovereign Arbitrage Calculator</button>
-      </p>
+      <p class="subtitle" style="margin-top: 0.75rem;"><a href="sovereign-gateway.html" style="color: var(--gold-bright); font-weight: 600;">Sovereign Gateway — SFP &amp; SSMV timeline</a></p>
     </header>
 
     <div class="sovereign-activation-alert kwas-kwas-shimmer-bar" role="status" aria-live="polite">
@@ -1360,7 +780,7 @@
       </div>
     </div>
 
-    <div class="section-title goldman-head">Reserves by state — National Coal Corridor (live pulses: Enugu, Anambra, Kogi, Benue, Bauchi)</div>
+    <div class="section-title kwas-kwas-shimmer">Reserves by state — 8R Stealth Paradigm Convergence</div>
     <!-- Sovereign Wealth Leakage: The Cost of Delay (Moribund counter) -->
     <div class="moribund-penalty glassmorphism engine-room-pulse">
       <div class="moribund-label">Sovereign Wealth Leakage: The Cost of Delay</div>
@@ -1370,32 +790,9 @@
     <!-- Falcon map + Determinants sidebar + Market Strike Data -->
     <div class="falcon-convergence">
       <div class="falcon-map-wrap glassmorphism">
-        <span class="spine-label">Sovereign Spine · Abuja–Zaria–Kano (AZK)</span>
         <div class="nigeria-map-svg" aria-hidden="true">
-          <svg viewBox="0 0 200 240" class="nigeria-chart" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="spineGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#fff8dc"/>
-                <stop offset="35%" stop-color="#f0c14b"/>
-                <stop offset="70%" stop-color="#D4AF37"/>
-                <stop offset="100%" stop-color="#8a7030"/>
-              </linearGradient>
-            </defs>
-            <path fill="rgba(10,18,37,0.35)" stroke="var(--navy-border)" stroke-width="1.2" d="M100 20 L160 50 L180 100 L165 160 L120 220 L80 200 L40 150 L35 90 L60 40 Z"></path>
-            <!-- AZK Sovereign Spine (metallic gold path) -->
-            <path class="sovereign-spine" d="M 102 98 L 108 72 L 114 52" />
-            <circle cx="102" cy="98" r="3" fill="#D4AF37" opacity="0.9" />
-            <text x="106" y="96" fill="#8fa3bf" font-size="6" font-family="system-ui,sans-serif">ABJ</text>
-            <circle cx="108" cy="72" r="2.5" fill="#D4AF37" opacity="0.85" />
-            <text x="110" y="70" fill="#8fa3bf" font-size="5.5" font-family="system-ui,sans-serif">ZAR</text>
-            <circle cx="114" cy="52" r="2.5" fill="#D4AF37" opacity="0.85" />
-            <text x="116" y="50" fill="#8fa3bf" font-size="5.5" font-family="system-ui,sans-serif">KN</text>
-            <!-- National Coal Corridor — five pulsing nodes (Ge / Si / syngas yields tied here, not AZK) -->
-            <circle class="corridor-node" cx="118" cy="142" r="4.5" />
-            <circle class="corridor-node" cx="98" cy="128" r="4.5" />
-            <circle class="corridor-node" cx="104" cy="108" r="4.5" />
-            <circle class="corridor-node" cx="112" cy="98" r="4.5" />
-            <circle class="corridor-node" cx="128" cy="82" r="4.5" />
+          <svg viewBox="0 0 200 240" class="nigeria-outline" xmlns="http://www.w3.org/2000/svg">
+            <path fill="none" stroke="var(--navy-border)" stroke-width="1.5" d="M100 20 L160 50 L180 100 L165 160 L120 220 L80 200 L40 150 L35 90 L60 40 Z"></path>
           </svg>
         </div>
         <div class="falcon-data-bubble" id="falconBubble" style="left: 48%; top: 57%; transform: translate(0px, -100%);">
@@ -1403,10 +800,10 @@
           <span class="bubble-value" id="falconBubbleValue">High-Value Feedstock Detected — Edo</span>
         </div>
         <div class="market-strike-data" id="marketStrikeData">
-          <span class="strike-label">Corridor nodes · March 2026</span>
+          <span class="strike-label">March 2026 benchmarks</span>
           <span class="strike-ge">Germanium: $8,597/kg</span>
           <span class="strike-fly">Coal Fly Ash: $148/MT</span>
-          <span class="strike-si">Silicon: $1.81/lb</span>
+          <span class="strike-si">Silicon: $1.81/kg</span>
           <span class="strike-nh3">Ammonia: $430/MT</span>
         </div>
         <div class="falcon-sprite" id="falconSprite" aria-hidden="true" style="left: 42%; top: 65%; transform: translate(-50%, -50%);">
@@ -1419,7 +816,7 @@
         </div>
       </div>
       <aside class="determinants-sidebar glassmorphism" aria-label="8R Determinants">
-        <div class="determinants-title"><span class="kwas-kwas-shimmer">Determinants (8R)</span><span class="akz-spine-narrative"> — Abuja-Zaria-Kano (AKZ) the spine governing National Coal Corridor.</span></div>
+        <div class="determinants-title kwas-kwas-shimmer">Determinants (8R)</div>
         <div class="determinant triggered" id="detD1" data-d="1" role="button" tabindex="0" data-det-idx="0"><span class="det-badge">D1</span><span class="det-label">Refine</span></div>
         <div class="determinant" id="detD2" data-d="2" role="button" tabindex="0" data-det-idx="1"><span class="det-badge">D2</span><span class="det-label">Reset</span></div>
         <div class="determinant" id="detD3" data-d="3" role="button" tabindex="0" data-det-idx="2"><span class="det-badge">D3</span><span class="det-label">Research</span></div>
@@ -1447,14 +844,14 @@
 
     <!-- Strategic Brief -->
     <section class="strategic-brief" aria-labelledby="strategic-brief-heading">
-      <h2 id="strategic-brief-heading" class="goldman-head">Strategic Brief</h2>
+      <h2 id="strategic-brief-heading" class="kwas-kwas-shimmer">Strategic Brief</h2>
       <p>Nigeria’s sub-bituminous coal is not a “dirty fuel”—it is a <span class="highlight">chemical feedstock</span>. The National Resources Revitalization Fusion Center (NRRFC) utilizes the <span class="emphasis">8R Stealth Paradigm</span> to extract <strong>Germanium</strong> for AI chips and <strong>Ammonia</strong> for fertilizers, effectively turning a liability into a sovereign asset.</p>
       <p>That sovereign asset clears the <span class="highlight">₦50 Trillion</span> national debt while powering the global AI revolution.</p>
     </section>
 
     <!-- National debt-swap: 10% Global Big Tech Capex vs Nigeria domestic debt -->
     <div class="widget-panel" id="debtSwapWidget">
-      <h2 class="goldman-head">National debt-swap: 10% Global Big Tech Capex vs Nigeria domestic debt</h2>
+      <h2 class="kwas-kwas-shimmer">National debt-swap: 10% Global Big Tech Capex vs Nigeria domestic debt</h2>
       <p class="fx-badge">Live 2026 FX: ₦1,350 = $1 USD</p>
       <div class="debt-swap-grid">
         <div class="cell">
@@ -1477,7 +874,7 @@
 
     <!-- NRRF: Coal to syngas conversion cost vs diesel (USD & Naira) -->
     <div class="widget-panel" id="nrrfWidget">
-      <h2 class="goldman-head">NRRF — Coal to syngas vs diesel (cost per liter diesel equivalent)</h2>
+      <h2 class="kwas-kwas-shimmer">NRRF — Coal to syngas vs diesel (cost per liter diesel equivalent)</h2>
       <p class="fx-badge">2026 FX: ₦1,350 = $1 USD</p>
       <div class="nrrf-inputs">
         <label>Diesel price ($/L) <input type="number" id="dieselUsd" value="1.00" min="0.1" step="0.01"></label>
@@ -1510,12 +907,11 @@
 
     <!-- NRRFC Value-Added Derivative Strike — GCSLC Sovereign -->
     <div class="widget-panel" id="derivativeStrikeWidget">
-      <h2 class="goldman-head">NRRFC Value-Added Derivative Strike — GCSLC Sovereign</h2>
-      <p class="fx-badge">March 2026 valuations · Corridor yields (five nodes) — not AZK spine institutions · Ge $8,597/kg · Fly ash $148/MT · Si $1.81/lb · NH₃ $430/MT · FX: ₦1,350 = $1</p>
+      <h2 class="kwas-kwas-shimmer">NRRFC Value-Added Derivative Strike — GCSLC Sovereign</h2>
+      <p class="fx-badge">March 2026 · Ge $8,597/kg · Fly ash $148/MT · Si $1.81/kg · NH₃ $430/MT · 80 g Ge/ton · 0.15 MT fly ash/MT coal · 2.608 kg Si/MT coal · 0.6 MT NH₃/MT coal · FX: ₦1,350 = $1</p>
       <div class="nrrf-inputs">
-        <label>Corridor coal throughput (MT) <input type="number" id="coalTonnageMt" value="10000" min="1" step="100" title="Throughput from the five corridor nodes"></label>
+        <label>Coal tonnage (MT) <input type="number" id="coalTonnageMt" value="10000" min="1" step="100"></label>
       </div>
-      <p class="fx-badge" style="margin-top:0.35rem;">Corridor proven base: 447.66 Mt (five nodes) · National total: 640.04 Mt — yields below are corridor-bound.</p>
       <div class="nrrf-grid">
         <div class="cell">
           <div class="label">Raw coal value (USD)</div>
@@ -1541,8 +937,8 @@
 
       <!-- Critical Mineral Yield -->
       <div class="critical-mineral-yield">
-        <h3 class="goldman-head">Critical Mineral Yield</h3>
-        <p class="yield-formula">Corridor-bound: Raw Coal + Ge + NH₃ + Fly Ash + Silicon — all quantities scale from corridor throughput (five nodes). AZK spine is governance only.</p>
+        <h3>Critical Mineral Yield</h3>
+        <p class="yield-formula">Total Revenue = Raw Coal + Ge + NH₃ + Fly Ash + Silicon (March 2026 prices: Ge $8,597/kg · Fly Ash $148/MT · Si $1.81/kg)</p>
         <table class="yield-table">
           <thead>
             <tr><th>Component</th><th>Quantity</th><th>Price</th><th>Revenue (USD)</th><th>Revenue (₦)</th></tr>
@@ -1558,7 +954,7 @@
 
       <!-- Bar chart: Raw Export vs NRRFC Processed Revenue -->
       <div class="bar-chart-wrap">
-        <h3 class="goldman-head">Raw Export Revenue vs NRRFC Processed Revenue</h3>
+        <h3>Raw Export Revenue vs NRRFC Processed Revenue</h3>
         <div class="bar-chart" id="revenueBarChart">
           <div class="bar-row">
             <span class="bar-label">Raw Export Revenue</span>
@@ -1578,13 +974,7 @@
       <p class="footer-statement">The Galadiman Ruwa Center (GCSLC) presents the NRRFC—a clinical strike against economic inertia. By capturing 10% of Global Big Tech CAPEX (₦945T at March 2026 FX), we achieve 18.9× coverage (1,890% of face) of Nigeria’s ₦50T domestic debt, proving that sovereign re-engineering is the only path to the Zenith.</p>
       <p class="footer-brand">Galadiman Ruwa Center for Strategic Leadership and Communication — <span class="gcslc">GCSLC</span></p>
       <p class="footer-tagline">GCSLC Sovereign · NRRFC · 2026 FX: ₦1,350 = $1</p>
-      <div class="footer-signature-row-app">
-        <span class="footer-seal-app" aria-hidden="true">LW15954</span>
-        <p class="footer-signature-metallic">Dr. Sa'ad Jaafaru</p>
-        <span class="footer-seal-app" aria-hidden="true">LW15954</span>
-      </div>
-      <p class="footer-tagline" style="margin-top:0.25rem;">Chairman &amp; Founder, GCSLC</p>
-      <p class="footer-ip">Copyright · Proprietary framework · IP LW15954</p>
+      <p class="footer-signature kwas-kwas-shimmer">Dr. Jaafaru Sa'ad — Chairman &amp; Founder, GCSLC</p>
     </footer>
     </div>
     <!-- Ultimatum: Falcon facing camera + speech bubble -->
@@ -1602,72 +992,15 @@
     </div>
   </div>
   </div>
-  </div>
-
-  <div id="sovereignTierExpiredModal" class="sovereign-tier-modal" role="alertdialog" aria-modal="true" aria-labelledby="sovereignTierExpiredTitle" aria-hidden="true">
-    <div class="sovereign-tier-modal-panel">
-      <h2 id="sovereignTierExpiredTitle">Access Expired. Contact Dr. Sa'ad for Tier 3 Authorization.</h2>
-      <span class="sovereign-tier-modal-seal" aria-hidden="true">LW15954</span>
-    </div>
-  </div>
-
-  <div class="modal-backdrop-app" id="arbModal" role="dialog" aria-modal="true" aria-labelledby="arbModalTitle" aria-hidden="true">
-    <div class="modal-panel-app arb-calc-panel">
-      <h4 id="arbModalTitle" class="goldman-head">Sovereign Arbitrage Calculator</h4>
-      <p class="arb-lead">Enter CAPEX to visualize the <strong>9.6×</strong> wealth multiplier and sovereign de-risking of your AI supply chain via AZK-governed mineral derivatives.</p>
-      <label class="arb-label" for="arbCapexInput">CAPEX (USD)</label>
-      <input type="number" class="arb-input" id="arbCapexInput" value="1000000000" min="1000000" step="1000000" />
-      <div class="arb-multiplier-row">
-        <span class="arb-mul-label">Wealth multiplier</span>
-        <span class="arb-mul-value">9.6×</span>
-      </div>
-      <div class="arb-viz" aria-hidden="true">
-        <div class="arb-viz-track">
-          <div class="arb-viz-capex" title="CAPEX share (1÷9.6)"></div>
-          <div class="arb-viz-gain" title="Sovereign terminal uplift"></div>
-        </div>
-        <div class="arb-viz-labels"><span>CAPEX slice</span><span>9.6× terminal stack</span></div>
-      </div>
-      <p class="arb-result">Implied sovereign terminal value: <strong id="arbTerminalUsd">$9.60 B</strong></p>
-      <p class="arb-footnote">National Coal Corridor throughput (Ge · Si · fly ash) — AZK spine governance only.</p>
-      <a href="mailto:info@galadimanruwacenter.org?subject=Executive%20Access%20%E2%80%94%20GCSLC%20Live%20Terminal" class="arb-mailto">Email executive access request</a>
-      <button type="button" class="modal-close-app" id="arbModalClose">Close</button>
-    </div>
-  </div>
 
   <div class="modal-backdrop-app" id="appRModal" role="dialog" aria-modal="true" aria-labelledby="appModalTitle" aria-hidden="true">
     <div class="modal-panel-app">
-      <h4 id="appModalTitle" class="goldman-head"></h4>
+      <h4 id="appModalTitle"></h4>
       <p id="appModalBody"></p>
       <button type="button" class="modal-close-app" id="appModalClose">Dismiss</button>
     </div>
   </div>
 
-  <script src="assets/sovereign-tier-session.js"></script>
-  <script>
-    (function () {
-      try {
-        if (sessionStorage.getItem('gcslc_just_bridged') === '1') {
-          sessionStorage.removeItem('gcslc_just_bridged');
-          document.documentElement.classList.add('app-8r-unveil');
-        }
-      } catch (e) {}
-    })();
-  </script>
-  <script>
-    (function () {
-      var lo = document.getElementById('sovereignLogoutBtn');
-      if (lo) {
-        lo.addEventListener('click', function () {
-          if (window.GCSLC_SOVEREIGN_SESSION && typeof window.GCSLC_SOVEREIGN_SESSION.visitorLogout === 'function') {
-            window.GCSLC_SOVEREIGN_SESSION.visitorLogout();
-          } else {
-            window.location.reload();
-          }
-        });
-      }
-    })();
-  </script>
   <script>
     (function () {
       const lastUpdatedEl = document.getElementById('last-updated');
@@ -1684,19 +1017,13 @@
         return Number(n).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 2 });
       }
 
-      var CORRIDOR_STATES = ['Enugu', 'Anambra', 'Kogi', 'Benue', 'Bauchi'];
-      function jitterMarch(v, kind) {
-        var w = kind === 'res' ? 0.004 : kind === 'pow' ? 0.003 : 0.06;
-        return v * (1 + (Math.random() - 0.5) * w);
-      }
-
       var baselineData = {
         summary: {
           totalProvenReservesMt: 640.04,
           powerPotentialMW: 1199,
           statesWithReserves: 13,
           totalProductionCapacityMtpa: 0.02,
-          lastUpdated: (function () { var t = new Date(); var d = new Date(); d.setFullYear(2026); d.setMonth(2); d.setDate(22); d.setHours(t.getHours(), t.getMinutes(), t.getSeconds(), t.getMilliseconds()); return d.toISOString(); })()
+          lastUpdated: (function () { var t = new Date(); var d = new Date(); d.setFullYear(2026); d.setMonth(2); d.setDate(8); d.setHours(t.getHours(), t.getMinutes(), t.getSeconds(), t.getMilliseconds()); return d.toISOString(); })()
         },
         states: [
           { name: 'Enugu', reservesMt: 167.7, powerPotentialMW: 401, productionMtpa: 0.01, status: 'active' },
@@ -1726,10 +1053,8 @@
         productionEl.textContent = formatNum(s.totalProductionCapacityMtpa);
 
         statesBody.innerHTML = states.map(function (row) {
-          var nm = row.name || row.id;
-          var trClass = CORRIDOR_STATES.indexOf(nm) >= 0 ? ' class="corridor-pulse-row"' : '';
-          return '<tr' + trClass + '>' +
-            '<td>' + nm + '</td>' +
+          return '<tr>' +
+            '<td>' + (row.name || row.id) + '</td>' +
             '<td>' + formatNum(row.reservesMt) + '</td>' +
             '<td>' + formatNum(row.powerPotentialMW) + '</td>' +
             '<td>' + formatNum(row.productionMtpa) + '</td>' +
@@ -1746,18 +1071,18 @@
         var s = baselineData.summary;
         return {
           summary: {
-            totalProvenReservesMt: jitterMarch(640.04, 'res'),
-            powerPotentialMW: Math.round(jitterMarch(1199, 'pow')),
+            totalProvenReservesMt: 640.04,
+            powerPotentialMW: 1199,
             statesWithReserves: s.statesWithReserves,
-            totalProductionCapacityMtpa: jitterMarch(s.totalProductionCapacityMtpa, 'prod'),
-            lastUpdated: (function () { var t = new Date(); var d = new Date(); d.setFullYear(2026); d.setMonth(2); d.setDate(22); d.setHours(t.getHours(), t.getMinutes(), t.getSeconds(), t.getMilliseconds()); return d.toISOString(); })()
+            totalProductionCapacityMtpa: s.totalProductionCapacityMtpa,
+            lastUpdated: (function () { var t = new Date(); var d = new Date(); d.setFullYear(2026); d.setMonth(2); d.setDate(8); d.setHours(t.getHours(), t.getMinutes(), t.getSeconds(), t.getMilliseconds()); return d.toISOString(); })()
           },
           states: baselineData.states.map(function (row) {
             return {
               name: row.name,
-              reservesMt: jitterMarch(row.reservesMt, 'res'),
-              powerPotentialMW: Math.round(jitterMarch(row.powerPotentialMW, 'pow')),
-              productionMtpa: row.productionMtpa > 0 ? jitterMarch(row.productionMtpa, 'prod') : 0,
+              reservesMt: row.reservesMt,
+              powerPotentialMW: row.powerPotentialMW,
+              productionMtpa: row.productionMtpa,
               status: row.status
             };
           })
@@ -1802,7 +1127,7 @@
       updateUtcClock();
     })();
 
-    // --- Falcon: National Coal Corridor only (5 nodes) — Ge/Si/syngas yields; AZK spine is separate ---
+    // --- Animated Falcon: shuttle 13 states, trigger D1-D8, Market Strike Data (Ge $8,597/kg · NH3 $430/MT) ---
     (function () {
       var wrap = document.querySelector('.falcon-map-wrap');
       var falcon = document.getElementById('falconSprite');
@@ -1810,13 +1135,21 @@
       var bubbleValue = document.getElementById('falconBubbleValue');
       if (!wrap || !falcon || !bubble) return;
       var statePositions = [
-        { left: 59, top: 59 },
-        { left: 49, top: 53 },
-        { left: 52, top: 45 },
-        { left: 56, top: 41 },
-        { left: 64, top: 34 }
+        { left: 52, top: 58 },
+        { left: 58, top: 48 },
+        { left: 62, top: 52 },
+        { left: 68, top: 55 },
+        { left: 65, top: 42 },
+        { left: 48, top: 68 },
+        { left: 45, top: 62 },
+        { left: 48, top: 58 },
+        { left: 42, top: 65 },
+        { left: 38, top: 38 },
+        { left: 62, top: 48 },
+        { left: 52, top: 42 },
+        { left: 58, top: 55 }
       ];
-      var stateNames = ['Enugu', 'Anambra', 'Kogi', 'Benue', 'Bauchi'];
+      var stateNames = ['Enugu', 'Kogi', 'Benue', 'Gombe', 'Nasarawa', 'Delta', 'Imo', 'Anambra', 'Edo', 'Kebbi', 'Bauchi', 'Kwara', 'Plateau'];
       var idx = 0;
       function triggerDeterminant(dNum) {
         for (var i = 1; i <= 8; i++) {
@@ -1833,12 +1166,12 @@
         bubble.style.left = (left + 6) + '%';
         bubble.style.top = (top - 8) + '%';
         bubble.style.transform = 'translate(0, -100%)';
-        bubbleValue.textContent = 'Corridor pulse — ' + stateNames[idx];
+        bubbleValue.textContent = 'High-Value Feedstock Detected — ' + stateNames[idx];
         bubble.classList.add('strike-pulse');
         setTimeout(function () { bubble.classList.remove('strike-pulse'); }, 400);
         var detIndex = (idx % 8) + 1;
         triggerDeterminant(detIndex);
-        idx = (idx + 1) % 5;
+        idx = (idx + 1) % 13;
       }
       place();
       setInterval(place, 2200);
@@ -1955,14 +1288,12 @@
       });
       updateNrrf();
 
-      // --- NRRFC Value-Added Derivative Strike (March 2026) — throughput = National Coal Corridor (5 nodes) only ---
-      var LB_TO_KG = 0.45359237;
+      // --- NRRFC Value-Added Derivative Strike (March 2026 benchmarks) ---
       var PRICE_GERMANIUM_KG = 8597;
       var PRICE_AMMONIA_MT = 430;
       var PRICE_COAL_MT = 110;
       var PRICE_FLY_ASH_MT = 148;
-      var PRICE_SILICON_LB = 1.81;
-      var PRICE_SILICON_KG = PRICE_SILICON_LB / LB_TO_KG;
+      var PRICE_SILICON_KG = 1.81;
       var GE_YIELD_KG_PER_MT = 0.08;
       var AMMONIA_YIELD_PER_MT = 0.6;
       var FLY_ASH_MT_PER_MT = 0.15;
@@ -2006,7 +1337,7 @@
             { label: 'Germanium (fly ash)', qty: germanium_kg, unit: 'KG', price: '$' + PRICE_GERMANIUM_KG.toLocaleString(), revenue: germanium_revenue },
             { label: 'Ammonia', qty: ammonia_mt, unit: 'MT', price: '$' + PRICE_AMMONIA_MT, revenue: ammonia_revenue },
             { label: 'Coal Fly Ash', qty: fly_ash_mt, unit: 'MT', price: '$' + PRICE_FLY_ASH_MT, revenue: fly_ash_revenue },
-            { label: 'Silicon', qty: silicon_kg, unit: 'KG', price: '$' + PRICE_SILICON_LB + '/lb', revenue: silicon_revenue }
+            { label: 'Silicon', qty: silicon_kg, unit: 'KG', price: '$' + PRICE_SILICON_KG, revenue: silicon_revenue }
           ]
         };
       }
@@ -2051,34 +1382,15 @@
       updateDerivativeStrike();
     })();
 
-    // —— Copyright / anti-copy (blocks casual screenshot & copy; modals remain usable) ——
-    (function () {
-      document.addEventListener('contextmenu', function (e) {
-        if (e.target.closest && (e.target.closest('.modal-backdrop-app.is-open') || e.target.closest('.sovereign-tier-modal.is-open'))) return;
-        e.preventDefault();
-      });
-      document.addEventListener('copy', function (e) {
-        if (e.target.closest && (e.target.closest('.modal-backdrop-app.is-open') || e.target.closest('.sovereign-tier-modal.is-open'))) return;
-        e.preventDefault();
-      });
-      document.addEventListener('keydown', function (e) {
-        if (e.target.closest && (e.target.closest('input') || e.target.closest('textarea'))) return;
-        if (e.key === 'PrintScreen') {
-          document.body.style.filter = 'blur(6px)';
-          setTimeout(function () { document.body.style.filter = ''; }, 400);
-        }
-      });
-    })();
-
     // —— Global Pulse (clocks + material ticker) + 8R Matrix typewriter (unified with sovereign-gateway) ——
     (function () {
       var zones = [
-        { city: 'Abuja', tag: 'Local', tz: 'Africa/Lagos' },
+        { city: 'Zaria', tag: 'Local', tz: 'Africa/Lagos' },
         { city: 'London', tag: 'LSE', tz: 'Europe/London' },
         { city: 'New York', tag: 'NYSE', tz: 'America/New_York' },
         { city: 'Dubai', tag: 'Commodities', tz: 'Asia/Dubai' },
         { city: 'Singapore', tag: 'Arbitrage', tz: 'Asia/Singapore' },
-        { city: 'Beijing', tag: 'Tech · CST (UTC+8)', tz: 'Asia/Shanghai' }
+        { city: 'Tokyo', tag: 'Technology', tz: 'Asia/Tokyo' }
       ];
       function renderClocks() {
         var el = document.getElementById('tzBar');
@@ -2094,62 +1406,40 @@
             if (p.type === 'minute') M = p.value;
             if (p.type === 'second') S = p.value;
           });
-          var syncTitle = z.tz === 'Asia/Shanghai'
-            ? ' title="Beijing sync · IANA Asia/Shanghai (China Standard Time)"'
-            : '';
-          return '<div class="tz-cell"' + syncTitle + '><span class="tz-city">' + z.city + '</span><span class="tz-tag">' + z.tag + '</span><span class="tz-time" data-tz="' + z.tz + '">' + H + ':' + M + ':' + S + '</span></div>';
+          return '<div class="tz-cell"><span class="tz-city">' + z.city + '</span><span class="tz-tag">' + z.tag + '</span><span class="tz-time">' + H + ':' + M + ':' + S + '</span></div>';
         }).join('');
       }
-      var mats = { germanium: 8597, siliconLb: 1.81, flyAsh: 148 };
+      var mats = { germanium: 8597, silicon: 1.81, flyAsh: 148, diamonds: 94.5 };
       function jitterMats() {
         mats.germanium = 8597 + (Math.random() - 0.5) * 8;
-        mats.siliconLb = 1.81 + (Math.random() - 0.5) * 0.02;
+        mats.silicon = 1.81 + (Math.random() - 0.5) * 0.02;
         mats.flyAsh = 148 + (Math.random() - 0.5) * 0.8;
+        mats.diamonds = 94.5 + (Math.random() - 0.5) * 0.6;
       }
       function updateTicker() {
         jitterMats();
-        var pulse = '<span class="tick-item"><span class="live-dot"></span><strong>Germanium</strong> $' + mats.germanium.toFixed(0) + '/kg</span>' +
-          '<span class="tick-item"><strong>Silicon</strong> $' + mats.siliconLb.toFixed(2) + '/lb</span>' +
-          '<span class="tick-item"><strong>Coal Fly Ash</strong> $' + mats.flyAsh.toFixed(0) + '/MT</span>';
-        var html = pulse + pulse;
+        var html = '<span class="tick-item"><span class="live-dot"></span><strong>Germanium</strong> $' + mats.germanium.toFixed(0) + '/kg</span>' +
+          '<span class="tick-item"><strong>Silicon</strong> $' + mats.silicon.toFixed(2) + '/kg</span>' +
+          '<span class="tick-item"><strong>Coal Fly Ash</strong> $' + mats.flyAsh.toFixed(0) + '/MT</span>' +
+          '<span class="tick-item"><strong>Industrial Diamonds</strong> $' + mats.diamonds.toFixed(1) + '/ct bench</span>' +
+          '<span class="tick-item"><strong>Germanium</strong> $' + mats.germanium.toFixed(0) + '/kg</span>' +
+          '<span class="tick-item"><strong>Silicon</strong> $' + mats.silicon.toFixed(2) + '/kg</span>' +
+          '<span class="tick-item"><strong>Coal Fly Ash</strong> $' + mats.flyAsh.toFixed(0) + '/MT</span>' +
+          '<span class="tick-item"><strong>Industrial Diamonds</strong> $' + mats.diamonds.toFixed(1) + '/ct bench</span>';
         var a = document.getElementById('tickerA');
         var b = document.getElementById('tickerB');
         if (a) a.innerHTML = html;
         if (b) b.innerHTML = html;
       }
       var determinants8 = [
-        {
-          title: 'D1 — REFINE',
-          body: 'MATRIX DETERMINANT D1 — REFINE\n\nDefinition: Continuous elevation of governance, operating cadence, and execution fidelity across NRRFC instruments. Refine locks KPIs, audit trails, and revision velocity so corridor throughput and AZK spine decisions are evidence-anchored—not narrative-driven.\n\nAuthority: Sets the measurement baseline before capital scale-up; reconciles book, physical, and market benchmarks for coal-derived stacks (Ge, Si, fly ash, syngas pathway).\n\n8R link: Feeds D2 (Reset) with a precise inventory of what must be cleared versus what must be preserved.'
-        },
-        {
-          title: 'D2 — RESET',
-          body: 'MATRIX DETERMINANT D2 — RESET\n\nDefinition: Institutional clearance—retiring obsolete mandates, conflicted workflows, and political drag that block sovereign execution. Reset is a controlled purge: remove friction without destroying institutional memory.\n\nAuthority: Authorizes environment sanitization for SSMV activation while preserving legal continuity and stakeholder trust.\n\n8R link: Enables D3 (Research) to run on clean rails and prevents “zombie processes” from contaminating derivative pricing.'
-        },
-        {
-          title: 'D3 — RESEARCH',
-          body: 'MATRIX DETERMINANT D3 — RESEARCH\n\nDefinition: Evidence-grade discovery—geology, chemistry, logistics, and offtake validation at corridor nodes (Enugu, Anambra, Kogi, Benue, Bauchi). Research converts reserves into bankable flows and derisks AI-adjacent mineral exposure.\n\nAuthority: Establishes reproducible assays, mass balances, and scenario bands for March 2026 valuation engines.\n\n8R link: Supplies the fact base required for D4 (Restructure) and D7 (Re-engineer) without speculative drift.'
-        },
-        {
-          title: 'D4 — RESTRUCTURE',
-          body: 'MATRIX DETERMINANT D4 — RESTRUCTURE\n\nDefinition: Legal and capital restructuring to align ownership, SPVs, offtake, and sovereign guarantees with the AZK spine and National Coal Corridor economics.\n\nAuthority: Maps entities, contracts, and risk partitions so derivative stacks are enforceable and auditable under Nigerian and partner frameworks.\n\n8R link: Creates the architecture that D5 (Resuscitate) and D6 (Revitalize) deploy into—without re-litigating structure mid-strike.'
-        },
-        {
-          title: 'D5 — RESUSCITATE',
-          body: 'MATRIX DETERMINANT D5 — RESUSCITATE\n\nDefinition: Recovery of moribund asset value—restart stranded logistics, upgrade capture yields, and restore operational tempo on corridor nodes before export narratives.\n\nAuthority: Targets idle or under-run capacity where Ge/Si/fly-ash recovery can compound without greenfield delay.\n\n8R link: Bridges research + structure into tangible throughput so D6 (Revitalize) can monetize.'
-        },
-        {
-          title: 'D6 — REVITALIZE',
-          body: 'MATRIX DETERMINANT D6 — REVITALIZE\n\nDefinition: Activation of sovereign revenue strikes—pricing discipline, offtake sequencing, and corridor pulses synchronized to live market benchmarks (e.g., Ge, Si lb, fly ash MT).\n\nAuthority: Converts engineering readiness into cashflow and proves the derivative multiplier against raw export parity.\n\n8R link: Feeds surplus logic that supports national balance-sheet engineering and the 9.6× wealth-multiplier narrative when paired with CAPEX discipline.'
-        },
-        {
-          title: 'D7 — RE-ENGINEER',
-          body: 'MATRIX DETERMINANT D7 — RE-ENGINEER\n\nDefinition: Technical overhaul—process control, digital twins, emissions profile, and recovery circuits tuned for long-cycle AI supply-chain de-risking via AZK-governed mineral derivatives.\n\nAuthority: Hardens plants and data pipelines so March 2026 valuations remain stable under stress tests.\n\n8R link: Institutionalizes improvements so D8 (Retain) captures know-how, not one-off heroics.'
-        },
-        {
-          title: 'D8 — RETAIN',
-          body: 'MATRIX DETERMINANT D8 — RETAIN\n\nDefinition: Preservation of institutional knowledge, contract memory, and sovereign wealth mechanics across electoral and market cycles.\n\nAuthority: Codifies playbooks, security posture (IP LW15954), and operator training so the 8R loop compounds instead of resetting.\n\n8R link: Closes the loop back to D1 (Refine) with a stronger evidence base—matrix continuity, not episodic consulting.'
-        }
+        { title: 'D1: Refine', body: 'Continuous enhancement of operational detail.' },
+        { title: 'D2: Reset', body: 'Institutional environment clearance & operational purge.' },
+        { title: 'D3: Research', body: 'Evidence-grade discovery & logic validation.' },
+        { title: 'D4: Restructure', body: 'Legal and structural SSMV alignment.' },
+        { title: 'D5: Resuscitate', body: 'Recovery of moribund asset value.' },
+        { title: 'D6: Revitalize', body: 'Activation of sovereign revenue strikes.' },
+        { title: 'D7: Re-engineer', body: 'Technical overhaul for long-cycle growth.' },
+        { title: 'D8: Retain', body: 'Preservation of institutional knowledge & wealth.' }
       ];
       var appModal = document.getElementById('appRModal');
       var appModalTitle = document.getElementById('appModalTitle');
@@ -2180,7 +1470,7 @@
         } else {
           typeChar(item.title, 0, appModalTitle, 24, function () {
             appModalBody.classList.add('cursor-blink');
-            typeChar(item.body, 0, appModalBody, 7, function () {
+            typeChar(item.body, 0, appModalBody, 10, function () {
               appModalBody.classList.remove('cursor-blink');
               twCancel = null;
             });
@@ -2211,83 +1501,12 @@
       if (appModalClose) appModalClose.addEventListener('click', closeAppModal);
       if (appModal) appModal.addEventListener('click', function (e) { if (e.target === appModal) closeAppModal(); });
       document.addEventListener('keydown', function (e) {
-        if (e.key !== 'Escape') return;
-        var arbEl = document.getElementById('arbModal');
-        if (arbEl && arbEl.classList.contains('is-open')) {
-          arbEl.classList.remove('is-open');
-          arbEl.setAttribute('aria-hidden', 'true');
-          document.body.style.overflow = '';
-          return;
-        }
-        if (appModal && appModal.classList.contains('is-open')) closeAppModal();
+        if (e.key === 'Escape' && appModal && appModal.classList.contains('is-open')) closeAppModal();
       });
       renderClocks();
       setInterval(renderClocks, 1000);
       updateTicker();
       setInterval(updateTicker, 3000);
-    })();
-
-    (function () {
-      var arb = document.getElementById('arbModal');
-      var execBtn = document.getElementById('execBtn');
-      var inp = document.getElementById('arbCapexInput');
-      var out = document.getElementById('arbTerminalUsd');
-      var WEALTH_MULTIPLIER = 9.6;
-      function fmtUsd(n) {
-        if (!isFinite(n) || n < 0) return '—';
-        if (n >= 1e12) return '$' + (n / 1e12).toFixed(2) + ' T';
-        if (n >= 1e9) return '$' + (n / 1e9).toFixed(2) + ' B';
-        if (n >= 1e6) return '$' + (n / 1e6).toFixed(2) + ' M';
-        return '$' + n.toLocaleString(undefined, { maximumFractionDigits: 0 });
-      }
-      function updateArb() {
-        var c = parseFloat(inp && inp.value) || 0;
-        if (out) out.textContent = fmtUsd(c * WEALTH_MULTIPLIER);
-      }
-      function openArb() {
-        if (!arb) return;
-        arb.classList.add('is-open');
-        arb.setAttribute('aria-hidden', 'false');
-        document.body.style.overflow = 'hidden';
-        updateArb();
-        if (inp) inp.focus();
-      }
-      function closeArb() {
-        if (!arb) return;
-        arb.classList.remove('is-open');
-        arb.setAttribute('aria-hidden', 'true');
-        document.body.style.overflow = '';
-      }
-      if (execBtn) {
-        execBtn.addEventListener('click', function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          openArb();
-        });
-      }
-      if (inp) inp.addEventListener('input', updateArb);
-      var arbClose = document.getElementById('arbModalClose');
-      if (arbClose) arbClose.addEventListener('click', closeArb);
-      if (arb) arb.addEventListener('click', function (e) { if (e.target === arb) closeArb(); });
-    })();
-
-    (function () {
-      var ribbon = document.querySelector('.watermark-ribbon');
-      if (!ribbon) return;
-      function tick() {
-        var sc = window.scrollY || 0;
-        var z = window.visualViewport ? window.visualViewport.scale : 1;
-        var bump = Math.min(0.12, sc * 0.00012 + Math.abs(Math.sin(Date.now() / 1800)) * 0.04);
-        var scale = 1 + bump + (z - 1) * 0.08;
-        ribbon.style.setProperty('--wm-scale', String(Math.min(1.14, Math.max(0.94, scale))));
-      }
-      window.addEventListener('scroll', tick, { passive: true });
-      if (window.visualViewport) {
-        window.visualViewport.addEventListener('resize', tick);
-        window.visualViewport.addEventListener('scroll', tick);
-      }
-      setInterval(tick, 120);
-      tick();
     })();
   </script>
 
