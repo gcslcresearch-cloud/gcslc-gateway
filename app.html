@@ -526,6 +526,20 @@
     @keyframes mission-cursor {
       50% { border-right-color: transparent; }
     }
+    .slow-cyan-typewriter {
+      color: #00e5ff;
+      text-shadow: 0 0 12px rgba(0, 229, 255, 0.34), 0 0 26px rgba(0, 229, 255, 0.22);
+      white-space: normal;
+      overflow: hidden;
+      display: inline-block;
+      max-width: 100%;
+      border-right: 2px solid rgba(0, 229, 255, 0.7);
+      animation: slow-mission-typewriter 24s steps(320, end) infinite, mission-cursor 0.9s step-end infinite;
+    }
+    @keyframes slow-mission-typewriter {
+      0%, 8% { width: 0; }
+      72%, 100% { width: 100%; }
+    }
     @keyframes hook-pulse-terminal {
       0%, 100% { opacity: 0.82; filter: brightness(0.98); }
       50% { opacity: 1; filter: brightness(1.05); text-shadow: 0 0 22px rgba(212, 175, 55, 0.35), 0 0 32px rgba(0, 229, 255, 0.12); }
@@ -628,6 +642,88 @@
       font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
       font-size: clamp(0.72rem, 2.1vw, 0.86rem);
       line-height: 1.55;
+      color: var(--text);
+    }
+    .corporate-anchor {
+      margin: 0.55rem auto 0.15rem;
+      padding: 0.45rem 0.7rem;
+      max-width: 56rem;
+      border: 1px solid rgba(212, 175, 55, 0.55);
+      border-radius: 8px;
+      background: rgba(11, 22, 38, 0.82);
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.7rem, 2vw, 0.84rem);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--gold-bright);
+      text-align: center;
+    }
+    .proponent-brief {
+      background: rgba(8, 20, 35, 0.94);
+      border: 1px solid var(--gold);
+      border-radius: 10px;
+      padding: 0.95rem 1rem;
+      margin: 0 0 1rem;
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.14);
+    }
+    .proponent-brief .proponent-title {
+      margin: 0 0 0.55rem;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.8rem, 2.2vw, 0.94rem);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--gold-bright);
+    }
+    .proponent-layout {
+      display: grid;
+      grid-template-columns: minmax(128px, 170px) 1fr;
+      gap: 0.8rem;
+      align-items: start;
+    }
+    @media (max-width: 700px) {
+      .proponent-layout { grid-template-columns: 1fr; }
+    }
+    .proponent-portrait-frame {
+      width: 100%;
+      min-height: 150px;
+      border: 1px solid var(--gold);
+      border-radius: 10px;
+      background: linear-gradient(145deg, rgba(26, 39, 68, 0.88), rgba(10, 19, 35, 0.95));
+      box-shadow: inset 0 1px 0 rgba(255, 248, 220, 0.18), 0 0 12px rgba(212, 175, 55, 0.2);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .proponent-portrait-frame img {
+      width: 100%;
+      height: 100%;
+      min-height: 150px;
+      object-fit: cover;
+      display: block;
+    }
+    .proponent-portrait-frame::after {
+      content: 'chairman_saad.jpg';
+      position: absolute;
+      left: 0.45rem;
+      right: 0.45rem;
+      bottom: 0.35rem;
+      font-size: 0.54rem;
+      text-align: center;
+      letter-spacing: 0.08em;
+      color: var(--gold-bright);
+      text-transform: uppercase;
+      background: rgba(5, 10, 21, 0.7);
+      border-radius: 4px;
+      padding: 0.15rem 0.3rem;
+      pointer-events: none;
+    }
+    .proponent-copy {
+      margin: 0;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.7rem, 2vw, 0.84rem);
+      line-height: 1.58;
       color: var(--text);
     }
     .sovereign-inbox {
@@ -1342,10 +1438,20 @@
       <p class="wow-spine-sub goldman-copy cyan-typewriter">MISSION MANDATE: Beyond the AZK Corridor, we are operationalizing the 15/15 Grassroots Model for Civic Responsibility and the Formalization of Artisanal Mining. This terminal facilitates International Investor Outreach for global conglomerates to participate in Nigeria’s National Resource Revitalization.</p>
       <p class="falcon-welcome kwas-kwas-shimmer">Falcon-Class Sovereign Gateway: Seizing the 9.6× Wealth Multiplier</p>
       <p class="institutional-status kwas-kwas-shimmer">Institutional Status: CAC Name Reservation Approved (GCSLC LTD/GTE)</p>
+      <p class="corporate-anchor">Corporate Anchor: Galadiman Ruwa Nigeria Ltd — Primary Strategic Industrial Holding Entity</p>
     </header>
     <section class="ssd-widget" aria-labelledby="ssdWidgetTitle">
       <h2 id="ssdWidgetTitle" class="ssd-title">STRATEGIC SUPPORT FOR DEMOCRACY (SSD)</h2>
       <p class="ssd-copy">Our 15/15 Sovereign Outreach Model provides the digital infrastructure for voter sensitization and grassroots civic engagement. Powered by the 8R Paradigms, we bridge the gap between national resource management and democratic responsibility.</p>
+    </section>
+    <section class="proponent-brief" aria-labelledby="proponentTitle">
+      <h2 id="proponentTitle" class="proponent-title">About the Proponent</h2>
+      <div class="proponent-layout">
+        <figure class="proponent-portrait-frame">
+          <img src="assets/chairman_saad.jpg" alt="Portrait of Dr. Sa'ad Jaafaru">
+        </figure>
+        <p class="proponent-copy slow-cyan-typewriter">DR. SA’AD JAAFARU, Galadiman Ruwan Zazzau — Sovereign Proponent of the 8R Stealth Paradigm. A distinguished developmentalist with a PhD in Development Administration and Management (American University of Leadership), he integrates global academic excellence with a prestigious traditional mandate to drive Nigeria's National Resource Revitalization and Strategic Support for Democracy (SSD).</p>
+      </div>
     </section>
     <section class="sovereign-inbox" aria-labelledby="sovereignInboxTitle">
       <h2 id="sovereignInboxTitle" class="inbox-title">Sovereign Inbox (Command G-Sync)</h2>
