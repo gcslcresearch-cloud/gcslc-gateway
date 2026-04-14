@@ -540,6 +540,18 @@
       color: var(--gold-bright);
       text-align: center;
     }
+    .authority-name-line {
+      margin: 0.48rem auto 0;
+      max-width: 56rem;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.7rem, 2.1vw, 0.86rem);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-align: center;
+      color: #f4dc91;
+      text-shadow: 0 0 14px rgba(232, 197, 71, 0.28);
+    }
     .chairman-profile {
       margin: 0 0 1rem;
       padding: 0.95rem 1rem;
@@ -573,6 +585,21 @@
       height: 100%;
       object-fit: cover;
       display: block;
+    }
+    .chairman-portrait-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.08em;
+      color: var(--gold-bright);
+      text-transform: uppercase;
+      text-align: center;
+      padding: 0.7rem;
+      background: radial-gradient(circle at 32% 28%, rgba(255, 248, 220, 0.16), rgba(10, 19, 35, 0.92) 70%);
     }
     .chairman-portrait-ring::after {
       content: 'chairman_saad.jpg';
@@ -1267,6 +1294,7 @@
       <h1 class="org-name goldman-head">Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE</h1>
       <p class="ngecc-brainbox kwas-kwas-shimmer">Nigerian Green Energy and Chemicals Corporation (NGECC) — Special Strategic Mission Vehicle (SSMV)</p>
       <p class="wow-spine-sub cyan-typewriter">MISSION MANDATE: Beyond the AZK Corridor, we are operationalizing the 15/15 Grassroots Model for Civic Responsibility and the Formalization of Artisanal Mining. This terminal facilitates International Investor Outreach for global conglomerates to participate in Nigeria’s National Resource Revitalization.</p>
+      <p class="authority-name-line">Dr. Jaafaru Sa’ad, Galadiman Ruwa Zazzau.</p>
       <p class="corporate-header-line">Galadiman Ruwa Nigeria Ltd — Primary Strategic Industrial Holding Entity</p>
       <p class="falcon-welcome kwas-kwas-shimmer">Falcon-Class Sovereign Gateway: Seizing the 9.6× Wealth Multiplier</p>
       <p class="institutional-status kwas-kwas-shimmer">Institutional Status: CAC Name Reservation Approved (GCSLC LTD/GTE)</p>
@@ -1274,9 +1302,9 @@
     <section class="chairman-profile" aria-label="Chairman Nodal Profile">
       <div class="chairman-profile-layout">
         <figure class="chairman-portrait-ring">
-          <img src="assets/chairman_saad.jpg" alt="Portrait of Dr. Sa'ad Jaafaru">
+          <div class="chairman-portrait-placeholder" aria-label="Chairman portrait placeholder">chairman_saad.jpg</div>
         </figure>
-        <p class="chairman-bio slow-cyan-typewriter">DR. SA’AD JAAFARU, Galadiman Ruwan Zazzau — Sovereign Proponent of the 8R Stealth Paradigm. He integrates global academic excellence (PhD, Development Administration, American University of Leadership) with a prestigious traditional mandate to drive Strategic Support for Democracy (SSD) and national economic growth.</p>
+        <p class="chairman-bio slow-cyan-typewriter">Dr. Jaafaru Sa’ad, Galadiman Ruwa Zazzau — Sovereign Proponent of the 8R Stealth Paradigm. Doctor of the University in Business Administration (DBA), Commonwealth University, Belize. He integrates global academic excellence with a prestigious traditional mandate to drive Strategic Support for Democracy (SSD) and national economic growth.</p>
       </div>
     </section>
 
