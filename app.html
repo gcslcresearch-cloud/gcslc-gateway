@@ -644,6 +644,32 @@
       line-height: 1.55;
       color: var(--text);
     }
+    .nodal-counter {
+      background: rgba(12, 24, 40, 0.92);
+      border: 1px solid rgba(0, 229, 255, 0.32);
+      border-left: 4px solid var(--gold);
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      margin: 0 0 1rem;
+      box-shadow: 0 0 16px rgba(0, 229, 255, 0.12);
+    }
+    .nodal-counter .nodal-title {
+      margin: 0;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.78rem, 2.2vw, 0.92rem);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--gold-bright);
+    }
+    .nodal-counter .nodal-value {
+      margin: 0.45rem 0 0;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(1rem, 3vw, 1.3rem);
+      color: #00e5ff;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-shadow: 0 0 14px rgba(0, 229, 255, 0.25);
+    }
     .corporate-anchor {
       margin: 0.55rem auto 0.15rem;
       padding: 0.45rem 0.7rem;
@@ -765,6 +791,33 @@
       font-size: clamp(0.68rem, 2vw, 0.8rem);
       line-height: 1.5;
       color: var(--text);
+    }
+    .sovereign-inbox .investor-log {
+      margin-top: 0.45rem;
+      padding-top: 0.4rem;
+      border-top: 1px dashed rgba(212, 175, 55, 0.35);
+    }
+    .sovereign-inbox .investor-log-title {
+      margin: 0 0 0.2rem;
+      font-size: 0.56rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--gold-bright);
+    }
+    .sovereign-inbox .investor-log p {
+      margin: 0;
+      font-size: 0.62rem;
+      letter-spacing: 0.04em;
+      color: #a6d8ff;
+      line-height: 1.4;
+    }
+    .institutional-mandate {
+      margin-top: 0.35rem;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--gold-bright);
     }
     .kwas-kwas-shimmer-bar {
       background: var(--navy-surface) !important;
@@ -1444,6 +1497,10 @@
       <h2 id="ssdWidgetTitle" class="ssd-title">STRATEGIC SUPPORT FOR DEMOCRACY (SSD)</h2>
       <p class="ssd-copy">Our 15/15 Sovereign Outreach Model provides the digital infrastructure for voter sensitization and grassroots civic engagement. Powered by the 8R Paradigms, we bridge the gap between national resource management and democratic responsibility.</p>
     </section>
+    <section class="nodal-counter" aria-label="15/15 Nodal Verification">
+      <h2 class="nodal-title">15/15 Nodal Verification</h2>
+      <p class="nodal-value">13,422 / 15,000 nodes active</p>
+    </section>
     <section class="proponent-brief" aria-labelledby="proponentTitle">
       <h2 id="proponentTitle" class="proponent-title">About the Proponent</h2>
       <div class="proponent-layout">
@@ -1465,7 +1522,14 @@
       </div>
       <div class="inbox-item">
         <span class="inbox-tag">Investor Signal</span>
-        <p class="inbox-copy">International Investor Outreach portal active. Global conglomerate interest queue opened for participation in National Resource Revitalization.</p>
+        <div>
+          <p class="inbox-copy">International Investor Outreach portal active. Global conglomerate interest queue opened for participation in National Resource Revitalization.</p>
+          <div class="investor-log" aria-label="Live Access Log">
+            <p class="investor-log-title">Live Access Log</p>
+            <p>Dubai Verification Ping · 09:44 UTC · Channel Secure</p>
+            <p>Riyadh Verification Ping · 09:47 UTC · Channel Secure</p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -1732,6 +1796,7 @@
       </div>
       <p class="footer-tagline" style="margin-top:0.25rem;">Chairman &amp; Founder, GCSLC</p>
       <p class="footer-ip">Copyright · Proprietary framework · IP LW15954</p>
+      <p class="institutional-mandate">Institutional Mandate: GCSLC LTD/GTE - Strategic Support for Democracy.</p>
       <button type="button" class="audit-log-btn" id="auditLogBtn" title="Audit Sync Dispatch">Audit Sync</button>
     </footer>
     </div>
