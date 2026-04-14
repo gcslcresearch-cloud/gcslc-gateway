@@ -554,6 +554,57 @@
       color: var(--muted);
       margin-top: 0.65rem;
     }
+    .audit-log-btn {
+      margin-top: 0.65rem;
+      background: transparent;
+      border: 1px solid rgba(212, 175, 55, 0.22);
+      border-radius: 6px;
+      color: var(--gold-bright);
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: 0.58rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.22rem 0.48rem;
+      opacity: 0.05;
+      cursor: pointer;
+    }
+    .audit-log-btn:focus-visible,
+    .audit-log-btn:hover {
+      opacity: 0.65;
+      border-color: var(--gold);
+      outline: none;
+    }
+    .secure-access-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 90000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 0.75rem;
+      padding: 1.5rem;
+      background: rgba(5, 10, 21, 0.97);
+      text-align: center;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+    }
+    .secure-access-overlay.is-visible { display: flex; }
+    .secure-access-overlay .secure-title {
+      font-size: clamp(1.05rem, 3.5vw, 1.45rem);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #fff8dc 0%, #f0c14b 40%, #8a7030 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .secure-access-overlay .secure-copy {
+      max-width: 52rem;
+      font-size: clamp(0.72rem, 2.4vw, 0.95rem);
+      color: var(--gold-bright);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
     .kwas-kwas-shimmer-bar {
       background: var(--navy-surface) !important;
     }
@@ -1165,6 +1216,24 @@
   </style>
 </head>
 <body>
+  <script>
+    (function () {
+      var key = 'gcslc_audit_window_start_time';
+      var startTime = Number(localStorage.getItem(key));
+      if (!startTime || Number.isNaN(startTime)) {
+        startTime = Date.now();
+        localStorage.setItem(key, String(startTime));
+      }
+      var expired = (Date.now() - startTime) > 7200000;
+      if (expired) {
+        document.documentElement.classList.add('secure-audit-expired');
+      }
+    })();
+  </script>
+  <div class="secure-access-overlay" id="secureAccessOverlay" aria-live="assertive" aria-hidden="true">
+    <div class="secure-title">SECURE ACCESS EXPIRED</div>
+    <div class="secure-copy">Audit Window Closed. Contact Galadiman Ruwa Center for Re-Authorization.</div>
+  </div>
   <div class="sovereign-app-layer">
   <div class="bluelaser-stack" aria-hidden="true">
     <div class="bluelaser-scan"></div>
@@ -1204,7 +1273,7 @@
       </div>
       <h1 class="org-name goldman-head">Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE</h1>
       <p class="ngecc-brainbox kwas-kwas-shimmer">Nigerian Green Energy and Chemicals Corporation (NGECC) — Special Strategic Mission Vehicle (SSMV)</p>
-      <p class="wow-spine-sub goldman-copy cyan-typewriter">MISSION MANDATE: Beyond the AZK Energy Corridor, we are operationalizing the 15/15 Grassroots Model for Civic Responsibility and the Formalization of Nigeria’s Artisanal Mining Sector. This terminal serves as the Command Center for National Resource Revitalization and Grassroots Voter Integration.</p>
+      <p class="wow-spine-sub goldman-copy cyan-typewriter">MISSION MANDATE: Beyond the AZK Energy Corridor, we are operationalizing the 15/15 Grassroots Model for Voter Outreach and Civic Responsibility, the Formalization of Nigeria’s Artisanal Mining Sector for Social and Economic Integration, and the International Investor Portal for Global Conglomerates. This terminal serves as the Command Center for National Resource Revitalization and Grassroots Voter Integration.</p>
       <p class="falcon-welcome kwas-kwas-shimmer">Falcon-Class Sovereign Gateway: Seizing the 9.6× Wealth Multiplier</p>
       <p class="institutional-status kwas-kwas-shimmer">Institutional Status: CAC Name Reservation Approved (GCSLC LTD/GTE)</p>
     </header>
@@ -1301,8 +1370,9 @@
           <span class="strike-fly">Coal Fly Ash: $148/MT</span>
           <span class="strike-si">Silicon: $1.81/lb</span>
           <span class="strike-nh3">Ammonia: $430/MT</span>
-          <span class="strike-node goldman-copy">Artisanal Mining Formalization - <span class="node-status">[Status: ACTIVE SYNC]</span></span>
-          <span class="strike-node goldman-copy">15/15 Grassroots Voter Outreach - <span class="node-status">[Status: OPERATIONAL]</span></span>
+          <span class="strike-node goldman-copy">Artisanal Mining Formalization (Social &amp; Economic Integration) - <span class="node-status">[Status: ACTIVE SYNC]</span></span>
+          <span class="strike-node goldman-copy">15/15 Grassroots Model (Voter Outreach &amp; Civic Responsibility) - <span class="node-status">[Status: OPERATIONAL]</span></span>
+          <span class="strike-node goldman-copy">International Investor Portal (For Global Conglomerates) - <span class="node-status">[Status: LIVE ACCESS]</span></span>
         </div>
         <div class="falcon-sprite" id="falconSprite" aria-hidden="true" style="left: 42%; top: 65%; transform: translate(-50%, -50%);">
           <svg viewBox="0 0 32 24" class="falcon-svg" xmlns="http://www.w3.org/2000/svg">
@@ -1481,6 +1551,7 @@
       </div>
       <p class="footer-tagline" style="margin-top:0.25rem;">Chairman &amp; Founder, GCSLC</p>
       <p class="footer-ip">Copyright · Proprietary framework · IP LW15954</p>
+      <button type="button" class="audit-log-btn" id="auditLogBtn" title="Audit Log Dispatch">Audit Log</button>
     </footer>
     </div>
     <!-- Ultimatum: Falcon facing camera + speech bubble -->
@@ -1561,23 +1632,52 @@
   </script>
   <script>
     (function () {
-      var TERMII_API_KEY = window.TERMII_API_KEY || '';
-      var TERMII_TO = window.TERMII_TO || '';
-      var TERMII_FROM = window.TERMII_FROM || 'GCSLC';
-      if (!TERMII_API_KEY || !TERMII_TO || typeof fetch !== 'function') return;
-      var message = 'GCSLC Sovereign Terminal: Mission mandate sync active. Digital SSMV nodes operational. 2-hour mission timer initiated.';
-      fetch('https://api.ng.termii.com/api/sms/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          to: TERMII_TO,
-          from: TERMII_FROM,
-          sms: message,
-          type: 'plain',
-          channel: 'generic',
-          api_key: TERMII_API_KEY
-        })
-      }).catch(function () {});
+      var overlay = document.getElementById('secureAccessOverlay');
+      var appLayer = document.querySelector('.sovereign-app-layer');
+      if (document.documentElement.classList.contains('secure-audit-expired')) {
+        if (appLayer) appLayer.style.display = 'none';
+        if (overlay) {
+          overlay.classList.add('is-visible');
+          overlay.setAttribute('aria-hidden', 'false');
+        }
+        return;
+      }
+      if (overlay) overlay.setAttribute('aria-hidden', 'true');
+    })();
+  </script>
+  <script>
+    (function () {
+      var btn = document.getElementById('auditLogBtn');
+      if (!btn || typeof fetch !== 'function') return;
+      var TERMII_API_KEY = 'TERMII_API_KEY_LIVE';
+      var AUDIT_MESSAGE = 'GCSLC AUDIT SYNC: Gateway accessed by Termii Compliance Team.';
+      var AUDIT_TO = '2348099111515';
+      var AUDIT_FROM = 'GCSLC';
+      async function sendAuditSms() {
+        btn.disabled = true;
+        try {
+          var res = await fetch('https://api.ng.termii.com/api/sms/send', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              to: AUDIT_TO,
+              from: AUDIT_FROM,
+              sms: AUDIT_MESSAGE,
+              type: 'plain',
+              channel: 'generic',
+              api_key: TERMII_API_KEY
+            })
+          });
+          if (!res.ok) {
+            throw new Error('Termii request failed with status ' + res.status);
+          }
+        } catch (err) {
+          console.error('[GCSLC] Audit log SMS failed:', err);
+        } finally {
+          btn.disabled = false;
+        }
+      }
+      btn.addEventListener('click', sendAuditSms);
     })();
   </script>
   <script>
