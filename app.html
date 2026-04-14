@@ -59,7 +59,7 @@
     }
     body {
       margin: 0;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-family: 'Goldman', 'Segoe UI', system-ui, -apple-system, sans-serif;
       background-color: #050a15 !important;
       color: white;
       min-height: 100vh;
@@ -604,6 +604,71 @@
       color: var(--gold-bright);
       letter-spacing: 0.05em;
       text-transform: uppercase;
+    }
+    .ssd-widget {
+      background: rgba(12, 23, 40, 0.92);
+      border: 1px solid var(--gold);
+      border-left: 4px solid var(--gold-bright);
+      border-radius: 10px;
+      padding: 1rem 1.1rem;
+      margin: 0.9rem 0 1rem;
+      box-shadow: 0 0 18px rgba(212, 175, 55, 0.18);
+    }
+    .ssd-widget .ssd-title {
+      margin: 0 0 0.45rem;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.82rem, 2.4vw, 0.96rem);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gold-bright);
+    }
+    .ssd-widget .ssd-copy {
+      margin: 0;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.72rem, 2.1vw, 0.86rem);
+      line-height: 1.55;
+      color: var(--text);
+    }
+    .sovereign-inbox {
+      background: rgba(10, 20, 36, 0.94);
+      border: 1px solid rgba(212, 175, 55, 0.5);
+      border-left: 4px solid var(--gold);
+      border-radius: 10px;
+      padding: 0.9rem 1rem;
+      margin: 0 0 1.1rem;
+      box-shadow: 0 0 16px rgba(0, 229, 255, 0.12), 0 0 18px rgba(212, 175, 55, 0.15);
+    }
+    .sovereign-inbox .inbox-title {
+      margin: 0 0 0.55rem;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.8rem, 2.2vw, 0.95rem);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--gold-bright);
+    }
+    .sovereign-inbox .inbox-item {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.4rem 0.65rem;
+      padding: 0.35rem 0;
+      border-top: 1px solid rgba(30, 58, 95, 0.75);
+    }
+    .sovereign-inbox .inbox-item:first-of-type { border-top: 0; }
+    .sovereign-inbox .inbox-tag {
+      font-size: 0.56rem;
+      color: #00e5ff;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      margin-top: 0.12rem;
+    }
+    .sovereign-inbox .inbox-copy {
+      margin: 0;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.68rem, 2vw, 0.8rem);
+      line-height: 1.5;
+      color: var(--text);
     }
     .kwas-kwas-shimmer-bar {
       background: var(--navy-surface) !important;
@@ -1218,21 +1283,22 @@
 <body>
   <script>
     (function () {
-      var key = 'gcslc_audit_window_start_time';
+      var isAuditSession = new URLSearchParams(window.location.search).get('audit') === 'termii';
+      if (!isAuditSession) return;
+      var key = 'gcslc_audit_window_start_time_termii';
       var startTime = Number(localStorage.getItem(key));
       if (!startTime || Number.isNaN(startTime)) {
         startTime = Date.now();
         localStorage.setItem(key, String(startTime));
       }
-      var expired = (Date.now() - startTime) > 7200000;
-      if (expired) {
+      if ((Date.now() - startTime) > 7200000) {
         document.documentElement.classList.add('secure-audit-expired');
       }
     })();
   </script>
   <div class="secure-access-overlay" id="secureAccessOverlay" aria-live="assertive" aria-hidden="true">
     <div class="secure-title">SECURE ACCESS EXPIRED</div>
-    <div class="secure-copy">Audit Window Closed. Contact Galadiman Ruwa Center for Re-Authorization.</div>
+    <div class="secure-copy">Termii Audit Window Closed. Secure Access Expired. Contact GCSLC for Re-Authorization.</div>
   </div>
   <div class="sovereign-app-layer">
   <div class="bluelaser-stack" aria-hidden="true">
@@ -1273,10 +1339,29 @@
       </div>
       <h1 class="org-name goldman-head">Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE</h1>
       <p class="ngecc-brainbox kwas-kwas-shimmer">Nigerian Green Energy and Chemicals Corporation (NGECC) — Special Strategic Mission Vehicle (SSMV)</p>
-      <p class="wow-spine-sub goldman-copy cyan-typewriter">MISSION MANDATE: Beyond the AZK Energy Corridor, we are operationalizing the 15/15 Grassroots Model for Voter Outreach and Civic Responsibility, the Formalization of Nigeria’s Artisanal Mining Sector for Social and Economic Integration, and the International Investor Portal for Global Conglomerates. This terminal serves as the Command Center for National Resource Revitalization and Grassroots Voter Integration.</p>
+      <p class="wow-spine-sub goldman-copy cyan-typewriter">MISSION MANDATE: Beyond the AZK Corridor, we are operationalizing the 15/15 Grassroots Model for Civic Responsibility and the Formalization of Artisanal Mining. This terminal facilitates International Investor Outreach for global conglomerates to participate in Nigeria’s National Resource Revitalization.</p>
       <p class="falcon-welcome kwas-kwas-shimmer">Falcon-Class Sovereign Gateway: Seizing the 9.6× Wealth Multiplier</p>
       <p class="institutional-status kwas-kwas-shimmer">Institutional Status: CAC Name Reservation Approved (GCSLC LTD/GTE)</p>
     </header>
+    <section class="ssd-widget" aria-labelledby="ssdWidgetTitle">
+      <h2 id="ssdWidgetTitle" class="ssd-title">STRATEGIC SUPPORT FOR DEMOCRACY (SSD)</h2>
+      <p class="ssd-copy">Our 15/15 Sovereign Outreach Model provides the digital infrastructure for voter sensitization and grassroots civic engagement. Powered by the 8R Paradigms, we bridge the gap between national resource management and democratic responsibility.</p>
+    </section>
+    <section class="sovereign-inbox" aria-labelledby="sovereignInboxTitle">
+      <h2 id="sovereignInboxTitle" class="inbox-title">Sovereign Inbox (Command G-Sync)</h2>
+      <div class="inbox-item">
+        <span class="inbox-tag">15/15 Signal</span>
+        <p class="inbox-copy">Grassroots civic duty campaign synchronized. Voter outreach packets dispatched to field coordinators for immediate sensitization cadence.</p>
+      </div>
+      <div class="inbox-item">
+        <span class="inbox-tag">Mining Signal</span>
+        <p class="inbox-copy">Artisanal Mining Formalization node engaged. Social and economic integration channel now aligned with sovereign reporting and compliance workflows.</p>
+      </div>
+      <div class="inbox-item">
+        <span class="inbox-tag">Investor Signal</span>
+        <p class="inbox-copy">International Investor Outreach portal active. Global conglomerate interest queue opened for participation in National Resource Revitalization.</p>
+      </div>
+    </section>
 
     <header class="dashboard-header">
       <p class="institution-name goldman-head">National Resources Revitalization Fusion Center <small>(NRRFC)</small></p>
@@ -1363,16 +1448,6 @@
         <div class="falcon-data-bubble" id="falconBubble" style="left: 48%; top: 57%; transform: translate(0px, -100%);">
           <span class="bubble-label">NGECC SSMV Strike</span>
           <span class="bubble-value" id="falconBubbleValue">High-Value Feedstock Detected — Edo</span>
-        </div>
-        <div class="market-strike-data" id="marketStrikeData">
-          <span class="strike-label goldman-copy">Digital SSMV Asset Nodes · March 2026</span>
-          <span class="strike-ge">Germanium: $8,597/kg</span>
-          <span class="strike-fly">Coal Fly Ash: $148/MT</span>
-          <span class="strike-si">Silicon: $1.81/lb</span>
-          <span class="strike-nh3">Ammonia: $430/MT</span>
-          <span class="strike-node goldman-copy">Artisanal Mining Formalization (Social &amp; Economic Integration) - <span class="node-status">[Status: ACTIVE SYNC]</span></span>
-          <span class="strike-node goldman-copy">15/15 Grassroots Model (Voter Outreach &amp; Civic Responsibility) - <span class="node-status">[Status: OPERATIONAL]</span></span>
-          <span class="strike-node goldman-copy">International Investor Portal (For Global Conglomerates) - <span class="node-status">[Status: LIVE ACCESS]</span></span>
         </div>
         <div class="falcon-sprite" id="falconSprite" aria-hidden="true" style="left: 42%; top: 65%; transform: translate(-50%, -50%);">
           <svg viewBox="0 0 32 24" class="falcon-svg" xmlns="http://www.w3.org/2000/svg">
@@ -1551,7 +1626,7 @@
       </div>
       <p class="footer-tagline" style="margin-top:0.25rem;">Chairman &amp; Founder, GCSLC</p>
       <p class="footer-ip">Copyright · Proprietary framework · IP LW15954</p>
-      <button type="button" class="audit-log-btn" id="auditLogBtn" title="Audit Log Dispatch">Audit Log</button>
+      <button type="button" class="audit-log-btn" id="auditLogBtn" title="Audit Sync Dispatch">Audit Sync</button>
     </footer>
     </div>
     <!-- Ultimatum: Falcon facing camera + speech bubble -->
@@ -1632,9 +1707,10 @@
   </script>
   <script>
     (function () {
+      var isAuditSession = new URLSearchParams(window.location.search).get('audit') === 'termii';
       var overlay = document.getElementById('secureAccessOverlay');
       var appLayer = document.querySelector('.sovereign-app-layer');
-      if (document.documentElement.classList.contains('secure-audit-expired')) {
+      if (isAuditSession && document.documentElement.classList.contains('secure-audit-expired')) {
         if (appLayer) appLayer.style.display = 'none';
         if (overlay) {
           overlay.classList.add('is-visible');
@@ -1647,8 +1723,13 @@
   </script>
   <script>
     (function () {
+      var isAuditSession = new URLSearchParams(window.location.search).get('audit') === 'termii';
       var btn = document.getElementById('auditLogBtn');
       if (!btn || typeof fetch !== 'function') return;
+      if (!isAuditSession) {
+        btn.style.display = 'none';
+        return;
+      }
       var TERMII_API_KEY = 'TERMII_API_KEY_LIVE';
       var AUDIT_MESSAGE = 'GCSLC AUDIT SYNC: Gateway accessed by Termii Compliance Team.';
       var AUDIT_TO = '2348099111515';
