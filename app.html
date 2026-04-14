@@ -684,6 +684,20 @@
       color: var(--gold-bright);
       text-align: center;
     }
+    .facilitator-portal {
+      margin: 0.45rem auto 0.2rem;
+      max-width: 58rem;
+      padding: 0.55rem 0.8rem;
+      border-radius: 10px;
+      border: 1px solid rgba(212, 175, 55, 0.55);
+      background: linear-gradient(135deg, rgba(9, 22, 38, 0.92), rgba(18, 31, 52, 0.9));
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.68rem, 2vw, 0.82rem);
+      color: var(--text);
+      letter-spacing: 0.05em;
+      text-align: center;
+      box-shadow: 0 0 14px rgba(212, 175, 55, 0.15);
+    }
     .proponent-brief {
       background: rgba(8, 20, 35, 0.94);
       border: 1px solid var(--gold);
@@ -704,7 +718,7 @@
       display: grid;
       grid-template-columns: minmax(128px, 170px) 1fr;
       gap: 0.8rem;
-      align-items: start;
+      align-items: stretch;
     }
     @media (max-width: 700px) {
       .proponent-layout { grid-template-columns: 1fr; }
@@ -810,6 +824,46 @@
       letter-spacing: 0.04em;
       color: #a6d8ff;
       line-height: 1.4;
+    }
+    .gsync-live-feed {
+      background: rgba(6, 16, 30, 0.95);
+      border: 1px solid rgba(0, 255, 157, 0.35);
+      border-left: 4px solid #00ff9d;
+      border-radius: 10px;
+      padding: 0.8rem 0.95rem;
+      margin: 0 0 1rem;
+      box-shadow: 0 0 16px rgba(0, 255, 157, 0.12);
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+    }
+    .gsync-live-feed .gsync-title {
+      margin: 0 0 0.45rem;
+      font-size: clamp(0.74rem, 2.1vw, 0.9rem);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #8dffcf;
+    }
+    .gsync-feed-window {
+      overflow: hidden;
+      max-height: 2.8rem;
+      border-top: 1px dashed rgba(0, 255, 157, 0.25);
+      border-bottom: 1px dashed rgba(0, 255, 157, 0.25);
+      padding: 0.3rem 0;
+    }
+    .gsync-feed-track {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      color: #00ff9d;
+      font-size: 0.62rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      animation: gsync-scroll 7s linear infinite;
+    }
+    .gsync-feed-track li { padding: 0.1rem 0; white-space: nowrap; }
+    @keyframes gsync-scroll {
+      0%, 15% { transform: translateY(0); }
+      40%, 55% { transform: translateY(-1.25rem); }
+      80%, 100% { transform: translateY(-2.5rem); }
     }
     .institutional-mandate {
       margin-top: 0.35rem;
@@ -1492,6 +1546,7 @@
       <p class="falcon-welcome kwas-kwas-shimmer">Falcon-Class Sovereign Gateway: Seizing the 9.6× Wealth Multiplier</p>
       <p class="institutional-status kwas-kwas-shimmer">Institutional Status: CAC Name Reservation Approved (GCSLC LTD/GTE)</p>
       <p class="corporate-anchor">Corporate Anchor: Galadiman Ruwa Nigeria Ltd — Primary Strategic Industrial Holding Entity</p>
+      <p class="facilitator-portal">Facilitator &amp; Client Access — Secured Gateway for 15,000+ Grassroots Canvassers and International Strategic Partners.</p>
     </header>
     <section class="ssd-widget" aria-labelledby="ssdWidgetTitle">
       <h2 id="ssdWidgetTitle" class="ssd-title">STRATEGIC SUPPORT FOR DEMOCRACY (SSD)</h2>
@@ -1530,6 +1585,16 @@
             <p>Riyadh Verification Ping · 09:47 UTC · Channel Secure</p>
           </div>
         </div>
+      </div>
+    </section>
+    <section class="gsync-live-feed" aria-label="G-Sync Live Feed">
+      <h2 class="gsync-title">G-SYNC LIVE FEED</h2>
+      <div class="gsync-feed-window">
+        <ul class="gsync-feed-track">
+          <li>Outbound: SMS Alert: Nodal Broadcast 15/15 active.</li>
+          <li>Inbound: Feedback: Zaria Node 004 verification success.</li>
+          <li>Active Data Channel: Sovereign traffic synchronized.</li>
+        </ul>
       </div>
     </section>
 
