@@ -10,6 +10,9 @@
   <meta name="author" content="National Resources Revitalization Fusion Center (NRRFC) · GCSLC Sovereign">
   <meta property="og:title" content="GCSLC Sovereign · NRRFC — Coal Reserves &amp; NRRF Dashboard">
   <meta property="og:description" content="GCSLC Sovereign: Nigeria Coal Reserves, debt-swap comparison, coal-to-syngas vs diesel — NRRFC 2026.">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&amp;display=swap" rel="stylesheet" />
   <style>
     /* 8R Stealth palette: Uniform Deep Navy (#050a15) & Gold (#D4AF37) */
     :root {
@@ -395,6 +398,448 @@
 
     /* ---- Refined watermark: top-down repeating ribbon, 15% opacity ---- */
     .main-data-area { position: relative; z-index: 1; }
+
+    /* —— Layer 1: Imperial Entrance (Obsidian Sovereign Navy · Goldman · Cyan pulse · Silver / White-Gold) —— */
+    .layer-one-gate--imperial {
+      --imperial-obsidian: #010409;
+      --imperial-navy: #020814;
+      --imperial-silver: #c8d0dc;
+      --imperial-white-gold: #f5ecd8;
+      --imperial-border-sheen: linear-gradient(135deg, rgba(200, 208, 220, 0.85) 0%, rgba(255, 248, 235, 0.55) 35%, rgba(212, 175, 55, 0.45) 65%, rgba(180, 190, 200, 0.75) 100%);
+      position: relative;
+      margin: 0 0 1.35rem;
+      padding: clamp(1.15rem, 3.2vw, 1.85rem) clamp(0.9rem, 2.6vw, 1.45rem);
+      border-radius: 14px;
+      border: 1px solid transparent;
+      background:
+        linear-gradient(var(--imperial-obsidian), var(--imperial-obsidian)) padding-box,
+        var(--imperial-border-sheen) border-box;
+      background-origin: padding-box, border-box;
+      background-clip: padding-box, border-box;
+      box-shadow:
+        0 0 0 1px rgba(255, 248, 235, 0.06),
+        0 0 52px rgba(0, 229, 255, 0.12),
+        0 0 80px rgba(212, 175, 55, 0.05),
+        inset 0 1px 0 rgba(255, 248, 235, 0.06);
+      overflow: hidden;
+    }
+    .layer-one-gate--imperial::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 130% 90% at 50% -10%, rgba(0, 229, 255, 0.1), transparent 52%),
+        radial-gradient(ellipse 80% 60% at 100% 100%, rgba(212, 175, 55, 0.06), transparent 50%),
+        linear-gradient(168deg, var(--imperial-obsidian) 0%, #030810 42%, #050a12 100%);
+    }
+    .layer-one-gate--imperial::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: inherit;
+      pointer-events: none;
+      z-index: 1;
+      background: linear-gradient(125deg, transparent 38%, rgba(0, 229, 255, 0.09) 50%, transparent 62%);
+      animation: layer1-cyan-sweep 7s ease-in-out infinite;
+    }
+    @keyframes layer1-cyan-sweep {
+      0%, 100% { opacity: 0.35; transform: translateX(-4%); }
+      50% { opacity: 0.88; transform: translateX(4%); }
+    }
+    .layer1-imperial-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      border-radius: inherit;
+      overflow: hidden;
+    }
+    .layer1-imperial-bg::before {
+      content: '© NCC Copyright LW15954';
+      position: absolute;
+      left: 50%;
+      top: 42%;
+      transform: translate(-50%, -50%) rotate(-11deg);
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(1.65rem, 5.5vw, 3.1rem);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      white-space: nowrap;
+      opacity: 0.09;
+      background: linear-gradient(95deg, #9aa4b2 0%, #f5ecd8 35%, #c0c8d4 55%, #fff8ec 78%, #8a929e 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: layer1-ncc-metallic 14s ease-in-out infinite;
+      filter: drop-shadow(0 0 2px rgba(212, 175, 55, 0.25));
+    }
+    @keyframes layer1-ncc-metallic {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    .layer1-imperial-bg::after {
+      content: 'SCUML Reg · RN: SC 151653884';
+      position: absolute;
+      right: -8%;
+      bottom: 8%;
+      transform: rotate(-9deg);
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.85rem, 2.8vw, 1.35rem);
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+      opacity: 0.075;
+      background: linear-gradient(100deg, #a8b0bc 0%, #fff8ec 40%, #c0c8d4 70%, #e8e0d0 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: layer1-scuml-ncc-watermark 16s ease-in-out infinite;
+      filter: drop-shadow(0 0 1px rgba(0, 229, 255, 0.2));
+    }
+    @keyframes layer1-scuml-ncc-watermark {
+      0%, 100% { background-position: 0% 50%; opacity: 0.07; }
+      50% { background-position: 100% 50%; opacity: 0.095; }
+    }
+    .layer-one-gate__inner { position: relative; z-index: 2; text-align: center; max-width: 54rem; margin: 0 auto; }
+    .layer1-widget-head {
+      margin: 0.85rem 0 0.5rem;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.58rem, 1.55vw, 0.72rem);
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #00e5ff 0%, #7ee8ff 25%, #b8f6ff 50%, #00f0ff 75%, #00c8e6 100%);
+      background-size: 220% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 14px rgba(0, 229, 255, 0.45)) drop-shadow(0 0 28px rgba(0, 200, 255, 0.2));
+      animation: layer1-headline-glow 5.5s ease-in-out infinite;
+    }
+    .layer1-widget-head:first-of-type { margin-top: 0; }
+    @keyframes layer1-headline-glow {
+      0%, 100% {
+        background-position: 0% 50%;
+        filter: drop-shadow(0 0 10px rgba(0, 229, 255, 0.42)) drop-shadow(0 0 22px rgba(0, 200, 255, 0.2));
+        opacity: 0.94;
+        letter-spacing: 0.21em;
+      }
+      50% {
+        background-position: 100% 50%;
+        filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.58)) drop-shadow(0 0 38px rgba(0, 229, 255, 0.32));
+        opacity: 1;
+        letter-spacing: 0.24em;
+      }
+    }
+    .layer1-anchor-chrome {
+      margin: 0 0 1rem;
+      padding: 0.85rem 0.75rem;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      background:
+        linear-gradient(rgba(4, 10, 22, 0.92), rgba(4, 10, 22, 0.92)) padding-box,
+        linear-gradient(145deg, rgba(200, 208, 220, 0.55) 0%, rgba(255, 248, 235, 0.35) 40%, rgba(212, 175, 55, 0.4) 100%) border-box;
+      background-origin: padding-box, border-box;
+      background-clip: padding-box, border-box;
+      box-shadow: inset 0 1px 0 rgba(255, 248, 235, 0.08), 0 4px 24px rgba(0, 0, 0, 0.35);
+    }
+    .layer-one-entity {
+      margin: 0 0 0.4rem;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.76rem, 2.05vw, 0.93rem);
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: linear-gradient(95deg, #fff8ec 0%, #f0e6d2 30%, #e8eef4 55%, #f5ecd8 85%, #d4dce8 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.25));
+      animation: layer1-metallic-anchor 10s ease-in-out infinite;
+    }
+    .layer-one-entity .rc-badge {
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      background: linear-gradient(90deg, #9ee8ff, #00e5ff, #b8f6ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 8px rgba(0, 229, 255, 0.45));
+    }
+    @keyframes layer1-metallic-anchor {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    .layer-one-pillar {
+      margin: 0 0 0.45rem;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.66rem, 1.8vw, 0.8rem);
+      font-weight: 600;
+      letter-spacing: 0.055em;
+      line-height: 1.45;
+      background: linear-gradient(100deg, #e8eef4 0%, #fff8ec 45%, #c8d0dc 100%);
+      background-size: 180% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+    }
+    .layer-one-leader {
+      margin: 0;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.63rem, 1.72vw, 0.76rem);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      background: linear-gradient(95deg, #f5ecd8, #e8eef4, #f0e6d2);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 6px rgba(200, 208, 220, 0.35));
+    }
+    .layer1-compliance-strip {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.55rem 0.75rem;
+      margin: 0 0 1rem;
+    }
+    .layer1-metal-card {
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.55rem, 1.45vw, 0.68rem);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.45rem 0.75rem;
+      border-radius: 8px;
+      color: rgba(245, 248, 252, 0.95);
+      border: 1px solid rgba(200, 208, 220, 0.45);
+      background: linear-gradient(145deg, rgba(30, 38, 52, 0.95) 0%, rgba(12, 18, 28, 0.98) 50%, rgba(40, 48, 62, 0.9) 100%);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 248, 235, 0.12),
+        0 0 0 1px rgba(212, 175, 55, 0.15),
+        0 4px 16px rgba(0, 0, 0, 0.35);
+      text-shadow: 0 0 8px rgba(0, 229, 255, 0.15);
+    }
+    .mission-mandate-typewriter {
+      margin: 0 auto 1rem;
+      max-width: 48rem;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.62rem, 1.72vw, 0.78rem);
+      font-weight: 600;
+      line-height: 1.55;
+      color: #00e5ff;
+      text-shadow: 0 0 12px rgba(0, 229, 255, 0.5), 0 0 28px rgba(0, 229, 255, 0.22);
+      white-space: nowrap;
+      overflow: hidden;
+      display: inline-block;
+      max-width: 100%;
+      border-right: 2px solid rgba(0, 229, 255, 0.75);
+      animation: mission-typewriter-l1 18s steps(200, end) infinite, mission-cursor-l1 0.85s step-end infinite;
+    }
+    @keyframes mission-typewriter-l1 {
+      0%, 8% { width: 0; }
+      65%, 100% { width: 100%; }
+    }
+    @keyframes mission-cursor-l1 {
+      50% { border-right-color: transparent; }
+    }
+    .branding-8r-signature {
+      margin: 0.9rem auto 1rem;
+      max-width: 48rem;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.6rem, 1.58vw, 0.74rem);
+      font-weight: 700;
+      line-height: 1.65;
+      letter-spacing: 0.035em;
+      color: #00f0ff;
+      text-shadow:
+        0 0 8px rgba(0, 240, 255, 0.55),
+        0 0 22px rgba(0, 229, 255, 0.38),
+        0 0 44px rgba(0, 200, 255, 0.16);
+      animation: branding8r-cyan-pulse 4.2s ease-in-out infinite;
+    }
+    @keyframes branding8r-cyan-pulse {
+      0%, 100% { filter: brightness(1); opacity: 0.96; }
+      50% { filter: brightness(1.1); opacity: 1; }
+    }
+    .layer1-security-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0.65rem 1rem;
+      margin: 0 0 1rem;
+    }
+    .layer1-api-status {
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.55rem, 1.45vw, 0.66rem);
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(200, 208, 220, 0.92);
+    }
+    .layer1-api-status .layer1-api-ok {
+      font-style: normal;
+      color: #7ee8ff;
+      text-shadow: 0 0 10px rgba(0, 229, 255, 0.45);
+    }
+    .layer1-anti-s-badge {
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.52rem, 1.35vw, 0.62rem);
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      padding: 0.38rem 0.72rem;
+      border-radius: 6px;
+      text-transform: uppercase;
+      color: #dff;
+      border: 1px solid rgba(0, 229, 255, 0.45);
+      background: linear-gradient(120deg, rgba(0, 40, 55, 0.9), rgba(20, 28, 40, 0.95));
+      box-shadow: 0 0 14px rgba(0, 229, 255, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      text-shadow: 0 0 12px rgba(0, 229, 255, 0.55);
+      animation: layer1-anti-s-shimmer 2.8s ease-in-out infinite;
+    }
+    @keyframes layer1-anti-s-shimmer {
+      0%, 100% { box-shadow: 0 0 12px rgba(0, 229, 255, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.06); opacity: 0.95; }
+      50% { box-shadow: 0 0 22px rgba(0, 240, 255, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.12); opacity: 1; }
+    }
+    .layer1-contact-hub {
+      position: relative;
+      margin: 0 0 1.15rem;
+      padding: 0.85rem 0.7rem 0.75rem;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      background:
+        linear-gradient(rgba(2, 6, 14, 0.88), rgba(2, 6, 14, 0.88)) padding-box,
+        linear-gradient(155deg, rgba(200, 208, 220, 0.5) 0%, rgba(255, 248, 235, 0.35) 45%, rgba(212, 175, 55, 0.38) 100%) border-box;
+      background-origin: padding-box, border-box;
+      background-clip: padding-box, border-box;
+      box-shadow: inset 0 1px 0 rgba(255, 248, 235, 0.06), 0 6px 28px rgba(0, 0, 0, 0.4);
+    }
+    .layer1-contact-hub .layer1-anti-s-badge {
+      margin: 0 auto 0.65rem;
+      display: inline-flex;
+    }
+    .layer1-emails {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      margin-bottom: 0.65rem;
+    }
+    .layer1-emails a {
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.58rem, 1.5vw, 0.7rem);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: #e8eef4;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(0, 229, 255, 0.25);
+      align-self: center;
+      transition: color 0.2s ease, border-color 0.2s ease, text-shadow 0.2s ease;
+    }
+    .layer1-emails a:hover {
+      color: #00f0ff;
+      border-bottom-color: rgba(245, 236, 216, 0.5);
+      text-shadow: 0 0 10px rgba(0, 229, 255, 0.4);
+    }
+    .layer1-wa {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      margin: 0 auto 0.7rem;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.58rem, 1.5vw, 0.7rem);
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: #f5ecd8;
+      text-shadow: 0 0 10px rgba(0, 229, 255, 0.25);
+    }
+    .layer1-wa:hover { color: #00f0ff; }
+    .layer1-social {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .layer1-social a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.1rem;
+      height: 2.1rem;
+      border-radius: 8px;
+      border: 1px solid rgba(245, 236, 216, 0.35);
+      background: linear-gradient(160deg, rgba(0, 229, 255, 0.12), rgba(212, 175, 55, 0.08));
+      color: #f5ecd8;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    .layer1-social a:hover {
+      transform: translateY(-2px);
+      border-color: rgba(0, 229, 255, 0.55);
+      box-shadow: 0 0 14px rgba(0, 229, 255, 0.35);
+      color: #00f0ff;
+    }
+    .layer1-social svg { width: 1rem; height: 1rem; fill: currentColor; }
+    .sovereign-gateway-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 16.5rem;
+      padding: 0.78rem 1.6rem;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.7rem, 1.95vw, 0.86rem);
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #020814;
+      border: 2px solid transparent;
+      border-radius: 12px;
+      cursor: pointer;
+      position: relative;
+      background:
+        linear-gradient(125deg, #00f0ff 0%, #00c8e6 12%, #fff8ec 32%, #f0c14b 52%, #D4AF37 68%, #00e5ff 88%, #7ee8ff 100%) padding-box,
+        linear-gradient(145deg, rgba(220, 228, 235, 0.95) 0%, rgba(255, 248, 235, 0.75) 40%, rgba(212, 175, 55, 0.85) 100%) border-box;
+      background-origin: padding-box, border-box;
+      background-clip: padding-box, border-box;
+      background-size: 240% 240%, auto;
+      animation: sovereign-gateway-metallic 5s ease-in-out infinite;
+      box-shadow:
+        0 0 22px rgba(0, 229, 255, 0.55),
+        0 0 48px rgba(212, 175, 55, 0.35),
+        0 0 80px rgba(0, 200, 255, 0.15),
+        inset 0 2px 0 rgba(255, 255, 255, 0.45),
+        inset 0 -2px 0 rgba(0, 60, 80, 0.2);
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+      transition: transform 0.2s ease;
+    }
+    @keyframes sovereign-gateway-metallic {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    .sovereign-gateway-cta:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow:
+        0 0 32px rgba(0, 240, 255, 0.65),
+        0 0 64px rgba(212, 175, 55, 0.42),
+        0 0 100px rgba(0, 200, 255, 0.2),
+        inset 0 2px 0 rgba(255, 255, 255, 0.5);
+    }
+    .sovereign-gateway-cta:focus-visible {
+      outline: 2px solid rgba(0, 240, 255, 0.95);
+      outline-offset: 4px;
+    }
     .watermark-ribbon {
       position: fixed;
       left: 0;
@@ -701,6 +1146,15 @@
     .ultimatum-corner { z-index: 1500; }
 
     @media (prefers-reduced-motion: reduce) {
+      .layer-one-gate--imperial::before { animation: none !important; opacity: 0.5; }
+      .layer1-imperial-bg::before,
+      .layer1-imperial-bg::after { animation: none !important; }
+      .layer1-widget-head { animation: none !important; }
+      .layer-one-entity { animation: none !important; }
+      .mission-mandate-typewriter { animation: none !important; white-space: normal; border-right: none; width: 100% !important; }
+      .branding-8r-signature { animation: none !important; }
+      .layer1-anti-s-badge { animation: none !important; }
+      .sovereign-gateway-cta { animation: none !important; }
       .bluelaser-scan, .bluelaser-edge, .satellite-scanlines, .ticker-track { animation: none !important; }
       .ticker-track { flex-wrap: wrap; width: 100%; max-width: 1200px; margin: 0 auto; transform: none; }
       .ticker-inner { flex-wrap: wrap; white-space: normal; justify-content: center; gap: 0.5rem 1rem; }
@@ -708,6 +1162,17 @@
   </style>
 </head>
 <body>
+  <script>
+    function showLayer(layerNumber) {
+      var l1 = document.getElementById('layer-1-gate');
+      var l2 = document.getElementById('layer-2-bridge');
+      var l3 = document.getElementById('layer-3-terminal');
+      var n = Number(layerNumber) || 1;
+      if (l1) l1.style.display = n === 1 ? '' : 'none';
+      if (l2) l2.style.display = n === 2 ? '' : 'none';
+      if (l3) l3.style.display = n === 3 ? '' : 'none';
+    }
+  </script>
   <div class="bluelaser-stack" aria-hidden="true">
     <div class="bluelaser-scan"></div>
     <div class="bluelaser-edge"></div>
@@ -728,17 +1193,57 @@
   <div class="container">
     <div class="watermark-ribbon" aria-hidden="true"></div>
     <div class="main-data-area">
-    <!-- Authority Branding: Gold Medallion + Full Name + Falcon-Class Welcome -->
-    <header class="authority-header">
-      <div class="gold-medallion kwas-kwas-shimmer-medallion" aria-hidden="true">
-        <span class="medallion-inner">GCSLC</span>
-      </div>
-      <h1 class="org-name kwas-kwas-shimmer">Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC) LTD/GTE</h1>
-      <p class="ngecc-brainbox kwas-kwas-shimmer">Nigerian Green Energy and Chemicals Corporation (NGECC) — Special Strategic Mission Vehicle (SSMV)</p>
-      <p class="falcon-welcome kwas-kwas-shimmer">Falcon-Class Sovereign Gateway: Seizing the 9.6× Wealth Multiplier</p>
-      <p class="institutional-status kwas-kwas-shimmer">Institutional Status: CAC Name Reservation Approved (GCSLC LTD/GTE)</p>
-    </header>
+    <section id="layer-1-gate" class="layer-one-gate layer-one-gate--imperial" aria-label="Institutional entrance — Layer 1">
+      <div class="layer1-imperial-bg" aria-hidden="true"></div>
+      <div class="layer-one-gate__inner">
+        <p class="layer1-widget-head">Institutional anchors</p>
+        <div class="layer1-anchor-chrome">
+          <p class="layer-one-entity">Corporate Engine: Galadiman Ruwa Nigeria Ltd <span class="rc-badge">(RC 1871418)</span></p>
+          <p class="layer-one-pillar">Strategic Pillar: Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC) LTD/GTE</p>
+          <p class="layer-one-leader">The Leader: Dr. Jaafaru Sa’ad, Galadiman Ruwa Zazzau (DBA, Commonwealth University, Belize)</p>
+        </div>
 
+        <p class="layer1-widget-head">Compliance &amp; registration</p>
+        <div class="layer1-compliance-strip">
+          <div class="layer1-metal-card">SCUML Reg · RN: SC 151653884</div>
+          <div class="layer1-metal-card">CAC · Name Reservation Approved · GCSLC LTD/GTE</div>
+        </div>
+
+        <p class="layer1-widget-head">Mission mandate</p>
+        <p class="mission-mandate-typewriter">MISSION MANDATE: Beyond the AZK Corridor, we are operationalizing the 15/15 Grassroots Model for Civic Responsibility and the Formalization of Artisanal Mining. This terminal facilitates International Investor Outreach for global conglomerates to participate in Nigeria’s National Resource Revitalization.</p>
+
+        <p class="layer1-widget-head">Security &amp; API integrity</p>
+        <div class="layer1-security-row">
+          <span class="layer1-api-status">API Gateway · <em class="layer1-api-ok">STATUS: SECURE</em></span>
+        </div>
+
+        <p class="layer1-widget-head">Strategic contact hub</p>
+        <div class="layer1-contact-hub">
+          <span class="layer1-anti-s-badge" title="Anti-S protocol — integrity assured">ANTI-S SECURE</span>
+          <div class="layer1-emails">
+            <a href="mailto:info@galadimanruwacenter.org">info@galadimanruwacenter.org</a>
+            <a href="mailto:chairman@galadimanruwacenter.org">chairman@galadimanruwacenter.org</a>
+            <a href="mailto:gcslc.research@gmail.com">gcslc.research@gmail.com</a>
+          </div>
+          <a class="layer1-wa" href="https://wa.me/2348099111515" target="_blank" rel="noopener noreferrer" title="WhatsApp">WhatsApp +234 809 911 1515</a>
+          <div class="layer1-social">
+            <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+            <a href="https://x.com/" target="_blank" rel="noopener noreferrer" aria-label="X"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+            <a href="https://bsky.app/" target="_blank" rel="noopener noreferrer" aria-label="Bluesky"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.59C2.6.944 1.036 1.84.813 3.784c-.235 2.05.742 5.48 3.072 7.748 1.554 1.454 3.33 2.01 4.115 2.468.256.153.5.3.73.45.23-.15.474-.297.73-.45.785-.458 2.561-1.014 4.115-2.468 2.33-2.268 3.307-5.698 3.072-7.748-.223-1.944-1.787-2.84-3.389-1.574-2.752 1.537-5.711 5.476-6.798 7.59z"/></svg></a>
+            <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+            <a href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg></a>
+          </div>
+        </div>
+
+        <p class="branding-8r-signature">Everything is powered by the 8R Stealth Paradigm Convergence and its Determinants. They are universal and stand the test of time. Let&apos;s converge for you to decode.</p>
+
+        <button type="button" class="sovereign-gateway-cta" id="sovereignGatewayLayer1" onclick="showLayer(2)">SOVEREIGN GATEWAY</button>
+      </div>
+    </section>
+
+    <div id="layer-2-bridge" style="display:none;" aria-hidden="true"></div>
+
+    <div id="layer-3-terminal" style="display:none;" aria-hidden="true">
     <header class="dashboard-header">
       <p class="institution-name">National Resources Revitalization Fusion Center <small>(NRRFC)</small></p>
       <p class="paradigm-anchor">Powered by the 8R Stealth Paradigm Convergence and its Determinants</p>
@@ -976,6 +1481,7 @@
       <p class="footer-tagline">GCSLC Sovereign · NRRFC · 2026 FX: ₦1,350 = $1</p>
       <p class="footer-signature kwas-kwas-shimmer">Dr. Jaafaru Sa'ad — Chairman &amp; Founder, GCSLC</p>
     </footer>
+    </div>
     </div>
     <!-- Ultimatum: Falcon facing camera + speech bubble -->
     <div class="ultimatum-corner" aria-hidden="true">
