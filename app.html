@@ -4,12 +4,12 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050a15">
-  <title>GCSLC Sovereign · NRRFC — Nigeria Coal Reserves &amp; NRRF Dashboard</title>
-  <meta name="application-name" content="GCSLC Sovereign · NRRFC">
-  <meta name="description" content="GCSLC Sovereign: Nigeria Coal Reserves, debt-swap (10% Big Tech Capex vs domestic debt), coal-to-syngas vs diesel. NRRFC 2026.">
-  <meta name="author" content="National Resources Revitalization Fusion Center (NRRFC) · GCSLC Sovereign">
-  <meta property="og:title" content="GCSLC Sovereign · NRRFC — Coal Reserves &amp; NRRF Dashboard">
-  <meta property="og:description" content="GCSLC Sovereign: Nigeria Coal Reserves, debt-swap comparison, coal-to-syngas vs diesel — NRRFC 2026.">
+  <title>GCSLC Sovereign · NRRGFC — Nigeria Coal Reserves &amp; NRRF Dashboard</title>
+  <meta name="application-name" content="GCSLC Sovereign · NRRGFC">
+  <meta name="description" content="GCSLC Sovereign: Nigeria Coal Reserves, debt-swap (10% Big Tech Capex vs domestic debt), coal-to-syngas vs diesel. National Resources Revitalization and Grassroots Fusion Center (NRRGFC) 2026.">
+  <meta name="author" content="National Resources Revitalization and Grassroots Fusion Center (NRRGFC) · GCSLC Sovereign">
+  <meta property="og:title" content="GCSLC Sovereign · NRRGFC — Coal Reserves &amp; NRRF Dashboard">
+  <meta property="og:description" content="GCSLC Sovereign: Nigeria Coal Reserves, debt-swap comparison, coal-to-syngas vs diesel — National Resources Revitalization and Grassroots Fusion Center (NRRGFC) 2026.">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&amp;display=swap" rel="stylesheet" />
@@ -28,6 +28,17 @@
       --danger: #e53e3e;
     }
     * { box-sizing: border-box; }
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
     body {
       margin: 0;
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -405,22 +416,25 @@
       --imperial-navy: #020814;
       --imperial-silver: #c8d0dc;
       --imperial-white-gold: #f5ecd8;
-      --imperial-border-sheen: linear-gradient(135deg, rgba(200, 208, 220, 0.85) 0%, rgba(255, 248, 235, 0.55) 35%, rgba(212, 175, 55, 0.45) 65%, rgba(180, 190, 200, 0.75) 100%);
+      --imperial-border-sheen: linear-gradient(to right, #D4AF37, #FFFFFF, #D4AF37);
       position: relative;
       margin: 0 0 1.35rem;
       padding: clamp(1.15rem, 3.2vw, 1.85rem) clamp(0.9rem, 2.6vw, 1.45rem);
-      border-radius: 14px;
-      border: 1px solid transparent;
+      border-radius: 16px;
+      border: 2px solid transparent;
       background:
-        linear-gradient(var(--imperial-obsidian), var(--imperial-obsidian)) padding-box,
+        radial-gradient(ellipse 95% 85% at 50% 18%, rgba(0, 229, 255, 0.07), transparent 52%),
+        linear-gradient(175deg, #00060f 0%, var(--imperial-navy) 38%, #030a14 72%, #000308 100%) padding-box,
         var(--imperial-border-sheen) border-box;
       background-origin: padding-box, border-box;
       background-clip: padding-box, border-box;
       box-shadow:
-        0 0 0 1px rgba(255, 248, 235, 0.06),
-        0 0 52px rgba(0, 229, 255, 0.12),
-        0 0 80px rgba(212, 175, 55, 0.05),
-        inset 0 1px 0 rgba(255, 248, 235, 0.06);
+        0 0 0 1px rgba(255, 248, 235, 0.1),
+        0 0 0 2px rgba(212, 175, 55, 0.22),
+        0 0 64px rgba(0, 229, 255, 0.14),
+        0 0 100px rgba(212, 175, 55, 0.07),
+        inset 0 1px 0 rgba(255, 248, 235, 0.1),
+        inset 0 -18px 40px rgba(0, 0, 0, 0.35);
       overflow: hidden;
     }
     .layer-one-gate--imperial::after {
@@ -431,9 +445,12 @@
       pointer-events: none;
       z-index: 0;
       background:
-        radial-gradient(ellipse 130% 90% at 50% -10%, rgba(0, 229, 255, 0.1), transparent 52%),
-        radial-gradient(ellipse 80% 60% at 100% 100%, rgba(212, 175, 55, 0.06), transparent 50%),
-        linear-gradient(168deg, var(--imperial-obsidian) 0%, #030810 42%, #050a12 100%);
+        radial-gradient(ellipse 95% 75% at 50% 118%, rgba(212, 175, 55, 0.11), transparent 58%),
+        radial-gradient(ellipse 110% 85% at 12% 8%, rgba(200, 208, 220, 0.09), transparent 52%),
+        radial-gradient(circle at 78% 22%, rgba(0, 229, 255, 0.11), transparent 46%),
+        radial-gradient(ellipse 130% 90% at 50% -10%, rgba(0, 229, 255, 0.12), transparent 52%),
+        radial-gradient(ellipse 80% 60% at 100% 100%, rgba(212, 175, 55, 0.07), transparent 50%),
+        linear-gradient(168deg, #00040c 0%, var(--imperial-navy) 28%, #030810 52%, #050a14 78%, #010308 100%);
     }
     .layer-one-gate--imperial::before {
       content: '';
@@ -456,6 +473,10 @@
       pointer-events: none;
       border-radius: inherit;
       overflow: hidden;
+      background:
+        radial-gradient(ellipse 120% 90% at 50% 120%, rgba(255, 248, 235, 0.045), transparent 55%),
+        radial-gradient(circle at 30% 40%, rgba(0, 229, 255, 0.05), transparent 48%),
+        radial-gradient(circle at 70% 65%, rgba(180, 190, 200, 0.04), transparent 50%);
     }
     .layer1-imperial-bg::before {
       content: '© NCC Copyright LW15954';
@@ -468,7 +489,7 @@
       font-weight: 700;
       letter-spacing: 0.12em;
       white-space: nowrap;
-      opacity: 0.09;
+      opacity: 0.12;
       background: linear-gradient(95deg, #9aa4b2 0%, #f5ecd8 35%, #c0c8d4 55%, #fff8ec 78%, #8a929e 100%);
       background-size: 200% auto;
       -webkit-background-clip: text;
@@ -520,22 +541,24 @@
       color: transparent;
       -webkit-text-fill-color: transparent;
       filter: drop-shadow(0 0 14px rgba(0, 229, 255, 0.45)) drop-shadow(0 0 28px rgba(0, 200, 255, 0.2));
-      animation: layer1-headline-glow 5.5s ease-in-out infinite;
+      animation: layer1-headline-glow 4s ease-in-out infinite, layer1-headline-cyan-pulse 2.8s ease-in-out infinite;
     }
     .layer1-widget-head:first-of-type { margin-top: 0; }
     @keyframes layer1-headline-glow {
       0%, 100% {
         background-position: 0% 50%;
         filter: drop-shadow(0 0 10px rgba(0, 229, 255, 0.42)) drop-shadow(0 0 22px rgba(0, 200, 255, 0.2));
-        opacity: 0.94;
         letter-spacing: 0.21em;
       }
       50% {
         background-position: 100% 50%;
-        filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.58)) drop-shadow(0 0 38px rgba(0, 229, 255, 0.32));
-        opacity: 1;
-        letter-spacing: 0.24em;
+        filter: drop-shadow(0 0 22px rgba(0, 240, 255, 0.62)) drop-shadow(0 0 44px rgba(0, 229, 255, 0.38));
+        letter-spacing: 0.245em;
       }
+    }
+    @keyframes layer1-headline-cyan-pulse {
+      0%, 100% { opacity: 0.93; text-shadow: 0 0 18px rgba(0, 229, 255, 0.25); }
+      50% { opacity: 1; text-shadow: 0 0 32px rgba(0, 240, 255, 0.55), 0 0 56px rgba(0, 200, 255, 0.22); }
     }
     .layer1-anchor-chrome {
       margin: 0 0 1rem;
@@ -606,6 +629,22 @@
       -webkit-text-fill-color: transparent;
       filter: drop-shadow(0 0 6px rgba(200, 208, 220, 0.35));
     }
+    .layer-one-identity {
+      margin: 0 0 0.85rem;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.66rem, 1.82vw, 0.82rem);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      line-height: 1.5;
+      background: linear-gradient(100deg, #fff8ec 0%, #f5ecd8 35%, #e8eef4 70%, #fff8ec 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.28));
+      animation: layer1-metallic-anchor 10s ease-in-out infinite;
+    }
     .layer1-compliance-strip {
       display: flex;
       flex-wrap: wrap;
@@ -661,16 +700,22 @@
       font-weight: 700;
       line-height: 1.65;
       letter-spacing: 0.035em;
-      color: #00f0ff;
-      text-shadow:
-        0 0 8px rgba(0, 240, 255, 0.55),
-        0 0 22px rgba(0, 229, 255, 0.38),
-        0 0 44px rgba(0, 200, 255, 0.16);
-      animation: branding8r-cyan-pulse 4.2s ease-in-out infinite;
+      background: linear-gradient(92deg, #00e5ff 0%, #b8f6ff 18%, #fff8ec 38%, #7ee8ff 58%, #00f0ff 78%, #00c8e6 100%);
+      background-size: 240% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 12px rgba(0, 229, 255, 0.5)) drop-shadow(0 0 28px rgba(0, 200, 255, 0.22));
+      animation: branding8r-shimmer 5.2s ease-in-out infinite, branding8r-cyan-pulse 3s ease-in-out infinite;
+    }
+    @keyframes branding8r-shimmer {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
     }
     @keyframes branding8r-cyan-pulse {
-      0%, 100% { filter: brightness(1); opacity: 0.96; }
-      50% { filter: brightness(1.1); opacity: 1; }
+      0%, 100% { filter: drop-shadow(0 0 10px rgba(0, 229, 255, 0.42)) drop-shadow(0 0 24px rgba(0, 200, 255, 0.18)); opacity: 0.95; }
+      50% { filter: drop-shadow(0 0 22px rgba(0, 240, 255, 0.65)) drop-shadow(0 0 44px rgba(0, 229, 255, 0.32)); opacity: 1; }
     }
     .layer1-security-row {
       display: flex;
@@ -792,6 +837,256 @@
       color: #00f0ff;
     }
     .layer1-social svg { width: 1rem; height: 1rem; fill: currentColor; }
+
+    /* —— Layer 1: Sovereign Gap (30M information axis) —— */
+    .layer1-sovereign-gap {
+      position: relative;
+      margin: 0 0 1.15rem;
+      padding: 0.95rem 0.75rem 1rem;
+      border-radius: 16px;
+      border: 2px solid transparent;
+      background:
+        radial-gradient(ellipse 80% 70% at 50% 0%, rgba(0, 229, 255, 0.08), transparent 55%),
+        linear-gradient(178deg, rgba(4, 12, 24, 0.72), rgba(2, 6, 14, 0.94)) padding-box,
+        linear-gradient(148deg, rgba(230, 236, 244, 0.65) 0%, rgba(255, 248, 235, 0.45) 42%, rgba(212, 175, 55, 0.5) 100%) border-box;
+      background-origin: padding-box, border-box;
+      background-clip: padding-box, border-box;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 248, 235, 0.1),
+        inset 0 -12px 32px rgba(0, 0, 0, 0.35),
+        0 0 0 1px rgba(0, 229, 255, 0.12),
+        0 10px 40px rgba(0, 0, 0, 0.5),
+        0 0 48px rgba(0, 229, 255, 0.1);
+    }
+    .layer1-gap-chart {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.65rem;
+      margin-bottom: 0.65rem;
+    }
+    .layer1-gap-pie-wrap {
+      position: relative;
+      width: min(14.5rem, 88vw);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+      filter: drop-shadow(0 0 22px rgba(212, 175, 55, 0.32)) drop-shadow(0 0 40px rgba(0, 229, 255, 0.28));
+      animation: layer1-gap-pie-float 5.5s ease-in-out infinite;
+    }
+    .layer1-gap-pie-glass {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      padding: 0.42rem;
+      isolation: isolate;
+      background:
+        linear-gradient(155deg, rgba(255, 248, 235, 0.22) 0%, rgba(200, 208, 220, 0.08) 38%, rgba(0, 229, 255, 0.1) 62%, rgba(2, 8, 20, 0.88) 100%);
+      border: 1px solid rgba(255, 248, 235, 0.28);
+      box-shadow:
+        inset 0 2px 14px rgba(255, 255, 255, 0.35),
+        inset 0 -10px 28px rgba(0, 0, 0, 0.55),
+        inset 0 0 0 1px rgba(0, 229, 255, 0.12),
+        0 0 0 1px rgba(212, 175, 55, 0.18),
+        0 0 36px rgba(0, 229, 255, 0.45),
+        0 0 72px rgba(0, 229, 255, 0.12);
+      backdrop-filter: blur(10px) saturate(1.25);
+      -webkit-backdrop-filter: blur(10px) saturate(1.25);
+    }
+    .layer1-gap-pie-glass::before {
+      content: '';
+      position: absolute;
+      inset: 12%;
+      border-radius: 50%;
+      pointer-events: none;
+      background: radial-gradient(circle at 35% 28%, rgba(255, 255, 255, 0.2), transparent 55%);
+      opacity: 0.55;
+      mix-blend-mode: screen;
+    }
+    .layer1-gap-pie-glass .layer1-gap-pie {
+      position: relative;
+      z-index: 1;
+      border-radius: 50%;
+      filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.45));
+    }
+    @keyframes layer1-gap-pie-float {
+      0%, 100% { transform: translateY(0) scale(1); filter: drop-shadow(0 0 16px rgba(212, 175, 55, 0.22)) drop-shadow(0 0 26px rgba(0, 229, 255, 0.16)); }
+      50% { transform: translateY(-3px) scale(1.01); filter: drop-shadow(0 0 24px rgba(255, 248, 235, 0.2)) drop-shadow(0 0 36px rgba(0, 240, 255, 0.28)); }
+    }
+    .layer1-gap-pie-wrap::after {
+      content: '';
+      position: absolute;
+      inset: -8%;
+      border-radius: 50%;
+      pointer-events: none;
+      background: conic-gradient(from 210deg, transparent 40%, rgba(0, 229, 255, 0.12) 50%, transparent 60%);
+      animation: layer1-gap-sheen-orbit 14s linear infinite;
+      mix-blend-mode: screen;
+    }
+    @keyframes layer1-gap-sheen-orbit {
+      to { transform: rotate(360deg); }
+    }
+    .layer1-gap-pie {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .layer1-gap-pie .gap-slice-gold {
+      fill: url(#layer1GapGoldMetallic);
+    }
+    .layer1-gap-pie .gap-slice-cyan {
+      fill: url(#layer1GapObsidianCyan);
+      filter: url(#layer1GapCyanBloom);
+    }
+    .layer1-gap-legend {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      max-width: 42rem;
+      text-align: left;
+    }
+    .layer1-gap-legend li {
+      margin: 0 0 0.4rem;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.58rem, 1.55vw, 0.72rem);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      line-height: 1.45;
+      color: rgba(232, 238, 244, 0.95);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.45rem;
+    }
+    .layer1-gap-legend li:last-child { margin-bottom: 0; }
+    .layer1-gap-swatch {
+      flex-shrink: 0;
+      width: 0.65rem;
+      height: 0.65rem;
+      margin-top: 0.2rem;
+      border-radius: 3px;
+      box-shadow: 0 0 10px rgba(255, 248, 235, 0.2);
+    }
+    .layer1-gap-swatch--gold {
+      background: linear-gradient(135deg, #fff8ec 0%, #D4AF37 45%, #7a6840 100%);
+      border: 1px solid rgba(255, 248, 235, 0.45);
+    }
+    .layer1-gap-swatch--cyan {
+      background: radial-gradient(circle at 30% 30%, #00f0ff 0%, #020814 58%, #041a24 100%);
+      border: 1px solid rgba(0, 229, 255, 0.45);
+      box-shadow: 0 0 12px rgba(0, 229, 255, 0.35);
+    }
+    .layer1-gap-context {
+      margin: 0.35rem 0 0;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.62rem, 1.65vw, 0.78rem);
+      line-height: 1.6;
+      letter-spacing: 0.02em;
+      color: rgba(200, 208, 220, 0.95);
+      text-align: center;
+      max-width: 46rem;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .layer1-gap-context strong {
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-weight: 700;
+      color: #00e5ff;
+      text-shadow: 0 0 12px rgba(0, 229, 255, 0.35);
+    }
+
+    /* G-GATE API — beside social bar */
+    .layer1-social-api-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: stretch;
+      justify-content: center;
+      gap: 0.85rem 1.1rem;
+      margin-top: 0.35rem;
+    }
+    .layer1-social-api-row .layer1-social {
+      flex: 1 1 auto;
+      justify-content: center;
+      min-width: min(100%, 12rem);
+    }
+    .layer1-ggate-api {
+      flex: 1 1 220px;
+      max-width: 22rem;
+      min-width: 11rem;
+      padding: 0.55rem 0.65rem 0.6rem;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      background:
+        linear-gradient(rgba(2, 8, 18, 0.92), rgba(2, 8, 18, 0.92)) padding-box,
+        linear-gradient(160deg, rgba(0, 229, 255, 0.35) 0%, rgba(255, 248, 235, 0.22) 45%, rgba(200, 208, 220, 0.4) 100%) border-box;
+      background-origin: padding-box, border-box;
+      background-clip: padding-box, border-box;
+      text-align: center;
+      box-shadow: inset 0 0 0 1px rgba(0, 229, 255, 0.08), 0 4px 20px rgba(0, 0, 0, 0.35);
+    }
+    .layer1-ggate-title {
+      margin: 0 0 0.4rem;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.52rem, 1.38vw, 0.64rem);
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #00e5ff 0%, #b8f6ff 45%, #fff8ec 70%, #00f0ff 100%);
+      background-size: 180% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 10px rgba(0, 229, 255, 0.35));
+      animation: layer1-ggate-title-sheen 6s ease-in-out infinite;
+    }
+    @keyframes layer1-ggate-title-sheen {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    .layer1-ggate-handshake {
+      margin: 0 0 0.25rem;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.52rem, 1.42vw, 0.66rem);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #b8f6ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      text-shadow: 0 0 14px rgba(0, 229, 255, 0.55);
+      animation: layer1-ggate-handshake-pulse 2.4s ease-in-out infinite;
+    }
+    @keyframes layer1-ggate-handshake-pulse {
+      0%, 100% { color: #9ee8ff; text-shadow: 0 0 10px rgba(0, 229, 255, 0.4); }
+      50% { color: #e8ffff; text-shadow: 0 0 22px rgba(0, 240, 255, 0.75), 0 0 36px rgba(0, 200, 255, 0.35); }
+    }
+    .layer1-ggate-pulse-dot {
+      width: 0.45rem;
+      height: 0.45rem;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #fff 0%, #00f0ff 55%, #006080 100%);
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.85);
+      animation: layer1-ggate-dot-beat 2.4s ease-in-out infinite;
+    }
+    @keyframes layer1-ggate-dot-beat {
+      0%, 100% { transform: scale(1); opacity: 0.95; }
+      50% { transform: scale(1.25); opacity: 1; }
+    }
+    .layer1-ggate-nodal {
+      margin: 0;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: clamp(0.48rem, 1.25vw, 0.58rem);
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(245, 236, 216, 0.88);
+    }
+
     .sovereign-gateway-cta {
       display: inline-flex;
       align-items: center;
@@ -1153,8 +1448,15 @@
       .layer-one-entity { animation: none !important; }
       .mission-mandate-typewriter { animation: none !important; white-space: normal; border-right: none; width: 100% !important; }
       .branding-8r-signature { animation: none !important; }
+      .layer-one-identity { animation: none !important; }
       .layer1-anti-s-badge { animation: none !important; }
       .sovereign-gateway-cta { animation: none !important; }
+      .layer1-gap-pie-wrap,
+      .layer1-gap-pie-wrap::after { animation: none !important; }
+      .layer1-gap-pie-wrap { transform: none !important; }
+      .layer1-ggate-title,
+      .layer1-ggate-handshake,
+      .layer1-ggate-pulse-dot { animation: none !important; }
       .bluelaser-scan, .bluelaser-edge, .satellite-scanlines, .ticker-track { animation: none !important; }
       .ticker-track { flex-wrap: wrap; width: 100%; max-width: 1200px; margin: 0 auto; transform: none; }
       .ticker-inner { flex-wrap: wrap; white-space: normal; justify-content: center; gap: 0.5rem 1rem; }
@@ -1196,11 +1498,12 @@
     <section id="layer-1-gate" class="layer-one-gate layer-one-gate--imperial" aria-label="Institutional entrance — Layer 1">
       <div class="layer1-imperial-bg" aria-hidden="true"></div>
       <div class="layer-one-gate__inner">
-        <p class="layer1-widget-head">Institutional anchors</p>
+        <p class="layer1-widget-head">Institutional identity</p>
+        <p class="layer-one-identity">Dr. Jaafaru Sa’ad, Galadiman Ruwa Zazzau (DBA, Commonwealth University, Belize)</p>
+        <p class="layer1-widget-head">Institutional pillars</p>
         <div class="layer1-anchor-chrome">
-          <p class="layer-one-entity">Corporate Engine: Galadiman Ruwa Nigeria Ltd <span class="rc-badge">(RC 1871418)</span></p>
-          <p class="layer-one-pillar">Strategic Pillar: Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC) LTD/GTE</p>
-          <p class="layer-one-leader">The Leader: Dr. Jaafaru Sa’ad, Galadiman Ruwa Zazzau (DBA, Commonwealth University, Belize)</p>
+          <p class="layer-one-entity">Galadiman Ruwa Nigeria Ltd <span class="rc-badge">(RC 1871418)</span></p>
+          <p class="layer-one-pillar">Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC) LTD/GTE</p>
         </div>
 
         <p class="layer1-widget-head">Compliance &amp; registration</p>
@@ -1212,9 +1515,48 @@
         <p class="layer1-widget-head">Mission mandate</p>
         <p class="mission-mandate-typewriter">MISSION MANDATE: Beyond the AZK Corridor, we are operationalizing the 15/15 Grassroots Model for Civic Responsibility and the Formalization of Artisanal Mining. This terminal facilitates International Investor Outreach for global conglomerates to participate in Nigeria’s National Resource Revitalization.</p>
 
-        <p class="layer1-widget-head">Security &amp; API integrity</p>
-        <div class="layer1-security-row">
-          <span class="layer1-api-status">API Gateway · <em class="layer1-api-ok">STATUS: SECURE</em></span>
+        <p class="layer1-widget-head">The Sovereign Gap — 30&nbsp;million information axis</p>
+        <div class="layer1-sovereign-gap" aria-labelledby="layer1-sovereign-gap-label">
+          <p class="visually-hidden" id="layer1-sovereign-gap-label">Pie chart: 27 percent active civic participation versus 73 percent strategic information gap among approximately thirty million citizens.</p>
+          <div class="layer1-gap-chart">
+            <div class="layer1-gap-pie-wrap">
+              <div class="layer1-gap-pie-glass">
+              <svg class="layer1-gap-pie" viewBox="0 0 200 200" role="img" aria-hidden="true" focusable="false">
+                <defs>
+                  <linearGradient id="layer1GapGoldMetallic" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#4a3f28"/>
+                    <stop offset="24%" stop-color="#fff8ec"/>
+                    <stop offset="48%" stop-color="#D4AF37"/>
+                    <stop offset="72%" stop-color="#8a7648"/>
+                    <stop offset="100%" stop-color="#2a2418"/>
+                  </linearGradient>
+                  <linearGradient id="layer1GapObsidianCyan" x1="0%" y1="100%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#000308"/>
+                    <stop offset="32%" stop-color="#051820"/>
+                    <stop offset="52%" stop-color="#0098b8"/>
+                    <stop offset="74%" stop-color="#00f0ff"/>
+                    <stop offset="100%" stop-color="#020814"/>
+                  </linearGradient>
+                  <filter id="layer1GapCyanBloom" x="-40%" y="-40%" width="180%" height="180%">
+                    <feGaussianBlur stdDeviation="3.2" result="blur"/>
+                    <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.55 0" result="soft"/>
+                    <feMerge>
+                      <feMergeNode in="soft"/>
+                      <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                  </filter>
+                </defs>
+                <path class="gap-slice-gold" d="M 100 100 L 100 20 A 80 80 0 0 1 179.36 110.03 Z" />
+                <path class="gap-slice-cyan" d="M 100 100 L 179.36 110.03 A 80 80 0 1 1 100 20 Z" />
+              </svg>
+              </div>
+            </div>
+            <ul class="layer1-gap-legend">
+              <li><span class="layer1-gap-swatch layer1-gap-swatch--gold" aria-hidden="true"></span><span><strong>27%</strong> — Active civic participation</span></li>
+              <li><span class="layer1-gap-swatch layer1-gap-swatch--cyan" aria-hidden="true"></span><span><strong>73%</strong> — Strategic information gap (~30.0M Nigerians)</span></li>
+            </ul>
+          </div>
+          <p class="layer1-gap-context">The <strong>73% information gap</strong> is the strategic driver for minimizing <strong>youth drug addiction</strong> and <strong>crime</strong> through grassroots revitalization and civic convergence.</p>
         </div>
 
         <p class="layer1-widget-head">Strategic contact hub</p>
@@ -1226,18 +1568,25 @@
             <a href="mailto:gcslc.research@gmail.com">gcslc.research@gmail.com</a>
           </div>
           <a class="layer1-wa" href="https://wa.me/2348099111515" target="_blank" rel="noopener noreferrer" title="WhatsApp">WhatsApp +234 809 911 1515</a>
-          <div class="layer1-social">
-            <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
-            <a href="https://x.com/" target="_blank" rel="noopener noreferrer" aria-label="X"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
-            <a href="https://bsky.app/" target="_blank" rel="noopener noreferrer" aria-label="Bluesky"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.59C2.6.944 1.036 1.84.813 3.784c-.235 2.05.742 5.48 3.072 7.748 1.554 1.454 3.33 2.01 4.115 2.468.256.153.5.3.73.45.23-.15.474-.297.73-.45.785-.458 2.561-1.014 4.115-2.468 2.33-2.268 3.307-5.698 3.072-7.748-.223-1.944-1.787-2.84-3.389-1.574-2.752 1.537-5.711 5.476-6.798 7.59z"/></svg></a>
-            <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
-            <a href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg></a>
+          <div class="layer1-social-api-row">
+            <div class="layer1-social">
+              <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+              <a href="https://x.com/" target="_blank" rel="noopener noreferrer" aria-label="X"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+              <a href="https://bsky.app/" target="_blank" rel="noopener noreferrer" aria-label="Bluesky"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.59C2.6.944 1.036 1.84.813 3.784c-.235 2.05.742 5.48 3.072 7.748 1.554 1.454 3.33 2.01 4.115 2.468.256.153.5.3.73.45.23-.15.474-.297.73-.45.785-.458 2.561-1.014 4.115-2.468 2.33-2.268 3.307-5.698 3.072-7.748-.223-1.944-1.787-2.84-3.389-1.574-2.752 1.537-5.711 5.476-6.798 7.59z"/></svg></a>
+              <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+              <a href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg></a>
+            </div>
+            <aside class="layer1-ggate-api" aria-label="G-Gate API secure handshake">
+              <p class="layer1-ggate-title">G-GATE API STATUS</p>
+              <p class="layer1-ggate-handshake"><span class="layer1-ggate-pulse-dot" aria-hidden="true"></span> SECURE TWO-WAY HANDSHAKE</p>
+              <p class="layer1-ggate-nodal">with national nodal facilitators</p>
+            </aside>
           </div>
         </div>
 
         <p class="branding-8r-signature">Everything is powered by the 8R Stealth Paradigm Convergence and its Determinants. They are universal and stand the test of time. Let&apos;s converge for you to decode.</p>
 
-        <button type="button" class="sovereign-gateway-cta" id="sovereignGatewayLayer1" onclick="showLayer(2)">SOVEREIGN GATEWAY</button>
+        <button type="button" class="sovereign-gateway-cta" id="sovereignGatewayLayer1" onclick="showLayer(3)">SOVEREIGN GATEWAY</button>
       </div>
     </section>
 
@@ -2014,6 +2363,9 @@
       updateTicker();
       setInterval(updateTicker, 3000);
     })();
+  </script>
+  <script>
+    window.onload = function () { showLayer(1); };
   </script>
 
 </body>
