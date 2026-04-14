@@ -498,6 +498,7 @@
     .wow-spine-sub {
       margin: 0.5rem 0 0;
       font-size: clamp(0.72rem, 2.2vw, 0.92rem);
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
       font-weight: 600;
       line-height: 1.5;
       text-align: center;
@@ -507,6 +508,23 @@
       color: rgba(232, 238, 244, 0.94);
       text-shadow: 0 0 20px rgba(212, 175, 55, 0.22);
       animation: hook-pulse-terminal 4.2s ease-in-out infinite;
+    }
+    .cyan-typewriter {
+      color: #00e5ff;
+      text-shadow: 0 0 10px rgba(0, 229, 255, 0.35), 0 0 24px rgba(0, 229, 255, 0.2);
+      white-space: nowrap;
+      overflow: hidden;
+      display: inline-block;
+      max-width: 100%;
+      border-right: 2px solid rgba(0, 229, 255, 0.75);
+      animation: mission-typewriter 16s steps(180, end) infinite, mission-cursor 0.9s step-end infinite;
+    }
+    @keyframes mission-typewriter {
+      0%, 10% { width: 0; }
+      70%, 100% { width: 100%; }
+    }
+    @keyframes mission-cursor {
+      50% { border-right-color: transparent; }
     }
     @keyframes hook-pulse-terminal {
       0%, 100% { opacity: 0.82; filter: brightness(0.98); }
@@ -764,9 +782,33 @@
       gap: 0.2rem;
       box-shadow: 0 0 12px rgba(212, 175, 55, 0.15);
     }
+    .goldman-copy { font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif; }
     .market-strike-data .strike-label { color: var(--muted); text-transform: uppercase; font-size: 0.6rem; }
     .market-strike-data .strike-ge { color: var(--gold-bright); font-weight: 700; }
     .market-strike-data .strike-nh3 { color: var(--gold); font-weight: 600; }
+    .market-strike-data .strike-node {
+      color: var(--gold-bright);
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .market-strike-data .strike-node .node-status {
+      color: #fff8dc;
+      font-weight: 700;
+    }
+    .strategic-audit-shield {
+      margin: 1.4rem 0 0.9rem;
+      padding: 0.75rem 0.95rem;
+      border-radius: 10px;
+      border: 1px solid var(--gold);
+      background: linear-gradient(135deg, rgba(12, 23, 40, 0.95) 0%, rgba(34, 48, 75, 0.9) 45%, rgba(10, 19, 35, 0.95) 100%);
+      color: var(--gold-bright);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: clamp(0.62rem, 1.7vw, 0.72rem);
+      box-shadow: inset 0 1px 0 rgba(255, 248, 220, 0.25), 0 0 14px rgba(212, 175, 55, 0.2);
+    }
 
     /* Ultimatum corner: falcon + speech bubble */
     .ultimatum-corner {
@@ -1136,7 +1178,7 @@
       <div class="tz-bar-inner" id="tzBar" aria-live="polite"></div>
     </div>
     <div class="ticker-outer cmd-ticker">
-      <div class="ticker-label">Live market pulse · March 2026 · Ge $8,597/kg · Si $1.81/lb · Fly ash $148/MT</div>
+      <div class="ticker-label goldman-copy">Global Commodity Feedstock Benchmarks · March 2026 · Ge $8,597/kg · Si $1.81/lb · Fly ash $148/MT</div>
       <div class="ticker-track" id="tickerTrack">
         <div class="ticker-inner" id="tickerA"></div>
         <div class="ticker-inner" id="tickerB" aria-hidden="true"></div>
@@ -1146,8 +1188,8 @@
       <div class="sovereign-tier-bar-wrap">
         <div class="sovereign-tier-bar-copy">
           <span class="sovereign-tier-bar-kicker">AWC / K-GEC Sovereign OS</span>
-          <span class="sovereign-tier-bar-text">Access Tier 1 (15m) | Extension Tier 2 (15m)</span>
-          <span class="sovereign-tier-bar-sub"><span class="sovereign-tier-which">Tier 1 active</span> · <span class="sovereign-tier-remaining">30:00</span> remaining</span>
+          <span class="sovereign-tier-bar-text">Mission Session Window: 2 Hours</span>
+          <span class="sovereign-tier-bar-sub"><span class="sovereign-tier-which">Mission timer active</span> · <span class="sovereign-tier-remaining" id="sovereignTwoHourTimer">02:00:00</span> remaining</span>
         </div>
         <button type="button" class="btn-sovereign-logout" id="sovereignLogoutBtn" title="Return to sovereign-mirror.html and clear bridge session">Sovereign Logout</button>
       </div>
@@ -1162,7 +1204,7 @@
       </div>
       <h1 class="org-name goldman-head">Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE</h1>
       <p class="ngecc-brainbox kwas-kwas-shimmer">Nigerian Green Energy and Chemicals Corporation (NGECC) — Special Strategic Mission Vehicle (SSMV)</p>
-      <p class="wow-spine-sub">Everything is powered by the 8R Stealth Paradigm Convergence and its Determinants; enter the AZK Spine governing the National Coal Corridor.</p>
+      <p class="wow-spine-sub goldman-copy cyan-typewriter">MISSION MANDATE: Beyond the AZK Energy Corridor, we are operationalizing the 15/15 Grassroots Model for Civic Responsibility and the Formalization of Nigeria’s Artisanal Mining Sector. This terminal serves as the Command Center for National Resource Revitalization and Grassroots Voter Integration.</p>
       <p class="falcon-welcome kwas-kwas-shimmer">Falcon-Class Sovereign Gateway: Seizing the 9.6× Wealth Multiplier</p>
       <p class="institutional-status kwas-kwas-shimmer">Institutional Status: CAC Name Reservation Approved (GCSLC LTD/GTE)</p>
     </header>
@@ -1254,11 +1296,13 @@
           <span class="bubble-value" id="falconBubbleValue">High-Value Feedstock Detected — Edo</span>
         </div>
         <div class="market-strike-data" id="marketStrikeData">
-          <span class="strike-label">Corridor nodes · March 2026</span>
+          <span class="strike-label goldman-copy">Digital SSMV Asset Nodes · March 2026</span>
           <span class="strike-ge">Germanium: $8,597/kg</span>
           <span class="strike-fly">Coal Fly Ash: $148/MT</span>
           <span class="strike-si">Silicon: $1.81/lb</span>
           <span class="strike-nh3">Ammonia: $430/MT</span>
+          <span class="strike-node goldman-copy">Artisanal Mining Formalization - <span class="node-status">[Status: ACTIVE SYNC]</span></span>
+          <span class="strike-node goldman-copy">15/15 Grassroots Voter Outreach - <span class="node-status">[Status: OPERATIONAL]</span></span>
         </div>
         <div class="falcon-sprite" id="falconSprite" aria-hidden="true" style="left: 42%; top: 65%; transform: translate(-50%, -50%);">
           <svg viewBox="0 0 32 24" class="falcon-svg" xmlns="http://www.w3.org/2000/svg">
@@ -1425,6 +1469,7 @@
       </div>
     </div>
 
+    <div class="strategic-audit-shield goldman-copy">SECURE AUDIT CORRIDOR: Intellectual Property protected by Nigerian Copyright Commission (NCC) Registration LW15954. Proprietary 8R Stealth Paradigm.</div>
     <footer class="footer footer-corporate">
       <p class="footer-statement">The Galadiman Ruwa Center (GCSLC) presents the NRRFC—a clinical strike against economic inertia. By capturing 10% of Global Big Tech CAPEX (₦945T at March 2026 FX), we achieve 18.9× coverage (1,890% of face) of Nigeria’s ₦50T domestic debt, proving that sovereign re-engineering is the only path to the Zenith.</p>
       <p class="footer-brand">Galadiman Ruwa Center for Strategic Leadership and Communication — <span class="gcslc">GCSLC</span></p>
@@ -1495,6 +1540,46 @@
   </div>
 
   <script src="assets/sovereign-tier-session.js"></script>
+  <script>
+    (function () {
+      var timerEl = document.getElementById('sovereignTwoHourTimer');
+      if (!timerEl) return;
+      var total = 2 * 60 * 60;
+      function fmt(t) {
+        var h = String(Math.floor(t / 3600)).padStart(2, '0');
+        var m = String(Math.floor((t % 3600) / 60)).padStart(2, '0');
+        var s = String(t % 60).padStart(2, '0');
+        return h + ':' + m + ':' + s;
+      }
+      function tick() {
+        timerEl.textContent = fmt(total);
+        if (total > 0) total -= 1;
+      }
+      tick();
+      setInterval(tick, 1000);
+    })();
+  </script>
+  <script>
+    (function () {
+      var TERMII_API_KEY = window.TERMII_API_KEY || '';
+      var TERMII_TO = window.TERMII_TO || '';
+      var TERMII_FROM = window.TERMII_FROM || 'GCSLC';
+      if (!TERMII_API_KEY || !TERMII_TO || typeof fetch !== 'function') return;
+      var message = 'GCSLC Sovereign Terminal: Mission mandate sync active. Digital SSMV nodes operational. 2-hour mission timer initiated.';
+      fetch('https://api.ng.termii.com/api/sms/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: TERMII_TO,
+          from: TERMII_FROM,
+          sms: message,
+          type: 'plain',
+          channel: 'generic',
+          api_key: TERMII_API_KEY
+        })
+      }).catch(function () {});
+    })();
+  </script>
   <script>
     (function () {
       try {
