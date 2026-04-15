@@ -12,7 +12,10 @@
       "port": 8848,
       "certificateValidationPath": "/spc/validate",
       "consultancyIntakePath": "/consultancy-intake",
-      "advisoryVaultPath": "/advisory-vault"
+      "advisoryVaultPath": "/advisory-vault",
+      "globalSouthBriefingPath": "/global-south-briefing",
+      "diamondName": "ZENITH_INFRA_STRIKE",
+      "advisoryTrafficLock": true
     }
   },
   "databaseHardening": {
@@ -33,7 +36,10 @@
   "visualResonance": {
     "rootCssVariables": {
       "--institutional-navy-blue": "#050A15",
-      "--metallic-gold": "#D4AF37"
+      "--metallic-gold": "#D4AF37",
+      "--deep-navy-blue": "#000080",
+      "--goldman-shimmering-cyan": "#00E5FF",
+      "--goldman-shimmer-overlay": "linear-gradient(92deg, #D4AF37 0%, #00E5FF 52%, #D4AF37 100%)"
     },
     "investorLandingPage": {
       "backgroundResonanceVideo": "assets/1003928944.mp4",
@@ -47,6 +53,7 @@
       "hardCodedPort": 8848,
       "components": [
         "advisory-vault",
+        "global-south-briefing",
         "certificate-validator",
         "continental-view-toggle",
         "consultancy-intake-form"

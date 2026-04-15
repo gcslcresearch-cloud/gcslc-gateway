@@ -17,6 +17,9 @@
     :root {
       --institutional-navy-blue: #050A15;
       --metallic-gold: #D4AF37;
+      --deep-navy-blue: #000080;
+      --goldman-shimmering-cyan: #00E5FF;
+      --goldman-shimmer-overlay: linear-gradient(92deg, #D4AF37 0%, #00E5FF 52%, #D4AF37 100%);
       --navy-bg: var(--institutional-navy-blue);
       --navy-surface: #0a1225;
       --navy-border: #1e3a5f;
@@ -284,6 +287,15 @@
       color: transparent;
       -webkit-text-fill-color: transparent;
       animation: authority-gold-sweep 6.5s ease-in-out infinite, authority-cyan-pulse 2.9s ease-in-out infinite;
+    }
+    .goldman-cyan-shimmer {
+      color: var(--goldman-shimmering-cyan);
+      background: var(--goldman-shimmer-overlay);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: kwas-kwas 4.8s linear infinite;
     }
     @keyframes authority-gold-sweep {
       0%, 100% { background-position: 0% 50%; }
@@ -845,7 +857,7 @@
 
     <header class="dashboard-header">
       <p class="institution-name">National Resources Revitalization Fusion Center <small>(NRRFC)</small></p>
-      <p class="paradigm-anchor">Powered by the 8R Stealth Paradigm Convergence and its Determinants</p>
+      <p class="paradigm-anchor goldman-cyan-shimmer">Everything is anchored by the 8R Stealth Paradigm Convergence and its Determinants; let's converge for you to decode.</p>
       <h2 class="section-heading kwas-kwas-shimmer">Nigeria Coal Reserves — Real-Time Dashboard</h2>
       <p class="subtitle">Galadiman Ruwa · GCSLC Sovereign · Energy solution for global AI data centers</p>
       <span class="badge">Power potential for AI DCs</span>
@@ -1086,9 +1098,10 @@
           <h3>Advisory Vault</h3>
           <p>High-level strategic white papers for 8R paradigm diplomacy, node synchronization, and sovereign industrial policy.</p>
           <div class="vault-links">
-            <a href="advisory-vault/index.html" target="_blank" rel="noopener">Open Vault Index</a>
-            <a href="advisory-vault/8r-geostrategy-whitepaper.md" target="_blank" rel="noopener">8R Geostrategy White Paper</a>
-            <a href="advisory-vault/industrial-sync-brief.md" target="_blank" rel="noopener">Industrial Sync Brief</a>
+            <a href="advisory-vault/index.html" data-advisory-route="/advisory-vault/index.html" target="_blank" rel="noopener">Open Vault Index</a>
+            <a href="advisory-vault/8r-geostrategy-whitepaper.md" data-advisory-route="/advisory-vault/8r-geostrategy-whitepaper.md" target="_blank" rel="noopener">8R Geostrategy White Paper</a>
+            <a href="advisory-vault/industrial-sync-brief.md" data-advisory-route="/advisory-vault/industrial-sync-brief.md" target="_blank" rel="noopener">Industrial Sync Brief</a>
+            <a href="global-south-briefing/index.html" data-advisory-route="/global-south-briefing/index.html" target="_blank" rel="noopener">Global South Briefing</a>
           </div>
         </article>
 
@@ -1509,8 +1522,16 @@
     // --- Global Advisory Hub: Port 8848 handshake modules ---
     (function () {
       var ZENITH_PORT = 8848;
+      var ZENITH_DIAMOND_NAME = 'ZENITH_INFRA_STRIKE';
+      var advisoryOrigin = 'https://zenith-infra-strike.gcslc:' + ZENITH_PORT;
       var portEls = document.querySelectorAll('[data-zenith-port]');
       portEls.forEach(function (el) { el.textContent = String(ZENITH_PORT); });
+      var advisoryLinks = document.querySelectorAll('[data-advisory-route]');
+      advisoryLinks.forEach(function (link) {
+        var route = link.getAttribute('data-advisory-route');
+        if (!route) return;
+        link.setAttribute('href', advisoryOrigin + route);
+      });
 
       var mapWrap = document.querySelector('.falcon-map-wrap');
       var continentalToggle = document.getElementById('continentalToggle');
@@ -1549,6 +1570,7 @@
       var intakeForm = document.getElementById('consultancyIntakeForm');
       var intakeResult = document.getElementById('consultancyIntakeResult');
       if (intakeForm && intakeResult) {
+        intakeForm.setAttribute('action', advisoryOrigin + '/consultancy-intake');
         intakeForm.addEventListener('submit', function (e) {
           e.preventDefault();
           var payload = new FormData(intakeForm);
@@ -1560,7 +1582,7 @@
             intakeResult.textContent = 'Secure handshake blocked: complete all required fields.';
             return;
           }
-          intakeResult.textContent = 'Handshake secured on :' + ZENITH_PORT + ' · Request ' + ref + ' queued for Strategic Leadership Audit Desk.';
+          intakeResult.textContent = 'Handshake secured on :' + ZENITH_PORT + ' · Node ' + ZENITH_DIAMOND_NAME + ' · Request ' + ref + ' queued for Strategic Leadership Audit Desk.';
           intakeForm.reset();
         });
       }
