@@ -106,6 +106,57 @@
       padding-bottom: 1px;
     }
     .stealth-switch.enabled { display: block; }
+
+    /* Direct Liaison — WhatsApp handshake (S24 / iPhone touch + safe areas) */
+    .direct-liaison {
+      margin-top: clamp(1.25rem, 4vw, 2rem);
+      width: 100%;
+      max-width: 420px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .direct-liaison-label {
+      margin: 0 0 0.5rem;
+      font-size: clamp(0.7rem, 2vw, 0.8rem);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .btn-handshake {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 52px;
+      padding: max(14px, env(safe-area-inset-bottom, 0px) * 0.25 + 12px) 1.15rem;
+      border: 2px solid rgba(212, 175, 55, 0.95);
+      border-radius: 14px;
+      background: linear-gradient(180deg, #e8c547 0%, var(--metallic-gold) 45%, #b8962e 100%);
+      color: #0a1225;
+      font-family: inherit;
+      font-size: clamp(1rem, 3.6vw, 1.08rem);
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      line-height: 1.25;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      -webkit-tap-highlight-color: rgba(212, 175, 55, 0.35);
+      touch-action: manipulation;
+      box-shadow:
+        0 4px 14px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.35);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .btn-handshake:active {
+      transform: scale(0.98);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .btn-handshake:hover {
+        filter: brightness(1.06);
+      }
+    }
     @keyframes shimmer-cyan {
       0% { background-position: 0% center; }
       100% { background-position: 200% center; }
@@ -123,6 +174,16 @@
     <h2 class="hero-title">Global Advisory Hub</h2>
     <p class="decode-quote">Everything is anchored by the 8R Stealth Paradigm Convergence and its Determinants; let's converge for you to decode.</p>
     <p class="support-line">Grand Entrance for global giants seeking sovereign strategic alignment.</p>
+    <div class="direct-liaison">
+      <p class="direct-liaison-label">Direct Liaison</p>
+      <a
+        class="btn-handshake"
+        href="https://wa.me/2348099111515?text=Strategic%20Audit%20Request%20for%20GCSLC%20-%20Initializing%20Handshake%20on%20Port%208848."
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Execute Handshake with the Chairman via WhatsApp"
+      >Execute Handshake with the Chairman.</a>
+    </div>
     <p class="stealth-switch" id="stealthSwitch"><a href="/index.html">Switch to Industrial Node</a></p>
   </main>
 
