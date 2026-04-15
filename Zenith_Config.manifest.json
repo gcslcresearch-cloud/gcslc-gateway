@@ -7,6 +7,12 @@
     "internalDataLogisticsHandshake": {
       "protocol": "broadcast",
       "port": 8848
+    },
+    "globalAdvisoryHubHandshake": {
+      "port": 8848,
+      "certificateValidationPath": "/spc/validate",
+      "consultancyIntakePath": "/consultancy-intake",
+      "advisoryVaultPath": "/advisory-vault"
     }
   },
   "databaseHardening": {
@@ -28,6 +34,23 @@
     "rootCssVariables": {
       "--institutional-navy-blue": "#050A15",
       "--metallic-gold": "#D4AF37"
+    },
+    "investorLandingPage": {
+      "backgroundResonanceVideo": "assets/1003928944.mp4",
+      "fallbackPoster": "assets/1003928944.jpg"
+    }
+  },
+  "modules": {
+    "globalAdvisoryHub": {
+      "enabled": true,
+      "environment": "ZENITH_INFRA_STRIKE",
+      "hardCodedPort": 8848,
+      "components": [
+        "advisory-vault",
+        "certificate-validator",
+        "continental-view-toggle",
+        "consultancy-intake-form"
+      ]
     }
   }
 }

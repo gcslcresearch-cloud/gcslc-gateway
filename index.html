@@ -37,6 +37,26 @@
       min-height: 100vh;
       line-height: 1.5;
     }
+    .resonance-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .resonance-bg video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.28;
+    }
+    .resonance-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background: radial-gradient(circle at center, rgba(5, 10, 21, 0.35), rgba(5, 10, 21, 0.88));
+    }
     .container {
       max-width: 1200px;
       margin: 0 auto;
@@ -610,6 +630,131 @@
     }
     .det-badge { font-weight: 800; color: var(--gold); min-width: 1.8em; }
     .det-label { color: var(--muted); font-size: 0.7rem; }
+    .map-controls {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      z-index: 4;
+    }
+    .node-toggle-btn {
+      border: 1px solid var(--gold);
+      background: rgba(5, 10, 21, 0.86);
+      color: var(--gold-bright);
+      font-size: 0.72rem;
+      letter-spacing: 0.04em;
+      border-radius: 7px;
+      padding: 0.36rem 0.55rem;
+      cursor: pointer;
+    }
+    .continental-node {
+      position: absolute;
+      z-index: 2;
+      transform: translate(-50%, -50%);
+      padding: 0.3rem 0.45rem;
+      border: 1px solid var(--gold);
+      border-radius: 8px;
+      font-size: 0.65rem;
+      line-height: 1.25;
+      white-space: nowrap;
+      color: var(--gold-bright);
+      background: rgba(10, 18, 37, 0.92);
+      opacity: 0;
+      transition: opacity 0.35s ease;
+      pointer-events: none;
+    }
+    .falcon-map-wrap.show-continental .continental-node { opacity: 1; }
+
+    .advisory-hub {
+      margin-top: 1.5rem;
+      background: var(--navy-surface);
+      border: 1px solid var(--navy-border);
+      border-radius: 10px;
+      padding: 1.25rem;
+    }
+    .advisory-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    .advisory-card {
+      border: 1px solid var(--navy-border);
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 0.95rem;
+    }
+    .advisory-card h3 {
+      margin: 0 0 0.5rem;
+      color: var(--gold);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .advisory-card p {
+      margin: 0 0 0.7rem;
+      font-size: 0.84rem;
+      color: var(--text);
+    }
+    .vault-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+    .vault-links a {
+      text-decoration: none;
+      color: var(--gold-bright);
+      border: 1px solid var(--gold-dim);
+      border-radius: 6px;
+      font-size: 0.74rem;
+      padding: 0.25rem 0.45rem;
+      background: rgba(5, 10, 21, 0.5);
+    }
+    .mini-form-row {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .mini-form-row input,
+    .intake-form input,
+    .intake-form select,
+    .intake-form textarea {
+      width: 100%;
+      padding: 0.45rem 0.55rem;
+      background: var(--navy-bg);
+      color: var(--text);
+      border: 1px solid var(--navy-border);
+      border-radius: 6px;
+    }
+    .mini-form-row input { flex: 1; min-width: 180px; }
+    .btn-gold {
+      border: 1px solid var(--gold);
+      background: var(--gold);
+      color: var(--navy-bg);
+      font-weight: 700;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-radius: 6px;
+      padding: 0.45rem 0.65rem;
+      cursor: pointer;
+    }
+    .validator-result, .intake-result {
+      min-height: 1.1rem;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+    .intake-form {
+      display: grid;
+      gap: 0.55rem;
+    }
+    .intake-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 0.2rem;
+    }
 
     /* Market Strike Data (Germanium / Ammonia when falcon touches state) */
     .market-strike-data {
@@ -678,6 +823,12 @@
   </style>
 </head>
 <body>
+  <div class="resonance-bg" aria-hidden="true">
+    <video autoplay muted loop playsinline preload="metadata" poster="assets/1003928944.jpg">
+      <source src="assets/1003928944.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="resonance-overlay" aria-hidden="true"></div>
   <div class="container">
     <div class="watermark-ribbon" aria-hidden="true"></div>
     <div class="main-data-area">
@@ -742,6 +893,9 @@
     <!-- Falcon map + Determinants sidebar + Market Strike Data -->
     <div class="falcon-convergence">
       <div class="falcon-map-wrap glassmorphism">
+        <div class="map-controls">
+          <button class="node-toggle-btn" type="button" id="continentalToggle" aria-pressed="false">Continental View: OFF</button>
+        </div>
         <div class="nigeria-map-svg" aria-hidden="true">
           <svg viewBox="0 0 200 240" class="nigeria-outline" xmlns="http://www.w3.org/2000/svg">
             <path fill="none" stroke="var(--navy-border)" stroke-width="1.5" d="M100 20 L160 50 L180 100 L165 160 L120 220 L80 200 L40 150 L35 90 L60 40 Z"></path>
@@ -764,6 +918,11 @@
             <path class="falcon-head" fill="var(--gold-bright)" d="M16 6 L18 4 L20 6 L18 8 Z"></path>
           </svg>
         </div>
+        <div class="continental-node" style="left: 27%; top: 42%;">Niger<br>8R Sync Candidate</div>
+        <div class="continental-node" style="left: 30%; top: 69%;">Cameroon<br>8R Sync Candidate</div>
+        <div class="continental-node" style="left: 52%; top: 80%;">Equatorial Guinea<br>8R Sync Candidate</div>
+        <div class="continental-node" style="left: 76%; top: 34%;">Chad<br>8R Sync Candidate</div>
+        <div class="continental-node" style="left: 63%; top: 50%;">Central African Republic<br>8R Sync Candidate</div>
       </div>
       <aside class="determinants-sidebar glassmorphism" aria-label="8R Determinants">
         <div class="determinants-title kwas-kwas-shimmer">Determinants (8R)</div>
@@ -919,6 +1078,57 @@
         </div>
       </div>
     </div>
+
+    <section class="advisory-hub" id="globalAdvisoryHub" aria-labelledby="advisoryHubHeading">
+      <h2 id="advisoryHubHeading" class="kwas-kwas-shimmer">Global Advisory Hub · Port 8848</h2>
+      <div class="advisory-grid">
+        <article class="advisory-card">
+          <h3>Advisory Vault</h3>
+          <p>High-level strategic white papers for 8R paradigm diplomacy, node synchronization, and sovereign industrial policy.</p>
+          <div class="vault-links">
+            <a href="advisory-vault/index.html" target="_blank" rel="noopener">Open Vault Index</a>
+            <a href="advisory-vault/8r-geostrategy-whitepaper.md" target="_blank" rel="noopener">8R Geostrategy White Paper</a>
+            <a href="advisory-vault/industrial-sync-brief.md" target="_blank" rel="noopener">Industrial Sync Brief</a>
+          </div>
+        </article>
+
+        <article class="advisory-card">
+          <h3>Certificate Validator (SPC)</h3>
+          <p>Global partners can verify Sovereign Proof Certificates by code via the ZENITH handshake node on port <span data-zenith-port>8848</span>.</p>
+          <form id="spcValidatorForm" autocomplete="off">
+            <div class="mini-form-row">
+              <input id="spcCodeInput" name="spc_code" placeholder="Enter SPC code (e.g. SPC-DANGOTE-8848)" maxlength="48" required>
+              <button class="btn-gold" type="submit">Validate</button>
+            </div>
+          </form>
+          <div class="validator-result" id="spcValidatorResult" aria-live="polite"></div>
+        </article>
+
+        <article class="advisory-card">
+          <h3>Consultancy Intake Handshake</h3>
+          <p>Secure intake path for Big Tech and conglomerates requesting strategic leadership audits through the sovereign gateway.</p>
+          <form id="consultancyIntakeForm" class="intake-form" method="post" action="https://zenith-infra-strike.gcslc:8848/consultancy-intake" autocomplete="off">
+            <input name="organization" placeholder="Organization name" required>
+            <select name="sector" required>
+              <option value="">Select sector</option>
+              <option>Big Tech</option>
+              <option>Energy Conglomerate</option>
+              <option>Infrastructure Consortium</option>
+              <option>Government Advisory</option>
+            </select>
+            <input name="contact_email" type="email" placeholder="Contact email" required>
+            <textarea name="audit_scope" rows="3" placeholder="Audit request scope and strategic objective" required></textarea>
+            <input type="hidden" name="handshake_port" value="8848">
+            <button class="btn-gold" type="submit">Transmit Request</button>
+          </form>
+          <div class="intake-meta">
+            <span>Routing: <code>/consultancy-intake</code></span>
+            <span>Port: <span data-zenith-port>8848</span></span>
+          </div>
+          <div class="intake-result" id="consultancyIntakeResult" aria-live="polite"></div>
+        </article>
+      </div>
+    </section>
 
     <footer class="footer footer-corporate">
       <p class="footer-statement">The Galadiman Ruwa Center (GCSLC) presents the NRRFC—a clinical strike against economic inertia. By capturing 10% of Global Big Tech CAPEX, we achieve 189% coverage of Nigeria’s domestic debt, proving that sovereign re-engineering is the only path to the Zenith.</p>
@@ -1294,6 +1504,66 @@
       var coalInput = document.getElementById('coalTonnageMt');
       if (coalInput) coalInput.addEventListener('input', updateDerivativeStrike);
       updateDerivativeStrike();
+    })();
+
+    // --- Global Advisory Hub: Port 8848 handshake modules ---
+    (function () {
+      var ZENITH_PORT = 8848;
+      var portEls = document.querySelectorAll('[data-zenith-port]');
+      portEls.forEach(function (el) { el.textContent = String(ZENITH_PORT); });
+
+      var mapWrap = document.querySelector('.falcon-map-wrap');
+      var continentalToggle = document.getElementById('continentalToggle');
+      if (mapWrap && continentalToggle) {
+        continentalToggle.addEventListener('click', function () {
+          var enabled = mapWrap.classList.toggle('show-continental');
+          continentalToggle.textContent = 'Continental View: ' + (enabled ? 'ON' : 'OFF');
+          continentalToggle.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+        });
+      }
+
+      var certificateRegistry = {
+        'SPC-DANGOTE-8848': { partner: 'Dangote Group', status: 'VALID', issuedBy: 'GCSLC Sovereign Gateway' },
+        'SPC-RIYADH-8848': { partner: 'Riyadh Strategic Node', status: 'VALID', issuedBy: 'GCSLC Sovereign Gateway' }
+      };
+      var spcForm = document.getElementById('spcValidatorForm');
+      var spcInput = document.getElementById('spcCodeInput');
+      var spcResult = document.getElementById('spcValidatorResult');
+      if (spcForm && spcInput && spcResult) {
+        spcForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+          var code = (spcInput.value || '').trim().toUpperCase();
+          if (!code) {
+            spcResult.textContent = 'Enter a certificate code to validate.';
+            return;
+          }
+          var cert = certificateRegistry[code];
+          if (cert) {
+            spcResult.textContent = cert.status + ' · ' + cert.partner + ' · Handshake Port ' + ZENITH_PORT;
+          } else {
+            spcResult.textContent = 'UNVERIFIED · No active Sovereign Proof Certificate for code: ' + code;
+          }
+        });
+      }
+
+      var intakeForm = document.getElementById('consultancyIntakeForm');
+      var intakeResult = document.getElementById('consultancyIntakeResult');
+      if (intakeForm && intakeResult) {
+        intakeForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+          var payload = new FormData(intakeForm);
+          var org = (payload.get('organization') || '').toString();
+          var sector = (payload.get('sector') || '').toString();
+          var scope = (payload.get('audit_scope') || '').toString();
+          var ref = 'ZEN-' + Date.now().toString().slice(-8);
+          if (!org || !sector || !scope) {
+            intakeResult.textContent = 'Secure handshake blocked: complete all required fields.';
+            return;
+          }
+          intakeResult.textContent = 'Handshake secured on :' + ZENITH_PORT + ' · Request ' + ref + ' queued for Strategic Leadership Audit Desk.';
+          intakeForm.reset();
+        });
+      }
     })();
   </script>
 
