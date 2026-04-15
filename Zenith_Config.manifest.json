@@ -14,6 +14,7 @@
       "consultancyIntakePath": "/consultancy-intake",
       "advisoryVaultPath": "/advisory-vault",
       "globalSouthBriefingPath": "/global-south-briefing",
+      "advisoryEntryPath": "/advisory.html",
       "diamondName": "ZENITH_INFRA_STRIKE",
       "advisoryTrafficLock": true,
       "secureLiaisonPath": "/secure-liaison",
@@ -53,7 +54,10 @@
       "enabled": true,
       "environment": "ZENITH_INFRA_STRIKE",
       "hardCodedPort": 8848,
+      "grandEntranceRoute": "/advisory.html",
+      "isIsolatedFromIndustrialDashboard": true,
       "components": [
+        "advisory-grand-entrance",
         "advisory-vault",
         "global-south-briefing",
         "certificate-validator",
