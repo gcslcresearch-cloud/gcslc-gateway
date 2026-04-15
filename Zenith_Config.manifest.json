@@ -10,6 +10,9 @@
     },
     "globalAdvisoryHubHandshake": {
       "port": 8848,
+      "whatsappBusinessNode": "+2347039139439",
+      "chairmanDirectNode": "+2348099111515",
+      "termiiSystemHandshakePrimary": true,
       "certificateValidationPath": "/spc/validate",
       "consultancyIntakePath": "/consultancy-intake",
       "advisoryVaultPath": "/advisory-vault",
@@ -58,6 +61,7 @@
       "isIsolatedFromIndustrialDashboard": true,
       "components": [
         "advisory-grand-entrance",
+        "dual-nodal-whatsapp-handshake",
         "advisory-vault",
         "global-south-briefing",
         "certificate-validator",
@@ -70,6 +74,8 @@
       "environment": "ZENITH_INFRA_STRIKE",
       "hardCodedPort": 8848,
       "primaryIntelligenceEmail": "info@galadimanruwacenter.org",
+      "whatsAppBusinessNode": "+2347039139439",
+      "chairmanDirectNode": "+2348099111515",
       "executiveHandshakeWhatsapp": "+2348099111515",
       "visualTheme": {
         "background": "--institutional-navy-blue",
