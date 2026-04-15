@@ -327,7 +327,12 @@
     }
     .goldman-cyan-shimmer {
       color: var(--goldman-shimmering-cyan);
-      background: var(--goldman-shimmer-overlay);
+      background: linear-gradient(
+        92deg,
+        rgba(212, 175, 55, 0.15) 0%,
+        var(--goldman-shimmering-cyan) 48%,
+        rgba(212, 175, 55, 0.15) 100%
+      );
       background-size: 200% auto;
       -webkit-background-clip: text;
       background-clip: text;
@@ -364,8 +369,10 @@
       margin: 0.4rem 0 0.35rem;
       font-size: 0.95rem;
       font-weight: 500;
-      color: rgba(255, 255, 255, 0.95);
+      color: var(--metallic-gold);
+      text-align: center;
       letter-spacing: 0.02em;
+      text-shadow: 0 1px 4px rgba(0, 0, 128, 0.45);
       animation: paradigm-shimmer 3s ease-in-out infinite;
     }
     @keyframes paradigm-shimmer {
@@ -852,6 +859,22 @@
     .ultimatum-falcon .ultimatum-falcon-svg { width: 100%; height: 100%; }
     .ultimatum-falcon .uf-wing.left { animation: wing-flap-left 0.4s ease-in-out infinite; transform-origin: right center; }
     .ultimatum-falcon .uf-wing.right { animation: wing-flap-right 0.4s ease-in-out infinite; transform-origin: left center; }
+    .legal-corner-overlay {
+      position: fixed;
+      right: 10px;
+      bottom: 8px;
+      z-index: 12;
+      font-size: 10px;
+      line-height: 1.2;
+      color: rgba(212, 175, 55, 0.95);
+      background: rgba(5, 10, 21, 0.72);
+      border: 1px solid rgba(0, 229, 255, 0.38);
+      border-radius: 5px;
+      padding: 3px 5px;
+      letter-spacing: 0.02em;
+      text-align: right;
+      pointer-events: none;
+    }
 
     /* Medallion kwas-kwas (gold/white glow) */
     .kwas-kwas-shimmer-medallion { animation: medallion-shimmer 3s ease-in-out infinite; }
@@ -1209,6 +1232,7 @@
         </svg>
       </div>
     </div>
+    <div class="legal-corner-overlay" aria-hidden="true">Copyright LW15954 · SCUML SC 151653884</div>
   </div>
 
   <script>
