@@ -15,7 +15,9 @@
       "advisoryVaultPath": "/advisory-vault",
       "globalSouthBriefingPath": "/global-south-briefing",
       "diamondName": "ZENITH_INFRA_STRIKE",
-      "advisoryTrafficLock": true
+      "advisoryTrafficLock": true,
+      "secureLiaisonPath": "/secure-liaison",
+      "secureLiaisonPortLock": 8848
     }
   },
   "databaseHardening": {
@@ -58,6 +60,22 @@
         "continental-view-toggle",
         "consultancy-intake-form"
       ]
+    },
+    "secureLiaisonNode": {
+      "enabled": true,
+      "environment": "ZENITH_INFRA_STRIKE",
+      "hardCodedPort": 8848,
+      "primaryIntelligenceEmail": "info@galadimanruwacenter.org",
+      "executiveHandshakeWhatsapp": "+2348099111515",
+      "visualTheme": {
+        "background": "--institutional-navy-blue",
+        "accent": "--goldman-shimmering-cyan"
+      },
+      "legalAuthority": {
+        "scumlRegistrationNumber": "SC 151653884",
+        "copyrightRegistrationNumber": "LW15954"
+      },
+      "callToAction": "Converge with the Chairman to Decode the Corridor."
     }
   }
 }
