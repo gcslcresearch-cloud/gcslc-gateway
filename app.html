@@ -56,6 +56,132 @@
       background: #0a1225;
       border: 1px solid #D4AF37;
     }
+
+
+    .audit-countdown-fixed {
+      position: fixed;
+      top: 0.65rem;
+      right: 0.75rem;
+      z-index: 2500;
+      min-width: 13.6rem;
+      padding: 0.55rem 0.75rem;
+      border-radius: 10px;
+      border: 1px solid rgba(212, 175, 55, 0.55);
+      background: linear-gradient(145deg, rgba(20, 15, 6, 0.96), rgba(45, 30, 10, 0.9));
+      box-shadow: 0 0 18px rgba(212, 175, 55, 0.3), inset 0 1px 0 rgba(255,255,255,0.08);
+      text-align: right;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+    }
+    .audit-countdown-fixed .audit-label {
+      display: block;
+      font-size: 0.56rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #f1d78a;
+      margin-bottom: 0.2rem;
+    }
+    .audit-countdown-fixed .audit-time {
+      display: block;
+      font-size: 0.92rem;
+      letter-spacing: 0.08em;
+      color: #fff3cc;
+      text-shadow: 0 0 10px rgba(212,175,55,0.52);
+      animation: cyan-heartbeat 2.6s ease-in-out infinite;
+    }
+
+    .confidential-banner {
+      position: fixed;
+      top: 3.2rem;
+      right: 0.75rem;
+      z-index: 2499;
+      max-width: 26rem;
+      padding: 0.36rem 0.62rem;
+      border-radius: 8px;
+      border: 1px solid rgba(212, 175, 55, 0.45);
+      background: rgba(8, 14, 26, 0.92);
+      color: #f5d98a;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: 0.52rem;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      text-shadow: 0 0 8px rgba(212,175,55,0.35);
+    }
+    .kill-switch-note {
+      display: block;
+      margin-top: 0.16rem;
+      font-size: 0.46rem;
+      letter-spacing: 0.04em;
+      text-transform: none;
+      color: #d6edf4;
+      opacity: 0.92;
+    }
+
+    .layer1-hook-priority {
+      margin: 0 0 0.85rem;
+      padding: 0.75rem;
+      border-radius: 12px;
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      background: linear-gradient(158deg, rgba(4, 14, 25, 0.9), rgba(7, 22, 36, 0.88));
+      box-shadow: 0 0 20px rgba(0, 229, 255, 0.16), inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+    .layer1-hook-priority h3 {
+      margin: 0 0 0.45rem;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: 0.64rem;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: #c6faff;
+    }
+    .layer1-outreach-graph {
+      display: grid;
+      gap: 0.4rem;
+      margin: 0 0 0.6rem;
+    }
+    .layer1-outreach-row {
+      display: grid;
+      grid-template-columns: 110px 1fr auto;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .layer1-outreach-row .label {
+      font-size: 0.55rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #a4dbe7;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+    }
+    .layer1-outreach-row .track {
+      height: 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(0, 229, 255, 0.2);
+      background: rgba(14, 35, 56, 0.72);
+      overflow: hidden;
+    }
+    .layer1-outreach-row .bar {
+      height: 100%;
+      width: var(--reach, 50%);
+      border-radius: inherit;
+      background: linear-gradient(90deg, rgba(0, 163, 195, 0.92), rgba(0, 240, 255, 0.95), rgba(233, 249, 255, 0.9));
+      box-shadow: 0 0 12px rgba(0, 229, 255, 0.45);
+      animation: cyan-heartbeat 2.8s ease-in-out infinite;
+    }
+    .layer1-outreach-row .value {
+      font-size: 0.64rem;
+      color: #d9fbff;
+      font-weight: 700;
+    }
+    .artisanal-heartbeat {
+      margin: 0;
+      padding: 0.5rem 0.62rem;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 229, 255, 0.34);
+      color: #d9f8ff;
+      font-size: 0.66rem;
+      line-height: 1.5;
+      background: rgba(5, 18, 30, 0.86);
+      animation: cyan-heartbeat 2.4s ease-in-out infinite;
+    }
+
     header {
       border-bottom: 1px solid var(--navy-border);
       padding: 1rem 0 1.5rem;
@@ -989,11 +1115,62 @@
       margin-left: auto;
       margin-right: auto;
     }
-    .layer1-gap-context strong {
+
+    .layer1-sovereign-heatmap {
+      margin: 0.75rem 0 1rem;
+      padding: 0.75rem;
+      border-radius: 14px;
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      background: linear-gradient(160deg, rgba(3, 14, 25, 0.9), rgba(6, 22, 36, 0.86));
+      box-shadow: 0 0 22px rgba(0, 229, 255, 0.16), inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+    .layer1-sovereign-heatmap h3 {
+      margin: 0 0 0.45rem;
       font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
-      font-weight: 700;
-      color: #00e5ff;
-      text-shadow: 0 0 12px rgba(0, 229, 255, 0.35);
+      font-size: clamp(0.64rem, 1.65vw, 0.78rem);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #baf6ff;
+    }
+    .layer1-sovereign-heatmap p {
+      margin: 0 0 0.6rem;
+      font-size: 0.72rem;
+      color: #9fd6e3;
+    }
+    .layer1-heatmap-field {
+      position: relative;
+      margin: 0 auto;
+      width: min(24rem, 100%);
+      aspect-ratio: 4 / 3;
+      border-radius: 12px;
+      border: 1px solid rgba(0, 229, 255, 0.2);
+      background: radial-gradient(circle at 45% 38%, rgba(0, 229, 255, 0.12), rgba(2, 8, 18, 0.92) 70%);
+      overflow: hidden;
+    }
+    .layer1-heatmap-outline {
+      position: absolute;
+      inset: 12% 14%;
+      border-radius: 48% 44% 50% 40%;
+      border: 1px dashed rgba(200, 235, 245, 0.28);
+      transform: rotate(-10deg);
+    }
+    .layer1-heat-node {
+      position: absolute;
+      width: 0.58rem;
+      height: 0.58rem;
+      border-radius: 50%;
+      background: radial-gradient(circle at 32% 32%, #fff 0%, #00f0ff 55%, #04607a 100%);
+      box-shadow: 0 0 12px rgba(0, 229, 255, 0.7);
+      animation: heat-node-pulse 2.8s ease-in-out infinite;
+    }
+    .layer1-heat-node:nth-child(2) { animation-delay: 0.35s; }
+    .layer1-heat-node:nth-child(3) { animation-delay: 0.7s; }
+    .layer1-heat-node:nth-child(4) { animation-delay: 1.05s; }
+    .layer1-heat-node:nth-child(5) { animation-delay: 1.4s; }
+    .layer1-heat-node:nth-child(6) { animation-delay: 1.75s; }
+    @keyframes heat-node-pulse {
+      0%, 100% { transform: scale(1); opacity: 0.9; }
+      50% { transform: scale(1.42); opacity: 1; }
     }
 
     /* G-GATE API — beside social bar */
@@ -1253,6 +1430,40 @@
       line-height: 1.58;
       color: #d5ecf3;
     }
+    .layer-two-wealth-counter {
+      margin-top: 0.7rem;
+      padding: 0.75rem;
+      border-radius: 10px;
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      background: rgba(3, 13, 24, 0.82);
+    }
+    .layer-two-wealth-counter h4 {
+      margin: 0 0 0.45rem;
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: #bef8ff;
+    }
+    .wealth-counter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.45rem 0.8rem;
+    }
+    .wealth-counter-cell .label {
+      display: block;
+      font-size: 0.62rem;
+      color: #8dc6d4;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.2rem;
+    }
+    .wealth-counter-cell .value {
+      font-family: 'Goldman', 'Segoe UI', system-ui, sans-serif;
+      font-size: 0.78rem;
+      color: #d9faff;
+      text-shadow: 0 0 10px rgba(0, 229, 255, 0.4);
+    }
     .layer-two-controls {
       margin-top: 0.9rem;
       display: flex;
@@ -1271,6 +1482,18 @@
       text-transform: uppercase;
       cursor: pointer;
       animation: cyan-heartbeat 2.6s ease-in-out infinite;
+    }
+    .layer-two-btn[disabled] {
+      opacity: 0.7;
+      cursor: not-allowed;
+      filter: grayscale(0.15);
+    }
+    .layer-pulse-lock {
+      animation: layer-pulse-lock-beat 2s ease-in-out infinite;
+    }
+    @keyframes layer-pulse-lock-beat {
+      0%, 100% { box-shadow: 0 0 0 rgba(0,229,255,0), 0 0 0 rgba(0,229,255,0); }
+      50% { box-shadow: 0 0 20px rgba(0,229,255,0.28), 0 0 44px rgba(0,229,255,0.12); }
     }
     .watermark-ribbon {
       position: fixed;
@@ -1545,6 +1768,7 @@
     .tz-city { display: block; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: var(--gold-bright); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .tz-tag { display: block; font-size: 0.52rem; color: var(--muted); margin-top: 0.08rem; }
     .tz-time { font-family: ui-monospace, monospace; font-size: clamp(0.68rem, 2.2vw, 0.85rem); font-weight: 700; color: #00e5ff; margin-top: 0.15rem; text-shadow: 0 0 10px rgba(0, 229, 255, 0.35); }
+    .tz-bar, .ticker-outer { display: none; }
     .ticker-outer { background: #030a12; border-bottom: 2px solid rgba(0, 229, 255, 0.32); overflow: hidden; padding: 0.35rem 0; }
     .ticker-label { max-width: 1200px; margin: 0 auto; padding: 0 0.65rem 0.15rem; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--gold-dim); }
     .ticker-track { display: flex; width: max-content; animation: cmd-ticker-scroll 16s linear infinite; }
@@ -1602,16 +1826,132 @@
 </head>
 <body>
   <script>
+    var layerPulseReady = false;
+    var SESSION_GUARDIAN_KEY = 'gcslc_audit_session_start_v1';
+    var SESSION_DURATION_MS = 120 * 60 * 1000;
+
+    function getSessionStartMs() {
+      var stored = localStorage.getItem(SESSION_GUARDIAN_KEY);
+      var parsed = stored ? parseInt(stored, 10) : NaN;
+      if (Number.isFinite(parsed) && parsed > 0) return parsed;
+      var now = Date.now();
+      localStorage.setItem(SESSION_GUARDIAN_KEY, String(now));
+      return now;
+    }
+
+    function getSessionRemainingMs() {
+      var startMs = getSessionStartMs();
+      return Math.max(0, (startMs + SESSION_DURATION_MS) - Date.now());
+    }
+
+    function showAuditClosedScreen() {
+      document.body.innerHTML = '';
+      document.body.style.margin = '0';
+      document.body.style.minHeight = '100vh';
+      document.body.style.display = 'grid';
+      document.body.style.placeItems = 'center';
+      document.body.style.background = '#050a15';
+      var panel = document.createElement('div');
+      panel.style.maxWidth = '52rem';
+      panel.style.padding = '2rem 1.5rem';
+      panel.style.textAlign = 'center';
+      panel.style.fontFamily = "'Goldman','Segoe UI',system-ui,sans-serif";
+      panel.style.color = '#f0c14b';
+      panel.style.letterSpacing = '0.06em';
+      panel.style.textTransform = 'uppercase';
+      panel.style.lineHeight = '1.6';
+      panel.style.border = '1px solid rgba(212,175,55,0.5)';
+      panel.style.borderRadius = '14px';
+      panel.style.background = 'rgba(7,14,26,0.9)';
+      panel.style.boxShadow = '0 0 24px rgba(212,175,55,0.25), inset 0 1px 0 rgba(255,255,255,0.06)';
+      panel.textContent = 'Audit Window Closed. Contact GCSLC Institutional Identity for Re-authorization.';
+      document.body.appendChild(panel);
+    }
+
+    function validateStampedUrl() {
+      var params = new URLSearchParams(window.location.search);
+      var exp = parseInt(params.get('auth_exp') || '', 10);
+      if (Number.isFinite(exp) && exp > 0 && Date.now() > exp) {
+        showAuditClosedScreen();
+        return false;
+      }
+      return true;
+    }
+
+    function bootstrapSessionGuardian() {
+      if (!validateStampedUrl()) return false;
+      if (getSessionRemainingMs() <= 0) {
+        showAuditClosedScreen();
+        return false;
+      }
+      return true;
+    }
+
+    window.generateTimeStampedAuditUrl24h = function (path) {
+      var target = new URL(path || window.location.href, window.location.origin);
+      target.searchParams.set('auth_exp', String(Date.now() + (24 * 60 * 60 * 1000)));
+      return target.toString();
+    };
+
     function showLayer(layerNumber) {
       var l1 = document.getElementById('layer-1-gate');
       var l2 = document.getElementById('layer-2-bridge');
       var l3 = document.getElementById('layer-3-terminal');
       var n = Number(layerNumber) || 1;
+      if (n === 3 && !layerPulseReady) {
+        return false;
+      }
       if (l1) l1.style.display = n === 1 ? '' : 'none';
       if (l2) l2.style.display = n === 2 ? '' : 'none';
       if (l3) l3.style.display = n === 3 ? '' : 'none';
+      var tz = document.querySelector('.tz-bar');
+      var ticker = document.querySelector('.ticker-outer');
+      if (tz) tz.style.display = n === 3 ? '' : 'none';
+      if (ticker) ticker.style.display = n === 3 ? '' : 'none';
+      return true;
+    }
+
+    function requestLayer3() {
+      if (!layerPulseReady) {
+        var btn = document.getElementById('layer3UnlockBtn');
+        if (btn) {
+          btn.textContent = 'Pulse verification in progress...';
+          setTimeout(function () {
+            if (!layerPulseReady) btn.textContent = 'Proceed to Layer 3 · NRRFC Engine';
+          }, 1100);
+        }
+        return;
+      }
+      showLayer(3);
+    }
+
+    function initLayerPulseGate() {
+      var l1 = document.getElementById('layer-1-gate');
+      var l2 = document.getElementById('layer-2-bridge');
+      var btn = document.getElementById('layer3UnlockBtn');
+      if (l1) l1.classList.add('layer-pulse-lock');
+      if (l2) l2.classList.add('layer-pulse-lock');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Pulse verification in progress...';
+      }
+      setTimeout(function () {
+        layerPulseReady = true;
+        if (l1) l1.classList.remove('layer-pulse-lock');
+        if (l2) l2.classList.remove('layer-pulse-lock');
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = 'Proceed to Layer 3 · NRRFC Engine';
+        }
+      }, 4200);
     }
   </script>
+
+  <div class="audit-countdown-fixed" aria-live="polite" aria-label="Audit countdown timer">
+    <span class="audit-label">SECURE IP AUDIT WINDOW</span>
+    <span class="audit-time" id="auditCountdown">02:00:00</span>
+  </div>
+  <div class="confidential-banner">CONFIDENTIAL: Level 1 Admin Access. This session is monitored and will terminate in 120 minutes.<span class="kill-switch-note">Authorized admin kill-switch: run <code>generateTimeStampedAuditUrl24h('/app.html')</code> in browser console.</span></div>
   <div class="bluelaser-stack" aria-hidden="true">
     <div class="bluelaser-scan"></div>
     <div class="bluelaser-edge"></div>
@@ -1650,7 +1990,7 @@
         </div>
 
         <p class="layer1-widget-head">Mission mandate</p>
-        <p class="mission-mandate-typewriter">Bridging the 30 Million Information Axis... Empowering Nigeria's Artisanal Miners... Converging Local and International Investment for National Sovereignty.</p>
+        <p class="mission-mandate-typewriter">Bridging the 30 Million Information Axis for Artisanal Miners and Global Investors... Empowering Nigeria's Artisanal Miners... Converging Local and International Investment for National Sovereignty.</p>
 
         <p class="layer1-widget-head">The Sovereign Gap — 30&nbsp;million information axis</p>
         <div class="layer1-sovereign-gap" aria-labelledby="layer1-sovereign-gap-label">
@@ -1694,6 +2034,23 @@
             </ul>
           </div>
           <p class="layer1-gap-context">The <strong>73% information gap</strong> is the strategic driver for minimizing <strong>youth drug addiction</strong> and <strong>crime</strong> through grassroots revitalization and civic convergence.</p>
+        </div>
+
+        <div class="layer1-sovereign-heatmap" aria-label="Sovereign Heatmap of Nigeria">
+          <h3>D4 · Restructure · Sovereign Heatmap · AZK Corridor</h3>
+          <p>Live Verification Nodes across the AZK Corridor and adjoining national links.</p>
+          <div class="layer1-heatmap-field">
+            <svg class="azk-corridor-svg" viewBox="0 0 420 260" aria-hidden="true" focusable="false">
+              <path class="azk-corridor-outline" d="M72 198 L96 156 L138 120 L154 82 L208 58 L256 84 L312 96 L334 148 L316 200 L250 220 L188 208 L128 224 Z"></path>
+              <path class="azk-corridor-path" d="M126 180 L174 120 L214 98 L248 88"></path>
+            </svg>
+            <div class="layer1-heatmap-outline" aria-hidden="true"></div>
+            <span class="layer1-heat-node" style="left:29%; top:66%;" aria-hidden="true"></span><span class="azk-node-label" style="left:26%; top:72%;">Abuja · Live Verification Node</span>
+            <span class="layer1-heat-node" style="left:41%; top:46%;" aria-hidden="true"></span><span class="azk-node-label" style="left:38%; top:52%;">Zaria · Live Verification Node</span>
+            <span class="layer1-heat-node" style="left:58%; top:35%;" aria-hidden="true"></span><span class="azk-node-label" style="left:55%; top:41%;">Kano · Live Verification Node</span>
+            <span class="layer1-heat-node" style="left:68%; top:56%;" aria-hidden="true"></span>
+            <span class="layer1-heat-node" style="left:50%; top:71%;" aria-hidden="true"></span>
+          </div>
         </div>
 
         <p class="layer1-widget-head">Strategic contact hub</p>
@@ -1751,12 +2108,21 @@
         <h3>Social Responsibility · 15/15 Inclusion Model · Artisanal Miners</h3>
         <p>
           Our 15/15 Inclusion Model links civic education, artisanal mining formalization, and youth reintegration pathways.
-          Mission priority: minimize youth drug addiction through grassroots revitalization, enterprise participation, and accountable local partnerships.
+          Core mission: Crime &amp; Drug Addiction Prevention through grassroots revitalization, enterprise participation, and accountable local partnerships.
         </p>
+      </section>
+      <section class="layer-two-wealth-counter" aria-label="Wealth Leakage versus Recovery counter">
+        <h4>D7 · Re-engineer · Forensic Optimization vs Asset Recovery Benchmarks (USD)</h4>
+        <div class="wealth-counter-grid">
+          <div class="wealth-counter-cell"><span class="label">Forensic Optimization Baseline (USD)</span><span class="value" id="wealthLeakageUsd">$1.70 B</span></div>
+          <div class="wealth-counter-cell"><span class="label">Asset Recovery Benchmarks (USD)</span><span class="value" id="wealthRecoveryUsd">$620.0 M</span></div>
+          <div class="wealth-counter-cell"><span class="label">Forensic Optimization Delta (USD)</span><span class="value" id="wealthNetUsd">$1.08 B</span></div>
+          <div class="wealth-counter-cell"><span class="label">Asset Recovery Coverage</span><span class="value" id="wealthCoveragePct">36.5%</span></div>
+        </div>
       </section>
       <div class="layer-two-controls">
         <button type="button" class="layer-two-btn" onclick="showLayer(1)">Return to Layer 1</button>
-        <button type="button" class="layer-two-btn" onclick="showLayer(3)">Proceed to Layer 3 · NRRFC Engine</button>
+        <button type="button" class="layer-two-btn" id="layer3UnlockBtn" onclick="requestLayer3()">Proceed to Layer 3 · NRRFC Engine</button>
       </div>
     </section>
 
@@ -2405,6 +2771,59 @@
       updateDerivativeStrike();
     })();
 
+
+    // --- D1 Audit Countdown Timer (2 hours) + D7 Wealth Leakage vs Recovery ---
+    (function () {
+      var timerEl = document.getElementById('auditCountdown');
+      var leakEl = document.getElementById('wealthLeakageUsd');
+      var recEl = document.getElementById('wealthRecoveryUsd');
+      var netEl = document.getElementById('wealthNetUsd');
+      var covEl = document.getElementById('wealthCoveragePct');
+
+      function fmtMoneyUSD(n) {
+        if (n >= 1e9) return '$' + (n / 1e9).toFixed(2) + ' B';
+        if (n >= 1e6) return '$' + (n / 1e6).toFixed(1) + ' M';
+        return '$' + Math.round(n).toLocaleString();
+      }
+
+      function tickCountdown() {
+        if (!timerEl) return;
+        var remaining = getSessionRemainingMs();
+        if (remaining <= 0) {
+          showAuditClosedScreen();
+          return;
+        }
+        var totalSec = Math.floor(remaining / 1000);
+        var h = String(Math.floor(totalSec / 3600)).padStart(2, '0');
+        var m = String(Math.floor((totalSec % 3600) / 60)).padStart(2, '0');
+        var s = String(totalSec % 60).padStart(2, '0');
+        timerEl.textContent = h + ':' + m + ':' + s;
+      }
+
+      var baseLeakage = 1.70e9;
+      var baseRecovery = 620e6;
+      var startedAt = Date.now();
+
+      function tickWealthCounter() {
+        if (!leakEl || !recEl || !netEl || !covEl) return;
+        var elapsedMin = (Date.now() - startedAt) / 60000;
+        var leakage = baseLeakage + (elapsedMin * 42000);
+        var recovery = baseRecovery + (elapsedMin * 35500);
+        var net = Math.max(0, leakage - recovery);
+        var coverage = leakage > 0 ? (recovery / leakage) * 100 : 0;
+
+        leakEl.textContent = fmtMoneyUSD(leakage);
+        recEl.textContent = fmtMoneyUSD(recovery);
+        netEl.textContent = fmtMoneyUSD(net);
+        covEl.textContent = coverage.toFixed(1) + '%';
+      }
+
+      tickCountdown();
+      tickWealthCounter();
+      setInterval(tickCountdown, 1000);
+      setInterval(tickWealthCounter, 1500);
+    })();
+
     // —— Global Pulse (clocks + material ticker) + 8R Matrix typewriter (unified with sovereign-gateway) ——
     (function () {
       var zones = [
@@ -2533,7 +2952,7 @@
     })();
   </script>
   <script>
-    window.onload = function () { showLayer(1); };
+    window.onload = function () { if (!bootstrapSessionGuardian()) return; showLayer(1); initLayerPulseGate(); };
   </script>
 
 </body>
