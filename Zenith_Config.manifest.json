@@ -1,0 +1,33 @@
+{
+  "deployment": {
+    "environmentName": "ZENITH_INFRA_STRIKE",
+    "target": "production"
+  },
+  "network": {
+    "internalDataLogisticsHandshake": {
+      "protocol": "broadcast",
+      "port": 8848
+    }
+  },
+  "databaseHardening": {
+    "incomingIndustrialLogs": {
+      "primaryMetadataFilter": "8R_DETERMINANTS",
+      "determinants": [
+        "D1",
+        "D2",
+        "D3",
+        "D4",
+        "D5",
+        "D6",
+        "D7",
+        "D8"
+      ]
+    }
+  },
+  "visualResonance": {
+    "rootCssVariables": {
+      "--institutional-navy-blue": "#050A15",
+      "--metallic-gold": "#D4AF37"
+    }
+  }
+}
