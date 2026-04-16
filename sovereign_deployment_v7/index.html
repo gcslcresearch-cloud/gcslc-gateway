@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#020a1f" />
-  <title>GCSLC — Kinetic Restoration V10</title>
+  <title>GCSLC — Sovereign Non-Formal Intelligence V11</title>
   <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
   <style>
     :root {
@@ -654,6 +654,83 @@
       touch-action: manipulation;
     }
     #apexTrajectoryChart svg { display: block; max-width: 100%; height: auto; }
+    /* Non-Formal Velocity Index — bridges informal economy to SIG closure */
+    .nf-velocity-panel {
+      width: 100%;
+      margin: 0 0 12px;
+      padding: 12px 12px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(212, 175, 55, 0.48);
+      background:
+        linear-gradient(128deg, rgba(255, 255, 255, 0.07), transparent 46%),
+        linear-gradient(172deg, rgba(4, 18, 52, 0.96), rgba(2, 6, 20, 0.93));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 14px 38px rgba(0, 10, 44, 0.55);
+    }
+    .nf-velocity-title {
+      margin: 0 0 4px;
+      text-align: center;
+      font-size: clamp(0.74rem, 1.9vw, 0.98rem);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #ffda7f;
+      font-weight: 900;
+    }
+    .nf-velocity-sub {
+      margin: 0 0 10px;
+      text-align: center;
+      font-size: clamp(0.56rem, 1.38vw, 0.72rem);
+      color: #9fc4d7;
+      line-height: 1.45;
+    }
+    .nf-velocity-sub strong { color: #f0d78c; }
+    #nfVelocityChart {
+      width: 100%;
+      min-height: 240px;
+      touch-action: manipulation;
+    }
+    #nfVelocityChart svg { display: block; max-width: 100%; height: auto; }
+    .advisory-fab {
+      position: fixed;
+      top: max(10px, env(safe-area-inset-top));
+      right: max(10px, env(safe-area-inset-right));
+      z-index: 130;
+      min-height: 48px;
+      min-width: min(200px, 46vw);
+      padding: 12px 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      border: 2px solid rgba(212, 175, 55, 0.75);
+      background: linear-gradient(145deg, rgba(212, 175, 55, 0.35), rgba(4, 12, 40, 0.92));
+      color: #fff8e8;
+      font-weight: 900;
+      font-size: clamp(0.58rem, 1.55vw, 0.72rem);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      text-align: center;
+      line-height: 1.25;
+      box-shadow: 0 0 22px rgba(212, 175, 55, 0.45), 0 12px 32px rgba(0, 0, 0, 0.45);
+      animation: advisoryFabGlow 2.8s ease-in-out infinite;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: rgba(212, 175, 55, 0.25);
+    }
+    .advisory-fab:hover, .advisory-fab:focus-visible {
+      filter: brightness(1.08);
+      outline: none;
+    }
+    @keyframes advisoryFabGlow {
+      0%, 100% { box-shadow: 0 0 18px rgba(212, 175, 55, 0.4), 0 10px 28px rgba(0, 0, 0, 0.4); }
+      50% { box-shadow: 0 0 32px rgba(102, 245, 255, 0.35), 0 0 28px rgba(212, 175, 55, 0.55), 0 14px 36px rgba(0, 0, 0, 0.48); }
+    }
+    @media (max-width: 520px) {
+      .advisory-fab {
+        font-size: 0.56rem;
+        padding: 14px 12px;
+        min-width: min(168px, 44vw);
+      }
+    }
     .map-wrap {
       border: 1px solid rgba(134,223,255,0.4);
       border-radius: 16px;
@@ -921,7 +998,7 @@
       text-transform: uppercase;
       cursor: pointer;
     }
-    /* Strategic Intelligence — tiered SN / SC / SA ticker */
+    /* High-Velocity Intelligence — tiered SN / SC / SA ticker */
     .intel-ticker {
       position: fixed;
       left: 0;
@@ -989,9 +1066,39 @@
       font-size: 0.52rem;
       letter-spacing: 0.1em;
     }
-    .tier-sn .badge { background: rgba(46, 204, 113, 0.25); color: #9ff5c4; border: 1px solid rgba(46, 204, 113, 0.55); }
-    .tier-sc .badge { background: rgba(255, 193, 7, 0.2); color: #ffe8a6; border: 1px solid rgba(255, 193, 7, 0.55); }
-    .tier-sa .badge { background: rgba(229, 62, 62, 0.22); color: #ffc9c9; border: 1px solid rgba(229, 62, 62, 0.55); }
+    .tier-sn .badge {
+      background: rgba(102, 245, 255, 0.12);
+      color: #e8ffff;
+      border: 1px solid rgba(102, 245, 255, 0.65);
+      box-shadow: 0 0 14px rgba(102, 245, 255, 0.45), inset 0 0 12px rgba(102, 245, 255, 0.15);
+      animation: bioPulseSn 2.1s ease-in-out infinite;
+    }
+    .tier-sc .badge {
+      background: rgba(255, 180, 60, 0.14);
+      color: #ffe8c4;
+      border: 1px solid rgba(255, 193, 90, 0.75);
+      box-shadow: 0 0 16px rgba(255, 180, 60, 0.5), inset 0 0 10px rgba(255, 200, 100, 0.12);
+      animation: bioPulseSc 1.9s ease-in-out infinite;
+    }
+    .tier-sa .badge {
+      background: rgba(200, 60, 40, 0.16);
+      color: #ffd4c4;
+      border: 1px solid rgba(255, 120, 80, 0.75);
+      box-shadow: 0 0 18px rgba(255, 100, 60, 0.55), 0 0 28px rgba(212, 175, 55, 0.25), inset 0 0 10px rgba(255, 80, 40, 0.12);
+      animation: bioPulseSa 1.65s ease-in-out infinite;
+    }
+    @keyframes bioPulseSn {
+      0%, 100% { filter: brightness(1); box-shadow: 0 0 12px rgba(102, 245, 255, 0.35), inset 0 0 10px rgba(102, 245, 255, 0.1); }
+      50% { filter: brightness(1.15); box-shadow: 0 0 22px rgba(102, 245, 255, 0.75), inset 0 0 14px rgba(166, 251, 255, 0.2); }
+    }
+    @keyframes bioPulseSc {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.18); box-shadow: 0 0 24px rgba(255, 190, 80, 0.65), inset 0 0 12px rgba(255, 220, 140, 0.18); }
+    }
+    @keyframes bioPulseSa {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.22); box-shadow: 0 0 26px rgba(255, 90, 60, 0.7), 0 0 36px rgba(212, 175, 55, 0.35), inset 0 0 12px rgba(255, 120, 80, 0.2); }
+    }
     .intel-item .txt { color: #d6eefc; }
     @keyframes intelSlide {
       0% { transform: translateX(0); }
@@ -1152,6 +1259,7 @@
   </div>
 
   <div class="gov-backdrop" id="govBackdrop" aria-hidden="true"></div>
+  <a class="advisory-fab" id="advisoryFab" href="https://galadimanruwacenter.org" target="_blank" rel="noopener noreferrer">ACCESS ADVISORY HUB</a>
   <button type="button" class="gov-toggle" id="govToggle" aria-controls="governanceSlide" aria-expanded="false">GOVERNANCE</button>
   <aside class="governance-slide" id="governanceSlide" aria-label="Governance and legal anchors">
     <h2>Governance — Legal Anchors</h2>
@@ -1206,13 +1314,19 @@
           <div id="apexTrajectoryChart"></div>
         </section>
 
+        <section class="nf-velocity-panel" aria-label="Non-Formal Velocity Index">
+          <h2 class="nf-velocity-title">Non-Formal Velocity Index</h2>
+          <p class="nf-velocity-sub" id="nfVelocityBridgeCopy">Potential revenue velocity (Livestock · Artisans · Micro-Services) across <strong>36 states + FCT</strong> — indexed to the live <strong>Social Information Gap</strong> bridge: as the gap compresses, non-formal throughput accelerates toward the AZK corridor.</p>
+          <div id="nfVelocityChart"></div>
+        </section>
+
           <h1 class="identity identity-v10" id="identityAnchor"><span class="identity-tw" id="identityTw"></span><span class="identity-caret" aria-hidden="true">▍</span></h1>
         </header>
 
         <div class="advisory-bridge">
           <div class="api-revenue-path">
             <span class="api-path-label">GCSLC API Revenue Path</span>
-            <a class="btn-advisory" href="https://galadimanruwacenter.org" target="_blank" rel="noopener noreferrer">DEPARTURE: Visit the Advisory Hub (Cloud Node Active)</a>
+            <a class="btn-advisory" href="https://galadimanruwacenter.org" target="_blank" rel="noopener noreferrer">Advisory Hub — Cloud Node (mirror route)</a>
           </div>
         </div>
 
@@ -1302,6 +1416,30 @@
     </div>
   </div>
 
+  <div class="modal-backdrop" id="nonFormalModal" role="dialog" aria-modal="true" aria-labelledby="nfModalTitle">
+    <div class="modal-card modal-kinetic-burst">
+      <h3 id="nfModalTitle">Non-Formal Sector Insight</h3>
+      <p class="sub" id="nfModalState" style="margin:0 0 8px;font-size:0.72rem;color:#9fc4d7;">State</p>
+      <p style="margin:0 0 10px;font-size:0.78rem;line-height:1.5;color:#dff8ff;" id="nfModalLead"></p>
+      <div class="burst-grid" style="margin-top:0;">
+        <div class="burst-metric">
+          <p class="burst-label">Livestock (potential band ₦/yr)</p>
+          <p class="burst-value" id="nfLivestock">—</p>
+        </div>
+        <div class="burst-metric">
+          <p class="burst-label">Artisans (potential band ₦/yr)</p>
+          <p class="burst-value" id="nfArtisans">—</p>
+        </div>
+        <div class="burst-metric">
+          <p class="burst-label">Micro-Services (potential band ₦/yr)</p>
+          <p class="burst-value" id="nfMicro">—</p>
+        </div>
+      </div>
+      <p style="margin:0;font-size:0.65rem;color:#bff4ff;line-height:1.45;" id="nfModalBridge"></p>
+      <button type="button" class="modal-close" id="nfModalClose">Close Insight</button>
+    </div>
+  </div>
+
   <div class="modal-backdrop" id="corridorModal" role="dialog" aria-modal="true">
     <div class="modal-card">
       <h3>AZK — Cyan Inference Spine</h3>
@@ -1315,8 +1453,8 @@
     </div>
   </div>
 
-  <div class="intel-ticker" role="region" aria-label="Strategic Intelligence feed">
-    <div class="intel-ticker-label" title="Strategic Intelligence">SI</div>
+  <div class="intel-ticker" role="region" aria-label="High-Velocity Intelligence feed">
+    <div class="intel-ticker-label" title="High-Velocity Intelligence — SN / SC / SA">HVI</div>
     <div class="intel-marquee">
       <div class="intel-band" id="intelBand">
         <div class="intel-track" id="intelTrack">
@@ -1331,7 +1469,7 @@
       <span class="g">HANDSHAKE //</span>
       Phone <span class="footer-node-metallic"><strong>+234 703 913 9439</strong> | <strong>+234 809 911 1515</strong></span>
       · Email <span class="footer-node-metallic">Info@galadimanruwacenter.org</span> · <span class="footer-node-metallic">gcslc.research@gmail.com</span>
-      · <strong>Copyright LW15954</strong> · <strong>SCUML RN: SC 151653884</strong> · GCSLC Kinetic Restoration V10 · 8,806 Wards : 123,284 Field Agents · 176,000 PUs · Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau · GCSLC PROPRIETARY
+      · <strong>Copyright LW15954</strong> · <strong>SCUML RN: SC 151653884</strong> · GCSLC Sovereign Non-Formal Intelligence V11 · 8,806 Wards : 123,284 Field Agents · 176,000 PUs · Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau · GCSLC PROPRIETARY
     </div>
   </footer>
 
@@ -1452,7 +1590,7 @@
     return d3.interpolateRgb(d3.rgb(5, 10, 28), d3.rgb(218, 188, 92))(t);
   }
 
-  let apexResizeTimer;
+  let apexResizeTimer, nfResizeTimer;
   function renderApexTrajectoryChart() {
     const root = document.getElementById("apexTrajectoryChart");
     if (!root || !window.d3) return;
@@ -1556,6 +1694,103 @@
       ruralGap: Math.round(Math.max(48, Math.min(94, rural)) * 10) / 10,
       urbanConn: Math.round(Math.max(58, Math.min(98, urban)) * 10) / 10
     };
+  }
+
+  function renderNonFormalVelocityIndex() {
+    const root = document.getElementById("nfVelocityChart");
+    const bridgeEl = document.getElementById("nfVelocityBridgeCopy");
+    if (!root || !window.d3) return;
+    const live = sampleZenithLive();
+    if (bridgeEl) {
+      bridgeEl.innerHTML = "Potential revenue velocity (Livestock · Artisans · Micro-Services) across <strong>36 states + FCT</strong> — live rural SIG <strong>" + live.ruralGap.toFixed(1) + "%</strong> · urban connectivity <strong>" + live.urbanConn.toFixed(1) + "%</strong>. <strong>Bridge factor</strong> scales indexed throughput as the Information Gap compresses toward <strong>AZK</strong> + Termii delivery.";
+    }
+    const d3 = window.d3;
+    d3.select(root).selectAll("*").remove();
+    const bridgeFactor = Math.max(0.42, Math.min(1.48, (100 - live.ruralGap) / 52));
+    const uid = "nfv" + String((Date.now() % 1000000));
+    const years = [2020, 2021, 2022, 2023, 2024, 2025];
+    const L0 = [18, 23, 29, 37, 46, 58];
+    const A0 = [14, 19, 25, 34, 44, 56];
+    const M0 = [20, 26, 33, 42, 53, 66];
+    const series = years.map((y, i) => ({
+      year: y,
+      livestock: L0[i] * bridgeFactor,
+      artisans: A0[i] * bridgeFactor,
+      micro: M0[i] * bridgeFactor
+    }));
+    const elW = Math.max(300, root.clientWidth || 640);
+    const h = 256;
+    const margin = { top: 22, right: 14, bottom: 34, left: 48 };
+    const innerW = elW - margin.left - margin.right;
+    const innerH = h - margin.top - margin.bottom;
+    const x = d3.scalePoint().domain(years).range([0, innerW]).padding(0.18);
+    const mx = Math.max(
+      d3.max(series, (d) => d.livestock),
+      d3.max(series, (d) => d.artisans),
+      d3.max(series, (d) => d.micro)
+    );
+    const y = d3.scaleLinear().domain([0, mx * 1.1]).range([innerH, 0]);
+    const svg = d3.select(root)
+      .append("svg")
+      .attr("width", elW)
+      .attr("height", h)
+      .attr("viewBox", "0 0 " + elW + " " + h)
+      .attr("preserveAspectRatio", "xMidYMid meet")
+      .style("touch-action", "manipulation");
+    const defs = svg.append("defs");
+    const grad = defs.append("linearGradient").attr("id", "nfNavy_" + uid).attr("x1", "0").attr("y1", "0").attr("x2", "0").attr("y2", "1");
+    grad.append("stop").attr("offset", "0%").attr("stop-color", "rgba(8, 28, 72, 0.55)");
+    grad.append("stop").attr("offset", "100%").attr("stop-color", "rgba(2, 5, 18, 0.02)");
+    const g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    const areaUnder = d3.area()
+      .x((d) => x(d.year))
+      .y0(innerH)
+      .y1((d) => y(d.micro))
+      .curve(d3.curveMonotoneX);
+    g.append("path")
+      .datum(series)
+      .attr("fill", "url(#nfNavy_" + uid + ")")
+      .attr("d", areaUnder)
+      .attr("opacity", 0.88);
+    const lineL = d3.line().x((d) => x(d.year)).y((d) => y(d.livestock)).curve(d3.curveMonotoneX);
+    const lineA = d3.line().x((d) => x(d.year)).y((d) => y(d.artisans)).curve(d3.curveMonotoneX);
+    const lineM = d3.line().x((d) => x(d.year)).y((d) => y(d.micro)).curve(d3.curveMonotoneX);
+    g.append("path")
+      .datum(series)
+      .attr("fill", "none")
+      .attr("stroke", "#d4af37")
+      .attr("stroke-width", 3)
+      .attr("d", lineL)
+      .style("filter", "drop-shadow(0 0 6px rgba(212, 175, 55, 0.45))");
+    g.append("path")
+      .datum(series)
+      .attr("fill", "none")
+      .attr("stroke", "#66f5ff")
+      .attr("stroke-width", 2.5)
+      .attr("d", lineA);
+    g.append("path")
+      .datum(series)
+      .attr("fill", "none")
+      .attr("stroke", "#e6c875")
+      .attr("stroke-width", 2.7)
+      .attr("d", lineM);
+    g.append("g").attr("transform", "translate(0," + innerH + ")").call(d3.axisBottom(x).tickFormat(d3.format("d"))).selectAll("text").attr("fill", "#9fc4d7").attr("font-size", "9px");
+    g.append("g").call(d3.axisLeft(y).ticks(5)).selectAll("text").attr("fill", "#9fc4d7").attr("font-size", "8px");
+    g.selectAll(".domain, .tick line").attr("stroke", "rgba(102,245,255,0.2)");
+    g.append("text")
+      .attr("x", 0)
+      .attr("y", -6)
+      .attr("fill", "#bff4ff")
+      .attr("font-size", "10px")
+      .attr("font-weight", "700")
+      .text("Indexed ₦bn-equivalent velocity (scales with live SIG bridge)");
+    const leg = g.append("g").attr("transform", "translate(" + Math.max(0, innerW - 224) + ", -2)");
+    leg.append("line").attr("x1", 0).attr("x2", 12).attr("y1", 0).attr("y2", 0).attr("stroke", "#d4af37").attr("stroke-width", 2.5);
+    leg.append("text").attr("x", 16).attr("y", 3).attr("fill", "#f0d78c").attr("font-size", "7px").attr("font-weight", "800").text("Livestock");
+    leg.append("line").attr("x1", 68).attr("x2", 80).attr("y1", 0).attr("y2", 0).attr("stroke", "#66f5ff").attr("stroke-width", 2);
+    leg.append("text").attr("x", 84).attr("y", 3).attr("fill", "#bff4ff").attr("font-size", "7px").attr("font-weight", "800").text("Artisans");
+    leg.append("line").attr("x1", 138).attr("x2", 150).attr("y1", 0).attr("y2", 0).attr("stroke", "#e6c875").attr("stroke-width", 2);
+    leg.append("text").attr("x", 154).attr("y", 3).attr("fill", "#ffe8b8").attr("font-size", "7px").attr("font-weight", "800").text("Micro");
   }
 
   let zenithResizeTimer;
@@ -1725,12 +1960,16 @@
 
   renderZenithInformationGap();
   renderApexTrajectoryChart();
+  renderNonFormalVelocityIndex();
   zenithLiveHandle = window.setInterval(renderZenithInformationGap, 1650);
+  window.setInterval(renderNonFormalVelocityIndex, 3200);
   window.addEventListener("resize", () => {
     clearTimeout(zenithResizeTimer);
     zenithResizeTimer = window.setTimeout(renderZenithInformationGap, 200);
     clearTimeout(apexResizeTimer);
     apexResizeTimer = window.setTimeout(renderApexTrajectoryChart, 220);
+    clearTimeout(nfResizeTimer);
+    nfResizeTimer = window.setTimeout(renderNonFormalVelocityIndex, 230);
   });
 
   function renderSocialGapChart(stateName) {
@@ -1829,6 +2068,7 @@
 
   const gapModal = document.getElementById("gapBridgeModal");
   const corridorModalEl = document.getElementById("corridorModal");
+  const nonFormalModal = document.getElementById("nonFormalModal");
   let lastGapState = "";
   let gapResizeTimer;
   window.addEventListener("resize", () => {
@@ -1841,6 +2081,11 @@
   document.getElementById("corridorClose").addEventListener("click", () => corridorModalEl.classList.remove("open"));
   gapModal.addEventListener("click", (e) => { if (e.target === gapModal) gapModal.classList.remove("open"); });
   corridorModalEl.addEventListener("click", (e) => { if (e.target === corridorModalEl) corridorModalEl.classList.remove("open"); });
+  const nfModalClose = document.getElementById("nfModalClose");
+  if (nfModalClose && nonFormalModal) {
+    nfModalClose.addEventListener("click", () => nonFormalModal.classList.remove("open"));
+    nonFormalModal.addEventListener("click", (e) => { if (e.target === nonFormalModal) nonFormalModal.classList.remove("open"); });
+  }
 
   const governanceSlide = document.getElementById("governanceSlide");
   const govToggle = document.getElementById("govToggle");
@@ -1854,7 +2099,9 @@
   govToggle.addEventListener("click", () => setGovernanceOpen(!governanceSlide.classList.contains("open")));
   govBackdrop.addEventListener("click", () => setGovernanceOpen(false));
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && governanceSlide.classList.contains("open")) setGovernanceOpen(false);
+    if (e.key !== "Escape") return;
+    if (governanceSlide.classList.contains("open")) setGovernanceOpen(false);
+    if (nonFormalModal && nonFormalModal.classList.contains("open")) nonFormalModal.classList.remove("open");
   });
 
   function burstGapFromState(stateName) {
@@ -1877,6 +2124,42 @@
     }
     gapModal.classList.add("open");
     requestAnimationFrame(() => renderSocialGapChart(stateName));
+  }
+
+  function formatBnBand(lo, hi) {
+    return "₦" + lo.toFixed(2) + "–" + hi.toFixed(2) + " bn";
+  }
+  function openNonFormalInsight(stateName) {
+    if (!nonFormalModal) return;
+    const h = hashStr(stateName);
+    const w = STATE_WARDS[stateName] != null ? STATE_WARDS[stateName] : Math.max(1, Math.round(WARDS / 37));
+    const live = sampleZenithLive();
+    const bridge = Math.max(0.25, Math.min(1.22, (100 - live.ruralGap) / 55));
+    const wardFactor = Math.sqrt(Math.max(1, w) / 120);
+    const mix = bridge * wardFactor * (0.82 + (h % 50) / 100);
+    const Llo = 0.45 * mix;
+    const Lhi = 1.38 * mix;
+    const Alo = 0.36 * mix;
+    const Ahi = 1.15 * mix;
+    const Mlo = 0.4 * mix;
+    const Mhi = 1.3 * mix;
+    const st = document.getElementById("nfModalState");
+    const lead = document.getElementById("nfModalLead");
+    if (st) st.textContent = "Lattice Node: " + stateName;
+    if (lead) {
+      lead.textContent = "Non-formal settlement lanes (livestock, artisan clusters, micro-service POS) align with ward lattice + Termii-class delivery. Bands are sovereign intelligence estimates—not audited filings.";
+    }
+    const el = document.getElementById("nfLivestock");
+    const ea = document.getElementById("nfArtisans");
+    const em = document.getElementById("nfMicro");
+    if (el) el.textContent = formatBnBand(Llo, Lhi);
+    if (ea) ea.textContent = formatBnBand(Alo, Ahi);
+    if (em) em.textContent = formatBnBand(Mlo, Mhi);
+    const br = document.getElementById("nfModalBridge");
+    if (br) {
+      br.innerHTML = "Linked to Social Information Gap: rural <strong>" + live.ruralGap.toFixed(1) + "%</strong> · urban <strong>" + live.urbanConn.toFixed(1) + "%</strong> — GCSLC bridges informal velocity as the gap compresses toward <strong>AZK</strong>.";
+    }
+    nonFormalModal.classList.add("open");
   }
 
   function ringPath(ring, project) {
@@ -2082,7 +2365,7 @@
       hit.setAttribute("aria-label", "Ward lattice vector to AZK — " + name);
       function go(ev) {
         if (ev) ev.stopPropagation();
-        openDataBurst(name);
+        openNonFormalInsight(name);
       }
       hit.addEventListener("click", go);
       hit.addEventListener("keydown", (e) => {
