@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#020a1f" />
-  <title>GCSLC — Zenith V10 Substance</title>
+  <title>GCSLC — Kinetic Restoration V10</title>
   <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
   <style>
     :root {
@@ -618,11 +618,98 @@
       line-height: 1.35;
     }
     .grassroots-ribbon strong { color: var(--gold); }
+    /* 5-Year trajectory — directly under 8R apex */
+    .apex-trajectory-panel {
+      width: 100%;
+      margin: 0 0 12px;
+      padding: 12px 12px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(212, 175, 55, 0.45);
+      background:
+        linear-gradient(125deg, rgba(255, 255, 255, 0.06), transparent 45%),
+        linear-gradient(168deg, rgba(3, 12, 38, 0.95), rgba(1, 4, 18, 0.92));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 16px 44px rgba(0, 8, 40, 0.55);
+      position: relative;
+      overflow: hidden;
+    }
+    .apex-trajectory-title {
+      margin: 0 0 4px;
+      text-align: center;
+      font-size: clamp(0.7rem, 1.75vw, 0.92rem);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #ffda7f;
+      font-weight: 900;
+    }
+    .apex-trajectory-sub {
+      margin: 0 0 8px;
+      text-align: center;
+      font-size: clamp(0.56rem, 1.35vw, 0.7rem);
+      color: #9fc4d7;
+      line-height: 1.35;
+    }
+    #apexTrajectoryChart {
+      width: 100%;
+      min-height: 200px;
+      touch-action: manipulation;
+    }
+    #apexTrajectoryChart svg { display: block; max-width: 100%; height: auto; }
     .map-wrap {
       border: 1px solid rgba(134,223,255,0.4);
       border-radius: 16px;
       background: rgba(4,21,52,0.75);
       padding: 10px;
+    }
+    .map-wrap.living-terminal {
+      position: relative;
+      box-shadow:
+        0 0 0 1px rgba(102, 245, 255, 0.2),
+        0 0 48px rgba(0, 60, 120, 0.45),
+        inset 0 0 70px rgba(0, 255, 255, 0.07);
+      animation: mapTerminalGlow 6s ease-in-out infinite;
+    }
+    @keyframes mapTerminalGlow {
+      0%, 100% { box-shadow: 0 0 0 1px rgba(102, 245, 255, 0.18), 0 0 40px rgba(0, 50, 100, 0.42), inset 0 0 60px rgba(0, 255, 255, 0.05); }
+      50% { box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.35), 0 0 56px rgba(0, 80, 140, 0.55), inset 0 0 80px rgba(102, 245, 255, 0.09); }
+    }
+    .map-kinetic-caption {
+      margin: 0 0 8px;
+      font-size: clamp(0.58rem, 1.45vw, 0.72rem);
+      color: #bff4ff;
+      text-align: center;
+      letter-spacing: 0.06em;
+      line-height: 1.35;
+    }
+    #mapSvg .ward-azk-flow-trail {
+      fill: none;
+      stroke: rgba(102, 245, 255, 0.38);
+      stroke-width: 10;
+      stroke-linecap: round;
+      opacity: 0.55;
+      pointer-events: none;
+    }
+    #mapSvg .ward-azk-flow {
+      fill: none;
+      stroke: #f0d78c;
+      stroke-width: 3.4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 0 10px rgba(102, 245, 255, 0.65)) drop-shadow(0 0 16px rgba(212, 175, 55, 0.5));
+      stroke-dasharray: 12 16;
+      animation: wardArrowDash 2.2s linear infinite;
+      pointer-events: none;
+    }
+    #mapSvg .ward-azk-hit {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0);
+      stroke-width: 48;
+      stroke-linecap: round;
+      cursor: pointer;
+      pointer-events: stroke;
+      touch-action: manipulation;
+    }
+    @keyframes wardArrowDash {
+      to { stroke-dashoffset: -112; }
     }
     .map-title {
       margin: 0 0 8px;
@@ -707,6 +794,113 @@
       color: var(--text);
       -webkit-overflow-scrolling: touch;
     }
+    .modal-card.modal-kinetic-burst {
+      max-width: min(560px, 100%);
+      border: 1px solid rgba(212, 175, 55, 0.65);
+      background:
+        linear-gradient(145deg, rgba(212, 175, 55, 0.12) 0%, transparent 42%),
+        linear-gradient(168deg, #000828 0%, #030b28 48%, #010414 100%);
+      box-shadow: inset 0 0 0 1px rgba(102, 245, 255, 0.12), 0 24px 60px rgba(0, 0, 0, 0.65);
+    }
+    .burst-grid {
+      display: grid;
+      gap: 12px;
+      margin: 12px 0 14px;
+    }
+    .burst-metric {
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(102, 245, 255, 0.28);
+      background: rgba(2, 10, 32, 0.75);
+    }
+    .burst-metric .burst-label {
+      margin: 0 0 4px;
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #9fc4d7;
+      font-weight: 800;
+    }
+    .burst-metric .burst-value {
+      margin: 0;
+      font-size: clamp(1.1rem, 3.2vw, 1.45rem);
+      font-weight: 900;
+      background: linear-gradient(118deg, #fff4d2 0%, #d4af37 35%, #fff9e8 55%, #c9a227 80%, #f5ecd2 100%);
+      background-size: 160% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-variant-numeric: tabular-nums;
+    }
+    .burst-termii {
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      background: rgba(0, 8, 28, 0.82);
+    }
+    .burst-termii-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #bff4ff;
+    }
+    .burst-termii-row:first-of-type { margin-top: 0; }
+    .burst-track {
+      flex: 1;
+      position: relative;
+      height: 14px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #020814, #061433);
+      border: 1px solid rgba(102, 245, 255, 0.22);
+      overflow: hidden;
+    }
+    .burst-dot-in {
+      position: absolute;
+      top: 50%;
+      width: 12px;
+      height: 12px;
+      margin-top: -6px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fff, #66f5ff 45%, #0099aa 100%);
+      box-shadow: 0 0 14px rgba(102, 245, 255, 0.95);
+      animation: burstIn 2.1s ease-in-out infinite;
+    }
+    .burst-dot-out {
+      position: absolute;
+      top: 50%;
+      width: 12px;
+      height: 12px;
+      margin-top: -6px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fff, #f0d78c 40%, #b8860b 100%);
+      box-shadow: 0 0 14px rgba(212, 175, 55, 0.9);
+      animation: burstOut 2.4s ease-in-out infinite;
+    }
+    @keyframes burstIn {
+      0% { left: 4%; opacity: 0.5; }
+      50% { opacity: 1; }
+      100% { left: 92%; opacity: 0.55; }
+    }
+    @keyframes burstOut {
+      0% { left: 92%; opacity: 0.5; }
+      50% { opacity: 1; }
+      100% { left: 4%; opacity: 0.55; }
+    }
+    .burst-agents {
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(102, 245, 255, 0.28);
+      background: rgba(2, 12, 36, 0.8);
+      font-size: 0.78rem;
+      line-height: 1.45;
+      color: #dff8ff;
+    }
+    .burst-agents strong { color: var(--gold); }
     #liveChartGap {
       width: 100%;
       min-height: 200px;
@@ -1006,6 +1200,12 @@
           </div>
         </section>
 
+        <section class="apex-trajectory-panel" aria-label="Five-year information gap trajectory">
+          <h2 class="apex-trajectory-title">5-Year Information Gap Trajectory</h2>
+          <p class="apex-trajectory-sub">2020–2025 · Institutional navy lattice · Sovereign gold signal · NCC-aligned rural telephone baseline</p>
+          <div id="apexTrajectoryChart"></div>
+        </section>
+
           <h1 class="identity identity-v10" id="identityAnchor"><span class="identity-tw" id="identityTw"></span><span class="identity-caret" aria-hidden="true">▍</span></h1>
         </header>
 
@@ -1044,8 +1244,9 @@
         </section>
 
         <section class="layout-inner">
-          <article class="map-wrap">
-            <h2 class="map-title">Eagle Map — Usage Density + AZK Cyan Inference Spine</h2>
+          <article class="map-wrap living-terminal">
+            <h2 class="map-title">Eagle Map — Living Terminal · Usage Density + AZK Spine</h2>
+            <p class="map-kinetic-caption">Sovereign gold vectors pulse from the grassroots ward lattice (8,806) toward the <strong>AZK corridor</strong> — touch an arrow or a state for the data burst.</p>
             <div class="grassroots-ribbon" id="grassrootsRibbon">
               <strong>Grassroots Math LIVE:</strong> <span id="wardStat">8,806</span> Wards : <strong id="fieldAgentsStat">123,284</strong> Field Agents —
               Bridging the <strong>60%</strong> Rural Connectivity Gap · <span id="puStat">176,000</span> PUs · Sovereign lattice overlay active.
@@ -1068,13 +1269,34 @@
   </main>
 
   <div class="modal-backdrop" id="gapBridgeModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-    <div class="modal-card">
-      <h3 id="modalTitle">Live Data — Opportunity Node</h3>
+    <div class="modal-card modal-kinetic-burst">
+      <h3 id="modalTitle">Data Burst — Opportunity Node</h3>
       <p class="sub" id="modalStateLabel" style="margin:0 0 8px;font-size:0.72rem;color:#9fc4d7;">State</p>
       <p style="margin:0 0 12px;color:#ffda7f;font-weight:600;">Eagle: Go and work in this area of Opportunity.</p>
+      <div class="burst-grid">
+        <div class="burst-metric">
+          <p class="burst-label">Real-Time Information Gap</p>
+          <p class="burst-value" id="burstGapPct">—</p>
+        </div>
+        <div class="burst-termii">
+          <p class="burst-label" style="margin:0 0 6px;">Termii Traffic Pulse</p>
+          <div class="burst-termii-row">
+            <span style="min-width:72px;color:#66f5ff;">Inbound</span>
+            <div class="burst-track" aria-hidden="true"><span class="burst-dot-in"></span></div>
+          </div>
+          <div class="burst-termii-row">
+            <span style="min-width:72px;color:#f0d78c;">Outbound</span>
+            <div class="burst-track" aria-hidden="true"><span class="burst-dot-out"></span></div>
+          </div>
+        </div>
+        <div class="burst-agents" id="burstAgents">
+          <strong>Field Agent Density (1:14)</strong><br />
+          <span id="burstAgentLines">—</span>
+        </div>
+      </div>
       <p style="margin:0 0 6px;font-size:0.7rem;color:#f0cd67;letter-spacing:0.06em;text-transform:uppercase;">Social Information Gap — 5-Year Trajectory</p>
-      <p style="margin:0 0 8px;font-size:0.65rem;color:#bff4ff;line-height:1.45;">NCC-aligned rural telephone penetration vs urban connectivity (national series, 2020–2025). State node applies a deterministic offset to illustrate why <strong>8,806 ward agents</strong> close the measurable rural signal deficit.</p>
-      <div style="background:rgba(4,16,40,0.65);border:1px solid rgba(102,245,255,0.28);border-radius:10px;padding:10px;min-height:240px;"><div id="liveChartGap"></div></div>
+      <p style="margin:0 0 8px;font-size:0.65rem;color:#bff4ff;line-height:1.45;">NCC-aligned rural telephone penetration vs urban connectivity (2020–2025). Node offset illustrates how <strong>8,806 ward agents</strong> compress the rural signal deficit toward the AZK corridor.</p>
+      <div style="background:rgba(4,16,40,0.65);border:1px solid rgba(102,245,255,0.28);border-radius:10px;padding:10px;min-height:220px;"><div id="liveChartGap"></div></div>
       <p style="font-size:0.56rem;color:#7a9aad;margin-top:10px;line-height:1.4;">Visualization is command intelligence (not NCC submission). Touch/drag chart for executive review. Grassroots lattice: 8,806 wards · 123,284 field agents · 176,000 PUs.</p>
       <button type="button" class="modal-close" id="modalClose">Acknowledge / Close</button>
     </div>
@@ -1109,7 +1331,7 @@
       <span class="g">HANDSHAKE //</span>
       Phone <span class="footer-node-metallic"><strong>+234 703 913 9439</strong> | <strong>+234 809 911 1515</strong></span>
       · Email <span class="footer-node-metallic">Info@galadimanruwacenter.org</span> · <span class="footer-node-metallic">gcslc.research@gmail.com</span>
-      · <strong>Copyright LW15954</strong> · <strong>SCUML RN: SC 151653884</strong> · GCSLC Zenith V10 Substance · 8,806 Wards : 123,284 Field Agents · 176,000 PUs · Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau · GCSLC PROPRIETARY
+      · <strong>Copyright LW15954</strong> · <strong>SCUML RN: SC 151653884</strong> · GCSLC Kinetic Restoration V10 · 8,806 Wards : 123,284 Field Agents · 176,000 PUs · Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau · GCSLC PROPRIETARY
     </div>
   </footer>
 
@@ -1119,6 +1341,7 @@
   const PUS = 176000;
   const FIELD_AGENTS = WARDS * 14;
   const CANV_PER_WARD = 14;
+  const STATE_WARDS = Object.create(null);
 
   const cities = [
     { name: "Abuja", zone: "Africa/Lagos" },
@@ -1227,6 +1450,82 @@
     if (!d3) return "#143042";
     const t = (hashStr(name) % 1000) / 1000;
     return d3.interpolateRgb(d3.rgb(5, 10, 28), d3.rgb(218, 188, 92))(t);
+  }
+
+  let apexResizeTimer;
+  function renderApexTrajectoryChart() {
+    const root = document.getElementById("apexTrajectoryChart");
+    if (!root || !window.d3) return;
+    const d3 = window.d3;
+    d3.select(root).selectAll("*").remove();
+    const uid = "apex" + String((Date.now() % 1000000));
+    const years = [2020, 2021, 2022, 2023, 2024, 2025];
+    const nccUrban = [58, 62, 68, 74, 79, 84];
+    const nccRuralSig = [76, 74, 70, 66, 62, 58];
+    const series = years.map((y, i) => ({ year: y, urban: nccUrban[i], ruralSig: nccRuralSig[i] }));
+    const elW = Math.max(300, root.clientWidth || 640);
+    const h = 228;
+    const margin = { top: 18, right: 12, bottom: 32, left: 44 };
+    const innerW = elW - margin.left - margin.right;
+    const innerH = h - margin.top - margin.bottom;
+    const x = d3.scalePoint().domain(years).range([0, innerW]).padding(0.22);
+    const y = d3.scaleLinear().domain([38, 94]).range([innerH, 0]);
+    const svg = d3.select(root)
+      .append("svg")
+      .attr("width", elW)
+      .attr("height", h)
+      .attr("viewBox", "0 0 " + elW + " " + h)
+      .attr("preserveAspectRatio", "xMidYMid meet")
+      .style("touch-action", "manipulation");
+    const defs = svg.append("defs");
+    const gradN = defs.append("linearGradient").attr("id", "apexNavy_" + uid).attr("x1", "0").attr("y1", "0").attr("x2", "0").attr("y2", "1");
+    gradN.append("stop").attr("offset", "0%").attr("stop-color", "rgba(12, 36, 82, 0.62)");
+    gradN.append("stop").attr("offset", "100%").attr("stop-color", "rgba(2, 6, 18, 0.02)");
+    const g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    const areaR = d3.area()
+      .x((d) => x(d.year))
+      .y0(innerH)
+      .y1((d) => y(d.ruralSig))
+      .curve(d3.curveMonotoneX);
+    g.append("path")
+      .datum(series)
+      .attr("fill", "url(#apexNavy_" + uid + ")")
+      .attr("d", areaR);
+    const lineU = d3.line().x((d) => x(d.year)).y((d) => y(d.urban)).curve(d3.curveMonotoneX);
+    const lineR = d3.line().x((d) => x(d.year)).y((d) => y(d.ruralSig)).curve(d3.curveMonotoneX);
+    const pU = g.append("path")
+      .datum(series)
+      .attr("fill", "none")
+      .attr("stroke", "#d4af37")
+      .attr("stroke-width", 3.1)
+      .attr("stroke-linecap", "round")
+      .attr("d", lineU)
+      .style("filter", "drop-shadow(0 0 6px rgba(212, 175, 55, 0.45))");
+    const pR = g.append("path")
+      .datum(series)
+      .attr("fill", "none")
+      .attr("stroke", "#1e3a66")
+      .attr("stroke-width", 2.4)
+      .attr("stroke-linecap", "round")
+      .attr("d", lineR);
+    pU.each(function () {
+      const len = this.getTotalLength();
+      d3.select(this).attr("stroke-dasharray", len + " " + len).attr("stroke-dashoffset", len);
+    });
+    pR.each(function () {
+      const len = this.getTotalLength();
+      d3.select(this).attr("stroke-dasharray", len + " " + len).attr("stroke-dashoffset", len);
+    });
+    pU.transition().duration(1400).ease(d3.easeCubicOut).attr("stroke-dashoffset", 0);
+    pR.transition().duration(1500).delay(80).ease(d3.easeCubicOut).attr("stroke-dashoffset", 0);
+    g.append("g").attr("transform", "translate(0," + innerH + ")").call(d3.axisBottom(x).tickFormat(d3.format("d"))).selectAll("text").attr("fill", "#9fc4d7").attr("font-size", "9px");
+    g.append("g").call(d3.axisLeft(y).ticks(5).tickFormat((d) => d + "%")).selectAll("text").attr("fill", "#9fc4d7").attr("font-size", "8px");
+    g.selectAll(".domain, .tick line").attr("stroke", "rgba(102,245,255,0.2)");
+    const leg = g.append("g").attr("transform", "translate(" + Math.max(0, innerW - 178) + ", -4)");
+    leg.append("line").attr("x1", 0).attr("x2", 16).attr("y1", 0).attr("y2", 0).attr("stroke", "#d4af37").attr("stroke-width", 2.5);
+    leg.append("text").attr("x", 20).attr("y", 3).attr("fill", "#f0d78c").attr("font-size", "8px").attr("font-weight", "800").text("Urban");
+    leg.append("line").attr("x1", 62).attr("x2", 78).attr("y1", 0).attr("y2", 0).attr("stroke", "#1e3a66").attr("stroke-width", 2.2);
+    leg.append("text").attr("x", 82).attr("y", 3).attr("fill", "#bff4ff").attr("font-size", "8px").attr("font-weight", "800").text("Rural SIG");
   }
 
   const IDENTITY_FULL = "Everything is Anchored by the 8R Stealth Paradigm Convergence and its determinants, let's converge for you to understand and decode.";
@@ -1425,10 +1724,13 @@
   }
 
   renderZenithInformationGap();
+  renderApexTrajectoryChart();
   zenithLiveHandle = window.setInterval(renderZenithInformationGap, 1650);
   window.addEventListener("resize", () => {
     clearTimeout(zenithResizeTimer);
     zenithResizeTimer = window.setTimeout(renderZenithInformationGap, 200);
+    clearTimeout(apexResizeTimer);
+    apexResizeTimer = window.setTimeout(renderApexTrajectoryChart, 220);
   });
 
   function renderSocialGapChart(stateName) {
@@ -1555,9 +1857,24 @@
     if (e.key === "Escape" && governanceSlide.classList.contains("open")) setGovernanceOpen(false);
   });
 
-  function openGapBridge(stateName) {
+  function burstGapFromState(stateName) {
+    const j = ((hashStr(stateName) % 31) - 15) / 10;
+    const t = Date.now() / 1300;
+    const base = 62 + Math.sin(t) * 2.1 + j;
+    return (Math.round(Math.max(48, Math.min(88, base)) * 10) / 10).toFixed(1);
+  }
+
+  function openDataBurst(stateName) {
     lastGapState = stateName;
     document.getElementById("modalStateLabel").textContent = "Hot Node: " + stateName;
+    const bg = document.getElementById("burstGapPct");
+    if (bg) bg.textContent = burstGapFromState(stateName) + "%";
+    const w = STATE_WARDS[stateName] != null ? STATE_WARDS[stateName] : Math.max(1, Math.round(WARDS / 36));
+    const fa = w * CANV_PER_WARD;
+    const bl = document.getElementById("burstAgentLines");
+    if (bl) {
+      bl.innerHTML = "<strong>" + fa.toLocaleString() + "</strong> field agents across <strong>" + w.toLocaleString() + "</strong> ward-equivalent nodes — <strong>1 : " + CANV_PER_WARD + "</strong> agent-to-canvass ratio (grassroots lattice).";
+    }
     gapModal.classList.add("open");
     requestAnimationFrame(() => renderSocialGapChart(stateName));
   }
@@ -1616,6 +1933,7 @@
       const share = w.area / totalArea;
       const wards = Math.max(1, Math.round(WARDS * share));
       const stateName = w.feature.properties.shapeName || "";
+      if (stateName) STATE_WARDS[stateName] = wards;
       const rng = mulberry32(hashStr(stateName || "x"));
       const nDots = Math.min(48, Math.max(4, Math.round(wards / 40)));
       for (let i = 0; i < nDots; i++) {
@@ -1677,11 +1995,116 @@
   const svgNS = "http://www.w3.org/2000/svg";
   const pad = 24, svgW = 760, svgH = 680;
 
-  fetch("/nigeria-states.geojson")
-    .then((r) => r.json())
+  function centroidLL(feature) {
+    const g = feature.geometry;
+    if (!g) return [8.65, 9.05];
+    let ring;
+    if (g.type === "Polygon") ring = g.coordinates[0];
+    else if (g.type === "MultiPolygon") ring = g.coordinates[0][0];
+    else return [8.65, 9.05];
+    const n = Math.max(1, ring.length - 1);
+    let sx = 0, sy = 0;
+    for (let i = 0; i < n; i++) {
+      sx += ring[i][0];
+      sy += ring[i][1];
+    }
+    return [sx / n, sy / n];
+  }
+
+  function closestPointOnCorridor(lon, lat, corridorLL) {
+    let best = [corridorLL[0][0], corridorLL[0][1]];
+    let bd = 1e18;
+    function dist2(px, py, qx, qy) {
+      const dx = px - qx, dy = py - qy;
+      return dx * dx + dy * dy;
+    }
+    for (let i = 0; i < corridorLL.length - 1; i++) {
+      const a = corridorLL[i], b = corridorLL[i + 1];
+      const abx = b[0] - a[0], aby = b[1] - a[1];
+      const apx = lon - a[0], apy = lat - a[1];
+      const ab2 = abx * abx + aby * aby;
+      let t = ab2 < 1e-18 ? 0 : (apx * abx + apy * aby) / ab2;
+      t = Math.max(0, Math.min(1, t));
+      const px = a[0] + t * abx;
+      const py = a[1] + t * aby;
+      const d = dist2(lon, lat, px, py);
+      if (d < bd) {
+        bd = d;
+        best = [px, py];
+      }
+    }
+    return best;
+  }
+
+  function fetchGeoJson() {
+    const urls = ["/nigeria-states.geojson", "./nigeria-states.geojson"];
+    function attempt(i) {
+      if (i >= urls.length) return Promise.reject(new Error("GEOJSON_UNAVAILABLE"));
+      return fetch(urls[i] + "?cb=" + Date.now(), { cache: "no-store" })
+        .then((res) => {
+          if (!res.ok) throw new Error("http");
+          return res.text();
+        })
+        .then((txt) => {
+          if (!txt || txt.trim().length < 500) throw new Error("empty");
+          const geo = JSON.parse(txt);
+          if (!geo || !geo.features || !geo.features.length) throw new Error("features");
+          return geo;
+        })
+        .catch(() => attempt(i + 1));
+    }
+    return attempt(0);
+  }
+
+  function buildWardAzkArrows(project, features, corridorLL) {
+    const g = document.createElementNS(svgNS, "g");
+    g.setAttribute("id", "wardAzkArrows");
+    features.forEach((feature) => {
+      const name = (feature.properties && feature.properties.shapeName) || "State";
+      const c = centroidLL(feature);
+      const t = closestPointOnCorridor(c[0], c[1], corridorLL);
+      const p0 = project(c);
+      const p1 = project(t);
+      const dStr = "M " + p0[0] + " " + p0[1] + " L " + p1[0] + " " + p1[1];
+      const trail = document.createElementNS(svgNS, "path");
+      trail.setAttribute("class", "ward-azk-flow-trail");
+      trail.setAttribute("d", dStr);
+      const vis = document.createElementNS(svgNS, "path");
+      vis.setAttribute("class", "ward-azk-flow");
+      vis.setAttribute("d", dStr);
+      vis.setAttribute("marker-end", "url(#arrowheadGold)");
+      const hit = document.createElementNS(svgNS, "path");
+      hit.setAttribute("class", "ward-azk-hit");
+      hit.setAttribute("d", dStr);
+      hit.setAttribute("data-state", name);
+      hit.setAttribute("role", "button");
+      hit.setAttribute("tabindex", "0");
+      hit.setAttribute("aria-label", "Ward lattice vector to AZK — " + name);
+      function go(ev) {
+        if (ev) ev.stopPropagation();
+        openDataBurst(name);
+      }
+      hit.addEventListener("click", go);
+      hit.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          go(e);
+        }
+      });
+      g.appendChild(trail);
+      g.appendChild(vis);
+      g.appendChild(hit);
+    });
+    mapSvg.appendChild(g);
+  }
+
+  fetchGeoJson()
     .then((geo) => {
       const defs = document.createElementNS(svgNS, "defs");
       defs.innerHTML = [
+        '<marker id="arrowheadGold" markerUnits="userSpaceOnUse" orient="auto" markerWidth="16" markerHeight="16" refX="13" refY="8" viewBox="0 0 16 16">',
+        '<path d="M0,1.2 L14,8 L0,14.8 Z" fill="#f0d78c" stroke="#b8860b" stroke-width="0.55"/>',
+        "</marker>",
         '<linearGradient id="corridorEnergyGrad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="' + svgW + '" y2="' + svgH + '">',
         '<stop offset="0%" stop-color="#00e5ff"/>',
         '<stop offset="45%" stop-color="#66f5ff"/>',
@@ -1726,8 +2149,8 @@
         p.setAttribute("data-name", stateName);
         p.setAttribute("fill", stateUsageFill(stateName));
         p.setAttribute("d", geomPath(feature.geometry, project));
-        p.addEventListener("click", () => openGapBridge(stateName));
-        p.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openGapBridge(stateName); } });
+        p.addEventListener("click", () => openDataBurst(stateName));
+        p.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openDataBurst(stateName); } });
         mapSvg.appendChild(p);
       });
 
@@ -1736,6 +2159,7 @@
       bindMicroStarHover(mapSvg, heat);
 
       const corridorLL = [[7.4951, 9.0765], [7.7090, 11.0747], [8.5247, 11.9914]];
+      buildWardAzkArrows(project, geo.features, corridorLL);
       let dPath = "";
       corridorLL.forEach((ll, i) => {
         const xy = project(ll);
@@ -1764,8 +2188,8 @@
       t.setAttribute("x", "24");
       t.setAttribute("y", "48");
       t.setAttribute("fill", "#ffd670");
-      t.setAttribute("font-size", "14");
-      t.textContent = "Map data not loaded.";
+      t.setAttribute("font-size", "13");
+      t.textContent = "Map data not loaded. Place nigeria-states.geojson next to index.html and serve via command_node (port 5050).";
       mapSvg.appendChild(t);
     });
 })();
