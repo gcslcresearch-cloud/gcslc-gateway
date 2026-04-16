@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#0a2540" />
+  <meta name="theme-color" content="#001a33" />
   <title>GCSLC — Sovereign Layer 01</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -15,8 +15,8 @@
       --bg0: #040f1a;
       --bg1: #0a2540;
       --bg2: #123a5c;
-      /* Unified deep blue — graph canvas / terminal seam */
-      --surface-unified: #0a2540;
+      /* Institutional Deep Blue — Chairman mandate */
+      --surface-unified: #001a33;
       --deep-cyan: #0097a7;
       --cyan: #66f5ff;
       --cyan-soft: #a6fbff;
@@ -30,7 +30,10 @@
       --footer-h: calc(var(--intel-h) + var(--footer-core));
     }
     * { box-sizing: border-box; }
-    html, body, button, input, select, textarea {
+    *, *::before, *::after {
+      font-family: "Goldman", system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    html, body, button, input, select, textarea, code, kbd, samp, pre {
       font-family: "Goldman", system-ui, -apple-system, "Segoe UI", sans-serif;
     }
     svg { font-family: "Goldman", system-ui, sans-serif; }
@@ -302,39 +305,43 @@
     .center-col { min-width: 0; width: 100%; }
     .center-col-primary { display: flex; flex-direction: column; align-items: stretch; gap: 0; }
     .header { text-align: center; margin-bottom: 10px; padding: 0 6px; display: flex; flex-direction: column; align-items: center; gap: 0; }
-    .header-apex-layer01 .brand-apex {
+    .header-apex-layer01 .apex-row1 {
       order: 1;
       margin: 0 0 8px;
       max-width: min(1100px, 96vw);
-      font-size: clamp(0.68rem, 1.85vw, 1.05rem);
+      font-size: clamp(0.72rem, 2vw, 1.08rem);
       font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: none;
-      line-height: 1.35;
-      color: #ffe8b8;
-      text-shadow: 0 0 20px rgba(212, 175, 55, 0.5), 0 0 32px rgba(102, 245, 255, 0.2);
-    }
-    .header-apex-layer01 .apex-anchor-line {
-      order: 2;
-      margin: 0 0 10px;
-      max-width: min(1100px, 96vw);
-      font-size: clamp(0.68rem, 1.85vw, 1.05rem);
-      font-weight: 600;
       letter-spacing: 0.05em;
-      line-height: 1.45;
-      color: #eaf8ff;
+      line-height: 1.4;
       text-align: center;
       white-space: normal;
-      min-height: 2.6em;
+      min-height: 2.4em;
     }
-    .header-apex-layer01 .apex-anchor-line .identity-tw { display: inline; }
-    .brand-apex .brand-gcslc-suffix {
-      display: inline;
-      font-weight: 700;
-      color: #bff4ff;
+    .header-apex-layer01 .apex-row1 .identity-tw { display: inline; }
+    .header-apex-layer01 .apex-row2 {
+      order: 2;
+      margin: 0 0 8px;
+      max-width: min(1100px, 96vw);
+      font-size: clamp(0.54rem, 1.45vw, 0.8rem);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      line-height: 1.4;
+      text-align: center;
+      color: rgba(0, 188, 212, 0.82);
+      text-shadow: 0 0 12px rgba(0, 131, 143, 0.35);
+    }
+    .header-apex-layer01 .apex-row3 {
+      order: 3;
+      margin: 0 0 10px;
+      max-width: min(1100px, 96vw);
+      font-size: clamp(0.54rem, 1.45vw, 0.8rem);
+      font-weight: 600;
       letter-spacing: 0.04em;
+      line-height: 1.45;
+      text-align: center;
+      color: rgba(0, 188, 212, 0.88);
     }
-    .header-apex-layer01 .paradigm-apex { order: 3; width: 100%; }
+    .header-apex-layer01 .paradigm-apex { order: 4; width: 100%; }
     .identity-tw {
       display: inline;
       color: #eaf8ff;
@@ -1343,8 +1350,9 @@
     /* Galaxy S24 Ultra / iPhone 16 class devices — fluid layout + touch */
     @media (max-width: 430px) {
       .shell-v7 { gap: 10px; }
-      .header-apex-layer01 .brand-apex,
-      .header-apex-layer01 .apex-anchor-line { font-size: clamp(0.58rem, 3.2vw, 0.88rem); letter-spacing: 0.04em; }
+      .header-apex-layer01 .apex-row1 { font-size: clamp(0.62rem, 3.2vw, 0.92rem); }
+      .header-apex-layer01 .apex-row2,
+      .header-apex-layer01 .apex-row3 { font-size: clamp(0.52rem, 2.6vw, 0.74rem); }
       .clock-row { gap: 8px; }
       .clock { width: max(30px, 8vw); height: max(30px, 8vw); }
       .gov-toggle {
@@ -1421,8 +1429,9 @@
 
       <div class="center-col center-col-primary">
         <header class="header header-apex-layer01">
-          <p class="brand-apex brand-center" id="brandCenterName">Galadiman Ruwa Nigeria Ltd / <span class="brand-gcslc-suffix">GCSLC LTD/GTE</span></p>
-          <p class="apex-anchor-line" aria-live="polite"><span class="identity-tw identity-tw--shimmer" id="identityTw"></span><span class="identity-caret" aria-hidden="true">▍</span></p>
+          <p class="apex-row apex-row1" id="apexRowTypewriter" aria-live="polite"><span class="identity-tw identity-tw--shimmer" id="identityTw"></span><span class="identity-caret" aria-hidden="true">▍</span></p>
+          <p class="apex-row apex-row2" id="apexRowRc">Galadiman Ruwa Nigeria Ltd RC 1871418</p>
+          <p class="apex-row apex-row3" id="apexRowAnchor">Everything is Anchored by the 8R Stealth Paradigm Convergence and its determinants, let’s converge for you to understand and decode.</p>
 
         <section class="paradigm-apex" aria-label="8R Stealth Paradigm determinants">
           <div class="prisms-row" id="prismsRow">
@@ -1794,7 +1803,7 @@
     leg.append("text").attr("x", 82).attr("y", 3).attr("fill", "#bff4ff").attr("font-size", "8px").attr("font-weight", "800").text("Rural SIG");
   }
 
-  const IDENTITY_FULL = "Everything is Anchored by the 8R Stealth Paradigm Convergence and its determinants, let's converge for you to understand and decode.";
+  const IDENTITY_FULL = "Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE";
   const IDENTITY_CHAR_MS = 120;
   function startIdentityTypewriter() {
     const el = document.getElementById("identityTw");
@@ -2574,7 +2583,7 @@
   }
 
   function fetchGeoJson() {
-    const urls = ["/nigeria-states.geojson", "./nigeria-states.geojson"];
+    const urls = ["./nigeria-states.geojson", "nigeria-states.geojson", "/nigeria-states.geojson"];
     function attempt(i) {
       if (i >= urls.length) return Promise.reject(new Error("GEOJSON_UNAVAILABLE"));
       return fetch(urls[i] + "?cb=" + Date.now(), { cache: "no-store" })
