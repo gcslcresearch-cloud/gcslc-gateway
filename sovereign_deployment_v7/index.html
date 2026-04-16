@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#020a1f" />
-  <title>GCSLC — Sovereign Non-Formal Intelligence V11</title>
+  <title>GCSLC — Sovereign Sequence Restoration V13</title>
   <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
   <style>
     :root {
@@ -196,7 +196,7 @@
       position: relative;
       z-index: 1;
       width: 100%;
-      min-height: 220px;
+      min-height: 150px;
       touch-action: manipulation;
       -webkit-user-select: none;
       user-select: none;
@@ -311,10 +311,21 @@
       45% { opacity: 1; }
       100% { left: -35%; opacity: 0.4; }
     }
-    .center-col { min-width: 0; }
-    .header { text-align: center; margin-bottom: 12px; padding: 0 6px; display: flex; flex-direction: column; align-items: center; gap: 0; }
-    .verification-top {
+    .center-col { min-width: 0; width: 100%; }
+    .center-col-primary { display: flex; flex-direction: column; align-items: stretch; gap: 0; }
+    .header { text-align: center; margin-bottom: 10px; padding: 0 6px; display: flex; flex-direction: column; align-items: center; gap: 0; }
+    .header-apex-v13 .brand-apex {
       order: 1;
+      margin: 0 0 6px;
+      font-size: clamp(0.82rem, 2.1vw, 1.12rem);
+      font-weight: 900;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #ffe8b8;
+      text-shadow: 0 0 20px rgba(212, 175, 55, 0.5), 0 0 32px rgba(102, 245, 255, 0.2);
+    }
+    .verification-top {
+      order: 2;
       margin: 0 0 10px;
       color: #ffe8b8;
       text-transform: uppercase;
@@ -324,10 +335,10 @@
       font-stretch: condensed;
       text-shadow: 0 0 18px rgba(212, 175, 55, 0.45), 0 0 28px rgba(102, 245, 255, 0.2);
     }
-    .paradigm-apex { order: 2; }
+    .header-apex-v13 .paradigm-apex { order: 3; }
     .identity.identity-v10 {
-      order: 3;
-      margin: 14px auto 0;
+      order: unset;
+      margin: 12px auto 0;
       max-width: min(1180px, 94vw);
       width: 100%;
       padding: 12px 12px 14px;
@@ -369,8 +380,103 @@
       container-type: inline-size;
       container-name: paradigm;
       width: 100%;
+      margin: 0 0 10px;
+    }
+    .map-stack-v13 {
+      width: 100%;
       margin: 0 0 12px;
     }
+    .map-masterpiece {
+      width: 100%;
+    }
+    .map-layer-toggles {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 8px 14px;
+      margin: 0 0 10px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(102, 245, 255, 0.28);
+      background: rgba(2, 10, 32, 0.65);
+      font-size: clamp(0.56rem, 1.35vw, 0.68rem);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: #bff4ff;
+    }
+    .layer-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      touch-action: manipulation;
+      min-height: 40px;
+      padding: 4px 2px;
+    }
+    .layer-toggle input { accent-color: var(--gold); width: 16px; height: 16px; }
+    .sidebar-chart-min {
+      margin-top: 12px;
+      padding: 10px 8px;
+      border-radius: 12px;
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      background: rgba(2, 8, 28, 0.55);
+    }
+    .sidebar-chart-h {
+      margin: 0 0 4px;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-align: center;
+    }
+    .sidebar-chart-sub {
+      margin: 0 0 6px;
+      font-size: 0.52rem;
+      line-height: 1.35;
+      color: #8fb4c8;
+      text-align: center;
+    }
+    #apexTrajectoryChart, #nfVelocityChart { min-height: 110px !important; }
+    .btn-termii-test {
+      margin-top: 10px;
+      width: 100%;
+      min-height: 44px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(102, 245, 255, 0.45);
+      background: linear-gradient(165deg, rgba(6, 22, 58, 0.85), rgba(2, 8, 24, 0.9));
+      color: #bff4ff;
+      font-weight: 900;
+      font-size: clamp(0.58rem, 1.4vw, 0.72rem);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .btn-termii-test:hover, .btn-termii-test:focus-visible { filter: brightness(1.1); outline: none; }
+    .termii-nafc-note {
+      margin: 6px 0 0;
+      font-size: 0.52rem;
+      color: #9fc4d7;
+      text-align: center;
+      line-height: 1.35;
+    }
+    .termii-lane.termii-sa-active .termii-outbound { box-shadow: 0 0 22px rgba(255, 90, 60, 0.55), inset 0 0 20px rgba(255, 60, 40, 0.15); }
+    .termii-lane.termii-sa-active .termii-outbound .termii-pulse {
+      animation-duration: 0.42s !important;
+      background: linear-gradient(90deg, transparent, rgba(255, 120, 80, 0.95), rgba(212, 175, 55, 0.95), transparent) !important;
+      box-shadow: 0 0 28px rgba(255, 80, 40, 0.95) !important;
+    }
+    .termii-lane.termii-test-flash .termii-inbound,
+    .termii-lane.termii-test-flash .termii-outbound {
+      animation: termiiTestFlash 0.6s ease-in-out 2;
+    }
+    @keyframes termiiTestFlash {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.35); box-shadow: 0 0 26px rgba(102, 245, 255, 0.65); }
+    }
+    .inst-node { pointer-events: none; }
     .prisms-row {
       display: grid;
       grid-template-columns: repeat(8, minmax(0, 1fr));
@@ -1286,14 +1392,18 @@
     <div class="shell-v7">
       <aside class="sidebar sidebar-left">
         <h2>Our Vision</h2>
-        <p>Galadiman Ruwa Center anchors sovereign leadership communication—merging institutional discipline with national opportunity intelligence.</p>
         <p>The 8R Stealth Paradigm is the operating spine: convergence without noise, execution without drift.</p>
-        <p style="margin-top:10px;font-size:0.68rem;color:#9fc4d7;line-height:1.4;">Live <strong style="color:var(--gold);">Information Gap</strong> intelligence, Termii traffic lane, and ward bridge sit in the <strong>center column</strong>—directly above the Eagle Map—for sovereign 15/15 balance.</p>
+        <div class="sidebar-chart-min" aria-label="Compact five-year gap trajectory">
+          <h3 class="sidebar-chart-h">5-Yr Information Gap</h3>
+          <p class="sidebar-chart-sub">Navy / gold · NCC-aligned baseline · national lattice</p>
+          <div id="apexTrajectoryChart"></div>
+        </div>
       </aside>
 
-      <div class="center-col">
-        <header class="header">
-          <p class="verification verification-top" id="headerRc">Galadiman Ruwa Nigeria Ltd RC 187 1418</p>
+      <div class="center-col center-col-primary">
+        <header class="header header-apex-v13">
+          <p class="brand-apex brand-center" id="brandCenterName">Galadiman Ruwa Center</p>
+          <p class="verification verification-top" id="headerRc">Galadiman Ruwa Nigeria Ltd · RC 187 1418</p>
 
         <section class="paradigm-apex" aria-label="8R Stealth Paradigm determinants">
           <div class="prisms-row" id="prismsRow">
@@ -1307,21 +1417,30 @@
             <div class="prism-box v8-glass" tabindex="0" data-definition="Retain — secure gains, protect institutional memory, and sustain outcomes beyond the tactical moment."><span>Retain</span></div>
           </div>
         </section>
-
-        <section class="apex-trajectory-panel" aria-label="Five-year information gap trajectory">
-          <h2 class="apex-trajectory-title">5-Year Information Gap Trajectory</h2>
-          <p class="apex-trajectory-sub">2020–2025 · Institutional navy lattice · Sovereign gold signal · NCC-aligned rural telephone baseline</p>
-          <div id="apexTrajectoryChart"></div>
-        </section>
-
-        <section class="nf-velocity-panel" aria-label="Non-Formal Velocity Index">
-          <h2 class="nf-velocity-title">Non-Formal Velocity Index</h2>
-          <p class="nf-velocity-sub" id="nfVelocityBridgeCopy">Potential revenue velocity (Livestock · Artisans · Micro-Services) across <strong>36 states + FCT</strong> — indexed to the live <strong>Social Information Gap</strong> bridge: as the gap compresses, non-formal throughput accelerates toward the AZK corridor.</p>
-          <div id="nfVelocityChart"></div>
-        </section>
-
-          <h1 class="identity identity-v10" id="identityAnchor"><span class="identity-tw" id="identityTw"></span><span class="identity-caret" aria-hidden="true">▍</span></h1>
         </header>
+
+        <section class="layout-inner map-stack-v13">
+          <article class="map-wrap living-terminal map-masterpiece">
+            <h2 class="map-title">Eagle Map — Masterpiece · Sovereign Lattice</h2>
+            <p class="map-kinetic-caption">Full-width command surface — gold ward vectors toward <strong>AZK</strong>. Arrows: Non-Formal insight · States: full data burst.</p>
+            <div class="map-layer-toggles" role="toolbar" aria-label="Institutional overlay toggles">
+              <label class="layer-toggle"><input type="checkbox" id="layerMil" checked data-layer="mil" /> Military / Paramilitary</label>
+              <label class="layer-toggle"><input type="checkbox" id="layerNysc" checked data-layer="nysc" /> NYSC</label>
+              <label class="layer-toggle"><input type="checkbox" id="layerJamb" checked data-layer="jamb" /> JAMB</label>
+            </div>
+            <div class="grassroots-ribbon" id="grassrootsRibbon">
+              <strong>Grassroots Math LIVE:</strong> <span id="wardStat">8,806</span> Wards : <strong id="fieldAgentsStat">123,284</strong> Field Agents —
+              Bridging the <strong>60%</strong> Rural Connectivity Gap · <span id="puStat">176,000</span> PUs · Sovereign lattice overlay active.
+            </div>
+            <section class="definition-panel" aria-live="polite">
+              <h3 class="definition-title">8R Definition Stream (Slow-Motion)</h3>
+              <p class="definition-text typing-slow" id="prismDefinition">Hover a determinant to load the typewriter-pop definition stream.</p>
+            </section>
+            <svg id="mapSvg" viewBox="0 0 760 680" role="img" aria-label="Nigeria map with grassroots heat and corridor"></svg>
+          </article>
+        </section>
+
+        <h1 class="identity identity-v10" id="identityAnchor"><span class="identity-tw" id="identityTw"></span><span class="identity-caret" aria-hidden="true">▍</span></h1>
 
         <div class="advisory-bridge">
           <div class="api-revenue-path">
@@ -1343,7 +1462,8 @@
             <span><span class="lbl">Urban Connectivity</span> <span class="gold-pct" id="zenithUrbanPct">—</span></span>
           </div>
           <div class="termii-block">
-            <div class="termii-label">Termii Gateway — Communication Traffic Lane</div>
+            <div class="termii-label">Termii Gateway — NAFC Secure Channel</div>
+            <p class="termii-nafc-note">National Alert Fusion Center (NAFC) sender ID · Inbound/Outbound traffic simulation for non-formal + security lanes.</p>
             <div class="termii-lane" id="termiiLane">
               <div class="termii-track termii-inbound" title="Inbound partnership pulses (Termii)">
                 <span class="track-tag">Inbound</span>
@@ -1354,30 +1474,21 @@
                 <span class="termii-pulse" aria-hidden="true"></span>
               </div>
             </div>
+            <button type="button" class="btn-termii-test" id="termiiTestAlert">Test Alert — NAFC → Termii (simulated SMS)</button>
+            <p class="termii-nafc-note" id="termiiStatusLine" aria-live="polite"></p>
           </div>
-        </section>
-
-        <section class="layout-inner">
-          <article class="map-wrap living-terminal">
-            <h2 class="map-title">Eagle Map — Living Terminal · Usage Density + AZK Spine</h2>
-            <p class="map-kinetic-caption">Sovereign gold vectors pulse from the grassroots ward lattice (8,806) toward the <strong>AZK corridor</strong> — touch an arrow or a state for the data burst.</p>
-            <div class="grassroots-ribbon" id="grassrootsRibbon">
-              <strong>Grassroots Math LIVE:</strong> <span id="wardStat">8,806</span> Wards : <strong id="fieldAgentsStat">123,284</strong> Field Agents —
-              Bridging the <strong>60%</strong> Rural Connectivity Gap · <span id="puStat">176,000</span> PUs · Sovereign lattice overlay active.
-            </div>
-            <section class="definition-panel" aria-live="polite">
-              <h3 class="definition-title">8R Definition Stream (Slow-Motion)</h3>
-              <p class="definition-text typing-slow" id="prismDefinition">Hover a determinant to load the typewriter-pop definition stream.</p>
-            </section>
-            <svg id="mapSvg" viewBox="0 0 760 680" role="img" aria-label="Nigeria map with grassroots heat and corridor"></svg>
-          </article>
         </section>
       </div>
 
       <aside class="sidebar sidebar-right">
         <h2>Governance</h2>
-        <p>Legal anchors, SCUML registration, and authorial seal are housed in the sliding Governance vault (edge control).</p>
-        <p><strong>Open the panel</strong> to audit copyright, SCUML RN, author line, and communication nodes.</p>
+        <p>Legal anchors and SCUML registration are in the Governance vault (edge control).</p>
+        <div class="sidebar-chart-min" aria-label="Compact non-formal velocity">
+          <h3 class="sidebar-chart-h">Non-Formal Velocity</h3>
+          <p class="sidebar-chart-sub" id="nfVelocityBridgeCopy">Livestock · Artisans · Micro-Services — scaled by the SIG bridge (36 + FCT).</p>
+          <div id="nfVelocityChart"></div>
+        </div>
+        <p style="margin-top:10px;font-size:0.68rem;"><strong>Open the panel</strong> to audit copyright, SCUML RN, author line, and communication nodes.</p>
       </aside>
     </div>
   </main>
@@ -1469,7 +1580,7 @@
       <span class="g">HANDSHAKE //</span>
       Phone <span class="footer-node-metallic"><strong>+234 703 913 9439</strong> | <strong>+234 809 911 1515</strong></span>
       · Email <span class="footer-node-metallic">Info@galadimanruwacenter.org</span> · <span class="footer-node-metallic">gcslc.research@gmail.com</span>
-      · <strong>Copyright LW15954</strong> · <strong>SCUML RN: SC 151653884</strong> · GCSLC Sovereign Non-Formal Intelligence V11 · 8,806 Wards : 123,284 Field Agents · 176,000 PUs · Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau · GCSLC PROPRIETARY
+      · <strong>Copyright LW15954</strong> · <strong>SCUML RN: SC 151653884</strong> · GCSLC Sovereign Sequence Restoration V13 · 8,806 Wards : 123,284 Field Agents · 176,000 PUs · Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau · GCSLC PROPRIETARY
     </div>
   </footer>
 
@@ -1601,9 +1712,9 @@
     const nccUrban = [58, 62, 68, 74, 79, 84];
     const nccRuralSig = [76, 74, 70, 66, 62, 58];
     const series = years.map((y, i) => ({ year: y, urban: nccUrban[i], ruralSig: nccRuralSig[i] }));
-    const elW = Math.max(300, root.clientWidth || 640);
-    const h = 228;
-    const margin = { top: 18, right: 12, bottom: 32, left: 44 };
+    const elW = Math.max(200, root.clientWidth || 280);
+    const h = 158;
+    const margin = { top: 14, right: 8, bottom: 26, left: 36 };
     const innerW = elW - margin.left - margin.right;
     const innerH = h - margin.top - margin.bottom;
     const x = d3.scalePoint().domain(years).range([0, innerW]).padding(0.22);
@@ -1718,9 +1829,9 @@
       artisans: A0[i] * bridgeFactor,
       micro: M0[i] * bridgeFactor
     }));
-    const elW = Math.max(300, root.clientWidth || 640);
-    const h = 256;
-    const margin = { top: 22, right: 14, bottom: 34, left: 48 };
+    const elW = Math.max(200, root.clientWidth || 280);
+    const h = 162;
+    const margin = { top: 16, right: 8, bottom: 26, left: 38 };
     const innerW = elW - margin.left - margin.right;
     const innerH = h - margin.top - margin.bottom;
     const x = d3.scalePoint().domain(years).range([0, innerW]).padding(0.18);
@@ -1806,9 +1917,9 @@
     if (urbanPct) urbanPct.textContent = live.urbanConn.toFixed(1) + "%";
 
     d3.select(root).selectAll("*").remove();
-    const W = Math.max(280, root.clientWidth || 640);
-    const H = 248;
-    const margin = { t: 28, r: 18, b: 56, l: 22 };
+    const W = Math.max(260, root.clientWidth || 640);
+    const H = 188;
+    const margin = { t: 22, r: 14, b: 44, l: 18 };
     const iw = W - margin.l - margin.r;
     const ih = H - margin.t - margin.b;
     const uid = "z" + String((Date.now() % 1000000));
@@ -2087,6 +2198,21 @@
     nonFormalModal.addEventListener("click", (e) => { if (e.target === nonFormalModal) nonFormalModal.classList.remove("open"); });
   }
 
+  const termiiTestBtn = document.getElementById("termiiTestAlert");
+  const termiiLaneEl = document.getElementById("termiiLane");
+  const termiiStatusLineEl = document.getElementById("termiiStatusLine");
+  if (termiiTestBtn && termiiLaneEl) {
+    termiiTestBtn.addEventListener("click", () => {
+      termiiLaneEl.classList.remove("termii-test-flash");
+      void termiiLaneEl.offsetWidth;
+      termiiLaneEl.classList.add("termii-test-flash");
+      window.setTimeout(() => termiiLaneEl.classList.remove("termii-test-flash"), 1500);
+      if (termiiStatusLineEl) {
+        termiiStatusLineEl.textContent = "NAFC Test Alert — Sender: National Alert Fusion Center → Termii route (simulated SMS). " + new Date().toLocaleTimeString();
+      }
+    });
+  }
+
   const governanceSlide = document.getElementById("governanceSlide");
   const govToggle = document.getElementById("govToggle");
   const govBackdrop = document.getElementById("govBackdrop");
@@ -2111,6 +2237,21 @@
     return (Math.round(Math.max(48, Math.min(88, base)) * 10) / 10).toFixed(1);
   }
 
+  function isSimulatedSa(stateName) {
+    return (hashStr(stateName + "|SA") % 10) === 0;
+  }
+  function triggerTermiiSaPulse(stateName) {
+    const lane = document.getElementById("termiiLane");
+    const st = document.getElementById("termiiStatusLine");
+    if (lane) {
+      lane.classList.add("termii-sa-active");
+      window.setTimeout(() => lane.classList.remove("termii-sa-active"), 2800);
+    }
+    if (st) {
+      st.textContent = "Security Alert (SA) — NAFC → Termii SMS pulse (sim) · Node: " + stateName + " · " + new Date().toLocaleTimeString();
+    }
+  }
+
   function openDataBurst(stateName) {
     lastGapState = stateName;
     document.getElementById("modalStateLabel").textContent = "Hot Node: " + stateName;
@@ -2124,6 +2265,7 @@
     }
     gapModal.classList.add("open");
     requestAnimationFrame(() => renderSocialGapChart(stateName));
+    if (isSimulatedSa(stateName)) triggerTermiiSaPulse(stateName);
   }
 
   function formatBnBand(lo, hi) {
@@ -2319,6 +2461,55 @@
     return best;
   }
 
+  function buildInstitutionalLayers(project, mapSvgEl, svgNSTarget) {
+    const prev = mapSvgEl.querySelector("#institutionalLayers");
+    if (prev) prev.remove();
+    const g = document.createElementNS(svgNSTarget, "g");
+    g.setAttribute("id", "institutionalLayers");
+    const nodes = [
+      { layer: "mil", lon: 7.4951, lat: 9.0765, r: 4.8 },
+      { layer: "mil", lon: 8.5247, lat: 11.9914, r: 4.8 },
+      { layer: "mil", lon: 3.3792, lat: 6.5244, r: 4.2 },
+      { layer: "nysc", lon: 7.3986, lat: 9.082, r: 4 },
+      { layer: "nysc", lon: 8.5167, lat: 12.0028, r: 4 },
+      { layer: "jamb", lon: 7.4411, lat: 9.0478, r: 4 },
+      { layer: "jamb", lon: 8.4943, lat: 11.9914, r: 3.8 }
+    ];
+    nodes.forEach((n) => {
+      const xy = project([n.lon, n.lat]);
+      const c = document.createElementNS(svgNSTarget, "circle");
+      c.setAttribute("class", "inst-node inst-" + n.layer);
+      c.setAttribute("data-layer", n.layer);
+      c.setAttribute("cx", String(xy[0]));
+      c.setAttribute("cy", String(xy[1]));
+      c.setAttribute("r", String(n.r));
+      c.setAttribute("fill", n.layer === "mil" ? "rgba(212,175,55,0.58)" : n.layer === "nysc" ? "rgba(102,245,255,0.52)" : "rgba(255,200,120,0.55)");
+      c.setAttribute("stroke", "rgba(255,255,255,0.4)");
+      c.setAttribute("stroke-width", "1.1");
+      g.appendChild(c);
+    });
+    mapSvgEl.appendChild(g);
+    function syncLayers() {
+      const mil = document.getElementById("layerMil");
+      const nysc = document.getElementById("layerNysc");
+      const jamb = document.getElementById("layerJamb");
+      g.querySelectorAll(".inst-node").forEach((node) => {
+        const layer = node.getAttribute("data-layer");
+        let on = true;
+        if (layer === "mil") on = !!(mil && mil.checked);
+        if (layer === "nysc") on = !!(nysc && nysc.checked);
+        if (layer === "jamb") on = !!(jamb && jamb.checked);
+        node.setAttribute("opacity", on ? "1" : "0");
+        node.style.visibility = on ? "visible" : "hidden";
+      });
+    }
+    ["layerMil", "layerNysc", "layerJamb"].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener("change", syncLayers);
+    });
+    syncLayers();
+  }
+
   function fetchGeoJson() {
     const urls = ["/nigeria-states.geojson", "./nigeria-states.geojson"];
     function attempt(i) {
@@ -2443,6 +2634,7 @@
 
       const corridorLL = [[7.4951, 9.0765], [7.7090, 11.0747], [8.5247, 11.9914]];
       buildWardAzkArrows(project, geo.features, corridorLL);
+      buildInstitutionalLayers(project, mapSvg, svgNS);
       let dPath = "";
       corridorLL.forEach((ll, i) => {
         const xy = project(ll);
