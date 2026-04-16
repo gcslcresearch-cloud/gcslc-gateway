@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#020a1f" />
+  <title>GCSLC — Sovereign Deployment V7 Zenith</title>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  <style>
+    :root {
+      --bg0: #020a1f;
+      --bg1: #06183f;
+      --bg2: #0b2b63;
+      --cyan: #66f5ff;
+      --cyan-soft: #a6fbff;
+      --gold: #D4AF37;
+      --text: #eaf8ff;
+      --sub: #c8e8f6;
+      --map-fill: #1e90a7;
+      --map-stroke: #d2f7ff;
+      --footer-h: min(120px, 22vw);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: "Segoe UI", "Avenir Next Condensed", "Arial Narrow", Arial, sans-serif;
+      background:
+        radial-gradient(circle at 18% 12%, rgba(124, 204, 255, 0.22), transparent 40%),
+        radial-gradient(circle at 82% 20%, rgba(102, 245, 255, 0.14), transparent 42%),
+        linear-gradient(160deg, var(--bg0), var(--bg1) 46%, var(--bg2) 100%);
+      overflow-x: hidden;
+      position: relative;
+    }
+    /* Diagonal proprietary watermark — shimmering diagonal */
+    .wm-proprietary {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .wm-proprietary span {
+      position: absolute;
+      top: 42%;
+      left: -20%;
+      width: 140%;
+      text-align: center;
+      font-size: clamp(2.2rem, 8vw, 4.5rem);
+      font-weight: 900;
+      letter-spacing: 0.35em;
+      transform: rotate(-32deg);
+      text-transform: uppercase;
+      user-select: none;
+      background-image: linear-gradient(
+        105deg,
+        rgba(212, 175, 55, 0.07) 0%,
+        rgba(102, 245, 255, 0.22) 38%,
+        rgba(212, 175, 55, 0.14) 50%,
+        rgba(102, 245, 255, 0.2) 62%,
+        rgba(212, 175, 55, 0.08) 100%
+      );
+      background-size: 240% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: wmShimmer 7.5s ease-in-out infinite;
+    }
+    @keyframes wmShimmer {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    body::before {
+      content: "GCSLC";
+      position: fixed;
+      top: 16%;
+      left: 50%;
+      transform: translateX(-50%) perspective(940px) rotateX(24deg);
+      font-size: clamp(3.8rem, 17vw, 11rem);
+      font-weight: 900;
+      letter-spacing: 0.28em;
+      color: rgba(172, 237, 255, 0.08);
+      text-shadow: 0 12px 26px rgba(0,0,0,0.45), 0 0 56px rgba(102,245,255,0.25);
+      pointer-events: none;
+      z-index: 0;
+      animation: watermarkPulse 8s ease-in-out infinite;
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image:
+        radial-gradient(circle at 8% 85%, rgba(90,176,255,0.2) 0 10px, transparent 12px),
+        radial-gradient(circle at 20% 70%, rgba(102,245,255,0.15) 0 7px, transparent 10px),
+        radial-gradient(circle at 36% 90%, rgba(90,176,255,0.17) 0 8px, transparent 11px),
+        radial-gradient(circle at 54% 74%, rgba(102,245,255,0.12) 0 6px, transparent 9px),
+        radial-gradient(circle at 74% 86%, rgba(90,176,255,0.16) 0 8px, transparent 11px),
+        radial-gradient(circle at 92% 76%, rgba(102,245,255,0.1) 0 7px, transparent 10px);
+      animation: bubbleLift 16s linear infinite;
+    }
+    .app {
+      position: relative;
+      z-index: 2;
+      max-width: 1480px;
+      margin: 0 auto;
+      padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) calc(var(--footer-h) + max(20px, env(safe-area-inset-bottom))) max(12px, env(safe-area-inset-left));
+    }
+    .shell-v7 {
+      display: grid;
+      grid-template-columns: minmax(168px, 0.95fr) minmax(320px, 3fr) minmax(168px, 0.95fr);
+      gap: 12px;
+      align-items: start;
+    }
+    .sidebar {
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      border-radius: 12px;
+      background: rgba(4, 18, 48, 0.78);
+      padding: 12px;
+      box-shadow: inset 0 0 18px rgba(0, 0, 128, 0.25);
+      font-size: 0.74rem;
+      line-height: 1.45;
+      color: #d6eefc;
+    }
+    .sidebar h2 {
+      margin: 0 0 8px;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    .sidebar p { margin: 0 0 8px; }
+    .center-col { min-width: 0; }
+    .header { text-align: center; margin-bottom: 10px; padding: 0 6px; }
+    .identity {
+      margin: 0 auto 10px;
+      max-width: 1180px;
+      color: var(--cyan);
+      font-size: clamp(0.68rem, 1.65vw, 1.05rem);
+      letter-spacing: 0.05em;
+      line-height: 1.45;
+      font-weight: 600;
+      overflow: hidden;
+      width: 0;
+      white-space: nowrap;
+      border-right: 3px solid rgba(102,245,255,0.95);
+      text-shadow: 0 0 14px rgba(102,245,255,0.45);
+      animation: headerType 52s steps(218, end) infinite, caret 1.1s step-end infinite;
+    }
+    .verification {
+      margin: 0;
+      color: var(--sub);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: clamp(0.68rem, 1.75vw, 0.95rem);
+      font-stretch: condensed;
+    }
+    .advisory-bridge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin: 8px 0 12px;
+      width: 100%;
+      padding: 0 4px;
+    }
+    .api-revenue-path {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      width: min(100%, 560px);
+    }
+    .api-path-label {
+      font-size: clamp(0.58rem, 1.45vw, 0.72rem);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #c9f6ff;
+      font-weight: 800;
+      text-align: center;
+      line-height: 1.3;
+    }
+    .btn-advisory {
+      display: inline-block;
+      width: 100%;
+      max-width: 560px;
+      padding: 12px 18px;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: rgba(212, 175, 55, 0.25);
+      border-radius: 10px;
+      border: 2px solid var(--gold);
+      background: linear-gradient(135deg, rgba(212,175,55,0.25), rgba(0,0,128,0.5));
+      color: #fff8e0;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-align: center;
+      text-decoration: none;
+      text-transform: uppercase;
+      font-size: clamp(0.62rem, 1.5vw, 0.78rem);
+      box-shadow: 0 0 18px rgba(212,175,55,0.35);
+      animation: advisoryPulse 2.2s ease-in-out infinite;
+    }
+    .btn-advisory:hover { filter: brightness(1.12); }
+    .clock-row {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(48px, 1fr));
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .clock-prism-frame {
+      text-align: center;
+      padding: 5px 3px 4px;
+      background: linear-gradient(145deg, #0a1a3a 0%, #1a1a1a 50%, #0a1a3a 100%);
+      border: 1px solid rgba(212, 175, 55, 0.45);
+      clip-path: polygon(10% 0, 90% 0, 100% 50%, 90% 100%, 10% 100%, 0 50%);
+      box-shadow: inset 0 0 10px rgba(102,245,255,0.12);
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .clock-prism-frame { animation: clockPrismPulse 2.4s ease-in-out infinite; }
+    .clock-prism-frame:hover { transform: scale(1.1); z-index: 3; box-shadow: 0 0 18px rgba(102,245,255,0.45); }
+    @media (hover: none) {
+      .clock-prism-frame:active { transform: scale(1.06); }
+    }
+    @keyframes clockPrismPulse {
+      0%, 100% { box-shadow: inset 0 0 8px rgba(212,175,55,0.12), 0 0 6px rgba(102,245,255,0.15); }
+      50% { box-shadow: inset 0 0 14px rgba(212,175,55,0.22), 0 0 14px rgba(102,245,255,0.28); }
+    }
+    .clock {
+      width: 32px;
+      height: 32px;
+      margin: 0 auto 3px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(149,239,255,0.88);
+      position: relative;
+      background: radial-gradient(circle at center, rgba(160,237,255,0.08) 0 20%, transparent 21%), linear-gradient(155deg, rgba(8,34,74,0.95), rgba(4,16,39,0.95));
+    }
+    .clock::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 3px;
+      height: 3px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: var(--cyan-soft);
+      z-index: 4;
+    }
+    .hand { position: absolute; left: 50%; bottom: 50%; transform-origin: bottom center; border-radius: 2px; }
+    .hour { width: 2px; height: 8px; margin-left: -1px; background: #d8ecff; }
+    .minute { width: 1.8px; height: 11px; margin-left: -0.9px; background: #bee9ff; }
+    .second { width: 1px; height: 12px; margin-left: -0.5px; background: #67f4ff; }
+    .city { font-size: 0.48rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--cyan-soft); font-weight: 700; }
+    .layout-inner {
+      display: grid;
+      grid-template-columns: 1fr 2.5fr;
+      gap: 12px;
+      align-items: start;
+    }
+    .prisms { display: grid; gap: 7px; }
+    .prism-box {
+      min-height: max(44px, min(52px, 11vw));
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: rgba(212, 175, 55, 0.2);
+      border: 1.5px solid var(--gold);
+      border-left-width: 3px;
+      border-right-width: 3px;
+      background: linear-gradient(130deg, #000080 0%, #1e1e1e 45%, #000080 100%);
+      background-size: 260% 260%;
+      clip-path: polygon(9% 0, 91% 0, 100% 50%, 91% 100%, 9% 100%, 0 50%);
+      display: grid;
+      place-items: center;
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: #f7f0c4;
+      animation: prismShimmer 2.8s linear infinite, prismSparkle 3.4s ease-in-out infinite;
+      cursor: pointer;
+    }
+    .prism-box:hover, .prism-box:focus-visible, .prism-box.active {
+      transform: translateY(-1px) scale(1.01);
+      filter: brightness(1.12);
+      box-shadow: 0 0 14px rgba(212,175,55,0.45);
+      outline: none;
+    }
+    .definition-panel {
+      margin-bottom: 8px;
+      border: 1px solid rgba(212, 175, 55, 0.55);
+      border-radius: 12px;
+      background: linear-gradient(160deg, rgba(0, 0, 128, 0.58), rgba(31, 31, 31, 0.7));
+      padding: 10px;
+      min-height: 76px;
+    }
+    .definition-title { margin: 0 0 6px; color: #f0cd67; font-size: 0.64rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; }
+    .definition-text {
+      margin: 0;
+      color: #dff8ff;
+      font-size: 0.74rem;
+      line-height: 1.4;
+      border-right: 2px solid rgba(166, 251, 255, 0.85);
+      white-space: nowrap;
+      overflow: hidden;
+      width: 0;
+    }
+    .definition-text.typing-slow { animation: definitionTypingSlow 16s steps(96, end) forwards, caret 1s step-end infinite; }
+    .grassroots-ribbon {
+      margin-bottom: 8px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(212,175,55,0.4);
+      background: rgba(0,0,40,0.45);
+      font-size: 0.62rem;
+      letter-spacing: 0.04em;
+      color: #e8d89a;
+      line-height: 1.35;
+    }
+    .grassroots-ribbon strong { color: var(--gold); }
+    .map-wrap {
+      border: 1px solid rgba(134,223,255,0.4);
+      border-radius: 16px;
+      background: rgba(4,21,52,0.75);
+      padding: 10px;
+    }
+    .map-title {
+      margin: 0 0 8px;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #ffda7f;
+      font-size: clamp(0.72rem, 1.9vw, 0.95rem);
+    }
+    #mapSvg { width: 100%; height: auto; display: block; border-radius: 10px; border: 1px solid rgba(103,193,238,0.32); background: linear-gradient(180deg, rgba(8,29,74,0.82), rgba(3,15,40,0.82)); }
+    .state { fill: var(--map-fill); stroke: var(--map-stroke); stroke-width: 0.85; cursor: pointer; transition: fill 0.15s ease; }
+    .state:hover, .state:focus-visible { fill: #35d7d8; outline: none; }
+    .heatmap-dot { pointer-events: none; mix-blend-mode: screen; }
+    .corridor-vector {
+      fill: none;
+      stroke: url(#corridorEnergyGrad);
+      stroke-width: 6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: url(#corridorGlowStrong);
+      cursor: pointer;
+      pointer-events: stroke;
+      stroke-dasharray: 16 12;
+      animation: corridorVelocityPulse 1.15s ease-in-out infinite, corridorDashFlow 2.8s linear infinite;
+    }
+    .corridor-glow-base {
+      fill: none;
+      stroke: rgba(102, 245, 255, 0.42);
+      stroke-width: 16;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: url(#corridorGlowSoft);
+      pointer-events: none;
+      stroke-dasharray: 20 14;
+      animation: corridorGlowPulse 1.4s ease-in-out infinite, corridorDashFlow 3.2s linear infinite reverse;
+    }
+    @keyframes corridorVelocityPulse {
+      0%, 100% { stroke-width: 5.5; opacity: 0.9; }
+      50% { stroke-width: 8.5; opacity: 1; }
+    }
+    @keyframes corridorGlowPulse {
+      0%, 100% { stroke-width: 15; opacity: 0.55; }
+      50% { stroke-width: 19; opacity: 0.85; }
+    }
+    @keyframes corridorDashFlow {
+      to { stroke-dashoffset: -56; }
+    }
+    .corridor-hit { fill: none; stroke: transparent; stroke-width: 18; cursor: pointer; pointer-events: stroke; }
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(2, 8, 24, 0.88);
+      backdrop-filter: blur(6px);
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-card {
+      max-width: min(520px, 100%);
+      max-height: min(88dvh, 900px);
+      overflow-y: auto;
+      width: 100%;
+      border: 1px solid rgba(212, 175, 55, 0.5);
+      border-radius: 14px;
+      background: linear-gradient(165deg, #000050 0%, #1a1a1e 55%, #05051a 100%);
+      padding: 16px;
+      padding-bottom: max(16px, env(safe-area-inset-bottom));
+      color: var(--text);
+      -webkit-overflow-scrolling: touch;
+    }
+    #liveChartGap {
+      width: 100%;
+      min-height: 200px;
+    }
+    #liveChartGap svg { max-width: 100%; height: auto; display: block; }
+    .modal-card h3 { margin: 0 0 6px; color: var(--cyan); font-size: 1rem; letter-spacing: 0.06em; }
+    .modal-close {
+      margin-top: 10px;
+      width: 100%;
+      padding: 10px;
+      border: 1px solid rgba(102, 245, 255, 0.4);
+      border-radius: 8px;
+      background: rgba(0, 0, 128, 0.4);
+      color: var(--cyan-soft);
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .footer {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      min-height: var(--footer-h);
+      z-index: 50;
+      border-top: 1px solid rgba(102, 245, 255, 0.35);
+      background: linear-gradient(180deg, rgba(2, 12, 32, 0.98), rgba(0, 0, 40, 0.99));
+      padding: 8px max(12px, env(safe-area-inset-left)) calc(10px + env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-right));
+    }
+    .footer-typewriter {
+      max-width: 1480px;
+      margin: 0 auto;
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: clamp(0.55rem, 1.35vw, 0.72rem);
+      letter-spacing: 0.04em;
+      color: #bff4ff;
+      border: 1px solid rgba(102, 245, 255, 0.3);
+      border-radius: 8px;
+      padding: 10px 12px;
+      background: rgba(0, 20, 55, 0.55);
+      overflow: hidden;
+      white-space: nowrap;
+      border-right: 2px solid rgba(102,245,255,0.85);
+      width: 0;
+      animation: footerTw 38s steps(220, end) infinite, caret 1s step-end infinite;
+    }
+    .footer-typewriter .g { color: var(--gold); }
+    /* Governance sliding sidebar */
+    .gov-toggle {
+      position: fixed;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 120;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      padding: 14px 8px;
+      border: 1px solid rgba(212, 175, 55, 0.55);
+      border-right: none;
+      border-radius: 10px 0 0 10px;
+      background: linear-gradient(180deg, rgba(0,0,128,0.85), rgba(20,20,30,0.92));
+      color: var(--gold);
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      cursor: pointer;
+      box-shadow: -4px 0 18px rgba(0,0,0,0.35);
+    }
+    .gov-toggle:hover { filter: brightness(1.1); }
+    .governance-slide {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: min(380px, 92vw);
+      height: 100%;
+      z-index: 119;
+      background: linear-gradient(200deg, rgba(2,8,28,0.98), rgba(0,0,64,0.96));
+      border-left: 2px solid rgba(212, 175, 55, 0.45);
+      box-shadow: -8px 0 40px rgba(0,0,0,0.5);
+      transform: translateX(100%);
+      transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+      overflow-y: auto;
+      padding: 56px 18px 24px;
+    }
+    .governance-slide.open { transform: translateX(0); }
+    .governance-slide h2 {
+      margin: 0 0 12px;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    .governance-slide .legal-block {
+      margin-bottom: 14px;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(102,245,255,0.2);
+      background: rgba(0, 20, 50, 0.45);
+      font-size: 0.72rem;
+      line-height: 1.45;
+      color: #d6eefc;
+    }
+    .governance-slide .legal-block strong { color: var(--cyan-soft); display: block; margin-bottom: 4px; font-size: 0.62rem; letter-spacing: 0.08em; }
+    .gov-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 118;
+      background: rgba(0,0,0,0.45);
+    }
+    .gov-backdrop.show { display: block; }
+    @media (max-width: 1100px) {
+      .shell-v7 { grid-template-columns: 1fr; }
+      .sidebar { order: 3; }
+      .center-col { order: 1; }
+    }
+    @media (max-width: 980px) {
+      .layout-inner { grid-template-columns: 1fr; }
+      .clock-row { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 520px) {
+      .clock-row { grid-template-columns: repeat(2, 1fr); }
+    }
+    /* Galaxy S24 Ultra / iPhone 16 class devices — fluid layout + touch */
+    @media (max-width: 430px) {
+      .shell-v7 { gap: 10px; }
+      .clock-row { gap: 8px; }
+      .clock { width: max(30px, 8vw); height: max(30px, 8vw); }
+      .gov-toggle {
+        padding: 18px 10px;
+        min-height: 44px;
+        touch-action: manipulation;
+      }
+      .modal-backdrop {
+        padding: max(10px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
+      }
+      .map-wrap { padding: 8px; }
+    }
+    @keyframes advisoryPulse {
+      0%, 100% { box-shadow: 0 0 12px rgba(212,175,55,0.35); transform: scale(1); }
+      50% { box-shadow: 0 0 26px rgba(212,175,55,0.65); transform: scale(1.02); }
+    }
+    @keyframes headerType {
+      0% { width: 0; } 38% { width: 100%; } 62% { width: 100%; } 98% { width: 0; } 100% { width: 0; }
+    }
+    @keyframes footerTw {
+      0% { width: 0; } 35% { width: 100%; } 65% { width: 100%; } 97% { width: 0; } 100% { width: 0; }
+    }
+    @keyframes caret { 50% { border-right-color: transparent; } }
+    @keyframes prismShimmer { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
+    @keyframes prismSparkle {
+      0%, 100% { box-shadow: inset 0 0 8px rgba(212,175,55,0.15); }
+      50% { box-shadow: inset 0 0 14px rgba(212,175,55,0.28); }
+    }
+    @keyframes definitionTypingSlow { from { width: 0; } to { width: 100%; } }
+    @keyframes watermarkPulse {
+      0%, 100% { opacity: 0.24; transform: translateX(-50%) perspective(940px) rotateX(24deg) scale(0.99); }
+      50% { opacity: 0.37; transform: translateX(-50%) perspective(940px) rotateX(24deg) scale(1.02); }
+    }
+    @keyframes bubbleLift { 0% { transform: translateY(0); } 100% { transform: translateY(-34px); } }
+  </style>
+</head>
+<body>
+  <div class="wm-proprietary" aria-hidden="true"><span>GCSLC PROPRIETARY</span></div>
+
+  <div class="gov-backdrop" id="govBackdrop" aria-hidden="true"></div>
+  <button type="button" class="gov-toggle" id="govToggle" aria-controls="governanceSlide" aria-expanded="false">GOVERNANCE</button>
+  <aside class="governance-slide" id="governanceSlide" aria-label="Governance and legal anchors">
+    <h2>Governance — Legal Anchors</h2>
+    <div class="legal-block">
+      <strong>Author</strong>
+      Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau.
+    </div>
+    <div class="legal-block">
+      <strong>Copyright</strong>
+      LW15954 (Literary Work: 8R Stealth Paradigm).
+    </div>
+    <div class="legal-block">
+      <strong>SCUML</strong>
+      RN: SC 151653884.
+    </div>
+    <div class="legal-block">
+      <strong>Communication Nodes</strong>
+      Emails: Info@galadimanruwacenter.org | gcslc.research@gmail.com<br />
+      Phone: +234 703 913 9439 | +234 809 911 1515
+    </div>
+  </aside>
+
+  <main class="app">
+    <div class="shell-v7">
+      <aside class="sidebar sidebar-left">
+        <h2>Our Vision</h2>
+        <p>Galadiman Ruwa Center anchors sovereign leadership communication—merging institutional discipline with national opportunity intelligence.</p>
+        <p>The 8R Stealth Paradigm is the operating spine: convergence without noise, execution without drift.</p>
+        <p><strong>Grassroots V7 Zenith:</strong> ward coordinators and polling-unit canvassers form the national sensing lattice—density on the map reflects operational presence, not vanity metrics.</p>
+      </aside>
+
+      <div class="center-col">
+        <header class="header">
+          <h1 class="identity">Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE. Everything is Anchored by the 8R Stealth Paradigm Convergence and its determinants, let's converge for you to understand and decode.</h1>
+          <p class="verification">Galadiman Ruwa Nigeria Ltd RC 187 1418</p>
+        </header>
+
+        <div class="advisory-bridge">
+          <div class="api-revenue-path">
+            <span class="api-path-label">GCSLC API Revenue Path</span>
+            <a class="btn-advisory" href="https://galadimanruwacenter.org" target="_blank" rel="noopener noreferrer">DEPARTURE: Visit the Advisory Hub (Cloud Node Active)</a>
+          </div>
+        </div>
+
+        <section class="clock-row" id="clockRow"></section>
+
+        <section class="layout-inner">
+          <aside class="prisms" aria-label="8R Determinants">
+            <div class="prism-box" tabindex="0" data-definition="Refine — sharpen mandate clarity, strip noise from signal, and preserve strategic precision across every sovereign decision lane.">Refine</div>
+            <div class="prism-box" tabindex="0" data-definition="Reset — recalibrate operational tempo, restore disciplined baselines, and re-anchor execution to institutional intent.">Reset</div>
+            <div class="prism-box" tabindex="0" data-definition="Research — gather verified intelligence and evidence-led insight to decode complexity before commitment.">Research</div>
+            <div class="prism-box" tabindex="0" data-definition="Restructure — realign institutions for accountability, continuity, and measurable national outcomes.">Restructure</div>
+            <div class="prism-box" tabindex="0" data-definition="Resuscitate — revive dormant opportunity corridors and reactivate strategic assets with disciplined stewardship.">Resuscitate</div>
+            <div class="prism-box" tabindex="0" data-definition="Revitalize — inject momentum across leadership layers and rebuild capability where erosion threatens sovereignty.">Revitalize</div>
+            <div class="prism-box" tabindex="0" data-definition="Re-engineer — redesign systems for resilience, speed, and long-cycle sovereignty under transparent governance.">Re-engineer</div>
+            <div class="prism-box" tabindex="0" data-definition="Retain — secure gains, protect institutional memory, and sustain outcomes beyond the tactical moment.">Retain</div>
+          </aside>
+
+          <article class="map-wrap">
+            <h2 class="map-title">Eagle Map — Grassroots Layer + AZK High-Velocity Pulse Corridor</h2>
+            <div class="grassroots-ribbon" id="grassrootsRibbon">
+              <strong>Grassroots Layer LIVE:</strong> <span id="wardStat">8,806</span> Wards (<strong>1:14</strong> coordinator-to-canvasser ratio) across
+              <span id="puStat">176,000</span> Polling Units · Sovereign Gold density heatmap overlay active.
+            </div>
+            <section class="definition-panel" aria-live="polite">
+              <h3 class="definition-title">8R Definition Stream (Slow-Motion)</h3>
+              <p class="definition-text typing-slow" id="prismDefinition">Hover a determinant to load the typewriter-pop definition stream.</p>
+            </section>
+            <svg id="mapSvg" viewBox="0 0 760 680" role="img" aria-label="Nigeria map with grassroots heat and corridor"></svg>
+          </article>
+        </section>
+      </div>
+
+      <aside class="sidebar sidebar-right">
+        <h2>Governance</h2>
+        <p>Legal anchors, SCUML registration, and authorial seal are housed in the sliding Governance vault (edge control).</p>
+        <p><strong>Open the panel</strong> to audit copyright, SCUML RN, author line, and communication nodes.</p>
+      </aside>
+    </div>
+  </main>
+
+  <div class="modal-backdrop" id="gapBridgeModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card">
+      <h3 id="modalTitle">Live Data — Opportunity Node</h3>
+      <p class="sub" id="modalStateLabel" style="margin:0 0 8px;font-size:0.72rem;color:#9fc4d7;">State</p>
+      <p style="margin:0 0 12px;color:#ffda7f;font-weight:600;">Eagle: Go and work in this area of Opportunity.</p>
+      <p style="margin:0 0 6px;font-size:0.7rem;color:#f0cd67;letter-spacing:0.06em;text-transform:uppercase;">Social Information Gap</p>
+      <p style="margin:0 0 8px;font-size:0.68rem;color:#bff4ff;">Rural <span style="color:#9fc4d7">vs.</span> Urban (indexed 0–100, D3 lattice estimate)</p>
+      <div style="background:rgba(4,16,40,0.65);border:1px solid rgba(102,245,255,0.28);border-radius:10px;padding:10px;min-height:220px;"><div id="liveChartGap"></div></div>
+      <p style="font-size:0.56rem;color:#7a9aad;margin-top:10px;line-height:1.4;">Estimates are state-seeded for command visualization (8,806 wards at 1:14 across 176,000 PUs)—not a securities offering.</p>
+      <button type="button" class="modal-close" id="modalClose">Acknowledge / Close</button>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="corridorModal" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <h3>AZK Corridor — High-Velocity Pulse</h3>
+      <p style="font-size:0.78rem;line-height:1.45;color:#dff8ff;">
+        The <strong>Abuja–Zaria–Kano (AZK)</strong> spine runs as a <strong>high-velocity pulse corridor</strong>: coal, industrial minerals, and grid-adjacent logistics converge with sovereign data stacks, model governance, and the <strong>GCSLC API Revenue Path</strong> advisory bridge. <strong>Coal-to-AI feedstock</strong> maps physical basins and process heat to datasets, SCUML-aware reporting, and secure nodes—moving along one disciplined vector.
+      </p>
+      <p style="font-size:0.72rem;color:#9fc4d7;line-height:1.4;">
+        GCSLC treats the corridor as a <em>dual-use opportunity bridge</em>: physical energy transition + digital uplift—anchored by institutional governance (SCUML-aware routing) and grassroots ward/Pu sensing.
+      </p>
+      <button type="button" class="modal-close" id="corridorClose">Close Insight</button>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-typewriter" id="footerTw" title="Contact audit — institutional handshake">
+      <span class="g">HANDSHAKE //</span>
+      Phone <strong>+234 703 913 9439</strong> | <strong>+234 809 911 1515</strong>
+      · Info@galadimanruwacenter.org | gcslc.research@gmail.com
+      · Sovereign V7 Zenith: 8,806 Wards (1:14) · 176,000 PUs · Author: Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau · GCSLC PROPRIETARY
+    </div>
+  </footer>
+
+  <script>
+(function () {
+  const WARDS = 8806;
+  const PUS = 176000;
+  const CANV_PER_WARD = 14;
+
+  const cities = [
+    { name: "Abuja", zone: "Africa/Lagos" },
+    { name: "Dubai", zone: "Asia/Dubai" },
+    { name: "Riyadh", zone: "Asia/Riyadh" },
+    { name: "London", zone: "Europe/London" },
+    { name: "NY", zone: "America/New_York" },
+    { name: "Beijing", zone: "Asia/Shanghai" }
+  ];
+  document.getElementById("wardStat").textContent = WARDS.toLocaleString();
+  document.getElementById("puStat").textContent = PUS.toLocaleString();
+
+  const row = document.getElementById("clockRow");
+  cities.forEach((c) => {
+    const el = document.createElement("article");
+    el.className = "clock-prism-frame";
+    el.innerHTML = '<div class="clock" data-zone="' + c.zone + '"><span class="hand hour"></span><span class="hand minute"></span><span class="hand second"></span></div><div class="city">' + c.name + "</div>";
+    row.appendChild(el);
+  });
+  function tick() {
+    document.querySelectorAll(".clock").forEach((clock) => {
+      const d = new Date(new Date().toLocaleString("en-US", { timeZone: clock.dataset.zone }));
+      const s = d.getSeconds(), m = d.getMinutes(), h = d.getHours();
+      clock.querySelector(".hour").style.transform = "translateX(-50%) rotate(" + ((h % 12) * 30 + m * 0.5) + "deg)";
+      clock.querySelector(".minute").style.transform = "translateX(-50%) rotate(" + (m * 6 + s * 0.1) + "deg)";
+      clock.querySelector(".second").style.transform = "translateX(-50%) rotate(" + (s * 6) + "deg)";
+    });
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  const prismBoxes = [].slice.call(document.querySelectorAll(".prism-box"));
+  const definitionEl = document.getElementById("prismDefinition");
+  function typeDefinitionSlow(text) {
+    definitionEl.classList.remove("typing-slow");
+    definitionEl.textContent = "";
+    void definitionEl.offsetWidth;
+    definitionEl.textContent = text;
+    void definitionEl.offsetWidth;
+    definitionEl.classList.add("typing-slow");
+  }
+  prismBoxes.forEach((box) => {
+    function activate() {
+      prismBoxes.forEach((b) => b.classList.remove("active"));
+      box.classList.add("active");
+      typeDefinitionSlow(box.dataset.definition || "");
+    }
+    box.addEventListener("mouseenter", activate);
+    box.addEventListener("focus", activate);
+    box.addEventListener("touchstart", activate, { passive: true });
+  });
+
+  function hashStr(s) {
+    let h = 0;
+    for (let i = 0; i < s.length; i++) h = ((h << 5) - h) + s.charCodeAt(i) | 0;
+    return Math.abs(h);
+  }
+
+  function renderSocialGapChart(stateName) {
+    const root = document.getElementById("liveChartGap");
+    if (!window.d3 || !root) return;
+    const d3 = window.d3;
+    d3.select(root).selectAll("*").remove();
+    const seed = hashStr(stateName);
+    const rng = mulberry32(seed ^ 0x9e3779b9);
+    const rural = 44 + Math.floor(rng() * 46);
+    const urban = 26 + Math.floor(rng() * 48);
+    const narrow = (root.clientWidth || window.innerWidth || 400) < 380;
+    const data = [
+      { key: narrow ? "Rural" : "Rural — Social Information Gap", value: rural, fill: "url(#socGradRural)" },
+      { key: narrow ? "Urban" : "Urban — Social Information Gap", value: urban, fill: "url(#socGradUrban)" }
+    ];
+    const elW = Math.max(260, root.clientWidth || Math.min(480, window.innerWidth - 48));
+    const margin = { top: 8, right: narrow ? 10 : 16, bottom: 28, left: narrow ? 72 : 118 };
+    const barH = narrow ? 26 : 22;
+    const gapY = narrow ? 16 : 14;
+    const rowStep = barH + gapY;
+    const height = margin.top + data.length * rowStep + margin.bottom;
+    const innerW = elW - margin.left - margin.right;
+    const x = d3.scaleLinear().domain([0, 100]).range([0, innerW]);
+    const svg = d3.select(root).append("svg").attr("width", elW).attr("height", height).attr("viewBox", "0 0 " + elW + " " + height).attr("preserveAspectRatio", "xMinYMin meet");
+    const defs = svg.append("defs");
+    defs.append("linearGradient").attr("id", "socGradRural").attr("x1", "0%").attr("x2", "100%")
+      .selectAll("stop").data([{ o: "0%", c: "#1a3d28" }, { o: "100%", c: "#5eead4" }]).enter().append("stop").attr("offset", (d) => d.o).attr("stop-color", (d) => d.c);
+    defs.append("linearGradient").attr("id", "socGradUrban").attr("x1", "0%").attr("x2", "100%")
+      .selectAll("stop").data([{ o: "0%", c: "#1e2a4a" }, { o: "100%", c: "#7ecbff" }]).enter().append("stop").attr("offset", (d) => d.o).attr("stop-color", (d) => d.c);
+    const g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    const xAxisG = g.append("g").attr("transform", "translate(0," + (data.length * rowStep) + ")")
+      .call(d3.axisBottom(x).ticks(5).tickFormat((d) => d + "%").tickSizeOuter(0));
+    xAxisG.selectAll("text").attr("fill", "#9fc4d7").attr("font-size", narrow ? "8px" : "9px");
+    xAxisG.selectAll(".domain, .tick line").attr("stroke", "rgba(102,245,255,0.25)");
+    data.forEach((d, i) => {
+      const row = g.append("g").attr("class", "row").attr("transform", "translate(0," + (i * rowStep) + ")");
+      row.append("rect").attr("x", -margin.left + 4).attr("y", 0).attr("width", margin.left - 8).attr("height", barH).attr("fill", "rgba(4,16,40,0.5)").attr("rx", 4);
+      row.append("text").attr("x", -margin.left + 10).attr("y", barH / 2 + 4).attr("fill", "#bff4ff").attr("font-size", narrow ? "9px" : "10px").text(d.key);
+      row.append("rect").attr("x", 0).attr("y", 2).attr("width", innerW).attr("height", barH - 4).attr("fill", "rgba(0,40,64,0.45)").attr("rx", 3);
+      row.append("rect").attr("x", 0).attr("y", 2).attr("height", barH - 4).attr("width", x(d.value)).attr("fill", d.fill).attr("rx", 3).attr("opacity", 0.95);
+      row.append("text").attr("x", x(d.value) + 6).attr("y", barH / 2 + 4).attr("fill", "#eaf8ff").attr("font-size", narrow ? "10px" : "11px").attr("font-weight", "700").text(d.value);
+    });
+  }
+
+  const gapModal = document.getElementById("gapBridgeModal");
+  const corridorModalEl = document.getElementById("corridorModal");
+  let lastGapState = "";
+  let gapResizeTimer;
+  window.addEventListener("resize", () => {
+    clearTimeout(gapResizeTimer);
+    gapResizeTimer = setTimeout(() => {
+      if (gapModal.classList.contains("open") && lastGapState) renderSocialGapChart(lastGapState);
+    }, 160);
+  });
+  document.getElementById("modalClose").addEventListener("click", () => gapModal.classList.remove("open"));
+  document.getElementById("corridorClose").addEventListener("click", () => corridorModalEl.classList.remove("open"));
+  gapModal.addEventListener("click", (e) => { if (e.target === gapModal) gapModal.classList.remove("open"); });
+  corridorModalEl.addEventListener("click", (e) => { if (e.target === corridorModalEl) corridorModalEl.classList.remove("open"); });
+
+  const governanceSlide = document.getElementById("governanceSlide");
+  const govToggle = document.getElementById("govToggle");
+  const govBackdrop = document.getElementById("govBackdrop");
+  function setGovernanceOpen(open) {
+    governanceSlide.classList.toggle("open", open);
+    govBackdrop.classList.toggle("show", open);
+    govToggle.setAttribute("aria-expanded", open ? "true" : "false");
+    govBackdrop.setAttribute("aria-hidden", open ? "false" : "true");
+  }
+  govToggle.addEventListener("click", () => setGovernanceOpen(!governanceSlide.classList.contains("open")));
+  govBackdrop.addEventListener("click", () => setGovernanceOpen(false));
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && governanceSlide.classList.contains("open")) setGovernanceOpen(false);
+  });
+
+  function openGapBridge(stateName) {
+    lastGapState = stateName;
+    document.getElementById("modalStateLabel").textContent = "Hot Node: " + stateName;
+    gapModal.classList.add("open");
+    requestAnimationFrame(() => renderSocialGapChart(stateName));
+  }
+
+  function ringPath(ring, project) {
+    if (!ring || !ring.length) return "";
+    let d = "";
+    ring.forEach((coord, i) => {
+      const xy = project(coord);
+      d += (i === 0 ? "M" + xy[0] + "," + xy[1] : "L" + xy[0] + "," + xy[1]);
+    });
+    return d + "Z";
+  }
+  function geomPath(geometry, project) {
+    if (!geometry) return "";
+    if (geometry.type === "Polygon") return geometry.coordinates.map((r) => ringPath(r, project)).join(" ");
+    if (geometry.type === "MultiPolygon") return geometry.coordinates.map((poly) => poly.map((r) => ringPath(r, project)).join(" ")).join(" ");
+    return "";
+  }
+
+  function bboxOfFeature(feature) {
+    const g = feature.geometry;
+    const pts = [];
+    function pushCoords(coords) {
+      if (typeof coords[0] === "number") pts.push(coords);
+      else coords.forEach(pushCoords);
+    }
+    if (!g) return { minLon: 0, maxLon: 1, minLat: 0, maxLat: 1 };
+    if (g.type === "Polygon") g.coordinates.forEach((ring) => ring.forEach((c) => pts.push(c)));
+    else if (g.type === "MultiPolygon") g.coordinates.forEach((poly) => poly.forEach((ring) => ring.forEach((c) => pts.push(c))));
+    const lons = pts.map((p) => p[0]);
+    const lats = pts.map((p) => p[1]);
+    return { minLon: Math.min.apply(null, lons), maxLon: Math.max.apply(null, lons), minLat: Math.min.apply(null, lats), maxLat: Math.max.apply(null, lats) };
+  }
+
+  function mulberry32(a) {
+    return function () {
+      let t = (a += 0x6D2B79F5);
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function buildHeatmap(project, features, mapSvg, svgNS) {
+    let totalArea = 0;
+    const weights = features.map((f) => {
+      const b = bboxOfFeature(f);
+      const a = Math.max(1e-8, (b.maxLon - b.minLon) * (b.maxLat - b.minLat));
+      totalArea += a;
+      return { feature: f, bbox: b, area: a };
+    });
+    const gHeat = document.createElementNS(svgNS, "g");
+    gHeat.setAttribute("id", "grassrootsHeat");
+    weights.forEach((w) => {
+      const share = w.area / totalArea;
+      const wards = Math.max(1, Math.round(WARDS * share));
+      const rng = mulberry32(hashStr(w.feature.properties.shapeName || "x"));
+      const nDots = Math.min(48, Math.max(4, Math.round(wards / 40)));
+      for (let i = 0; i < nDots; i++) {
+        const lon = w.bbox.minLon + rng() * (w.bbox.maxLon - w.bbox.minLon);
+        const lat = w.bbox.minLat + rng() * (w.bbox.maxLat - w.bbox.minLat);
+        const xy = project([lon, lat]);
+        const c = document.createElementNS(svgNS, "circle");
+        c.setAttribute("class", "heatmap-dot");
+        c.setAttribute("cx", xy[0]);
+        c.setAttribute("cy", xy[1]);
+        c.setAttribute("r", (3 + rng() * 10).toFixed(2));
+        c.setAttribute("fill", "rgba(212, 175, 55, " + (0.08 + rng() * 0.22).toFixed(3) + ")");
+        gHeat.appendChild(c);
+      }
+    });
+    return gHeat;
+  }
+
+  const mapSvg = document.getElementById("mapSvg");
+  const svgNS = "http://www.w3.org/2000/svg";
+  const pad = 24, svgW = 760, svgH = 680;
+
+  fetch("/nigeria-states.geojson")
+    .then((r) => r.json())
+    .then((geo) => {
+      const defs = document.createElementNS(svgNS, "defs");
+      defs.innerHTML = [
+        '<linearGradient id="corridorEnergyGrad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="' + svgW + '" y2="' + svgH + '">',
+        '<stop offset="0%" stop-color="#00e5ff"/>',
+        '<stop offset="45%" stop-color="#66f5ff"/>',
+        '<stop offset="100%" stop-color="#d4af37"/>',
+        "</linearGradient>",
+        '<filter id="corridorGlowStrong" x="-60%" y="-60%" width="220%" height="220%">',
+        '<feGaussianBlur in="SourceGraphic" stdDeviation="3.2" result="blur"/>',
+        '<feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1.15 0" result="glow"/>',
+        "<feMerge><feMergeNode in=\"glow\"/><feMergeNode in=\"SourceGraphic\"/></feMerge>",
+        "</filter>",
+        '<filter id="corridorGlowSoft" x="-80%" y="-80%" width="260%" height="260%">',
+        '<feGaussianBlur in="SourceGraphic" stdDeviation="9" result="b"/>',
+        "<feMerge><feMergeNode in=\"b\"/><feMergeNode in=\"SourceGraphic\"/></feMerge>",
+        "</filter>"
+      ].join("");
+      mapSvg.appendChild(defs);
+
+      const coords = [];
+      geo.features.forEach((f) => {
+        const g = f.geometry;
+        if (!g) return;
+        if (g.type === "Polygon") g.coordinates.forEach((ring) => ring.forEach((c) => coords.push(c)));
+        else if (g.type === "MultiPolygon") g.coordinates.forEach((poly) => poly.forEach((ring) => ring.forEach((c) => coords.push(c))));
+      });
+      const lons = coords.map((c) => c[0]), lats = coords.map((c) => c[1]);
+      const minLon = Math.min.apply(null, lons), maxLon = Math.max.apply(null, lons);
+      const minLat = Math.min.apply(null, lats), maxLat = Math.max.apply(null, lats);
+      const lonSpan = maxLon - minLon, latSpan = maxLat - minLat;
+      const scale = Math.min((svgW - pad * 2) / lonSpan, (svgH - pad * 2) / latSpan);
+      const xOff = (svgW - lonSpan * scale) / 2, yOff = (svgH - latSpan * scale) / 2;
+      const project = function (ll) {
+        const x = xOff + (ll[0] - minLon) * scale;
+        const y = svgH - (yOff + (ll[1] - minLat) * scale);
+        return [Number(x.toFixed(2)), Number(y.toFixed(2))];
+      };
+
+      geo.features.forEach((feature) => {
+        const p = document.createElementNS(svgNS, "path");
+        p.setAttribute("class", "state");
+        p.setAttribute("tabindex", "0");
+        const stateName = feature.properties.shapeName || "State";
+        p.setAttribute("d", geomPath(feature.geometry, project));
+        p.addEventListener("click", () => openGapBridge(stateName));
+        p.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openGapBridge(stateName); } });
+        mapSvg.appendChild(p);
+      });
+
+      const heat = buildHeatmap(project, geo.features, mapSvg, svgNS);
+      mapSvg.appendChild(heat);
+
+      const corridorLL = [[7.4951, 9.0765], [7.7090, 11.0747], [8.5247, 11.9914]];
+      let dPath = "";
+      corridorLL.forEach((ll, i) => {
+        const xy = project(ll);
+        dPath += (i === 0 ? "M" : "L") + xy[0] + "," + xy[1] + " ";
+      });
+      const glowBase = document.createElementNS(svgNS, "path");
+      glowBase.setAttribute("class", "corridor-glow-base");
+      glowBase.setAttribute("d", dPath.trim());
+      mapSvg.appendChild(glowBase);
+      const hit = document.createElementNS(svgNS, "path");
+      hit.setAttribute("class", "corridor-hit");
+      hit.setAttribute("d", dPath.trim());
+      hit.addEventListener("click", () => corridorModalEl.classList.add("open"));
+      mapSvg.appendChild(hit);
+      const cor = document.createElementNS(svgNS, "path");
+      cor.setAttribute("class", "corridor-vector");
+      cor.setAttribute("d", dPath.trim());
+      cor.addEventListener("click", () => corridorModalEl.classList.add("open"));
+      mapSvg.appendChild(cor);
+
+      window.__GCSLC_V7_GRASSROOTS_LIVE__ = true;
+      window.dispatchEvent(new CustomEvent("gcslc:v7grassroots"));
+    })
+    .catch(() => {
+      const t = document.createElementNS(svgNS, "text");
+      t.setAttribute("x", "24");
+      t.setAttribute("y", "48");
+      t.setAttribute("fill", "#ffd670");
+      t.setAttribute("font-size", "14");
+      t.textContent = "Map data not loaded.";
+      mapSvg.appendChild(t);
+    });
+})();
+  </script>
+</body>
+</html>
