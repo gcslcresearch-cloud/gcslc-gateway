@@ -1,16 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+(function () {
+  try {
+    var q = location.search || "";
+    if (/(?:^|[?&])(?:embed|wp)=1(?:&|$)/.test(q) || /^#embed\b/.test(location.hash || "")) {
+      document.documentElement.classList.add("gcslc-embed");
+    }
+  } catch (e) { /* no-op */ }
+})();
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#001a33" />
-  <title>GCSLC — NAFC No Number Simulation</title>
+  <meta name="color-scheme" content="dark" />
+  <title>GCSLC — Sovereign Cloud Sync v20</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
   <style>
     :root {
+      --gcslc-brand-bg: #001a33;
+      --gcslc-brand-font: "Goldman", system-ui, -apple-system, "Segoe UI", sans-serif;
       /* Institutional Deep Blue — full canvas */
       --bg0: #001a33;
       --bg1: #001a33;
@@ -39,6 +52,19 @@
     html {
       background-color: #001a33;
       font-family: "Goldman", system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    html.gcslc-embed {
+      --footer-h: 8px;
+      --intel-h: 0px;
+    }
+    html.gcslc-embed .advisory-fab,
+    html.gcslc-embed .gov-toggle,
+    html.gcslc-embed .intel-ticker,
+    html.gcslc-embed .footer.footer-vault {
+      display: none !important;
+    }
+    html.gcslc-embed .app {
+      padding-bottom: max(12px, env(safe-area-inset-bottom));
     }
     body {
       margin: 0;
@@ -531,6 +557,9 @@
       cursor: wait;
       filter: none;
     }
+    .termii-block .btn-nafc-handshake {
+      margin-top: 8px;
+    }
     .termii-nafc-note {
       margin: 6px 0 0;
       font-size: 0.52rem;
@@ -821,11 +850,6 @@
     .handshake-terminal-line .tag-send { color: #f0d78c; font-weight: 800; }
     .handshake-terminal-line .tag-data { color: #9ee6ff; font-weight: 800; }
     .handshake-terminal-line .tag-confirm { color: #7fffba; font-weight: 800; }
-    .handshake-terminal-placeholder {
-      color: rgba(159, 196, 215, 0.55);
-      border-left-color: rgba(102, 245, 255, 0.12) !important;
-      font-weight: 600;
-    }
     .map-stack-v15 .map-wrap {
       min-height: min(74vh, 900px);
     }
@@ -1671,33 +1695,29 @@
         <div class="advisory-bridge">
           <div class="api-revenue-path">
             <span class="api-path-label">GCSLC API Revenue Path</span>
-            <a class="btn-advisory" href="https://galadimanruwacenter.org" target="_blank" rel="noopener noreferrer">Advisory Hub — Cloud Node (mirror route)</a>
+            <a class="btn-advisory" href="https://galadimanruwacenter.org" target="_blank" rel="noopener noreferrer">Advisory Hub</a>
           </div>
         </div>
 
-        <!-- NAFC no-number sim: institutional node IDs only; NAFC_V18_SAMPLE_SMS retained for optional live Termii path -->
-        <section class="termii-panel-v15" aria-label="Communication lane — institutional backbone">
+        <section class="termii-panel-v15" aria-label="Communication lane">
           <div class="termii-block">
-            <div class="termii-label">GCSLC Communication Lane — Institutional Node Simulation</div>
-            <p class="termii-nafc-note">Inbound / Outbound status · No phone numbers — route by node ID (simulated)</p>
+            <div class="termii-label">Communication Lane</div>
             <div class="termii-lane" id="termiiLane">
-              <div class="termii-track termii-inbound" title="Inbound partnership pulses (Termii)">
+              <div class="termii-track termii-inbound" title="Inbound">
                 <span class="track-tag">Inbound</span>
                 <span class="termii-pulse" aria-hidden="true"></span>
               </div>
-              <div class="termii-track termii-outbound" id="termiiOutboundTrack" title="Outbound status — strategic handshake target">
+              <div class="termii-track termii-outbound" id="termiiOutboundTrack" title="Outbound">
                 <span class="track-tag">Outbound</span>
                 <span class="termii-pulse" aria-hidden="true"></span>
               </div>
             </div>
             <button type="button" class="btn-strategic-handshake" id="strategicHandshakeBtn">INITIATE STRATEGIC HANDSHAKE</button>
-            <button type="button" class="btn-nafc-handshake" id="nafcHandshakeBtn">INITIATE NAFC TEST HANDSHAKE</button>
-            <div class="handshake-terminal" aria-label="Backbone terminal log">
-              <p class="handshake-terminal-h">Backbone status — terminal</p>
+            <button type="button" class="btn-nafc-handshake" id="nafcHandshakeBtn">INITIATE NAFC HANDSHAKE</button>
+            <div class="handshake-terminal" aria-label="Lane log">
+              <p class="handshake-terminal-h">Lane log</p>
               <div class="handshake-terminal-scroll" id="handshakeTerminalScroll">
-                <div class="handshake-terminal-strip is-idle" id="handshakeTerminalStrip">
-                  <p class="handshake-terminal-line handshake-terminal-placeholder">— Awaiting institutional command —</p>
-                </div>
+                <div class="handshake-terminal-strip is-idle" id="handshakeTerminalStrip"></div>
               </div>
             </div>
             <p class="termii-nafc-note" id="termiiStatusLine" aria-live="polite"></p>
@@ -1709,7 +1729,7 @@
         <h2>Governance</h2>
         <div class="sidebar-chart-min" aria-label="Compact non-formal velocity">
           <h3 class="sidebar-chart-h">Non-Formal Velocity</h3>
-          <p class="sidebar-chart-sub" id="nfVelocityBridgeCopy">Livestock · Artisans · Micro-Services — scaled by the SIG bridge (36 + FCT).</p>
+          <p class="sidebar-chart-sub" id="nfVelocityBridgeCopy">Livestock · Artisans · Micro-Services · 36 + FCT</p>
           <div id="nfVelocityChart"></div>
         </div>
       </aside>
@@ -1720,7 +1740,7 @@
     <div class="modal-card modal-kinetic-burst">
       <h3 id="modalTitle">Data Burst — Opportunity Node</h3>
       <p class="sub" id="modalStateLabel" style="margin:0 0 8px;font-size:0.72rem;color:#9fc4d7;">State</p>
-      <p style="margin:0 0 12px;color:#ffda7f;font-weight:600;">Eagle: Go and work in this area of Opportunity.</p>
+      <p style="margin:0 0 12px;color:#ffda7f;font-weight:600;">Opportunity node</p>
       <div class="burst-grid">
         <div class="burst-metric">
           <p class="burst-label">Real-Time Information Gap</p>
@@ -1742,11 +1762,9 @@
           <span id="burstAgentLines">—</span>
         </div>
       </div>
-      <p style="margin:0 0 6px;font-size:0.7rem;color:#f0cd67;letter-spacing:0.06em;text-transform:uppercase;">Social Information Gap — 5-Year Trajectory</p>
-      <p style="margin:0 0 8px;font-size:0.65rem;color:#bff4ff;line-height:1.45;">NCC-aligned rural telephone penetration vs urban connectivity (2020–2025). Node offset illustrates how <strong>8,806 ward agents</strong> compress the rural signal deficit toward the AZK corridor.</p>
+      <p style="margin:0 0 8px;font-size:0.65rem;color:#bff4ff;line-height:1.45;">Urban vs rural connectivity — 5-year trajectory.</p>
       <div style="background:rgba(4,16,40,0.65);border:1px solid rgba(102,245,255,0.28);border-radius:10px;padding:10px;min-height:220px;"><div id="liveChartGap"></div></div>
-      <p style="font-size:0.56rem;color:#7a9aad;margin-top:10px;line-height:1.4;">Visualization is command intelligence (not NCC submission). Touch/drag chart for executive review. Grassroots lattice: 8,806 wards · 123,284 field agents · 176,000 PUs.</p>
-      <button type="button" class="modal-close" id="modalClose">Acknowledge / Close</button>
+      <button type="button" class="modal-close" id="modalClose">Close</button>
     </div>
   </div>
 
@@ -1770,20 +1788,17 @@
         </div>
       </div>
       <p style="margin:0;font-size:0.65rem;color:#bff4ff;line-height:1.45;" id="nfModalBridge"></p>
-      <button type="button" class="modal-close" id="nfModalClose">Close Insight</button>
+      <button type="button" class="modal-close" id="nfModalClose">Close</button>
     </div>
   </div>
 
   <div class="modal-backdrop" id="corridorModal" role="dialog" aria-modal="true">
     <div class="modal-card">
-      <h3>AZK — Cyan Inference Spine</h3>
+      <h3>AZK Corridor</h3>
       <p style="font-size:0.78rem;line-height:1.45;color:#dff8ff;">
-        The <strong>Abuja–Zaria–Kano (AZK)</strong> spine runs as a <strong>glowing cyan inference spine</strong>: coal, industrial minerals, and grid-adjacent logistics converge with sovereign data stacks, model governance, and the <strong>GCSLC API Revenue Path</strong> advisory bridge. <strong>Coal-to-AI feedstock</strong> maps physical basins and process heat to datasets, SCUML-aware reporting, and secure nodes—moving along one disciplined vector.
+        <strong>Abuja–Zaria–Kano (AZK)</strong> — sovereign corridor spine; logistics, energy transition, and institutional routing.
       </p>
-      <p style="font-size:0.72rem;color:#9fc4d7;line-height:1.4;">
-        GCSLC treats the corridor as a <em>dual-use opportunity bridge</em>: physical energy transition + digital uplift—anchored by institutional governance (SCUML-aware routing) and grassroots ward/Pu sensing.
-      </p>
-      <button type="button" class="modal-close" id="corridorClose">Close Insight</button>
+      <button type="button" class="modal-close" id="corridorClose">Close</button>
     </div>
   </div>
 
@@ -1799,11 +1814,11 @@
   </div>
 
   <footer class="footer footer-vault">
-    <div class="footer-typewriter" id="footerTw" title="Contact audit — institutional handshake">
+    <div class="footer-typewriter" id="footerTw" title="GCSLC">
       <span class="g">HANDSHAKE //</span>
       Phone <span class="footer-node-metallic"><strong>+234 703 913 9439</strong> | <strong>+234 809 911 1515</strong></span>
       · Email <span class="footer-node-metallic">Info@galadimanruwacenter.org</span> · <span class="footer-node-metallic">gcslc.research@gmail.com</span>
-      · <strong>Copyright LW15954</strong> · <strong>SCUML RN: 151653884</strong> · NAFC No Number Simulation · 8,806 Wards : 123,284 Field Agents · 176,000 PUs · Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau · <strong>GCSLC PROPRIETARY</strong>
+      · <strong>Copyright LW15954</strong> · <strong>SCUML RN: 151653884</strong> · Sovereign Cloud Sync v20 · 8,806 Wards : 123,284 Field Agents · 176,000 PUs · Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau · <strong>GCSLC PROPRIETARY</strong>
     </div>
   </footer>
 
@@ -1829,6 +1844,36 @@
   document.getElementById("puStat").textContent = PUS.toLocaleString();
   const fas = document.getElementById("fieldAgentsStat");
   if (fas) fas.textContent = FIELD_AGENTS.toLocaleString();
+
+  window.GCSLC_CLOUD_SYNC_V20 = window.GCSLC_CLOUD_SYNC_V20 || {
+    wardFeedUrl: "",
+    geoJsonUrl: "",
+    senderId: "GALADIMA_R"
+  };
+  const CLOUD = window.GCSLC_CLOUD_SYNC_V20;
+
+  function applyWardLatticeFromCloud(j) {
+    if (!j || typeof j !== "object") return;
+    const w = j.wards != null ? j.wards : j.ward_count != null ? j.ward_count : j.wardCount;
+    const fa = j.fieldAgents != null ? j.fieldAgents : j.field_agents;
+    const pu = j.pus != null ? j.pus : j.pu_count != null ? j.pu_count : j.puCount;
+    const ws = document.getElementById("wardStat");
+    const fs = document.getElementById("fieldAgentsStat");
+    const ps = document.getElementById("puStat");
+    if (ws != null && w != null && Number.isFinite(Number(w))) ws.textContent = Number(w).toLocaleString();
+    if (fs != null && fa != null && Number.isFinite(Number(fa))) fs.textContent = Number(fa).toLocaleString();
+    if (ps != null && pu != null && Number.isFinite(Number(pu))) ps.textContent = Number(pu).toLocaleString();
+  }
+
+  function pullWardFeedFromGcp() {
+    const url = CLOUD.wardFeedUrl ? String(CLOUD.wardFeedUrl).trim() : "";
+    if (!url) return;
+    fetch(url, { cache: "no-store", credentials: "omit", mode: "cors" })
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((j) => { applyWardLatticeFromCloud(j); })
+      .catch(function () { /* optional cloud feed */ });
+  }
+  pullWardFeedFromGcp();
 
   const FORENSIC_FALLBACK = [
     { tier: "SN", text: "Strategic Normal — image forensic hash chain idle · AZK spine nominal" },
@@ -2342,7 +2387,7 @@
     g.append("g").attr("transform", "translate(0," + innerH + ")").call(d3.axisBottom(x).tickFormat(d3.format("d"))).selectAll("text").attr("fill", "#9fc4d7").attr("font-size", "9px");
     g.append("g").call(d3.axisLeft(y).ticks(5).tickFormat((d) => d + "%")).selectAll("text").attr("fill", "#9fc4d7").attr("font-size", "8px");
     g.selectAll(".domain, .tick line").attr("stroke", "rgba(102,245,255,0.22)");
-    g.append("text").attr("x", 0).attr("y", -4).attr("fill", "#bff4ff").attr("font-size", "9px").text("Urban connectivity vs Rural SIG (NCC-aligned baseline + state offset)");
+    g.append("text").attr("x", 0).attr("y", -4).attr("fill", "#bff4ff").attr("font-size", "9px").text("Urban connectivity vs rural SIG");
     const leg = g.append("g").attr("transform", "translate(" + Math.max(0, innerW - 168) + ", -2)");
     leg.append("line").attr("x1", 0).attr("x2", 16).attr("y1", 0).attr("y2", 0).attr("stroke", "#7ecbff").attr("stroke-width", 2);
     leg.append("text").attr("x", 20).attr("y", 3).attr("fill", "#bff4ff").attr("font-size", "8px").text("Urban");
@@ -2395,13 +2440,14 @@
     nonFormalModal.addEventListener("click", (e) => { if (e.target === nonFormalModal) nonFormalModal.classList.remove("open"); });
   }
 
-  window.GCSLC_NAFC_TERMII = window.GCSLC_NAFC_TERMII || {
+  window.GCSLC_NAFC_TERMII = Object.assign({
     live: false,
     endpoint: "https://api.ng.termii.com/api/sms/send",
     apiKey: "",
-    from: "NAFC",
+    from: CLOUD.senderId || "GALADIMA_R",
     to: ""
-  };
+  }, window.GCSLC_NAFC_TERMII || {});
+  if (!window.GCSLC_NAFC_TERMII.from) window.GCSLC_NAFC_TERMII.from = CLOUD.senderId || "GALADIMA_R";
 
   const NAFC_V18_SAMPLE_SMS = "GCSLC: Your nodal sync for the AZK Energy Corridor & 15/15 model is verified. We are resuscitating 639M MT of reserves to power our mandate. Performance is our Incumbency.";
   window.NAFC_V18_SAMPLE_SMS = NAFC_V18_SAMPLE_SMS;
@@ -2468,7 +2514,7 @@
       handshakeTerminalStrip.classList.remove("is-idle");
     }
     if (termiiStatusLineEl) {
-      termiiStatusLineEl.textContent = "Strategic handshake (sim) · institutional nodes · GALADIMA_R → Ward Node 8806 · " + new Date().toLocaleTimeString();
+      termiiStatusLineEl.textContent = "Outbound synchronized · GALADIMA_R → Ward 8806 · " + new Date().toLocaleTimeString();
     }
     window.setTimeout(() => {
       strategicHandshakeBusy = false;
@@ -2512,14 +2558,14 @@
     const cfg = window.GCSLC_NAFC_TERMII || {};
     if (!cfg.live || !cfg.apiKey || !cfg.to) {
       if (termiiStatusLineEl) {
-        termiiStatusLineEl.textContent = "NAFC INTERNAL HANDSHAKE V18 (sim) — Sample transactional message dispatched. Outbound lane armed. " + new Date().toLocaleTimeString();
+        termiiStatusLineEl.textContent = "Outbound ready · sender GALADIMA_R · " + new Date().toLocaleTimeString();
       }
       return;
     }
     const payload = {
       api_key: String(cfg.apiKey),
       to: String(cfg.to),
-      from: String(cfg.from || "NAFC"),
+      from: String(cfg.from || CLOUD.senderId || "GALADIMA_R"),
       sms: NAFC_V18_SAMPLE_SMS,
       type: "plain",
       channel: "generic"
@@ -2537,11 +2583,11 @@
         summary = j.message || j.sms || j.code || raw;
       } catch (e) { /* keep raw */ }
       if (termiiStatusLineEl) {
-        termiiStatusLineEl.textContent = (res.ok ? "NAFC V18 → Termii live: OK. " : "NAFC V18 → Termii: HTTP " + res.status + ". ") + summary + " · " + new Date().toLocaleTimeString();
+        termiiStatusLineEl.textContent = (res.ok ? "Channel OK · GALADIMA_R · " : "Channel HTTP " + res.status + " · ") + String(summary).slice(0, 120) + " · " + new Date().toLocaleTimeString();
       }
     } catch (err) {
       if (termiiStatusLineEl) {
-        termiiStatusLineEl.textContent = "NAFC V18 → Termii: route blocked (" + (err && err.message ? err.message : "error") + "). Pulse shown. " + new Date().toLocaleTimeString();
+        termiiStatusLineEl.textContent = "Channel unavailable · " + new Date().toLocaleTimeString();
       }
     }
   }
@@ -2588,7 +2634,7 @@
       window.setTimeout(() => lane.classList.remove("termii-sa-active"), 2800);
     }
     if (st) {
-      st.textContent = "Security Alert (SA) — NAFC → Termii SMS pulse (sim) · Node: " + stateName + " · " + new Date().toLocaleTimeString();
+      st.textContent = "Security Alert · " + stateName + " · " + new Date().toLocaleTimeString();
     }
   }
 
@@ -2629,7 +2675,7 @@
     const lead = document.getElementById("nfModalLead");
     if (st) st.textContent = "Lattice Node: " + stateName;
     if (lead) {
-      lead.textContent = "Non-formal settlement lanes (livestock, artisan clusters, micro-service POS) align with ward lattice + Termii-class delivery. Bands are sovereign intelligence estimates—not audited filings.";
+      lead.textContent = "Non-formal sector bands by state — livestock, artisans, micro-services.";
     }
     const el = document.getElementById("nfLivestock");
     const ea = document.getElementById("nfArtisans");
@@ -2851,6 +2897,21 @@
   }
 
   function fetchGeoJson() {
+    const cloud = window.GCSLC_CLOUD_SYNC_V20 || {};
+    const custom = cloud.geoJsonUrl && String(cloud.geoJsonUrl).trim();
+    if (custom) {
+      return fetch(custom, { cache: "no-store" })
+        .then((res) => {
+          if (!res.ok) throw new Error("http");
+          return res.text();
+        })
+        .then((txt) => {
+          if (!txt || txt.trim().length < 500) throw new Error("empty");
+          const geo = JSON.parse(txt);
+          if (!geo || !geo.features || !geo.features.length) throw new Error("features");
+          return geo;
+        });
+    }
     const urls = ["./nigeria-states.geojson", "nigeria-states.geojson", "/nigeria-states.geojson"];
     function attempt(i) {
       if (i >= urls.length) return Promise.reject(new Error("GEOJSON_UNAVAILABLE"));
@@ -3004,7 +3065,7 @@
       t.setAttribute("y", "48");
       t.setAttribute("fill", "#ffd670");
       t.setAttribute("font-size", "13");
-      t.textContent = "Map data not loaded. Place nigeria-states.geojson next to index.html and serve via command_node (port 5050).";
+      t.textContent = "Map data unavailable.";
       mapSvg.appendChild(t);
     });
 })();
