@@ -11,11 +11,10 @@
   <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
   <style>
     :root {
-      /* Deep blue — aligned to lattice / trajectory chart canvas */
-      --bg0: #040f1a;
-      --bg1: #0a2540;
-      --bg2: #123a5c;
-      /* Institutional Deep Blue — Chairman mandate */
+      /* Institutional Deep Blue — full canvas */
+      --bg0: #001a33;
+      --bg1: #001a33;
+      --bg2: #001a33;
       --surface-unified: #001a33;
       --deep-cyan: #0097a7;
       --cyan: #66f5ff;
@@ -49,6 +48,11 @@
       background-image: none;
       overflow-x: hidden;
       position: relative;
+    }
+    main.app,
+    .shell-v7,
+    .center-col-primary {
+      background-color: #001a33;
     }
     /* Diagonal proprietary watermark — parallax layer + shimmer */
     .wm-proprietary {
@@ -1433,7 +1437,7 @@
 
       <div class="center-col center-col-primary">
         <header class="header header-apex-layer01">
-          <p class="apex-row apex-row1" id="apexRowTypewriter" aria-live="polite"><span class="identity-tw identity-tw--shimmer" id="identityTw"></span><span class="identity-caret" aria-hidden="true">▍</span></p>
+          <p class="apex-row apex-row1" id="apexRowTypewriter" aria-live="polite"><span class="identity-tw identity-tw--shimmer" id="identityFullName">Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE</span></p>
           <p class="apex-row apex-row2" id="apexRowRc">Galadiman Ruwa Nigeria Ltd RC 1871418</p>
           <p class="apex-row apex-row3" id="apexRowAnchor">Everything is Anchored by the 8R Stealth Paradigm Convergence and its determinants, let’s converge for you to understand and decode.</p>
 
@@ -1806,27 +1810,6 @@
     leg.append("line").attr("x1", 62).attr("x2", 78).attr("y1", 0).attr("y2", 0).attr("stroke", "#1e3a66").attr("stroke-width", 2.2);
     leg.append("text").attr("x", 82).attr("y", 3).attr("fill", "#bff4ff").attr("font-size", "8px").attr("font-weight", "800").text("Rural SIG");
   }
-
-  const IDENTITY_FULL = "Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE";
-  const IDENTITY_CHAR_MS = 120;
-  function startIdentityTypewriter() {
-    const el = document.getElementById("identityTw");
-    if (!el) return;
-    let i = 0;
-    function tick() {
-      if (i <= IDENTITY_FULL.length) {
-        el.textContent = IDENTITY_FULL.slice(0, i);
-        i += 1;
-        window.setTimeout(tick, i > IDENTITY_FULL.length ? 5600 : IDENTITY_CHAR_MS);
-      } else {
-        i = 0;
-        el.textContent = "";
-        window.setTimeout(tick, 720);
-      }
-    }
-    tick();
-  }
-  startIdentityTypewriter();
 
   function sampleZenithLive() {
     const t = Date.now() / 1050;
