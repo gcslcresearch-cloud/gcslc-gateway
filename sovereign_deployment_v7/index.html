@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#001a33" />
-  <title>GCSLC — V15 Diligence</title>
+  <title>GCSLC — NAFC Internal Handshake V18</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet" />
@@ -501,23 +501,29 @@
     }
     #apexTrajectoryChart, #nfVelocityChart { min-height: 110px !important; }
     .sidebar-diagnostics-v15 #apexTrajectoryChart { min-height: 95px !important; }
-    .btn-termii-test {
+    .btn-termii-test,
+    .btn-nafc-handshake {
       margin-top: 10px;
       width: 100%;
-      min-height: 44px;
-      padding: 10px 12px;
+      min-height: 48px;
+      padding: 12px 14px;
       border-radius: 10px;
-      border: 1px solid rgba(102, 245, 255, 0.35);
-      background: var(--surface-unified);
-      color: #bff4ff;
+      border: 2px solid #D4AF37;
+      background: linear-gradient(165deg, rgba(212, 175, 55, 0.22), rgba(0, 26, 51, 0.96));
+      color: #fff4d8;
       font-weight: 900;
-      font-size: clamp(0.58rem, 1.4vw, 0.72rem);
-      letter-spacing: 0.1em;
+      font-size: clamp(0.56rem, 1.35vw, 0.72rem);
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       cursor: pointer;
       touch-action: manipulation;
+      box-shadow: 0 0 18px rgba(212, 175, 55, 0.35);
     }
-    .btn-termii-test:hover, .btn-termii-test:focus-visible { filter: brightness(1.1); outline: none; }
+    .btn-nafc-handshake:hover, .btn-nafc-handshake:focus-visible {
+      filter: brightness(1.08);
+      outline: none;
+      box-shadow: 0 0 26px rgba(212, 175, 55, 0.55);
+    }
     .termii-nafc-note {
       margin: 6px 0 0;
       font-size: 0.52rem;
@@ -695,9 +701,52 @@
       gap: 6px;
       margin-bottom: 12px;
     }
+    .clock-widget-v15 .clock-row {
+      margin-bottom: 0;
+    }
     .clock-widget-v15 {
       width: 100%;
-      margin: 0 0 12px;
+      margin: 0 0 10px;
+      padding: 6px 4px 8px;
+      border-radius: 12px;
+      border: 1px solid rgba(102, 245, 255, 0.12);
+      background: #001a33;
+    }
+    #nafcHandshakePulse {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 18px;
+      height: 18px;
+      margin: 0;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 5000;
+      background: radial-gradient(circle at 32% 28%, #f0ffff, #00e5ff 42%, rgba(0, 229, 255, 0.15) 72%);
+      box-shadow:
+        0 0 22px rgba(102, 245, 255, 0.95),
+        0 0 42px rgba(0, 229, 255, 0.55);
+      opacity: 0;
+      transform: translate(-50%, -50%);
+      will-change: transform, opacity;
+    }
+    #nafcHandshakePulse.nafc-pulse-run {
+      opacity: 1;
+      animation: nafcCyanPulseFlight 1.12s cubic-bezier(0.22, 0.82, 0.28, 1) forwards;
+    }
+    @keyframes nafcCyanPulseFlight {
+      0% {
+        transform: translate(-50%, -50%) translate(0, 0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) scale(0.82);
+        opacity: 0.2;
+      }
+    }
+    .termii-outbound.termii-outbound-handshake {
+      box-shadow: inset 0 0 24px rgba(102, 245, 255, 0.35), 0 0 20px rgba(102, 245, 255, 0.55);
+      border-color: rgba(102, 245, 255, 0.55) !important;
     }
     .map-stack-v15 .map-wrap {
       min-height: min(74vh, 900px);
@@ -1505,7 +1554,7 @@
       <div class="center-col center-col-primary">
         <header class="header header-apex-layer01">
           <p class="apex-row apex-row1" id="apexRowTypewriter" aria-live="polite"><span class="identity-tw apex-identity-deep-cyan" id="identityFullName">Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE</span></p>
-          <p class="apex-row apex-row2" id="apexRowRc">Galadiman Ruwa Nigeria Ltd RC 1871418</p>
+          <p class="apex-row apex-row2" id="apexRowRc">Nigeria Ltd RC 1871418</p>
           <p class="apex-row apex-row3" id="apexRowAnchor">Everything is Anchored by the 8R Stealth Paradigm Convergence and its determinants, let’s converge for you to understand and decode.</p>
 
         <section class="paradigm-apex" aria-label="8R Stealth Paradigm determinants">
@@ -1525,7 +1574,7 @@
         <section class="clock-row clock-widget-v15" id="clockRow" aria-label="World clocks"></section>
 
         <section class="layout-inner map-stack-v13 map-stack-v15">
-          <article class="map-wrap living-terminal map-masterpiece">
+          <article class="map-wrap living-terminal map-masterpiece" id="mapCommandSurface">
             <h2 class="map-title">Eagle Map — Sovereign Lattice</h2>
             <p class="map-kinetic-caption"><strong>AZK</strong> corridor · Abuja–Zaria–Kano · ward lattice to command node</p>
             <div class="map-layer-toggles" role="toolbar" aria-label="Institutional overlay toggles">
@@ -1548,6 +1597,7 @@
           </div>
         </div>
 
+        <!-- Termii authorization: transactional body matches NAFC_V18_SAMPLE_SMS in script (sample message per letter) -->
         <section class="termii-panel-v15" aria-label="Termii gateway">
           <div class="termii-block">
             <div class="termii-label">Termii Gateway — NAFC Secure Channel</div>
@@ -1557,12 +1607,12 @@
                 <span class="track-tag">Inbound</span>
                 <span class="termii-pulse" aria-hidden="true"></span>
               </div>
-              <div class="termii-track termii-outbound" title="Outbound partnership pulses (Termii)">
+              <div class="termii-track termii-outbound" id="termiiOutboundTrack" title="Outbound partnership pulses (Termii)">
                 <span class="track-tag">Outbound</span>
                 <span class="termii-pulse" aria-hidden="true"></span>
               </div>
             </div>
-            <button type="button" class="btn-termii-test" id="termiiTestAlert">Test Alert — NAFC → Termii (simulated SMS)</button>
+            <button type="button" class="btn-nafc-handshake" id="nafcHandshakeBtn">INITIATE NAFC TEST HANDSHAKE</button>
             <p class="termii-nafc-note" id="termiiStatusLine" aria-live="polite"></p>
           </div>
         </section>
@@ -1666,9 +1716,11 @@
       <span class="g">HANDSHAKE //</span>
       Phone <span class="footer-node-metallic"><strong>+234 703 913 9439</strong> | <strong>+234 809 911 1515</strong></span>
       · Email <span class="footer-node-metallic">Info@galadimanruwacenter.org</span> · <span class="footer-node-metallic">gcslc.research@gmail.com</span>
-      · <strong>Copyright LW15954</strong> · <strong>SCUML RN: 151653884</strong> · Gateway Alignment Sovereign V14 · 8,806 Wards : 123,284 Field Agents · 176,000 PUs · Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau · <strong>GCSLC PROPRIETARY</strong>
+      · <strong>Copyright LW15954</strong> · <strong>SCUML RN: 151653884</strong> · NAFC Internal Handshake V18 · 8,806 Wards : 123,284 Field Agents · 176,000 PUs · Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau · <strong>GCSLC PROPRIETARY</strong>
     </div>
   </footer>
+
+  <div id="nafcHandshakePulse" aria-hidden="true"></div>
 
   <script>
 (function () {
@@ -2264,9 +2316,16 @@
     to: ""
   };
 
-  const termiiTestBtn = document.getElementById("termiiTestAlert");
+  const NAFC_V18_SAMPLE_SMS = "GCSLC: Your nodal sync for the AZK Energy Corridor & 15/15 model is verified. We are resuscitating 639M MT of reserves to power our mandate. Performance is our Incumbency.";
+  window.NAFC_V18_SAMPLE_SMS = NAFC_V18_SAMPLE_SMS;
+
+  const nafcHandshakeBtn = document.getElementById("nafcHandshakeBtn");
   const termiiLaneEl = document.getElementById("termiiLane");
+  const termiiOutboundTrack = document.getElementById("termiiOutboundTrack");
   const termiiStatusLineEl = document.getElementById("termiiStatusLine");
+  const nafcHandshakePulse = document.getElementById("nafcHandshakePulse");
+  const mapCommandSurface = document.getElementById("mapCommandSurface");
+
   function flashTermiiTestLane() {
     if (!termiiLaneEl) return;
     termiiLaneEl.classList.remove("termii-test-flash");
@@ -2274,12 +2333,36 @@
     termiiLaneEl.classList.add("termii-test-flash");
     window.setTimeout(() => termiiLaneEl.classList.remove("termii-test-flash"), 1500);
   }
-  async function runNafcTermiiTestPulse() {
+
+  function runMapToOutboundCyanPulse() {
+    if (!nafcHandshakePulse || !mapCommandSurface || !termiiOutboundTrack) return;
+    const rm = mapCommandSurface.getBoundingClientRect();
+    const ro = termiiOutboundTrack.getBoundingClientRect();
+    const sx = rm.left + rm.width / 2;
+    const sy = rm.top + rm.height / 2;
+    const ex = ro.left + ro.width * 0.82;
+    const ey = ro.top + ro.height / 2;
+    nafcHandshakePulse.style.left = sx + "px";
+    nafcHandshakePulse.style.top = sy + "px";
+    nafcHandshakePulse.style.setProperty("--dx", (ex - sx) + "px");
+    nafcHandshakePulse.style.setProperty("--dy", (ey - sy) + "px");
+    nafcHandshakePulse.classList.remove("nafc-pulse-run");
+    void nafcHandshakePulse.offsetWidth;
+    nafcHandshakePulse.classList.add("nafc-pulse-run");
+    termiiOutboundTrack.classList.add("termii-outbound-handshake");
+    window.setTimeout(() => {
+      nafcHandshakePulse.classList.remove("nafc-pulse-run");
+      termiiOutboundTrack.classList.remove("termii-outbound-handshake");
+    }, 1180);
+  }
+
+  async function runNafcInternalHandshakeV18() {
+    runMapToOutboundCyanPulse();
     flashTermiiTestLane();
     const cfg = window.GCSLC_NAFC_TERMII || {};
     if (!cfg.live || !cfg.apiKey || !cfg.to) {
       if (termiiStatusLineEl) {
-        termiiStatusLineEl.textContent = "NAFC Test Alert — National Alert Fusion Center → Termii (simulated SMS). Set window.GCSLC_NAFC_TERMII = { live: true, apiKey, to, from } for live send (use server proxy if CORS blocks). " + new Date().toLocaleTimeString();
+        termiiStatusLineEl.textContent = "NAFC INTERNAL HANDSHAKE V18 (sim) — Sample transactional message dispatched. Outbound lane armed. " + new Date().toLocaleTimeString();
       }
       return;
     }
@@ -2287,7 +2370,7 @@
       api_key: String(cfg.apiKey),
       to: String(cfg.to),
       from: String(cfg.from || "NAFC"),
-      sms: "[NAFC/GCSLC] Secure gateway test — National Alert Fusion Center. " + new Date().toISOString(),
+      sms: NAFC_V18_SAMPLE_SMS,
       type: "plain",
       channel: "generic"
     };
@@ -2304,16 +2387,17 @@
         summary = j.message || j.sms || j.code || raw;
       } catch (e) { /* keep raw */ }
       if (termiiStatusLineEl) {
-        termiiStatusLineEl.textContent = (res.ok ? "NAFC → Termii live: OK. " : "NAFC → Termii live: HTTP " + res.status + ". ") + summary + " · " + new Date().toLocaleTimeString();
+        termiiStatusLineEl.textContent = (res.ok ? "NAFC V18 → Termii live: OK. " : "NAFC V18 → Termii: HTTP " + res.status + ". ") + summary + " · " + new Date().toLocaleTimeString();
       }
     } catch (err) {
       if (termiiStatusLineEl) {
-        termiiStatusLineEl.textContent = "NAFC → Termii live: blocked or offline (" + (err && err.message ? err.message : "error") + "). Use a same-origin proxy for Termii. Showing lane pulse only. " + new Date().toLocaleTimeString();
+        termiiStatusLineEl.textContent = "NAFC V18 → Termii: route blocked (" + (err && err.message ? err.message : "error") + "). Pulse shown. " + new Date().toLocaleTimeString();
       }
     }
   }
-  if (termiiTestBtn) {
-    termiiTestBtn.addEventListener("click", () => { void runNafcTermiiTestPulse(); });
+
+  if (nafcHandshakeBtn) {
+    nafcHandshakeBtn.addEventListener("click", () => { void runNafcInternalHandshakeV18(); });
   }
 
   const governanceSlide = document.getElementById("governanceSlide");
