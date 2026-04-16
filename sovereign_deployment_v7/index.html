@@ -3,14 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#020a1f" />
-  <title>GCSLC — Sovereign Sequence Restoration V13</title>
+  <meta name="theme-color" content="#0a2540" />
+  <title>GCSLC — Gateway Alignment Sovereign V14</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
   <style>
     :root {
-      --bg0: #020a1f;
-      --bg1: #06183f;
-      --bg2: #0b2b63;
+      /* Deep blue — aligned to lattice / trajectory chart canvas */
+      --bg0: #040f1a;
+      --bg1: #0a2540;
+      --bg2: #123a5c;
+      --deep-cyan: #0097a7;
       --cyan: #66f5ff;
       --cyan-soft: #a6fbff;
       --gold: #D4AF37;
@@ -23,15 +28,19 @@
       --footer-h: calc(var(--intel-h) + var(--footer-core));
     }
     * { box-sizing: border-box; }
+    html, body, button, input, select, textarea {
+      font-family: "Goldman", system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    svg { font-family: "Goldman", system-ui, sans-serif; }
     body {
       margin: 0;
       min-height: 100vh;
       color: var(--text);
-      font-family: "Segoe UI", "Avenir Next Condensed", "Arial Narrow", Arial, sans-serif;
       background:
-        radial-gradient(circle at 18% 12%, rgba(124, 204, 255, 0.22), transparent 40%),
-        radial-gradient(circle at 82% 20%, rgba(102, 245, 255, 0.14), transparent 42%),
-        linear-gradient(160deg, var(--bg0), var(--bg1) 46%, var(--bg2) 100%);
+        radial-gradient(ellipse 130% 90% at 50% -15%, rgba(18, 58, 92, 0.42), transparent 52%),
+        radial-gradient(circle at 18% 12%, rgba(30, 74, 120, 0.18), transparent 42%),
+        radial-gradient(circle at 82% 22%, rgba(12, 48, 82, 0.14), transparent 44%),
+        linear-gradient(168deg, var(--bg0) 0%, var(--bg1) 50%, var(--bg2) 100%);
       overflow-x: hidden;
       position: relative;
     }
@@ -317,12 +326,20 @@
     .header-apex-v13 .brand-apex {
       order: 1;
       margin: 0 0 6px;
-      font-size: clamp(0.82rem, 2.1vw, 1.12rem);
-      font-weight: 900;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
+      max-width: min(1100px, 96vw);
+      font-size: clamp(0.68rem, 1.85vw, 1.05rem);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: none;
+      line-height: 1.35;
       color: #ffe8b8;
       text-shadow: 0 0 20px rgba(212, 175, 55, 0.5), 0 0 32px rgba(102, 245, 255, 0.2);
+    }
+    .brand-apex .brand-gcslc-suffix {
+      display: inline;
+      font-weight: 700;
+      color: #bff4ff;
+      letter-spacing: 0.04em;
     }
     .verification-top {
       order: 2;
@@ -346,6 +363,7 @@
       font-weight: 600;
       letter-spacing: 0.04em;
       text-align: center;
+      white-space: normal;
       border-radius: 14px;
       border: 1px solid rgba(102, 245, 255, 0.32);
       background: linear-gradient(165deg, rgba(6, 22, 58, 0.55), rgba(2, 8, 28, 0.35));
@@ -358,6 +376,27 @@
       display: inline;
       color: #eaf8ff;
       text-shadow: 0 0 14px rgba(102, 245, 255, 0.25);
+    }
+    .identity-tw.identity-tw--shimmer {
+      color: transparent;
+      background-image: linear-gradient(
+        105deg,
+        #006064 0%,
+        #00838f 18%,
+        #00acc1 38%,
+        #26c6da 52%,
+        #00838f 72%,
+        #00bcd4 100%
+      );
+      background-size: 240% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      text-shadow: none;
+      animation: identityCyanShimmer 6s ease-in-out infinite;
+    }
+    @keyframes identityCyanShimmer {
+      0%, 100% { background-position: 0% 50%; filter: brightness(1); }
+      50% { background-position: 100% 50%; filter: brightness(1.12); }
     }
     .identity-caret {
       display: inline-block;
@@ -516,7 +555,11 @@
       font-weight: 800;
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      color: rgba(240, 248, 255, 0.95);
+      color: #D4AF37;
+      text-shadow:
+        0 0 10px rgba(212, 175, 55, 0.45),
+        0 0 22px rgba(212, 175, 55, 0.2),
+        0 1px 0 rgba(0, 0, 0, 0.35);
       display: grid;
       place-items: center;
       text-align: center;
@@ -873,11 +916,11 @@
     }
     #mapSvg .ward-azk-flow {
       fill: none;
-      stroke: #f0d78c;
-      stroke-width: 3.4;
+      stroke: #D4AF37;
+      stroke-width: 3.6;
       stroke-linecap: round;
       stroke-linejoin: round;
-      filter: drop-shadow(0 0 10px rgba(102, 245, 255, 0.65)) drop-shadow(0 0 16px rgba(212, 175, 55, 0.5));
+      filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.85)) drop-shadow(0 0 14px rgba(102, 245, 255, 0.55)) drop-shadow(0 0 22px rgba(212, 175, 55, 0.45));
       stroke-dasharray: 12 16;
       animation: wardArrowDash 2.2s linear infinite;
       pointer-events: none;
@@ -1218,26 +1261,51 @@
       min-height: var(--footer-core);
       z-index: 50;
       border-top: 1px solid rgba(212, 175, 55, 0.35);
-      background: linear-gradient(180deg, rgba(4, 8, 20, 0.98), rgba(0, 0, 32, 0.99));
+      background: linear-gradient(180deg, rgba(4, 12, 28, 0.98), rgba(2, 8, 24, 0.99));
       padding: 8px max(12px, env(safe-area-inset-left)) calc(10px + env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-right));
     }
+    .footer.footer-vault::before {
+      content: "GCSLC PROPRIETARY";
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(1.4rem, 7vw, 2.6rem);
+      font-weight: 700;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: rgba(102, 245, 255, 0.06);
+      pointer-events: none;
+      z-index: 0;
+    }
     .footer-typewriter {
+      position: relative;
+      z-index: 1;
       max-width: 1480px;
       margin: 0 auto;
-      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
       font-size: clamp(0.55rem, 1.35vw, 0.72rem);
       letter-spacing: 0.04em;
       color: #bff4ff;
       border: 1px solid rgba(212, 175, 55, 0.35);
       border-radius: 10px;
       padding: 10px 12px;
-      background: linear-gradient(165deg, rgba(30, 32, 38, 0.75), rgba(0, 24, 64, 0.55));
+      background: linear-gradient(165deg, rgba(10, 37, 64, 0.82), rgba(4, 16, 40, 0.78));
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 4px 20px rgba(0, 0, 0, 0.35);
       overflow: hidden;
       white-space: nowrap;
       border-right: 2px solid rgba(102,245,255,0.85);
       width: 0;
       animation: footerTw 38s steps(220, end) infinite, caret 1s step-end infinite;
+    }
+    @media (max-width: 640px) {
+      .footer-typewriter {
+        white-space: normal;
+        width: 100% !important;
+        animation: none;
+        border-right: 1px solid rgba(102, 245, 255, 0.35);
+        line-height: 1.45;
+      }
     }
     .footer-typewriter .g { color: var(--gold); }
     .footer-node-metallic {
@@ -1326,6 +1394,8 @@
     /* Galaxy S24 Ultra / iPhone 16 class devices — fluid layout + touch */
     @media (max-width: 430px) {
       .shell-v7 { gap: 10px; }
+      .header-apex-v13 .brand-apex { font-size: clamp(0.6rem, 3.4vw, 0.88rem); letter-spacing: 0.04em; }
+      .verification-top { font-size: clamp(0.58rem, 2.8vw, 0.78rem) !important; }
       .clock-row { gap: 8px; }
       .clock { width: max(30px, 8vw); height: max(30px, 8vw); }
       .gov-toggle {
@@ -1402,8 +1472,8 @@
 
       <div class="center-col center-col-primary">
         <header class="header header-apex-v13">
-          <p class="brand-apex brand-center" id="brandCenterName">Galadiman Ruwa Center</p>
-          <p class="verification verification-top" id="headerRc">Galadiman Ruwa Nigeria Ltd · RC 187 1418</p>
+          <p class="brand-apex brand-center" id="brandCenterName">Galadiman Ruwa Center for Strategic Leadership and Communication <span class="brand-gcslc-suffix">GCSLC LTD/GTE</span></p>
+          <p class="verification verification-top" id="headerRc">RC 187 1418 · Sovereign command terminal</p>
 
         <section class="paradigm-apex" aria-label="8R Stealth Paradigm determinants">
           <div class="prisms-row" id="prismsRow">
@@ -1422,7 +1492,7 @@
         <section class="layout-inner map-stack-v13">
           <article class="map-wrap living-terminal map-masterpiece">
             <h2 class="map-title">Eagle Map — Masterpiece · Sovereign Lattice</h2>
-            <p class="map-kinetic-caption">Full-width command surface — gold ward vectors toward <strong>AZK</strong>. Arrows: Non-Formal insight · States: full data burst.</p>
+            <p class="map-kinetic-caption">Central command surface — bioluminescent <strong>gold</strong> ward vectors flow toward the <strong>Abuja–Zaria–Kano (AZK)</strong> corridor. Arrows: Non-Formal insight · States: full data burst.</p>
             <div class="map-layer-toggles" role="toolbar" aria-label="Institutional overlay toggles">
               <label class="layer-toggle"><input type="checkbox" id="layerMil" checked data-layer="mil" /> Military / Paramilitary</label>
               <label class="layer-toggle"><input type="checkbox" id="layerNysc" checked data-layer="nysc" /> NYSC</label>
@@ -1440,7 +1510,7 @@
           </article>
         </section>
 
-        <h1 class="identity identity-v10" id="identityAnchor"><span class="identity-tw" id="identityTw"></span><span class="identity-caret" aria-hidden="true">▍</span></h1>
+        <h1 class="identity identity-v10" id="identityAnchor"><span class="identity-tw identity-tw--shimmer" id="identityTw"></span><span class="identity-caret" aria-hidden="true">▍</span></h1>
 
         <div class="advisory-bridge">
           <div class="api-revenue-path">
@@ -1463,7 +1533,7 @@
           </div>
           <div class="termii-block">
             <div class="termii-label">Termii Gateway — NAFC Secure Channel</div>
-            <p class="termii-nafc-note">National Alert Fusion Center (NAFC) sender ID · Inbound/Outbound traffic simulation for non-formal + security lanes.</p>
+            <p class="termii-nafc-note">National Alert Fusion Center (NAFC) sender ID · Inbound/Outbound lanes stay live · Set <code style="font-size:0.9em;">window.GCSLC_NAFC_TERMII</code> for Termii live test (API key + destination).</p>
             <div class="termii-lane" id="termiiLane">
               <div class="termii-track termii-inbound" title="Inbound partnership pulses (Termii)">
                 <span class="track-tag">Inbound</span>
@@ -1575,12 +1645,12 @@
     </div>
   </div>
 
-  <footer class="footer">
+  <footer class="footer footer-vault">
     <div class="footer-typewriter" id="footerTw" title="Contact audit — institutional handshake">
       <span class="g">HANDSHAKE //</span>
       Phone <span class="footer-node-metallic"><strong>+234 703 913 9439</strong> | <strong>+234 809 911 1515</strong></span>
       · Email <span class="footer-node-metallic">Info@galadimanruwacenter.org</span> · <span class="footer-node-metallic">gcslc.research@gmail.com</span>
-      · <strong>Copyright LW15954</strong> · <strong>SCUML RN: SC 151653884</strong> · GCSLC Sovereign Sequence Restoration V13 · 8,806 Wards : 123,284 Field Agents · 176,000 PUs · Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau · GCSLC PROPRIETARY
+      · <strong>Copyright LW15954</strong> · <strong>SCUML RN: 151653884</strong> · Gateway Alignment Sovereign V14 · 8,806 Wards : 123,284 Field Agents · 176,000 PUs · Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau · <strong>GCSLC PROPRIETARY</strong>
     </div>
   </footer>
 
@@ -1777,7 +1847,8 @@
     leg.append("text").attr("x", 82).attr("y", 3).attr("fill", "#bff4ff").attr("font-size", "8px").attr("font-weight", "800").text("Rural SIG");
   }
 
-  const IDENTITY_FULL = "Everything is Anchored by the 8R Stealth Paradigm Convergence and its determinants, let's converge for you to understand and decode.";
+  const IDENTITY_FULL = "Everything is Anchored by the 8R Stealth Paradigm convergence — decode sovereign signal through the Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC).";
+  const IDENTITY_CHAR_MS = 120;
   function startIdentityTypewriter() {
     const el = document.getElementById("identityTw");
     if (!el) return;
@@ -1786,11 +1857,11 @@
       if (i <= IDENTITY_FULL.length) {
         el.textContent = IDENTITY_FULL.slice(0, i);
         i += 1;
-        window.setTimeout(tick, i > IDENTITY_FULL.length ? 5200 : 34);
+        window.setTimeout(tick, i > IDENTITY_FULL.length ? 5600 : IDENTITY_CHAR_MS);
       } else {
         i = 0;
         el.textContent = "";
-        window.setTimeout(tick, 420);
+        window.setTimeout(tick, 720);
       }
     }
     tick();
@@ -2198,19 +2269,64 @@
     nonFormalModal.addEventListener("click", (e) => { if (e.target === nonFormalModal) nonFormalModal.classList.remove("open"); });
   }
 
+  window.GCSLC_NAFC_TERMII = window.GCSLC_NAFC_TERMII || {
+    live: false,
+    endpoint: "https://api.ng.termii.com/api/sms/send",
+    apiKey: "",
+    from: "NAFC",
+    to: ""
+  };
+
   const termiiTestBtn = document.getElementById("termiiTestAlert");
   const termiiLaneEl = document.getElementById("termiiLane");
   const termiiStatusLineEl = document.getElementById("termiiStatusLine");
-  if (termiiTestBtn && termiiLaneEl) {
-    termiiTestBtn.addEventListener("click", () => {
-      termiiLaneEl.classList.remove("termii-test-flash");
-      void termiiLaneEl.offsetWidth;
-      termiiLaneEl.classList.add("termii-test-flash");
-      window.setTimeout(() => termiiLaneEl.classList.remove("termii-test-flash"), 1500);
+  function flashTermiiTestLane() {
+    if (!termiiLaneEl) return;
+    termiiLaneEl.classList.remove("termii-test-flash");
+    void termiiLaneEl.offsetWidth;
+    termiiLaneEl.classList.add("termii-test-flash");
+    window.setTimeout(() => termiiLaneEl.classList.remove("termii-test-flash"), 1500);
+  }
+  async function runNafcTermiiTestPulse() {
+    flashTermiiTestLane();
+    const cfg = window.GCSLC_NAFC_TERMII || {};
+    if (!cfg.live || !cfg.apiKey || !cfg.to) {
       if (termiiStatusLineEl) {
-        termiiStatusLineEl.textContent = "NAFC Test Alert — Sender: National Alert Fusion Center → Termii route (simulated SMS). " + new Date().toLocaleTimeString();
+        termiiStatusLineEl.textContent = "NAFC Test Alert — National Alert Fusion Center → Termii (simulated SMS). Set window.GCSLC_NAFC_TERMII = { live: true, apiKey, to, from } for live send (use server proxy if CORS blocks). " + new Date().toLocaleTimeString();
       }
-    });
+      return;
+    }
+    const payload = {
+      api_key: String(cfg.apiKey),
+      to: String(cfg.to),
+      from: String(cfg.from || "NAFC"),
+      sms: "[NAFC/GCSLC] Secure gateway test — National Alert Fusion Center. " + new Date().toISOString(),
+      type: "plain",
+      channel: "generic"
+    };
+    try {
+      const res = await fetch(String(cfg.endpoint || "https://api.ng.termii.com/api/sms/send"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const raw = await res.text();
+      let summary = raw;
+      try {
+        const j = JSON.parse(raw);
+        summary = j.message || j.sms || j.code || raw;
+      } catch (e) { /* keep raw */ }
+      if (termiiStatusLineEl) {
+        termiiStatusLineEl.textContent = (res.ok ? "NAFC → Termii live: OK. " : "NAFC → Termii live: HTTP " + res.status + ". ") + summary + " · " + new Date().toLocaleTimeString();
+      }
+    } catch (err) {
+      if (termiiStatusLineEl) {
+        termiiStatusLineEl.textContent = "NAFC → Termii live: blocked or offline (" + (err && err.message ? err.message : "error") + "). Use a same-origin proxy for Termii. Showing lane pulse only. " + new Date().toLocaleTimeString();
+      }
+    }
+  }
+  if (termiiTestBtn) {
+    termiiTestBtn.addEventListener("click", () => { void runNafcTermiiTestPulse(); });
   }
 
   const governanceSlide = document.getElementById("governanceSlide");
