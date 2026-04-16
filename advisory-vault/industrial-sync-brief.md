@@ -14,4 +14,4 @@ Define potential 8R nodal synchronization opportunities in neighboring African c
 Partner engagements should include SPC (Sovereign Proof Certificate) verification via the Certificate Validator module.
 
 ## Intake Governance
-All service requests for strategic leadership audits must pass through the Consultancy Intake handshake endpoint on port `8848`.
+All service requests for strategic leadership audits must pass through the Consultancy Intake handshake endpoint on port `8850`.

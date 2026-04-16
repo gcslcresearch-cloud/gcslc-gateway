@@ -10,5 +10,5 @@ Re-establish NGECC strategic functionality through phased operational recovery, 
 
 ## Control Parameters
 - Validation anchor: Sovereign Proof Certificate standards.
-- Advisory transport: `ZENITH_INFRA_STRIKE` port `8848`.
+- Advisory transport: `ZENITH_INFRA_STRIKE` port `8850`.
 - Escalation policy: leadership audit handshake required for high-risk engagements.

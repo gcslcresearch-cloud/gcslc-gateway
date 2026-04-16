@@ -6,10 +6,10 @@
   "network": {
     "internalDataLogisticsHandshake": {
       "protocol": "broadcast",
-      "port": 8848
+      "port": 8850
     },
     "globalAdvisoryHubHandshake": {
-      "port": 8848,
+      "port": 8850,
       "whatsappBusinessNode": "+2347039139439",
       "chairmanDirectNode": "+2348099111515",
       "termiiSystemHandshakePrimary": true,
@@ -21,7 +21,7 @@
       "diamondName": "ZENITH_INFRA_STRIKE",
       "advisoryTrafficLock": true,
       "secureLiaisonPath": "/secure-liaison",
-      "secureLiaisonPortLock": 8848
+      "secureLiaisonPortLock": 8850
     }
   },
   "databaseHardening": {
@@ -56,7 +56,7 @@
     "globalAdvisoryHub": {
       "enabled": true,
       "environment": "ZENITH_INFRA_STRIKE",
-      "hardCodedPort": 8848,
+      "hardCodedPort": 8850,
       "grandEntranceRoute": "/advisory.html",
       "isIsolatedFromIndustrialDashboard": true,
       "components": [
@@ -72,7 +72,7 @@
     "secureLiaisonNode": {
       "enabled": true,
       "environment": "ZENITH_INFRA_STRIKE",
-      "hardCodedPort": 8848,
+      "hardCodedPort": 8850,
       "primaryIntelligenceEmail": "info@galadimanruwacenter.org",
       "whatsAppBusinessNode": "+2347039139439",
       "chairmanDirectNode": "+2348099111515",

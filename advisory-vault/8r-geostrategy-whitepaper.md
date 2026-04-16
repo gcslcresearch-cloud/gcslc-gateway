@@ -15,4 +15,4 @@ The 8R Paradigm defines a sovereign industrial protocol for converting latent na
 3. Build continental nodal intelligence for synchronized industrial response.
 
 ## Advisory Channel
-All strategic consultations route through the Sovereign Gateway service handshake on port `8848`.
+All strategic consultations route through the Sovereign Gateway service handshake on port `8850`.

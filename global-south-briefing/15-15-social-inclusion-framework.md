@@ -10,5 +10,5 @@ Deploy a balanced social inclusion architecture that aligns institutional system
 
 ## Governance Notes
 - Advisory node: `ZENITH_INFRA_STRIKE`
-- Traffic lock: Port `8848`
+- Traffic lock: Port `8850`
 - Reporting cadence: quarterly sovereign inclusion scorecards
