@@ -16,6 +16,7 @@ _BASE: Final[Path] = Path(__file__).resolve().parent
 INDEX_HTML: Final[Path] = _BASE / "index.html"
 GEOJSON: Final[Path] = _BASE / "nigeria-states.geojson"
 INTERFACE_HTML: Final[Path] = _BASE / "interface.html"
+FORENSIC_JSON: Final[Path] = _BASE / "forensic_intel.json"
 PORT: Final[int] = 5050
 
 
@@ -50,13 +51,20 @@ class CommandHandler(BaseHTTPRequestHandler):
             self._send(GEOJSON, "application/geo+json; charset=utf-8")
             return
 
+        if path == "/forensic_intel.json":
+            if not FORENSIC_JSON.is_file():
+                self.send_error(HTTPStatus.NOT_FOUND, f"Missing: {FORENSIC_JSON}")
+                return
+            self._send(FORENSIC_JSON, "application/json; charset=utf-8")
+            return
+
         if path == "/health":
             body = json.dumps(
                 {
                     "status": "ok",
                     "port": PORT,
                     "index_served": str(INDEX_HTML),
-                    "deployment": "SOVEREIGN_AESTHETIC_V8_ULTRA",
+                    "deployment": "SOVEREIGN_DATA_INTEGRATION_V9",
                 }
             ).encode("utf-8")
             self.send_response(HTTPStatus.OK)
@@ -82,14 +90,14 @@ class CommandHandler(BaseHTTPRequestHandler):
 
 def _open_browser() -> None:
     time.sleep(0.35)
-    webbrowser.open(f"http://localhost:5050/?v8ultra={int(time.time())}")
+    webbrowser.open(f"http://localhost:5050/?v9data={int(time.time())}")
 
 
 def main() -> None:
     if not INDEX_HTML.is_file():
         raise FileNotFoundError(str(INDEX_HTML))
     print(f"FILE SIZE VERIFIED: {INDEX_HTML.stat().st_size}", flush=True)
-    print("COMMAND CENTRAL 5050: SOVEREIGN_AESTHETIC_V8_ULTRA READY", flush=True)
+    print("COMMAND CENTRAL 5050: SOVEREIGN_DATA_INTEGRATION_V9 READY", flush=True)
     print(f"SERVED FROM: {_BASE}", flush=True)
 
     server = ThreadingHTTPServer(("0.0.0.0", PORT), CommandHandler)

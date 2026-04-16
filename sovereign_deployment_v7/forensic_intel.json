@@ -1,0 +1,37 @@
+{
+  "schema": "gcslc.forensic_intel.v1",
+  "source": "image_forensic_audit_trace",
+  "generated": "2026-04-16",
+  "items": [
+    {
+      "tier": "SN",
+      "code": "FORENSIC_SN_01",
+      "text": "Strategic Normal — image forensic hash chain verified · EXIF/timestamp drift within tolerance"
+    },
+    {
+      "tier": "SC",
+      "code": "FORENSIC_SC_02",
+      "text": "Strategic Caution — duplicate frame cluster detected in ward telemetry ingress · manual reconcile"
+    },
+    {
+      "tier": "SA",
+      "code": "FORENSIC_SA_03",
+      "text": "Strategic Alert — privileged document surface mismatch vs. SCUML export manifest · hold egress"
+    },
+    {
+      "tier": "SN",
+      "code": "FORENSIC_SN_04",
+      "text": "Strategic Normal — AZK corridor inference spine sync nominal · cyan spine stable"
+    },
+    {
+      "tier": "SC",
+      "code": "FORENSIC_SC_05",
+      "text": "Strategic Caution — rural connectivity gap estimator variance ±2.1% vs. national lattice"
+    },
+    {
+      "tier": "SA",
+      "code": "FORENSIC_SA_06",
+      "text": "Strategic Alert — cross-node API key rotation window open · rotate before advisory departure"
+    }
+  ]
+}
