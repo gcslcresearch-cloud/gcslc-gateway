@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#020a1f" />
-  <title>GCSLC — Aesthetic Sovereignty V10</title>
+  <title>GCSLC — Zenith V10 Substance</title>
   <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
   <style>
     :root {
@@ -138,38 +138,178 @@
       color: var(--gold);
     }
     .sidebar p { margin: 0 0 8px; }
-    .sidebar-chart {
+    /* Zenith — central Information Gap stack (replaces sidebar static chart) */
+    .zenith-panel {
+      margin-bottom: 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(212, 175, 55, 0.42);
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, transparent 42%),
+        linear-gradient(168deg, rgba(4, 14, 42, 0.92), rgba(2, 6, 22, 0.88));
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.45),
+        0 14px 40px rgba(0, 12, 48, 0.55);
+      backdrop-filter: blur(14px) saturate(150%);
+      -webkit-backdrop-filter: blur(14px) saturate(150%);
+      padding: 12px 12px 14px;
+      position: relative;
+      overflow: hidden;
+      animation: zenithFrameSheen 11s ease-in-out infinite;
+    }
+    @keyframes zenithFrameSheen {
+      0%, 100% { filter: saturate(1.05) brightness(1); border-color: rgba(212, 175, 55, 0.42); }
+      50% { filter: saturate(1.18) brightness(1.05); border-color: rgba(102, 245, 255, 0.38); }
+    }
+    .zenith-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(118deg, transparent 20%, rgba(102, 245, 255, 0.08) 45%, rgba(212, 175, 55, 0.1) 52%, transparent 78%);
+      background-size: 240% 100%;
+      animation: glassPrismShimmer 6.5s linear infinite;
+      opacity: 0.55;
+      mix-blend-mode: screen;
+    }
+    .zenith-head {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .zenith-title {
+      margin: 0 0 4px;
+      font-size: clamp(0.72rem, 1.85vw, 0.95rem);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #ffda7f;
+      font-weight: 900;
+    }
+    .zenith-sub {
+      margin: 0;
+      font-size: clamp(0.58rem, 1.35vw, 0.72rem);
+      color: #9fc4d7;
+      line-height: 1.4;
+    }
+    #zenithGapChart {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      min-height: 220px;
+      touch-action: manipulation;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    #zenithGapChart svg { display: block; max-width: 100%; height: auto; }
+    #zenithGapChart .zenith-bar-sheen {
+      animation: zenithMetalBarSweep 2.6s ease-in-out infinite;
+      transform-box: fill-box;
+      transform-origin: left center;
+    }
+    @keyframes zenithMetalBarSweep {
+      0%, 100% { transform: translateX(0); opacity: 0.42; }
+      50% { transform: translateX(55%); opacity: 0.78; }
+    }
+    .zenith-readouts {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px 18px;
+      margin-top: 8px;
+      font-size: clamp(0.68rem, 1.65vw, 0.82rem);
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+    .zenith-readouts .lbl { color: #bff4ff; margin-right: 4px; }
+    .gold-pct {
+      display: inline-block;
+      background: linear-gradient(118deg, #fff4d2 0%, #d4af37 28%, #fff9e8 48%, #c9a227 72%, #f0e6c8 100%);
+      background-size: 180% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: goldPctShimmer 4s ease-in-out infinite;
+      text-shadow: 0 0 12px rgba(212, 175, 55, 0.35);
+      font-variant-numeric: tabular-nums;
+    }
+    @keyframes goldPctShimmer {
+      0%, 100% { background-position: 0% 50%; filter: brightness(1); }
+      50% { background-position: 100% 50%; filter: brightness(1.12); }
+    }
+    .termii-block {
+      position: relative;
+      z-index: 1;
       margin-top: 12px;
       padding-top: 10px;
       border-top: 1px solid rgba(102, 245, 255, 0.22);
     }
-    .sidebar-chart h3 {
-      margin: 0 0 6px;
-      font-size: 0.68rem;
-      letter-spacing: 0.1em;
+    .termii-label {
+      text-align: center;
+      font-size: clamp(0.58rem, 1.4vw, 0.72rem);
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: var(--gold);
+      color: #c9f6ff;
+      font-weight: 800;
+      margin-bottom: 8px;
     }
-    .sidebar-chart-sub {
-      margin: 0 0 8px;
-      font-size: 0.62rem;
-      color: #9fc4d7;
-      line-height: 1.35;
+    .termii-lane {
+      display: grid;
+      gap: 8px;
     }
-    #sidebarTrendChart {
-      width: 100%;
-      min-height: 168px;
-      touch-action: none;
-      -webkit-user-select: none;
-      user-select: none;
+    .termii-track {
+      position: relative;
+      height: max(28px, 7vw);
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(102, 245, 255, 0.28);
+      background: linear-gradient(180deg, #030d1f 0%, #061433 55%, #020814 100%);
+      box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.55);
     }
-    #sidebarTrendChart svg { display: block; max-width: 100%; }
-    .touch-chart-hint {
-      margin: 6px 0 0;
-      font-size: 0.52rem;
-      letter-spacing: 0.06em;
-      color: rgba(191, 244, 255, 0.65);
+    .termii-track span.track-tag {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2;
+      font-size: clamp(0.52rem, 1.2vw, 0.62rem);
+      font-weight: 900;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
+      color: rgba(234, 248, 255, 0.88);
+      text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+    }
+    .termii-pulse {
+      position: absolute;
+      top: 50%;
+      width: 38%;
+      height: 64%;
+      border-radius: 999px;
+      transform: translateY(-50%);
+      opacity: 0.92;
+      filter: blur(0.2px);
+    }
+    .termii-inbound .termii-pulse {
+      background: linear-gradient(90deg, transparent, rgba(102, 245, 255, 0.05), rgba(102, 245, 255, 0.95), rgba(166, 251, 255, 0.55), transparent);
+      box-shadow: 0 0 22px rgba(102, 245, 255, 0.85), 0 0 44px rgba(0, 255, 255, 0.35);
+      animation: termiiInbound 2.4s ease-in-out infinite;
+    }
+    .termii-outbound .termii-pulse {
+      background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.12), rgba(255, 215, 120, 0.95), rgba(212, 175, 55, 0.75), transparent);
+      box-shadow: 0 0 22px rgba(212, 175, 55, 0.75), 0 0 40px rgba(212, 175, 55, 0.35);
+      animation: termiiOutbound 2.7s ease-in-out infinite;
+    }
+    @keyframes termiiInbound {
+      0% { left: -35%; opacity: 0.35; }
+      45% { opacity: 1; }
+      100% { left: 105%; opacity: 0.4; }
+    }
+    @keyframes termiiOutbound {
+      0% { left: 105%; opacity: 0.35; }
+      45% { opacity: 1; }
+      100% { left: -35%; opacity: 0.4; }
     }
     .center-col { min-width: 0; }
     .header { text-align: center; margin-bottom: 12px; padding: 0 6px; display: flex; flex-direction: column; align-items: center; gap: 0; }
@@ -203,21 +343,18 @@
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 12px 36px rgba(0, 12, 40, 0.55);
       animation: identityKineticV10 5.8s ease-in-out infinite;
     }
-    .identity-glow {
-      display: block;
-      background-image: linear-gradient(
-        102deg,
-        #bff4ff 0%,
-        #66f5ff 32%,
-        #e8d89a 48%,
-        #66f5ff 62%,
-        #bff4ff 100%
-      );
-      background-size: 220% 100%;
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      animation: identityTextFlow 16s ease-in-out infinite;
+    .identity-tw {
+      display: inline;
+      color: #eaf8ff;
+      text-shadow: 0 0 14px rgba(102, 245, 255, 0.25);
+    }
+    .identity-caret {
+      display: inline-block;
+      margin-left: 2px;
+      color: var(--gold);
+      font-weight: 300;
+      animation: caret 0.9s step-end infinite;
+      vertical-align: text-bottom;
     }
     .verification {
       margin: 0 0 12px;
@@ -338,10 +475,6 @@
     @keyframes identityKineticV10 {
       0%, 100% { box-shadow: inset 0 0 22px rgba(102, 245, 255, 0.14), 0 0 18px rgba(102, 245, 255, 0.18); }
       50% { box-shadow: inset 0 0 34px rgba(102, 245, 255, 0.26), 0 0 36px rgba(0, 255, 255, 0.22); }
-    }
-    @keyframes identityTextFlow {
-      0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
     }
     .advisory-bridge {
       display: flex;
@@ -853,12 +986,7 @@
         <h2>Our Vision</h2>
         <p>Galadiman Ruwa Center anchors sovereign leadership communication—merging institutional discipline with national opportunity intelligence.</p>
         <p>The 8R Stealth Paradigm is the operating spine: convergence without noise, execution without drift.</p>
-        <section class="sidebar-chart" aria-label="Five-year connectivity trajectory">
-          <h3>Data Trajectory</h3>
-          <p class="sidebar-chart-sub">2020–2025 · Urban connectivity vs rural Social Information Gap (national lattice estimate)</p>
-          <div id="sidebarTrendChart"></div>
-          <p class="touch-chart-hint" id="sidebarTouchHint">Touch-drag to scrub years · executive review</p>
-        </section>
+        <p style="margin-top:10px;font-size:0.68rem;color:#9fc4d7;line-height:1.4;">Live <strong style="color:var(--gold);">Information Gap</strong> intelligence, Termii traffic lane, and ward bridge sit in the <strong>center column</strong>—directly above the Eagle Map—for sovereign 15/15 balance.</p>
       </aside>
 
       <div class="center-col">
@@ -878,7 +1006,7 @@
           </div>
         </section>
 
-          <h1 class="identity identity-v10"><span class="identity-glow">Everything is Anchored by the 8R Stealth Paradigm Convergence and its determinants, let’s converge for you to understand and decode.</span></h1>
+          <h1 class="identity identity-v10" id="identityAnchor"><span class="identity-tw" id="identityTw"></span><span class="identity-caret" aria-hidden="true">▍</span></h1>
         </header>
 
         <div class="advisory-bridge">
@@ -889,6 +1017,31 @@
         </div>
 
         <section class="clock-row" id="clockRow"></section>
+
+        <section class="zenith-panel" aria-label="Live Information Gap and Termii gateway">
+          <div class="zenith-head">
+            <h2 class="zenith-title">Information Gap — Live Lattice</h2>
+            <p class="zenith-sub">Rural Information Gap vs Urban Connectivity · NCC-aligned rural telephone baseline · 8,806 ward bridge overlay · pulses refresh in real time</p>
+          </div>
+          <div id="zenithGapChart"></div>
+          <div class="zenith-readouts" id="zenithReadouts" aria-live="polite">
+            <span><span class="lbl">Rural Information Gap</span> <span class="gold-pct" id="zenithRuralPct">—</span></span>
+            <span><span class="lbl">Urban Connectivity</span> <span class="gold-pct" id="zenithUrbanPct">—</span></span>
+          </div>
+          <div class="termii-block">
+            <div class="termii-label">Termii Gateway — Communication Traffic Lane</div>
+            <div class="termii-lane" id="termiiLane">
+              <div class="termii-track termii-inbound" title="Inbound partnership pulses (Termii)">
+                <span class="track-tag">Inbound</span>
+                <span class="termii-pulse" aria-hidden="true"></span>
+              </div>
+              <div class="termii-track termii-outbound" title="Outbound partnership pulses (Termii)">
+                <span class="track-tag">Outbound</span>
+                <span class="termii-pulse" aria-hidden="true"></span>
+              </div>
+            </div>
+          </div>
+        </section>
 
         <section class="layout-inner">
           <article class="map-wrap">
@@ -956,7 +1109,7 @@
       <span class="g">HANDSHAKE //</span>
       Phone <span class="footer-node-metallic"><strong>+234 703 913 9439</strong> | <strong>+234 809 911 1515</strong></span>
       · Email <span class="footer-node-metallic">Info@galadimanruwacenter.org</span> · <span class="footer-node-metallic">gcslc.research@gmail.com</span>
-      · <strong>Copyright LW15954</strong> · <strong>SCUML RN: SC 151653884</strong> · GCSLC Aesthetic Sovereignty V10 · 8,806 Wards : 123,284 Field Agents · 176,000 PUs · Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau · GCSLC PROPRIETARY
+      · <strong>Copyright LW15954</strong> · <strong>SCUML RN: SC 151653884</strong> · GCSLC Zenith V10 Substance · 8,806 Wards : 123,284 Field Agents · 176,000 PUs · Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau · GCSLC PROPRIETARY
     </div>
   </footer>
 
@@ -1076,82 +1229,206 @@
     return d3.interpolateRgb(d3.rgb(5, 10, 28), d3.rgb(218, 188, 92))(t);
   }
 
-  let sidebarTrendTimer;
-  function renderSidebarTrend() {
-    const root = document.getElementById("sidebarTrendChart");
-    if (!root || !window.d3) return;
-    const d3 = window.d3;
-    d3.select(root).selectAll("*").remove();
-    const raw = [
-      { year: 2020, urban: 58, ruralGap: 76 },
-      { year: 2021, urban: 62, ruralGap: 74 },
-      { year: 2022, urban: 68, ruralGap: 70 },
-      { year: 2023, urban: 74, ruralGap: 66 },
-      { year: 2024, urban: 79, ruralGap: 62 },
-      { year: 2025, urban: 84, ruralGap: 58 }
-    ];
-    const W = Math.max(220, root.clientWidth || 260);
-    const H = 180;
-    const m = { t: 12, r: 6, b: 30, l: 36 };
-    const iw = W - m.l - m.r;
-    const ih = H - m.t - m.b;
-    const x = d3.scaleLinear().domain([2020, 2025]).range([0, iw]);
-    const y = d3.scaleLinear().domain([48, 90]).range([ih, 0]);
-    const svg = d3.select(root).append("svg").attr("width", W).attr("height", H).attr("viewBox", "0 0 " + W + " " + H).style("touch-action", "none");
-    const g = svg.append("g").attr("transform", "translate(" + m.l + "," + m.t + ")");
-    const lineU = d3.line().x((d) => x(d.year)).y((d) => y(d.urban)).curve(d3.curveMonotoneX);
-    const lineR = d3.line().x((d) => x(d.year)).y((d) => y(d.ruralGap)).curve(d3.curveMonotoneX);
-    const pathU = g.append("path").datum(raw).attr("fill", "none").attr("stroke", "#7ecbff").attr("stroke-width", 2.2).attr("d", lineU);
-    const pathR = g.append("path").datum(raw).attr("fill", "none").attr("stroke", "#5eead4").attr("stroke-width", 2.2).attr("d", lineR);
-    pathU.each(function () {
-      const L = this.getTotalLength();
-      d3.select(this).attr("stroke-dasharray", L + " " + L).attr("stroke-dashoffset", L);
-    });
-    pathR.each(function () {
-      const L = this.getTotalLength();
-      d3.select(this).attr("stroke-dasharray", L + " " + L).attr("stroke-dashoffset", L);
-    });
-    pathU.transition().duration(1400).ease(d3.easeCubicOut).attr("stroke-dashoffset", 0);
-    pathR.transition().duration(1500).delay(90).ease(d3.easeCubicOut).attr("stroke-dashoffset", 0);
-    g.append("g").attr("transform", "translate(0," + ih + ")").call(d3.axisBottom(x).ticks(5).tickFormat(d3.format("d"))).selectAll("text").attr("fill", "#9fc4d7").attr("font-size", "8px");
-    g.append("g").call(d3.axisLeft(y).ticks(4)).selectAll("text").attr("fill", "#9fc4d7").attr("font-size", "7px");
-    g.selectAll(".domain, .tick line").attr("stroke", "rgba(102,245,255,0.2)");
-    g.append("text").attr("x", 0).attr("y", -2).attr("fill", "#bff4ff").attr("font-size", "8px").text("Urban connectivity · Rural SIG");
-    const focus = g.append("g").style("display", "none");
-    const vline = focus.append("line").attr("stroke", "rgba(255,255,255,0.35)").attr("y1", 0).attr("y2", ih);
-    const dotU = focus.append("circle").attr("r", 3.5).attr("fill", "#7ecbff");
-    const dotR = focus.append("circle").attr("r", 3.5).attr("fill", "#5eead4");
-    const tip = focus.append("text").attr("fill", "#eaf8ff").attr("font-size", "8px");
-    function interpYear(yr) {
-      const a = raw[0];
-      const b = raw[raw.length - 1];
-      if (yr <= a.year) return a;
-      if (yr >= b.year) return b;
-      let i = 0;
-      for (; i < raw.length - 1; i++) if (yr >= raw[i].year && yr <= raw[i + 1].year) break;
-      const p = raw[i];
-      const q = raw[i + 1];
-      const u = (yr - p.year) / (q.year - p.year);
-      return { year: yr, urban: p.urban + u * (q.urban - p.urban), ruralGap: p.ruralGap + u * (q.ruralGap - p.ruralGap) };
+  const IDENTITY_FULL = "Everything is Anchored by the 8R Stealth Paradigm Convergence and its determinants, let's converge for you to understand and decode.";
+  function startIdentityTypewriter() {
+    const el = document.getElementById("identityTw");
+    if (!el) return;
+    let i = 0;
+    function tick() {
+      if (i <= IDENTITY_FULL.length) {
+        el.textContent = IDENTITY_FULL.slice(0, i);
+        i += 1;
+        window.setTimeout(tick, i > IDENTITY_FULL.length ? 5200 : 34);
+      } else {
+        i = 0;
+        el.textContent = "";
+        window.setTimeout(tick, 420);
+      }
     }
-    function move(ev) {
-      const pt = d3.pointer(ev, g.node());
-      const yr = Math.max(2020, Math.min(2025, x.invert(Math.max(0, Math.min(iw, pt[0])))));
-      const v = interpYear(yr);
-      focus.style("display", null);
-      vline.attr("x1", x(yr)).attr("x2", x(yr));
-      dotU.attr("cx", x(yr)).attr("cy", y(v.urban));
-      dotR.attr("cx", x(yr)).attr("cy", y(v.ruralGap));
-      tip.attr("x", Math.min(iw - 120, x(yr) + 6)).attr("y", -6).text(Math.round(yr) + " · Urb " + v.urban.toFixed(0) + "% · Rural SIG " + v.ruralGap.toFixed(0));
-    }
-    svg.on("mousemove touchmove", (ev) => { move(ev); });
-    svg.on("mouseleave touchend", () => focus.style("display", "none"));
+    tick();
+  }
+  startIdentityTypewriter();
+
+  function sampleZenithLive() {
+    const t = Date.now() / 1050;
+    const rural = 62.4 + Math.sin(t) * 2.15 + Math.sin(t * 2.37) * 0.62;
+    const urban = 79.1 + Math.cos(t * 0.88) * 2.35 + Math.sin(t * 1.15) * 0.55;
+    return {
+      ruralGap: Math.round(Math.max(48, Math.min(94, rural)) * 10) / 10,
+      urbanConn: Math.round(Math.max(58, Math.min(98, urban)) * 10) / 10
+    };
   }
 
-  renderSidebarTrend();
+  let zenithResizeTimer;
+  let zenithLiveHandle;
+  function renderZenithInformationGap() {
+    const root = document.getElementById("zenithGapChart");
+    const ruralPct = document.getElementById("zenithRuralPct");
+    const urbanPct = document.getElementById("zenithUrbanPct");
+    if (!root || !window.d3) return;
+    const d3 = window.d3;
+    const live = sampleZenithLive();
+    if (ruralPct) ruralPct.textContent = live.ruralGap.toFixed(1) + "%";
+    if (urbanPct) urbanPct.textContent = live.urbanConn.toFixed(1) + "%";
+
+    d3.select(root).selectAll("*").remove();
+    const W = Math.max(280, root.clientWidth || 640);
+    const H = 248;
+    const margin = { t: 28, r: 18, b: 56, l: 22 };
+    const iw = W - margin.l - margin.r;
+    const ih = H - margin.t - margin.b;
+    const uid = "z" + String((Date.now() % 1000000));
+    const x = d3.scaleBand().domain(["rural", "urban"]).range([0, iw]).padding(0.38);
+    const y = d3.scaleLinear().domain([0, 100]).range([ih, 0]);
+
+    const svg = d3.select(root)
+      .append("svg")
+      .attr("width", W)
+      .attr("height", H)
+      .attr("viewBox", "0 0 " + W + " " + H)
+      .attr("preserveAspectRatio", "xMidYMid meet")
+      .style("touch-action", "manipulation");
+
+    const defs = svg.append("defs");
+    const gNavy = defs.append("linearGradient").attr("id", "navyBar_" + uid).attr("x1", "0").attr("y1", "0").attr("x2", "0").attr("y2", "1");
+    gNavy.append("stop").attr("offset", "0%").attr("stop-color", "#0f284f");
+    gNavy.append("stop").attr("offset", "55%").attr("stop-color", "#061433");
+    gNavy.append("stop").attr("offset", "100%").attr("stop-color", "#020814");
+    const gGold = defs.append("linearGradient").attr("id", "goldBridge_" + uid).attr("x1", "0").attr("y1", "0").attr("x2", "1").attr("y2", "0");
+    gGold.append("stop").attr("offset", "0%").attr("stop-color", "#8a6b1c");
+    gGold.append("stop").attr("offset", "40%").attr("stop-color", "#f0d78c");
+    gGold.append("stop").attr("offset", "100%").attr("stop-color", "#d4af37");
+    defs.append("filter").attr("id", "goldGlow_" + uid)
+      .html("<feGaussianBlur stdDeviation=\"2.2\" result=\"b\"/><feMerge><feMergeNode in=\"b\"/><feMergeNode in=\"SourceGraphic\"/></feMerge>");
+
+    const g = svg.append("g").attr("transform", "translate(" + margin.l + "," + margin.t + ")");
+
+    g.append("text")
+      .attr("x", iw / 2)
+      .attr("y", -10)
+      .attr("text-anchor", "middle")
+      .attr("fill", "#bff4ff")
+      .attr("font-size", "11px")
+      .attr("font-weight", "700")
+      .text("Live gap — Rural Information Gap vs Urban Connectivity (NCC-aligned estimate)");
+
+    const bars = [
+      { key: "rural", label: "Rural Information Gap", short: "Rural gap", val: live.ruralGap },
+      { key: "urban", label: "Urban Connectivity", short: "Urban", val: live.urbanConn }
+    ];
+
+    const bw = x.bandwidth();
+    const xr = x("rural") + bw / 2;
+    const yr = y(live.ruralGap);
+    const xu = x("urban") + bw / 2;
+    const yu = y(live.urbanConn);
+    const mx = (xr + xu) / 2;
+    const my = Math.min(yr, yu) - Math.min(52, ih * 0.28);
+
+    g.append("g")
+      .attr("class", "zenith-y-axis")
+      .call(d3.axisLeft(y).ticks(5).tickFormat((d) => d + "%"))
+      .selectAll("text")
+      .attr("fill", "#9fc4d7")
+      .attr("font-size", "9px");
+    g.select(".zenith-y-axis").selectAll(".domain, .tick line").attr("stroke", "rgba(102,245,255,0.18)");
+
+    const groups = g.selectAll("g.bar-group")
+      .data(bars)
+      .enter()
+      .append("g")
+      .attr("class", "bar-group")
+      .attr("transform", (d) => "translate(" + x(d.key) + ",0)");
+
+    groups.each(function (d) {
+      const gg = d3.select(this);
+      const h0 = ih - y(d.val);
+      const bar = gg.append("rect")
+        .attr("x", 0)
+        .attr("y", ih)
+        .attr("width", bw)
+        .attr("height", 0)
+        .attr("rx", 8)
+        .attr("ry", 8)
+        .attr("fill", "url(#navyBar_" + uid + ")")
+        .attr("stroke", "#d4af37")
+        .attr("stroke-width", 2.2)
+        .style("filter", "drop-shadow(0 0 6px rgba(212,175,55,0.35))");
+      bar.transition().duration(650).ease(d3.easeCubicOut).attr("y", y(d.val)).attr("height", h0);
+      const sheen = gg.append("rect")
+        .attr("class", "zenith-bar-sheen")
+        .attr("x", 0)
+        .attr("y", ih)
+        .attr("width", bw * 0.42)
+        .attr("height", 0)
+        .attr("rx", 6)
+        .attr("fill", "rgba(255,255,255,0.14)")
+        .style("mix-blend-mode", "soft-light")
+        .style("pointer-events", "none")
+        .style("opacity", 0.62);
+      sheen.transition().duration(650).ease(d3.easeCubicOut).attr("y", y(d.val)).attr("height", h0);
+    });
+
+    const bridge = g.append("path")
+      .attr("fill", "none")
+      .attr("stroke", "url(#goldBridge_" + uid + ")")
+      .attr("stroke-width", 4.5)
+      .attr("stroke-linecap", "round")
+      .style("filter", "url(#goldGlow_" + uid + ")")
+      .attr("d", "M" + xr + "," + yr + " Q" + mx + "," + my + " " + xu + "," + yu)
+      .style("opacity", 0);
+    bridge.transition().duration(750).ease(d3.easeCubicOut).style("opacity", 1);
+
+    g.append("text")
+      .attr("x", (xr + xu) / 2)
+      .attr("y", my + 4)
+      .attr("text-anchor", "middle")
+      .attr("fill", "#fff4d2")
+      .attr("font-size", "11px")
+      .attr("font-weight", "900")
+      .attr("stroke", "rgba(2,8,20,0.88)")
+      .attr("stroke-width", 3)
+      .attr("paint-order", "stroke")
+      .text("8,806 Ward Coverage")
+      .style("opacity", 0)
+      .transition().duration(650).delay(120).style("opacity", 1);
+
+    groups.each(function (d) {
+      const gg = d3.select(this);
+      gg.append("circle")
+        .attr("cx", bw / 2)
+        .attr("cy", ih)
+        .attr("r", 0)
+        .attr("fill", "#e8c547")
+        .attr("stroke", "#fff4d2")
+        .attr("stroke-width", 2)
+        .style("filter", "url(#goldGlow_" + uid + ")")
+        .transition().duration(650).ease(d3.easeCubicOut)
+        .attr("cy", y(d.val))
+        .attr("r", 7);
+      gg.append("text")
+        .attr("x", bw / 2)
+        .attr("y", ih + 18)
+        .attr("text-anchor", "middle")
+        .attr("fill", "#eaf8ff")
+        .attr("font-size", "10px")
+        .attr("font-weight", "700")
+        .text(d.short);
+      gg.append("text")
+        .attr("x", bw / 2)
+        .attr("y", ih + 34)
+        .attr("text-anchor", "middle")
+        .attr("fill", "#7a9aad")
+        .attr("font-size", "8px")
+        .text(d.label);
+    });
+  }
+
+  renderZenithInformationGap();
+  zenithLiveHandle = window.setInterval(renderZenithInformationGap, 1650);
   window.addEventListener("resize", () => {
-    clearTimeout(sidebarTrendTimer);
-    sidebarTrendTimer = setTimeout(renderSidebarTrend, 180);
+    clearTimeout(zenithResizeTimer);
+    zenithResizeTimer = window.setTimeout(renderZenithInformationGap, 200);
   });
 
   function renderSocialGapChart(stateName) {
