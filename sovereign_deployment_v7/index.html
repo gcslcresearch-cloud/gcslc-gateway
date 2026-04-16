@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#001a33" />
-  <title>GCSLC — Sovereign Layer 01</title>
+  <title>GCSLC — V15 Diligence</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet" />
@@ -128,7 +128,7 @@
     }
     .shell-v7 {
       display: grid;
-      grid-template-columns: minmax(168px, 0.95fr) minmax(320px, 3fr) minmax(168px, 0.95fr);
+      grid-template-columns: minmax(200px, 1.15fr) minmax(340px, 4.25fr) minmax(160px, 0.9fr);
       gap: 12px;
       align-items: start;
     }
@@ -179,23 +179,38 @@
     }
     .zenith-title {
       margin: 0 0 4px;
-      font-size: clamp(0.72rem, 1.85vw, 0.95rem);
-      letter-spacing: 0.12em;
+      font-size: clamp(0.62rem, 1.45vw, 0.78rem);
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: #ffda7f;
+      color: var(--gold);
       font-weight: 900;
     }
-    .zenith-sub {
-      margin: 0;
-      font-size: clamp(0.58rem, 1.35vw, 0.72rem);
-      color: #9fc4d7;
-      line-height: 1.4;
+    .zenith-sub { display: none; }
+    .sidebar-diagnostics-v15 .diag-block {
+      margin-bottom: 10px;
+      padding: 8px;
+      border-radius: 10px;
+      border: 1px solid rgba(102, 245, 255, 0.14);
+      background: #001a33;
     }
+    .sidebar-diagnostics-v15 .diag-h {
+      margin: 0 0 6px;
+      font-size: 0.58rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-align: center;
+    }
+    .zenith-panel--compact {
+      padding: 8px 6px 10px !important;
+      margin-bottom: 0 !important;
+    }
+    .zenith-panel--compact .zenith-head { margin-bottom: 4px; }
     #zenithGapChart {
       position: relative;
       z-index: 1;
       width: 100%;
-      min-height: 150px;
+      min-height: 100px;
       touch-action: manipulation;
       -webkit-user-select: none;
       user-select: none;
@@ -223,6 +238,28 @@
       letter-spacing: 0.04em;
     }
     .zenith-readouts .lbl { color: #bff4ff; margin-right: 4px; }
+    .zenith-panel--compact .zenith-readouts {
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      margin-top: 6px;
+      font-size: clamp(0.48rem, 1.1vw, 0.62rem);
+    }
+    .sr-only-def {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    .termii-panel-v15 {
+      margin-bottom: 12px;
+      padding: 0 4px;
+    }
     .gold-pct {
       display: inline-block;
       background: linear-gradient(118deg, #fff4d2 0%, #d4af37 28%, #fff9e8 48%, #c9a227 72%, #f0e6c8 100%);
@@ -326,6 +363,14 @@
       min-height: 2.4em;
     }
     .header-apex-layer01 .apex-row1 .identity-tw { display: inline; }
+    .header-apex-layer01 .apex-row1 .identity-tw.apex-identity-deep-cyan {
+      color: #00acc1;
+      background: none;
+      -webkit-background-clip: border-box;
+      background-clip: border-box;
+      text-shadow: 0 0 18px rgba(0, 188, 212, 0.45);
+      animation: none;
+    }
     .header-apex-layer01 .apex-row2 {
       order: 2;
       margin: 0 0 8px;
@@ -347,7 +392,7 @@
       letter-spacing: 0.04em;
       line-height: 1.45;
       text-align: center;
-      color: rgba(0, 188, 212, 0.88);
+      color: #D4AF37;
     }
     .header-apex-layer01 .paradigm-apex { order: 4; width: 100%; }
     .identity-tw {
@@ -455,6 +500,7 @@
       text-align: center;
     }
     #apexTrajectoryChart, #nfVelocityChart { min-height: 110px !important; }
+    .sidebar-diagnostics-v15 #apexTrajectoryChart { min-height: 95px !important; }
     .btn-termii-test {
       margin-top: 10px;
       width: 100%;
@@ -648,6 +694,16 @@
       grid-template-columns: repeat(6, minmax(48px, 1fr));
       gap: 6px;
       margin-bottom: 12px;
+    }
+    .clock-widget-v15 {
+      width: 100%;
+      margin: 0 0 12px;
+    }
+    .map-stack-v15 .map-wrap {
+      min-height: min(74vh, 900px);
+    }
+    .map-stack-v15 #mapSvg {
+      min-height: min(62vh, 720px);
     }
     .clock-prism-frame {
       text-align: center;
@@ -850,6 +906,7 @@
       }
     }
     .map-wrap {
+      position: relative;
       border: 1px solid rgba(102, 245, 255, 0.16);
       border-radius: 16px;
       background: var(--surface-unified);
@@ -1346,7 +1403,8 @@
     .gov-backdrop.show { display: block; }
     @media (max-width: 1100px) {
       .shell-v7 { grid-template-columns: 1fr; }
-      .sidebar { order: 3; }
+      .sidebar-left.sidebar-diagnostics-v15 { order: 2; }
+      .sidebar-right { order: 3; }
       .center-col { order: 1; }
     }
     @media (max-width: 980px) {
@@ -1425,19 +1483,28 @@
 
   <main class="app">
     <div class="shell-v7">
-      <aside class="sidebar sidebar-left">
-        <h2>Our Vision</h2>
-        <p>The 8R Stealth Paradigm is the operating spine: convergence without noise, execution without drift.</p>
-        <div class="sidebar-chart-min" aria-label="Compact five-year gap trajectory">
-          <h3 class="sidebar-chart-h">5-Yr Information Gap</h3>
-          <p class="sidebar-chart-sub">Navy / gold · NCC-aligned baseline · national lattice</p>
-          <div id="apexTrajectoryChart"></div>
+      <aside class="sidebar sidebar-left sidebar-diagnostics-v15">
+        <div class="diagnostic-lane" aria-label="Diagnostic lane — live lattice">
+          <div class="diag-block">
+            <h3 class="diag-h">5-Yr Information Gap</h3>
+            <div id="apexTrajectoryChart"></div>
+          </div>
+          <div class="diag-block zenith-panel zenith-panel--compact" aria-label="Information Gap — Live Lattice">
+            <div class="zenith-head">
+              <h2 class="zenith-title">Information Gap — Live Lattice</h2>
+            </div>
+            <div id="zenithGapChart"></div>
+            <div class="zenith-readouts" id="zenithReadouts" aria-live="polite">
+              <span><span class="lbl">Rural Information Gap</span> <span class="gold-pct" id="zenithRuralPct">—</span></span>
+              <span><span class="lbl">Urban Connectivity</span> <span class="gold-pct" id="zenithUrbanPct">—</span></span>
+            </div>
+          </div>
         </div>
       </aside>
 
       <div class="center-col center-col-primary">
         <header class="header header-apex-layer01">
-          <p class="apex-row apex-row1" id="apexRowTypewriter" aria-live="polite"><span class="identity-tw identity-tw--shimmer" id="identityFullName">Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE</span></p>
+          <p class="apex-row apex-row1" id="apexRowTypewriter" aria-live="polite"><span class="identity-tw apex-identity-deep-cyan" id="identityFullName">Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE</span></p>
           <p class="apex-row apex-row2" id="apexRowRc">Galadiman Ruwa Nigeria Ltd RC 1871418</p>
           <p class="apex-row apex-row3" id="apexRowAnchor">Everything is Anchored by the 8R Stealth Paradigm Convergence and its determinants, let’s converge for you to understand and decode.</p>
 
@@ -1455,23 +1522,21 @@
         </section>
         </header>
 
-        <section class="layout-inner map-stack-v13">
+        <section class="clock-row clock-widget-v15" id="clockRow" aria-label="World clocks"></section>
+
+        <section class="layout-inner map-stack-v13 map-stack-v15">
           <article class="map-wrap living-terminal map-masterpiece">
-            <h2 class="map-title">Eagle Map — Masterpiece · Sovereign Lattice</h2>
-            <p class="map-kinetic-caption">Central command surface — bioluminescent <strong>gold</strong> ward vectors flow toward the <strong>Abuja–Zaria–Kano (AZK)</strong> corridor. Arrows: Non-Formal insight · States: full data burst.</p>
+            <h2 class="map-title">Eagle Map — Sovereign Lattice</h2>
+            <p class="map-kinetic-caption"><strong>AZK</strong> corridor · Abuja–Zaria–Kano · ward lattice to command node</p>
             <div class="map-layer-toggles" role="toolbar" aria-label="Institutional overlay toggles">
               <label class="layer-toggle"><input type="checkbox" id="layerMil" checked data-layer="mil" /> Military / Paramilitary</label>
               <label class="layer-toggle"><input type="checkbox" id="layerNysc" checked data-layer="nysc" /> NYSC</label>
               <label class="layer-toggle"><input type="checkbox" id="layerJamb" checked data-layer="jamb" /> JAMB</label>
             </div>
             <div class="grassroots-ribbon" id="grassrootsRibbon">
-              <strong>Grassroots Math LIVE:</strong> <span id="wardStat">8,806</span> Wards : <strong id="fieldAgentsStat">123,284</strong> Field Agents —
-              Bridging the <strong>60%</strong> Rural Connectivity Gap · <span id="puStat">176,000</span> PUs · Sovereign lattice overlay active.
+              <strong>Grassroots Math LIVE:</strong> <span id="wardStat">8,806</span> Wards · <strong id="fieldAgentsStat">123,284</strong> Field Agents · <span id="puStat">176,000</span> PUs
             </div>
-            <section class="definition-panel" aria-live="polite">
-              <h3 class="definition-title">8R Definition Stream (Slow-Motion)</h3>
-              <p class="definition-text typing-slow" id="prismDefinition">Hover a determinant to load the typewriter-pop definition stream.</p>
-            </section>
+            <p id="prismDefinition" class="sr-only-def" aria-live="polite"></p>
             <svg id="mapSvg" viewBox="0 0 760 680" role="img" aria-label="Nigeria map with grassroots heat and corridor"></svg>
           </article>
         </section>
@@ -1483,21 +1548,10 @@
           </div>
         </div>
 
-        <section class="clock-row" id="clockRow"></section>
-
-        <section class="zenith-panel" aria-label="Live Information Gap and Termii gateway">
-          <div class="zenith-head">
-            <h2 class="zenith-title">Information Gap — Live Lattice</h2>
-            <p class="zenith-sub">Rural Information Gap vs Urban Connectivity · NCC-aligned rural telephone baseline · 8,806 ward bridge overlay · pulses refresh in real time</p>
-          </div>
-          <div id="zenithGapChart"></div>
-          <div class="zenith-readouts" id="zenithReadouts" aria-live="polite">
-            <span><span class="lbl">Rural Information Gap</span> <span class="gold-pct" id="zenithRuralPct">—</span></span>
-            <span><span class="lbl">Urban Connectivity</span> <span class="gold-pct" id="zenithUrbanPct">—</span></span>
-          </div>
+        <section class="termii-panel-v15" aria-label="Termii gateway">
           <div class="termii-block">
             <div class="termii-label">Termii Gateway — NAFC Secure Channel</div>
-            <p class="termii-nafc-note">National Alert Fusion Center (NAFC) sender ID · Inbound/Outbound lanes stay live · Set <code style="font-size:0.9em;">window.GCSLC_NAFC_TERMII</code> for Termii live test (API key + destination).</p>
+            <p class="termii-nafc-note">National Alert Fusion Center (NAFC) · Inbound / Outbound secure lanes</p>
             <div class="termii-lane" id="termiiLane">
               <div class="termii-track termii-inbound" title="Inbound partnership pulses (Termii)">
                 <span class="track-tag">Inbound</span>
@@ -1516,13 +1570,11 @@
 
       <aside class="sidebar sidebar-right">
         <h2>Governance</h2>
-        <p>Legal anchors and SCUML registration are in the Governance vault (edge control).</p>
         <div class="sidebar-chart-min" aria-label="Compact non-formal velocity">
           <h3 class="sidebar-chart-h">Non-Formal Velocity</h3>
           <p class="sidebar-chart-sub" id="nfVelocityBridgeCopy">Livestock · Artisans · Micro-Services — scaled by the SIG bridge (36 + FCT).</p>
           <div id="nfVelocityChart"></div>
         </div>
-        <p style="margin-top:10px;font-size:0.68rem;"><strong>Open the panel</strong> to audit copyright, SCUML RN, author line, and communication nodes.</p>
       </aside>
     </div>
   </main>
@@ -1704,12 +1756,8 @@
   const prismBoxes = [].slice.call(document.querySelectorAll(".prism-box"));
   const definitionEl = document.getElementById("prismDefinition");
   function typeDefinitionSlow(text) {
-    definitionEl.classList.remove("typing-slow");
-    definitionEl.textContent = "";
-    void definitionEl.offsetWidth;
-    definitionEl.textContent = text;
-    void definitionEl.offsetWidth;
-    definitionEl.classList.add("typing-slow");
+    if (!definitionEl) return;
+    definitionEl.textContent = text || "";
   }
   prismBoxes.forEach((box) => {
     function activate() {
@@ -1746,9 +1794,13 @@
     const nccUrban = [58, 62, 68, 74, 79, 84];
     const nccRuralSig = [76, 74, 70, 66, 62, 58];
     const series = years.map((y, i) => ({ year: y, urban: nccUrban[i], ruralSig: nccRuralSig[i] }));
-    const elW = Math.max(200, root.clientWidth || 280);
-    const h = 158;
-    const margin = { top: 14, right: 8, bottom: 26, left: 36 };
+    const cw = root.clientWidth || 240;
+    const elW = Math.max(130, cw);
+    const compact = elW < 300;
+    const h = compact ? 118 : 158;
+    const margin = compact
+      ? { top: 8, right: 4, bottom: 20, left: 26 }
+      : { top: 14, right: 8, bottom: 26, left: 36 };
     const innerW = elW - margin.left - margin.right;
     const innerH = h - margin.top - margin.bottom;
     const x = d3.scalePoint().domain(years).range([0, innerW]).padding(0.22);
@@ -1762,8 +1814,8 @@
       .style("touch-action", "manipulation");
     const defs = svg.append("defs");
     const gradN = defs.append("linearGradient").attr("id", "apexNavy_" + uid).attr("x1", "0").attr("y1", "0").attr("x2", "0").attr("y2", "1");
-    gradN.append("stop").attr("offset", "0%").attr("stop-color", "rgba(12, 36, 82, 0.62)");
-    gradN.append("stop").attr("offset", "100%").attr("stop-color", "rgba(2, 6, 18, 0.02)");
+    gradN.append("stop").attr("offset", "0%").attr("stop-color", "rgba(0, 26, 51, 0.85)");
+    gradN.append("stop").attr("offset", "100%").attr("stop-color", "rgba(0, 26, 51, 0.02)");
     const g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     const areaR = d3.area()
       .x((d) => x(d.year))
@@ -1787,7 +1839,7 @@
     const pR = g.append("path")
       .datum(series)
       .attr("fill", "none")
-      .attr("stroke", "#1e3a66")
+      .attr("stroke", "#4dd0e1")
       .attr("stroke-width", 2.4)
       .attr("stroke-linecap", "round")
       .attr("d", lineR);
@@ -1807,8 +1859,8 @@
     const leg = g.append("g").attr("transform", "translate(" + Math.max(0, innerW - 178) + ", -4)");
     leg.append("line").attr("x1", 0).attr("x2", 16).attr("y1", 0).attr("y2", 0).attr("stroke", "#d4af37").attr("stroke-width", 2.5);
     leg.append("text").attr("x", 20).attr("y", 3).attr("fill", "#f0d78c").attr("font-size", "8px").attr("font-weight", "800").text("Urban");
-    leg.append("line").attr("x1", 62).attr("x2", 78).attr("y1", 0).attr("y2", 0).attr("stroke", "#1e3a66").attr("stroke-width", 2.2);
-    leg.append("text").attr("x", 82).attr("y", 3).attr("fill", "#bff4ff").attr("font-size", "8px").attr("font-weight", "800").text("Rural SIG");
+    leg.append("line").attr("x1", 62).attr("x2", 78).attr("y1", 0).attr("y2", 0).attr("stroke", "#4dd0e1").attr("stroke-width", 2.2);
+    leg.append("text").attr("x", 82).attr("y", 3).attr("fill", "#a5f3fc").attr("font-size", "8px").attr("font-weight", "800").text("Rural SIG");
   }
 
   function sampleZenithLive() {
@@ -1827,7 +1879,7 @@
     if (!root || !window.d3) return;
     const live = sampleZenithLive();
     if (bridgeEl) {
-      bridgeEl.innerHTML = "Potential revenue velocity (Livestock · Artisans · Micro-Services) across <strong>36 states + FCT</strong> — live rural SIG <strong>" + live.ruralGap.toFixed(1) + "%</strong> · urban connectivity <strong>" + live.urbanConn.toFixed(1) + "%</strong>. <strong>Bridge factor</strong> scales indexed throughput as the Information Gap compresses toward <strong>AZK</strong> + Termii delivery.";
+      bridgeEl.innerHTML = "Non-formal velocity · <strong>36 + FCT</strong> · SIG <strong>" + live.ruralGap.toFixed(1) + "%</strong> / urban <strong>" + live.urbanConn.toFixed(1) + "%</strong>";
     }
     const d3 = window.d3;
     d3.select(root).selectAll("*").remove();
@@ -1931,9 +1983,10 @@
     if (urbanPct) urbanPct.textContent = live.urbanConn.toFixed(1) + "%";
 
     d3.select(root).selectAll("*").remove();
-    const W = Math.max(260, root.clientWidth || 640);
-    const H = 188;
-    const margin = { t: 22, r: 14, b: 44, l: 18 };
+    const cw = root.clientWidth || 220;
+    const W = Math.max(120, Math.min(320, cw));
+    const H = W < 260 ? 132 : 168;
+    const margin = { t: 10, r: 10, b: 34, l: 14 };
     const iw = W - margin.l - margin.r;
     const ih = H - margin.t - margin.b;
     const uid = "z" + String((Date.now() % 1000000));
@@ -1950,9 +2003,9 @@
 
     const defs = svg.append("defs");
     const gNavy = defs.append("linearGradient").attr("id", "navyBar_" + uid).attr("x1", "0").attr("y1", "0").attr("x2", "0").attr("y2", "1");
-    gNavy.append("stop").attr("offset", "0%").attr("stop-color", "#0f284f");
-    gNavy.append("stop").attr("offset", "55%").attr("stop-color", "#061433");
-    gNavy.append("stop").attr("offset", "100%").attr("stop-color", "#020814");
+    gNavy.append("stop").attr("offset", "0%").attr("stop-color", "#001a33");
+    gNavy.append("stop").attr("offset", "55%").attr("stop-color", "#001a33");
+    gNavy.append("stop").attr("offset", "100%").attr("stop-color", "#000d1a");
     const gGold = defs.append("linearGradient").attr("id", "goldBridge_" + uid).attr("x1", "0").attr("y1", "0").attr("x2", "1").attr("y2", "0");
     gGold.append("stop").attr("offset", "0%").attr("stop-color", "#8a6b1c");
     gGold.append("stop").attr("offset", "40%").attr("stop-color", "#f0d78c");
@@ -1961,15 +2014,6 @@
       .html("<feGaussianBlur stdDeviation=\"2.2\" result=\"b\"/><feMerge><feMergeNode in=\"b\"/><feMergeNode in=\"SourceGraphic\"/></feMerge>");
 
     const g = svg.append("g").attr("transform", "translate(" + margin.l + "," + margin.t + ")");
-
-    g.append("text")
-      .attr("x", iw / 2)
-      .attr("y", -10)
-      .attr("text-anchor", "middle")
-      .attr("fill", "#bff4ff")
-      .attr("font-size", "11px")
-      .attr("font-weight", "700")
-      .text("Live gap — Rural Information Gap vs Urban Connectivity (NCC-aligned estimate)");
 
     const bars = [
       { key: "rural", label: "Rural Information Gap", short: "Rural gap", val: live.ruralGap },
