@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#020a1f" />
-  <title>GCSLC — Sovereign Deployment V7 Zenith</title>
+  <title>GCSLC — Sovereign Aesthetic V8 Ultra</title>
   <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
   <style>
     :root {
@@ -18,7 +18,9 @@
       --sub: #c8e8f6;
       --map-fill: #1e90a7;
       --map-stroke: #d2f7ff;
-      --footer-h: min(120px, 22vw);
+      --intel-h: 38px;
+      --footer-core: min(108px, 28vw);
+      --footer-h: calc(var(--intel-h) + var(--footer-core));
     }
     * { box-sizing: border-box; }
     body {
@@ -33,7 +35,7 @@
       overflow-x: hidden;
       position: relative;
     }
-    /* Diagonal proprietary watermark — shimmering diagonal */
+    /* Diagonal proprietary watermark — parallax layer + shimmer */
     .wm-proprietary {
       position: fixed;
       inset: 0;
@@ -41,16 +43,20 @@
       pointer-events: none;
       overflow: hidden;
     }
-    .wm-proprietary span {
+    .wm-parallax-layer {
       position: absolute;
       top: 42%;
       left: -20%;
       width: 140%;
+      will-change: transform;
+      transform: rotate(-32deg) translateZ(0);
       text-align: center;
+    }
+    .wm-parallax-layer span {
+      display: block;
       font-size: clamp(2.2rem, 8vw, 4.5rem);
       font-weight: 900;
       letter-spacing: 0.35em;
-      transform: rotate(-32deg);
       text-transform: uppercase;
       user-select: none;
       background-image: linear-gradient(
@@ -147,15 +153,111 @@
       white-space: nowrap;
       border-right: 3px solid rgba(102,245,255,0.95);
       text-shadow: 0 0 14px rgba(102,245,255,0.45);
-      animation: headerType 52s steps(218, end) infinite, caret 1.1s step-end infinite;
+      animation: headerTypeSlow 72s steps(218, end) infinite, caret 1.1s step-end infinite;
     }
     .verification {
-      margin: 0;
+      margin: 0 0 12px;
       color: var(--sub);
       text-transform: uppercase;
       letter-spacing: 0.12em;
       font-size: clamp(0.68rem, 1.75vw, 0.95rem);
       font-stretch: condensed;
+    }
+    /* 8R apex row — glassmorphic prisms + AZK-sync bioluminescent pulse */
+    .paradigm-apex {
+      container-type: inline-size;
+      container-name: paradigm;
+      width: 100%;
+      margin: 0 0 14px;
+    }
+    .prisms-row {
+      display: grid;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      gap: 8px;
+      align-items: stretch;
+    }
+    @container paradigm (max-width: 720px) {
+      .prisms-row {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+      }
+    }
+    .prism-box.v8-glass {
+      position: relative;
+      isolation: isolate;
+      min-height: max(44px, min(50px, 11vw));
+      padding: 8px 4px;
+      border-radius: 12px;
+      clip-path: polygon(8% 0, 92% 0, 100% 50%, 92% 100%, 8% 100%, 0 50%);
+      border: 1px solid rgba(102, 245, 255, 0.38);
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, transparent 42%),
+        linear-gradient(210deg, rgba(8, 32, 72, 0.55), rgba(4, 14, 36, 0.28));
+      backdrop-filter: blur(16px) saturate(155%);
+      -webkit-backdrop-filter: blur(16px) saturate(155%);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.14),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+        0 10px 28px rgba(0, 24, 64, 0.5);
+      font-size: clamp(0.58rem, 1.35vw, 0.68rem);
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(240, 248, 255, 0.95);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: rgba(102, 245, 255, 0.15);
+      animation: glassPrismShimmer 5s linear infinite, azkBiolumPulse 1.15s ease-in-out infinite;
+    }
+    .prism-box.v8-glass > span {
+      position: relative;
+      z-index: 1;
+    }
+    .prism-box.v8-glass::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      clip-path: inherit;
+      pointer-events: none;
+      background: linear-gradient(118deg, transparent 28%, rgba(102, 245, 255, 0.22) 48%, rgba(212, 175, 55, 0.16) 52%, transparent 72%);
+      background-size: 220% 100%;
+      animation: glassPrismShimmer 5s linear infinite reverse;
+      opacity: 0.88;
+    }
+    .prism-box.v8-glass:hover,
+    .prism-box.v8-glass:focus-visible,
+    .prism-box.v8-glass.active {
+      transform: translateY(-2px) scale(1.02);
+      filter: brightness(1.08);
+      outline: none;
+      z-index: 2;
+    }
+    @keyframes glassPrismShimmer {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
+    @keyframes azkBiolumPulse {
+      0%, 100% {
+        border-color: rgba(102, 245, 255, 0.35);
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.12),
+          inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+          0 0 10px rgba(0, 255, 255, 0.12),
+          0 10px 26px rgba(0, 24, 64, 0.45);
+      }
+      50% {
+        border-color: rgba(166, 251, 255, 0.95);
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.2),
+          inset 0 -1px 0 rgba(0, 0, 0, 0.35),
+          0 0 26px rgba(102, 245, 255, 0.55),
+          0 0 42px rgba(0, 255, 255, 0.28),
+          0 12px 32px rgba(0, 40, 90, 0.55);
+      }
     }
     .advisory-bridge {
       display: flex;
@@ -255,37 +357,8 @@
     .second { width: 1px; height: 12px; margin-left: -0.5px; background: #67f4ff; }
     .city { font-size: 0.48rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--cyan-soft); font-weight: 700; }
     .layout-inner {
-      display: grid;
-      grid-template-columns: 1fr 2.5fr;
-      gap: 12px;
-      align-items: start;
-    }
-    .prisms { display: grid; gap: 7px; }
-    .prism-box {
-      min-height: max(44px, min(52px, 11vw));
-      touch-action: manipulation;
-      -webkit-tap-highlight-color: rgba(212, 175, 55, 0.2);
-      border: 1.5px solid var(--gold);
-      border-left-width: 3px;
-      border-right-width: 3px;
-      background: linear-gradient(130deg, #000080 0%, #1e1e1e 45%, #000080 100%);
-      background-size: 260% 260%;
-      clip-path: polygon(9% 0, 91% 0, 100% 50%, 91% 100%, 9% 100%, 0 50%);
-      display: grid;
-      place-items: center;
-      font-size: 0.66rem;
-      font-weight: 700;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-      color: #f7f0c4;
-      animation: prismShimmer 2.8s linear infinite, prismSparkle 3.4s ease-in-out infinite;
-      cursor: pointer;
-    }
-    .prism-box:hover, .prism-box:focus-visible, .prism-box.active {
-      transform: translateY(-1px) scale(1.01);
-      filter: brightness(1.12);
-      box-shadow: 0 0 14px rgba(212,175,55,0.45);
-      outline: none;
+      display: block;
+      width: 100%;
     }
     .definition-panel {
       margin-bottom: 8px;
@@ -336,7 +409,16 @@
     #mapSvg { width: 100%; height: auto; display: block; border-radius: 10px; border: 1px solid rgba(103,193,238,0.32); background: linear-gradient(180deg, rgba(8,29,74,0.82), rgba(3,15,40,0.82)); }
     .state { fill: var(--map-fill); stroke: var(--map-stroke); stroke-width: 0.85; cursor: pointer; transition: fill 0.15s ease; }
     .state:hover, .state:focus-visible { fill: #35d7d8; outline: none; }
-    .heatmap-dot { pointer-events: none; mix-blend-mode: screen; }
+    .heatmap-dot {
+      pointer-events: none;
+      mix-blend-mode: screen;
+      transition: r 0.45s cubic-bezier(0.22, 1, 0.36, 1), fill 0.45s ease, stroke 0.45s ease, stroke-width 0.45s ease, filter 0.45s ease;
+    }
+    .heatmap-dot.micro-star.is-lit {
+      filter: drop-shadow(0 0 4px #bff4ff) drop-shadow(0 0 10px #66f5ff) drop-shadow(0 0 18px rgba(102, 245, 255, 0.65));
+      stroke: rgba(200, 255, 255, 0.95);
+      stroke-width: 1.25;
+    }
     .corridor-vector {
       fill: none;
       stroke: url(#corridorEnergyGrad);
@@ -416,15 +498,91 @@
       text-transform: uppercase;
       cursor: pointer;
     }
+    /* Strategic Intelligence — tiered SN / SC / SA ticker */
+    .intel-ticker {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: var(--footer-core);
+      z-index: 52;
+      min-height: var(--intel-h);
+      display: flex;
+      align-items: stretch;
+      border-top: 1px solid rgba(102, 245, 255, 0.28);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.45);
+      background: linear-gradient(90deg, rgba(2, 10, 28, 0.96), rgba(0, 20, 55, 0.94));
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      overflow: hidden;
+    }
+    .intel-ticker-label {
+      flex: 0 0 auto;
+      padding: 0 12px;
+      display: grid;
+      place-items: center;
+      font-size: 0.58rem;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #ffda7f;
+      background: linear-gradient(180deg, rgba(212, 175, 55, 0.2), rgba(0, 0, 40, 0.5));
+      border-right: 1px solid rgba(212, 175, 55, 0.35);
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+    }
+    .intel-marquee {
+      flex: 1;
+      min-width: 0;
+      position: relative;
+      overflow: hidden;
+      mask-image: linear-gradient(90deg, transparent, #000 2%, #000 98%, transparent);
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 2%, #000 98%, transparent);
+    }
+    .intel-band {
+      display: flex;
+      width: max-content;
+      animation: intelSlide 48s linear infinite;
+    }
+    .intel-track {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      white-space: nowrap;
+      padding: 8px 16px 8px 0;
+    }
+    .intel-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: clamp(0.56rem, 1.25vw, 0.68rem);
+      letter-spacing: 0.04em;
+    }
+    .intel-item .badge {
+      flex: 0 0 auto;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-weight: 900;
+      font-size: 0.52rem;
+      letter-spacing: 0.1em;
+    }
+    .tier-sn .badge { background: rgba(46, 204, 113, 0.25); color: #9ff5c4; border: 1px solid rgba(46, 204, 113, 0.55); }
+    .tier-sc .badge { background: rgba(255, 193, 7, 0.2); color: #ffe8a6; border: 1px solid rgba(255, 193, 7, 0.55); }
+    .tier-sa .badge { background: rgba(229, 62, 62, 0.22); color: #ffc9c9; border: 1px solid rgba(229, 62, 62, 0.55); }
+    .intel-item .txt { color: #d6eefc; }
+    @keyframes intelSlide {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
     .footer {
       position: fixed;
       left: 0;
       right: 0;
       bottom: 0;
-      min-height: var(--footer-h);
+      min-height: var(--footer-core);
       z-index: 50;
-      border-top: 1px solid rgba(102, 245, 255, 0.35);
-      background: linear-gradient(180deg, rgba(2, 12, 32, 0.98), rgba(0, 0, 40, 0.99));
+      border-top: 1px solid rgba(212, 175, 55, 0.35);
+      background: linear-gradient(180deg, rgba(4, 8, 20, 0.98), rgba(0, 0, 32, 0.99));
       padding: 8px max(12px, env(safe-area-inset-left)) calc(10px + env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-right));
     }
     .footer-typewriter {
@@ -434,10 +592,11 @@
       font-size: clamp(0.55rem, 1.35vw, 0.72rem);
       letter-spacing: 0.04em;
       color: #bff4ff;
-      border: 1px solid rgba(102, 245, 255, 0.3);
-      border-radius: 8px;
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      border-radius: 10px;
       padding: 10px 12px;
-      background: rgba(0, 20, 55, 0.55);
+      background: linear-gradient(165deg, rgba(30, 32, 38, 0.75), rgba(0, 24, 64, 0.55));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 4px 20px rgba(0, 0, 0, 0.35);
       overflow: hidden;
       white-space: nowrap;
       border-right: 2px solid rgba(102,245,255,0.85);
@@ -445,6 +604,14 @@
       animation: footerTw 38s steps(220, end) infinite, caret 1s step-end infinite;
     }
     .footer-typewriter .g { color: var(--gold); }
+    .footer-node-metallic {
+      background: linear-gradient(118deg, #f8f4e8 0%, #d4af37 22%, #fff9e8 42%, #8a9ba8 55%, #e8eef2 72%, #d4af37 88%, #c8d4dc 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: 800;
+      text-shadow: 0 0 1px rgba(212, 175, 55, 0.35);
+    }
     /* Governance sliding sidebar */
     .gov-toggle {
       position: fixed;
@@ -515,7 +682,6 @@
       .center-col { order: 1; }
     }
     @media (max-width: 980px) {
-      .layout-inner { grid-template-columns: 1fr; }
       .clock-row { grid-template-columns: repeat(3, 1fr); }
     }
     @media (max-width: 520px) {
@@ -540,8 +706,8 @@
       0%, 100% { box-shadow: 0 0 12px rgba(212,175,55,0.35); transform: scale(1); }
       50% { box-shadow: 0 0 26px rgba(212,175,55,0.65); transform: scale(1.02); }
     }
-    @keyframes headerType {
-      0% { width: 0; } 38% { width: 100%; } 62% { width: 100%; } 98% { width: 0; } 100% { width: 0; }
+    @keyframes headerTypeSlow {
+      0% { width: 0; } 32% { width: 100%; } 68% { width: 100%; } 97% { width: 0; } 100% { width: 0; }
     }
     @keyframes footerTw {
       0% { width: 0; } 35% { width: 100%; } 65% { width: 100%; } 97% { width: 0; } 100% { width: 0; }
@@ -561,7 +727,9 @@
   </style>
 </head>
 <body>
-  <div class="wm-proprietary" aria-hidden="true"><span>GCSLC PROPRIETARY</span></div>
+  <div class="wm-proprietary" id="wmProprietary" aria-hidden="true">
+    <div class="wm-parallax-layer" id="wmParallaxLayer"><span>GCSLC PROPRIETARY</span></div>
+  </div>
 
   <div class="gov-backdrop" id="govBackdrop" aria-hidden="true"></div>
   <button type="button" class="gov-toggle" id="govToggle" aria-controls="governanceSlide" aria-expanded="false">GOVERNANCE</button>
@@ -601,6 +769,19 @@
           <p class="verification">Galadiman Ruwa Nigeria Ltd RC 187 1418</p>
         </header>
 
+        <section class="paradigm-apex" aria-label="8R Stealth Paradigm determinants">
+          <div class="prisms-row" id="prismsRow">
+            <div class="prism-box v8-glass" tabindex="0" data-definition="Refine — sharpen mandate clarity, strip noise from signal, and preserve strategic precision across every sovereign decision lane."><span>Refine</span></div>
+            <div class="prism-box v8-glass" tabindex="0" data-definition="Reset — recalibrate operational tempo, restore disciplined baselines, and re-anchor execution to institutional intent."><span>Reset</span></div>
+            <div class="prism-box v8-glass" tabindex="0" data-definition="Research — gather verified intelligence and evidence-led insight to decode complexity before commitment."><span>Research</span></div>
+            <div class="prism-box v8-glass" tabindex="0" data-definition="Restructure — realign institutions for accountability, continuity, and measurable national outcomes."><span>Restructure</span></div>
+            <div class="prism-box v8-glass" tabindex="0" data-definition="Resuscitate — revive dormant opportunity corridors and reactivate strategic assets with disciplined stewardship."><span>Resuscitate</span></div>
+            <div class="prism-box v8-glass" tabindex="0" data-definition="Revitalize — inject momentum across leadership layers and rebuild capability where erosion threatens sovereignty."><span>Revitalize</span></div>
+            <div class="prism-box v8-glass" tabindex="0" data-definition="Re-engineer — redesign systems for resilience, speed, and long-cycle sovereignty under transparent governance."><span>Re-engineer</span></div>
+            <div class="prism-box v8-glass" tabindex="0" data-definition="Retain — secure gains, protect institutional memory, and sustain outcomes beyond the tactical moment."><span>Retain</span></div>
+          </div>
+        </section>
+
         <div class="advisory-bridge">
           <div class="api-revenue-path">
             <span class="api-path-label">GCSLC API Revenue Path</span>
@@ -611,17 +792,6 @@
         <section class="clock-row" id="clockRow"></section>
 
         <section class="layout-inner">
-          <aside class="prisms" aria-label="8R Determinants">
-            <div class="prism-box" tabindex="0" data-definition="Refine — sharpen mandate clarity, strip noise from signal, and preserve strategic precision across every sovereign decision lane.">Refine</div>
-            <div class="prism-box" tabindex="0" data-definition="Reset — recalibrate operational tempo, restore disciplined baselines, and re-anchor execution to institutional intent.">Reset</div>
-            <div class="prism-box" tabindex="0" data-definition="Research — gather verified intelligence and evidence-led insight to decode complexity before commitment.">Research</div>
-            <div class="prism-box" tabindex="0" data-definition="Restructure — realign institutions for accountability, continuity, and measurable national outcomes.">Restructure</div>
-            <div class="prism-box" tabindex="0" data-definition="Resuscitate — revive dormant opportunity corridors and reactivate strategic assets with disciplined stewardship.">Resuscitate</div>
-            <div class="prism-box" tabindex="0" data-definition="Revitalize — inject momentum across leadership layers and rebuild capability where erosion threatens sovereignty.">Revitalize</div>
-            <div class="prism-box" tabindex="0" data-definition="Re-engineer — redesign systems for resilience, speed, and long-cycle sovereignty under transparent governance.">Re-engineer</div>
-            <div class="prism-box" tabindex="0" data-definition="Retain — secure gains, protect institutional memory, and sustain outcomes beyond the tactical moment.">Retain</div>
-          </aside>
-
           <article class="map-wrap">
             <h2 class="map-title">Eagle Map — Grassroots Layer + AZK High-Velocity Pulse Corridor</h2>
             <div class="grassroots-ribbon" id="grassrootsRibbon">
@@ -651,7 +821,7 @@
       <p class="sub" id="modalStateLabel" style="margin:0 0 8px;font-size:0.72rem;color:#9fc4d7;">State</p>
       <p style="margin:0 0 12px;color:#ffda7f;font-weight:600;">Eagle: Go and work in this area of Opportunity.</p>
       <p style="margin:0 0 6px;font-size:0.7rem;color:#f0cd67;letter-spacing:0.06em;text-transform:uppercase;">Social Information Gap</p>
-      <p style="margin:0 0 8px;font-size:0.68rem;color:#bff4ff;">Rural <span style="color:#9fc4d7">vs.</span> Urban (indexed 0–100, D3 lattice estimate)</p>
+      <p style="margin:0 0 8px;font-size:0.68rem;color:#bff4ff;">Rural <span style="color:#9fc4d7">vs.</span> Urban — live area chart (0–100 lattice)</p>
       <div style="background:rgba(4,16,40,0.65);border:1px solid rgba(102,245,255,0.28);border-radius:10px;padding:10px;min-height:220px;"><div id="liveChartGap"></div></div>
       <p style="font-size:0.56rem;color:#7a9aad;margin-top:10px;line-height:1.4;">Estimates are state-seeded for command visualization (8,806 wards at 1:14 across 176,000 PUs)—not a securities offering.</p>
       <button type="button" class="modal-close" id="modalClose">Acknowledge / Close</button>
@@ -671,12 +841,28 @@
     </div>
   </div>
 
+  <div class="intel-ticker" role="region" aria-label="Strategic Intelligence feed">
+    <div class="intel-ticker-label" title="Strategic Intelligence">SI</div>
+    <div class="intel-marquee">
+      <div class="intel-band" id="intelBand">
+        <div class="intel-track" id="intelTrack">
+          <span class="intel-item tier-sn"><span class="badge">SN</span><span class="txt">Strategic Normal — AZK corridor sync nominal · ward lattice stable</span></span>
+          <span class="intel-item tier-sc"><span class="badge">SC</span><span class="txt">Strategic Caution — cloud node handshake variance within tolerance</span></span>
+          <span class="intel-item tier-sa"><span class="badge">SA</span><span class="txt">Strategic Alert — verify SCUML routing before outbound advisory</span></span>
+          <span class="intel-item tier-sn"><span class="badge">SN</span><span class="txt">Grassroots 8,806 wards / 176k PU telemetry nominal</span></span>
+          <span class="intel-item tier-sc"><span class="badge">SC</span><span class="txt">Information gap deltas monitored — no autonomous capital action</span></span>
+          <span class="intel-item tier-sa"><span class="badge">SA</span><span class="txt">Privileged nodes: re-auth before cross-border data egress</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <footer class="footer">
     <div class="footer-typewriter" id="footerTw" title="Contact audit — institutional handshake">
       <span class="g">HANDSHAKE //</span>
-      Phone <strong>+234 703 913 9439</strong> | <strong>+234 809 911 1515</strong>
-      · Info@galadimanruwacenter.org | gcslc.research@gmail.com
-      · Sovereign V7 Zenith: 8,806 Wards (1:14) · 176,000 PUs · Author: Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau · GCSLC PROPRIETARY
+      Phone <span class="footer-node-metallic"><strong>+234 703 913 9439</strong> | <strong>+234 809 911 1515</strong></span>
+      · <span class="footer-node-metallic">Info@galadimanruwacenter.org</span> | gcslc.research@gmail.com
+      · Sovereign Aesthetic V8 Ultra: 8,806 Wards (1:14) · 176,000 PUs · Author: Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau · GCSLC PROPRIETARY
     </div>
   </footer>
 
@@ -696,6 +882,25 @@
   ];
   document.getElementById("wardStat").textContent = WARDS.toLocaleString();
   document.getElementById("puStat").textContent = PUS.toLocaleString();
+
+  (function initIntelClone() {
+    const band = document.getElementById("intelBand");
+    const t = document.getElementById("intelTrack");
+    if (!band || !t) return;
+    const t2 = t.cloneNode(true);
+    t2.removeAttribute("id");
+    t2.setAttribute("aria-hidden", "true");
+    band.appendChild(t2);
+  })();
+
+  const wmParallaxLayer = document.getElementById("wmParallaxLayer");
+  function wmParallax() {
+    if (!wmParallaxLayer) return;
+    const y = window.scrollY || window.pageYOffset || 0;
+    wmParallaxLayer.style.transform = "translate3d(0," + (y * 0.09).toFixed(2) + "px,0) rotate(-32deg)";
+  }
+  window.addEventListener("scroll", wmParallax, { passive: true });
+  wmParallax();
 
   const row = document.getElementById("clockRow");
   cities.forEach((c) => {
@@ -749,41 +954,57 @@
     const d3 = window.d3;
     d3.select(root).selectAll("*").remove();
     const seed = hashStr(stateName);
-    const rng = mulberry32(seed ^ 0x9e3779b9);
-    const rural = 44 + Math.floor(rng() * 46);
-    const urban = 26 + Math.floor(rng() * 48);
-    const narrow = (root.clientWidth || window.innerWidth || 400) < 380;
-    const data = [
-      { key: narrow ? "Rural" : "Rural — Social Information Gap", value: rural, fill: "url(#socGradRural)" },
-      { key: narrow ? "Urban" : "Urban — Social Information Gap", value: urban, fill: "url(#socGradUrban)" }
-    ];
-    const elW = Math.max(260, root.clientWidth || Math.min(480, window.innerWidth - 48));
-    const margin = { top: 8, right: narrow ? 10 : 16, bottom: 28, left: narrow ? 72 : 118 };
-    const barH = narrow ? 26 : 22;
-    const gapY = narrow ? 16 : 14;
-    const rowStep = barH + gapY;
-    const height = margin.top + data.length * rowStep + margin.bottom;
-    const innerW = elW - margin.left - margin.right;
-    const x = d3.scaleLinear().domain([0, 100]).range([0, innerW]);
-    const svg = d3.select(root).append("svg").attr("width", elW).attr("height", height).attr("viewBox", "0 0 " + elW + " " + height).attr("preserveAspectRatio", "xMinYMin meet");
-    const defs = svg.append("defs");
-    defs.append("linearGradient").attr("id", "socGradRural").attr("x1", "0%").attr("x2", "100%")
-      .selectAll("stop").data([{ o: "0%", c: "#1a3d28" }, { o: "100%", c: "#5eead4" }]).enter().append("stop").attr("offset", (d) => d.o).attr("stop-color", (d) => d.c);
-    defs.append("linearGradient").attr("id", "socGradUrban").attr("x1", "0%").attr("x2", "100%")
-      .selectAll("stop").data([{ o: "0%", c: "#1e2a4a" }, { o: "100%", c: "#7ecbff" }]).enter().append("stop").attr("offset", (d) => d.o).attr("stop-color", (d) => d.c);
-    const g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-    const xAxisG = g.append("g").attr("transform", "translate(0," + (data.length * rowStep) + ")")
-      .call(d3.axisBottom(x).ticks(5).tickFormat((d) => d + "%").tickSizeOuter(0));
-    xAxisG.selectAll("text").attr("fill", "#9fc4d7").attr("font-size", narrow ? "8px" : "9px");
-    xAxisG.selectAll(".domain, .tick line").attr("stroke", "rgba(102,245,255,0.25)");
-    data.forEach((d, i) => {
-      const row = g.append("g").attr("class", "row").attr("transform", "translate(0," + (i * rowStep) + ")");
-      row.append("rect").attr("x", -margin.left + 4).attr("y", 0).attr("width", margin.left - 8).attr("height", barH).attr("fill", "rgba(4,16,40,0.5)").attr("rx", 4);
-      row.append("text").attr("x", -margin.left + 10).attr("y", barH / 2 + 4).attr("fill", "#bff4ff").attr("font-size", narrow ? "9px" : "10px").text(d.key);
-      row.append("rect").attr("x", 0).attr("y", 2).attr("width", innerW).attr("height", barH - 4).attr("fill", "rgba(0,40,64,0.45)").attr("rx", 3);
-      row.append("rect").attr("x", 0).attr("y", 2).attr("height", barH - 4).attr("width", x(d.value)).attr("fill", d.fill).attr("rx", 3).attr("opacity", 0.95);
-      row.append("text").attr("x", x(d.value) + 6).attr("y", barH / 2 + 4).attr("fill", "#eaf8ff").attr("font-size", narrow ? "10px" : "11px").attr("font-weight", "700").text(d.value);
+    const rng = mulberry32(seed ^ 0xcafebabe);
+    const n = 22;
+    let r = 38 + rng() * 40;
+    let u = 26 + rng() * 42;
+    const series = d3.range(n).map((i) => {
+      r += (rng() - 0.46) * 8;
+      u += (rng() - 0.48) * 7;
+      r = Math.max(14, Math.min(94, r));
+      u = Math.max(12, Math.min(90, u));
+      return { i: i, rural: r, urban: u };
     });
+    const elW = Math.max(280, root.clientWidth || Math.min(500, window.innerWidth - 48));
+    const h = 236;
+    const margin = { top: 16, right: 10, bottom: 32, left: 42 };
+    const innerW = elW - margin.left - margin.right;
+    const innerH = h - margin.top - margin.bottom;
+    const x = d3.scaleLinear().domain([0, n - 1]).range([0, innerW]);
+    const y = d3.scaleLinear().domain([0, 100]).range([innerH, 0]);
+    const svg = d3.select(root).append("svg").attr("width", elW).attr("height", h).attr("viewBox", "0 0 " + elW + " " + h).attr("preserveAspectRatio", "xMidYMid meet");
+    const defs = svg.append("defs");
+    const gR = defs.append("linearGradient").attr("id", "areaRuralGrad").attr("x1", "0").attr("y1", "0").attr("x2", "0").attr("y2", "1");
+    gR.append("stop").attr("offset", "0%").attr("stop-color", "rgba(94, 234, 212, 0.55)");
+    gR.append("stop").attr("offset", "100%").attr("stop-color", "rgba(4, 18, 40, 0.06)");
+    const gU = defs.append("linearGradient").attr("id", "areaUrbanGrad").attr("x1", "0").attr("y1", "0").attr("x2", "0").attr("y2", "1");
+    gU.append("stop").attr("offset", "0%").attr("stop-color", "rgba(126, 203, 255, 0.48)");
+    gU.append("stop").attr("offset", "100%").attr("stop-color", "rgba(6, 22, 48, 0.05)");
+    const g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    const areaR = d3.area().x((d) => x(d.i)).y0(innerH).y1((d) => y(d.rural)).curve(d3.curveMonotoneX);
+    const areaU = d3.area().x((d) => x(d.i)).y0(innerH).y1((d) => y(d.urban)).curve(d3.curveMonotoneX);
+    const pathRa = g.append("path").datum(series).attr("fill", "url(#areaRuralGrad)").attr("d", areaR).style("opacity", 0);
+    const pathUa = g.append("path").datum(series).attr("fill", "url(#areaUrbanGrad)").attr("d", areaU).style("opacity", 0);
+    pathRa.transition().duration(900).ease(d3.easeCubicOut).style("opacity", 1);
+    pathUa.transition().duration(1100).delay(100).ease(d3.easeCubicOut).style("opacity", 1);
+    const lineR = d3.line().x((d) => x(d.i)).y((d) => y(d.rural)).curve(d3.curveMonotoneX);
+    const lineU = d3.line().x((d) => x(d.i)).y((d) => y(d.urban)).curve(d3.curveMonotoneX);
+    const pathLr = g.append("path").datum(series).attr("fill", "none").attr("stroke", "#5eead4").attr("stroke-width", 2.2).attr("d", lineR);
+    pathLr.each(function () {
+      const len = this.getTotalLength();
+      d3.select(this).attr("stroke-dasharray", len + " " + len).attr("stroke-dashoffset", len);
+    });
+    pathLr.transition().duration(1500).ease(d3.easeCubicInOut).attr("stroke-dashoffset", 0);
+    const pathLu = g.append("path").datum(series).attr("fill", "none").attr("stroke", "#7ecbff").attr("stroke-width", 2.2).attr("d", lineU);
+    pathLu.each(function () {
+      const len = this.getTotalLength();
+      d3.select(this).attr("stroke-dasharray", len + " " + len).attr("stroke-dashoffset", len);
+    });
+    pathLu.transition().duration(1600).delay(90).ease(d3.easeCubicInOut).attr("stroke-dashoffset", 0);
+    g.append("g").attr("transform", "translate(0," + innerH + ")").call(d3.axisBottom(x).ticks(4).tickFormat(() => "")).select(".domain").attr("stroke", "rgba(102,245,255,0.2)");
+    g.append("g").call(d3.axisLeft(y).ticks(5).tickFormat((d) => d + "%")).selectAll("text").attr("fill", "#9fc4d7").attr("font-size", "8px");
+    g.selectAll(".domain, .tick line").attr("stroke", "rgba(102,245,255,0.22)");
+    g.append("text").attr("x", 0).attr("y", -2).attr("fill", "#bff4ff").attr("font-size", "9px").text("Rural vs Urban — live area lattice");
   }
 
   const gapModal = document.getElementById("gapBridgeModal");
@@ -863,7 +1084,7 @@
     };
   }
 
-  function buildHeatmap(project, features, mapSvg, svgNS) {
+  function buildHeatmap(project, features, svgNS) {
     let totalArea = 0;
     const weights = features.map((f) => {
       const b = bboxOfFeature(f);
@@ -876,22 +1097,56 @@
     weights.forEach((w) => {
       const share = w.area / totalArea;
       const wards = Math.max(1, Math.round(WARDS * share));
-      const rng = mulberry32(hashStr(w.feature.properties.shapeName || "x"));
+      const stateName = w.feature.properties.shapeName || "";
+      const rng = mulberry32(hashStr(stateName || "x"));
       const nDots = Math.min(48, Math.max(4, Math.round(wards / 40)));
       for (let i = 0; i < nDots; i++) {
         const lon = w.bbox.minLon + rng() * (w.bbox.maxLon - w.bbox.minLon);
         const lat = w.bbox.minLat + rng() * (w.bbox.maxLat - w.bbox.minLat);
         const xy = project([lon, lat]);
         const c = document.createElementNS(svgNS, "circle");
-        c.setAttribute("class", "heatmap-dot");
+        c.setAttribute("class", "heatmap-dot micro-star");
+        c.setAttribute("data-state", stateName);
+        const r0 = (3 + rng() * 10).toFixed(2);
+        c.setAttribute("data-r0", r0);
+        c.setAttribute("r", r0);
         c.setAttribute("cx", xy[0]);
         c.setAttribute("cy", xy[1]);
-        c.setAttribute("r", (3 + rng() * 10).toFixed(2));
-        c.setAttribute("fill", "rgba(212, 175, 55, " + (0.08 + rng() * 0.22).toFixed(3) + ")");
+        const fill = "rgba(212, 175, 55, " + (0.08 + rng() * 0.22).toFixed(3) + ")";
+        c.setAttribute("data-fill0", fill);
+        c.setAttribute("fill", fill);
         gHeat.appendChild(c);
       }
     });
     return gHeat;
+  }
+
+  function bindMicroStarHover(mapSvgEl, gHeatEl) {
+    function clearStarLit() {
+      gHeatEl.querySelectorAll(".heatmap-dot.is-lit").forEach((el) => {
+        el.classList.remove("is-lit");
+        const r0 = el.getAttribute("data-r0");
+        const f0 = el.getAttribute("data-fill0");
+        if (r0 != null) el.setAttribute("r", r0);
+        if (f0 != null) el.setAttribute("fill", f0);
+        el.removeAttribute("stroke");
+        el.removeAttribute("stroke-width");
+      });
+    }
+    function lightStars(name) {
+      if (!name) return;
+      clearStarLit();
+      gHeatEl.querySelectorAll(".heatmap-dot[data-state=\"" + name.replace(/"/g, "") + "\"]").forEach((el) => {
+        el.classList.add("is-lit");
+        const r0 = parseFloat(el.getAttribute("data-r0") || "3");
+        el.setAttribute("r", String(Math.min(12, r0 * 2.35)));
+      });
+    }
+    mapSvgEl.querySelectorAll(".state").forEach((pathEl) => {
+      const sn = pathEl.getAttribute("data-name");
+      pathEl.addEventListener("mouseenter", () => lightStars(sn));
+      pathEl.addEventListener("mouseleave", clearStarLit);
+    });
   }
 
   const mapSvg = document.getElementById("mapSvg");
@@ -944,14 +1199,16 @@
         p.setAttribute("class", "state");
         p.setAttribute("tabindex", "0");
         const stateName = feature.properties.shapeName || "State";
+        p.setAttribute("data-name", stateName);
         p.setAttribute("d", geomPath(feature.geometry, project));
         p.addEventListener("click", () => openGapBridge(stateName));
         p.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openGapBridge(stateName); } });
         mapSvg.appendChild(p);
       });
 
-      const heat = buildHeatmap(project, geo.features, mapSvg, svgNS);
+      const heat = buildHeatmap(project, geo.features, svgNS);
       mapSvg.appendChild(heat);
+      bindMicroStarHover(mapSvg, heat);
 
       const corridorLL = [[7.4951, 9.0765], [7.7090, 11.0747], [8.5247, 11.9914]];
       let dPath = "";

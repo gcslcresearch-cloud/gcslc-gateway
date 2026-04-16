@@ -56,7 +56,7 @@ class CommandHandler(BaseHTTPRequestHandler):
                     "status": "ok",
                     "port": PORT,
                     "index_served": str(INDEX_HTML),
-                    "deployment": "SOVEREIGN_DEPLOYMENT_V7_ZENITH",
+                    "deployment": "SOVEREIGN_AESTHETIC_V8_ULTRA",
                 }
             ).encode("utf-8")
             self.send_response(HTTPStatus.OK)
@@ -82,14 +82,14 @@ class CommandHandler(BaseHTTPRequestHandler):
 
 def _open_browser() -> None:
     time.sleep(0.35)
-    webbrowser.open(f"http://localhost:5050/?v7zenith={int(time.time())}")
+    webbrowser.open(f"http://localhost:5050/?v8ultra={int(time.time())}")
 
 
 def main() -> None:
     if not INDEX_HTML.is_file():
         raise FileNotFoundError(str(INDEX_HTML))
     print(f"FILE SIZE VERIFIED: {INDEX_HTML.stat().st_size}", flush=True)
-    print("COMMAND CENTRAL 5050: SOVEREIGN_DEPLOYMENT_V7_ZENITH READY", flush=True)
+    print("COMMAND CENTRAL 5050: SOVEREIGN_AESTHETIC_V8_ULTRA READY", flush=True)
     print(f"SERVED FROM: {_BASE}", flush=True)
 
     server = ThreadingHTTPServer(("0.0.0.0", PORT), CommandHandler)
