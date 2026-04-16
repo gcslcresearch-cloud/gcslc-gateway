@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#001a33" />
-  <title>GCSLC — NAFC Internal Handshake V18</title>
+  <title>GCSLC — NAFC No Number Simulation</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet" />
@@ -502,7 +502,8 @@
     #apexTrajectoryChart, #nfVelocityChart { min-height: 110px !important; }
     .sidebar-diagnostics-v15 #apexTrajectoryChart { min-height: 95px !important; }
     .btn-termii-test,
-    .btn-nafc-handshake {
+    .btn-nafc-handshake,
+    .btn-strategic-handshake {
       margin-top: 10px;
       width: 100%;
       min-height: 48px;
@@ -519,10 +520,16 @@
       touch-action: manipulation;
       box-shadow: 0 0 18px rgba(212, 175, 55, 0.35);
     }
-    .btn-nafc-handshake:hover, .btn-nafc-handshake:focus-visible {
+    .btn-nafc-handshake:hover, .btn-nafc-handshake:focus-visible,
+    .btn-strategic-handshake:hover, .btn-strategic-handshake:focus-visible {
       filter: brightness(1.08);
       outline: none;
       box-shadow: 0 0 26px rgba(212, 175, 55, 0.55);
+    }
+    .btn-strategic-handshake:disabled {
+      opacity: 0.55;
+      cursor: wait;
+      filter: none;
     }
     .termii-nafc-note {
       margin: 6px 0 0;
@@ -747,6 +754,77 @@
     .termii-outbound.termii-outbound-handshake {
       box-shadow: inset 0 0 24px rgba(102, 245, 255, 0.35), 0 0 20px rgba(102, 245, 255, 0.55);
       border-color: rgba(102, 245, 255, 0.55) !important;
+    }
+    .handshake-terminal {
+      margin-top: 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(102, 245, 255, 0.22);
+      background: rgba(0, 8, 22, 0.55);
+      overflow: hidden;
+      box-shadow: inset 0 0 0 1px rgba(0, 229, 255, 0.08);
+    }
+    .handshake-terminal-h {
+      margin: 0;
+      padding: 6px 10px;
+      font-size: 0.52rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #7ee8f5;
+      font-weight: 800;
+      border-bottom: 1px solid rgba(102, 245, 255, 0.14);
+      background: rgba(0, 26, 51, 0.65);
+    }
+    .handshake-terminal-scroll {
+      max-height: 118px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      position: relative;
+      padding: 8px 10px 10px;
+      font-size: clamp(0.5rem, 1.15vw, 0.62rem);
+      line-height: 1.5;
+      letter-spacing: 0.03em;
+      color: #c9f6ff;
+      font-variant-numeric: tabular-nums;
+    }
+    .handshake-terminal-scroll::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 28px;
+      pointer-events: none;
+      background: linear-gradient(180deg, transparent, rgba(0, 26, 51, 0.92));
+    }
+    .handshake-terminal-strip {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      animation: handshakeTerminalDrift 14s linear infinite;
+    }
+    .handshake-terminal-strip.is-idle {
+      animation: none;
+    }
+    @keyframes handshakeTerminalDrift {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-50%); }
+    }
+    .handshake-terminal-line {
+      margin: 0;
+      padding: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      border-left: 2px solid rgba(102, 245, 255, 0.35);
+      padding-left: 8px;
+    }
+    .handshake-terminal-line .tag-sync { color: #66f5ff; font-weight: 800; }
+    .handshake-terminal-line .tag-send { color: #f0d78c; font-weight: 800; }
+    .handshake-terminal-line .tag-data { color: #9ee6ff; font-weight: 800; }
+    .handshake-terminal-line .tag-confirm { color: #7fffba; font-weight: 800; }
+    .handshake-terminal-placeholder {
+      color: rgba(159, 196, 215, 0.55);
+      border-left-color: rgba(102, 245, 255, 0.12) !important;
+      font-weight: 600;
     }
     .map-stack-v15 .map-wrap {
       min-height: min(74vh, 900px);
@@ -1535,7 +1613,7 @@
       <aside class="sidebar sidebar-left sidebar-diagnostics-v15">
         <div class="diagnostic-lane" aria-label="Diagnostic lane — live lattice">
           <div class="diag-block">
-            <h3 class="diag-h">5-Yr Information Gap</h3>
+            <h3 class="diag-h">Trajectory &amp; 5-Yr Information Gap</h3>
             <div id="apexTrajectoryChart"></div>
           </div>
           <div class="diag-block zenith-panel zenith-panel--compact" aria-label="Information Gap — Live Lattice">
@@ -1554,7 +1632,7 @@
       <div class="center-col center-col-primary">
         <header class="header header-apex-layer01">
           <p class="apex-row apex-row1" id="apexRowTypewriter" aria-live="polite"><span class="identity-tw apex-identity-deep-cyan" id="identityFullName">Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE</span></p>
-          <p class="apex-row apex-row2" id="apexRowRc">Nigeria Ltd RC 1871418</p>
+          <p class="apex-row apex-row2" id="apexRowRc">RC 1871418</p>
           <p class="apex-row apex-row3" id="apexRowAnchor">Everything is Anchored by the 8R Stealth Paradigm Convergence and its determinants, let’s converge for you to understand and decode.</p>
 
         <section class="paradigm-apex" aria-label="8R Stealth Paradigm determinants">
@@ -1597,22 +1675,31 @@
           </div>
         </div>
 
-        <!-- Termii authorization: transactional body matches NAFC_V18_SAMPLE_SMS in script (sample message per letter) -->
-        <section class="termii-panel-v15" aria-label="Termii gateway">
+        <!-- NAFC no-number sim: institutional node IDs only; NAFC_V18_SAMPLE_SMS retained for optional live Termii path -->
+        <section class="termii-panel-v15" aria-label="Communication lane — institutional backbone">
           <div class="termii-block">
-            <div class="termii-label">Termii Gateway — NAFC Secure Channel</div>
-            <p class="termii-nafc-note">National Alert Fusion Center (NAFC) · Inbound / Outbound secure lanes</p>
+            <div class="termii-label">GCSLC Communication Lane — Institutional Node Simulation</div>
+            <p class="termii-nafc-note">Inbound / Outbound status · No phone numbers — route by node ID (simulated)</p>
             <div class="termii-lane" id="termiiLane">
               <div class="termii-track termii-inbound" title="Inbound partnership pulses (Termii)">
                 <span class="track-tag">Inbound</span>
                 <span class="termii-pulse" aria-hidden="true"></span>
               </div>
-              <div class="termii-track termii-outbound" id="termiiOutboundTrack" title="Outbound partnership pulses (Termii)">
+              <div class="termii-track termii-outbound" id="termiiOutboundTrack" title="Outbound status — strategic handshake target">
                 <span class="track-tag">Outbound</span>
                 <span class="termii-pulse" aria-hidden="true"></span>
               </div>
             </div>
+            <button type="button" class="btn-strategic-handshake" id="strategicHandshakeBtn">INITIATE STRATEGIC HANDSHAKE</button>
             <button type="button" class="btn-nafc-handshake" id="nafcHandshakeBtn">INITIATE NAFC TEST HANDSHAKE</button>
+            <div class="handshake-terminal" aria-label="Backbone terminal log">
+              <p class="handshake-terminal-h">Backbone status — terminal</p>
+              <div class="handshake-terminal-scroll" id="handshakeTerminalScroll">
+                <div class="handshake-terminal-strip is-idle" id="handshakeTerminalStrip">
+                  <p class="handshake-terminal-line handshake-terminal-placeholder">— Awaiting institutional command —</p>
+                </div>
+              </div>
+            </div>
             <p class="termii-nafc-note" id="termiiStatusLine" aria-live="polite"></p>
           </div>
         </section>
@@ -1716,7 +1803,7 @@
       <span class="g">HANDSHAKE //</span>
       Phone <span class="footer-node-metallic"><strong>+234 703 913 9439</strong> | <strong>+234 809 911 1515</strong></span>
       · Email <span class="footer-node-metallic">Info@galadimanruwacenter.org</span> · <span class="footer-node-metallic">gcslc.research@gmail.com</span>
-      · <strong>Copyright LW15954</strong> · <strong>SCUML RN: 151653884</strong> · NAFC Internal Handshake V18 · 8,806 Wards : 123,284 Field Agents · 176,000 PUs · Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau · <strong>GCSLC PROPRIETARY</strong>
+      · <strong>Copyright LW15954</strong> · <strong>SCUML RN: 151653884</strong> · NAFC No Number Simulation · 8,806 Wards : 123,284 Field Agents · 176,000 PUs · Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau · <strong>GCSLC PROPRIETARY</strong>
     </div>
   </footer>
 
@@ -2319,12 +2406,75 @@
   const NAFC_V18_SAMPLE_SMS = "GCSLC: Your nodal sync for the AZK Energy Corridor & 15/15 model is verified. We are resuscitating 639M MT of reserves to power our mandate. Performance is our Incumbency.";
   window.NAFC_V18_SAMPLE_SMS = NAFC_V18_SAMPLE_SMS;
 
+  const STRATEGIC_SIM_LINES = [
+    { tagClass: "tag-sync", label: "[SYNC]", text: " Connecting to GCSLC Institutional Backbone..." },
+    { tagClass: "tag-send", label: "[SEND]", text: " ID: GALADIMA_R -> Destination: Ward Node 8806..." },
+    { tagClass: "tag-data", label: "[DATA]", text: " Payload: \"AZK Energy Corridor & 15/15 model verified. Resuscitating 639M MT. Performance is our Incumbency.\"" },
+    { tagClass: "tag-confirm", label: "[CONFIRM]", text: " Handshake Complete. Signal Strength 100%." }
+  ];
+  let strategicHandshakeBusy = false;
+
   const nafcHandshakeBtn = document.getElementById("nafcHandshakeBtn");
+  const strategicHandshakeBtn = document.getElementById("strategicHandshakeBtn");
   const termiiLaneEl = document.getElementById("termiiLane");
   const termiiOutboundTrack = document.getElementById("termiiOutboundTrack");
   const termiiStatusLineEl = document.getElementById("termiiStatusLine");
   const nafcHandshakePulse = document.getElementById("nafcHandshakePulse");
   const mapCommandSurface = document.getElementById("mapCommandSurface");
+  const handshakeTerminalScroll = document.getElementById("handshakeTerminalScroll");
+  const handshakeTerminalStrip = document.getElementById("handshakeTerminalStrip");
+
+  function appendStrategicTerminalLine(row) {
+    const p = document.createElement("p");
+    p.className = "handshake-terminal-line";
+    const tag = document.createElement("span");
+    tag.className = row.tagClass;
+    tag.textContent = row.label;
+    p.appendChild(tag);
+    p.appendChild(document.createTextNode(row.text));
+    return p;
+  }
+
+  async function runStrategicHandshakeNoNumberSim() {
+    if (strategicHandshakeBusy) return;
+    strategicHandshakeBusy = true;
+    if (strategicHandshakeBtn) strategicHandshakeBtn.disabled = true;
+    runMapToOutboundCyanPulse();
+    flashTermiiTestLane();
+    if (handshakeTerminalScroll) {
+      handshakeTerminalScroll.style.overflowY = "auto";
+      handshakeTerminalScroll.scrollTop = 0;
+    }
+    if (handshakeTerminalStrip) {
+      handshakeTerminalStrip.classList.add("is-idle");
+      handshakeTerminalStrip.innerHTML = "";
+      for (let i = 0; i < STRATEGIC_SIM_LINES.length; i++) {
+        if (i > 0) {
+          await new Promise((resolve) => window.setTimeout(resolve, 420));
+        } else {
+          await new Promise((resolve) => window.setTimeout(resolve, 90));
+        }
+        handshakeTerminalStrip.appendChild(appendStrategicTerminalLine(STRATEGIC_SIM_LINES[i]));
+        if (handshakeTerminalScroll) handshakeTerminalScroll.scrollTop = handshakeTerminalScroll.scrollHeight;
+      }
+      const firstLines = handshakeTerminalStrip.querySelectorAll(".handshake-terminal-line");
+      if (firstLines.length === 4) {
+        firstLines.forEach((node) => handshakeTerminalStrip.appendChild(node.cloneNode(true)));
+      }
+      if (handshakeTerminalScroll) {
+        handshakeTerminalScroll.style.overflowY = "hidden";
+        handshakeTerminalScroll.scrollTop = 0;
+      }
+      handshakeTerminalStrip.classList.remove("is-idle");
+    }
+    if (termiiStatusLineEl) {
+      termiiStatusLineEl.textContent = "Strategic handshake (sim) · institutional nodes · GALADIMA_R → Ward Node 8806 · " + new Date().toLocaleTimeString();
+    }
+    window.setTimeout(() => {
+      strategicHandshakeBusy = false;
+      if (strategicHandshakeBtn) strategicHandshakeBtn.disabled = false;
+    }, 1650);
+  }
 
   function flashTermiiTestLane() {
     if (!termiiLaneEl) return;
@@ -2396,6 +2546,9 @@
     }
   }
 
+  if (strategicHandshakeBtn) {
+    strategicHandshakeBtn.addEventListener("click", () => { void runStrategicHandshakeNoNumberSim(); });
+  }
   if (nafcHandshakeBtn) {
     nafcHandshakeBtn.addEventListener("click", () => { void runNafcInternalHandshakeV18(); });
   }
