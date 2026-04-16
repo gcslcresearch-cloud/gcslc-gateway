@@ -15,7 +15,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#001a33" />
   <meta name="color-scheme" content="dark" />
-  <title>GCSLC — Sovereign Cloud Sync v20</title>
+  <title>GCSLC — Sovereign Convergence v21</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet" />
@@ -57,7 +57,6 @@
       --footer-h: 8px;
       --intel-h: 0px;
     }
-    html.gcslc-embed .advisory-fab,
     html.gcslc-embed .gov-toggle,
     html.gcslc-embed .intel-ticker,
     html.gcslc-embed .footer.footer-vault {
@@ -684,53 +683,6 @@
       0%, 100% { filter: saturate(1.05) brightness(1); }
       50% { filter: saturate(1.2) brightness(1.06); }
     }
-    .advisory-bridge {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      margin: 8px 0 12px;
-      width: 100%;
-      padding: 0 4px;
-    }
-    .api-revenue-path {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      width: min(100%, 560px);
-    }
-    .api-path-label {
-      font-size: clamp(0.58rem, 1.45vw, 0.72rem);
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: #c9f6ff;
-      font-weight: 800;
-      text-align: center;
-      line-height: 1.3;
-    }
-    .btn-advisory {
-      display: inline-block;
-      width: 100%;
-      max-width: 560px;
-      padding: 12px 18px;
-      touch-action: manipulation;
-      -webkit-tap-highlight-color: rgba(212, 175, 55, 0.25);
-      border-radius: 10px;
-      border: 2px solid var(--gold);
-      background: var(--surface-unified);
-      color: #fff8e0;
-      font-weight: 800;
-      letter-spacing: 0.06em;
-      text-align: center;
-      text-decoration: none;
-      text-transform: uppercase;
-      font-size: clamp(0.62rem, 1.5vw, 0.78rem);
-      box-shadow: 0 0 18px rgba(212,175,55,0.35);
-      animation: advisoryPulse 2.2s ease-in-out infinite;
-    }
-    .btn-advisory:hover { filter: brightness(1.12); }
     .clock-row {
       display: grid;
       grid-template-columns: repeat(6, minmax(48px, 1fr));
@@ -1020,40 +972,67 @@
       right: max(10px, env(safe-area-inset-right));
       z-index: 130;
       min-height: 48px;
-      min-width: min(200px, 46vw);
+      min-width: min(220px, 52vw);
       padding: 12px 16px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       border-radius: 12px;
-      border: 2px solid rgba(212, 175, 55, 0.55);
-      background: var(--surface-unified);
-      color: #fff8e8;
+      font-family: var(--gcslc-brand-font);
+      color: #fff4dc;
       font-weight: 900;
-      font-size: clamp(0.58rem, 1.55vw, 0.72rem);
-      letter-spacing: 0.1em;
+      font-size: clamp(0.52rem, 1.45vw, 0.68rem);
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       text-decoration: none;
       text-align: center;
-      line-height: 1.25;
-      box-shadow: 0 0 22px rgba(212, 175, 55, 0.45), 0 12px 32px rgba(0, 0, 0, 0.45);
-      animation: advisoryFabGlow 2.8s ease-in-out infinite;
+      line-height: 1.2;
       touch-action: manipulation;
       -webkit-tap-highlight-color: rgba(212, 175, 55, 0.25);
+      background:
+        linear-gradient(145deg, rgba(255, 248, 220, 0.14) 0%, rgba(0, 26, 51, 0.96) 42%, rgba(0, 12, 28, 0.98) 100%);
+      border: 2px solid transparent;
+      background-clip: padding-box;
+      box-shadow:
+        0 0 0 1px rgba(212, 175, 55, 0.55),
+        0 0 0 2px rgba(255, 236, 176, 0.35),
+        0 0 28px rgba(212, 175, 55, 0.55),
+        0 12px 32px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      animation: advisoryFabGlow 2.8s ease-in-out infinite, advisoryFabPulse 3.2s ease-in-out infinite;
     }
     .advisory-fab:hover, .advisory-fab:focus-visible {
       filter: brightness(1.08);
       outline: none;
     }
     @keyframes advisoryFabGlow {
-      0%, 100% { box-shadow: 0 0 18px rgba(212, 175, 55, 0.4), 0 10px 28px rgba(0, 0, 0, 0.4); }
-      50% { box-shadow: 0 0 32px rgba(102, 245, 255, 0.35), 0 0 28px rgba(212, 175, 55, 0.55), 0 14px 36px rgba(0, 0, 0, 0.48); }
+      0%, 100% {
+        box-shadow:
+          0 0 0 1px rgba(212, 175, 55, 0.5),
+          0 0 0 2px rgba(255, 236, 176, 0.28),
+          0 0 22px rgba(212, 175, 55, 0.42),
+          0 10px 28px rgba(0, 0, 0, 0.42),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      }
+      50% {
+        box-shadow:
+          0 0 0 1px rgba(255, 224, 150, 0.75),
+          0 0 0 2px rgba(102, 245, 255, 0.22),
+          0 0 38px rgba(212, 175, 55, 0.65),
+          0 0 26px rgba(102, 245, 255, 0.28),
+          0 14px 36px rgba(0, 0, 0, 0.48),
+          inset 0 1px 0 rgba(255, 255, 255, 0.16);
+      }
+    }
+    @keyframes advisoryFabPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
     }
     @media (max-width: 520px) {
       .advisory-fab {
-        font-size: 0.56rem;
-        padding: 14px 12px;
-        min-width: min(168px, 44vw);
+        font-size: 0.5rem;
+        padding: 12px 10px;
+        min-width: min(188px, 54vw);
       }
     }
     .map-wrap {
@@ -1582,10 +1561,6 @@
       }
       .map-wrap { padding: 8px; }
     }
-    @keyframes advisoryPulse {
-      0%, 100% { box-shadow: 0 0 12px rgba(212,175,55,0.35); transform: scale(1); }
-      50% { box-shadow: 0 0 26px rgba(212,175,55,0.65); transform: scale(1.02); }
-    }
     @keyframes footerTw {
       0% { width: 0; } 35% { width: 100%; } 65% { width: 100%; } 97% { width: 0; } 100% { width: 0; }
     }
@@ -1609,7 +1584,7 @@
   </div>
 
   <div class="gov-backdrop" id="govBackdrop" aria-hidden="true"></div>
-  <a class="advisory-fab" id="advisoryFab" href="https://galadimanruwacenter.org" target="_blank" rel="noopener noreferrer">ACCESS ADVISORY HUB</a>
+  <a class="advisory-fab" id="advisoryFab" href="https://gcslc-gateway.vercel.app/advisory.html" target="_blank" rel="noopener noreferrer">ADVISORY HUB - CLOUD NODE</a>
   <button type="button" class="gov-toggle" id="govToggle" aria-controls="governanceSlide" aria-expanded="false">GOVERNANCE</button>
   <aside class="governance-slide" id="governanceSlide" aria-label="Governance and legal anchors">
     <h2>Governance — Legal Anchors</h2>
@@ -1691,13 +1666,6 @@
             <svg id="mapSvg" viewBox="0 0 760 680" role="img" aria-label="Nigeria map with grassroots heat and corridor"></svg>
           </article>
         </section>
-
-        <div class="advisory-bridge">
-          <div class="api-revenue-path">
-            <span class="api-path-label">GCSLC API Revenue Path</span>
-            <a class="btn-advisory" href="https://galadimanruwacenter.org" target="_blank" rel="noopener noreferrer">Advisory Hub</a>
-          </div>
-        </div>
 
         <section class="termii-panel-v15" aria-label="Communication lane">
           <div class="termii-block">
@@ -1807,7 +1775,7 @@
     <div class="intel-marquee">
       <div class="intel-band" id="intelBand">
         <div class="intel-track" id="intelTrack">
-          <span class="intel-item tier-sn"><span class="badge">SN</span><span class="txt">Loading forensic intel…</span></span>
+          <span class="intel-item tier-sn"><span class="badge">SN</span><span class="txt">Lattice sync…</span></span>
         </div>
       </div>
     </div>
@@ -1818,7 +1786,7 @@
       <span class="g">HANDSHAKE //</span>
       Phone <span class="footer-node-metallic"><strong>+234 703 913 9439</strong> | <strong>+234 809 911 1515</strong></span>
       · Email <span class="footer-node-metallic">Info@galadimanruwacenter.org</span> · <span class="footer-node-metallic">gcslc.research@gmail.com</span>
-      · <strong>Copyright LW15954</strong> · <strong>SCUML RN: 151653884</strong> · Sovereign Cloud Sync v20 · 8,806 Wards : 123,284 Field Agents · 176,000 PUs · Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau · <strong>GCSLC PROPRIETARY</strong>
+      · <strong>Copyright LW15954</strong> · <strong>SCUML RN: 151653884</strong> · Sovereign Convergence v21 · 8,806 Wards : 123,284 Field Agents · 176,000 PUs · Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau · <strong>GCSLC PROPRIETARY</strong>
     </div>
   </footer>
 
@@ -1845,12 +1813,13 @@
   const fas = document.getElementById("fieldAgentsStat");
   if (fas) fas.textContent = FIELD_AGENTS.toLocaleString();
 
-  window.GCSLC_CLOUD_SYNC_V20 = window.GCSLC_CLOUD_SYNC_V20 || {
-    wardFeedUrl: "",
+  window.GCSLC_CLOUD_SYNC_V21 = Object.assign({
+    wardFeedUrl: "https://gcslc-gateway.vercel.app/ward_lattice.json",
     geoJsonUrl: "",
     senderId: "GALADIMA_R"
-  };
-  const CLOUD = window.GCSLC_CLOUD_SYNC_V20;
+  }, window.GCSLC_CLOUD_SYNC_V20 || {}, window.GCSLC_CLOUD_SYNC_V21 || {});
+  window.GCSLC_CLOUD_SYNC_V20 = window.GCSLC_CLOUD_SYNC_V21;
+  const CLOUD = window.GCSLC_CLOUD_SYNC_V21;
 
   function applyWardLatticeFromCloud(j) {
     if (!j || typeof j !== "object") return;
@@ -1866,22 +1835,25 @@
   }
 
   function pullWardFeedFromGcp() {
-    const url = CLOUD.wardFeedUrl ? String(CLOUD.wardFeedUrl).trim() : "";
-    if (!url) return;
-    fetch(url, { cache: "no-store", credentials: "omit", mode: "cors" })
-      .then((r) => (r.ok ? r.json() : Promise.reject()))
-      .then((j) => { applyWardLatticeFromCloud(j); })
-      .catch(function () { /* optional cloud feed */ });
+    const primary = CLOUD.wardFeedUrl ? String(CLOUD.wardFeedUrl).trim() : "";
+    const localLattice = "./ward_lattice.json";
+    function loadJson(url) {
+      return fetch(url, { cache: "no-store", credentials: "omit", mode: "cors" })
+        .then((r) => (r.ok ? r.json() : Promise.reject()));
+    }
+    (primary ? loadJson(primary).catch(function () { return loadJson(localLattice); }) : loadJson(localLattice))
+      .then(applyWardLatticeFromCloud)
+      .catch(function () { /* lattice feed optional */ });
   }
   pullWardFeedFromGcp();
 
   const FORENSIC_FALLBACK = [
-    { tier: "SN", text: "Strategic Normal — image forensic hash chain idle · AZK spine nominal" },
-    { tier: "SC", text: "Strategic Caution — forensic frame cluster variance · reconcile ward ingress" },
-    { tier: "SA", text: "Strategic Alert — SCUML export manifest mismatch · hold advisory egress" },
-    { tier: "SN", text: "Strategic Normal — 8,806 ward nodes / 176k PU lattice stable" },
-    { tier: "SC", text: "Strategic Caution — rural connectivity gap estimator drift within band" },
-    { tier: "SA", text: "Strategic Alert — API rotation window · rotate keys before cloud departure" }
+    { tier: "SN", text: "Strategic Normal — AZK spine nominal" },
+    { tier: "SC", text: "Strategic Caution — reconcile ward ingress" },
+    { tier: "SA", text: "Strategic Alert — hold advisory egress" },
+    { tier: "SN", text: "Strategic Normal — ward lattice stable" },
+    { tier: "SC", text: "Strategic Caution — connectivity band drift" },
+    { tier: "SA", text: "Strategic Alert — rotate outbound credentials" }
   ];
 
   function buildIntelTrackFromData(items) {
@@ -2897,7 +2869,7 @@
   }
 
   function fetchGeoJson() {
-    const cloud = window.GCSLC_CLOUD_SYNC_V20 || {};
+    const cloud = window.GCSLC_CLOUD_SYNC_V21 || window.GCSLC_CLOUD_SYNC_V20 || {};
     const custom = cloud.geoJsonUrl && String(cloud.geoJsonUrl).trim();
     if (custom) {
       return fetch(custom, { cache: "no-store" })
