@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#001a33" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
-  <title>GCSLC — Sovereign Total Matrix V61 · Intelligence Injection</title>
+  <title>GCSLC — Sovereign Total Matrix V62 · Intelligence Layer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet" />
@@ -746,6 +746,24 @@
       50% {
         filter: brightness(1.5);
         box-shadow: 0 0 32px rgba(212, 175, 55, 0.88), 0 0 48px rgba(102, 245, 255, 0.35), inset 0 0 20px rgba(212, 175, 55, 0.18);
+      }
+    }
+    /* V62 — Termii only: Security Clearance pulse (EP G/H/I); does not alter map or 8R layout */
+    .termii-lane.termii-security-clearance .termii-inbound,
+    .termii-lane.termii-security-clearance .termii-outbound {
+      animation: termiiSecurityClearance 0.58s ease-in-out 7;
+    }
+    .termii-lane.termii-security-clearance .termii-pulse {
+      animation-duration: 0.48s !important;
+    }
+    @keyframes termiiSecurityClearance {
+      0%, 100% { filter: brightness(1); box-shadow: none; }
+      50% {
+        filter: brightness(1.58);
+        box-shadow:
+          0 0 36px rgba(46, 213, 115, 0.55),
+          0 0 52px rgba(212, 175, 55, 0.5),
+          inset 0 0 22px rgba(102, 245, 255, 0.14);
       }
     }
     .inst-node { pointer-events: auto; cursor: help; }
@@ -2131,8 +2149,8 @@
   var PUS = ASSET.pus;
   var FIELD_AGENTS = ASSET.fieldAgents;
   var CANV_PER_WARD = 14;
-  /** V61 Agency Kitchen — background data objects (map + API catalog). Do not reorder lon/lat/r without map audit. */
-  window.__GCSLC_AGENCY_KITCHEN_V61 = [
+  /** V62 Agency Kitchen — background data objects (map + API catalog). Do not reorder lon/lat/r without map audit. */
+  window.__GCSLC_AGENCY_KITCHEN_V62 = [
     { id: "CBN", cluster: "economic", title: "CBN — Central Bank of Nigeria", handshakeName: "CBN", lon: 7.495, lat: 9.076, r: 4.7, endpoint: "/v59/economic/cbn/sovereign-rails", dishTag: "Dish · Economic", subtext: "Monetary policy, payment systems, SCUML-adjacent institutional attest." },
     { id: "BOI", cluster: "economic", title: "BOI — Bank of Industry", handshakeName: "BOI", lon: 8.52, lat: 11.99, r: 4.3, endpoint: "/v59/economic/boi/industrial-credit", dishTag: "Dish · Economic", subtext: "Industrial finance · SME uplift vectors." },
     { id: "NEXIM", cluster: "economic", title: "NEXIM — Export-Import Bank", handshakeName: "NEXIM", lon: 3.38, lat: 6.52, r: 4.2, endpoint: "/v59/economic/nexim/export-import", dishTag: "Dish · Economic", subtext: "Trade finance · ECOWAS corridor liquidity." },
@@ -2151,12 +2169,12 @@
     { id: "AVIATION", cluster: "infrastructure", title: "Federal Ministry of Aviation & Aerospace", handshakeName: "FMAA", lon: 5.02, lat: 7.38, r: 4.1, endpoint: "/v59/infrastructure/aviation/notam-lite", dishTag: "Dish · Infrastructure", subtext: "Airspace governance · airport slot coordination sim." },
     { id: "NIMET", cluster: "infrastructure", title: "NiMet — Meteorological Agency", handshakeName: "NiMet", lon: 8.88, lat: 9.89, r: 3.9, endpoint: "/v59/infrastructure/nimet/weather-grid", dishTag: "Dish · Infrastructure", subtext: "Severe weather advisories · agro corridor risk." },
     { id: "MOD", cluster: "security", title: "Ministry of Defence", handshakeName: "MOD", lon: 7.5, lat: 9.08, r: 4.7, endpoint: "/v59/security/mod/policy-spine", dishTag: "Dish · Defense", subtext: "Strategic posture · inter-service coordination." },
-    { id: "EFCC", cluster: "security", title: "EFCC — Economic and Financial Crimes Commission", handshakeName: "EFCC", endpointCode: "G", lon: 7.455, lat: 9.085, r: 4.15, endpoint: "/v61/security/efcc/financial-integrity-verify", dishTag: "Endpoint G · Financial Integrity Verify", subtext: "EFCC/NFIU pattern handshake — typology, STR & asset-tracing lattice." },
-    { id: "NFIU", cluster: "security", title: "NFIU — Nigerian Financial Intelligence Unit", handshakeName: "NFIU", endpointCode: "G", lon: 7.478, lat: 9.072, r: 4.08, endpoint: "/v61/security/nfiu/pattern-handshake", dishTag: "Endpoint G · Financial Integrity Verify", subtext: "EFCC/NFIU pattern handshake — goAML-class correlation & FIURE sync." },
-    { id: "DSS", cluster: "security", title: "DSS — Department of State Services", handshakeName: "DSS", endpointCode: "H", lon: 7.428, lat: 9.058, r: 4.05, endpoint: "/v61/security/dss/sovereign-threat-assessment", dishTag: "Endpoint H · Sovereign Threat Assessment", subtext: "DSS intelligence pulse — domestic threat surface & venue hardening diagnostic." },
+    { id: "EFCC", cluster: "security", title: "EFCC — Economic and Financial Crimes Commission", handshakeName: "EFCC", endpointCode: "G", lon: 7.455, lat: 9.085, r: 4.15, endpoint: "/v62/security/efcc/financial-integrity-verify", dishTag: "EP G · Financial Integrity Verify (EFCC/NFIU)", subtext: "EFCC/NFIU — typology, STR & asset-tracing pattern lattice." },
+    { id: "NFIU", cluster: "security", title: "NFIU — Nigerian Financial Intelligence Unit", handshakeName: "NFIU", endpointCode: "G", lon: 7.478, lat: 9.072, r: 4.08, endpoint: "/v62/security/nfiu/financial-integrity-verify", dishTag: "EP G · Financial Integrity Verify (EFCC/NFIU)", subtext: "EFCC/NFIU — goAML-class correlation & FIURE sync pulse." },
+    { id: "DSS", cluster: "security", title: "DSS — Department of State Services", handshakeName: "DSS", endpointCode: "H", lon: 7.428, lat: 9.058, r: 4.05, endpoint: "/v62/security/dss/threat-assessment-pulse", dishTag: "EP H · Threat Assessment Pulse (DSS)", subtext: "DSS intelligence lane — sovereign threat surface & venue diagnostic." },
     { id: "DHQ", cluster: "security", title: "DHQ — Defence Headquarters", handshakeName: "DHQ", lon: 7.46, lat: 9.0, r: 4.2, endpoint: "/v59/security/dhq/joint-ops", dishTag: "Dish · Defense", subtext: "Joint tasking · theater readiness lattice." },
     { id: "NPF", cluster: "security", title: "NPF — Nigeria Police Force", handshakeName: "NPF", lon: 8.51, lat: 12.0, r: 4.4, endpoint: "/v59/security/npf/incident-routing", dishTag: "Dish · Security", subtext: "Civil order · ward-level incident fusion." },
-    { id: "NSCDC", cluster: "security", title: "NSCDC — Nigeria Security and Civil Defence Corps", handshakeName: "NSCDC", endpointCode: "I", lon: 7.4, lat: 10.52, r: 4.2, endpoint: "/v61/security/nscdc/critical-infrastructure-safety", dishTag: "Endpoint I · Critical Infrastructure Safety", subtext: "Civil Defence status sync — pipelines, grid nodes, and public venues." },
+    { id: "NSCDC", cluster: "security", title: "NSCDC — Nigeria Security and Civil Defence Corps", handshakeName: "NSCDC", endpointCode: "I", lon: 7.4, lat: 10.52, r: 4.2, endpoint: "/v62/security/nscdc/infrastructure-shield", dishTag: "EP I · Infrastructure Shield (Civil Defense)", subtext: "Civil Defence — critical infrastructure shield & public-venue status sync." },
     { id: "NIA", cluster: "security", title: "NIA — Intelligence Agency (sim overlay)", handshakeName: "NIA", lon: 12.0, lat: 8.52, r: 3.8, endpoint: "/v59/security/nia/signals-overlay", dishTag: "Dish · Security", subtext: "Classified lane placeholder · synthetic fusion only." },
     { id: "NAVY", cluster: "security", title: "Nigerian Navy (sim anchor)", handshakeName: "NIGERIAN_NAVY", lon: 4.75, lat: 8.32, r: 4.2, endpoint: "/v59/security/navy/maritime-patrol", dishTag: "Dish · Defense", subtext: "Gulf of Guinea presence · EEZ enforcement sim." },
     { id: "NEMA", cluster: "social", title: "NEMA — Emergency Management Agency", handshakeName: "NEMA", lon: 7.5, lat: 9.07, r: 4.4, endpoint: "/v59/social/nema/disaster-index", dishTag: "Dish · Social", subtext: "Hazard alerts · relief logistics staging." },
@@ -2806,6 +2824,10 @@
       appendHandshakeLog("SECURE DIAGNOSTIC COMPLETE: SOVEREIGN INTEGRITY VERIFIED", null);
       console.log("SECURE DIAGNOSTIC COMPLETE: SOVEREIGN INTEGRITY VERIFIED");
     }
+    var epSecurityClearance = catalog && (endpointCodeCatalog === "G" || endpointCodeCatalog === "H" || endpointCodeCatalog === "I");
+    if (epSecurityClearance) {
+      appendHandshakeLog("SECURITY CLEARANCE · ANIMATION: EP " + endpointCodeCatalog + " · LANE SEALED", null);
+    }
     if (catalog && termiiLaneEl) {
       termiiLaneEl.classList.remove("termii-order-success");
       void termiiLaneEl.offsetWidth;
@@ -2813,6 +2835,14 @@
       window.setTimeout(function () {
         if (termiiLaneEl) termiiLaneEl.classList.remove("termii-order-success");
       }, 2400);
+    }
+    if (epSecurityClearance && termiiLaneEl) {
+      termiiLaneEl.classList.remove("termii-security-clearance");
+      void termiiLaneEl.offsetWidth;
+      termiiLaneEl.classList.add("termii-security-clearance");
+      window.setTimeout(function () {
+        if (termiiLaneEl) termiiLaneEl.classList.remove("termii-security-clearance");
+      }, 4300);
     }
     var cfg = window.GCSLC_NAFC_TERMII || {};
     var endpoint = String(cfg.endpoint || ASSET.mockTermiiUrl);
@@ -2928,7 +2958,7 @@
     return b && b.getAttribute("data-cluster") ? b.getAttribute("data-cluster") : "all";
   }
   function renderApiCatalogAgencyMenu() {
-    const reg = window.__GCSLC_AGENCY_KITCHEN_V61;
+    const reg = window.__GCSLC_AGENCY_KITCHEN_V62;
     if (!apiCatalogListEl || !reg || !reg.length) return;
     const mode = getActiveClusterForCatalog();
     const show = reg.filter(function (a) {
@@ -3365,7 +3395,7 @@
       security: "rgba(241,196,15,0.62)",
       social: "rgba(155,89,182,0.58)"
     };
-    const nodes = window.__GCSLC_AGENCY_KITCHEN_V61 || [];
+    const nodes = window.__GCSLC_AGENCY_KITCHEN_V62 || [];
     nodes.forEach((n, idx) => {
       const fill = fillByCluster[n.cluster] || "rgba(200,200,200,0.5)";
       const xy = project([n.lon, n.lat]);
