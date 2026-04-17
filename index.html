@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#001a33" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
-  <title>GCSLC — Sovereign Total Matrix V64 · CIN Matrix</title>
+  <title>GCSLC — Sovereign Total Matrix V66 · NOFR Fiscal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet" />
@@ -2029,6 +2029,96 @@
       0%, 100% { filter: drop-shadow(0 0 0 rgba(212, 175, 55, 0)); }
       50% { filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.45)); }
     }
+    /* V66 — NOFR Money Market Benchmark ticker (map SVG untouched; sits above grassroots ribbon) */
+    .nofr-mm-ticker-wrap {
+      margin: 10px 0 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      background: linear-gradient(180deg, rgba(2, 8, 22, 0.98) 0%, rgba(0, 18, 40, 0.96) 55%, rgba(0, 8, 20, 0.98) 100%);
+      box-shadow: 0 0 0 1px rgba(102, 245, 255, 0.08), inset 0 1px 0 rgba(255, 244, 210, 0.04);
+      overflow: hidden;
+    }
+    .nofr-mm-ticker-wrap.is-nofr-hidden {
+      display: none;
+    }
+    .nofr-mm-label {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 12px 6px;
+      border-bottom: 1px solid rgba(102, 245, 255, 0.12);
+      background: linear-gradient(90deg, rgba(212, 175, 55, 0.12), rgba(102, 245, 255, 0.06), rgba(212, 175, 55, 0.1));
+    }
+    .nofr-shimmer {
+      font-size: clamp(0.58rem, 1.5vw, 0.76rem);
+      font-weight: 900;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      background-image: linear-gradient(105deg, #2e7d32 0%, #66f5ff 35%, #d4af37 55%, #66f5ff 75%, #2e7d32 100%);
+      background-size: 220% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: nofrLabelShimmer 6.5s ease-in-out infinite;
+    }
+    .nofr-sub {
+      font-size: clamp(0.48rem, 1.2vw, 0.62rem);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(191, 244, 255, 0.82);
+      font-weight: 800;
+    }
+    @keyframes nofrLabelShimmer {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    .nofr-mm-viewport {
+      position: relative;
+      overflow: hidden;
+      padding: 8px 0 10px;
+      mask-image: linear-gradient(90deg, transparent 0%, #000 4%, #000 96%, transparent 100%);
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 4%, #000 96%, transparent 100%);
+    }
+    .nofr-mm-track {
+      display: flex;
+      width: max-content;
+      gap: 0;
+      will-change: transform;
+      animation: nofrTapeDrift 52s linear infinite;
+    }
+    @keyframes nofrTapeDrift {
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-50%, 0, 0); }
+    }
+    .nofr-mm-line {
+      display: inline-block;
+      padding: 0 18px;
+      white-space: nowrap;
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: clamp(0.48rem, 1.15vw, 0.62rem);
+      letter-spacing: 0.04em;
+      font-weight: 700;
+      color: #dff8ff;
+      text-shadow: 0 0 12px rgba(102, 245, 255, 0.18);
+    }
+    .nofr-mm-line .nofr-up { color: #69f0ae; }
+    .nofr-mm-line .nofr-dn { color: #ff8a80; }
+    .nofr-mm-line .nofr-gld { color: #f0d78c; }
+    @media (max-width: 430px) {
+      .nofr-mm-ticker-wrap {
+        margin: 8px 0 8px;
+        border-radius: 14px;
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 244, 210, 0.05);
+      }
+      .nofr-mm-label { padding: 10px 12px 8px; flex-wrap: wrap; }
+      .nofr-mm-line {
+        font-size: clamp(0.42rem, 2.85vw, 0.58rem);
+        letter-spacing: 0.05em;
+        padding: 0 14px;
+      }
+      .nofr-mm-viewport { padding: 10px 0 12px; }
+    }
   </style>
 </head>
 <body>
@@ -2117,6 +2207,15 @@
                 <button type="button" class="sovereign-cluster-btn" data-cluster="security" aria-pressed="false">Security</button>
                 <button type="button" class="sovereign-cluster-btn" data-cluster="social" aria-pressed="false">Social Impact</button>
                 <button type="button" class="sovereign-cluster-btn" data-cluster="off" aria-pressed="false">Off</button>
+              </div>
+            </div>
+            <div class="nofr-mm-ticker-wrap" id="nofrMmTickerWrap" aria-label="NOFR Money Market Benchmark — Economic &amp; Fiscal cluster">
+              <div class="nofr-mm-label">
+                <span class="nofr-shimmer">NOFR</span>
+                <span class="nofr-sub">Money Market Benchmark · CBN lattice</span>
+              </div>
+              <div class="nofr-mm-viewport">
+                <div class="nofr-mm-track" id="nofrMmTrack"></div>
               </div>
             </div>
             <div class="grassroots-ribbon" id="grassrootsRibbon">
@@ -2347,8 +2446,8 @@
   var PUS = ASSET.pus;
   var FIELD_AGENTS = ASSET.fieldAgents;
   var CANV_PER_WARD = 14;
-  /** V64 Agency Kitchen — background data objects (map + API catalog). Do not reorder lon/lat/r without map audit. */
-  window.__GCSLC_AGENCY_KITCHEN_V64 = [
+  /** V66 Agency Kitchen — background data objects (map + API catalog). Do not reorder lon/lat/r without map audit. */
+  window.__GCSLC_AGENCY_KITCHEN_V66 = [
     { id: "CBN", cluster: "economic", title: "CBN — Central Bank of Nigeria", handshakeName: "CBN", lon: 7.495, lat: 9.076, r: 4.7, endpoint: "/v59/economic/cbn/sovereign-rails", dishTag: "Dish · Economic", subtext: "Monetary policy, payment systems, SCUML-adjacent institutional attest." },
     { id: "BOI", cluster: "economic", title: "BOI — Bank of Industry", handshakeName: "BOI", lon: 8.52, lat: 11.99, r: 4.3, endpoint: "/v59/economic/boi/industrial-credit", dishTag: "Dish · Economic", subtext: "Industrial finance · SME uplift vectors." },
     { id: "NEXIM", cluster: "economic", title: "NEXIM — Export-Import Bank", handshakeName: "NEXIM", lon: 3.38, lat: 6.52, r: 4.2, endpoint: "/v59/economic/nexim/export-import", dishTag: "Dish · Economic", subtext: "Trade finance · ECOWAS corridor liquidity." },
@@ -2358,6 +2457,7 @@
     { id: "FIRS", cluster: "economic", title: "FIRS — Federal Inland Revenue Service", handshakeName: "FIRS", lon: 5.75, lat: 5.55, r: 4.4, endpoint: "/v59/economic/firs/tax-attest", dishTag: "Dish · Economic", subtext: "Revenue assurance · harmonized reporting endpoint." },
     { id: "NERC", cluster: "economic", title: "NERC — Electricity Regulatory Commission", handshakeName: "NERC", lon: 6.45, lat: 4.55, r: 4.1, endpoint: "/v59/economic/nerc/tariff-lattice", dishTag: "Dish · Economic", subtext: "Power market rules · DISCO/GENCO adjacency." },
     { id: "RMAFC", cluster: "economic", title: "RMAFC — Revenue Mobilization Allocation and Fiscal Commission", handshakeName: "RMAFC", endpointCode: "E", lon: 7.53, lat: 9.068, r: 4.25, endpoint: "/v60/economic/rmafc/fiscal-allocation-insight", dishTag: "Endpoint E · Fiscal Allocation Insight", subtext: "RMAFC data handshake — federation revenue formula & allocation insight." },
+    { id: "NOFR_O", cluster: "economic", title: "Endpoint O — NOFR_Liquidity_Handshake", handshakeName: "NOFR", endpointCode: "O", lon: 7.488, lat: 9.078, r: 4.12, endpoint: "/v66/economic/NOFR_Liquidity_Handshake", dishTag: "EP O · NOFR_Liquidity_Handshake", subtext: "Aligns grassroots data packets with the new CBN NOFR benchmark for fiscal transparency.", nofrFlag: true },
     { id: "WORKS", cluster: "infrastructure", title: "Federal Ministry of Works", handshakeName: "FMW", lon: 7.44, lat: 9.02, r: 4.6, endpoint: "/v59/infrastructure/fmw/roads-core", dishTag: "Dish · Infrastructure", subtext: "Federal road asset registry · corridor maintenance." },
     { id: "FMOT", cluster: "infrastructure", title: "Federal Ministry of Transportation", handshakeName: "FMOT", lon: 8.49, lat: 11.98, r: 4.4, endpoint: "/v59/infrastructure/fmot/multimodal", dishTag: "Dish · Infrastructure", subtext: "Rail, road, and intermodal logistics orchestration." },
     { id: "BLUE_ECON", cluster: "infrastructure", title: "Blue Economy (Presidential priority)", handshakeName: "BLUE_ECONOMY", lon: 4.28, lat: 8.32, r: 4.9, endpoint: "/v59/infrastructure/blue-economy/coastal-matrix", dishTag: "Dish · Marine Economy", subtext: "Coastal productivity · fisheries and offshore adjacency." },
@@ -2552,7 +2652,34 @@
     for (let i = 0; i < s.length; i++) h = ((h << 5) - h) + s.charCodeAt(i) | 0;
     return Math.abs(h);
   }
+  function initNofrMmTickerV66() {
+    var tr = document.getElementById("nofrMmTrack");
+    if (!tr) return;
+    var tape =
+      "<span class=\"nofr-gld\">NOFR 27D</span> <span class=\"nofr-up\">26.05%</span>   •   " +
+      "<span class=\"nofr-gld\">OMO 364D</span> <span class=\"nofr-dn\">18.20%</span>   •   " +
+      "<span class=\"nofr-gld\">STANDING FACILITY</span> <span class=\"nofr-up\">27.50%</span>   •   " +
+      "<span class=\"nofr-gld\">RETAIL BENCH</span> <span class=\"nofr-up\">26.10%</span>   •   " +
+      "<span class=\"nofr-gld\">WARD PKTS</span> <span class=\"nofr-up\">SYNC</span>   •   " +
+      "<span class=\"nofr-gld\">PU ATTEST</span> <span class=\"nofr-up\">HASH OK</span>   •   " +
+      "<span class=\"nofr-gld\">AZK SPREAD</span> <span class=\"nofr-up\">+2bps</span>   •   " +
+      "<span class=\"nofr-gld\">FISCAL TRACE</span> <span class=\"nofr-up\">LIVE</span>";
+    tr.innerHTML =
+      "<span class=\"nofr-mm-line\">" + tape + "</span>" +
+      "<span class=\"nofr-mm-line\" aria-hidden=\"true\">" + tape + "</span>";
+  }
+  function syncNofrMmTickerVisibilityV66() {
+    var wrap = document.getElementById("nofrMmTickerWrap");
+    if (!wrap) return;
+    var b = document.querySelector(".sovereign-cluster-btn.is-active");
+    var m = b && b.getAttribute("data-cluster") ? b.getAttribute("data-cluster") : "all";
+    var on = m === "all" || m === "economic";
+    wrap.classList.toggle("is-nofr-hidden", !on);
+  }
+  window.syncNofrMmTickerVisibilityV66 = syncNofrMmTickerVisibilityV66;
   setupRhgiKadunaAndCinV64();
+  initNofrMmTickerV66();
+  syncNofrMmTickerVisibilityV66();
 
   function stateUsageFill(name) {
     const d3 = window.d3;
@@ -3088,6 +3215,10 @@
       appendHandshakeLog("FISCAL HANDSHAKE SECURE: REVENUE FORMULA SYNCED", null);
       console.log("FISCAL HANDSHAKE SECURE: REVENUE FORMULA SYNCED");
     }
+    if (catalog && endpointCodeCatalog === "O") {
+      appendHandshakeLog("CBN NOFR ALIGNMENT: 100% SECURE. FISCAL TRANSPARENCY ACTIVE.", null);
+      console.log("CBN NOFR ALIGNMENT: 100% SECURE. FISCAL TRANSPARENCY ACTIVE.");
+    }
     if (catalog && (endpointCodeCatalog === "M" || endpointCodeCatalog === "N")) {
       var cinLab = cinLgaCatalog || "NATIONAL";
       appendHandshakeLog("CIN PROTOCOL ACTIVE: " + cinLab + " LATTICE STABLE", null);
@@ -3164,13 +3295,15 @@
     if (termiiStatusLineEl) {
       termiiStatusLineEl.textContent = catalog && agencyIdCatalog === "RMAFC"
         ? ("FISCAL HANDSHAKE SECURE: REVENUE FORMULA SYNCED · Mock Termii pulse · " + new Date().toLocaleTimeString())
-        : catalog && (endpointCodeCatalog === "M" || endpointCodeCatalog === "N")
-          ? ("CIN PROTOCOL ACTIVE: " + (cinLgaCatalog || "NATIONAL") + " LATTICE STABLE · Mock Termii · " + new Date().toLocaleTimeString())
-          : catalog && clusterCatalog === "security"
+        : catalog && endpointCodeCatalog === "O"
+          ? ("CBN NOFR ALIGNMENT: 100% SECURE. FISCAL TRANSPARENCY ACTIVE. · Mock Termii · " + new Date().toLocaleTimeString())
+          : catalog && (endpointCodeCatalog === "M" || endpointCodeCatalog === "N")
+            ? ("CIN PROTOCOL ACTIVE: " + (cinLgaCatalog || "NATIONAL") + " LATTICE STABLE · Mock Termii · " + new Date().toLocaleTimeString())
+            : catalog && clusterCatalog === "security"
             ? ("SECURE DIAGNOSTIC COMPLETE: SOVEREIGN INTEGRITY VERIFIED · Mock Termii pulse · " + new Date().toLocaleTimeString())
-            : catalog
-              ? ("Successful order · " + String(ctx.name || "") + " · Mock Termii pulse · JSON proof in log · " + new Date().toLocaleTimeString())
-              : ("Handshake queued — lane pulse active · inspect logic log for JSON Data Packet · " + new Date().toLocaleTimeString());
+              : catalog
+                ? ("Successful order · " + String(ctx.name || "") + " · Mock Termii pulse · JSON proof in log · " + new Date().toLocaleTimeString())
+                : ("Handshake queued — lane pulse active · inspect logic log for JSON Data Packet · " + new Date().toLocaleTimeString());
     }
     var outbound = {
       api_key: dataPacket.termii.api_key,
@@ -3198,13 +3331,15 @@
         if (catalog) {
           termiiStatusLineEl.textContent = agencyIdCatalog === "RMAFC"
             ? ("FISCAL HANDSHAKE SECURE: REVENUE FORMULA SYNCED · GCSLC → Mock Termii: HTTP " + res.status + " · " + new Date().toLocaleTimeString())
-            : (endpointCodeCatalog === "M" || endpointCodeCatalog === "N")
-              ? ("CIN PROTOCOL ACTIVE: " + (cinLgaCatalog || "NATIONAL") + " LATTICE STABLE · GCSLC → Mock Termii: HTTP " + res.status + " · " + new Date().toLocaleTimeString())
-              : clusterCatalog === "security"
-                ? ("SECURE DIAGNOSTIC COMPLETE: SOVEREIGN INTEGRITY VERIFIED · GCSLC → Mock Termii: HTTP " + res.status + " · " + new Date().toLocaleTimeString())
-                : res.ok
-                  ? ("Successful order · " + String(ctx.name || "") + " · GCSLC → Mock Termii: OK · " + new Date().toLocaleTimeString())
-                  : ("Successful order (sim) · " + String(ctx.name || "") + " · HTTP " + res.status + " · " + new Date().toLocaleTimeString());
+            : endpointCodeCatalog === "O"
+              ? ("CBN NOFR ALIGNMENT: 100% SECURE. FISCAL TRANSPARENCY ACTIVE. · GCSLC → Mock Termii: HTTP " + res.status + " · " + new Date().toLocaleTimeString())
+              : (endpointCodeCatalog === "M" || endpointCodeCatalog === "N")
+                ? ("CIN PROTOCOL ACTIVE: " + (cinLgaCatalog || "NATIONAL") + " LATTICE STABLE · GCSLC → Mock Termii: HTTP " + res.status + " · " + new Date().toLocaleTimeString())
+                : clusterCatalog === "security"
+                  ? ("SECURE DIAGNOSTIC COMPLETE: SOVEREIGN INTEGRITY VERIFIED · GCSLC → Mock Termii: HTTP " + res.status + " · " + new Date().toLocaleTimeString())
+                  : res.ok
+                    ? ("Successful order · " + String(ctx.name || "") + " · GCSLC → Mock Termii: OK · " + new Date().toLocaleTimeString())
+                    : ("Successful order (sim) · " + String(ctx.name || "") + " · HTTP " + res.status + " · " + new Date().toLocaleTimeString());
         } else {
           termiiStatusLineEl.textContent = (res.ok ? "GCSLC → Mock Termii: OK · " : "GCSLC → Mock Termii: HTTP " + res.status + " · ") + new Date().toLocaleTimeString();
         }
@@ -3214,13 +3349,15 @@
       if (termiiStatusLineEl) {
         termiiStatusLineEl.textContent = catalog && agencyIdCatalog === "RMAFC"
           ? ("FISCAL HANDSHAKE SECURE: REVENUE FORMULA SYNCED · Mock offline — JSON logged · " + new Date().toLocaleTimeString())
-          : catalog && (endpointCodeCatalog === "M" || endpointCodeCatalog === "N")
-            ? ("CIN PROTOCOL ACTIVE: " + (cinLgaCatalog || "NATIONAL") + " LATTICE STABLE · Mock offline — JSON logged · " + new Date().toLocaleTimeString())
-            : catalog && clusterCatalog === "security"
-              ? ("SECURE DIAGNOSTIC COMPLETE: SOVEREIGN INTEGRITY VERIFIED · Mock offline — JSON logged · " + new Date().toLocaleTimeString())
-              : catalog
-                ? ("Successful order (sim) · " + String(ctx.name || "") + " · Mock offline — JSON logged · " + new Date().toLocaleTimeString())
-                : ("Mock Termii unreachable — JSON logged. Start terminal mock server, then retry. " + new Date().toLocaleTimeString());
+          : catalog && endpointCodeCatalog === "O"
+            ? ("CBN NOFR ALIGNMENT: 100% SECURE. FISCAL TRANSPARENCY ACTIVE. · Mock offline — JSON logged · " + new Date().toLocaleTimeString())
+            : catalog && (endpointCodeCatalog === "M" || endpointCodeCatalog === "N")
+              ? ("CIN PROTOCOL ACTIVE: " + (cinLgaCatalog || "NATIONAL") + " LATTICE STABLE · Mock offline — JSON logged · " + new Date().toLocaleTimeString())
+              : catalog && clusterCatalog === "security"
+                ? ("SECURE DIAGNOSTIC COMPLETE: SOVEREIGN INTEGRITY VERIFIED · Mock offline — JSON logged · " + new Date().toLocaleTimeString())
+                : catalog
+                  ? ("Successful order (sim) · " + String(ctx.name || "") + " · Mock offline — JSON logged · " + new Date().toLocaleTimeString())
+                  : ("Mock Termii unreachable — JSON logged. Start terminal mock server, then retry. " + new Date().toLocaleTimeString());
       }
     }
   }
@@ -3238,7 +3375,7 @@
     return b && b.getAttribute("data-cluster") ? b.getAttribute("data-cluster") : "all";
   }
   function renderApiCatalogAgencyMenu() {
-    const reg = window.__GCSLC_AGENCY_KITCHEN_V64;
+    const reg = window.__GCSLC_AGENCY_KITCHEN_V66;
     if (!apiCatalogListEl || !reg || !reg.length) return;
     const mode = getActiveClusterForCatalog();
     const show = reg.filter(function (a) {
@@ -3295,6 +3432,7 @@
   document.addEventListener("click", function (e) {
     if (e.target && e.target.closest && e.target.closest(".sovereign-cluster-btn")) {
       window.requestAnimationFrame(renderApiCatalogAgencyMenu);
+      window.requestAnimationFrame(syncNofrMmTickerVisibilityV66);
     }
   }, true);
   if (apiCatalogListEl) {
@@ -3676,7 +3814,7 @@
       security: "rgba(241,196,15,0.62)",
       social: "rgba(155,89,182,0.58)"
     };
-    const nodes = window.__GCSLC_AGENCY_KITCHEN_V64 || [];
+    const nodes = window.__GCSLC_AGENCY_KITCHEN_V66 || [];
     nodes.forEach((n, idx) => {
       const fill = fillByCluster[n.cluster] || "rgba(200,200,200,0.5)";
       const xy = project([n.lon, n.lat]);
@@ -3714,6 +3852,7 @@
       applyEagleReadinessPulse(mapSvgEl, mode);
       updateStateReadinessTitles(mapSvgEl, mode);
       if (typeof window.renderApiCatalogAgencyMenu === "function") window.renderApiCatalogAgencyMenu();
+      if (typeof window.syncNofrMmTickerVisibilityV66 === "function") window.syncNofrMmTickerVisibilityV66();
     }
     window.__GCSLC_CLUSTER_SYNC__ = syncClusterMatrix;
     return syncClusterMatrix;
