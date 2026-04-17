@@ -15,7 +15,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#001a33" />
   <meta name="color-scheme" content="dark" />
-  <title>GCSLC — Sovereign Convergence v21</title>
+  <title>GCSLC — Sovereign Total Convergence v22</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet" />
@@ -38,8 +38,9 @@
       --map-fill: #1e90a7;
       --map-stroke: #d2f7ff;
       --intel-h: 38px;
+      --nafc-feed-h: 36px;
       --footer-core: min(108px, 28vw);
-      --footer-h: calc(var(--intel-h) + var(--footer-core));
+      --footer-h: calc(var(--intel-h) + var(--nafc-feed-h) + var(--footer-core));
     }
     * { box-sizing: border-box; }
     *, *::before, *::after {
@@ -54,8 +55,9 @@
       font-family: "Goldman", system-ui, -apple-system, "Segoe UI", sans-serif;
     }
     html.gcslc-embed {
-      --footer-h: 8px;
+      --footer-h: calc(var(--nafc-feed-h) + var(--footer-core));
       --intel-h: 0px;
+      --nafc-feed-h: 34px;
     }
     html.gcslc-embed .gov-toggle,
     html.gcslc-embed .intel-ticker,
@@ -375,6 +377,35 @@
     .center-col { min-width: 0; width: 100%; }
     .center-col-primary { display: flex; flex-direction: column; align-items: stretch; gap: 0; }
     .header { text-align: center; margin-bottom: 10px; padding: 0 6px; display: flex; flex-direction: column; align-items: center; gap: 0; }
+    .header-apex-layer01 .apex-row-nodes {
+      order: 2;
+      margin: 0 0 8px;
+      max-width: min(1100px, 96vw);
+      font-size: clamp(0.52rem, 1.35vw, 0.72rem);
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      line-height: 1.35;
+      text-align: center;
+      color: transparent;
+      background-image: linear-gradient(
+        105deg,
+        #006064 0%,
+        #00acc1 28%,
+        #66f5ff 50%,
+        #00bcd4 72%,
+        #00838f 100%
+      );
+      background-size: 220% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      animation: apexNodesShimmer 5.5s ease-in-out infinite;
+      text-shadow: none;
+    }
+    @keyframes apexNodesShimmer {
+      0%, 100% { background-position: 0% 50%; filter: brightness(1); }
+      50% { background-position: 100% 50%; filter: brightness(1.12); }
+    }
     .header-apex-layer01 .apex-row1 {
       order: 1;
       margin: 0 0 8px;
@@ -397,7 +428,7 @@
       animation: none;
     }
     .header-apex-layer01 .apex-row2 {
-      order: 2;
+      order: 3;
       margin: 0 0 8px;
       max-width: min(1100px, 96vw);
       font-size: clamp(0.54rem, 1.45vw, 0.8rem);
@@ -409,7 +440,7 @@
       text-shadow: 0 0 12px rgba(0, 131, 143, 0.35);
     }
     .header-apex-layer01 .apex-row3 {
-      order: 3;
+      order: 4;
       margin: 0 0 10px;
       max-width: min(1100px, 96vw);
       font-size: clamp(0.54rem, 1.45vw, 0.8rem);
@@ -419,7 +450,7 @@
       text-align: center;
       color: #D4AF37;
     }
-    .header-apex-layer01 .paradigm-apex { order: 4; width: 100%; }
+    .header-apex-layer01 .paradigm-apex { order: 5; width: 100%; }
     .identity-tw {
       display: inline;
       color: #eaf8ff;
@@ -581,6 +612,105 @@
       50% { filter: brightness(1.35); box-shadow: 0 0 26px rgba(102, 245, 255, 0.65); }
     }
     .inst-node { pointer-events: none; }
+    .delta-node-glow {
+      pointer-events: none;
+      fill: rgba(0, 255, 255, 0.12);
+      stroke: rgba(102, 245, 255, 0.85);
+      stroke-width: 1.4;
+      filter: drop-shadow(0 0 10px rgba(102, 245, 255, 0.95)) drop-shadow(0 0 22px rgba(0, 229, 255, 0.55));
+      animation: deltaBiolumPulse 1.35s ease-in-out infinite;
+    }
+    .delta-node-core {
+      pointer-events: none;
+      fill: rgba(240, 255, 255, 0.92);
+      stroke: rgba(212, 175, 55, 0.75);
+      stroke-width: 0.9;
+      filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.85));
+      animation: deltaCorePulse 1.1s ease-in-out infinite;
+    }
+    @keyframes deltaBiolumPulse {
+      0%, 100% { opacity: 0.55; }
+      50% { opacity: 0.98; }
+    }
+    @keyframes deltaCorePulse {
+      0%, 100% { opacity: 0.92; }
+      50% { opacity: 1; }
+    }
+    .social-sentiment-hub {
+      margin-top: 12px;
+      padding: 10px 8px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(102, 245, 255, 0.16);
+      background: #001a33;
+    }
+    .social-sentiment-hub h3 {
+      margin: 0 0 8px;
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-align: center;
+      font-weight: 900;
+    }
+    .sentiment-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .sent-col {
+      padding: 8px;
+      border-radius: 10px;
+      border: 1px solid rgba(102, 245, 255, 0.12);
+      background: rgba(0, 8, 22, 0.35);
+      min-height: 120px;
+    }
+    .sent-col-h {
+      margin: 0 0 6px;
+      font-size: 0.52rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #9fc4d7;
+      font-weight: 800;
+    }
+    .sent-col ul {
+      margin: 0;
+      padding: 0 0 0 14px;
+      font-size: 0.52rem;
+      line-height: 1.45;
+      color: #dff8ff;
+    }
+    .sent-col li { margin-bottom: 4px; }
+    .sent-refresh {
+      margin-top: 8px;
+      width: 100%;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      background: rgba(0, 26, 51, 0.9);
+      color: #f0d78c;
+      font-weight: 800;
+      font-size: 0.52rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .sent-refresh:hover, .sent-refresh:focus-visible {
+      filter: brightness(1.08);
+      outline: none;
+    }
+    .merchant-trust-doc h4 {
+      margin: 12px 0 6px;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #f0d78c;
+    }
+    .merchant-trust-doc p, .merchant-trust-doc li {
+      font-size: 0.72rem;
+      line-height: 1.45;
+      color: #dff8ff;
+    }
+    .merchant-trust-doc ul { margin: 0 0 8px; padding-left: 18px; }
     .prisms-row {
       display: grid;
       grid-template-columns: repeat(8, minmax(0, 1fr));
@@ -970,7 +1100,7 @@
       position: fixed;
       top: max(10px, env(safe-area-inset-top));
       right: max(10px, env(safe-area-inset-right));
-      z-index: 130;
+      z-index: 220;
       min-height: 48px;
       min-width: min(220px, 52vw);
       padding: 12px 16px;
@@ -1298,12 +1428,81 @@
       text-transform: uppercase;
       cursor: pointer;
     }
+    /* NAFC global feed — agency lanes */
+    .nafc-feed-bar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: var(--footer-core);
+      z-index: 51;
+      min-height: var(--nafc-feed-h);
+      display: flex;
+      align-items: stretch;
+      border-top: 1px solid rgba(212, 175, 55, 0.28);
+      background: rgba(0, 26, 51, 0.96);
+      overflow: hidden;
+    }
+    .nafc-feed-label {
+      flex: 0 0 auto;
+      padding: 0 10px;
+      display: grid;
+      place-items: center;
+      font-size: 0.58rem;
+      font-weight: 900;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #f0d78c;
+      background: #001a33;
+      border-right: 1px solid rgba(212, 175, 55, 0.35);
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+    }
+    .nafc-feed-marquee {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      mask-image: linear-gradient(90deg, transparent, #000 2%, #000 98%, transparent);
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 2%, #000 98%, transparent);
+    }
+    .nafc-feed-band {
+      display: flex;
+      width: max-content;
+      animation: nafcFeedSlide 64s linear infinite;
+    }
+    .nafc-feed-track {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      white-space: nowrap;
+      padding: 8px 20px 8px 0;
+      font-size: clamp(0.54rem, 1.2vw, 0.66rem);
+      letter-spacing: 0.04em;
+      color: #dff8ff;
+    }
+    .nafc-feed-item .nafc-tag {
+      display: inline-block;
+      margin-right: 8px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 900;
+      font-size: 0.5rem;
+      letter-spacing: 0.12em;
+      color: #0a1224;
+      background: linear-gradient(180deg, #fff4d2, #d4af37 55%, #b8962e);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      box-shadow: 0 0 12px rgba(212, 175, 55, 0.45);
+    }
+    @keyframes nafcFeedSlide {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
     /* High-Velocity Intelligence — tiered SN / SC / SA ticker */
     .intel-ticker {
       position: fixed;
       left: 0;
       right: 0;
-      bottom: var(--footer-core);
+      bottom: calc(var(--footer-core) + var(--nafc-feed-h));
       z-index: 52;
       min-height: var(--intel-h);
       display: flex;
@@ -1605,6 +1804,10 @@
       Emails: <span class="footer-node-metallic">Info@galadimanruwacenter.org</span> | <span class="footer-node-metallic">gcslc.research@gmail.com</span><br />
       Phone: +234 703 913 9439 | +234 809 911 1515
     </div>
+    <div class="legal-block">
+      <strong>Merchant Trust Score</strong>
+      <button type="button" id="merchantTrustOpen" style="margin-top:8px;width:100%;padding:10px;border-radius:8px;border:1px solid rgba(212,175,55,0.45);background:#001a33;color:#f0d78c;font-weight:800;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;">API documentation</button>
+    </div>
   </aside>
 
   <main class="app">
@@ -1631,6 +1834,7 @@
       <div class="center-col center-col-primary">
         <header class="header header-apex-layer01">
           <p class="apex-row apex-row1" id="apexRowTypewriter" aria-live="polite"><span class="identity-tw apex-identity-deep-cyan" id="identityFullName">Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE</span></p>
+          <p class="apex-row apex-row-nodes" id="apexRowNodes">Lagos, Rivers &amp; Diaspora Nodes Active</p>
           <p class="apex-row apex-row2" id="apexRowRc">RC 1871418</p>
           <p class="apex-row apex-row3" id="apexRowAnchor">Everything is Anchored by the 8R Stealth Paradigm Convergence and its determinants, let’s converge for you to understand and decode.</p>
 
@@ -1700,6 +1904,20 @@
           <p class="sidebar-chart-sub" id="nfVelocityBridgeCopy">Livestock · Artisans · Micro-Services · 36 + FCT</p>
           <div id="nfVelocityChart"></div>
         </div>
+        <div class="social-sentiment-hub" id="socialSentimentHub" aria-label="Social sentiment hub">
+          <h3>Social Sentiment Hub</h3>
+          <div class="sentiment-columns">
+            <div class="sent-col" id="googleSentimentCol">
+              <p class="sent-col-h">Google</p>
+              <ul id="googleSentimentList"></ul>
+            </div>
+            <div class="sent-col" id="xSentimentCol">
+              <p class="sent-col-h">X</p>
+              <ul id="xSentimentList"></ul>
+            </div>
+          </div>
+          <button type="button" class="sent-refresh" id="socialSentimentRefresh">Refresh sentiment</button>
+        </div>
       </aside>
     </div>
   </main>
@@ -1760,6 +1978,28 @@
     </div>
   </div>
 
+  <div class="modal-backdrop" id="merchantTrustModal" role="dialog" aria-modal="true" aria-labelledby="merchantTrustTitle">
+    <div class="modal-card merchant-trust-doc">
+      <h3 id="merchantTrustTitle">Merchant Trust Score — WhatsApp Business</h3>
+      <h4>Verification</h4>
+      <p>Meta Business Portfolio ID, WhatsApp Business Account ID, and display phone number must match the verified business profile used for customer messaging.</p>
+      <h4>Trust inputs</h4>
+      <ul>
+        <li>Business verification status (Meta Business Manager)</li>
+        <li>Quality rating and messaging limits (24-hour session / utility)</li>
+        <li>Chargeback and dispute signals (aggregated, PCI-safe)</li>
+      </ul>
+      <h4>API surface (reference)</h4>
+      <ul>
+        <li><code>GET /v1/trust/merchant</code> — returns score band, last evaluated timestamp, and reason codes.</li>
+        <li><code>POST /v1/trust/webhook</code> — inbound Meta/WhatsApp status callbacks (signed).</li>
+      </ul>
+      <h4>Security</h4>
+      <p>HMAC-SHA256 signatures on webhooks; rotate secrets per environment; no PAN or card data in payloads.</p>
+      <button type="button" class="modal-close" id="merchantTrustClose">Close</button>
+    </div>
+  </div>
+
   <div class="modal-backdrop" id="corridorModal" role="dialog" aria-modal="true">
     <div class="modal-card">
       <h3>AZK Corridor</h3>
@@ -1767,6 +2007,19 @@
         <strong>Abuja–Zaria–Kano (AZK)</strong> — sovereign corridor spine; logistics, energy transition, and institutional routing.
       </p>
       <button type="button" class="modal-close" id="corridorClose">Close</button>
+    </div>
+  </div>
+
+  <div class="nafc-feed-bar" id="nafcFeedBar" role="region" aria-label="NAFC global feed">
+    <div class="nafc-feed-label" title="National Alert Fusion Center">NAFC</div>
+    <div class="nafc-feed-marquee">
+      <div class="nafc-feed-band" id="nafcFeedBand">
+        <div class="nafc-feed-track" id="nafcFeedTrack">
+          <span class="nafc-feed-item"><span class="nafc-tag">NAHCON</span> "2027 Digital PTA Handshake: Status Pending..."</span>
+          <span class="nafc-feed-item"><span class="nafc-tag">RMAFC</span> "Real-Time Fiscal Allocation Sync: Active..."</span>
+          <span class="nafc-feed-item"><span class="nafc-tag">Embassies</span> "Security Signal Priority: Whitelisted..."</span>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1786,7 +2039,7 @@
       <span class="g">HANDSHAKE //</span>
       Phone <span class="footer-node-metallic"><strong>+234 703 913 9439</strong> | <strong>+234 809 911 1515</strong></span>
       · Email <span class="footer-node-metallic">Info@galadimanruwacenter.org</span> · <span class="footer-node-metallic">gcslc.research@gmail.com</span>
-      · <strong>Copyright LW15954</strong> · <strong>SCUML RN: 151653884</strong> · Sovereign Convergence v21 · 8,806 Wards : 123,284 Field Agents · 176,000 PUs · Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau · <strong>GCSLC PROPRIETARY</strong>
+      · <strong>Copyright LW15954</strong> · <strong>SCUML RN: 151653884</strong> · Sovereign Total Convergence v22 · 8,806 Wards : 123,284 Field Agents · 176,000 PUs · Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau · <strong>GCSLC PROPRIETARY</strong>
     </div>
   </footer>
 
