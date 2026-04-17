@@ -2,9 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5, user-scalable=yes" />
   <meta name="theme-color" content="#001a33" />
-  <title>GCSLC — V15 Diligence</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <title>GCSLC — Sovereign Total Sync V56 · Mobile Retain</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet" />
@@ -23,7 +25,8 @@
       --text: #eaf8ff;
       --sub: #c8e8f6;
       --map-fill: #1e90a7;
-      --map-stroke: #d2f7ff;
+      /* Sovereign Gold edge (specular sweep layered via .state-specular) */
+      --map-stroke: #d4af37;
       --intel-h: 38px;
       --footer-core: min(108px, 28vw);
       --footer-h: calc(var(--intel-h) + var(--footer-core));
@@ -122,9 +125,56 @@
     .app {
       position: relative;
       z-index: 2;
-      max-width: 1480px;
+      max-width: min(1480px, 100%);
+      width: 100%;
       margin: 0 auto;
       padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) calc(var(--footer-h) + max(20px, env(safe-area-inset-bottom))) max(12px, env(safe-area-inset-left));
+    }
+    /* V56 — mobile scale-to-fit: single column, touch targets, map fluid */
+    @media (max-width: 900px) {
+      .shell-v7 {
+        grid-template-columns: 1fr !important;
+        gap: 10px;
+        align-items: stretch;
+      }
+      .sidebar { font-size: clamp(0.62rem, 2.8vw, 0.74rem); }
+      .map-masterpiece { overflow: hidden; border-radius: 12px; }
+      #mapSvg {
+        width: 100% !important;
+        height: auto !important;
+        max-width: 100%;
+        min-height: min(52vw, 420px);
+      }
+      .map-layer-toggles {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        padding: 10px;
+      }
+      .sovereign-filter-select {
+        width: 100%;
+        min-height: 44px;
+        padding: 8px 10px;
+        border-radius: 10px;
+        border: 1px solid rgba(212, 175, 55, 0.45);
+        background: rgba(0, 26, 51, 0.92);
+        color: #eaf8ff;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        font-size: clamp(0.58rem, 2.9vw, 0.72rem);
+      }
+      .header-apex-layer01 .apex-row1 { min-height: auto; }
+    }
+    @media (max-width: 420px) {
+      .prisms-row {
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        gap: 6px !important;
+      }
+      .prism-box.v8-glass {
+        min-height: max(40px, 11vw);
+        font-size: clamp(0.48rem, 2.6vw, 0.6rem);
+        padding: 6px 2px;
+      }
     }
     .shell-v7 {
       display: grid;
@@ -456,27 +506,46 @@
       flex-wrap: wrap;
       align-items: center;
       justify-content: center;
-      gap: 8px 14px;
+      gap: 8px 12px;
       margin: 0 0 10px;
       padding: 8px 10px;
       border-radius: 10px;
-      border: 1px solid rgba(102, 245, 255, 0.16);
-      background: var(--surface-unified);
+      border: 1px solid rgba(212, 175, 55, 0.28);
+      background: linear-gradient(165deg, rgba(0, 26, 51, 0.95), rgba(0, 12, 28, 0.88));
       font-size: clamp(0.56rem, 1.35vw, 0.68rem);
       font-weight: 700;
       letter-spacing: 0.06em;
       color: #bff4ff;
     }
-    .layer-toggle {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+    .sovereign-filter-label {
+      flex: 1 1 auto;
+      min-width: min(100%, 140px);
+      text-align: center;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #f0d78c;
+      font-size: clamp(0.52rem, 1.25vw, 0.62rem);
+    }
+    .sovereign-filter-select {
+      flex: 1 1 220px;
+      min-width: 0;
+      min-height: 40px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(102, 245, 255, 0.28);
+      background: rgba(0, 18, 40, 0.88);
+      color: #eaf8ff;
+      font-family: inherit;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      font-size: clamp(0.54rem, 1.3vw, 0.68rem);
       cursor: pointer;
       touch-action: manipulation;
-      min-height: 40px;
-      padding: 4px 2px;
     }
-    .layer-toggle input { accent-color: var(--gold); width: 16px; height: 16px; }
+    .sovereign-filter-select:focus-visible {
+      outline: 2px solid rgba(212, 175, 55, 0.65);
+      outline-offset: 2px;
+    }
     .sidebar-chart-min {
       margin-top: 12px;
       padding: 10px 8px;
@@ -518,6 +587,29 @@
       touch-action: manipulation;
     }
     .btn-termii-test:hover, .btn-termii-test:focus-visible { filter: brightness(1.1); outline: none; }
+    .btn-handshake-sim {
+      border-color: rgba(212, 175, 55, 0.55);
+      background: linear-gradient(165deg, rgba(0, 26, 51, 0.98) 0%, rgba(4, 18, 42, 0.96) 55%, rgba(0, 26, 51, 0.98) 100%);
+      box-shadow: inset 0 1px 0 rgba(255, 244, 210, 0.06), 0 0 18px rgba(212, 175, 55, 0.22);
+    }
+    .termii-handshake-log {
+      margin: 10px 0 0;
+      padding: 10px 10px 12px;
+      max-height: min(220px, 38vh);
+      overflow: auto;
+      border-radius: 10px;
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      background: linear-gradient(180deg, rgba(0, 18, 40, 0.96), rgba(0, 8, 22, 0.92));
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.52rem;
+      line-height: 1.45;
+      color: #c8e8f6;
+      text-align: left;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .termii-handshake-log .log-line { margin: 0 0 8px; color: #7defff; }
+    .termii-handshake-log .log-payload { margin: 0; color: #f0d78c; }
     .termii-nafc-note {
       margin: 6px 0 0;
       font-size: 0.52rem;
@@ -539,7 +631,15 @@
       0%, 100% { filter: brightness(1); }
       50% { filter: brightness(1.35); box-shadow: 0 0 26px rgba(102, 245, 255, 0.65); }
     }
-    .inst-node { pointer-events: none; }
+    .termii-lane.termii-handshake-pulse .termii-inbound,
+    .termii-lane.termii-handshake-pulse .termii-outbound {
+      animation: termiiHandshakeBurst 0.38s ease-in-out 5;
+    }
+    @keyframes termiiHandshakeBurst {
+      0%, 100% { filter: brightness(1); box-shadow: none; }
+      50% { filter: brightness(1.45); box-shadow: 0 0 28px rgba(212, 175, 55, 0.75), inset 0 0 18px rgba(102, 245, 255, 0.12); }
+    }
+    .inst-node { pointer-events: auto; cursor: help; }
     .prisms-row {
       display: grid;
       grid-template-columns: repeat(8, minmax(0, 1fr));
@@ -1562,10 +1662,20 @@
           <article class="map-wrap living-terminal map-masterpiece">
             <h2 class="map-title">Eagle Map — Sovereign Lattice</h2>
             <p class="map-kinetic-caption"><strong>AZK</strong> corridor · Abuja–Zaria–Kano · ward lattice to command node</p>
-            <div class="map-layer-toggles" role="toolbar" aria-label="Institutional overlay toggles">
-              <label class="layer-toggle"><input type="checkbox" id="layerMil" checked data-layer="mil" /> Military / Paramilitary</label>
-              <label class="layer-toggle"><input type="checkbox" id="layerNysc" checked data-layer="nysc" /> NYSC</label>
-              <label class="layer-toggle"><input type="checkbox" id="layerJamb" checked data-layer="jamb" /> JAMB</label>
+            <div class="map-layer-toggles" role="toolbar" aria-label="Sovereign agency layer filter">
+              <span class="sovereign-filter-label" id="sovereignFilterLabel">Sovereign Filter</span>
+              <label class="sr-only-def" for="sovereignAgencyFilter">Select institutional agency overlay</label>
+              <select id="sovereignAgencyFilter" class="sovereign-filter-select" aria-describedby="sovereignFilterLabel">
+                <option value="all">All agencies (overlay)</option>
+                <option value="smedan">SMEDAN</option>
+                <option value="itf">ITF</option>
+                <option value="nema">NEMA</option>
+                <option value="works">Federal Ministry of Works</option>
+                <option value="nimasa">NIMASA</option>
+                <option value="npa">NPA</option>
+                <option value="blue">Blue Economy</option>
+                <option value="off">Overlays off</option>
+              </select>
             </div>
             <div class="grassroots-ribbon" id="grassrootsRibbon">
               <strong>Grassroots Math LIVE:</strong> <span id="wardStat">8,806</span> Wards · <strong id="fieldAgentsStat">123,284</strong> Field Agents · <span id="puStat">176,000</span> PUs
@@ -1600,7 +1710,8 @@
                 <span class="termii-pulse" aria-hidden="true"></span>
               </div>
             </div>
-            <button type="button" class="btn-termii-test" id="termiiTestAlert">Test Alert — NAFC → Termii (simulated SMS)</button>
+            <button type="button" class="btn-termii-test btn-handshake-sim" id="handshakeSimBtn">TEST_HANDSHAKE: GCSLC -&gt; TERMII (SIMULATED)</button>
+            <pre class="termii-handshake-log" id="termiiHandshakeLog" aria-live="polite"></pre>
             <p class="termii-nafc-note" id="termiiStatusLine" aria-live="polite"></p>
           </div>
         </section>
@@ -1716,12 +1827,38 @@
     </div>
   </footer>
 
+  <script type="application/json" id="gcslcAssetLock">
+{"SOVEREIGN_ASSET_LOCK_V55":{"wards":8806,"fieldAgents":123284,"pus":176000,"deepBlue":"#001a33","gold":"#D4AF37","cyan":"#66f5ff","mockTermiiUrl":"http://127.0.0.1:8787/api/sms/send"}}
+  </script>
+
   <script>
 (function () {
-  const WARDS = 8806;
-  const PUS = 176000;
-  const FIELD_AGENTS = WARDS * 14;
-  const CANV_PER_WARD = 14;
+  function readAssetLock() {
+    var el = document.getElementById("gcslcAssetLock");
+    var fallback = { wards: 8806, fieldAgents: 123284, pus: 176000, deepBlue: "#001a33", gold: "#D4AF37", cyan: "#66f5ff", mockTermiiUrl: "http://127.0.0.1:8787/api/sms/send" };
+    if (!el || !el.textContent) return fallback;
+    try {
+      var j = JSON.parse(el.textContent);
+      var a = j && j.SOVEREIGN_ASSET_LOCK_V55;
+      if (!a) return fallback;
+      return {
+        wards: Number(a.wards),
+        fieldAgents: Number(a.fieldAgents),
+        pus: Number(a.pus),
+        deepBlue: String(a.deepBlue),
+        gold: String(a.gold),
+        cyan: String(a.cyan),
+        mockTermiiUrl: String(a.mockTermiiUrl)
+      };
+    } catch (e) {
+      return fallback;
+    }
+  }
+  var ASSET = readAssetLock();
+  var WARDS = ASSET.wards;
+  var PUS = ASSET.pus;
+  var FIELD_AGENTS = ASSET.fieldAgents;
+  var CANV_PER_WARD = 14;
   const STATE_WARDS = Object.create(null);
 
   const cities = [
@@ -2303,14 +2440,15 @@
   }
 
   window.GCSLC_NAFC_TERMII = window.GCSLC_NAFC_TERMII || {
-    live: false,
-    endpoint: "https://api.ng.termii.com/api/sms/send",
-    apiKey: "",
-    from: "NAFC",
-    to: ""
+    live: true,
+    endpoint: ASSET.mockTermiiUrl,
+    apiKey: "GCSLC_SIMULATION_KEY",
+    from: "GCSLC",
+    to: "+2347039139439"
   };
 
-  const termiiTestBtn = document.getElementById("termiiTestAlert");
+  const handshakeSimBtn = document.getElementById("handshakeSimBtn");
+  const termiiHandshakeLogEl = document.getElementById("termiiHandshakeLog");
   const termiiLaneEl = document.getElementById("termiiLane");
   const termiiStatusLineEl = document.getElementById("termiiStatusLine");
   function flashTermiiTestLane() {
@@ -2320,46 +2458,91 @@
     termiiLaneEl.classList.add("termii-test-flash");
     window.setTimeout(() => termiiLaneEl.classList.remove("termii-test-flash"), 1500);
   }
-  async function runNafcTermiiTestPulse() {
+  function pulseTermiiHandshakeLane() {
+    if (!termiiLaneEl) return;
+    termiiLaneEl.classList.remove("termii-handshake-pulse");
+    void termiiLaneEl.offsetWidth;
+    termiiLaneEl.classList.add("termii-handshake-pulse");
+    window.setTimeout(() => termiiLaneEl.classList.remove("termii-handshake-pulse"), 2000);
+  }
+  function appendHandshakeLog(label, obj) {
+    if (!termiiHandshakeLogEl) return;
+    var ts = new Date().toISOString();
+    var block = document.createElement("div");
+    block.className = "log-line";
+    block.textContent = "[" + ts + "] " + label;
+    termiiHandshakeLogEl.appendChild(block);
+    if (obj != null) {
+      var pre = document.createElement("pre");
+      pre.className = "log-payload";
+      pre.style.margin = "0 0 10px";
+      pre.textContent = typeof obj === "string" ? obj : JSON.stringify(obj, null, 2);
+      termiiHandshakeLogEl.appendChild(pre);
+    }
+    termiiHandshakeLogEl.scrollTop = termiiHandshakeLogEl.scrollHeight;
+  }
+  async function runGcslcTermiiHandshakeSimulation() {
+    pulseTermiiHandshakeLane();
     flashTermiiTestLane();
-    const cfg = window.GCSLC_NAFC_TERMII || {};
-    if (!cfg.live || !cfg.apiKey || !cfg.to) {
-      if (termiiStatusLineEl) {
-        termiiStatusLineEl.textContent = "NAFC Test Alert — National Alert Fusion Center → Termii (simulated SMS). Set window.GCSLC_NAFC_TERMII = { live: true, apiKey, to, from } for live send (use server proxy if CORS blocks). " + new Date().toLocaleTimeString();
+    var cfg = window.GCSLC_NAFC_TERMII || {};
+    var endpoint = String(cfg.endpoint || ASSET.mockTermiiUrl);
+    var dataPacket = {
+      handshake: "GCSLC -> TERMII (SIMULATED)",
+      institutional: {
+        deepBlue: ASSET.deepBlue,
+        gold: ASSET.gold,
+        cyan: ASSET.cyan,
+        wards: WARDS,
+        fieldAgents: FIELD_AGENTS,
+        pus: PUS
+      },
+      termii: {
+        api_key: String(cfg.apiKey || "GCSLC_SIMULATION_KEY"),
+        to: String(cfg.to || "+2347039139439"),
+        from: String(cfg.from || "GCSLC"),
+        sms: "[GCSLC/NAFC] Sovereign handshake probe — Eagle transmit (simulation). " + new Date().toISOString(),
+        type: "plain",
+        channel: "generic"
       }
+    };
+    appendHandshakeLog("DATA_PACKET (outbound JSON)", dataPacket);
+    if (termiiStatusLineEl) {
+      termiiStatusLineEl.textContent = "Handshake queued — lane pulse active · inspect logic log for JSON Data Packet · " + new Date().toLocaleTimeString();
+    }
+    var outbound = {
+      api_key: dataPacket.termii.api_key,
+      to: dataPacket.termii.to,
+      from: dataPacket.termii.from,
+      sms: dataPacket.termii.sms,
+      type: dataPacket.termii.type,
+      channel: dataPacket.termii.channel
+    };
+    if (!cfg.live) {
+      appendHandshakeLog("MOCK_SERVER_SKIPPED (cfg.live=false) — UI-only proof complete.", outbound);
       return;
     }
-    const payload = {
-      api_key: String(cfg.apiKey),
-      to: String(cfg.to),
-      from: String(cfg.from || "NAFC"),
-      sms: "[NAFC/GCSLC] Secure gateway test — National Alert Fusion Center. " + new Date().toISOString(),
-      type: "plain",
-      channel: "generic"
-    };
     try {
-      const res = await fetch(String(cfg.endpoint || "https://api.ng.termii.com/api/sms/send"), {
+      var res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(outbound)
       });
-      const raw = await res.text();
-      let summary = raw;
-      try {
-        const j = JSON.parse(raw);
-        summary = j.message || j.sms || j.code || raw;
-      } catch (e) { /* keep raw */ }
+      var raw = await res.text();
+      var parsed = raw;
+      try { parsed = JSON.parse(raw); } catch (e1) { /* keep text */ }
+      appendHandshakeLog("MOCK_TERMII_RESPONSE (HTTP " + res.status + ")", parsed);
       if (termiiStatusLineEl) {
-        termiiStatusLineEl.textContent = (res.ok ? "NAFC → Termii live: OK. " : "NAFC → Termii live: HTTP " + res.status + ". ") + summary + " · " + new Date().toLocaleTimeString();
+        termiiStatusLineEl.textContent = (res.ok ? "GCSLC → Mock Termii: OK · " : "GCSLC → Mock Termii: HTTP " + res.status + " · ") + new Date().toLocaleTimeString();
       }
     } catch (err) {
+      appendHandshakeLog("MOCK_TERMII_OFFLINE (start Python mock on 127.0.0.1:8787) — payload preserved below.", outbound);
       if (termiiStatusLineEl) {
-        termiiStatusLineEl.textContent = "NAFC → Termii live: blocked or offline (" + (err && err.message ? err.message : "error") + "). Use a same-origin proxy for Termii. Showing lane pulse only. " + new Date().toLocaleTimeString();
+        termiiStatusLineEl.textContent = "Mock Termii unreachable — JSON logged. Start terminal mock server, then retry. " + new Date().toLocaleTimeString();
       }
     }
   }
-  if (termiiTestBtn) {
-    termiiTestBtn.addEventListener("click", () => { void runNafcTermiiTestPulse(); });
+  if (handshakeSimBtn) {
+    handshakeSimBtn.addEventListener("click", () => { void runGcslcTermiiHandshakeSimulation(); });
   }
 
   const governanceSlide = document.getElementById("governanceSlide");
@@ -2616,16 +2799,33 @@
     if (prev) prev.remove();
     const g = document.createElementNS(svgNSTarget, "g");
     g.setAttribute("id", "institutionalLayers");
+    const agencyMeta = {
+      smedan: { title: "SMEDAN — Small & Medium Enterprises Development Agency of Nigeria", fill: "rgba(212,175,55,0.62)" },
+      itf: { title: "ITF — Industrial Training Fund", fill: "rgba(102,245,255,0.55)" },
+      nema: { title: "NEMA — National Emergency Management Agency", fill: "rgba(255,160,90,0.58)" },
+      works: { title: "Federal Ministry of Works — infrastructure & transport corridor alignment", fill: "rgba(130,170,220,0.58)" },
+      nimasa: { title: "NIMASA — Nigerian Maritime Administration and Safety Agency", fill: "rgba(70,130,200,0.58)" },
+      npa: { title: "NPA — Nigerian Ports Authority", fill: "rgba(64,200,190,0.56)" },
+      blue: { title: "Blue Economy — maritime/coastal economic layer (policy overlay)", fill: "rgba(40,120,255,0.52)" }
+    };
     const nodes = [
-      { layer: "mil", lon: 7.4951, lat: 9.0765, r: 4.8 },
-      { layer: "mil", lon: 8.5247, lat: 11.9914, r: 4.8 },
-      { layer: "mil", lon: 3.3792, lat: 6.5244, r: 4.2 },
-      { layer: "nysc", lon: 7.3986, lat: 9.082, r: 4 },
-      { layer: "nysc", lon: 8.5167, lat: 12.0028, r: 4 },
-      { layer: "jamb", lon: 7.4411, lat: 9.0478, r: 4 },
-      { layer: "jamb", lon: 8.4943, lat: 11.9914, r: 3.8 }
+      { layer: "smedan", lon: 7.42, lat: 9.05, r: 4.9 },
+      { layer: "smedan", lon: 10.2, lat: 11.85, r: 4.4 },
+      { layer: "itf", lon: 8.52, lat: 11.99, r: 4.8 },
+      { layer: "itf", lon: 3.35, lat: 6.45, r: 4.2 },
+      { layer: "nema", lon: 7.5, lat: 9.08, r: 4.6 },
+      { layer: "nema", lon: 13.05, lat: 11.85, r: 4.3 },
+      { layer: "works", lon: 7.44, lat: 9.02, r: 4.5 },
+      { layer: "works", lon: 5.75, lat: 5.55, r: 4.2 },
+      { layer: "nimasa", lon: 3.39, lat: 6.52, r: 4.7 },
+      { layer: "nimasa", lon: 6.45, lat: 4.55, r: 4.4 },
+      { layer: "npa", lon: 8.49, lat: 11.98, r: 4.6 },
+      { layer: "npa", lon: 7.72, lat: 8.52, r: 4.2 },
+      { layer: "blue", lon: 4.28, lat: 8.32, r: 5 },
+      { layer: "blue", lon: 5.72, lat: 4.78, r: 4.5 }
     ];
     nodes.forEach((n) => {
+      const meta = agencyMeta[n.layer] || { title: n.layer, fill: "rgba(200,200,200,0.5)" };
       const xy = project([n.lon, n.lat]);
       const c = document.createElementNS(svgNSTarget, "circle");
       c.setAttribute("class", "inst-node inst-" + n.layer);
@@ -2633,30 +2833,30 @@
       c.setAttribute("cx", String(xy[0]));
       c.setAttribute("cy", String(xy[1]));
       c.setAttribute("r", String(n.r));
-      c.setAttribute("fill", n.layer === "mil" ? "rgba(212,175,55,0.58)" : n.layer === "nysc" ? "rgba(102,245,255,0.52)" : "rgba(255,200,120,0.55)");
-      c.setAttribute("stroke", "rgba(255,255,255,0.4)");
+      c.setAttribute("fill", meta.fill);
+      c.setAttribute("stroke", "rgba(255,255,255,0.42)");
       c.setAttribute("stroke-width", "1.1");
+      const t = document.createElementNS(svgNSTarget, "title");
+      t.textContent = meta.title;
+      c.appendChild(t);
       g.appendChild(c);
     });
     mapSvgEl.appendChild(g);
     function syncLayers() {
-      const mil = document.getElementById("layerMil");
-      const nysc = document.getElementById("layerNysc");
-      const jamb = document.getElementById("layerJamb");
+      const sel = document.getElementById("sovereignAgencyFilter");
+      const mode = sel && sel.value ? sel.value : "all";
       g.querySelectorAll(".inst-node").forEach((node) => {
         const layer = node.getAttribute("data-layer");
         let on = true;
-        if (layer === "mil") on = !!(mil && mil.checked);
-        if (layer === "nysc") on = !!(nysc && nysc.checked);
-        if (layer === "jamb") on = !!(jamb && jamb.checked);
+        if (mode === "off") on = false;
+        else if (mode !== "all") on = layer === mode;
         node.setAttribute("opacity", on ? "1" : "0");
         node.style.visibility = on ? "visible" : "hidden";
+        node.setAttribute("pointer-events", on ? "auto" : "none");
       });
     }
-    ["layerMil", "layerNysc", "layerJamb"].forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) el.addEventListener("change", syncLayers);
-    });
+    const sovereignSel = document.getElementById("sovereignAgencyFilter");
+    if (sovereignSel) sovereignSel.addEventListener("change", syncLayers);
     syncLayers();
   }
 
