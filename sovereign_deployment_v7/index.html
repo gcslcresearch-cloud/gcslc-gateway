@@ -8,6 +8,9 @@
     if (/(?:^|[?&])(?:embed|wp)=1(?:&|$)/.test(q) || /^#embed\b/.test(location.hash || "")) {
       document.documentElement.classList.add("gcslc-embed");
     }
+    if (/(?:^|[?&])tg=1(?:&|$)/.test(q) || /tgWebAppData=/.test(q)) {
+      document.documentElement.classList.add("tg-mini-app");
+    }
   } catch (e) { /* no-op */ }
 })();
   </script>
@@ -15,11 +18,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#001a33" />
   <meta name="color-scheme" content="dark" />
-  <title>GCSLC — Sovereign Total Convergence v22</title>
+  <title>GCSLC — Sovereign Total Convergence v28</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
       --gcslc-brand-bg: #001a33;
@@ -75,6 +79,10 @@
       background-image: none;
       overflow-x: hidden;
       position: relative;
+    }
+    html.tg-mini-app body {
+      padding-top: env(safe-area-inset-top, 0);
+      padding-bottom: env(safe-area-inset-bottom, 0);
     }
     main.app,
     .shell-v7,
@@ -555,8 +563,37 @@
       color: #8fb4c8;
       text-align: center;
     }
-    #apexTrajectoryChart, #nfVelocityChart { min-height: 110px !important; }
+    #apexTrajectoryChart, #nfVelocityChart, #revenueVelocityChart, #treasuryPulseChart { min-height: 110px !important; }
     .sidebar-diagnostics-v15 #apexTrajectoryChart { min-height: 95px !important; }
+    .sidebar-diagnostics-v15 #treasuryPulseChart { min-height: 102px !important; }
+    .diag-metric {
+      margin: 0 0 6px;
+      font-size: 0.5rem;
+      line-height: 1.35;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #8fb4c8;
+      text-align: center;
+      font-weight: 800;
+    }
+    .diag-block--oagf #treasuryPulseChart {
+      min-height: 108px !important;
+      background: #001a33;
+      border-radius: 8px;
+    }
+    .diag-block--oagf #treasuryPulseChart svg {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      background: #001a33;
+    }
+    .treasury-bar {
+      animation: treasuryBarSheen 2.8s ease-in-out infinite;
+    }
+    @keyframes treasuryBarSheen {
+      0%, 100% { filter: brightness(1) drop-shadow(0 0 4px rgba(212, 175, 55, 0.35)); }
+      50% { filter: brightness(1.12) drop-shadow(0 0 12px rgba(255, 236, 176, 0.55)); }
+    }
     .btn-termii-test,
     .btn-nafc-handshake,
     .btn-strategic-handshake {
@@ -589,6 +626,15 @@
     }
     .termii-block .btn-nafc-handshake {
       margin-top: 8px;
+    }
+    .termii-sender-line {
+      margin: 8px 0 0;
+      font-size: 0.52rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #f0d78c;
+      text-align: center;
+      font-weight: 900;
     }
     .termii-nafc-note {
       margin: 6px 0 0;
@@ -643,6 +689,38 @@
       border: 1px solid rgba(102, 245, 255, 0.16);
       background: #001a33;
     }
+    .social-sentiment-hub--dock {
+      position: fixed;
+      top: max(72px, calc(env(safe-area-inset-top) + 52px));
+      right: max(10px, env(safe-area-inset-right));
+      z-index: 55;
+      width: min(300px, calc(100vw - 20px));
+      max-height: min(340px, 52vh);
+      overflow: auto;
+      margin-top: 0;
+      -webkit-overflow-scrolling: touch;
+      box-shadow: 0 14px 42px rgba(0, 0, 0, 0.5);
+    }
+    html.gcslc-embed .social-sentiment-hub--dock {
+      position: relative;
+      top: auto;
+      right: auto;
+      width: 100%;
+      max-height: none;
+      margin: 0 0 10px;
+      box-shadow: none;
+    }
+    @media (max-width: 900px) {
+      .social-sentiment-hub--dock {
+        position: relative;
+        top: auto;
+        right: auto;
+        width: 100%;
+        max-height: none;
+        margin: 0 0 10px;
+        box-shadow: none;
+      }
+    }
     .social-sentiment-hub h3 {
       margin: 0 0 8px;
       font-size: 0.62rem;
@@ -693,6 +771,72 @@
       letter-spacing: 0.1em;
       text-transform: uppercase;
       cursor: pointer;
+    }
+    .revenue-velocity-panel {
+      background: #001a33 !important;
+      border-color: rgba(212, 175, 55, 0.38) !important;
+    }
+    .revenue-velocity-panel #revenueVelocityChart {
+      min-height: 132px !important;
+      background: #001a33;
+      border-radius: 8px;
+    }
+    .revenue-velocity-panel #revenueVelocityChart svg {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      background: #001a33;
+    }
+    #mapSvg .cng-density-halo {
+      fill: none;
+      pointer-events: none;
+    }
+    #mapSvg .cng-node-cnv {
+      stroke: rgba(255, 255, 255, 0.35);
+      stroke-width: 1.1;
+      filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.75));
+    }
+    #mapSvg .cng-node-nap {
+      stroke: rgba(255, 255, 255, 0.35);
+      stroke-width: 1.1;
+      filter: drop-shadow(0 0 6px rgba(0, 229, 255, 0.65));
+    }
+    #mapSvg .nsip-dot {
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+    #mapSvg .nsip-dot--feed {
+      fill: rgba(212, 175, 55, 0.55);
+      stroke: rgba(255, 248, 220, 0.35);
+      stroke-width: 0.45;
+    }
+    #mapSvg .nsip-dot--cash {
+      fill: rgba(102, 245, 255, 0.5);
+      stroke: rgba(200, 255, 255, 0.32);
+      stroke-width: 0.45;
+    }
+    #mapSvg .ward-azk-flow-trail {
+      fill: none;
+      stroke: rgba(0, 151, 167, 0.35);
+      stroke-width: 12;
+      stroke-linecap: round;
+      opacity: 0.65;
+      pointer-events: none;
+    }
+    #mapSvg .ward-azk-flow {
+      fill: none;
+      stroke: url(#palliativeCyanStroke);
+      stroke-width: 3.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 0 10px rgba(0, 188, 212, 0.85)) drop-shadow(0 0 18px rgba(0, 229, 255, 0.55));
+      stroke-dasharray: 12 16;
+      animation: wardArrowDash 2.2s linear infinite, cyanFlowShimmer 2.8s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes cyanFlowShimmer {
+      0%, 100% { stroke-opacity: 0.88; filter: drop-shadow(0 0 8px rgba(0, 188, 212, 0.65)) drop-shadow(0 0 14px rgba(0, 229, 255, 0.4)); }
+      50% { stroke-opacity: 1; filter: drop-shadow(0 0 16px rgba(102, 245, 255, 0.95)) drop-shadow(0 0 28px rgba(0, 229, 255, 0.72)); }
     }
     .sent-refresh:hover, .sent-refresh:focus-visible {
       filter: brightness(1.08);
@@ -1189,25 +1333,6 @@
       letter-spacing: 0.06em;
       line-height: 1.35;
     }
-    #mapSvg .ward-azk-flow-trail {
-      fill: none;
-      stroke: rgba(102, 245, 255, 0.38);
-      stroke-width: 10;
-      stroke-linecap: round;
-      opacity: 0.55;
-      pointer-events: none;
-    }
-    #mapSvg .ward-azk-flow {
-      fill: none;
-      stroke: #D4AF37;
-      stroke-width: 3.6;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.85)) drop-shadow(0 0 14px rgba(102, 245, 255, 0.55)) drop-shadow(0 0 22px rgba(212, 175, 55, 0.45));
-      stroke-dasharray: 12 16;
-      animation: wardArrowDash 2.2s linear infinite;
-      pointer-events: none;
-    }
     #mapSvg .ward-azk-hit {
       fill: none;
       stroke: rgba(255, 255, 255, 0);
@@ -1229,6 +1354,20 @@
       font-size: clamp(0.72rem, 1.9vw, 0.95rem);
     }
     #mapSvg { width: 100%; height: auto; display: block; border-radius: 10px; border: 1px solid rgba(102, 245, 255, 0.14); background: var(--surface-unified); }
+    .kaduna-gmap-host {
+      margin-top: 10px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(102, 245, 255, 0.2);
+      background: #001a33;
+    }
+    .kaduna-gmap-host iframe {
+      width: 100%;
+      min-height: 220px;
+      border: 0;
+      display: block;
+      background: #001a33;
+    }
     .state { stroke: var(--map-stroke); stroke-width: 0.85; cursor: pointer; transition: fill 0.2s ease; }
     .state:hover, .state:focus-visible { fill: #35d7d8; outline: none; }
     .heatmap-dot {
@@ -1658,6 +1797,31 @@
       }
     }
     .footer-typewriter .g { color: var(--gold); }
+    .footer-typewriter.footer-typewriter--gold-shimmer {
+      color: #eaf8ff;
+      text-shadow:
+        0 0 10px rgba(212, 175, 55, 0.25),
+        0 0 22px rgba(102, 245, 255, 0.12);
+      animation:
+        footerTw 38s steps(220, end) infinite,
+        footerGoldSheen 6.2s ease-in-out infinite,
+        caret 1s step-end infinite;
+    }
+    @keyframes footerGoldSheen {
+      0%, 100% {
+        filter: brightness(1);
+        text-shadow:
+          0 0 8px rgba(212, 175, 55, 0.28),
+          0 0 18px rgba(0, 26, 51, 0.2);
+      }
+      50% {
+        filter: brightness(1.09);
+        text-shadow:
+          0 0 16px rgba(255, 236, 176, 0.45),
+          0 0 28px rgba(212, 175, 55, 0.38),
+          0 0 40px rgba(102, 245, 255, 0.15);
+      }
+    }
     .footer-node-metallic {
       background: linear-gradient(118deg, #f8f4e8 0%, #d4af37 22%, #fff9e8 42%, #8a9ba8 55%, #e8eef2 72%, #d4af37 88%, #c8d4dc 100%);
       -webkit-background-clip: text;
@@ -1811,9 +1975,29 @@
   </aside>
 
   <main class="app">
+    <div class="social-sentiment-hub social-sentiment-hub--dock" id="socialSentimentHub" aria-label="Social sentiment hub">
+      <h3>Sentiment Hub</h3>
+      <div class="sentiment-columns">
+        <div class="sent-col" id="googleSentimentCol">
+          <p class="sent-col-h">Google</p>
+          <ul id="googleSentimentList"></ul>
+        </div>
+        <div class="sent-col" id="xSentimentCol">
+          <p class="sent-col-h">X</p>
+          <ul id="xSentimentList"></ul>
+        </div>
+      </div>
+      <button type="button" class="sent-refresh" id="socialSentimentRefresh" title="Sync" aria-label="Sync">↻</button>
+    </div>
     <div class="shell-v7">
       <aside class="sidebar sidebar-left sidebar-diagnostics-v15">
         <div class="diagnostic-lane" aria-label="Diagnostic lane — live lattice">
+          <div class="diag-block diag-block--oagf" aria-label="OAGF Financial Node — Treasury Pulse">
+            <p class="diag-metric" id="oagfNodeLabel">OAGF Financial Node</p>
+            <h3 class="diag-h">Treasury Pulse</h3>
+            <p class="diag-metric" id="treasuryPulseMetric">TSA Ward-Level Distribution Velocity</p>
+            <div id="treasuryPulseChart"></div>
+          </div>
           <div class="diag-block">
             <h3 class="diag-h">Trajectory &amp; 5-Yr Information Gap</h3>
             <div id="apexTrajectoryChart"></div>
@@ -1862,12 +2046,15 @@
               <label class="layer-toggle"><input type="checkbox" id="layerMil" checked data-layer="mil" /> Military / Paramilitary</label>
               <label class="layer-toggle"><input type="checkbox" id="layerNysc" checked data-layer="nysc" /> NYSC</label>
               <label class="layer-toggle"><input type="checkbox" id="layerJamb" checked data-layer="jamb" /> JAMB</label>
+              <label class="layer-toggle"><input type="checkbox" id="layerCngInfra" checked data-layer="cng" /> CNG Infrastructure Density</label>
+              <label class="layer-toggle"><input type="checkbox" id="layerNsipSocial" checked data-layer="nsip" /> Social Investment Density</label>
             </div>
             <div class="grassroots-ribbon" id="grassrootsRibbon">
               <strong>Grassroots Math LIVE:</strong> <span id="wardStat">8,806</span> Wards · <strong id="fieldAgentsStat">123,284</strong> Field Agents · <span id="puStat">176,000</span> PUs
             </div>
             <p id="prismDefinition" class="sr-only-def" aria-live="polite"></p>
             <svg id="mapSvg" viewBox="0 0 760 680" role="img" aria-label="Nigeria map with grassroots heat and corridor"></svg>
+            <div id="kadunaGmapHost" class="kaduna-gmap-host" data-triple-cloud="kaduna-lga" hidden></div>
           </article>
         </section>
 
@@ -1885,6 +2072,7 @@
               </div>
             </div>
             <button type="button" class="btn-strategic-handshake" id="strategicHandshakeBtn">INITIATE STRATEGIC HANDSHAKE</button>
+            <button type="button" class="btn-strategic-handshake" id="executeHandshakeBtn">Execute Handshake</button>
             <button type="button" class="btn-nafc-handshake" id="nafcHandshakeBtn">INITIATE NAFC HANDSHAKE</button>
             <div class="handshake-terminal" aria-label="Lane log">
               <p class="handshake-terminal-h">Lane log</p>
@@ -1892,31 +2080,23 @@
                 <div class="handshake-terminal-strip is-idle" id="handshakeTerminalStrip"></div>
               </div>
             </div>
+            <p class="termii-sender-line" id="termiiSenderLine"></p>
             <p class="termii-nafc-note" id="termiiStatusLine" aria-live="polite"></p>
           </div>
         </section>
       </div>
 
       <aside class="sidebar sidebar-right">
-        <h2>Governance</h2>
+        <h2>NRS Fiscal Node</h2>
+        <div class="sidebar-chart-min revenue-velocity-panel" aria-label="Revenue velocity">
+          <h3 class="sidebar-chart-h">Revenue Velocity</h3>
+          <p class="sidebar-chart-sub" id="revenueVelocityMetric">Non-Oil IGR Growth vs. CNG Adoption</p>
+          <div id="revenueVelocityChart"></div>
+        </div>
         <div class="sidebar-chart-min" aria-label="Compact non-formal velocity">
           <h3 class="sidebar-chart-h">Non-Formal Velocity</h3>
           <p class="sidebar-chart-sub" id="nfVelocityBridgeCopy">Livestock · Artisans · Micro-Services · 36 + FCT</p>
           <div id="nfVelocityChart"></div>
-        </div>
-        <div class="social-sentiment-hub" id="socialSentimentHub" aria-label="Social sentiment hub">
-          <h3>Social Sentiment Hub</h3>
-          <div class="sentiment-columns">
-            <div class="sent-col" id="googleSentimentCol">
-              <p class="sent-col-h">Google</p>
-              <ul id="googleSentimentList"></ul>
-            </div>
-            <div class="sent-col" id="xSentimentCol">
-              <p class="sent-col-h">X</p>
-              <ul id="xSentimentList"></ul>
-            </div>
-          </div>
-          <button type="button" class="sent-refresh" id="socialSentimentRefresh">Refresh sentiment</button>
         </div>
       </aside>
     </div>
@@ -2017,6 +2197,8 @@
         <div class="nafc-feed-track" id="nafcFeedTrack">
           <span class="nafc-feed-item"><span class="nafc-tag">NAHCON</span> "2027 Digital PTA Handshake: Status Pending..."</span>
           <span class="nafc-feed-item"><span class="nafc-tag">RMAFC</span> "Real-Time Fiscal Allocation Sync: Active..."</span>
+          <span class="nafc-feed-item"><span class="nafc-tag">NRS</span> "Sovereign Tax-Credit Handshake: Active..."</span>
+          <span class="nafc-feed-item"><span class="nafc-tag">Pi-CNG</span> "National Napep Palliative Sync: 1:14 Verified..."</span>
           <span class="nafc-feed-item"><span class="nafc-tag">Embassies</span> "Security Signal Priority: Whitelisted..."</span>
         </div>
       </div>
@@ -2035,11 +2217,11 @@
   </div>
 
   <footer class="footer footer-vault">
-    <div class="footer-typewriter" id="footerTw" title="GCSLC">
+    <div class="footer-typewriter footer-typewriter--gold-shimmer" id="footerTw" title="GCSLC">
       <span class="g">HANDSHAKE //</span>
       Phone <span class="footer-node-metallic"><strong>+234 703 913 9439</strong> | <strong>+234 809 911 1515</strong></span>
       · Email <span class="footer-node-metallic">Info@galadimanruwacenter.org</span> · <span class="footer-node-metallic">gcslc.research@gmail.com</span>
-      · <strong>Copyright LW15954</strong> · <strong>SCUML RN: 151653884</strong> · Sovereign Total Convergence v22 · 8,806 Wards : 123,284 Field Agents · 176,000 PUs · Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau · <strong>GCSLC PROPRIETARY</strong>
+      · <strong>Copyright LW15954</strong> · <strong>SCUML RN: 151653884</strong> · Sovereign Total Convergence v28 · OAGF: "Fiscal Transparency Handshake: Active..." · Humanitarian: "NSIP Last-Mile Verification Node: Ready..." · NRS: "Sovereign Tax-Credit Handshake: Active..." · Pi-CNG: "National Napep Palliative Sync: 1:14 Verified..." · 8,806 Wards : 123,284 Field Agents · 176,000 PUs · Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau · <strong>GCSLC PROPRIETARY</strong>
     </div>
   </footer>
 
@@ -2074,6 +2256,83 @@
   window.GCSLC_CLOUD_SYNC_V20 = window.GCSLC_CLOUD_SYNC_V21;
   const CLOUD = window.GCSLC_CLOUD_SYNC_V21;
 
+  window.GCSLC_TRIPLE_CLOUD_V28 = Object.assign({
+    bridgeUrl: "",
+    auditWebhookUrl: "",
+    azureSubscriptionKey: "",
+    azureApimTrace: "false",
+    telegramGatewayPrimary: true,
+    telegramGatewayUrl: "",
+    googleMapsEmbedUrl: ""
+  }, window.GCSLC_TRIPLE_CLOUD_V28 || {});
+
+  function gcslcAzureApimHeaders(extra) {
+    const tc = window.GCSLC_TRIPLE_CLOUD_V28 || {};
+    const h = Object.assign({ "Content-Type": "application/json" }, extra || {});
+    const key = tc.azureSubscriptionKey != null ? String(tc.azureSubscriptionKey).trim() : "";
+    if (key) h["Ocp-Apim-Subscription-Key"] = key;
+    const tr = String(tc.azureApimTrace || "").toLowerCase();
+    if (tr === "true" || tr === "1") h["Ocp-Apim-Trace"] = "true";
+    return h;
+  }
+
+  async function tripleCloudLgaPing(reason) {
+    const tc = window.GCSLC_TRIPLE_CLOUD_V28 || {};
+    const sender = CLOUD.senderId || "GALADIMA_R";
+    const payload = {
+      event: "lga_ping",
+      source: "kaduna_lga_database",
+      sender_id: sender,
+      wards: WARDS,
+      reason: reason || "triple_cloud_sync",
+      ts: Date.now()
+    };
+    const tasks = [];
+    if (tc.bridgeUrl && String(tc.bridgeUrl).trim()) {
+      tasks.push(
+        fetch(String(tc.bridgeUrl).trim(), {
+          method: "POST",
+          headers: gcslcAzureApimHeaders(),
+          body: JSON.stringify(payload),
+          mode: "cors",
+          credentials: "omit"
+        }).catch(function () { return null; })
+      );
+    }
+    if (tc.auditWebhookUrl && String(tc.auditWebhookUrl).trim()) {
+      tasks.push(
+        fetch(String(tc.auditWebhookUrl).trim(), {
+          method: "POST",
+          headers: gcslcAzureApimHeaders({ "X-GCSLC-Audit": "azure" }),
+          body: JSON.stringify(Object.assign({ audit_lane: "azure_apim" }, payload)),
+          mode: "cors",
+          credentials: "omit"
+        }).catch(function () { return null; })
+      );
+    }
+    await Promise.all(tasks);
+    pullWardFeedFromGcp();
+    const gmap = String(tc.googleMapsEmbedUrl || "").trim();
+    const host = document.getElementById("kadunaGmapHost");
+    if (host && gmap) {
+      host.innerHTML = "<iframe title=\"Kaduna LGA\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\" allowfullscreen=\"\" src=\"" + gmap.replace(/"/g, "") + "\"></iframe>";
+      host.hidden = false;
+    }
+    try {
+      window.dispatchEvent(new CustomEvent("gcslc:triple-cloud-lga-sync", { detail: payload }));
+    } catch (e) { /* no-op */ }
+    const st = document.getElementById("termiiStatusLine");
+    if (st) {
+      st.textContent = "Triple-cloud LGA sync · " + sender + " · " + new Date().toLocaleTimeString();
+    }
+  }
+  window.gcslcTripleCloudLgaPing = tripleCloudLgaPing;
+
+  const termiiSenderLineEl = document.getElementById("termiiSenderLine");
+  if (termiiSenderLineEl) {
+    termiiSenderLineEl.textContent = (CLOUD.senderId || "GALADIMA_R") + " · transactional · alert-ready";
+  }
+
   function applyWardLatticeFromCloud(j) {
     if (!j || typeof j !== "object") return;
     const w = j.wards != null ? j.wards : j.ward_count != null ? j.ward_count : j.wardCount;
@@ -2100,6 +2359,19 @@
   }
   pullWardFeedFromGcp();
 
+  (function duplicateNafcFeedTrack() {
+    const band = document.getElementById("nafcFeedBand");
+    const tr = document.getElementById("nafcFeedTrack");
+    if (!band || !tr) return;
+    band.querySelectorAll(".nafc-feed-track").forEach((node, i) => {
+      if (i > 0) node.remove();
+    });
+    const t2 = tr.cloneNode(true);
+    t2.removeAttribute("id");
+    t2.setAttribute("aria-hidden", "true");
+    band.appendChild(t2);
+  })();
+
   const FORENSIC_FALLBACK = [
     { tier: "SN", text: "Strategic Normal — AZK spine nominal" },
     { tier: "SC", text: "Strategic Caution — reconcile ward ingress" },
@@ -2109,12 +2381,18 @@
     { tier: "SA", text: "Strategic Alert — rotate outbound credentials" }
   ];
 
+  let intelSnPrepends = [];
+  let lastIntelItems = null;
+
   function buildIntelTrackFromData(items) {
     const band = document.getElementById("intelBand");
     const tr = document.getElementById("intelTrack");
-    if (!band || !tr || !items || !items.length) return;
+    if (!band || !tr) return;
+    const base = (items && items.length) ? items : FORENSIC_FALLBACK;
+    lastIntelItems = (items && items.length) ? items : null;
+    const merged = intelSnPrepends.concat(base);
     tr.innerHTML = "";
-    items.forEach((it) => {
+    merged.forEach((it) => {
       const tier = String(it.tier || "SN").toUpperCase();
       const cls = tier === "SC" ? "tier-sc" : tier === "SA" ? "tier-sa" : "tier-sn";
       const span = document.createElement("span");
@@ -2127,6 +2405,14 @@
     t2.removeAttribute("id");
     t2.setAttribute("aria-hidden", "true");
     band.appendChild(t2);
+  }
+
+  function injectPalliativeSnAlert(msg) {
+    const line = String(msg || "").trim();
+    if (!line) return;
+    intelSnPrepends.unshift({ tier: "SN", text: line + " · GALADIMA_R" });
+    if (intelSnPrepends.length > 4) intelSnPrepends.length = 4;
+    buildIntelTrackFromData(lastIntelItems || FORENSIC_FALLBACK);
   }
 
   fetch("/forensic_intel.json")
@@ -2192,7 +2478,7 @@
     return d3.interpolateRgb(d3.rgb(5, 10, 28), d3.rgb(218, 188, 92))(t);
   }
 
-  let apexResizeTimer, nfResizeTimer;
+  let apexResizeTimer, nfResizeTimer, revenueResizeTimer, treasuryResizeTimer;
   function renderApexTrajectoryChart() {
     const root = document.getElementById("apexTrajectoryChart");
     if (!root || !window.d3) return;
@@ -2270,6 +2556,159 @@
     leg.append("text").attr("x", 20).attr("y", 3).attr("fill", "#f0d78c").attr("font-size", "8px").attr("font-weight", "800").text("Urban");
     leg.append("line").attr("x1", 62).attr("x2", 78).attr("y1", 0).attr("y2", 0).attr("stroke", "#4dd0e1").attr("stroke-width", 2.2);
     leg.append("text").attr("x", 82).attr("y", 3).attr("fill", "#a5f3fc").attr("font-size", "8px").attr("font-weight", "800").text("Rural SIG");
+  }
+
+  function renderTreasuryPulse() {
+    const root = document.getElementById("treasuryPulseChart");
+    if (!root || !window.d3) return;
+    const d3 = window.d3;
+    d3.select(root).selectAll("*").remove();
+    const uid = "tsa" + String((Date.now() % 1000000));
+    const zones = ["NC", "NE", "NW", "SE", "SS", "SW"];
+    const wave = Date.now() / 2600;
+    const data = zones.map((z, i) => ({
+      z: z,
+      v: 38 + ((i * 11 + Math.sin(wave + i * 0.8) * 14 + 52) % 52)
+    }));
+    const cw = root.clientWidth || 220;
+    const elW = Math.max(150, cw);
+    const h = 124;
+    const margin = { top: 10, right: 6, bottom: 28, left: 34 };
+    const innerW = elW - margin.left - margin.right;
+    const innerH = h - margin.top - margin.bottom;
+    const x = d3.scaleBand().domain(zones).range([0, innerW]).padding(0.28);
+    const y = d3.scaleLinear().domain([0, 100]).range([innerH, 0]);
+    const svg = d3.select(root)
+      .append("svg")
+      .attr("width", elW)
+      .attr("height", h)
+      .attr("viewBox", "0 0 " + elW + " " + h)
+      .attr("preserveAspectRatio", "xMidYMid meet")
+      .style("touch-action", "manipulation");
+    const defs = svg.append("defs");
+    const gGold = defs.append("linearGradient").attr("id", "treasuryGold_" + uid).attr("x1", "0%").attr("y1", "0%").attr("x2", "0%").attr("y2", "100%");
+    gGold.append("stop").attr("offset", "0%").attr("stop-color", "#fff4d2");
+    gGold.append("stop").attr("offset", "45%").attr("stop-color", "#d4af37");
+    gGold.append("stop").attr("offset", "100%").attr("stop-color", "#7a5f12");
+    gGold.append("animate").attr("attributeName", "y1").attr("values", "0%;18%;0%").attr("dur", "3.6s").attr("repeatCount", "indefinite");
+    gGold.append("animate").attr("attributeName", "y2").attr("values", "100%;118%;100%").attr("dur", "3.6s").attr("repeatCount", "indefinite");
+    const g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    g.selectAll("rect.treasury-bar")
+      .data(data)
+      .enter()
+      .append("rect")
+      .attr("class", "treasury-bar")
+      .attr("x", (d) => x(d.z))
+      .attr("y", innerH)
+      .attr("width", x.bandwidth())
+      .attr("height", 0)
+      .attr("rx", 6)
+      .attr("ry", 6)
+      .attr("fill", "url(#treasuryGold_" + uid + ")")
+      .transition()
+      .duration(900)
+      .ease(d3.easeCubicOut)
+      .attr("y", (d) => y(d.v))
+      .attr("height", (d) => innerH - y(d.v));
+    g.append("g")
+      .attr("transform", "translate(0," + innerH + ")")
+      .call(d3.axisBottom(x))
+      .selectAll("text")
+      .attr("fill", "#9fc4d7")
+      .attr("font-size", "8px");
+    g.append("g")
+      .call(d3.axisLeft(y).ticks(4))
+      .selectAll("text")
+      .attr("fill", "#9fc4d7")
+      .attr("font-size", "8px");
+    g.selectAll(".domain, .tick line").attr("stroke", "rgba(102,245,255,0.16)");
+  }
+
+  function renderRevenueVelocityMonitor() {
+    const root = document.getElementById("revenueVelocityChart");
+    if (!root || !window.d3) return;
+    const d3 = window.d3;
+    d3.select(root).selectAll("*").remove();
+    const uid = "rv" + String((Date.now() % 1000000));
+    const years = [2020, 2021, 2022, 2023, 2024, 2025];
+    const nonOilIgr = [41, 47, 54, 62, 69, 77];
+    const cngAdopt = [14, 21, 29, 38, 48, 59];
+    const series = years.map((y, i) => ({ year: y, igr: nonOilIgr[i], cng: cngAdopt[i] }));
+    const cw = root.clientWidth || 240;
+    const elW = Math.max(160, cw);
+    const compact = elW < 300;
+    const h = compact ? 128 : 148;
+    const margin = compact
+      ? { top: 8, right: 4, bottom: 22, left: 30 }
+      : { top: 12, right: 8, bottom: 26, left: 36 };
+    const innerW = elW - margin.left - margin.right;
+    const innerH = h - margin.top - margin.bottom;
+    const x = d3.scalePoint().domain(years).range([0, innerW]).padding(0.2);
+    const y = d3.scaleLinear()
+      .domain([
+        Math.min(d3.min(series, (d) => d.igr), d3.min(series, (d) => d.cng)) - 6,
+        Math.max(d3.max(series, (d) => d.igr), d3.max(series, (d) => d.cng)) + 6
+      ])
+      .range([innerH, 0]);
+    const svg = d3.select(root)
+      .append("svg")
+      .attr("width", elW)
+      .attr("height", h)
+      .attr("viewBox", "0 0 " + elW + " " + h)
+      .attr("preserveAspectRatio", "xMidYMid meet")
+      .style("touch-action", "manipulation");
+    const defs = svg.append("defs");
+    const gGoldA = defs.append("linearGradient").attr("id", "rvGoldIGR_" + uid).attr("x1", "0%").attr("y1", "0%").attr("x2", "100%").attr("y2", "0%");
+    gGoldA.append("stop").attr("offset", "0%").attr("stop-color", "#8a7018");
+    gGoldA.append("stop").attr("offset", "45%").attr("stop-color", "#fff4d2");
+    gGoldA.append("stop").attr("offset", "100%").attr("stop-color", "#d4af37");
+    gGoldA.append("animate").attr("attributeName", "x1").attr("values", "0%;100%;0%").attr("dur", "4.2s").attr("repeatCount", "indefinite");
+    gGoldA.append("animate").attr("attributeName", "x2").attr("values", "100%;200%;100%").attr("dur", "4.2s").attr("repeatCount", "indefinite");
+    const gGoldB = defs.append("linearGradient").attr("id", "rvGoldCNG_" + uid).attr("x1", "0%").attr("y1", "0%").attr("x2", "100%").attr("y2", "0%");
+    gGoldB.append("stop").attr("offset", "0%").attr("stop-color", "#6b5a12");
+    gGoldB.append("stop").attr("offset", "50%").attr("stop-color", "#ffe9a8");
+    gGoldB.append("stop").attr("offset", "100%").attr("stop-color", "#c9a227");
+    gGoldB.append("animate").attr("attributeName", "x1").attr("values", "100%;0%;100%").attr("dur", "5.1s").attr("repeatCount", "indefinite");
+    gGoldB.append("animate").attr("attributeName", "x2").attr("values", "200%;100%;200%").attr("dur", "5.1s").attr("repeatCount", "indefinite");
+    defs.append("filter").attr("id", "rvGoldGlow_" + uid)
+      .html("<feGaussianBlur stdDeviation=\"1.8\" result=\"b\"/><feMerge><feMergeNode in=\"b\"/><feMergeNode in=\"SourceGraphic\"/></feMerge>");
+    const g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    const lineI = d3.line().x((d) => x(d.year)).y((d) => y(d.igr)).curve(d3.curveMonotoneX);
+    const lineC = d3.line().x((d) => x(d.year)).y((d) => y(d.cng)).curve(d3.curveMonotoneX);
+    const pI = g.append("path")
+      .datum(series)
+      .attr("fill", "none")
+      .attr("stroke", "url(#rvGoldIGR_" + uid + ")")
+      .attr("stroke-width", 3.2)
+      .attr("stroke-linecap", "round")
+      .attr("d", lineI)
+      .style("filter", "url(#rvGoldGlow_" + uid + ")");
+    const pC = g.append("path")
+      .datum(series)
+      .attr("fill", "none")
+      .attr("stroke", "url(#rvGoldCNG_" + uid + ")")
+      .attr("stroke-width", 2.8)
+      .attr("stroke-linecap", "round")
+      .attr("d", lineC)
+      .style("filter", "url(#rvGoldGlow_" + uid + ")");
+    pI.each(function () {
+      const len = this.getTotalLength();
+      d3.select(this).attr("stroke-dasharray", len + " " + len).attr("stroke-dashoffset", len);
+    });
+    pC.each(function () {
+      const len = this.getTotalLength();
+      d3.select(this).attr("stroke-dasharray", len + " " + len).attr("stroke-dashoffset", len);
+    });
+    pI.transition().duration(1500).ease(d3.easeCubicOut).attr("stroke-dashoffset", 0);
+    pC.transition().duration(1650).delay(90).ease(d3.easeCubicOut).attr("stroke-dashoffset", 0);
+    g.append("g").attr("transform", "translate(0," + innerH + ")").call(d3.axisBottom(x).tickFormat(d3.format("d"))).selectAll("text").attr("fill", "#9fc4d7").attr("font-size", "8px");
+    g.append("g").call(d3.axisLeft(y).ticks(5)).selectAll("text").attr("fill", "#9fc4d7").attr("font-size", "8px");
+    g.selectAll(".domain, .tick line").attr("stroke", "rgba(102,245,255,0.18)");
+    const leg = g.append("g").attr("transform", "translate(" + Math.max(0, innerW - 152) + ", -2)");
+    leg.append("line").attr("x1", 0).attr("x2", 14).attr("y1", 0).attr("y2", 0).attr("stroke", "url(#rvGoldIGR_" + uid + ")").attr("stroke-width", 2.6);
+    leg.append("text").attr("x", 18).attr("y", 3).attr("fill", "#f0d78c").attr("font-size", "7px").attr("font-weight", "800").text("IGR");
+    leg.append("line").attr("x1", 52).attr("x2", 66).attr("y1", 0).attr("y2", 0).attr("stroke", "url(#rvGoldCNG_" + uid + ")").attr("stroke-width", 2.4);
+    leg.append("text").attr("x", 70).attr("y", 3).attr("fill", "#ffe8b0").attr("font-size", "7px").attr("font-weight", "800").text("CNG");
   }
 
   function sampleZenithLive() {
@@ -2536,19 +2975,70 @@
     });
   }
 
+  const SENTIMENT_TRACKS = ["TSA Transparency", "Humanitarian Impact", "GCSLC 8R Paradigm"];
+  function sentimentPulse(topic, channel) {
+    const u = Date.now() / 2100;
+    const h = hashStr(topic + "|" + channel) % 1000;
+    const wobble = Math.sin(u + h * 0.01) * 0.08;
+    const base = 0.48 + (h % 420) / 1000;
+    return Math.max(0.22, Math.min(0.96, base + wobble));
+  }
+  function renderSentimentHub() {
+    const gList = document.getElementById("googleSentimentList");
+    const xList = document.getElementById("xSentimentList");
+    if (!gList || !xList) return;
+    gList.innerHTML = "";
+    xList.innerHTML = "";
+    SENTIMENT_TRACKS.forEach((topic) => {
+      const g = sentimentPulse(topic, "G");
+      const x = sentimentPulse(topic, "X");
+      const liG = document.createElement("li");
+      const liX = document.createElement("li");
+      liG.textContent = topic + " · " + (g * 100).toFixed(1);
+      liX.textContent = topic + " · " + (x * 100).toFixed(1);
+      gList.appendChild(liG);
+      xList.appendChild(liX);
+    });
+  }
+  renderSentimentHub();
+  window.setInterval(renderSentimentHub, 4800);
+  const socialSentimentRefresh = document.getElementById("socialSentimentRefresh");
+  if (socialSentimentRefresh) socialSentimentRefresh.addEventListener("click", () => { renderSentimentHub(); });
+
   renderZenithInformationGap();
   renderApexTrajectoryChart();
+  renderTreasuryPulse();
+  renderRevenueVelocityMonitor();
   renderNonFormalVelocityIndex();
   zenithLiveHandle = window.setInterval(renderZenithInformationGap, 1650);
   window.setInterval(renderNonFormalVelocityIndex, 3200);
+  window.setInterval(renderRevenueVelocityMonitor, 5600);
+  window.setInterval(renderTreasuryPulse, 5200);
   window.addEventListener("resize", () => {
     clearTimeout(zenithResizeTimer);
     zenithResizeTimer = window.setTimeout(renderZenithInformationGap, 200);
     clearTimeout(apexResizeTimer);
     apexResizeTimer = window.setTimeout(renderApexTrajectoryChart, 220);
+    clearTimeout(treasuryResizeTimer);
+    treasuryResizeTimer = window.setTimeout(renderTreasuryPulse, 200);
+    clearTimeout(revenueResizeTimer);
+    revenueResizeTimer = window.setTimeout(renderRevenueVelocityMonitor, 210);
     clearTimeout(nfResizeTimer);
     nfResizeTimer = window.setTimeout(renderNonFormalVelocityIndex, 230);
   });
+
+  window.setInterval(function () {
+    const nsip = document.getElementById("layerNsipSocial");
+    if (!nsip || !nsip.checked) return;
+    const tick = Math.floor(Date.now() / 11000);
+    if ((hashStr("nsip|palliative|" + tick) % 19) !== 0) return;
+    const msgs = [
+      "Security Note — palliative window delayed · NSIP reconcile",
+      "Security Note — last-mile divert scan · ward ledger verify",
+      "Security Note — TSA dispersal lag · route attestation"
+    ];
+    injectPalliativeSnAlert(msgs[hashStr(String(tick)) % msgs.length]);
+  }, 17000);
 
   function renderSocialGapChart(stateName) {
     const root = document.getElementById("liveChartGap");
@@ -2687,6 +3177,7 @@
 
   const nafcHandshakeBtn = document.getElementById("nafcHandshakeBtn");
   const strategicHandshakeBtn = document.getElementById("strategicHandshakeBtn");
+  const executeHandshakeBtn = document.getElementById("executeHandshakeBtn");
   const termiiLaneEl = document.getElementById("termiiLane");
   const termiiOutboundTrack = document.getElementById("termiiOutboundTrack");
   const termiiStatusLineEl = document.getElementById("termiiStatusLine");
@@ -2710,6 +3201,7 @@
     if (strategicHandshakeBusy) return;
     strategicHandshakeBusy = true;
     if (strategicHandshakeBtn) strategicHandshakeBtn.disabled = true;
+    if (executeHandshakeBtn) executeHandshakeBtn.disabled = true;
     runMapToOutboundCyanPulse();
     flashTermiiTestLane();
     if (handshakeTerminalScroll) {
@@ -2741,9 +3233,15 @@
     if (termiiStatusLineEl) {
       termiiStatusLineEl.textContent = "Outbound synchronized · GALADIMA_R → Ward 8806 · " + new Date().toLocaleTimeString();
     }
+    window.setTimeout(function () {
+      if (document.documentElement.classList.contains("tg-mini-app")) {
+        void tripleCloudLgaPing("telegram_execute_handshake");
+      }
+    }, 380);
     window.setTimeout(() => {
       strategicHandshakeBusy = false;
       if (strategicHandshakeBtn) strategicHandshakeBtn.disabled = false;
+      if (executeHandshakeBtn) executeHandshakeBtn.disabled = false;
     }, 1650);
   }
 
@@ -2777,9 +3275,40 @@
     }, 1180);
   }
 
+  async function tryTelegramGatewayNafc() {
+    const tc = window.GCSLC_TRIPLE_CLOUD_V28 || {};
+    const url = tc.telegramGatewayUrl != null ? String(tc.telegramGatewayUrl).trim() : "";
+    if (!url || tc.telegramGatewayPrimary === false) return false;
+    const sid = String((window.GCSLC_NAFC_TERMII && window.GCSLC_NAFC_TERMII.from) || CLOUD.senderId || "GALADIMA_R");
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: gcslcAzureApimHeaders(),
+        body: JSON.stringify({
+          sender_id: sid,
+          text: NAFC_V18_SAMPLE_SMS,
+          route: "telegram_gateway_primary",
+          source: "nafc_bypass"
+        }),
+        mode: "cors",
+        credentials: "omit"
+      });
+      return res.ok;
+    } catch (err) {
+      return false;
+    }
+  }
+
   async function runNafcInternalHandshakeV18() {
     runMapToOutboundCyanPulse();
     flashTermiiTestLane();
+    const tgOk = await tryTelegramGatewayNafc();
+    if (tgOk) {
+      if (termiiStatusLineEl) {
+        termiiStatusLineEl.textContent = "NAFC · Telegram Gateway · GALADIMA_R · " + new Date().toLocaleTimeString();
+      }
+      return;
+    }
     const cfg = window.GCSLC_NAFC_TERMII || {};
     if (!cfg.live || !cfg.apiKey || !cfg.to) {
       if (termiiStatusLineEl) {
@@ -2820,9 +3349,29 @@
   if (strategicHandshakeBtn) {
     strategicHandshakeBtn.addEventListener("click", () => { void runStrategicHandshakeNoNumberSim(); });
   }
+  if (executeHandshakeBtn) {
+    executeHandshakeBtn.addEventListener("click", () => { void runStrategicHandshakeNoNumberSim(); });
+  }
   if (nafcHandshakeBtn) {
     nafcHandshakeBtn.addEventListener("click", () => { void runNafcInternalHandshakeV18(); });
   }
+
+  (function initTelegramMiniAppV28() {
+    try {
+      var tg = window.Telegram && window.Telegram.WebApp;
+      if (!tg) return;
+      document.documentElement.classList.add("tg-mini-app");
+      tg.ready();
+      tg.expand();
+      tg.setHeaderColor("#001a33");
+      tg.setBackgroundColor("#001a33");
+      if (tg.MainButton) {
+        tg.MainButton.setParams({ text: "Execute Handshake", color: "#001a33", text_color: "#D4AF37" });
+        tg.MainButton.onClick(function () { void runStrategicHandshakeNoNumberSim(); });
+        tg.MainButton.show();
+      }
+    } catch (e) { /* no-op */ }
+  })();
 
   const governanceSlide = document.getElementById("governanceSlide");
   const govToggle = document.getElementById("govToggle");
@@ -3121,6 +3670,107 @@
     syncLayers();
   }
 
+  function buildCngPalliativeLayer(project, mapSvgEl, svgNSTarget) {
+    const prev = mapSvgEl.querySelector("#cngPalliativeLayer");
+    if (prev) prev.remove();
+    const gRoot = document.createElementNS(svgNSTarget, "g");
+    gRoot.setAttribute("id", "cngPalliativeLayer");
+    const densitySites = [
+      { lon: 3.3792, lat: 6.5244 },
+      { lon: 6.9915, lat: 4.8356 },
+      { lon: 7.4384, lat: 10.5144 }
+    ];
+    densitySites.forEach((s, idx) => {
+      const xy = project([s.lon, s.lat]);
+      [38, 62, 88].forEach((rad, j) => {
+        const ring = document.createElementNS(svgNSTarget, "circle");
+        ring.setAttribute("class", "cng-density-halo");
+        ring.setAttribute("cx", String(xy[0]));
+        ring.setAttribute("cy", String(xy[1]));
+        ring.setAttribute("r", String(rad + idx * 3));
+        ring.setAttribute("fill", "none");
+        ring.setAttribute("stroke", "rgba(0, 188, 212, " + (0.06 + j * 0.05) + ")");
+        ring.setAttribute("stroke-width", String(2.4 - j * 0.35));
+        gRoot.appendChild(ring);
+      });
+    });
+    const nodes = [
+      { kind: "cng", lon: 3.3421, lat: 6.5388 },
+      { kind: "nap", lon: 3.4012, lat: 6.4982 },
+      { kind: "cng", lon: 7.0328, lat: 4.8151 },
+      { kind: "nap", lon: 6.9522, lat: 4.8622 },
+      { kind: "cng", lon: 7.4011, lat: 10.4771 },
+      { kind: "nap", lon: 7.4812, lat: 10.5512 }
+    ];
+    nodes.forEach((n) => {
+      const xy = project([n.lon, n.lat]);
+      const c = document.createElementNS(svgNSTarget, "circle");
+      c.setAttribute("class", n.kind === "cng" ? "cng-node-cnv" : "cng-node-nap");
+      c.setAttribute("cx", String(xy[0]));
+      c.setAttribute("cy", String(xy[1]));
+      c.setAttribute("r", n.kind === "cng" ? "5.2" : "4.6");
+      c.setAttribute("fill", n.kind === "cng" ? "rgba(212,175,55,0.82)" : "rgba(102,245,255,0.78)");
+      gRoot.appendChild(c);
+    });
+    mapSvgEl.appendChild(gRoot);
+    function syncCng() {
+      const el = document.getElementById("layerCngInfra");
+      const on = !!(el && el.checked);
+      gRoot.setAttribute("opacity", on ? "1" : "0");
+      gRoot.style.visibility = on ? "visible" : "hidden";
+    }
+    const cngLb = document.getElementById("layerCngInfra");
+    if (cngLb) cngLb.addEventListener("change", syncCng);
+    syncCng();
+  }
+
+  function buildNsipSocialLayer(project, features, mapSvgEl, svgNSTarget) {
+    const prev = mapSvgEl.querySelector("#nsipSocialLayer");
+    if (prev) prev.remove();
+    const gRoot = document.createElementNS(svgNSTarget, "g");
+    gRoot.setAttribute("id", "nsipSocialLayer");
+    features.forEach((feature) => {
+      const stateName = (feature.properties && feature.properties.shapeName) || "";
+      const b = bboxOfFeature(feature);
+      const rng = mulberry32(hashStr("nsip|" + stateName) + 913);
+      const wards = STATE_WARDS[stateName] != null ? STATE_WARDS[stateName] : Math.max(1, Math.round(WARDS / 36));
+      const nFeed = Math.min(52, Math.max(3, Math.round(wards / 125)));
+      const nCash = Math.min(52, Math.max(3, Math.round(wards / 140)));
+      for (let i = 0; i < nFeed; i++) {
+        const lon = b.minLon + rng() * (b.maxLon - b.minLon);
+        const lat = b.minLat + rng() * (b.maxLat - b.minLat);
+        const xy = project([lon, lat]);
+        const c = document.createElementNS(svgNSTarget, "circle");
+        c.setAttribute("class", "nsip-dot nsip-dot--feed");
+        c.setAttribute("cx", String(xy[0]));
+        c.setAttribute("cy", String(xy[1]));
+        c.setAttribute("r", (1.7 + rng() * 2.9).toFixed(2));
+        gRoot.appendChild(c);
+      }
+      for (let j = 0; j < nCash; j++) {
+        const lon = b.minLon + rng() * (b.maxLon - b.minLon);
+        const lat = b.minLat + rng() * (b.maxLat - b.minLat);
+        const xy = project([lon, lat]);
+        const c = document.createElementNS(svgNSTarget, "circle");
+        c.setAttribute("class", "nsip-dot nsip-dot--cash");
+        c.setAttribute("cx", String(xy[0]));
+        c.setAttribute("cy", String(xy[1]));
+        c.setAttribute("r", (1.5 + rng() * 2.7).toFixed(2));
+        gRoot.appendChild(c);
+      }
+    });
+    mapSvgEl.appendChild(gRoot);
+    function syncNsip() {
+      const el = document.getElementById("layerNsipSocial");
+      const on = !!(el && el.checked);
+      gRoot.setAttribute("opacity", on ? "1" : "0");
+      gRoot.style.visibility = on ? "visible" : "hidden";
+    }
+    const nsLb = document.getElementById("layerNsipSocial");
+    if (nsLb) nsLb.addEventListener("change", syncNsip);
+    syncNsip();
+  }
+
   function fetchGeoJson() {
     const cloud = window.GCSLC_CLOUD_SYNC_V21 || window.GCSLC_CLOUD_SYNC_V20 || {};
     const custom = cloud.geoJsonUrl && String(cloud.geoJsonUrl).trim();
@@ -3172,7 +3822,7 @@
       const vis = document.createElementNS(svgNS, "path");
       vis.setAttribute("class", "ward-azk-flow");
       vis.setAttribute("d", dStr);
-      vis.setAttribute("marker-end", "url(#arrowheadGold)");
+      vis.setAttribute("marker-end", "url(#arrowheadCyan)");
       const hit = document.createElementNS(svgNS, "path");
       hit.setAttribute("class", "ward-azk-hit");
       hit.setAttribute("d", dStr);
@@ -3205,6 +3855,16 @@
         '<marker id="arrowheadGold" markerUnits="userSpaceOnUse" orient="auto" markerWidth="16" markerHeight="16" refX="13" refY="8" viewBox="0 0 16 16">',
         '<path d="M0,1.2 L14,8 L0,14.8 Z" fill="#f0d78c" stroke="#b8860b" stroke-width="0.55"/>',
         "</marker>",
+        '<marker id="arrowheadCyan" markerUnits="userSpaceOnUse" orient="auto" markerWidth="16" markerHeight="16" refX="13" refY="8" viewBox="0 0 16 16">',
+        '<path d="M0,1.2 L14,8 L0,14.8 Z" fill="#00e5ff" stroke="#00838f" stroke-width="0.55"/>',
+        "</marker>",
+        '<linearGradient id="palliativeCyanStroke" x1="0%" y1="0%" x2="100%" y2="0%">',
+        '<stop offset="0%" stop-color="#006978"/>',
+        '<stop offset="50%" stop-color="#4dd0e1"/>',
+        '<stop offset="100%" stop-color="#00e5ff"/>',
+        "<animate attributeName=\"x1\" values=\"0%;100%;0%\" dur=\"3.4s\" repeatCount=\"indefinite\"/>",
+        "<animate attributeName=\"x2\" values=\"100%;200%;100%\" dur=\"3.4s\" repeatCount=\"indefinite\"/>",
+        "</linearGradient>",
         '<linearGradient id="corridorEnergyGrad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="' + svgW + '" y2="' + svgH + '">',
         '<stop offset="0%" stop-color="#00e5ff"/>',
         '<stop offset="45%" stop-color="#66f5ff"/>',
@@ -3261,6 +3921,8 @@
       const corridorLL = [[7.4951, 9.0765], [7.7090, 11.0747], [8.5247, 11.9914]];
       buildWardAzkArrows(project, geo.features, corridorLL);
       buildInstitutionalLayers(project, mapSvg, svgNS);
+      buildCngPalliativeLayer(project, mapSvg, svgNS);
+      buildNsipSocialLayer(project, geo.features, mapSvg, svgNS);
       let dPath = "";
       corridorLL.forEach((ll, i) => {
         const xy = project(ll);
