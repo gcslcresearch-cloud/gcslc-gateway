@@ -40,7 +40,7 @@
       --text: #eaf8ff;
       --sub: #c8e8f6;
       --map-fill: #1e90a7;
-      --map-stroke: #d2f7ff;
+      --map-stroke: #d4af37;
       --intel-h: 38px;
       --nafc-feed-h: 36px;
       --footer-core: min(108px, 28vw);
@@ -599,7 +599,7 @@
       background: #ff845c;
       box-shadow: 0 0 12px rgba(255, 132, 92, 0.75);
     }
-    #apexTrajectoryChart, #nfVelocityChart, #revenueVelocityChart, #treasuryPulseChart { min-height: 110px !important; }
+    #apexTrajectoryChart, #nfVelocityChart, #revenueVelocityChart, #treasuryPulseChart, #opportunityGapChart { min-height: 110px !important; }
     .sidebar-diagnostics-v15 #apexTrajectoryChart { min-height: 95px !important; }
     .sidebar-diagnostics-v15 #treasuryPulseChart { min-height: 102px !important; }
     .diag-metric {
@@ -915,7 +915,7 @@
       min-height: max(44px, min(50px, 11vw));
       padding: 8px 4px;
       border-radius: 12px;
-      clip-path: polygon(8% 0, 92% 0, 100% 50%, 92% 100%, 8% 100%, 0 50%);
+      clip-path: none;
       border: 1px solid rgba(102, 245, 255, 0.22);
       background:
         linear-gradient(145deg, rgba(255, 255, 255, 0.06) 0%, transparent 42%),
@@ -1123,7 +1123,7 @@
       padding: 4px 3px 3px;
       background: var(--surface-unified);
       border: 1px solid rgba(102, 245, 255, 0.16);
-      clip-path: polygon(10% 0, 90% 0, 100% 50%, 90% 100%, 10% 100%, 0 50%);
+      clip-path: none;
       box-shadow: none;
       backdrop-filter: none;
       -webkit-backdrop-filter: none;
@@ -1276,6 +1276,8 @@
       touch-action: manipulation;
     }
     #nfVelocityChart svg { display: block; max-width: 100%; height: auto; }
+    #opportunityGapChart { width: 100%; min-height: 140px; }
+    #opportunityGapChart svg { display: block; max-width: 100%; height: auto; }
     .bridge-header {
       position: fixed;
       top: max(8px, env(safe-area-inset-top));
@@ -1437,7 +1439,7 @@
       display: block;
       background: #001a33;
     }
-    .state { stroke: var(--map-stroke); stroke-width: 0.85; cursor: pointer; transition: fill 0.2s ease; }
+    .state { stroke: var(--map-stroke); stroke-width: 1.35; cursor: pointer; transition: fill 0.2s ease; filter: drop-shadow(0 0 2px rgba(212,175,55,0.55)); }
     .state:hover, .state:focus-visible { fill: #35d7d8; outline: none; }
     .heatmap-dot {
       pointer-events: none;
@@ -2191,7 +2193,14 @@
             <div class="zenith-readouts" id="zenithReadouts" aria-live="polite">
               <span><span class="lbl">Rural Information Gap</span> <span class="gold-pct" id="zenithRuralPct">—</span></span>
               <span><span class="lbl">Urban Connectivity</span> <span class="gold-pct" id="zenithUrbanPct">—</span></span>
+              <span><span class="lbl">Wards</span> <span class="gold-pct" id="liveWardsStat">8,806</span></span>
+              <span><span class="lbl">Field Agents</span> <span class="gold-pct" id="liveAgentsStat">123,284</span></span>
+              <span><span class="lbl">PUs</span> <span class="gold-pct" id="livePuStat">176,000</span></span>
             </div>
+          </div>
+          <div class="diag-block definition-panel" aria-label="8R typewriter definitions">
+            <p class="definition-title">8R Slow-Motion Typewriter</p>
+            <p id="prismDefinitionLeft" class="definition-text" data-prism-definition aria-live="polite"></p>
           </div>
         </div>
       </aside>
@@ -2235,7 +2244,7 @@
             <div class="grassroots-ribbon" id="grassrootsRibbon">
               <strong>Grassroots Math LIVE:</strong> <span id="wardStat">8,806</span> Wards · <strong id="fieldAgentsStat">123,284</strong> Field Agents · <span id="puStat">176,000</span> PUs
             </div>
-            <div class="definition-panel" id="definitionPanel"><p class="definition-title">8R Live Definition</p><p id="prismDefinition" class="definition-text" aria-live="polite"></p></div>
+            <div class="definition-panel" id="definitionPanel"><p class="definition-title">8R Live Definition</p><p id="prismDefinition" class="definition-text" data-prism-definition aria-live="polite"></p></div>
             <svg id="mapSvg" viewBox="0 0 760 680" role="img" aria-label="Nigeria map with grassroots heat and corridor"></svg>
             <div id="kadunaGmapHost" class="kaduna-gmap-host" data-triple-cloud="kaduna-lga" hidden></div>
           </article>
@@ -2289,10 +2298,10 @@
           <p class="sidebar-chart-sub" id="revenueVelocityMetric">Non-Oil IGR Growth vs. CNG Adoption</p>
           <div id="revenueVelocityChart"></div>
         </div>
-        <div class="sidebar-chart-min" aria-label="Compact non-formal velocity">
-          <h3 class="sidebar-chart-h">Non-Formal Velocity</h3>
-          <p class="sidebar-chart-sub" id="nfVelocityBridgeCopy">Livestock · Artisans · Micro-Services · 36 + FCT</p>
-          <div id="nfVelocityChart"></div>
+        <div class="sidebar-chart-min" aria-label="Opportunity gap realtime graphs">
+          <h3 class="sidebar-chart-h">Opportunity Gap Graphs</h3>
+          <p class="sidebar-chart-sub" id="opportunityGapMetric">SMEDAN 67% · Works 87% · Maritime 47%</p>
+          <div id="opportunityGapChart"></div>
         </div>
       </aside>
     </div>
@@ -2451,6 +2460,12 @@
   document.getElementById("puStat").textContent = PUS.toLocaleString();
   const fas = document.getElementById("fieldAgentsStat");
   if (fas) fas.textContent = FIELD_AGENTS.toLocaleString();
+  const liveW = document.getElementById("liveWardsStat");
+  const liveA = document.getElementById("liveAgentsStat");
+  const liveP = document.getElementById("livePuStat");
+  if (liveW) liveW.textContent = WARDS.toLocaleString();
+  if (liveA) liveA.textContent = FIELD_AGENTS.toLocaleString();
+  if (liveP) liveP.textContent = PUS.toLocaleString();
 
   window.GCSLC_CLOUD_SYNC_V21 = Object.assign({
     wardFeedUrl: "https://gcslc-gateway.vercel.app/ward_lattice.json",
@@ -2769,19 +2784,18 @@
   setInterval(tick, 1000);
 
   const prismBoxes = [].slice.call(document.querySelectorAll(".prism-box"));
-  const definitionEl = document.getElementById("prismDefinition");
+  const definitionTargets = Array.from(document.querySelectorAll("[data-prism-definition]"));
   let definitionTimer = null;
   function typeDefinitionSlow(text) {
-    if (!definitionEl) return;
+    if (!definitionTargets.length) return;
     if (definitionTimer) window.clearInterval(definitionTimer);
-    definitionEl.classList.remove("typing-slow");
     const target = String(text || "");
     let i = 0;
-    definitionEl.textContent = "";
-    definitionEl.classList.add("typing-slow");
+    definitionTargets.forEach((el) => { el.classList.remove("typing-slow"); el.textContent = ""; el.classList.add("typing-slow"); });
     definitionTimer = window.setInterval(function () {
       i += 1;
-      definitionEl.textContent = target.slice(0, i);
+      const snip = target.slice(0, i);
+      definitionTargets.forEach((el) => { el.textContent = snip; });
       if (i >= target.length) {
         window.clearInterval(definitionTimer);
         definitionTimer = null;
@@ -3086,6 +3100,56 @@
     const root = document.getElementById("nfVelocityChart");
     const bridgeEl = document.getElementById("nfVelocityBridgeCopy");
     if (!root || !window.d3) return;
+
+
+  function renderOpportunityGapRealtime() {
+    const root = document.getElementById("opportunityGapChart");
+    const metric = document.getElementById("opportunityGapMetric");
+    if (!root || !window.d3) return;
+    const d3 = window.d3;
+    d3.select(root).selectAll("*").remove();
+    const t = Date.now() / 1700;
+    const data = [
+      { k: "SMEDAN", v: 67 + Math.sin(t) * 1.7, c1: "#f0d78c", c2: "#b8860b" },
+      { k: "Works", v: 87 + Math.cos(t * 0.9) * 1.5, c1: "#fff1c2", c2: "#d4af37" },
+      { k: "Maritime", v: 47 + Math.sin(t * 1.1 + 0.8) * 1.9, c1: "#66f5ff", c2: "#0d8ea6" }
+    ];
+    if (metric) metric.textContent = data.map((d) => d.k + " " + d.v.toFixed(0) + "%").join(" · ");
+
+    const W = Math.max(190, root.clientWidth || 240);
+    const H = 150;
+    const m = { t: 12, r: 8, b: 24, l: 34 };
+    const iw = W - m.l - m.r;
+    const ih = H - m.t - m.b;
+    const x = d3.scaleBand().domain(data.map((d) => d.k)).range([0, iw]).padding(0.28);
+    const y = d3.scaleLinear().domain([0, 100]).range([ih, 0]);
+
+    const svg = d3.select(root).append("svg").attr("width", W).attr("height", H).attr("viewBox", "0 0 " + W + " " + H).attr("preserveAspectRatio", "xMidYMid meet");
+    const defs = svg.append("defs");
+    data.forEach((d, i) => {
+      const g = defs.append("linearGradient").attr("id", "oppGrad" + i).attr("x1", "0%").attr("y1", "0%").attr("x2", "0%").attr("y2", "100%");
+      g.append("stop").attr("offset", "0%").attr("stop-color", d.c1);
+      g.append("stop").attr("offset", "60%").attr("stop-color", d.c2);
+      g.append("stop").attr("offset", "100%").attr("stop-color", "#3a2a07");
+      g.append("animate").attr("attributeName", "y1").attr("values", "0%;18%;0%").attr("dur", "2.8s").attr("repeatCount", "indefinite");
+      g.append("animate").attr("attributeName", "y2").attr("values", "100%;118%;100%").attr("dur", "2.8s").attr("repeatCount", "indefinite");
+    });
+    const g = svg.append("g").attr("transform", "translate(" + m.l + "," + m.t + ")");
+    g.selectAll("rect").data(data).enter().append("rect")
+      .attr("x", (d) => x(d.k))
+      .attr("y", ih)
+      .attr("width", x.bandwidth())
+      .attr("height", 0)
+      .attr("rx", 6)
+      .attr("fill", (d, i) => "url(#oppGrad" + i + ")")
+      .transition().duration(720)
+      .attr("y", (d) => y(d.v))
+      .attr("height", (d) => ih - y(d.v));
+
+    g.append("g").attr("transform", "translate(0," + ih + ")").call(d3.axisBottom(x)).selectAll("text").attr("fill", "#9fc4d7").attr("font-size", "8px");
+    g.append("g").call(d3.axisLeft(y).ticks(4)).selectAll("text").attr("fill", "#9fc4d7").attr("font-size", "8px");
+    g.selectAll(".domain, .tick line").attr("stroke", "rgba(102,245,255,0.16)");
+  }
     const live = sampleZenithLive();
     if (bridgeEl) {
       bridgeEl.innerHTML = "Non-formal velocity · <strong>36 + FCT</strong> · SIG <strong>" + live.ruralGap.toFixed(1) + "%</strong> / urban <strong>" + live.urbanConn.toFixed(1) + "%</strong>";
@@ -3371,8 +3435,10 @@
   renderTreasuryPulse();
   renderRevenueVelocityMonitor();
   renderNonFormalVelocityIndex();
+  renderOpportunityGapRealtime();
   zenithLiveHandle = window.setInterval(renderZenithInformationGap, 1650);
   window.setInterval(renderNonFormalVelocityIndex, 3200);
+  window.setInterval(renderOpportunityGapRealtime, 2600);
   window.setInterval(renderRevenueVelocityMonitor, 5600);
   window.setInterval(renderTreasuryPulse, 5200);
   window.addEventListener("resize", () => {
@@ -3386,6 +3452,7 @@
     revenueResizeTimer = window.setTimeout(renderRevenueVelocityMonitor, 210);
     clearTimeout(nfResizeTimer);
     nfResizeTimer = window.setTimeout(renderNonFormalVelocityIndex, 230);
+    window.setTimeout(renderOpportunityGapRealtime, 240);
   });
 
   window.setInterval(function () {
