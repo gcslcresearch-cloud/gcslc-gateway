@@ -595,6 +595,62 @@
       text-align: center;
       color: rgba(210, 228, 240, 0.82);
     }
+    .nafc-live-signal {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin: 0 0 12px;
+      flex-wrap: wrap;
+    }
+    .nafc-live-signal-label {
+      font-size: clamp(0.4rem, 1vw, 0.52rem);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(165, 235, 200, 0.9);
+      font-weight: 800;
+    }
+    .nafc-live-signal-node {
+      flex: 0 0 auto;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 32% 32%, #d4ff8a 0%, #00e676 45%, #004d40 100%);
+      box-shadow:
+        0 0 0 1px rgba(0, 230, 118, 0.5),
+        0 0 10px rgba(0, 230, 118, 0.9),
+        0 0 20px rgba(0, 230, 118, 0.35);
+      animation: nafcLedIdlePulse 2.25s ease-in-out infinite;
+    }
+    .nafc-live-signal-node.nafc-live-signal-node--kaduna-sync:not(.nafc-live-signal-node--flicker) {
+      animation: nafcLedIdlePulseFast 1.7s ease-in-out infinite;
+      box-shadow:
+        0 0 0 1px rgba(102, 245, 255, 0.28),
+        0 0 12px rgba(0, 230, 118, 0.95),
+        0 0 26px rgba(0, 230, 118, 0.42);
+    }
+    .nafc-live-signal-node.nafc-live-signal-node--flicker {
+      animation: nafcLedGrassrootsFlicker 0.38s ease-out 1;
+    }
+    @keyframes nafcLedIdlePulse {
+      0%, 100% { opacity: 0.88; filter: brightness(1); transform: scale(1); }
+      50% { opacity: 1; filter: brightness(1.28); transform: scale(1.12); }
+    }
+    @keyframes nafcLedIdlePulseFast {
+      0%, 100% { opacity: 0.9; filter: brightness(1.05); transform: scale(1); }
+      50% { opacity: 1; filter: brightness(1.45); transform: scale(1.14); }
+    }
+    @keyframes nafcLedGrassrootsFlicker {
+      0% { opacity: 1; filter: brightness(1.4); transform: scale(1.12); }
+      22% { opacity: 0.28; filter: brightness(2.1); transform: scale(0.92); }
+      48% { opacity: 1; filter: brightness(1.1); transform: scale(1.18); }
+      72% { opacity: 0.35; filter: brightness(1.95); transform: scale(0.95); }
+      100% { opacity: 1; filter: brightness(1.25); transform: scale(1.05); }
+    }
+    .nafc-live-signal.nafc-live-signal--fusing .nafc-live-signal-label {
+      color: rgba(210, 255, 230, 1);
+      text-shadow: 0 0 12px rgba(0, 230, 118, 0.35);
+    }
     .nafc-fusion-lang {
       position: relative;
       display: flex;
@@ -2673,6 +2729,10 @@
                   </span>
                 </h2>
                 <p class="nafc-fusion-tagline">Sovereign Anchor · Fusion Command</p>
+                <div class="nafc-live-signal" id="nafcLiveSignalStrip" title="NAFC live signal — fused with Kaduna master stream">
+                  <span class="nafc-live-signal-node" id="nafcLiveSignalNode" aria-hidden="true"></span>
+                  <span class="nafc-live-signal-label"><span class="sr-only-def">NAFC live signal status. </span>LIVE · Kaduna data stream</span>
+                </div>
                 <div class="nafc-fusion-lang" role="group" aria-labelledby="nafcFusionLangLabel">
                   <span id="nafcFusionLangLabel" class="nafc-fusion-lang-heading">Sovereign linguistics</span>
                   <select id="nafcLangSelect" class="nafc-lang-select-sr" aria-label="NAFC broadcast language" tabindex="-1">
@@ -3225,12 +3285,46 @@
     });
     return html + html;
   }
+  function setNafcKadunaStreamLive(on) {
+    var led = document.getElementById("nafcLiveSignalNode");
+    var strip = document.getElementById("nafcLiveSignalStrip");
+    if (!led) return;
+    led.classList.toggle("nafc-live-signal-node--kaduna-sync", !!on);
+    if (strip) strip.setAttribute("data-kaduna-sync", on ? "live" : "idle");
+  }
+  function wireNafcKadunaLiveSignalLed(scrollEl) {
+    if (!scrollEl || scrollEl.dataset.gcslcNafcLedBound === "1") return;
+    scrollEl.dataset.gcslcNafcLedBound = "1";
+    var led = document.getElementById("nafcLiveSignalNode");
+    var strip = document.getElementById("nafcLiveSignalStrip");
+    var fuseTo = null;
+    var lastFlicker = 0;
+    function flickerFromKadunaScroll() {
+      if (!led) return;
+      var t = typeof performance !== "undefined" && performance.now ? performance.now() : Date.now();
+      if (t - lastFlicker < 56) return;
+      lastFlicker = t;
+      led.classList.remove("nafc-live-signal-node--flicker");
+      void led.offsetWidth;
+      led.classList.add("nafc-live-signal-node--flicker");
+      window.clearTimeout(fuseTo);
+      fuseTo = window.setTimeout(function () {
+        led.classList.remove("nafc-live-signal-node--flicker");
+      }, 400);
+      if (strip) {
+        strip.classList.add("nafc-live-signal--fusing");
+        window.setTimeout(function () { strip.classList.remove("nafc-live-signal--fusing"); }, 420);
+      }
+    }
+    scrollEl.addEventListener("scroll", flickerFromKadunaScroll, { passive: true });
+  }
   function setupRhgiKadunaAndCinV64() {
     var scroll = document.getElementById("kadunaLgaScroll");
     var term = document.getElementById("kadunaRhgiTerminal");
     var rail = document.getElementById("cinTickerRail");
     var pres = document.getElementById("rhgiPresidentialRail");
     if (!scroll || !term || !rail) return;
+    wireNafcKadunaLiveSignalLed(scroll);
     function applySovereignLatticePayload(j) {
       if (pres && j && j.tickerRows && j.tickerRows.length) {
         pres.innerHTML = buildRhgiPresidentialRailHtml(j.tickerRows);
@@ -3247,11 +3341,13 @@
         window.__GCSLC_KADUNA_MASTER__ = parsed;
         wireKadunaRhgiLgaButtons(scroll, term, parsed.lgas, parsed.byLga);
         populateNafcLgaSelectFromMaster(parsed.lgas);
+        setNafcKadunaStreamLive(true);
         if (term && !window.__GCSLC_RHGI_SELECTED_LGA) {
           term.textContent = ">> KADUNA MASTER SYNC · OK\n>> RHGI PROTOCOL · select an LGA…";
         }
       })
       .catch(function () {
+        setNafcKadunaStreamLive(false);
         wireKadunaRhgiLgaButtons(scroll, term, KADUNA_LGAS_RHGI, null);
         populateNafcLgaSelectFromMaster(KADUNA_LGAS_RHGI);
         if (term && !window.__GCSLC_RHGI_SELECTED_LGA) {
