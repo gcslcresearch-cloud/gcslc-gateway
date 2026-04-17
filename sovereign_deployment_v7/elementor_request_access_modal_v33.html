@@ -1,0 +1,183 @@
+<!-- GCSLC SOVEREIGN_TOTAL_SYNC_V33 · Elementor Embed Snippet -->
+<div id="gcslc-access-v33">
+  <button type="button" class="gcslc-access-open" id="gcslcAccessOpen">Request Access</button>
+
+  <div class="gcslc-access-backdrop" id="gcslcAccessBackdrop" aria-hidden="true">
+    <section class="gcslc-access-modal" role="dialog" aria-modal="true" aria-labelledby="gcslcAccessTitle">
+      <button type="button" class="gcslc-access-close" id="gcslcAccessClose" aria-label="Close">x</button>
+      <h3 id="gcslcAccessTitle">Sovereign Gateway Access</h3>
+      <p class="gcslc-access-meta">Goldman | Deep Blue | Institutional Gold</p>
+
+      <form id="gcslcAccessForm">
+        <label for="gcslcName">Full Name</label>
+        <input id="gcslcName" name="name" type="text" required />
+
+        <label for="gcslcEmail">Official Email</label>
+        <input id="gcslcEmail" name="email" type="email" required />
+
+        <label for="gcslcInstitution">Institution</label>
+        <input id="gcslcInstitution" name="institution" type="text" required />
+
+        <label for="gcslcSovereignKey">Sovereign Key</label>
+        <input id="gcslcSovereignKey" name="sovereign_key" type="password" required />
+
+        <button type="submit" class="gcslc-access-submit">Submit Sovereign Request</button>
+      </form>
+
+      <p class="gcslc-access-status" id="gcslcAccessStatus" aria-live="polite"></p>
+    </section>
+  </div>
+</div>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap');
+  #gcslc-access-v33 { font-family: "Goldman", system-ui, sans-serif; }
+  #gcslc-access-v33 .gcslc-access-open,
+  #gcslc-access-v33 .gcslc-access-submit {
+    border: 1px solid rgba(212, 175, 55, 0.75);
+    background: #001a33;
+    color: #f0d78c;
+    padding: 0.7rem 1rem;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  #gcslc-access-v33 .gcslc-access-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    background: rgba(0, 10, 24, 0.82);
+    backdrop-filter: blur(5px);
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  #gcslc-access-v33 .gcslc-access-backdrop.is-open { display: flex; }
+  #gcslc-access-v33 .gcslc-access-modal {
+    width: min(520px, 100%);
+    background: #001a33;
+    border: 1px solid rgba(212, 175, 55, 0.55);
+    border-radius: 14px;
+    box-shadow: 0 22px 60px rgba(0, 0, 0, 0.5);
+    padding: 18px;
+    color: #dff8ff;
+    position: relative;
+  }
+  #gcslc-access-v33 .gcslc-access-close {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: 28px;
+    height: 28px;
+    border: 1px solid rgba(212, 175, 55, 0.6);
+    border-radius: 999px;
+    background: transparent;
+    color: #f0d78c;
+    cursor: pointer;
+    font-weight: 700;
+  }
+  #gcslc-access-v33 h3 {
+    margin: 0 0 6px;
+    color: #f0d78c;
+    letter-spacing: 0.04em;
+  }
+  #gcslc-access-v33 .gcslc-access-meta {
+    margin: 0 0 14px;
+    font-size: 0.78rem;
+    color: #a6d2ef;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  #gcslc-access-v33 form {
+    display: grid;
+    gap: 8px;
+  }
+  #gcslc-access-v33 label {
+    font-size: 0.72rem;
+    color: #f0d78c;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+  }
+  #gcslc-access-v33 input {
+    width: 100%;
+    background: rgba(3, 25, 51, 0.88);
+    border: 1px solid rgba(102, 245, 255, 0.32);
+    color: #e9f6ff;
+    border-radius: 8px;
+    padding: 0.62rem 0.7rem;
+    font-family: inherit;
+  }
+  #gcslc-access-v33 .gcslc-access-status {
+    margin: 10px 0 0;
+    font-size: 0.78rem;
+    min-height: 1rem;
+    color: #d4af37;
+  }
+</style>
+
+<script>
+  (() => {
+    const root = document.getElementById("gcslc-access-v33");
+    if (!root) return;
+    const openBtn = root.querySelector("#gcslcAccessOpen");
+    const closeBtn = root.querySelector("#gcslcAccessClose");
+    const backdrop = root.querySelector("#gcslcAccessBackdrop");
+    const form = root.querySelector("#gcslcAccessForm");
+    const status = root.querySelector("#gcslcAccessStatus");
+
+    function setOpen(open) {
+      if (!backdrop) return;
+      backdrop.classList.toggle("is-open", open);
+      backdrop.setAttribute("aria-hidden", open ? "false" : "true");
+    }
+
+    function submitToElementorWebhook(payload) {
+      const webhook = (window.GCSLC_ELEMENTOR_ACCESS_WEBHOOK || "").trim();
+      if (!webhook) return Promise.resolve(false);
+      return fetch(webhook, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }).then((res) => res.ok).catch(() => false);
+    }
+
+    if (openBtn) openBtn.addEventListener("click", () => setOpen(true));
+    if (closeBtn) closeBtn.addEventListener("click", () => setOpen(false));
+    if (backdrop) {
+      backdrop.addEventListener("click", (ev) => {
+        if (ev.target === backdrop) setOpen(false);
+      });
+    }
+    document.addEventListener("keydown", (ev) => {
+      if (ev.key === "Escape") setOpen(false);
+    });
+
+    if (form) {
+      form.addEventListener("submit", async (ev) => {
+        ev.preventDefault();
+        const formData = new FormData(form);
+        const payload = {
+          source: "SOVEREIGN_TOTAL_SYNC_V33",
+          requested_at: new Date().toISOString(),
+          name: String(formData.get("name") || "").trim(),
+          email: String(formData.get("email") || "").trim(),
+          institution: String(formData.get("institution") || "").trim(),
+          sovereign_key: String(formData.get("sovereign_key") || "").trim()
+        };
+        if (!payload.name || !payload.email || !payload.institution || !payload.sovereign_key) {
+          status.textContent = "Complete all required fields.";
+          return;
+        }
+        status.textContent = "Submitting sovereign request...";
+        const delivered = await submitToElementorWebhook(payload);
+        status.textContent = delivered
+          ? "Request submitted. Sovereign lane review in progress."
+          : "Request captured locally. Bind GCSLC_ELEMENTOR_ACCESS_WEBHOOK to deliver.";
+        form.reset();
+      });
+    }
+  })();
+</script>

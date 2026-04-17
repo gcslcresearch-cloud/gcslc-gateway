@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#001a33" />
   <meta name="color-scheme" content="dark" />
-  <title>GCSLC — Sovereign Total Convergence v28</title>
+  <title>GCSLC — Sovereign Total Convergence v33</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet" />
@@ -563,6 +563,42 @@
       color: #8fb4c8;
       text-align: center;
     }
+    .cloud-status-panel {
+      margin-top: 0;
+      border-color: rgba(212, 175, 55, 0.35);
+      background: #001a33;
+    }
+    .cloud-status-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+    .cloud-pill {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border: 1px solid rgba(102, 245, 255, 0.18);
+      border-radius: 10px;
+      padding: 6px 8px;
+      font-size: 0.52rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #dff8ff;
+      background: rgba(0, 12, 28, 0.45);
+    }
+    .cloud-pill .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4dd0e1;
+      box-shadow: 0 0 12px rgba(77, 208, 225, 0.65);
+      flex: 0 0 auto;
+    }
+    .cloud-pill.is-offline .dot {
+      background: #ff845c;
+      box-shadow: 0 0 12px rgba(255, 132, 92, 0.75);
+    }
     #apexTrajectoryChart, #nfVelocityChart, #revenueVelocityChart, #treasuryPulseChart { min-height: 110px !important; }
     .sidebar-diagnostics-v15 #apexTrajectoryChart { min-height: 95px !important; }
     .sidebar-diagnostics-v15 #treasuryPulseChart { min-height: 102px !important; }
@@ -1084,7 +1120,7 @@
     }
     .clock-prism-frame {
       text-align: center;
-      padding: 5px 3px 4px;
+      padding: 4px 3px 3px;
       background: var(--surface-unified);
       border: 1px solid rgba(102, 245, 255, 0.16);
       clip-path: polygon(10% 0, 90% 0, 100% 50%, 90% 100%, 10% 100%, 0 50%);
@@ -1092,14 +1128,14 @@
       backdrop-filter: none;
       -webkit-backdrop-filter: none;
       transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-      animation: clockMetalShimmer 7s ease-in-out infinite;
+      animation: clockMetalShimmer 7s ease-in-out infinite, clockMetalZoom 4.6s ease-in-out infinite;
     }
     @keyframes clockMetalShimmer {
       0%, 100% { filter: brightness(1) saturate(1.05); border-color: rgba(102, 245, 255, 0.28); }
       50% { filter: brightness(1.1) saturate(1.18); border-color: rgba(166, 251, 255, 0.55); }
     }
     .clock-prism-frame { animation: clockPrismPulse 2.4s ease-in-out infinite; }
-    .clock-prism-frame:hover { transform: scale(1.1); z-index: 3; box-shadow: 0 0 18px rgba(102,245,255,0.45); }
+    .clock-prism-frame:hover { transform: scale(1.08); z-index: 3; box-shadow: 0 0 18px rgba(102,245,255,0.45); }
     @media (hover: none) {
       .clock-prism-frame:active { transform: scale(1.06); }
     }
@@ -1108,8 +1144,8 @@
       50% { box-shadow: inset 0 0 14px rgba(212,175,55,0.22), 0 0 14px rgba(102,245,255,0.28); }
     }
     .clock {
-      width: 32px;
-      height: 32px;
+      width: 26px;
+      height: 26px;
       margin: 0 auto 3px;
       border-radius: 50%;
       border: 1.5px solid rgba(149,239,255,0.88);
@@ -1129,10 +1165,10 @@
       z-index: 4;
     }
     .hand { position: absolute; left: 50%; bottom: 50%; transform-origin: bottom center; border-radius: 2px; }
-    .hour { width: 2px; height: 8px; margin-left: -1px; background: #d8ecff; }
-    .minute { width: 1.8px; height: 11px; margin-left: -0.9px; background: #bee9ff; }
-    .second { width: 1px; height: 12px; margin-left: -0.5px; background: #67f4ff; }
-    .city { font-size: 0.48rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--cyan-soft); font-weight: 700; }
+    .hour { width: 1.8px; height: 6px; margin-left: -0.9px; background: #d8ecff; }
+    .minute { width: 1.5px; height: 8px; margin-left: -0.75px; background: #bee9ff; }
+    .second { width: 1px; height: 9px; margin-left: -0.5px; background: #67f4ff; }
+    .city { font-size: 0.44rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--cyan-soft); font-weight: 700; }
     .layout-inner {
       display: block;
       width: 100%;
@@ -1605,7 +1641,11 @@
       -webkit-mask-image: linear-gradient(90deg, transparent, #000 2%, #000 98%, transparent);
     }
     .nafc-feed-band {
-      display: flex;
+      display: grid;
+      grid-template-rows: auto auto;
+      grid-auto-flow: column;
+      grid-auto-columns: max-content;
+      row-gap: 2px;
       width: max-content;
       animation: nafcFeedSlide 64s linear infinite;
     }
@@ -1618,6 +1658,16 @@
       font-size: clamp(0.54rem, 1.2vw, 0.66rem);
       letter-spacing: 0.04em;
       color: #dff8ff;
+    }
+    .nafc-feed-track-secondary {
+      font-size: clamp(0.5rem, 1.05vw, 0.6rem);
+      color: #bfe9ff;
+      opacity: 0.95;
+    }
+    .nafc-feed-track-secondary .nafc-tag {
+      background: linear-gradient(180deg, #e8f7ff, #9dcff0 55%, #7aadc8);
+      color: #081425;
+      box-shadow: 0 0 10px rgba(157, 207, 240, 0.45);
     }
     .nafc-feed-item .nafc-tag {
       display: inline-block;
@@ -1852,6 +1902,27 @@
       box-shadow: -4px 0 18px rgba(0,0,0,0.35);
     }
     .gov-toggle:hover { filter: brightness(1.1); }
+    .vision-toggle {
+      position: fixed;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 120;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      padding: 14px 8px;
+      border: 1px solid rgba(102, 245, 255, 0.18);
+      border-left: none;
+      border-radius: 0 10px 10px 0;
+      background: var(--surface-unified);
+      color: var(--gold);
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      cursor: pointer;
+      box-shadow: 4px 0 18px rgba(0,0,0,0.35);
+    }
+    .vision-toggle:hover { filter: brightness(1.1); }
     .governance-slide {
       position: fixed;
       top: 0;
@@ -1886,6 +1957,40 @@
       color: #d6eefc;
     }
     .governance-slide .legal-block strong { color: var(--cyan-soft); display: block; margin-bottom: 4px; font-size: 0.62rem; letter-spacing: 0.08em; }
+    .vision-slide {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: min(380px, 92vw);
+      height: 100%;
+      z-index: 119;
+      background: var(--surface-unified);
+      border-right: 2px solid rgba(102, 245, 255, 0.2);
+      box-shadow: 8px 0 40px rgba(0,0,0,0.5);
+      transform: translateX(-100%);
+      transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+      overflow-y: auto;
+      padding: 56px 18px 24px;
+    }
+    .vision-slide.open { transform: translateX(0); }
+    .vision-slide h2 {
+      margin: 0 0 12px;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    .vision-slide .legal-block {
+      margin-bottom: 14px;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(102,245,255,0.16);
+      background: var(--surface-unified);
+      font-size: 0.72rem;
+      line-height: 1.45;
+      color: #d6eefc;
+    }
+    .vision-slide .legal-block strong { color: var(--cyan-soft); display: block; margin-bottom: 4px; font-size: 0.62rem; letter-spacing: 0.08em; }
     .gov-backdrop {
       display: none;
       position: fixed;
@@ -1933,6 +2038,10 @@
       0%, 100% { box-shadow: inset 0 0 8px rgba(212,175,55,0.15); }
       50% { box-shadow: inset 0 0 14px rgba(212,175,55,0.28); }
     }
+    @keyframes clockMetalZoom {
+      0%, 100% { transform: scale(0.99); }
+      50% { transform: scale(1.03); }
+    }
     @keyframes definitionTypingSlow { from { width: 0; } to { width: 100%; } }
     @keyframes watermarkPulse {
       0%, 100% { opacity: 0.24; transform: translateX(-50%) perspective(940px) rotateX(24deg) scale(0.99); }
@@ -1947,8 +2056,25 @@
   </div>
 
   <div class="gov-backdrop" id="govBackdrop" aria-hidden="true"></div>
-  <a class="advisory-fab" id="advisoryFab" href="https://gcslc-gateway.vercel.app/advisory.html" target="_blank" rel="noopener noreferrer">ADVISORY HUB - CLOUD NODE</a>
+  <a class="advisory-fab" id="advisoryFab" href="https://gcslc-gateway.vercel.app/advisory.html" target="_blank" rel="noopener noreferrer">ACCESS ADVISORY HUB</a>
+  <button type="button" class="vision-toggle" id="visionToggle" aria-controls="visionSlide" aria-expanded="false">VISION</button>
   <button type="button" class="gov-toggle" id="govToggle" aria-controls="governanceSlide" aria-expanded="false">GOVERNANCE</button>
+  <aside class="vision-slide" id="visionSlide" aria-label="Vision and sovereign mandate">
+    <h2>Vision — 15/15 Narrative</h2>
+    <div class="legal-block">
+      <strong>Strategic Narrative</strong>
+      Everything is Anchored by the 8R Stealth Paradigm Convergence and its determinants; each state pulse is mapped as Investment Potential versus Information Gap.
+    </div>
+    <div class="legal-block">
+      <strong>Substance Pop-up</strong>
+      Every state interaction opens Strategic Opportunity Gap Graphs (Investment Potential vs Information Gap), synchronized for executive review.
+    </div>
+    <div class="legal-block">
+      <strong>Grassroots Precision</strong>
+      23 Kaduna LGAs calibrated around a 2.0M population bioluminescent pulse for sovereign planning discipline.
+    </div>
+  </aside>
+
   <aside class="governance-slide" id="governanceSlide" aria-label="Governance and legal anchors">
     <h2>Governance — Legal Anchors</h2>
     <div class="legal-block">
@@ -2088,6 +2214,19 @@
 
       <aside class="sidebar sidebar-right">
         <h2>NRS Fiscal Node</h2>
+        <div class="sidebar-chart-min cloud-status-panel" aria-label="Triple-cloud status">
+          <h3 class="sidebar-chart-h">Triple-Cloud Status</h3>
+          <p class="sidebar-chart-sub">Azure APIM + Telegram Gateway · Google Sync</p>
+          <div class="cloud-status-grid">
+            <div class="cloud-pill" id="azureCloudStatus"><span>Azure Cloud</span><span class="dot" aria-hidden="true"></span></div>
+            <div class="cloud-pill" id="telegramCloudStatus"><span>Telegram Cloud</span><span class="dot" aria-hidden="true"></span></div>
+          </div>
+        </div>
+        <div class="sidebar-chart-min liquidity-mirror-panel" aria-label="Institutional liquidity mirror">
+          <h3 class="sidebar-chart-h">Institutional Liquidity Mirror</h3>
+          <p class="sidebar-chart-sub" id="liquidityMirrorMain">CBN / NNPCL · —</p>
+          <p class="sidebar-chart-sub liquidity-recovered" id="liquidityMirrorRecovered">Recovered Asset Mirror · AMCON / EFCC · —</p>
+        </div>
         <div class="sidebar-chart-min revenue-velocity-panel" aria-label="Revenue velocity">
           <h3 class="sidebar-chart-h">Revenue Velocity</h3>
           <p class="sidebar-chart-sub" id="revenueVelocityMetric">Non-Oil IGR Growth vs. CNG Adoption</p>
@@ -2195,11 +2334,19 @@
     <div class="nafc-feed-marquee">
       <div class="nafc-feed-band" id="nafcFeedBand">
         <div class="nafc-feed-track" id="nafcFeedTrack">
-          <span class="nafc-feed-item"><span class="nafc-tag">NAHCON</span> "2027 Digital PTA Handshake: Status Pending..."</span>
+          <span class="nafc-feed-item"><span class="nafc-tag">CBN</span> "Institutional Liquidity Mirror: Active..."</span>
+          <span class="nafc-feed-item"><span class="nafc-tag">NNPCL</span> "Energy-Liquidity Corridor: Synced..."</span>
           <span class="nafc-feed-item"><span class="nafc-tag">RMAFC</span> "Real-Time Fiscal Allocation Sync: Active..."</span>
-          <span class="nafc-feed-item"><span class="nafc-tag">NRS</span> "Sovereign Tax-Credit Handshake: Active..."</span>
-          <span class="nafc-feed-item"><span class="nafc-tag">Pi-CNG</span> "National Napep Palliative Sync: 1:14 Verified..."</span>
-          <span class="nafc-feed-item"><span class="nafc-tag">Embassies</span> "Security Signal Priority: Whitelisted..."</span>
+          <span class="nafc-feed-item"><span class="nafc-tag">NSA</span> "Strategic Security Coordination: Live..."</span>
+          <span class="nafc-feed-item"><span class="nafc-tag">NIMASA</span> "Maritime Revenue Shield: Verified..."</span>
+          <span class="nafc-feed-item"><span class="nafc-tag">NAHCON</span> "2027 Digital PTA Handshake: Status Pending..."</span>
+        </div>
+        <div class="nafc-feed-track nafc-feed-track-secondary" id="nafcFeedTrackSecondary">
+          <span class="nafc-feed-item"><span class="nafc-tag">AMCON</span> "Recovered Asset Mirror: Active..."</span>
+          <span class="nafc-feed-item"><span class="nafc-tag">NDIC</span> "Deposit Integrity Shield: Synced..."</span>
+          <span class="nafc-feed-item"><span class="nafc-tag">NHIS</span> "National Health Coverage Ledger: Live..."</span>
+          <span class="nafc-feed-item"><span class="nafc-tag">Hajj Commission</span> "Pilgrimage Service Assurance: Ready..."</span>
+          <span class="nafc-feed-item"><span class="nafc-tag">INEC</span> "Electoral Roll Integrity: Verified..."</span>
         </div>
       </div>
     </div>
@@ -2221,7 +2368,7 @@
       <span class="g">HANDSHAKE //</span>
       Phone <span class="footer-node-metallic"><strong>+234 703 913 9439</strong> | <strong>+234 809 911 1515</strong></span>
       · Email <span class="footer-node-metallic">Info@galadimanruwacenter.org</span> · <span class="footer-node-metallic">gcslc.research@gmail.com</span>
-      · <strong>Copyright LW15954</strong> · <strong>SCUML RN: 151653884</strong> · Sovereign Total Convergence v28 · OAGF: "Fiscal Transparency Handshake: Active..." · Humanitarian: "NSIP Last-Mile Verification Node: Ready..." · NRS: "Sovereign Tax-Credit Handshake: Active..." · Pi-CNG: "National Napep Palliative Sync: 1:14 Verified..." · 8,806 Wards : 123,284 Field Agents · 176,000 PUs · Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau · <strong>GCSLC PROPRIETARY</strong>
+      · <strong>Copyright LW15954</strong> · <strong>SCUML RN: 151653884</strong> · Sovereign Total Convergence v33 · OAGF: "Fiscal Transparency Handshake: Active..." · Humanitarian: "NSIP Last-Mile Verification Node: Ready..." · NRS: "Sovereign Tax-Credit Handshake: Active..." · Pi-CNG: "National Napep Palliative Sync: 1:14 Verified..." · 8,806 Wards : 123,284 Field Agents · 176,000 PUs · Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau · <strong>GCSLC PROPRIETARY</strong>
     </div>
   </footer>
 
@@ -2263,8 +2410,103 @@
     azureApimTrace: "false",
     telegramGatewayPrimary: true,
     telegramGatewayUrl: "",
-    googleMapsEmbedUrl: ""
+    googleMapsEmbedUrl: "",
+    lgaActivityUrl: "./KADUNA_Data_2027/lga_activity.json"
   }, window.GCSLC_TRIPLE_CLOUD_V28 || {});
+
+  const INSTITUTIONAL_TICKER_NODES = ["CBN", "NNPCL", "RMAFC", "NSA", "NIMASA", "NAHCON"];
+  const INSTITUTIONAL_TICKER_SECONDARY_NODES = ["AMCON", "NDIC", "NHIS", "Hajj Commission", "INEC"];
+  const ALERT_TRIGGER_NODES = ["Police", "Immigration"];
+  const KADUNA_LGA_NAMES = [
+    "Birnin Gwari", "Chikun", "Giwa", "Igabi", "Ikara", "Jaba", "Jema'a", "Kachia", "Kaduna North", "Kaduna South", "Kagarko", "Kajuru", "Kaura", "Kauru", "Kubau", "Kudan", "Lere", "Makarfi", "Sabon Gari", "Sanga", "Soba", "Zangon Kataf", "Zaria"
+  ];
+  const KADUNA_LGA_ACTIVITY = Object.create(null);
+  const EXPECTED_SOVEREIGN_KEY = String(window.GCSLC_SOVEREIGN_KEY_EXPECTED || "LW15954").trim().toUpperCase();
+
+  function detectSovereignKey() {
+    let key = "";
+    try {
+      const q = new URLSearchParams(window.location.search || "");
+      key = String(q.get("sov_key") || q.get("skey") || "").trim();
+      if (!key) key = String(window.localStorage.getItem("gcslc_sovereign_key") || "").trim();
+      if (!key && window.GCSLC_SOVEREIGN_KEY) key = String(window.GCSLC_SOVEREIGN_KEY).trim();
+    } catch (e) { /* no-op */ }
+    if (!key) return "";
+    const up = key.toUpperCase();
+    return (up && up === EXPECTED_SOVEREIGN_KEY) ? up : "";
+  }
+  const SOVEREIGN_KEY_DETECTED = detectSovereignKey();
+  const PRIVATE_LANE_UNLOCKED = !!SOVEREIGN_KEY_DETECTED;
+
+  const NAFC_SENDER_WHITELIST = new Set(["GALADIMA_R"]);
+  function normalizeNafcSender(raw) {
+    const v = raw != null ? String(raw).trim().toUpperCase() : "";
+    return v || "GALADIMA_R";
+  }
+  function getWhitelistedSender(raw) {
+    const sender = normalizeNafcSender(raw);
+    if (!NAFC_SENDER_WHITELIST.has(sender)) {
+      NAFC_SENDER_WHITELIST.add("GALADIMA_R");
+      return "GALADIMA_R";
+    }
+    return sender;
+  }
+
+  function renderTripleCloudStatus() {
+    const tc = window.GCSLC_TRIPLE_CLOUD_V28 || {};
+    const azure = document.getElementById("azureCloudStatus");
+    const telegram = document.getElementById("telegramCloudStatus");
+    if (azure) {
+      const azOn = !!(tc.bridgeUrl || tc.auditWebhookUrl || tc.azureSubscriptionKey);
+      azure.classList.toggle("is-offline", !azOn);
+      azure.title = azOn ? "Azure APIM bridge ready" : "Azure APIM bridge pending";
+    }
+    if (telegram) {
+      const tgOn = !!(tc.telegramGatewayUrl && tc.telegramGatewayPrimary !== false);
+      telegram.classList.toggle("is-offline", !tgOn);
+      telegram.title = tgOn ? "Telegram gateway primary" : "Telegram gateway standby";
+    }
+  }
+
+  function sampleLiquidityMirror() {
+    const t = Date.now() / 1700;
+    const liq = 72 + Math.sin(t) * 6 + Math.cos(t * 0.6) * 3;
+    const rec = 58 + Math.cos(t * 0.92) * 7 + Math.sin(t * 0.55) * 2;
+    return {
+      cbnNnpcl: Math.max(42, Math.min(96, liq)),
+      amconEfcc: Math.max(36, Math.min(94, rec))
+    };
+  }
+
+  function renderLiquidityMirror() {
+    const m = sampleLiquidityMirror();
+    const a = document.getElementById("liquidityMirrorMain");
+    const b = document.getElementById("liquidityMirrorRecovered");
+    if (a) a.textContent = "CBN / NNPCL · " + m.cbnNnpcl.toFixed(1) + "%";
+    if (b) b.textContent = "Recovered Asset Mirror · AMCON / EFCC · " + m.amconEfcc.toFixed(1) + "%";
+    return m;
+  }
+
+  async function loadKadunaLgaActivityData() {
+    const tc = window.GCSLC_TRIPLE_CLOUD_V28 || {};
+    const url = tc.lgaActivityUrl ? String(tc.lgaActivityUrl).trim() : "";
+    if (!url) return;
+    try {
+      const res = await fetch(url, { cache: "no-store", credentials: "omit", mode: "cors" });
+      if (!res.ok) return;
+      const j = await res.json();
+      const rec = (j && (j.lgas || j.activities || j.nodes)) || j;
+      if (rec && typeof rec === "object") {
+        KADUNA_LGA_NAMES.forEach(function (name) {
+          const row = rec[name] || rec[name.toLowerCase()] || rec[name.replace(/\s+/g, "_").toLowerCase()];
+          if (row == null) return;
+          const v = typeof row === "number" ? row : (row.activity || row.value || row.pulse || row.score);
+          const n = Number(v);
+          if (Number.isFinite(n)) KADUNA_LGA_ACTIVITY[name] = Math.max(0, Math.min(1, n > 1 ? n / 100 : n));
+        });
+      }
+    } catch (e) { /* graceful fallback to synthetic pulses */ }
+  }
 
   function gcslcAzureApimHeaders(extra) {
     const tc = window.GCSLC_TRIPLE_CLOUD_V28 || {};
@@ -2278,13 +2520,22 @@
 
   async function tripleCloudLgaPing(reason) {
     const tc = window.GCSLC_TRIPLE_CLOUD_V28 || {};
-    const sender = CLOUD.senderId || "GALADIMA_R";
+    const sender = getWhitelistedSender(CLOUD.senderId || "GALADIMA_R");
+    const liq = sampleLiquidityMirror();
     const payload = {
       event: "lga_ping",
       source: "kaduna_lga_database",
       sender_id: sender,
+      alert_trigger_nodes: ALERT_TRIGGER_NODES,
       wards: WARDS,
       reason: reason || "triple_cloud_sync",
+      clouds: ["google", "microsoft", "telegram"],
+      institutional_ticker: INSTITUTIONAL_TICKER_NODES,
+      institutional_ticker_secondary: INSTITUTIONAL_TICKER_SECONDARY_NODES,
+      liquidity_mirror: {
+        cbn_nnpcl: Number(liq.cbnNnpcl.toFixed(2)),
+        recovered_asset_amcon_efcc: Number(liq.amconEfcc.toFixed(2))
+      },
       ts: Date.now()
     };
     const tasks = [];
@@ -2312,6 +2563,7 @@
     }
     await Promise.all(tasks);
     pullWardFeedFromGcp();
+    renderTripleCloudStatus();
     const gmap = String(tc.googleMapsEmbedUrl || "").trim();
     const host = document.getElementById("kadunaGmapHost");
     if (host && gmap) {
@@ -2330,7 +2582,7 @@
 
   const termiiSenderLineEl = document.getElementById("termiiSenderLine");
   if (termiiSenderLineEl) {
-    termiiSenderLineEl.textContent = (CLOUD.senderId || "GALADIMA_R") + " · transactional · alert-ready";
+    termiiSenderLineEl.textContent = getWhitelistedSender(CLOUD.senderId || "GALADIMA_R") + " · alert trigger · Police / Immigration";
   }
 
   function applyWardLatticeFromCloud(j) {
@@ -2358,18 +2610,27 @@
       .catch(function () { /* lattice feed optional */ });
   }
   pullWardFeedFromGcp();
+  renderTripleCloudStatus();
+  renderLiquidityMirror();
+  window.setInterval(renderLiquidityMirror, 3600);
+  void loadKadunaLgaActivityData();
+  if (!PRIVATE_LANE_UNLOCKED) {
+    const st = document.getElementById("termiiStatusLine");
+    if (st) st.textContent = "Private Lane Locked · Provide Sovereign Key";
+  }
 
   (function duplicateNafcFeedTrack() {
     const band = document.getElementById("nafcFeedBand");
-    const tr = document.getElementById("nafcFeedTrack");
-    if (!band || !tr) return;
-    band.querySelectorAll(".nafc-feed-track").forEach((node, i) => {
-      if (i > 0) node.remove();
+    if (!band) return;
+    band.querySelectorAll('.nafc-feed-track[data-clone="1"]').forEach((node) => node.remove());
+    const bases = Array.from(band.querySelectorAll(".nafc-feed-track")).filter((n) => n.getAttribute("data-clone") !== "1");
+    bases.forEach((base) => {
+      const dup = base.cloneNode(true);
+      dup.removeAttribute("id");
+      dup.setAttribute("aria-hidden", "true");
+      dup.setAttribute("data-clone", "1");
+      band.appendChild(dup);
     });
-    const t2 = tr.cloneNode(true);
-    t2.removeAttribute("id");
-    t2.setAttribute("aria-hidden", "true");
-    band.appendChild(t2);
   })();
 
   const FORENSIC_FALLBACK = [
@@ -2454,6 +2715,25 @@
     if (!definitionEl) return;
     definitionEl.textContent = text || "";
   }
+
+  const apexNarrativeEl = document.getElementById("apexRowAnchor");
+  const apexNarrativeFull = apexNarrativeEl ? String(apexNarrativeEl.textContent || "") : "";
+  let apexNarrativeTimer = null;
+  function typeApexNarrativeSlow() {
+    if (!apexNarrativeEl || !apexNarrativeFull) return;
+    if (apexNarrativeTimer) window.clearInterval(apexNarrativeTimer);
+    let i = 0;
+    apexNarrativeEl.textContent = "";
+    apexNarrativeTimer = window.setInterval(function () {
+      i += 1;
+      apexNarrativeEl.textContent = apexNarrativeFull.slice(0, i);
+      if (i >= apexNarrativeFull.length) {
+        window.clearInterval(apexNarrativeTimer);
+        apexNarrativeTimer = null;
+      }
+    }, 68);
+  }
+  typeApexNarrativeSlow();
   prismBoxes.forEach((box) => {
     function activate() {
       prismBoxes.forEach((b) => b.classList.remove("active"));
@@ -2561,6 +2841,10 @@
   function renderTreasuryPulse() {
     const root = document.getElementById("treasuryPulseChart");
     if (!root || !window.d3) return;
+    if (!PRIVATE_LANE_UNLOCKED) {
+      root.innerHTML = '<div style="padding:10px;text-align:center;color:#f0d78c;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;">Private Lane Locked · Sovereign Key Required</div>';
+      return;
+    }
     const d3 = window.d3;
     d3.select(root).selectAll("*").remove();
     const uid = "tsa" + String((Date.now() % 1000000));
@@ -3028,6 +3312,7 @@
   });
 
   window.setInterval(function () {
+    if (!PRIVATE_LANE_UNLOCKED) return;
     const nsip = document.getElementById("layerNsipSocial");
     if (!nsip || !nsip.checked) return;
     const tick = Math.floor(Date.now() / 11000);
@@ -3159,10 +3444,11 @@
     live: false,
     endpoint: "https://api.ng.termii.com/api/sms/send",
     apiKey: "",
-    from: CLOUD.senderId || "GALADIMA_R",
+    from: getWhitelistedSender(CLOUD.senderId || "GALADIMA_R"),
     to: ""
   }, window.GCSLC_NAFC_TERMII || {});
-  if (!window.GCSLC_NAFC_TERMII.from) window.GCSLC_NAFC_TERMII.from = CLOUD.senderId || "GALADIMA_R";
+  if (!window.GCSLC_NAFC_TERMII.from) window.GCSLC_NAFC_TERMII.from = getWhitelistedSender(CLOUD.senderId || "GALADIMA_R");
+window.GCSLC_NAFC_TERMII.from = getWhitelistedSender(window.GCSLC_NAFC_TERMII.from);
 
   const NAFC_V18_SAMPLE_SMS = "GCSLC: Your nodal sync for the AZK Energy Corridor & 15/15 model is verified. We are resuscitating 639M MT of reserves to power our mandate. Performance is our Incumbency.";
   window.NAFC_V18_SAMPLE_SMS = NAFC_V18_SAMPLE_SMS;
@@ -3279,7 +3565,7 @@
     const tc = window.GCSLC_TRIPLE_CLOUD_V28 || {};
     const url = tc.telegramGatewayUrl != null ? String(tc.telegramGatewayUrl).trim() : "";
     if (!url || tc.telegramGatewayPrimary === false) return false;
-    const sid = String((window.GCSLC_NAFC_TERMII && window.GCSLC_NAFC_TERMII.from) || CLOUD.senderId || "GALADIMA_R");
+    const sid = getWhitelistedSender((window.GCSLC_NAFC_TERMII && window.GCSLC_NAFC_TERMII.from) || CLOUD.senderId || "GALADIMA_R");
     try {
       const res = await fetch(url, {
         method: "POST",
@@ -3288,7 +3574,9 @@
           sender_id: sid,
           text: NAFC_V18_SAMPLE_SMS,
           route: "telegram_gateway_primary",
-          source: "nafc_bypass"
+          source: "nafc_bypass",
+          alert_trigger: "GALADIMA_R",
+          nodes: ALERT_TRIGGER_NODES
         }),
         mode: "cors",
         credentials: "omit"
@@ -3300,26 +3588,30 @@
   }
 
   async function runNafcInternalHandshakeV18() {
+    if (!PRIVATE_LANE_UNLOCKED) {
+      if (termiiStatusLineEl) termiiStatusLineEl.textContent = "NAFC lane locked · Sovereign Key required";
+      return;
+    }
     runMapToOutboundCyanPulse();
     flashTermiiTestLane();
     const tgOk = await tryTelegramGatewayNafc();
     if (tgOk) {
       if (termiiStatusLineEl) {
-        termiiStatusLineEl.textContent = "NAFC · Telegram Gateway · GALADIMA_R · " + new Date().toLocaleTimeString();
+        termiiStatusLineEl.textContent = "NAFC · Telegram Gateway · GALADIMA_R · Police/Immigration · " + new Date().toLocaleTimeString();
       }
       return;
     }
     const cfg = window.GCSLC_NAFC_TERMII || {};
     if (!cfg.live || !cfg.apiKey || !cfg.to) {
       if (termiiStatusLineEl) {
-        termiiStatusLineEl.textContent = "Outbound ready · sender GALADIMA_R · " + new Date().toLocaleTimeString();
+        termiiStatusLineEl.textContent = "Outbound ready · alert trigger GALADIMA_R · Police/Immigration · " + new Date().toLocaleTimeString();
       }
       return;
     }
     const payload = {
       api_key: String(cfg.apiKey),
       to: String(cfg.to),
-      from: String(cfg.from || CLOUD.senderId || "GALADIMA_R"),
+      from: getWhitelistedSender(String(cfg.from || CLOUD.senderId || "GALADIMA_R")),
       sms: NAFC_V18_SAMPLE_SMS,
       type: "plain",
       channel: "generic"
@@ -3353,6 +3645,7 @@
     executeHandshakeBtn.addEventListener("click", () => { void runStrategicHandshakeNoNumberSim(); });
   }
   if (nafcHandshakeBtn) {
+    if (!PRIVATE_LANE_UNLOCKED) nafcHandshakeBtn.disabled = true;
     nafcHandshakeBtn.addEventListener("click", () => { void runNafcInternalHandshakeV18(); });
   }
 
@@ -3370,23 +3663,49 @@
         tg.MainButton.onClick(function () { void runStrategicHandshakeNoNumberSim(); });
         tg.MainButton.show();
       }
+      renderTripleCloudStatus();
     } catch (e) { /* no-op */ }
   })();
 
   const governanceSlide = document.getElementById("governanceSlide");
+  const visionSlide = document.getElementById("visionSlide");
   const govToggle = document.getElementById("govToggle");
+  const visionToggle = document.getElementById("visionToggle");
   const govBackdrop = document.getElementById("govBackdrop");
-  function setGovernanceOpen(open) {
-    governanceSlide.classList.toggle("open", open);
-    govBackdrop.classList.toggle("show", open);
-    govToggle.setAttribute("aria-expanded", open ? "true" : "false");
-    govBackdrop.setAttribute("aria-hidden", open ? "false" : "true");
+  function syncSlideBackdrop() {
+    const anyOpen = !!((governanceSlide && governanceSlide.classList.contains("open")) || (visionSlide && visionSlide.classList.contains("open")));
+    if (govBackdrop) {
+      govBackdrop.classList.toggle("show", anyOpen);
+      govBackdrop.setAttribute("aria-hidden", anyOpen ? "false" : "true");
+    }
   }
-  govToggle.addEventListener("click", () => setGovernanceOpen(!governanceSlide.classList.contains("open")));
-  govBackdrop.addEventListener("click", () => setGovernanceOpen(false));
+  function setGovernanceOpen(open) {
+    if (!governanceSlide) return;
+    governanceSlide.classList.toggle("open", open);
+    if (govToggle) govToggle.setAttribute("aria-expanded", open ? "true" : "false");
+    if (open && visionSlide) {
+      visionSlide.classList.remove("open");
+      if (visionToggle) visionToggle.setAttribute("aria-expanded", "false");
+    }
+    syncSlideBackdrop();
+  }
+  function setVisionOpen(open) {
+    if (!visionSlide) return;
+    visionSlide.classList.toggle("open", open);
+    if (visionToggle) visionToggle.setAttribute("aria-expanded", open ? "true" : "false");
+    if (open && governanceSlide) {
+      governanceSlide.classList.remove("open");
+      if (govToggle) govToggle.setAttribute("aria-expanded", "false");
+    }
+    syncSlideBackdrop();
+  }
+  if (govToggle && governanceSlide) govToggle.addEventListener("click", () => setGovernanceOpen(!governanceSlide.classList.contains("open")));
+  if (visionToggle && visionSlide) visionToggle.addEventListener("click", () => setVisionOpen(!visionSlide.classList.contains("open")));
+  if (govBackdrop) govBackdrop.addEventListener("click", () => { setGovernanceOpen(false); setVisionOpen(false); });
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;
-    if (governanceSlide.classList.contains("open")) setGovernanceOpen(false);
+    if (governanceSlide && governanceSlide.classList.contains("open")) setGovernanceOpen(false);
+    if (visionSlide && visionSlide.classList.contains("open")) setVisionOpen(false);
     if (nonFormalModal && nonFormalModal.classList.contains("open")) nonFormalModal.classList.remove("open");
   });
 
@@ -3432,36 +3751,8 @@
     return "₦" + lo.toFixed(2) + "–" + hi.toFixed(2) + " bn";
   }
   function openNonFormalInsight(stateName) {
-    if (!nonFormalModal) return;
-    const h = hashStr(stateName);
-    const w = STATE_WARDS[stateName] != null ? STATE_WARDS[stateName] : Math.max(1, Math.round(WARDS / 37));
-    const live = sampleZenithLive();
-    const bridge = Math.max(0.25, Math.min(1.22, (100 - live.ruralGap) / 55));
-    const wardFactor = Math.sqrt(Math.max(1, w) / 120);
-    const mix = bridge * wardFactor * (0.82 + (h % 50) / 100);
-    const Llo = 0.45 * mix;
-    const Lhi = 1.38 * mix;
-    const Alo = 0.36 * mix;
-    const Ahi = 1.15 * mix;
-    const Mlo = 0.4 * mix;
-    const Mhi = 1.3 * mix;
-    const st = document.getElementById("nfModalState");
-    const lead = document.getElementById("nfModalLead");
-    if (st) st.textContent = "Lattice Node: " + stateName;
-    if (lead) {
-      lead.textContent = "Non-formal sector bands by state — livestock, artisans, micro-services.";
-    }
-    const el = document.getElementById("nfLivestock");
-    const ea = document.getElementById("nfArtisans");
-    const em = document.getElementById("nfMicro");
-    if (el) el.textContent = formatBnBand(Llo, Lhi);
-    if (ea) ea.textContent = formatBnBand(Alo, Ahi);
-    if (em) em.textContent = formatBnBand(Mlo, Mhi);
-    const br = document.getElementById("nfModalBridge");
-    if (br) {
-      br.innerHTML = "Linked to Social Information Gap: rural <strong>" + live.ruralGap.toFixed(1) + "%</strong> · urban <strong>" + live.urbanConn.toFixed(1) + "%</strong> — GCSLC bridges informal velocity as the gap compresses toward <strong>AZK</strong>.";
-    }
-    nonFormalModal.classList.add("open");
+    if (nonFormalModal && nonFormalModal.classList.contains("open")) nonFormalModal.classList.remove("open");
+    openDataBurst(stateName);
   }
 
   function ringPath(ring, project) {
@@ -3771,6 +4062,79 @@
     syncNsip();
   }
 
+  function buildKadunaPrimacyLayer(project, features, mapSvgEl, svgNSTarget) {
+    const prev = mapSvgEl.querySelector("#kadunaPrimacyLayer");
+    if (prev) prev.remove();
+    const g = document.createElementNS(svgNSTarget, "g");
+    g.setAttribute("id", "kadunaPrimacyLayer");
+
+    const centerLL = [7.4384, 10.5144];
+    const c = project(centerLL);
+
+    [28, 46, 68].forEach(function (r) {
+      const halo = document.createElementNS(svgNSTarget, "circle");
+      halo.setAttribute("class", "kaduna-focus-halo");
+      halo.setAttribute("cx", String(c[0]));
+      halo.setAttribute("cy", String(c[1]));
+      halo.setAttribute("r", String(r));
+      g.appendChild(halo);
+    });
+
+    const nodeMeta = [];
+    KADUNA_LGA_NAMES.forEach(function (name, i) {
+      const a = (Math.PI * 2 * i) / KADUNA_LGA_NAMES.length;
+      const rr = 11 + (i % 8) * 4.2;
+      const dot = document.createElementNS(svgNSTarget, "circle");
+      dot.setAttribute("class", "kaduna-lga-dot");
+      dot.setAttribute("data-lga", name);
+      dot.setAttribute("cx", String((c[0] + Math.cos(a) * rr).toFixed(2)));
+      dot.setAttribute("cy", String((c[1] + Math.sin(a) * rr).toFixed(2)));
+      dot.setAttribute("r", "2.2");
+      const title = document.createElementNS(svgNSTarget, "title");
+      title.textContent = name;
+      dot.appendChild(title);
+      g.appendChild(dot);
+      nodeMeta.push({ name: name, el: dot, phase: i / 3.1 });
+    });
+
+    const txt = document.createElementNS(svgNSTarget, "text");
+    txt.setAttribute("x", String(c[0] + 6));
+    txt.setAttribute("y", String(c[1] - 76));
+    txt.setAttribute("fill", "#f0d78c");
+    txt.setAttribute("font-size", "9");
+    txt.setAttribute("font-weight", "900");
+    txt.textContent = "Kaduna Master Node · 23 LGAs · 2.0M Biolum Pulse";
+    g.appendChild(txt);
+
+    mapSvgEl.appendChild(g);
+
+    const focusW = 360;
+    const focusH = 320;
+    const minX = Math.max(0, Math.min(760 - focusW, c[0] - focusW / 2));
+    const minY = Math.max(0, Math.min(680 - focusH, c[1] - focusH / 2));
+    mapSvgEl.setAttribute("viewBox", [minX.toFixed(2), minY.toFixed(2), focusW, focusH].join(" "));
+
+    function pulseKadunaLgas() {
+      const t = Date.now() / 900;
+      const popScale = 2000000 / 23;
+      nodeMeta.forEach(function (n) {
+        const v = KADUNA_LGA_ACTIVITY[n.name] != null
+          ? Number(KADUNA_LGA_ACTIVITY[n.name])
+          : (0.38 + (Math.sin(t + n.phase) + 1) * 0.28);
+        const activity = Math.max(0.04, Math.min(1, v));
+        const density = Math.max(0.78, Math.min(1.24, popScale / 93000));
+        const radius = (1.8 + activity * 2.7) * density;
+        n.el.setAttribute("r", radius.toFixed(2));
+        n.el.setAttribute("opacity", (0.58 + activity * 0.42).toFixed(3));
+        n.el.style.animationDuration = (2.4 - activity * 1.25).toFixed(2) + "s";
+      });
+    }
+
+    pulseKadunaLgas();
+    if (window.__gcslcKadunaPulseTimer) window.clearInterval(window.__gcslcKadunaPulseTimer);
+    window.__gcslcKadunaPulseTimer = window.setInterval(pulseKadunaLgas, 1100);
+  }
+
   function fetchGeoJson() {
     const cloud = window.GCSLC_CLOUD_SYNC_V21 || window.GCSLC_CLOUD_SYNC_V20 || {};
     const custom = cloud.geoJsonUrl && String(cloud.geoJsonUrl).trim();
@@ -3923,6 +4287,7 @@
       buildInstitutionalLayers(project, mapSvg, svgNS);
       buildCngPalliativeLayer(project, mapSvg, svgNS);
       buildNsipSocialLayer(project, geo.features, mapSvg, svgNS);
+      buildKadunaPrimacyLayer(project, geo.features, mapSvg, svgNS);
       let dPath = "";
       corridorLL.forEach((ll, i) => {
         const xy = project(ll);
