@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#001a33" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
-  <title>GCSLC — Sovereign Total Matrix V62 · Intelligence Layer</title>
+  <title>GCSLC — Sovereign Total Matrix V64 · CIN Matrix</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet" />
@@ -1846,6 +1846,10 @@
         padding: max(10px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
       }
       .map-wrap { padding: 8px; }
+      .kaduna-rhgi-scroll { max-height: min(200px, 46vh); }
+      .rhgi-terminal-readout { font-size: clamp(0.46rem, 2.9vw, 0.56rem); }
+      .cin-ticker-viewport { height: min(180px, 42vh); }
+      .cin-ticker-line { font-size: clamp(0.46rem, 2.8vw, 0.56rem); padding: 8px 8px; }
     }
     @keyframes advisoryPulse {
       0%, 100% { box-shadow: 0 0 12px rgba(212,175,55,0.35); transform: scale(1); }
@@ -1866,6 +1870,165 @@
       50% { opacity: 0.37; transform: translateX(-50%) perspective(940px) rotateX(24deg) scale(1.02); }
     }
     @keyframes bubbleLift { 0% { transform: translateY(0); } 100% { transform: translateY(-34px); } }
+    /* V64 — RHGI / CIN / Social Lattice (sidebar-local only; shell-v7 grid untouched) */
+    .kaduna-rhgi-block {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(102, 245, 255, 0.16);
+      background: rgba(0, 26, 51, 0.55);
+    }
+    .kaduna-rhgi-block .diag-h { margin-bottom: 8px; }
+    .kaduna-rhgi-scroll {
+      max-height: min(220px, 42vh);
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+      padding-right: 4px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(212, 175, 55, 0.22);
+      background: rgba(0, 12, 28, 0.55);
+    }
+    .kaduna-rhgi-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      margin: 0 0 6px;
+      padding: 10px 10px;
+      min-height: 44px;
+      border-radius: 10px;
+      border: 1px solid rgba(102, 245, 255, 0.22);
+      background: rgba(0, 18, 40, 0.88);
+      color: #eaf8ff;
+      font-family: inherit;
+      font-weight: 800;
+      font-size: clamp(0.52rem, 1.35vw, 0.64rem);
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .kaduna-rhgi-btn:hover,
+    .kaduna-rhgi-btn:focus-visible {
+      outline: none;
+      border-color: rgba(212, 175, 55, 0.55);
+      box-shadow: 0 0 16px rgba(102, 245, 255, 0.12);
+    }
+    .kaduna-rhgi-btn.is-active {
+      border-color: rgba(212, 175, 55, 0.75);
+      box-shadow: 0 0 18px rgba(212, 175, 55, 0.22);
+    }
+    .rhgi-terminal-readout {
+      margin: 0;
+      padding: 10px 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      background: linear-gradient(180deg, rgba(0, 14, 32, 0.96), rgba(0, 6, 18, 0.92));
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: clamp(0.48rem, 1.2vw, 0.58rem);
+      line-height: 1.5;
+      color: #9fe8ff;
+      white-space: pre-wrap;
+      word-break: break-word;
+      min-height: 7.5em;
+    }
+    .cin-ticker-block {
+      margin-top: 12px;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(102, 245, 255, 0.16);
+      background: rgba(0, 26, 51, 0.55);
+    }
+    .cin-ticker-block .cin-ticker-title {
+      margin: 0 0 8px;
+      font-size: clamp(0.58rem, 1.45vw, 0.72rem);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 900;
+      text-align: center;
+      line-height: 1.35;
+    }
+    .cin-ticker-viewport {
+      position: relative;
+      height: min(200px, 38vh);
+      overflow: hidden;
+      border-radius: 10px;
+      border: 1px solid rgba(212, 175, 55, 0.22);
+      background: rgba(0, 10, 24, 0.72);
+      mask-image: linear-gradient(180deg, transparent 0%, #000 10%, #000 90%, transparent 100%);
+      -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 10%, #000 90%, transparent 100%);
+    }
+    .cin-ticker-rail {
+      will-change: transform;
+      animation: cinVerticalDrift 960s linear infinite;
+    }
+    @keyframes cinVerticalDrift {
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(0, -50%, 0); }
+    }
+    .cin-ticker-line {
+      padding: 6px 10px;
+      font-size: clamp(0.48rem, 1.15vw, 0.58rem);
+      letter-spacing: 0.03em;
+      color: #c8e8f6;
+      border-bottom: 1px solid rgba(102, 245, 255, 0.08);
+    }
+    .cin-ticker-line .cin-cor {
+      color: #66f5ff;
+      font-weight: 900;
+      margin-right: 6px;
+    }
+    .social-lattice-widget {
+      margin-top: 12px;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(212, 175, 55, 0.22);
+      background: radial-gradient(120% 90% at 50% 20%, rgba(102, 245, 255, 0.08), rgba(0, 18, 40, 0.92));
+      overflow: hidden;
+    }
+    .social-lattice-widget h3 {
+      margin: 0 0 8px;
+      font-size: clamp(0.58rem, 1.45vw, 0.72rem);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 900;
+      text-align: center;
+    }
+    .social-lattice-svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: min(140px, 32vh);
+    }
+    .lattice-edge {
+      stroke: rgba(102, 245, 255, 0.35);
+      stroke-width: 1.2;
+      stroke-dasharray: 4 6;
+      animation: latticeEdgeShimmer 5.5s ease-in-out infinite;
+    }
+    .lattice-node-disk {
+      fill: rgba(0, 26, 51, 0.92);
+      stroke: rgba(212, 175, 55, 0.55);
+      stroke-width: 1.1;
+      animation: latticeNodePulse 3.2s ease-in-out infinite;
+    }
+    .lattice-node-label {
+      fill: #eaf8ff;
+      font-size: 7px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+    }
+    @keyframes latticeEdgeShimmer {
+      0%, 100% { stroke-opacity: 0.35; filter: drop-shadow(0 0 0 rgba(102, 245, 255, 0)); }
+      50% { stroke-opacity: 0.85; filter: drop-shadow(0 0 6px rgba(102, 245, 255, 0.35)); }
+    }
+    @keyframes latticeNodePulse {
+      0%, 100% { filter: drop-shadow(0 0 0 rgba(212, 175, 55, 0)); }
+      50% { filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.45)); }
+    }
   </style>
 </head>
 <body>
@@ -1910,6 +2073,11 @@
               <span><span class="lbl">Rural Information Gap</span> <span class="gold-pct" id="zenithRuralPct">—</span></span>
               <span><span class="lbl">Urban Connectivity</span> <span class="gold-pct" id="zenithUrbanPct">—</span></span>
             </div>
+          </div>
+          <div class="diag-block kaduna-rhgi-block" aria-label="RHGI — Kaduna LGA drill-down">
+            <h3 class="diag-h">RHGI · Kaduna (23 LGAs)</h3>
+            <div class="kaduna-rhgi-scroll" id="kadunaLgaScroll" role="list"></div>
+            <pre class="rhgi-terminal-readout" id="kadunaRhgiTerminal" aria-live="polite">&gt;&gt; RHGI PROTOCOL · select an LGA…</pre>
           </div>
         </div>
       </aside>
@@ -2005,6 +2173,36 @@
           <h3 class="sidebar-chart-h">Non-Formal Velocity</h3>
           <p class="sidebar-chart-sub" id="nfVelocityBridgeCopy">Livestock · Artisans · Micro-Services — scaled by the SIG bridge (36 + FCT).</p>
           <div id="nfVelocityChart"></div>
+        </div>
+        <div class="cin-ticker-block" aria-label="Citizens Intelligence Network — 774 LGAs by corridor">
+          <p class="cin-ticker-title">CIN — Citizens Intelligence Network</p>
+          <p class="sidebar-chart-sub" style="margin:0 0 8px;text-align:center;">774 LGAs · NW · NE · NC · SW · SE · SS</p>
+          <div class="cin-ticker-viewport" id="cinTickerViewport">
+            <div class="cin-ticker-rail" id="cinTickerRail"></div>
+          </div>
+        </div>
+        <div class="social-lattice-widget" aria-label="Social lattice — informal sector nodes">
+          <h3>Social Lattice</h3>
+          <svg class="social-lattice-svg" viewBox="0 0 240 130" role="img" aria-label="Unions, Civil Society, and Associations lattice">
+            <defs>
+              <linearGradient id="latticeShine" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="rgba(102,245,255,0.15)" />
+                <stop offset="50%" stop-color="rgba(212,175,55,0.35)" />
+                <stop offset="100%" stop-color="rgba(102,245,255,0.12)" />
+              </linearGradient>
+            </defs>
+            <rect x="0" y="0" width="240" height="130" fill="url(#latticeShine)" opacity="0.35" />
+            <line class="lattice-edge" x1="120" y1="28" x2="48" y2="96" />
+            <line class="lattice-edge" x1="120" y1="28" x2="192" y2="96" />
+            <line class="lattice-edge" x1="48" y1="96" x2="192" y2="96" />
+            <circle class="lattice-node-disk" cx="120" cy="28" r="14" />
+            <circle class="lattice-node-disk" cx="48" cy="96" r="14" />
+            <circle class="lattice-node-disk" cx="192" cy="96" r="14" />
+            <text class="lattice-node-label" x="120" y="31" text-anchor="middle">UNIONS</text>
+            <text class="lattice-node-label" x="48" y="99" text-anchor="middle">CIVIL</text>
+            <text class="lattice-node-label" x="192" y="99" text-anchor="middle">ASSOC</text>
+          </svg>
+          <p class="sidebar-chart-sub" style="margin:8px 0 0;text-align:center;">Informal sector mesh · unions ↔ civil society ↔ associations</p>
         </div>
       </aside>
     </div>
@@ -2149,8 +2347,8 @@
   var PUS = ASSET.pus;
   var FIELD_AGENTS = ASSET.fieldAgents;
   var CANV_PER_WARD = 14;
-  /** V62 Agency Kitchen — background data objects (map + API catalog). Do not reorder lon/lat/r without map audit. */
-  window.__GCSLC_AGENCY_KITCHEN_V62 = [
+  /** V64 Agency Kitchen — background data objects (map + API catalog). Do not reorder lon/lat/r without map audit. */
+  window.__GCSLC_AGENCY_KITCHEN_V64 = [
     { id: "CBN", cluster: "economic", title: "CBN — Central Bank of Nigeria", handshakeName: "CBN", lon: 7.495, lat: 9.076, r: 4.7, endpoint: "/v59/economic/cbn/sovereign-rails", dishTag: "Dish · Economic", subtext: "Monetary policy, payment systems, SCUML-adjacent institutional attest." },
     { id: "BOI", cluster: "economic", title: "BOI — Bank of Industry", handshakeName: "BOI", lon: 8.52, lat: 11.99, r: 4.3, endpoint: "/v59/economic/boi/industrial-credit", dishTag: "Dish · Economic", subtext: "Industrial finance · SME uplift vectors." },
     { id: "NEXIM", cluster: "economic", title: "NEXIM — Export-Import Bank", handshakeName: "NEXIM", lon: 3.38, lat: 6.52, r: 4.2, endpoint: "/v59/economic/nexim/export-import", dishTag: "Dish · Economic", subtext: "Trade finance · ECOWAS corridor liquidity." },
@@ -2185,9 +2383,77 @@
     { id: "ITF", cluster: "social", title: "ITF — Industrial Training Fund", handshakeName: "ITF", lon: 3.35, lat: 6.48, r: 4.2, endpoint: "/v59/social/itf/skills-voucher", dishTag: "Dish · Social", subtext: "Apprenticeship funding · employer attest." },
     { id: "NDDC", cluster: "social", title: "NDDC — Niger Delta Development Commission", handshakeName: "NDDC", lon: 5.72, lat: 4.78, r: 4.3, endpoint: "/v59/social/nddc/regional-projects", dishTag: "Dish · Social", subtext: "Regional development · stakeholder reconciliation." },
     { id: "NAHCON", cluster: "social", title: "NAHCON — National Hajj Commission of Nigeria", handshakeName: "NAHCON", endpointCode: "F", lon: 7.585, lat: 9.065, r: 4.12, endpoint: "/v60/social/nahcon/pilgrimage-logistics-pulse", dishTag: "Endpoint F · Pilgrimage Logistics Pulse", subtext: "NAHCON coordination data — pilgrimage logistics & manifest routing." },
-    { id: "UBEC", cluster: "social", title: "UBEC — Universal Basic Education", handshakeName: "UBEC", lon: 10.6, lat: 12.18, r: 3.9, endpoint: "/v59/social/ubec/school-grants", dishTag: "Dish · Social", subtext: "Basic education access · facility condition index." }
+    { id: "UBEC", cluster: "social", title: "UBEC — Universal Basic Education", handshakeName: "UBEC", lon: 10.6, lat: 12.18, r: 3.9, endpoint: "/v59/social/ubec/school-grants", dishTag: "Dish · Social", subtext: "Basic education access · facility condition index." },
+    { id: "CIN_M", cluster: "social", title: "Endpoint M — CIN_Regional_Handshake", handshakeName: "CIN_M", endpointCode: "M", lon: 7.52, lat: 9.07, r: 3.95, endpoint: "/v64/cin/CIN_Regional_Handshake", dishTag: "EP M · CIN_Regional_Handshake", subtext: "Citizens Intelligence Network — regional corridor handshake (774 LGA lattice).", cinFlag: true },
+    { id: "CIN_N", cluster: "social", title: "Endpoint N — Social_Lattice_Audit", handshakeName: "CIN_N", endpointCode: "N", lon: 6.48, lat: 8.95, r: 3.9, endpoint: "/v64/cin/Social_Lattice_Audit", dishTag: "EP N · Social_Lattice_Audit", subtext: "Social lattice audit — unions, civil society & associations mesh.", cinFlag: true }
   ];
   const STATE_WARDS = Object.create(null);
+  window.__GCSLC_RHGI_SELECTED_LGA = "";
+  var KADUNA_LGAS_RHGI = [
+    "Birnin Gwari", "Chikun", "Giwa", "Igabi", "Ikara", "Jaba", "Jema'a",
+    "Kachia", "Kaduna North", "Kaduna South", "Kagarko", "Kajuru", "Kaura", "Kauru",
+    "Kubau", "Kudan", "Lere", "Makarfi", "Sabon Gari", "Sanga", "Soba", "Zangon Kataf", "Zaria"
+  ];
+  function buildCin774TickerLines() {
+    var zones = {
+      NW: [["Jigawa", 27], ["Kaduna", 23], ["Kano", 44], ["Katsina", 34], ["Kebbi", 21], ["Sokoto", 23], ["Zamfara", 14]],
+      NE: [["Adamawa", 21], ["Bauchi", 20], ["Borno", 27], ["Gombe", 11], ["Taraba", 16], ["Yobe", 17]],
+      NC: [["Benue", 23], ["Kogi", 21], ["Kwara", 16], ["Nasarawa", 13], ["Niger", 25], ["Plateau", 17], ["FCT", 6]],
+      SW: [["Ekiti", 16], ["Lagos", 20], ["Ogun", 20], ["Ondo", 18], ["Osun", 30], ["Oyo", 33]],
+      SE: [["Abia", 17], ["Anambra", 21], ["Ebonyi", 13], ["Enugu", 17], ["Imo", 27]],
+      SS: [["Akwa Ibom", 31], ["Bayelsa", 8], ["Cross River", 18], ["Delta", 25], ["Edo", 18], ["Rivers", 23]]
+    };
+    var out = [];
+    Object.keys(zones).forEach(function (z) {
+      zones[z].forEach(function (pair) {
+        var sn = pair[0];
+        var n = pair[1];
+        for (var i = 1; i <= n; i++) {
+          var zi = i < 10 ? "0" + i : String(i);
+          var zn = n < 10 ? "0" + n : String(n);
+          var lab = sn + " · LGA " + zi + "/" + zn;
+          out.push({ z: z, line: lab });
+        }
+      });
+    });
+    return out;
+  }
+  function setupRhgiKadunaAndCinV64() {
+    var scroll = document.getElementById("kadunaLgaScroll");
+    var term = document.getElementById("kadunaRhgiTerminal");
+    var rail = document.getElementById("cinTickerRail");
+    if (!scroll || !term || !rail) return;
+    scroll.innerHTML = "";
+    KADUNA_LGAS_RHGI.forEach(function (name) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "kaduna-rhgi-btn";
+      b.setAttribute("role", "listitem");
+      b.setAttribute("data-lga", name);
+      b.textContent = name;
+      b.addEventListener("click", function () {
+        scroll.querySelectorAll(".kaduna-rhgi-btn").forEach(function (x) { x.classList.remove("is-active"); });
+        b.classList.add("is-active");
+        window.__GCSLC_RHGI_SELECTED_LGA = name;
+        var w = 90 + (hashStr("RHGI|" + name) % 160);
+        var pu = 1200 + (hashStr("PU|" + name) % 14800);
+        var ag = Math.max(8, Math.round((w * 14) / 100));
+        term.textContent =
+          ">> RHGI LIVE NODE — KADUNA / " + String(name).toUpperCase() + "\n" +
+          "    WARDS (SIM):     " + w + "\n" +
+          "    PUs (SIM):       " + pu.toLocaleString() + "\n" +
+          "    FIELD MESH:      ~" + ag + " agents (1:14 lattice)\n" +
+          "    PULSE:           STABLE · CIN-READY";
+      });
+      scroll.appendChild(b);
+    });
+    var rows = buildCin774TickerLines();
+    var html = "";
+    rows.forEach(function (r) {
+      html += '<div class="cin-ticker-line"><span class="cin-cor">' + r.z + "</span>" + r.line + "</div>";
+    });
+    rail.innerHTML = html + html;
+  }
 
   const cities = [
     { name: "Abuja", zone: "Africa/Lagos" },
@@ -2286,6 +2552,7 @@
     for (let i = 0; i < s.length; i++) h = ((h << 5) - h) + s.charCodeAt(i) | 0;
     return Math.abs(h);
   }
+  setupRhgiKadunaAndCinV64();
 
   function stateUsageFill(name) {
     const d3 = window.d3;
@@ -2816,9 +3083,15 @@
     var agencyIdCatalog = catalog && ctx && ctx.agencyId ? String(ctx.agencyId) : "";
     var endpointCodeCatalog = catalog && ctx && ctx.endpointCode ? String(ctx.endpointCode) : "";
     var clusterCatalog = catalog && ctx && ctx.cluster ? String(ctx.cluster) : "";
+    var cinLgaCatalog = catalog && ctx && ctx.cinLga ? String(ctx.cinLga) : "";
     if (catalog && agencyIdCatalog === "RMAFC") {
       appendHandshakeLog("FISCAL HANDSHAKE SECURE: REVENUE FORMULA SYNCED", null);
       console.log("FISCAL HANDSHAKE SECURE: REVENUE FORMULA SYNCED");
+    }
+    if (catalog && (endpointCodeCatalog === "M" || endpointCodeCatalog === "N")) {
+      var cinLab = cinLgaCatalog || "NATIONAL";
+      appendHandshakeLog("CIN PROTOCOL ACTIVE: " + cinLab + " LATTICE STABLE", null);
+      console.log("CIN PROTOCOL ACTIVE: " + cinLab + " LATTICE STABLE");
     }
     if (catalog && clusterCatalog === "security") {
       appendHandshakeLog("SECURE DIAGNOSTIC COMPLETE: SOVEREIGN INTEGRITY VERIFIED", null);
@@ -2866,6 +3139,7 @@
         endpointCode: endpointCodeCatalog || undefined,
         agencyId: agencyIdCatalog || undefined,
         cluster: clusterCatalog || undefined,
+        cinLga: cinLgaCatalog || undefined,
         product: String(ctx.name || ""),
         scope: String(ctx.sub || "")
       } : undefined,
@@ -2890,11 +3164,13 @@
     if (termiiStatusLineEl) {
       termiiStatusLineEl.textContent = catalog && agencyIdCatalog === "RMAFC"
         ? ("FISCAL HANDSHAKE SECURE: REVENUE FORMULA SYNCED · Mock Termii pulse · " + new Date().toLocaleTimeString())
-        : catalog && clusterCatalog === "security"
-          ? ("SECURE DIAGNOSTIC COMPLETE: SOVEREIGN INTEGRITY VERIFIED · Mock Termii pulse · " + new Date().toLocaleTimeString())
-          : catalog
-            ? ("Successful order · " + String(ctx.name || "") + " · Mock Termii pulse · JSON proof in log · " + new Date().toLocaleTimeString())
-            : ("Handshake queued — lane pulse active · inspect logic log for JSON Data Packet · " + new Date().toLocaleTimeString());
+        : catalog && (endpointCodeCatalog === "M" || endpointCodeCatalog === "N")
+          ? ("CIN PROTOCOL ACTIVE: " + (cinLgaCatalog || "NATIONAL") + " LATTICE STABLE · Mock Termii · " + new Date().toLocaleTimeString())
+          : catalog && clusterCatalog === "security"
+            ? ("SECURE DIAGNOSTIC COMPLETE: SOVEREIGN INTEGRITY VERIFIED · Mock Termii pulse · " + new Date().toLocaleTimeString())
+            : catalog
+              ? ("Successful order · " + String(ctx.name || "") + " · Mock Termii pulse · JSON proof in log · " + new Date().toLocaleTimeString())
+              : ("Handshake queued — lane pulse active · inspect logic log for JSON Data Packet · " + new Date().toLocaleTimeString());
     }
     var outbound = {
       api_key: dataPacket.termii.api_key,
@@ -2922,11 +3198,13 @@
         if (catalog) {
           termiiStatusLineEl.textContent = agencyIdCatalog === "RMAFC"
             ? ("FISCAL HANDSHAKE SECURE: REVENUE FORMULA SYNCED · GCSLC → Mock Termii: HTTP " + res.status + " · " + new Date().toLocaleTimeString())
-            : clusterCatalog === "security"
-              ? ("SECURE DIAGNOSTIC COMPLETE: SOVEREIGN INTEGRITY VERIFIED · GCSLC → Mock Termii: HTTP " + res.status + " · " + new Date().toLocaleTimeString())
-              : res.ok
-                ? ("Successful order · " + String(ctx.name || "") + " · GCSLC → Mock Termii: OK · " + new Date().toLocaleTimeString())
-                : ("Successful order (sim) · " + String(ctx.name || "") + " · HTTP " + res.status + " · " + new Date().toLocaleTimeString());
+            : (endpointCodeCatalog === "M" || endpointCodeCatalog === "N")
+              ? ("CIN PROTOCOL ACTIVE: " + (cinLgaCatalog || "NATIONAL") + " LATTICE STABLE · GCSLC → Mock Termii: HTTP " + res.status + " · " + new Date().toLocaleTimeString())
+              : clusterCatalog === "security"
+                ? ("SECURE DIAGNOSTIC COMPLETE: SOVEREIGN INTEGRITY VERIFIED · GCSLC → Mock Termii: HTTP " + res.status + " · " + new Date().toLocaleTimeString())
+                : res.ok
+                  ? ("Successful order · " + String(ctx.name || "") + " · GCSLC → Mock Termii: OK · " + new Date().toLocaleTimeString())
+                  : ("Successful order (sim) · " + String(ctx.name || "") + " · HTTP " + res.status + " · " + new Date().toLocaleTimeString());
         } else {
           termiiStatusLineEl.textContent = (res.ok ? "GCSLC → Mock Termii: OK · " : "GCSLC → Mock Termii: HTTP " + res.status + " · ") + new Date().toLocaleTimeString();
         }
@@ -2936,11 +3214,13 @@
       if (termiiStatusLineEl) {
         termiiStatusLineEl.textContent = catalog && agencyIdCatalog === "RMAFC"
           ? ("FISCAL HANDSHAKE SECURE: REVENUE FORMULA SYNCED · Mock offline — JSON logged · " + new Date().toLocaleTimeString())
-          : catalog && clusterCatalog === "security"
-            ? ("SECURE DIAGNOSTIC COMPLETE: SOVEREIGN INTEGRITY VERIFIED · Mock offline — JSON logged · " + new Date().toLocaleTimeString())
-            : catalog
-              ? ("Successful order (sim) · " + String(ctx.name || "") + " · Mock offline — JSON logged · " + new Date().toLocaleTimeString())
-              : ("Mock Termii unreachable — JSON logged. Start terminal mock server, then retry. " + new Date().toLocaleTimeString());
+          : catalog && (endpointCodeCatalog === "M" || endpointCodeCatalog === "N")
+            ? ("CIN PROTOCOL ACTIVE: " + (cinLgaCatalog || "NATIONAL") + " LATTICE STABLE · Mock offline — JSON logged · " + new Date().toLocaleTimeString())
+            : catalog && clusterCatalog === "security"
+              ? ("SECURE DIAGNOSTIC COMPLETE: SOVEREIGN INTEGRITY VERIFIED · Mock offline — JSON logged · " + new Date().toLocaleTimeString())
+              : catalog
+                ? ("Successful order (sim) · " + String(ctx.name || "") + " · Mock offline — JSON logged · " + new Date().toLocaleTimeString())
+                : ("Mock Termii unreachable — JSON logged. Start terminal mock server, then retry. " + new Date().toLocaleTimeString());
       }
     }
   }
@@ -2958,7 +3238,7 @@
     return b && b.getAttribute("data-cluster") ? b.getAttribute("data-cluster") : "all";
   }
   function renderApiCatalogAgencyMenu() {
-    const reg = window.__GCSLC_AGENCY_KITCHEN_V62;
+    const reg = window.__GCSLC_AGENCY_KITCHEN_V64;
     if (!apiCatalogListEl || !reg || !reg.length) return;
     const mode = getActiveClusterForCatalog();
     const show = reg.filter(function (a) {
@@ -3030,7 +3310,8 @@
         sub: btn.getAttribute("data-sub") || "",
         agencyId: btn.getAttribute("data-agency-handshake") || "",
         endpointCode: btn.getAttribute("data-endpoint-code") || "",
-        cluster: btn.getAttribute("data-cluster") || ""
+        cluster: btn.getAttribute("data-cluster") || "",
+        cinLga: window.__GCSLC_RHGI_SELECTED_LGA || "NATIONAL"
       });
       setApiCatalogOpen(false);
     });
@@ -3395,7 +3676,7 @@
       security: "rgba(241,196,15,0.62)",
       social: "rgba(155,89,182,0.58)"
     };
-    const nodes = window.__GCSLC_AGENCY_KITCHEN_V62 || [];
+    const nodes = window.__GCSLC_AGENCY_KITCHEN_V64 || [];
     nodes.forEach((n, idx) => {
       const fill = fillByCluster[n.cluster] || "rgba(200,200,200,0.5)";
       const xy = project([n.lon, n.lat]);
