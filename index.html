@@ -6,10 +6,10 @@
   <meta name="theme-color" content="#001a33" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
-  <title>GCSLC — Sovereign Total Matrix V69 · NAFC Fusion Center</title>
+  <title>GCSLC — Sovereign Total Matrix V72 · NAFC Kinetic Supremacy</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@500;600;700&family=Goldman:wght@400;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
   <style>
     :root {
@@ -449,133 +449,242 @@
       text-align: center;
       color: #D4AF37;
     }
-    /* V69 — NAFC Sovereign Anchor (identity only; map + 8R untouched) */
+    /* V69–V72 — NAFC Sovereign Anchor (identity only; map + 8R untouched) */
     .header-apex-layer01 .nafc-fusion-prism-v69 {
       order: 3;
       width: 100%;
       max-width: min(1100px, 96vw);
-      margin: 0 auto 14px;
+      margin: 0 auto 12px;
       position: relative;
-      z-index: 6;
+      z-index: 8;
     }
     .nafc-fusion-prism-frame {
       position: relative;
       isolation: isolate;
-      padding: 14px 16px 16px;
-      border-radius: 14px;
-      clip-path: polygon(6% 0, 94% 0, 100% 50%, 94% 100%, 6% 100%, 0 50%);
-      border: 1px solid rgba(102, 245, 255, 0.28);
+      padding: 16px 18px 18px;
+      border-radius: 22px;
+      border: 1px solid rgba(200, 210, 224, 0.42);
       background:
-        linear-gradient(155deg, rgba(255, 255, 255, 0.07) 0%, transparent 42%),
-        linear-gradient(180deg, #001428 0%, #001a33 38%, #000d1f 100%);
+        linear-gradient(145deg, rgba(255, 255, 255, 0.11) 0%, rgba(255, 255, 255, 0.02) 38%, transparent 55%),
+        linear-gradient(210deg, rgba(0, 0, 0, 0.35) 0%, rgba(0, 20, 40, 0.2) 100%),
+        linear-gradient(180deg, #001a3a 0%, #001428 42%, #000814 100%);
       box-shadow:
-        0 0 0 1px rgba(212, 175, 55, 0.22),
-        0 12px 40px rgba(0, 0, 0, 0.55),
-        0 0 48px rgba(0, 80, 120, 0.35),
-        inset 0 1px 0 rgba(255, 255, 255, 0.12);
-      animation: nafcFusionPrismPulse 4.2s ease-in-out infinite;
+        0 0 0 1px rgba(255, 255, 255, 0.06),
+        0 0 0 2px rgba(160, 175, 195, 0.28),
+        0 0 24px rgba(200, 215, 235, 0.22),
+        0 14px 44px rgba(0, 0, 0, 0.58),
+        inset 0 2px 0 rgba(255, 255, 255, 0.14),
+        inset 0 -3px 10px rgba(0, 0, 0, 0.45);
+      animation: nafcSilverRackPulse 3.8s ease-in-out infinite;
       overflow: hidden;
     }
     .nafc-fusion-prism-sheen {
       position: absolute;
-      inset: -40% -30%;
+      inset: -45% -32%;
       background: linear-gradient(
         118deg,
         transparent 0%,
-        rgba(255, 255, 255, 0.06) 38%,
-        rgba(212, 175, 55, 0.18) 50%,
-        rgba(102, 245, 255, 0.12) 62%,
+        rgba(255, 255, 255, 0.07) 36%,
+        rgba(212, 175, 55, 0.14) 50%,
+        rgba(102, 245, 255, 0.1) 64%,
         transparent 100%
       );
       background-size: 220% 100%;
       animation: nafcFusionSheen 5.5s linear infinite;
       pointer-events: none;
       mix-blend-mode: screen;
-      opacity: 0.85;
+      opacity: 0.78;
     }
     .nafc-fusion-prism-body {
       position: relative;
       z-index: 1;
     }
     .nafc-fusion-title {
-      margin: 0 0 6px;
-      padding: 0 4px;
-      font-family: "Goldman", system-ui, sans-serif;
-      font-weight: 700;
-      font-size: clamp(0.78rem, 2.35vw, 1.22rem);
-      letter-spacing: 0.14em;
-      line-height: 1.2;
-      text-transform: uppercase;
+      margin: 0 0 4px;
+      padding: 0 2px;
       text-align: center;
     }
-    .nafc-fusion-title-kicker {
+    .nafc-fusion-calligraphy-wrap {
       display: block;
-      color: rgba(248, 252, 255, 0.96);
-      text-shadow:
-        0 0 18px rgba(255, 255, 255, 0.22),
-        0 0 36px rgba(102, 245, 255, 0.18);
+      margin: 0 auto;
+      max-width: min(920px, 100%);
+      transform-origin: 50% 55%;
+      animation: nafcCalligraphyBreathe 10s ease-in-out infinite;
     }
-    .nafc-fusion-title-acronym {
+    .nafc-fusion-calligraphy {
       display: block;
-      margin-top: 6px;
-      font-size: clamp(1.05rem, 3.2vw, 1.65rem);
-      letter-spacing: 0.28em;
+      font-family: "Cormorant SC", "Times New Roman", serif;
+      font-weight: 700;
+      font-size: clamp(0.72rem, 2.15vw, 1.18rem);
+      letter-spacing: 0.22em;
+      line-height: 1.22;
+      text-transform: uppercase;
+      text-align: center;
       background-image: linear-gradient(
-        105deg,
-        #6a5220 0%,
-        #d4af37 28%,
-        #fff8e6 50%,
-        #d4af37 72%,
-        #6a5220 100%
+        95deg,
+        #ffffff 0%,
+        #f2f6fb 18%,
+        #e6c77a 42%,
+        #fff9e8 58%,
+        #d4af37 78%,
+        #f7fbff 100%
       );
-      background-size: 220% 100%;
+      background-size: 180% 100%;
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      filter: drop-shadow(0 0 14px rgba(212, 175, 55, 0.45));
-      animation: nafcFusionGoldFlow 5s ease-in-out infinite;
+      filter: drop-shadow(0 2px 18px rgba(255, 255, 255, 0.2));
+      animation: nafcCalligraphyGoldShimmer 14s ease-in-out infinite;
+    }
+    .nafc-fusion-acronym-row {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: clamp(6px, 1.8vw, 14px);
+      margin: 10px 0 2px;
+    }
+    .nafc-letter {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Goldman", system-ui, sans-serif;
+      font-weight: 700;
+      font-size: clamp(1.05rem, 3.4vw, 1.75rem);
+      line-height: 1;
+      letter-spacing: 0;
+      background-image: linear-gradient(
+        168deg,
+        #1a1406 0%,
+        #5c4510 18%,
+        #b8922a 38%,
+        #ffecc8 50%,
+        #c9a227 65%,
+        #3d2f0d 100%
+      );
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      opacity: 0;
+      transform: scale(0.2) translateY(22px);
+      filter: blur(3px);
+      animation-name: nafcLetterDrop, nafcLetterInstitution;
+      animation-duration: 1.05s, 3.6s;
+      animation-timing-function: cubic-bezier(0.22, 1.32, 0.36, 1), ease-in-out;
+      animation-iteration-count: 1, infinite;
+      animation-fill-mode: forwards, none;
+    }
+    .nafc-letter-1 { animation-delay: 0.05s, 1s; }
+    .nafc-letter-2 { animation-delay: 0.22s, 1.18s; }
+    .nafc-letter-3 { animation-delay: 0.39s, 1.35s; }
+    .nafc-letter-4 { animation-delay: 0.56s, 1.52s; }
+    @keyframes nafcLetterDrop {
+      0% { opacity: 0; transform: scale(0.18) translateY(26px); filter: blur(4px) brightness(1.35); }
+      70% { opacity: 1; transform: scale(1.14) translateY(0); filter: blur(0) brightness(1.2); }
+      100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0) brightness(1); }
+    }
+    @keyframes nafcLetterInstitution {
+      0%, 100% { filter: brightness(1) drop-shadow(0 0 8px rgba(212, 175, 55, 0.35)); }
+      50% { filter: brightness(1.22) drop-shadow(0 0 22px rgba(255, 236, 180, 0.55)); }
     }
     .nafc-fusion-tagline {
-      margin: 0 0 12px;
-      font-size: clamp(0.48rem, 1.25vw, 0.58rem);
-      letter-spacing: 0.18em;
+      margin: 0 0 10px;
+      font-size: clamp(0.46rem, 1.15vw, 0.56rem);
+      letter-spacing: 0.2em;
       text-transform: uppercase;
       text-align: center;
-      color: rgba(200, 230, 245, 0.82);
+      color: rgba(210, 228, 240, 0.82);
     }
     .nafc-fusion-lang {
+      position: relative;
       display: flex;
       flex-direction: column;
       align-items: stretch;
       gap: 8px;
-      max-width: min(420px, 100%);
+      max-width: min(440px, 100%);
       margin: 0 auto;
     }
     .nafc-fusion-lang-heading {
-      font-size: clamp(0.46rem, 1.15vw, 0.54rem);
-      letter-spacing: 0.16em;
+      font-size: clamp(0.44rem, 1.1vw, 0.52rem);
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: rgba(159, 196, 215, 0.95);
+      color: rgba(170, 200, 218, 0.92);
       text-align: center;
     }
-    .nafc-select.nafc-select--fusion {
-      min-height: 46px;
-      font-weight: 900;
-      letter-spacing: 0.06em;
-      border-color: rgba(212, 175, 55, 0.42);
-      box-shadow: 0 0 18px rgba(102, 245, 255, 0.12);
+    .nafc-lang-select-sr {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
-    @keyframes nafcFusionPrismPulse {
-      0%, 100% { transform: scale(1); filter: brightness(1); box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.22), 0 12px 40px rgba(0, 0, 0, 0.55), 0 0 48px rgba(0, 80, 120, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.12); }
-      50% { transform: scale(1.008); filter: brightness(1.04); box-shadow: 0 0 0 1px rgba(102, 245, 255, 0.35), 0 16px 48px rgba(0, 0, 0, 0.58), 0 0 56px rgba(102, 245, 255, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.16); }
+    .nafc-lang-pills {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .nafc-lang-pill {
+      min-height: 44px;
+      padding: 8px 4px;
+      border-radius: 12px;
+      border: 1px solid rgba(180, 195, 215, 0.35);
+      background: linear-gradient(165deg, rgba(0, 22, 48, 0.92), rgba(0, 10, 24, 0.88));
+      color: rgba(230, 240, 250, 0.88);
+      font-family: "Goldman", system-ui, sans-serif;
+      font-weight: 800;
+      font-size: clamp(0.44rem, 1.05vw, 0.54rem);
+      letter-spacing: 0.08em;
+      text-transform: none;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: rgba(212, 175, 55, 0.22);
+      transition: color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
+    }
+    .nafc-lang-pill.is-active {
+      border-color: rgba(212, 175, 55, 0.55);
+      color: #fff8e8;
+      box-shadow: 0 0 16px rgba(212, 175, 55, 0.28);
+    }
+    .nafc-lang-pill.nafc-lang-pill--pulse {
+      color: #66f5ff;
+      border-color: rgba(102, 245, 255, 0.55);
+      box-shadow: 0 0 22px rgba(102, 245, 255, 0.35), 0 0 28px rgba(212, 175, 55, 0.22);
+      transform: translateY(-2px) scale(1.03);
+    }
+    @keyframes nafcSilverRackPulse {
+      0%, 100% {
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.07),
+          0 0 0 2px rgba(175, 190, 210, 0.32),
+          0 0 20px rgba(210, 225, 245, 0.18),
+          0 14px 44px rgba(0, 0, 0, 0.58),
+          inset 0 2px 0 rgba(255, 255, 255, 0.13),
+          inset 0 -3px 10px rgba(0, 0, 0, 0.45);
+      }
+      50% {
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.12),
+          0 0 0 3px rgba(230, 240, 255, 0.55),
+          0 0 36px rgba(230, 240, 255, 0.42),
+          0 18px 50px rgba(0, 0, 0, 0.62),
+          inset 0 2px 0 rgba(255, 255, 255, 0.2),
+          inset 0 -3px 12px rgba(0, 0, 0, 0.5);
+      }
     }
     @keyframes nafcFusionSheen {
       0% { background-position: 0% 50%; }
       100% { background-position: 200% 50%; }
     }
-    @keyframes nafcFusionGoldFlow {
-      0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
+    @keyframes nafcCalligraphyBreathe {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.042); }
+    }
+    @keyframes nafcCalligraphyGoldShimmer {
+      0%, 100% { background-position: 0% 50%; filter: drop-shadow(0 2px 14px rgba(255, 255, 255, 0.16)); }
+      50% { background-position: 100% 50%; filter: drop-shadow(0 3px 22px rgba(212, 175, 55, 0.35)); }
     }
     .header-apex-layer01 .paradigm-apex { order: 5; width: 100%; }
     /* Diligence — explicit interactivity (8R + clusters) */
@@ -1308,8 +1417,8 @@
         padding: 14px 12px;
         min-width: min(168px, 44vw);
       }
-      .nafc-fusion-prism-frame { padding: 12px 12px 14px; clip-path: polygon(4% 0, 96% 0, 100% 50%, 96% 100%, 4% 100%, 0 50%); }
-      .nafc-select.nafc-select--fusion { min-height: 48px; }
+      .nafc-fusion-prism-frame { padding: 12px 12px 14px; border-radius: 18px; }
+      .nafc-lang-pill { min-height: 46px; }
       .nafc-broadcast-panel { padding: 12px 10px 14px; }
       .nafc-transmit-btn { min-height: 50px; padding: 14px 10px; }
       .command-doctrine-feed { font-size: clamp(0.46rem, 2.85vw, 0.56rem); padding: 10px; }
@@ -2018,10 +2127,11 @@
       .header-apex-layer01 .apex-row1 { font-size: clamp(0.62rem, 3.2vw, 0.92rem); }
       .header-apex-layer01 .apex-row2,
       .header-apex-layer01 .apex-row3 { font-size: clamp(0.52rem, 2.6vw, 0.74rem); }
-      .nafc-fusion-prism-v69 { margin-bottom: 12px; }
-      .nafc-fusion-title { font-size: clamp(0.68rem, 3.1vw, 1.05rem); }
-      .nafc-fusion-title-acronym { font-size: clamp(0.95rem, 4.2vw, 1.45rem); letter-spacing: 0.22em; }
-      .nafc-fusion-tagline { margin-bottom: 10px; }
+      .nafc-fusion-prism-v69 { margin-bottom: 10px; }
+      .nafc-fusion-calligraphy { font-size: clamp(0.62rem, 3.05vw, 0.98rem); letter-spacing: 0.16em; }
+      .nafc-letter { font-size: clamp(0.95rem, 4vw, 1.5rem); }
+      .nafc-fusion-tagline { margin-bottom: 8px; }
+      .nafc-lang-pills { gap: 6px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .clock-row { gap: 8px; }
       .clock { width: max(30px, 8vw); height: max(30px, 8vw); }
       .gov-toggle {
@@ -2387,23 +2497,36 @@
         <header class="header header-apex-layer01">
           <p class="apex-row apex-row1" id="apexRowTypewriter" aria-live="polite"><span class="identity-tw apex-identity-deep-cyan" id="identityFullName">Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE</span></p>
           <p class="apex-row apex-row2" id="apexRowRc">Galadiman Ruwa Nigeria Ltd RC 1871418</p>
-          <div class="nafc-fusion-prism-v69" id="nafcSovereignAnchor" aria-labelledby="nafcFusionTitle">
+          <div class="nafc-fusion-prism-v69 nafc-kinetic-v72" id="nafcSovereignAnchor" aria-labelledby="nafcFusionTitle">
             <div class="nafc-fusion-prism-frame">
               <div class="nafc-fusion-prism-sheen" aria-hidden="true"></div>
               <div class="nafc-fusion-prism-body">
                 <h2 class="nafc-fusion-title" id="nafcFusionTitle">
-                  <span class="nafc-fusion-title-kicker">National Alert Fusion Center</span>
-                  <span class="nafc-fusion-title-acronym">NAFC</span>
+                  <span class="nafc-fusion-calligraphy-wrap">
+                    <span class="nafc-fusion-calligraphy">National Alert Fusion Center</span>
+                  </span>
+                  <span class="nafc-fusion-acronym-row" aria-label="NAFC">
+                    <span class="nafc-letter nafc-letter-1">N</span>
+                    <span class="nafc-letter nafc-letter-2">A</span>
+                    <span class="nafc-letter nafc-letter-3">F</span>
+                    <span class="nafc-letter nafc-letter-4">C</span>
+                  </span>
                 </h2>
                 <p class="nafc-fusion-tagline">Sovereign Anchor · Fusion Command</p>
                 <div class="nafc-fusion-lang" role="group" aria-labelledby="nafcFusionLangLabel">
-                  <span id="nafcFusionLangLabel" class="nafc-fusion-lang-heading">Broadcast language</span>
-                  <select id="nafcLangSelect" class="nafc-select nafc-select--fusion" aria-label="NAFC broadcast language">
+                  <span id="nafcFusionLangLabel" class="nafc-fusion-lang-heading">Sovereign linguistics</span>
+                  <select id="nafcLangSelect" class="nafc-lang-select-sr" aria-label="NAFC broadcast language" tabindex="-1">
                     <option value="hausa">Hausa</option>
                     <option value="yoruba">Yoruba</option>
                     <option value="igbo">Igbo</option>
                     <option value="pidgin">Pidgin</option>
                   </select>
+                  <div class="nafc-lang-pills" role="group" aria-label="Broadcast language">
+                    <button type="button" class="nafc-lang-pill is-active" data-lang="hausa" aria-pressed="true">Hausa</button>
+                    <button type="button" class="nafc-lang-pill" data-lang="yoruba" aria-pressed="false">Yoruba</button>
+                    <button type="button" class="nafc-lang-pill" data-lang="igbo" aria-pressed="false">Igbo</button>
+                    <button type="button" class="nafc-lang-pill" data-lang="pidgin" aria-pressed="false">Pidgin</button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -2910,23 +3033,34 @@
     }, tickMs);
   }
   prismBoxes.forEach((box) => {
+    let touchGate = false;
     function highlightOnly() {
       prismBoxes.forEach((b) => b.classList.remove("active"));
       box.classList.add("active");
       if (definitionEl) definitionEl.textContent = box.dataset.definition || "";
     }
+    function activateDoctrine() {
+      highlightOnly();
+      streamDoctrineTypewriter(box.dataset.definition || "");
+    }
     box.addEventListener("mouseenter", highlightOnly);
     box.addEventListener("focus", highlightOnly);
     box.addEventListener("click", function (e) {
+      if (touchGate) return;
       e.preventDefault();
-      highlightOnly();
-      streamDoctrineTypewriter(box.dataset.definition || "");
+      activateDoctrine();
+    });
+    box.addEventListener("pointerup", function (e) {
+      if (e.pointerType !== "touch" && e.pointerType !== "pen") return;
+      touchGate = true;
+      e.preventDefault();
+      activateDoctrine();
+      window.setTimeout(function () { touchGate = false; }, 450);
     });
     box.addEventListener("keydown", function (e) {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
-        highlightOnly();
-        streamDoctrineTypewriter(box.dataset.definition || "");
+        activateDoctrine();
       }
     });
   });
@@ -2988,9 +3122,40 @@
       });
     }
     tick();
-    window.setInterval(tick, 2100);
+    window.setInterval(tick, 1650);
   }
   initLatticeSyncIndicesV68();
+  function initNafcLinguisticsPulseV72() {
+    var sel = document.getElementById("nafcLangSelect");
+    var pills = [].slice.call(document.querySelectorAll(".nafc-lang-pill"));
+    if (!sel || !pills.length) return;
+    var pulseIdx = 0;
+    function syncPillsFromSelect() {
+      var v = sel.value || "hausa";
+      pills.forEach(function (p) {
+        var on = (p.getAttribute("data-lang") || "") === v;
+        p.classList.toggle("is-active", on);
+        p.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+    }
+    function rotateOutreachPulse() {
+      pills.forEach(function (p, i) {
+        p.classList.toggle("nafc-lang-pill--pulse", i === pulseIdx);
+      });
+      pulseIdx = (pulseIdx + 1) % pills.length;
+    }
+    syncPillsFromSelect();
+    rotateOutreachPulse();
+    window.setInterval(rotateOutreachPulse, 5000);
+    pills.forEach(function (p) {
+      p.addEventListener("click", function () {
+        var lang = p.getAttribute("data-lang") || "hausa";
+        sel.value = lang;
+        syncPillsFromSelect();
+      });
+    });
+  }
+  initNafcLinguisticsPulseV72();
 
   function stateUsageFill(name) {
     const d3 = window.d3;
@@ -4127,6 +4292,11 @@
         b.setAttribute("aria-pressed", on ? "true" : "false");
       });
       if (syncFn) syncFn();
+      window.queueMicrotask(function () {
+        if (typeof window.__GCSLC_CLUSTER_SYNC__ === "function") window.__GCSLC_CLUSTER_SYNC__();
+        if (typeof window.renderApiCatalogAgencyMenu === "function") window.renderApiCatalogAgencyMenu();
+        if (typeof window.syncNofrMmTickerVisibilityV66 === "function") window.syncNofrMmTickerVisibilityV66();
+      });
     });
     if (syncFn) syncFn();
   }
