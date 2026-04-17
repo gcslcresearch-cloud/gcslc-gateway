@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#001a33" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
-  <title>GCSLC — Sovereign Total Matrix V72 · NAFC Kinetic Supremacy</title>
+  <title>GCSLC — Sovereign Total Matrix V75 · NAFC Kinetic Supremacy</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@500;600;700&family=Goldman:wght@400;700&display=swap" rel="stylesheet" />
@@ -427,7 +427,7 @@
       animation: none;
     }
     .header-apex-layer01 .apex-row2 {
-      order: 2;
+      order: 3;
       margin: 0 0 8px;
       max-width: min(1100px, 96vw);
       font-size: clamp(0.54rem, 1.45vw, 0.8rem);
@@ -449,14 +449,15 @@
       text-align: center;
       color: #D4AF37;
     }
-    /* V69–V72 — NAFC Sovereign Anchor (identity only; map + 8R untouched) */
+    /* V69–V75 — NAFC Sovereign Anchor (identity only; map + 8R untouched) */
     .header-apex-layer01 .nafc-fusion-prism-v69 {
-      order: 3;
+      order: 2;
       width: 100%;
       max-width: min(1100px, 96vw);
       margin: 0 auto 12px;
       position: relative;
-      z-index: 8;
+      z-index: 10;
+      isolation: isolate;
     }
     .nafc-fusion-prism-frame {
       position: relative;
@@ -653,6 +654,19 @@
       border-color: rgba(102, 245, 255, 0.55);
       box-shadow: 0 0 22px rgba(102, 245, 255, 0.35), 0 0 28px rgba(212, 175, 55, 0.22);
       transform: translateY(-2px) scale(1.03);
+      animation: nafcLangPop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .nafc-lang-pill.nafc-lang-pill--pulse-gold {
+      color: #fff4d2;
+      border-color: rgba(212, 175, 55, 0.65);
+      box-shadow: 0 0 26px rgba(212, 175, 55, 0.45), 0 0 32px rgba(102, 245, 255, 0.18);
+      transform: translateY(-3px) scale(1.05);
+      animation: nafcLangPop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes nafcLangPop {
+      0% { transform: translateY(0) scale(1); }
+      60% { transform: translateY(-4px) scale(1.08); }
+      100% { transform: translateY(-2px) scale(1.03); }
     }
     @keyframes nafcSilverRackPulse {
       0%, 100% {
@@ -1371,6 +1385,42 @@
       touch-action: manipulation;
     }
     #nfVelocityChart svg { display: block; max-width: 100%; height: auto; }
+    /* V64 — CIN / CIEN dual mode (top-right; FAB stacked below) */
+    .cin-cien-toggle-bar {
+      position: fixed;
+      top: max(8px, env(safe-area-inset-top));
+      right: max(8px, env(safe-area-inset-right));
+      z-index: 131;
+      display: flex;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(0, 229, 255, 0.38);
+      background: linear-gradient(180deg, rgba(0, 31, 63, 0.96), rgba(0, 14, 32, 0.94));
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45), 0 0 22px rgba(0, 229, 255, 0.12);
+      touch-action: manipulation;
+    }
+    .cin-cien-btn {
+      margin: 0;
+      padding: 10px 12px;
+      min-width: 56px;
+      min-height: 40px;
+      border: 0;
+      border-right: 1px solid rgba(102, 245, 255, 0.14);
+      background: transparent;
+      color: #bff4ff;
+      font-family: inherit;
+      font-weight: 900;
+      font-size: clamp(0.48rem, 1.2vw, 0.58rem);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .cin-cien-btn:last-child { border-right: 0; }
+    .cin-cien-btn.is-active {
+      color: #fff8e8;
+      background: linear-gradient(180deg, rgba(212, 175, 55, 0.22), rgba(0, 26, 52, 0.55));
+      text-shadow: 0 0 12px rgba(212, 175, 55, 0.45);
+    }
     .advisory-fab.advisory-portal-v68 {
       background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(0, 18, 40, 0.96));
       border-color: rgba(212, 175, 55, 0.72);
@@ -1378,7 +1428,7 @@
     }
     .advisory-fab {
       position: fixed;
-      top: max(10px, env(safe-area-inset-top));
+      top: calc(max(10px, env(safe-area-inset-top)) + 48px);
       right: max(10px, env(safe-area-inset-right));
       z-index: 130;
       min-height: 48px;
@@ -2127,7 +2177,17 @@
       .header-apex-layer01 .apex-row1 { font-size: clamp(0.62rem, 3.2vw, 0.92rem); }
       .header-apex-layer01 .apex-row2,
       .header-apex-layer01 .apex-row3 { font-size: clamp(0.52rem, 2.6vw, 0.74rem); }
-      .nafc-fusion-prism-v69 { margin-bottom: 10px; }
+      .nafc-fusion-prism-v69 { margin-bottom: 8px; max-width: 100%; }
+      .nafc-kinetic-v75 .nafc-fusion-prism-frame {
+        padding: 10px 10px 12px;
+        border-radius: 16px;
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.05),
+          0 0 0 2px rgba(160, 175, 195, 0.24),
+          0 0 20px rgba(200, 215, 235, 0.26),
+          0 10px 32px rgba(0, 0, 0, 0.5),
+          inset 0 2px 0 rgba(255, 255, 255, 0.12);
+      }
       .nafc-fusion-calligraphy { font-size: clamp(0.62rem, 3.05vw, 0.98rem); letter-spacing: 0.16em; }
       .nafc-letter { font-size: clamp(0.95rem, 4vw, 1.5rem); }
       .nafc-fusion-tagline { margin-bottom: 8px; }
@@ -2167,11 +2227,58 @@
     .kaduna-rhgi-block {
       margin-top: 10px;
       padding: 10px;
-      border-radius: 12px;
-      border: 1px solid rgba(102, 245, 255, 0.16);
-      background: rgba(0, 26, 51, 0.55);
+      border-radius: 14px;
+      border: 1px solid rgba(0, 229, 255, 0.35);
+      background: linear-gradient(180deg, #001f3f 0%, #001428 52%, #000814 100%);
+      box-shadow:
+        inset 0 0 0 1px rgba(212, 175, 55, 0.12),
+        inset 0 0 48px rgba(0, 40, 90, 0.35),
+        0 12px 32px rgba(0, 0, 0, 0.35);
     }
-    .kaduna-rhgi-block .diag-h { margin-bottom: 8px; }
+    .kaduna-rhgi-block .diag-h { margin-bottom: 8px; color: #7ecbff; text-shadow: 0 0 18px rgba(0, 229, 255, 0.25); }
+    .rhgi-presidential-ticker {
+      margin: 0 0 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(0, 229, 255, 0.22);
+      background: rgba(0, 12, 28, 0.55);
+      overflow: hidden;
+    }
+    .rhgi-presidential-ticker-head {
+      padding: 6px 8px;
+      font-size: clamp(0.44rem, 1.05vw, 0.52rem);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-align: center;
+      color: #7ecbff;
+      border-bottom: 1px solid rgba(102, 245, 255, 0.12);
+      background: linear-gradient(90deg, rgba(0, 31, 63, 0.9), rgba(0, 18, 40, 0.75), rgba(0, 31, 63, 0.9));
+    }
+    .rhgi-presidential-viewport {
+      position: relative;
+      height: min(168px, 34vh);
+      overflow: hidden;
+      mask-image: linear-gradient(180deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
+    }
+    .rhgi-presidential-rail {
+      will-change: transform;
+      animation: rhgiPresidentialScroll 95s linear infinite;
+    }
+    .rhgi-presidential-line {
+      padding: 6px 10px;
+      font-size: clamp(0.46rem, 1.08vw, 0.54rem);
+      line-height: 1.35;
+      color: #eaf8ff;
+      border-bottom: 1px solid rgba(102, 245, 255, 0.06);
+      text-align: left;
+    }
+    .rhgi-presidential-line strong {
+      color: #f0d78c;
+      font-weight: 800;
+    }
+    @keyframes rhgiPresidentialScroll {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-50%); }
+    }
     .kaduna-rhgi-scroll {
       max-height: min(220px, 42vh);
       overflow-y: auto;
@@ -2225,6 +2332,17 @@
       white-space: pre-wrap;
       word-break: break-word;
       min-height: 7.5em;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    .rhgi-terminal-readout.rhgi-terminal--pulse {
+      border-color: rgba(102, 245, 255, 0.55);
+      box-shadow: inset 0 0 32px rgba(102, 245, 255, 0.18), 0 0 22px rgba(212, 175, 55, 0.22);
+      animation: rhgiTerminalAuditPulse 0.55s ease-out;
+    }
+    @keyframes rhgiTerminalAuditPulse {
+      0% { filter: brightness(1); }
+      45% { filter: brightness(1.12); }
+      100% { filter: brightness(1); }
     }
     .cin-ticker-block {
       margin-top: 12px;
@@ -2280,6 +2398,39 @@
       border: 1px solid rgba(212, 175, 55, 0.22);
       background: radial-gradient(120% 90% at 50% 20%, rgba(102, 245, 255, 0.08), rgba(0, 18, 40, 0.92));
       overflow: hidden;
+    }
+    .social-lattice-widget.social-lattice-widget--v64-shimmer {
+      position: relative;
+      animation: socialLatticeFramePulse 4.2s ease-in-out infinite;
+      box-shadow: 0 0 0 1px rgba(102, 245, 255, 0.12), 0 0 28px rgba(212, 175, 55, 0.15);
+    }
+    .social-lattice-widget.social-lattice-widget--v64-shimmer::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      background: linear-gradient(118deg, transparent 30%, rgba(255, 255, 255, 0.06) 48%, rgba(212, 175, 55, 0.12) 52%, transparent 70%);
+      background-size: 200% 100%;
+      animation: latticeShimmerSweep 5s linear infinite;
+      mix-blend-mode: screen;
+      opacity: 0.55;
+    }
+    @keyframes socialLatticeFramePulse {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.06); }
+    }
+    @keyframes latticeShimmerSweep {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+    .social-lattice-widget .lattice-sync-row {
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .social-lattice-widget .lattice-sync-row:hover,
+    .social-lattice-widget .lattice-sync-row:focus-visible {
+      background: rgba(0, 31, 63, 0.45);
+      transform: translateX(2px);
     }
     .social-lattice-widget h3 {
       margin: 0 0 8px;
@@ -2444,6 +2595,10 @@
 </head>
 <body>
   <div class="gov-backdrop" id="govBackdrop" aria-hidden="true"></div>
+  <div class="cin-cien-toggle-bar" id="cinCienToggleBar" role="group" aria-label="Citizens Intelligence mode">
+    <button type="button" class="cin-cien-btn is-active" id="cinModeBtn" data-mode="CIN" aria-pressed="true">CIN</button>
+    <button type="button" class="cin-cien-btn" id="cienModeBtn" data-mode="CIEN" aria-pressed="false">CIEN</button>
+  </div>
   <a class="advisory-fab advisory-portal-v68" id="advisoryFab" href="https://galadimanruwacenter.org" target="_blank" rel="noopener noreferrer">SOVEREIGN ADVISORY PORTAL</a>
   <button type="button" class="gov-toggle" id="govToggle" aria-controls="governanceSlide" aria-expanded="false">GOVERNANCE</button>
   <aside class="governance-slide" id="governanceSlide" aria-label="Governance and legal anchors">
@@ -2486,7 +2641,13 @@
             </div>
           </div>
           <div class="diag-block kaduna-rhgi-block" aria-label="RHGI — Kaduna LGA drill-down">
-            <h3 class="diag-h">RHGI · Kaduna (23 LGAs)</h3>
+            <h3 class="diag-h">RHGI · Kaduna Master Sync</h3>
+            <div class="rhgi-presidential-ticker" aria-label="Sovereign Lattice live feed">
+              <div class="rhgi-presidential-ticker-head">Live update · kaduna_master_payload.csv + lattice</div>
+              <div class="rhgi-presidential-viewport">
+                <div class="rhgi-presidential-rail" id="rhgiPresidentialRail"></div>
+              </div>
+            </div>
             <div class="kaduna-rhgi-scroll" id="kadunaLgaScroll" role="list"></div>
             <pre class="rhgi-terminal-readout" id="kadunaRhgiTerminal" aria-live="polite">&gt;&gt; RHGI PROTOCOL · select an LGA…</pre>
           </div>
@@ -2496,14 +2657,13 @@
       <div class="center-col center-col-primary">
         <header class="header header-apex-layer01">
           <p class="apex-row apex-row1" id="apexRowTypewriter" aria-live="polite"><span class="identity-tw apex-identity-deep-cyan" id="identityFullName">Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE</span></p>
-          <p class="apex-row apex-row2" id="apexRowRc">Galadiman Ruwa Nigeria Ltd RC 1871418</p>
-          <div class="nafc-fusion-prism-v69 nafc-kinetic-v72" id="nafcSovereignAnchor" aria-labelledby="nafcFusionTitle">
+          <div class="nafc-fusion-prism-v69 nafc-kinetic-v75" id="nafcSovereignAnchor" aria-labelledby="nafcFusionTitle">
             <div class="nafc-fusion-prism-frame">
               <div class="nafc-fusion-prism-sheen" aria-hidden="true"></div>
               <div class="nafc-fusion-prism-body">
                 <h2 class="nafc-fusion-title" id="nafcFusionTitle">
                   <span class="nafc-fusion-calligraphy-wrap">
-                    <span class="nafc-fusion-calligraphy">National Alert Fusion Center</span>
+                    <span class="nafc-fusion-calligraphy">NATIONAL ALERT FUSION CENTER</span>
                   </span>
                   <span class="nafc-fusion-acronym-row" aria-label="NAFC">
                     <span class="nafc-letter nafc-letter-1">N</span>
@@ -2531,6 +2691,7 @@
               </div>
             </div>
           </div>
+          <p class="apex-row apex-row2" id="apexRowRc">Galadiman Ruwa Nigeria Ltd RC 1871418</p>
           <p class="apex-row apex-row3" id="apexRowAnchor">Everything is Anchored by the 8R Stealth Paradigm Convergence and its determinants, let’s converge for you to understand and decode.</p>
 
         <section class="paradigm-apex" aria-label="8R Stealth Paradigm determinants">
@@ -2642,14 +2803,14 @@
           <p class="sidebar-chart-sub" id="nfVelocityBridgeCopy">Livestock · Artisans · Micro-Services — scaled by the SIG bridge (36 + FCT).</p>
           <div id="nfVelocityChart"></div>
         </div>
-        <div class="cin-ticker-block" aria-label="Citizens Intelligence Network — 774 LGAs by corridor">
+        <div class="cin-ticker-block" aria-label="Citizens Intelligence Network — four sovereign corridors">
           <p class="cin-ticker-title">CIN — Citizens Intelligence Network</p>
-          <p class="sidebar-chart-sub" style="margin:0 0 8px;text-align:center;">774 LGAs · NW · NE · NC · SW · SE · SS</p>
+          <p class="sidebar-chart-sub" style="margin:0 0 8px;text-align:center;">Northwest · Northeast · North Central · Southwest</p>
           <div class="cin-ticker-viewport" id="cinTickerViewport">
             <div class="cin-ticker-rail" id="cinTickerRail"></div>
           </div>
         </div>
-        <div class="social-lattice-widget" aria-label="Social lattice — informal sector nodes">
+        <div class="social-lattice-widget social-lattice-widget--v64-shimmer" id="socialLatticeWidget" aria-label="Social lattice — informal sector nodes">
           <h3>Social Lattice</h3>
           <svg class="social-lattice-svg" viewBox="0 0 240 130" role="img" aria-label="Unions, Civil Society, and Associations lattice">
             <defs>
@@ -2862,6 +3023,32 @@
     { id: "CIN_M", cluster: "social", title: "Endpoint M — CIN_Regional_Handshake", handshakeName: "CIN_M", endpointCode: "M", lon: 7.52, lat: 9.07, r: 3.95, endpoint: "/v64/cin/CIN_Regional_Handshake", dishTag: "EP M · CIN_Regional_Handshake", subtext: "Citizens Intelligence Network — regional corridor handshake (774 LGA lattice).", cinFlag: true },
     { id: "CIN_N", cluster: "social", title: "Endpoint N — Social_Lattice_Audit", handshakeName: "CIN_N", endpointCode: "N", lon: 6.48, lat: 8.95, r: 3.9, endpoint: "/v64/cin/Social_Lattice_Audit", dishTag: "EP N · Social_Lattice_Audit", subtext: "Social lattice audit — unions, civil society & associations mesh.", cinFlag: true }
   ];
+  window.__GCSLC_INTEL_MODE__ = window.__GCSLC_INTEL_MODE__ || "CIN";
+  window.__GCSLC_CIEN_BATTLE_V64__ = [
+    { id: "PU176K", cluster: "social", title: "176,000 PUs — national attest mesh", handshakeName: "PU_MESH", lon: 7.52, lat: 9.07, r: 4.4, endpoint: "/v64/cien/pu-national-mesh", dishTag: "Battle · PU", subtext: "Polling unit lattice · ward-class attest stream." },
+    { id: "CANV123", cluster: "economic", title: "123,284 Canvasser strength — field lattice", handshakeName: "CANV", lon: 7.44, lat: 9.05, r: 4.35, endpoint: "/v64/cien/canvasser-strength", dishTag: "Battle · Canvasser", subtext: "14 agents / ward baseline · kinetic uplift vectors." },
+    { id: "VNODE1", cluster: "infrastructure", title: "Voter nodes — Sovereign_Lattice1.5M.csv handshake", handshakeName: "VNODE", lon: 7.48, lat: 9.06, r: 4.2, endpoint: "/v64/cien/voter-node-handshake", dishTag: "Battle · Voters", subtext: "Name · LGA nodes pulsed from lattice CSV ingress." },
+    { id: "WARD8806", cluster: "social", title: "8,806 Wards — vertical battle grid", handshakeName: "WARD_GRID", lon: 7.5, lat: 9.04, r: 4.1, endpoint: "/v64/cien/ward-battle-grid", dishTag: "Battle · Wards", subtext: "Ward agents · SIG closure bridge." },
+    { id: "FIELD14", cluster: "security", title: "Field ratio 1:14 — canvasser doctrine", handshakeName: "RATIO14", lon: 7.42, lat: 9.02, r: 4, endpoint: "/v64/cien/ratio-doctrine", dishTag: "Battle · Ratio", subtext: "Doctrine-locked staffing model (sim)." },
+    { id: "AZKPU", cluster: "infrastructure", title: "AZK spine PU clusters — Zaria↔Kano", handshakeName: "AZK_PU", lon: 8.52, lat: 11.99, r: 4.2, endpoint: "/v64/cien/azk-pu-clusters", dishTag: "Battle · AZK", subtext: "Corridor-tied PU density (sim)." },
+    { id: "LGA774", cluster: "social", title: "774 LGA fusion — corridor grouping", handshakeName: "LGA774", lon: 6.5, lat: 8.9, r: 4.15, endpoint: "/v64/cien/lga-fusion", dishTag: "Battle · LGAs", subtext: "NW/NE/NC/SW corridor attestation (sim)." },
+    { id: "NODEINT", cluster: "economic", title: "Node intensity — Kaduna South pulse", handshakeName: "KDS_PULSE", lon: 7.43, lat: 10.52, r: 4, endpoint: "/v64/cien/kaduna-south-pulse", dishTag: "Battle · Pulse", subtext: "High-density lattice band from CSV feed." },
+    { id: "BALLOT1", cluster: "security", title: "Ballot chain sim — PU ↔ Party nodes", handshakeName: "BALLOT", lon: 7.46, lat: 9.08, r: 3.95, endpoint: "/v64/cien/ballot-chain-sim", dishTag: "Battle · Ballot", subtext: "Synthetic chain integrity check (sim)." },
+    { id: "CANV2", cluster: "economic", title: "Canvasser redeploy — swing wards", handshakeName: "CANV2", lon: 8.1, lat: 9.6, r: 3.9, endpoint: "/v64/cien/canvasser-redeploy", dishTag: "Battle · Redeploy", subtext: "Swing-ward uplift queue (sim)." },
+    { id: "OBS1", cluster: "security", title: "Observer mesh — party agents", handshakeName: "OBS", lon: 7.55, lat: 9.1, r: 3.85, endpoint: "/v64/cien/observer-mesh", dishTag: "Battle · Observers", subtext: "Party/civil observers · venue attest (sim)." },
+    { id: "VOTERDUP", cluster: "social", title: "Duplicate voter probe — hash lattice", handshakeName: "VDUP", lon: 6.9, lat: 9.2, r: 3.9, endpoint: "/v64/cien/duplicate-probe", dishTag: "Battle · Dedupe", subtext: "Duplicate identity probe across LGAs (sim)." },
+    { id: "TURNOUT", cluster: "social", title: "Turnout estimator — live corridor", handshakeName: "TURN", lon: 7.4, lat: 9.03, r: 3.95, endpoint: "/v64/cien/turnout-estimator", dishTag: "Battle · Turnout", subtext: "Bayesian turnout estimator (sim)." },
+    { id: "INCID1", cluster: "security", title: "Incident routing — PU escalation", handshakeName: "INCR", lon: 7.5, lat: 9.09, r: 3.9, endpoint: "/v64/cien/incident-routing", dishTag: "Battle · Incidents", subtext: "PU-level incident escalation ladder (sim)." },
+    { id: "RESULT1", cluster: "infrastructure", title: "Results ingest — ward batches", handshakeName: "RES", lon: 7.47, lat: 9.07, r: 3.88, endpoint: "/v64/cien/results-ingest", dishTag: "Battle · Results", subtext: "Ward batch ingest · checksum gate (sim)." },
+    { id: "MEDIA1", cluster: "social", title: "Media nodes — situation room", handshakeName: "MEDIA", lon: 7.45, lat: 9.055, r: 3.85, endpoint: "/v64/cien/media-nodes", dishTag: "Battle · Media", subtext: "Situation room media attest (sim)." },
+    { id: "PARTY1", cluster: "economic", title: "Party canvasser ledger — ward splits", handshakeName: "PARTY", lon: 7.53, lat: 9.065, r: 3.9, endpoint: "/v64/cien/party-ledger", dishTag: "Battle · Party", subtext: "Ward-level canvasser ledger (sim)." },
+    { id: "VOL1", cluster: "social", title: "Volunteer surge — youth nodes", handshakeName: "VOL", lon: 7.49, lat: 9.04, r: 3.82, endpoint: "/v64/cien/volunteer-surge", dishTag: "Battle · Volunteers", subtext: "Youth volunteer surge routing (sim)." },
+    { id: "SMS1", cluster: "infrastructure", title: "SMS blast — turnout nudge", handshakeName: "SMS", lon: 7.51, lat: 9.06, r: 3.8, endpoint: "/v64/cien/sms-turnout", dishTag: "Battle · SMS", subtext: "Termii-class turnout nudge (sim)." },
+    { id: "GEO1", cluster: "security", title: "Geo-fence PU — perimeter lock", handshakeName: "GEO", lon: 7.44, lat: 9.05, r: 3.88, endpoint: "/v64/cien/geo-pu-fence", dishTag: "Battle · Geo", subtext: "Perimeter lock on PU venue (sim)." },
+    { id: "AUDIT1", cluster: "economic", title: "Post-election audit — sample wards", handshakeName: "AUDIT", lon: 7.46, lat: 9.06, r: 3.9, endpoint: "/v64/cien/post-audit", dishTag: "Battle · Audit", subtext: "Sample ward audit queue (sim)." },
+    { id: "CERT1", cluster: "infrastructure", title: "Certificate stream — INEC class", handshakeName: "CERT", lon: 7.48, lat: 9.07, r: 3.87, endpoint: "/v64/cien/certificate-stream", dishTag: "Battle · Certs", subtext: "Result certificate stream verify (sim)." },
+    { id: "NODE2", cluster: "social", title: "Voter node graph — CSV adjacency", handshakeName: "VGRAPH", lon: 7.5, lat: 9.05, r: 3.9, endpoint: "/v64/cien/voter-graph", dishTag: "Battle · Graph", subtext: "Adjacency graph from lattice nodes (sim)." }
+  ];
   const STATE_WARDS = Object.create(null);
   window.__GCSLC_RHGI_SELECTED_LGA = "";
   var KADUNA_LGAS_RHGI = [
@@ -2869,37 +3056,127 @@
     "Kachia", "Kaduna North", "Kaduna South", "Kagarko", "Kajuru", "Kaura", "Kauru",
     "Kubau", "Kudan", "Lere", "Makarfi", "Sabon Gari", "Sanga", "Soba", "Zangon Kataf", "Zaria"
   ];
-  function buildCin774TickerLines() {
-    var zones = {
-      NW: [["Jigawa", 27], ["Kaduna", 23], ["Kano", 44], ["Katsina", 34], ["Kebbi", 21], ["Sokoto", 23], ["Zamfara", 14]],
-      NE: [["Adamawa", 21], ["Bauchi", 20], ["Borno", 27], ["Gombe", 11], ["Taraba", 16], ["Yobe", 17]],
-      NC: [["Benue", 23], ["Kogi", 21], ["Kwara", 16], ["Nasarawa", 13], ["Niger", 25], ["Plateau", 17], ["FCT", 6]],
-      SW: [["Ekiti", 16], ["Lagos", 20], ["Ogun", 20], ["Ondo", 18], ["Osun", 30], ["Oyo", 33]],
-      SE: [["Abia", 17], ["Anambra", 21], ["Ebonyi", 13], ["Enugu", 17], ["Imo", 27]],
-      SS: [["Akwa Ibom", 31], ["Bayelsa", 8], ["Cross River", 18], ["Delta", 25], ["Edo", 18], ["Rivers", 23]]
-    };
+  function buildFourCorridorTickerLinesV64() {
+    var corridors = [
+      { code: "NW", name: "Northwest Corridor", totalLgas: 186, states: [["Jigawa", 27], ["Kaduna", 23], ["Kano", 44], ["Katsina", 34], ["Kebbi", 21], ["Sokoto", 23], ["Zamfara", 14]] },
+      { code: "NE", name: "Northeast Corridor", totalLgas: 112, states: [["Adamawa", 21], ["Bauchi", 20], ["Borno", 27], ["Gombe", 11], ["Taraba", 16], ["Yobe", 17]] },
+      { code: "NC", name: "North Central Corridor", totalLgas: 121, states: [["Benue", 23], ["Kogi", 21], ["Kwara", 16], ["Nasarawa", 13], ["Niger", 25], ["Plateau", 17], ["FCT", 6]] },
+      { code: "SW", name: "Southwest Corridor", totalLgas: 137, states: [["Ekiti", 16], ["Lagos", 20], ["Ogun", 20], ["Ondo", 18], ["Osun", 30], ["Oyo", 33]] }
+    ];
     var out = [];
-    Object.keys(zones).forEach(function (z) {
-      zones[z].forEach(function (pair) {
+    corridors.forEach(function (c) {
+      out.push({ z: c.code, line: c.name + " · " + c.totalLgas + " LGAs · LIVE" });
+      c.states.forEach(function (pair) {
         var sn = pair[0];
         var n = pair[1];
-        for (var i = 1; i <= n; i++) {
-          var zi = i < 10 ? "0" + i : String(i);
-          var zn = n < 10 ? "0" + n : String(n);
-          var lab = sn + " · LGA " + zi + "/" + zn;
-          out.push({ z: z, line: lab });
-        }
+        out.push({ z: c.code, line: sn + " · " + n + " LGAs · corridor attested" });
       });
     });
     return out;
   }
-  function setupRhgiKadunaAndCinV64() {
-    var scroll = document.getElementById("kadunaLgaScroll");
+  function kadunaMiniHash(s) {
+    var h = 0;
+    var str = String(s || "");
+    for (var i = 0; i < str.length; i++) h = ((h << 5) - h) + str.charCodeAt(i) | 0;
+    return Math.abs(h);
+  }
+  function appendRhgiTerminalAuditLine(text) {
     var term = document.getElementById("kadunaRhgiTerminal");
-    var rail = document.getElementById("cinTickerRail");
-    if (!scroll || !term || !rail) return;
+    if (!term) return;
+    var prev = term.textContent || "";
+    var add = String(text || "");
+    term.textContent = prev + (prev && !/\n$/.test(prev) ? "\n" : "") + add;
+    term.classList.add("rhgi-terminal--pulse");
+    window.setTimeout(function () { term.classList.remove("rhgi-terminal--pulse"); }, 520);
+  }
+  function parseKadunaMasterPayloadCsv(text) {
+    var byLga = Object.create(null);
+    var lines = String(text || "").replace(/^\uFEFF/, "").split(/\r?\n/);
+    for (var i = 1; i < lines.length; i++) {
+      var line = lines[i];
+      if (!line || !line.trim()) continue;
+      var parts = line.split(",");
+      if (parts.length < 3) continue;
+      var lga = parts[0].trim();
+      var state = parts[1].trim();
+      var phone = "";
+      var pu = "";
+      if (parts.length >= 4) {
+        phone = parts[2].trim();
+        pu = parts.slice(3).join(",").trim();
+      } else {
+        phone = parts.slice(2).join(",").trim();
+      }
+      if (!lga || !phone) continue;
+      if (!pu) {
+        pu = "PU-SYN-" + String((kadunaMiniHash(lga + "|" + phone) % 90000) + 10000);
+      }
+      if (!byLga[lga]) byLga[lga] = [];
+      byLga[lga].push({ phone: phone, state: state, pu: pu });
+    }
+    var lgas = Object.keys(byLga).sort(function (a, b) { return a.localeCompare(b); });
+    return { byLga: byLga, lgas: lgas };
+  }
+  function streamTextToRhgiTerminal(term, full, msPerChar) {
+    if (!term) return;
+    var txt = String(full || "");
+    if (term._rhgiStreamTimer) {
+      window.clearInterval(term._rhgiStreamTimer);
+      term._rhgiStreamTimer = null;
+    }
+    term.textContent = "";
+    var j = 0;
+    var step = typeof msPerChar === "number" && msPerChar > 0 ? msPerChar : 1.2;
+    term._rhgiStreamTimer = window.setInterval(function () {
+      if (j >= txt.length) {
+        window.clearInterval(term._rhgiStreamTimer);
+        term._rhgiStreamTimer = null;
+        return;
+      }
+      term.textContent += txt.charAt(j);
+      j++;
+    }, step);
+  }
+  function buildKadunaMasterTerminalBlock(lgaName, nodes) {
+    var lines = [
+      ">> KADUNA MASTER SYNC — " + String(lgaName || "").toUpperCase(),
+      "    SOURCE: kaduna_master_payload.csv",
+      "    LIVE PHONE NODES: " + (nodes && nodes.length ? nodes.length : 0)
+    ];
+    if (nodes && nodes.length) {
+      var st0 = nodes[0].state || "—";
+      lines.push("    STATE (ROW 0): " + st0);
+      lines.push("    NODE STREAM:");
+      var cap = Math.min(nodes.length, 56);
+      for (var i = 0; i < cap; i++) {
+        var puLab = nodes[i].pu || "—";
+        lines.push("    " + (i + 1) + ". " + nodes[i].phone + " · PU " + puLab + " · " + (nodes[i].state || ""));
+      }
+      if (nodes.length > cap) {
+        lines.push("    … +" + (nodes.length - cap) + " additional nodes …");
+      }
+    } else {
+      lines.push("    NOTE: No nodes in master payload for this key — fallback sim.");
+    }
+    lines.push("    PULSE: STABLE · NAFC-LINKED");
+    return lines.join("\n");
+  }
+  function populateNafcLgaSelectFromMaster(lgas) {
+    var sel = document.getElementById("nafcLgaSelect");
+    if (!sel || !lgas || !lgas.length) return;
+    var cur = sel.value;
+    sel.innerHTML = "";
+    lgas.forEach(function (name) {
+      var o = document.createElement("option");
+      o.value = name;
+      o.textContent = name;
+      sel.appendChild(o);
+    });
+    if (cur && lgas.indexOf(cur) >= 0) sel.value = cur;
+  }
+  function wireKadunaRhgiLgaButtons(scroll, term, lgaList, byLgaMap) {
     scroll.innerHTML = "";
-    KADUNA_LGAS_RHGI.forEach(function (name) {
+    lgaList.forEach(function (name) {
       var b = document.createElement("button");
       b.type = "button";
       b.className = "kaduna-rhgi-btn";
@@ -2910,19 +3187,101 @@
         scroll.querySelectorAll(".kaduna-rhgi-btn").forEach(function (x) { x.classList.remove("is-active"); });
         b.classList.add("is-active");
         window.__GCSLC_RHGI_SELECTED_LGA = name;
-        var w = 90 + (hashStr("RHGI|" + name) % 160);
-        var pu = 1200 + (hashStr("PU|" + name) % 14800);
-        var ag = Math.max(8, Math.round((w * 14) / 100));
-        term.textContent =
-          ">> RHGI LIVE NODE — KADUNA / " + String(name).toUpperCase() + "\n" +
-          "    WARDS (SIM):     " + w + "\n" +
-          "    PUs (SIM):       " + pu.toLocaleString() + "\n" +
-          "    FIELD MESH:      ~" + ag + " agents (1:14 lattice)\n" +
-          "    PULSE:           STABLE · CIN-READY";
+        var nafcSel = document.getElementById("nafcLgaSelect");
+        if (nafcSel) nafcSel.value = name;
+        var nodes = byLgaMap && byLgaMap[name] ? byLgaMap[name] : null;
+        if (nodes && nodes.length) {
+          streamTextToRhgiTerminal(term, buildKadunaMasterTerminalBlock(name, nodes), 1.15);
+        } else {
+          var w = 90 + (hashStr("RHGI|" + name) % 160);
+          var pu = 1200 + (hashStr("PU|" + name) % 14800);
+          var ag = Math.max(8, Math.round((w * 14) / 100));
+          term.textContent =
+            ">> RHGI LIVE NODE — " + String(name).toUpperCase() + "\n" +
+            "    WARDS (SIM):     " + w + "\n" +
+            "    PUs (SIM):       " + pu.toLocaleString() + "\n" +
+            "    FIELD MESH:      ~" + ag + " agents (1:14 lattice)\n" +
+            "    CSV HANDSHAKE:   Sovereign_Lattice1.5M.csv\n" +
+            "    PULSE:           STABLE · CIN-READY";
+        }
       });
       scroll.appendChild(b);
     });
-    var rows = buildCin774TickerLines();
+  }
+  function escRhgiCell(s) {
+    return String(s || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+  function buildRhgiPresidentialRailHtml(rows) {
+    var html = "";
+    rows.forEach(function (r) {
+      var nm = escRhgiCell(r.name);
+      var lg = escRhgiCell(r.lga);
+      var st = escRhgiCell(r.state);
+      html += '<div class="rhgi-presidential-line"><strong>' + nm + "</strong> · " + lg + " · " + st + "</div>";
+    });
+    return html + html;
+  }
+  function setupRhgiKadunaAndCinV64() {
+    var scroll = document.getElementById("kadunaLgaScroll");
+    var term = document.getElementById("kadunaRhgiTerminal");
+    var rail = document.getElementById("cinTickerRail");
+    var pres = document.getElementById("rhgiPresidentialRail");
+    if (!scroll || !term || !rail) return;
+    function applySovereignLatticePayload(j) {
+      if (pres && j && j.tickerRows && j.tickerRows.length) {
+        pres.innerHTML = buildRhgiPresidentialRailHtml(j.tickerRows);
+      } else if (pres) {
+        var fb = '<div class="rhgi-presidential-line"><strong>RHGI</strong> · awaiting lattice handshake…</div>';
+        pres.innerHTML = fb + fb;
+      }
+    }
+    if (term) term.textContent = ">> KADUNA MASTER SYNC · loading kaduna_master_payload.csv…";
+    fetch("kaduna_master_payload.csv", { cache: "no-store" })
+      .then(function (r) { return r.ok ? r.text() : Promise.reject(new Error("KADUNA_MASTER")); })
+      .then(function (txt) {
+        var parsed = parseKadunaMasterPayloadCsv(txt);
+        window.__GCSLC_KADUNA_MASTER__ = parsed;
+        wireKadunaRhgiLgaButtons(scroll, term, parsed.lgas, parsed.byLga);
+        populateNafcLgaSelectFromMaster(parsed.lgas);
+        if (term && !window.__GCSLC_RHGI_SELECTED_LGA) {
+          term.textContent = ">> KADUNA MASTER SYNC · OK\n>> RHGI PROTOCOL · select an LGA…";
+        }
+      })
+      .catch(function () {
+        wireKadunaRhgiLgaButtons(scroll, term, KADUNA_LGAS_RHGI, null);
+        populateNafcLgaSelectFromMaster(KADUNA_LGAS_RHGI);
+        if (term && !window.__GCSLC_RHGI_SELECTED_LGA) {
+          term.textContent = ">> KADUNA MASTER SYNC · FALLBACK (CSV missing)\n>> RHGI PROTOCOL · select an LGA…";
+        }
+      });
+    fetch("sovereign_lattice_rhgi.json", { cache: "no-store" })
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error("RHGI_JSON")); })
+      .then(applySovereignLatticePayload)
+      .catch(function () { applySovereignLatticePayload(null); });
+    fetch("Sovereign_Lattice1.5M.csv", { cache: "default" })
+      .then(function (r) {
+        window.__GCSLC_CSV_HANDSHAKE__ = { ok: r.ok, status: r.status, source: "Sovereign_Lattice1.5M.csv" };
+        return r.ok ? r.text() : "";
+      })
+      .then(function (txt) {
+        if (!txt) return;
+        var head = txt.split(/\r?\n/).slice(0, 3).join(" | ");
+        if (term && !window.__GCSLC_RHGI_SELECTED_LGA) {
+          var prev = (term.textContent || "").trim();
+          var add =
+            "\n\n>> LATTICE CSV HANDSHAKE — Sovereign_Lattice1.5M.csv\n" +
+            "    PREVIEW: " + head.slice(0, 200) + (head.length > 200 ? "…" : "");
+          term.textContent = (prev ? prev : ">> RHGI PROTOCOL · select an LGA…") + add;
+        }
+      })
+      .catch(function () {
+        window.__GCSLC_CSV_HANDSHAKE__ = { ok: false, source: "Sovereign_Lattice1.5M.csv" };
+      });
+    var rows = buildFourCorridorTickerLinesV64();
     var html = "";
     rows.forEach(function (r) {
       html += '<div class="cin-ticker-line"><span class="cin-cor">' + r.z + "</span>" + r.line + "</div>";
@@ -3042,6 +3401,10 @@
     function activateDoctrine() {
       highlightOnly();
       streamDoctrineTypewriter(box.dataset.definition || "");
+      var prismLabel = "";
+      var sp = box.querySelector("span");
+      if (sp) prismLabel = (sp.textContent || "").trim();
+      appendRhgiTerminalAuditLine(">> 8R TYPEWRITER · " + (prismLabel || "PRISM") + " — doctrine stream live · NAFC-linked");
     }
     box.addEventListener("mouseenter", highlightOnly);
     box.addEventListener("focus", highlightOnly);
@@ -3125,7 +3488,40 @@
     window.setInterval(tick, 1650);
   }
   initLatticeSyncIndicesV68();
-  function initNafcLinguisticsPulseV72() {
+  function wireSocialLatticeKineticV75() {
+    var root = document.getElementById("socialLatticeWidget");
+    if (!root || root.dataset.gcslcLatticeBound === "1") return;
+    root.dataset.gcslcLatticeBound = "1";
+    function pulseLatticeLine(label) {
+      appendRhgiTerminalAuditLine(">> SOCIAL LATTICE · " + label + " — informal mesh triangulated · NAFC pulse");
+    }
+    root.querySelectorAll(".lattice-sync-row").forEach(function (row) {
+      row.style.cursor = "pointer";
+      if (!row.getAttribute("tabindex")) row.setAttribute("tabindex", "0");
+      row.setAttribute("role", "button");
+      row.addEventListener("click", function () {
+        var k = row.querySelector(".lattice-sync-k");
+        pulseLatticeLine(k ? k.textContent.trim() : "LATTICE");
+      });
+      row.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          var k2 = row.querySelector(".lattice-sync-k");
+          pulseLatticeLine(k2 ? k2.textContent.trim() : "LATTICE");
+        }
+      });
+    });
+    root.querySelectorAll(".lattice-node-disk, .lattice-node-label").forEach(function (el) {
+      el.style.cursor = "pointer";
+      el.addEventListener("click", function (e) {
+        e.stopPropagation();
+        var lab = (el.textContent || "").trim() || "NODE";
+        pulseLatticeLine(lab);
+      });
+    });
+  }
+  wireSocialLatticeKineticV75();
+  function initNafcLinguisticsPulseV75() {
     var sel = document.getElementById("nafcLangSelect");
     var pills = [].slice.call(document.querySelectorAll(".nafc-lang-pill"));
     if (!sel || !pills.length) return;
@@ -3139,23 +3535,34 @@
       });
     }
     function rotateOutreachPulse() {
+      var phase = pulseIdx % 2;
       pills.forEach(function (p, i) {
-        p.classList.toggle("nafc-lang-pill--pulse", i === pulseIdx);
+        var on = i === pulseIdx;
+        p.classList.toggle("nafc-lang-pill--pulse", on && phase === 0);
+        p.classList.toggle("nafc-lang-pill--pulse-gold", on && phase === 1);
       });
       pulseIdx = (pulseIdx + 1) % pills.length;
     }
     syncPillsFromSelect();
     rotateOutreachPulse();
     window.setInterval(rotateOutreachPulse, 5000);
+    sel.addEventListener("change", function () {
+      syncPillsFromSelect();
+      pulseNafcLanguageBroadcast(sel.value || "hausa");
+    });
     pills.forEach(function (p) {
       p.addEventListener("click", function () {
         var lang = p.getAttribute("data-lang") || "hausa";
         sel.value = lang;
+        pills.forEach(function (x) {
+          x.classList.remove("nafc-lang-pill--pulse", "nafc-lang-pill--pulse-gold");
+        });
         syncPillsFromSelect();
+        pulseNafcLanguageBroadcast(lang);
       });
     });
   }
-  initNafcLinguisticsPulseV72();
+  initNafcLinguisticsPulseV75();
 
   function stateUsageFill(name) {
     const d3 = window.d3;
@@ -3841,26 +4248,55 @@
     handshakeSimBtn.addEventListener("click", () => { void runGcslcTermiiHandshakeSimulation(); });
   }
   var NAFC_LANG_LINES = {
-    hausa: { label: "HAUSA", line: "Kudin ruwa ya karu..." },
-    yoruba: { label: "YORUBA", line: "Owo omi ti pọ si..." },
-    igbo: { label: "IGBO", line: "Ego mmiri dịkwàrà elu..." },
-    pidgin: { label: "PIDGIN", line: "Water money don increase..." }
+    hausa: { label: "Hausa", line: "Kudin ruwa ya karu..." },
+    yoruba: { label: "Yoruba", line: "Owo omi ti pọ si..." },
+    igbo: { label: "Igbo", line: "Ego mmiri dịkwàrà elu..." },
+    pidgin: { label: "Pidgin", line: "Water money don increase..." }
   };
+  var NAFC_POLICY_DATA = {
+    hausa: "KADUNA FISCAL WATER-PRICE STABILIZATION (TIER-1)",
+    yoruba: "SOUTH-WEST PRICE SIGNAL LOCK (TIER-1)",
+    igbo: "SOUTH-EAST MARKET MESH STABILIZATION (TIER-1)",
+    pidgin: "NATIONAL GRASSROOTS SIGNAL BRIDGE (TIER-1)"
+  };
+  function pulseNafcLanguageBroadcast(langKey) {
+    var lang = langKey || "hausa";
+    var lga = window.__GCSLC_RHGI_SELECTED_LGA || "";
+    var sel = document.getElementById("nafcLgaSelect");
+    if (!lga && sel && sel.value) lga = sel.value;
+    if (!lga) lga = "NATIONAL";
+    var pol = NAFC_POLICY_DATA[lang] || NAFC_POLICY_DATA.hausa;
+    var line = "NAFC ALERT (" + String(lang).toUpperCase() + "): " + pol + " broadcasting to " + lga + " nodes...";
+    appendRhgiTerminalAuditLine(line);
+  }
   function buildNafcFiscalAlertPayload(langKey, lgaName) {
     var L = NAFC_LANG_LINES[langKey] || NAFC_LANG_LINES.hausa;
-    return "NAFC ALERT (" + L.label + "): " + L.line + " [Translation of CBN Policy] · NODE: " + lgaName;
+    var pol = NAFC_POLICY_DATA[langKey] || NAFC_POLICY_DATA.hausa;
+    return "NAFC Alert for " + lgaName + " in " + L.label + " — " + L.line + " · POLICY: " + pol + " [Kaduna Live Sync] …";
   }
   var nafcTransmitBtn = document.getElementById("nafcTransmitFiscal");
   var nafcLangSelect = document.getElementById("nafcLangSelect");
   var nafcLgaSelect = document.getElementById("nafcLgaSelect");
+  if (nafcLgaSelect) {
+    nafcLgaSelect.addEventListener("change", function () {
+      var v = nafcLgaSelect.value || "";
+      if (v) window.__GCSLC_RHGI_SELECTED_LGA = v;
+      var lang = nafcLangSelect && nafcLangSelect.value ? nafcLangSelect.value : "hausa";
+      pulseNafcLanguageBroadcast(lang);
+    });
+  }
   if (nafcTransmitBtn) {
     nafcTransmitBtn.addEventListener("click", function () {
       var lang = nafcLangSelect && nafcLangSelect.value ? nafcLangSelect.value : "hausa";
       var lga = nafcLgaSelect && nafcLgaSelect.value ? nafcLgaSelect.value : "NATIONAL";
+      var L = NAFC_LANG_LINES[lang] || NAFC_LANG_LINES.hausa;
       var payload = buildNafcFiscalAlertPayload(lang, lga);
+      var pulseLine = "NAFC Alert for " + lga + " in " + L.label + " …";
       pulseTermiiHandshakeLane();
       flashTermiiTestLane();
+      appendHandshakeLog("NAFC BROADCAST PULSE (SIM)", pulseLine);
       appendHandshakeLog("NAFC NATIONAL FISCAL ALERT (SIM)", payload);
+      if (typeof pulseNafcLanguageBroadcast === "function") pulseNafcLanguageBroadcast(lang);
     });
   }
 
@@ -3874,7 +4310,8 @@
     return b && b.getAttribute("data-cluster") ? b.getAttribute("data-cluster") : "all";
   }
   function renderApiCatalogAgencyMenu() {
-    const reg = window.__GCSLC_AGENCY_KITCHEN_V66;
+    const intel = window.__GCSLC_INTEL_MODE__ || "CIN";
+    const reg = intel === "CIEN" ? window.__GCSLC_CIEN_BATTLE_V64__ : window.__GCSLC_AGENCY_KITCHEN_V66;
     if (!apiCatalogListEl || !reg || !reg.length) return;
     const mode = getActiveClusterForCatalog();
     const show = reg.filter(function (a) {
@@ -3949,6 +4386,25 @@
   }
   window.renderApiCatalogAgencyMenu = renderApiCatalogAgencyMenu;
   renderApiCatalogAgencyMenu();
+  function initCinCienToggleV64() {
+    var cinB = document.getElementById("cinModeBtn");
+    var cienB = document.getElementById("cienModeBtn");
+    var menuBtn = document.getElementById("apiCatalogMenuBtn");
+    function setMode(m) {
+      window.__GCSLC_INTEL_MODE__ = m;
+      if (cinB && cienB) {
+        cinB.classList.toggle("is-active", m === "CIN");
+        cienB.classList.toggle("is-active", m === "CIEN");
+        cinB.setAttribute("aria-pressed", m === "CIN" ? "true" : "false");
+        cienB.setAttribute("aria-pressed", m === "CIEN" ? "true" : "false");
+      }
+      if (menuBtn) menuBtn.textContent = m === "CIEN" ? "Battle" : "Agencies";
+      if (typeof window.renderApiCatalogAgencyMenu === "function") window.renderApiCatalogAgencyMenu();
+    }
+    if (cinB) cinB.addEventListener("click", function () { setMode("CIN"); });
+    if (cienB) cienB.addEventListener("click", function () { setMode("CIEN"); });
+  }
+  initCinCienToggleV64();
   if (apiCatalogGrab && apiCatalogDrawer) {
     var acDragY0 = 0;
     var acTy = 0;
@@ -4291,6 +4747,10 @@
         b.classList.toggle("is-active", on);
         b.setAttribute("aria-pressed", on ? "true" : "false");
       });
+      const cl = btn.getAttribute("data-cluster") || "";
+      if (typeof appendRhgiTerminalAuditLine === "function") {
+        appendRhgiTerminalAuditLine(">> CLUSTER MATRIX · " + String(cl).toUpperCase() + " — Eagle readiness vector locked · NAFC audit sync");
+      }
       if (syncFn) syncFn();
       window.queueMicrotask(function () {
         if (typeof window.__GCSLC_CLUSTER_SYNC__ === "function") window.__GCSLC_CLUSTER_SYNC__();
