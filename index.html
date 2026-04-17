@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#001a33" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
-  <title>GCSLC — Sovereign Total Matrix V66 · NOFR Fiscal</title>
+  <title>GCSLC — Sovereign Total Matrix V69 · NAFC Fusion Center</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet" />
@@ -439,7 +439,7 @@
       text-shadow: 0 0 12px rgba(0, 131, 143, 0.35);
     }
     .header-apex-layer01 .apex-row3 {
-      order: 3;
+      order: 4;
       margin: 0 0 10px;
       max-width: min(1100px, 96vw);
       font-size: clamp(0.54rem, 1.45vw, 0.8rem);
@@ -449,7 +449,144 @@
       text-align: center;
       color: #D4AF37;
     }
-    .header-apex-layer01 .paradigm-apex { order: 4; width: 100%; }
+    /* V69 — NAFC Sovereign Anchor (identity only; map + 8R untouched) */
+    .header-apex-layer01 .nafc-fusion-prism-v69 {
+      order: 3;
+      width: 100%;
+      max-width: min(1100px, 96vw);
+      margin: 0 auto 14px;
+      position: relative;
+      z-index: 6;
+    }
+    .nafc-fusion-prism-frame {
+      position: relative;
+      isolation: isolate;
+      padding: 14px 16px 16px;
+      border-radius: 14px;
+      clip-path: polygon(6% 0, 94% 0, 100% 50%, 94% 100%, 6% 100%, 0 50%);
+      border: 1px solid rgba(102, 245, 255, 0.28);
+      background:
+        linear-gradient(155deg, rgba(255, 255, 255, 0.07) 0%, transparent 42%),
+        linear-gradient(180deg, #001428 0%, #001a33 38%, #000d1f 100%);
+      box-shadow:
+        0 0 0 1px rgba(212, 175, 55, 0.22),
+        0 12px 40px rgba(0, 0, 0, 0.55),
+        0 0 48px rgba(0, 80, 120, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      animation: nafcFusionPrismPulse 4.2s ease-in-out infinite;
+      overflow: hidden;
+    }
+    .nafc-fusion-prism-sheen {
+      position: absolute;
+      inset: -40% -30%;
+      background: linear-gradient(
+        118deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.06) 38%,
+        rgba(212, 175, 55, 0.18) 50%,
+        rgba(102, 245, 255, 0.12) 62%,
+        transparent 100%
+      );
+      background-size: 220% 100%;
+      animation: nafcFusionSheen 5.5s linear infinite;
+      pointer-events: none;
+      mix-blend-mode: screen;
+      opacity: 0.85;
+    }
+    .nafc-fusion-prism-body {
+      position: relative;
+      z-index: 1;
+    }
+    .nafc-fusion-title {
+      margin: 0 0 6px;
+      padding: 0 4px;
+      font-family: "Goldman", system-ui, sans-serif;
+      font-weight: 700;
+      font-size: clamp(0.78rem, 2.35vw, 1.22rem);
+      letter-spacing: 0.14em;
+      line-height: 1.2;
+      text-transform: uppercase;
+      text-align: center;
+    }
+    .nafc-fusion-title-kicker {
+      display: block;
+      color: rgba(248, 252, 255, 0.96);
+      text-shadow:
+        0 0 18px rgba(255, 255, 255, 0.22),
+        0 0 36px rgba(102, 245, 255, 0.18);
+    }
+    .nafc-fusion-title-acronym {
+      display: block;
+      margin-top: 6px;
+      font-size: clamp(1.05rem, 3.2vw, 1.65rem);
+      letter-spacing: 0.28em;
+      background-image: linear-gradient(
+        105deg,
+        #6a5220 0%,
+        #d4af37 28%,
+        #fff8e6 50%,
+        #d4af37 72%,
+        #6a5220 100%
+      );
+      background-size: 220% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      filter: drop-shadow(0 0 14px rgba(212, 175, 55, 0.45));
+      animation: nafcFusionGoldFlow 5s ease-in-out infinite;
+    }
+    .nafc-fusion-tagline {
+      margin: 0 0 12px;
+      font-size: clamp(0.48rem, 1.25vw, 0.58rem);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      text-align: center;
+      color: rgba(200, 230, 245, 0.82);
+    }
+    .nafc-fusion-lang {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+      max-width: min(420px, 100%);
+      margin: 0 auto;
+    }
+    .nafc-fusion-lang-heading {
+      font-size: clamp(0.46rem, 1.15vw, 0.54rem);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(159, 196, 215, 0.95);
+      text-align: center;
+    }
+    .nafc-select.nafc-select--fusion {
+      min-height: 46px;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      border-color: rgba(212, 175, 55, 0.42);
+      box-shadow: 0 0 18px rgba(102, 245, 255, 0.12);
+    }
+    @keyframes nafcFusionPrismPulse {
+      0%, 100% { transform: scale(1); filter: brightness(1); box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.22), 0 12px 40px rgba(0, 0, 0, 0.55), 0 0 48px rgba(0, 80, 120, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.12); }
+      50% { transform: scale(1.008); filter: brightness(1.04); box-shadow: 0 0 0 1px rgba(102, 245, 255, 0.35), 0 16px 48px rgba(0, 0, 0, 0.58), 0 0 56px rgba(102, 245, 255, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.16); }
+    }
+    @keyframes nafcFusionSheen {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+    @keyframes nafcFusionGoldFlow {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    .header-apex-layer01 .paradigm-apex { order: 5; width: 100%; }
+    /* Diligence — explicit interactivity (8R + clusters) */
+    .header-apex-layer01 .paradigm-apex .prism-box.v8-glass {
+      pointer-events: auto;
+      cursor: pointer;
+    }
+    .sovereign-cluster-toolbar .sovereign-cluster-btn {
+      pointer-events: auto;
+      cursor: pointer;
+    }
     .identity-tw {
       display: inline;
       color: #eaf8ff;
@@ -715,6 +852,70 @@
       text-align: center;
       line-height: 1.35;
     }
+    .nafc-broadcast-panel {
+      margin: 10px 0 12px;
+      padding: 10px 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      background: linear-gradient(165deg, rgba(0, 22, 48, 0.96), rgba(0, 10, 26, 0.92));
+    }
+    .nafc-broadcast-title {
+      font-size: clamp(0.52rem, 1.2vw, 0.62rem);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #f0d78c;
+      font-weight: 900;
+      text-align: center;
+      margin: 0 0 8px;
+    }
+    .nafc-broadcast-hint {
+      margin: 0 0 10px;
+      font-size: 0.48rem;
+      line-height: 1.4;
+      color: #8eb8cc;
+      text-align: center;
+      letter-spacing: 0.04em;
+    }
+    .nafc-field-label {
+      display: block;
+      font-size: 0.48rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #9fc4d7;
+      margin: 6px 0 4px;
+    }
+    .nafc-select {
+      width: 100%;
+      min-height: 44px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(102, 245, 255, 0.28);
+      background: rgba(0, 18, 40, 0.92);
+      color: #eaf8ff;
+      font-family: inherit;
+      font-weight: 800;
+      font-size: clamp(0.54rem, 1.3vw, 0.66rem);
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .nafc-transmit-btn {
+      width: 100%;
+      margin-top: 12px;
+      min-height: 48px;
+      padding: 12px 10px;
+      border-radius: 12px;
+      border: 2px solid rgba(212, 175, 55, 0.55);
+      background: linear-gradient(145deg, rgba(212, 175, 55, 0.22), rgba(0, 26, 52, 0.95));
+      color: #fff8e8;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      font-size: clamp(0.48rem, 1.2vw, 0.58rem);
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: rgba(212, 175, 55, 0.25);
+      box-shadow: 0 0 18px rgba(212, 175, 55, 0.28);
+    }
+    .nafc-transmit-btn:active { transform: scale(0.98); }
     .termii-lane.termii-sa-active .termii-outbound { box-shadow: 0 0 22px rgba(255, 90, 60, 0.55), inset 0 0 20px rgba(255, 60, 40, 0.15); }
     .termii-lane.termii-sa-active .termii-outbound .termii-pulse {
       animation-duration: 0.42s !important;
@@ -869,53 +1070,24 @@
       0%, 100% { filter: saturate(1.05) brightness(1); }
       50% { filter: saturate(1.2) brightness(1.06); }
     }
-    .advisory-bridge {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      margin: 8px 0 12px;
-      width: 100%;
-      padding: 0 4px;
-    }
-    .api-revenue-path {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      width: min(100%, 560px);
-    }
-    .api-path-label {
-      font-size: clamp(0.58rem, 1.45vw, 0.72rem);
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: #c9f6ff;
-      font-weight: 800;
-      text-align: center;
-      line-height: 1.3;
-    }
-    .btn-advisory {
-      display: inline-block;
-      width: 100%;
-      max-width: 560px;
-      padding: 12px 18px;
-      touch-action: manipulation;
-      -webkit-tap-highlight-color: rgba(212, 175, 55, 0.25);
+    .command-doctrine-feed {
+      margin-top: 10px;
+      min-height: 3.4em;
+      padding: 10px 12px;
       border-radius: 10px;
-      border: 2px solid var(--gold);
-      background: var(--surface-unified);
-      color: #fff8e0;
-      font-weight: 800;
-      letter-spacing: 0.06em;
-      text-align: center;
-      text-decoration: none;
-      text-transform: uppercase;
-      font-size: clamp(0.62rem, 1.5vw, 0.78rem);
-      box-shadow: 0 0 18px rgba(212,175,55,0.35);
-      animation: advisoryPulse 2.2s ease-in-out infinite;
+      border: 1px solid rgba(102, 245, 255, 0.24);
+      background: rgba(0, 12, 28, 0.92);
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: clamp(0.5rem, 1.25vw, 0.62rem);
+      line-height: 1.55;
+      color: #bff4ff;
+      letter-spacing: 0.02em;
+      box-shadow: inset 0 0 28px rgba(102, 245, 255, 0.07);
     }
-    .btn-advisory:hover { filter: brightness(1.12); }
+    .command-doctrine-feed.command-feed-typing {
+      border-color: rgba(212, 175, 55, 0.35);
+      text-shadow: 0 0 10px rgba(102, 245, 255, 0.35);
+    }
     .clock-row {
       display: grid;
       grid-template-columns: repeat(6, minmax(48px, 1fr));
@@ -1090,6 +1262,11 @@
       touch-action: manipulation;
     }
     #nfVelocityChart svg { display: block; max-width: 100%; height: auto; }
+    .advisory-fab.advisory-portal-v68 {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(0, 18, 40, 0.96));
+      border-color: rgba(212, 175, 55, 0.72);
+      letter-spacing: 0.09em;
+    }
     .advisory-fab {
       position: fixed;
       top: max(10px, env(safe-area-inset-top));
@@ -1131,6 +1308,12 @@
         padding: 14px 12px;
         min-width: min(168px, 44vw);
       }
+      .nafc-fusion-prism-frame { padding: 12px 12px 14px; clip-path: polygon(4% 0, 96% 0, 100% 50%, 96% 100%, 4% 100%, 0 50%); }
+      .nafc-select.nafc-select--fusion { min-height: 48px; }
+      .nafc-broadcast-panel { padding: 12px 10px 14px; }
+      .nafc-transmit-btn { min-height: 50px; padding: 14px 10px; }
+      .command-doctrine-feed { font-size: clamp(0.46rem, 2.85vw, 0.56rem); padding: 10px; }
+      .sovereign-cluster-btn { min-height: 46px; padding: 12px 6px; }
     }
     .map-wrap {
       position: relative;
@@ -1835,6 +2018,10 @@
       .header-apex-layer01 .apex-row1 { font-size: clamp(0.62rem, 3.2vw, 0.92rem); }
       .header-apex-layer01 .apex-row2,
       .header-apex-layer01 .apex-row3 { font-size: clamp(0.52rem, 2.6vw, 0.74rem); }
+      .nafc-fusion-prism-v69 { margin-bottom: 12px; }
+      .nafc-fusion-title { font-size: clamp(0.68rem, 3.1vw, 1.05rem); }
+      .nafc-fusion-title-acronym { font-size: clamp(0.95rem, 4.2vw, 1.45rem); letter-spacing: 0.22em; }
+      .nafc-fusion-tagline { margin-bottom: 10px; }
       .clock-row { gap: 8px; }
       .clock { width: max(30px, 8vw); height: max(30px, 8vw); }
       .gov-toggle {
@@ -1850,10 +2037,6 @@
       .rhgi-terminal-readout { font-size: clamp(0.46rem, 2.9vw, 0.56rem); }
       .cin-ticker-viewport { height: min(180px, 42vh); }
       .cin-ticker-line { font-size: clamp(0.46rem, 2.8vw, 0.56rem); padding: 8px 8px; }
-    }
-    @keyframes advisoryPulse {
-      0%, 100% { box-shadow: 0 0 12px rgba(212,175,55,0.35); transform: scale(1); }
-      50% { box-shadow: 0 0 26px rgba(212,175,55,0.65); transform: scale(1.02); }
     }
     @keyframes footerTw {
       0% { width: 0; } 35% { width: 100%; } 65% { width: 100%; } 97% { width: 0; } 100% { width: 0; }
@@ -2003,6 +2186,34 @@
       height: auto;
       max-height: min(140px, 32vh);
     }
+    .lattice-sync-indices {
+      margin-top: 8px;
+      padding: 8px 6px;
+      border-radius: 8px;
+      background: rgba(0, 12, 28, 0.72);
+      border: 1px solid rgba(102, 245, 255, 0.14);
+      font-family: ui-monospace, Menlo, monospace;
+      font-size: clamp(0.48rem, 1.15vw, 0.56rem);
+    }
+    .lattice-sync-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 4px 0;
+      border-bottom: 1px solid rgba(102, 245, 255, 0.07);
+    }
+    .lattice-sync-row:last-child { border-bottom: 0; }
+    .lattice-sync-k { color: #9fc4d7; flex: 1 1 auto; }
+    .lattice-sync-v {
+      color: #66f5ff;
+      font-weight: 900;
+      min-width: 3.2em;
+      text-align: right;
+      transition: color 0.18s ease;
+    }
+    .lattice-sync-v.is-flicker { color: #f0d78c; }
+    .lattice-sync-h { color: #6a8a9a; font-size: 0.92em; white-space: nowrap; }
     .lattice-edge {
       stroke: rgba(102, 245, 255, 0.35);
       stroke-width: 1.2;
@@ -2123,7 +2334,7 @@
 </head>
 <body>
   <div class="gov-backdrop" id="govBackdrop" aria-hidden="true"></div>
-  <a class="advisory-fab" id="advisoryFab" href="https://galadimanruwacenter.org" target="_blank" rel="noopener noreferrer">ACCESS ADVISORY HUB</a>
+  <a class="advisory-fab advisory-portal-v68" id="advisoryFab" href="https://galadimanruwacenter.org" target="_blank" rel="noopener noreferrer">SOVEREIGN ADVISORY PORTAL</a>
   <button type="button" class="gov-toggle" id="govToggle" aria-controls="governanceSlide" aria-expanded="false">GOVERNANCE</button>
   <aside class="governance-slide" id="governanceSlide" aria-label="Governance and legal anchors">
     <h2>Governance — Legal Anchors</h2>
@@ -2176,6 +2387,27 @@
         <header class="header header-apex-layer01">
           <p class="apex-row apex-row1" id="apexRowTypewriter" aria-live="polite"><span class="identity-tw apex-identity-deep-cyan" id="identityFullName">Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE</span></p>
           <p class="apex-row apex-row2" id="apexRowRc">Galadiman Ruwa Nigeria Ltd RC 1871418</p>
+          <div class="nafc-fusion-prism-v69" id="nafcSovereignAnchor" aria-labelledby="nafcFusionTitle">
+            <div class="nafc-fusion-prism-frame">
+              <div class="nafc-fusion-prism-sheen" aria-hidden="true"></div>
+              <div class="nafc-fusion-prism-body">
+                <h2 class="nafc-fusion-title" id="nafcFusionTitle">
+                  <span class="nafc-fusion-title-kicker">National Alert Fusion Center</span>
+                  <span class="nafc-fusion-title-acronym">NAFC</span>
+                </h2>
+                <p class="nafc-fusion-tagline">Sovereign Anchor · Fusion Command</p>
+                <div class="nafc-fusion-lang" role="group" aria-labelledby="nafcFusionLangLabel">
+                  <span id="nafcFusionLangLabel" class="nafc-fusion-lang-heading">Broadcast language</span>
+                  <select id="nafcLangSelect" class="nafc-select nafc-select--fusion" aria-label="NAFC broadcast language">
+                    <option value="hausa">Hausa</option>
+                    <option value="yoruba">Yoruba</option>
+                    <option value="igbo">Igbo</option>
+                    <option value="pidgin">Pidgin</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
           <p class="apex-row apex-row3" id="apexRowAnchor">Everything is Anchored by the 8R Stealth Paradigm Convergence and its determinants, let’s converge for you to understand and decode.</p>
 
         <section class="paradigm-apex" aria-label="8R Stealth Paradigm determinants">
@@ -2189,6 +2421,7 @@
             <div class="prism-box v8-glass" tabindex="0" data-definition="Re-engineer — redesign systems for resilience, speed, and long-cycle sovereignty under transparent governance."><span>Re-engineer</span></div>
             <div class="prism-box v8-glass" tabindex="0" data-definition="Retain — secure gains, protect institutional memory, and sustain outcomes beyond the tactical moment."><span>Retain</span></div>
           </div>
+          <div id="commandDoctrineFeed" class="command-doctrine-feed" aria-live="polite" role="status">GCSLC COMMAND FEED · 8R doctrine stream idle — select a prism…</div>
         </section>
         </header>
 
@@ -2230,17 +2463,30 @@
           </article>
         </section>
 
-        <div class="advisory-bridge">
-          <div class="api-revenue-path">
-            <span class="api-path-label">GCSLC API Revenue Path</span>
-            <a class="btn-advisory" href="https://galadimanruwacenter.org" target="_blank" rel="noopener noreferrer">Advisory Hub — Cloud Node (mirror route)</a>
-          </div>
-        </div>
-
         <section class="termii-panel-v15" aria-label="Termii gateway">
           <div class="termii-block">
             <div class="termii-label">Termii Gateway — NAFC Secure Channel</div>
             <p class="termii-nafc-note">National Alert Fusion Center (NAFC) · Inbound / Outbound secure lanes</p>
+            <div class="nafc-broadcast-panel" id="nafcBroadcastPanel" aria-label="NAFC anchor LGA and fiscal transmit">
+              <div class="nafc-broadcast-title">NAFC Broadcast</div>
+              <p class="nafc-broadcast-hint">Language control lives in the NAFC Sovereign Anchor above.</p>
+              <label class="nafc-field-label" for="nafcLgaSelect">Anchor LGA</label>
+              <select id="nafcLgaSelect" class="nafc-select">
+                <option value="Dambatta">Dambatta</option>
+                <option value="Soba">Soba</option>
+                <option value="Goronyo">Goronyo</option>
+                <option value="Dekina">Dekina</option>
+                <option value="Zaria">Zaria</option>
+                <option value="Chikun">Chikun</option>
+                <option value="Ikeja">Ikeja</option>
+                <option value="Lagos Island">Lagos Island</option>
+                <option value="Port Harcourt">Port Harcourt</option>
+                <option value="Enugu North">Enugu North</option>
+                <option value="Calabar Municipal">Calabar Municipal</option>
+                <option value="Abaji">Abaji (FCT)</option>
+              </select>
+              <button type="button" class="nafc-transmit-btn" id="nafcTransmitFiscal">TRANSMIT NATIONAL FISCAL ALERT</button>
+            </div>
             <div class="termii-lane" id="termiiLane">
               <div class="termii-track termii-inbound" title="Inbound partnership pulses (Termii)">
                 <span class="track-tag">Inbound</span>
@@ -2301,6 +2547,12 @@
             <text class="lattice-node-label" x="48" y="99" text-anchor="middle">CIVIL</text>
             <text class="lattice-node-label" x="192" y="99" text-anchor="middle">ASSOC</text>
           </svg>
+          <div class="lattice-sync-indices" id="latticeSyncIndices" aria-live="polite">
+            <div class="lattice-sync-row"><span class="lattice-sync-k">Motor Associations</span> <span class="lattice-sync-v" data-lattice-metric="motor">88%</span> <span class="lattice-sync-h">Reach</span></div>
+            <div class="lattice-sync-row"><span class="lattice-sync-k">Artisan Guilds</span> <span class="lattice-sync-v" data-lattice-metric="artisan">76%</span> <span class="lattice-sync-h">Sync</span></div>
+            <div class="lattice-sync-row"><span class="lattice-sync-k">Market Unions</span> <span class="lattice-sync-v" data-lattice-metric="market">91%</span> <span class="lattice-sync-h">Pulse</span></div>
+            <div class="lattice-sync-row"><span class="lattice-sync-k">Civil Nodes</span> <span class="lattice-sync-v" data-lattice-metric="civil">82%</span> <span class="lattice-sync-h">Lattice</span></div>
+          </div>
           <p class="sidebar-chart-sub" style="margin:8px 0 0;text-align:center;">Informal sector mesh · unions ↔ civil society ↔ associations</p>
         </div>
       </aside>
@@ -2632,19 +2884,51 @@
 
   const prismBoxes = [].slice.call(document.querySelectorAll(".prism-box"));
   const definitionEl = document.getElementById("prismDefinition");
-  function typeDefinitionSlow(text) {
-    if (!definitionEl) return;
-    definitionEl.textContent = text || "";
+  const commandFeedEl = document.getElementById("commandDoctrineFeed");
+  let doctrineStreamTimer = null;
+  function streamDoctrineTypewriter(fullText) {
+    const text = fullText || "";
+    if (definitionEl) definitionEl.textContent = text;
+    if (doctrineStreamTimer) {
+      window.clearInterval(doctrineStreamTimer);
+      doctrineStreamTimer = null;
+    }
+    if (!commandFeedEl) return;
+    commandFeedEl.classList.add("command-feed-typing");
+    commandFeedEl.textContent = "";
+    var i = 0;
+    var tickMs = 34;
+    doctrineStreamTimer = window.setInterval(function () {
+      if (i >= text.length) {
+        window.clearInterval(doctrineStreamTimer);
+        doctrineStreamTimer = null;
+        commandFeedEl.classList.remove("command-feed-typing");
+        return;
+      }
+      commandFeedEl.textContent += text.charAt(i);
+      i++;
+    }, tickMs);
   }
   prismBoxes.forEach((box) => {
-    function activate() {
+    function highlightOnly() {
       prismBoxes.forEach((b) => b.classList.remove("active"));
       box.classList.add("active");
-      typeDefinitionSlow(box.dataset.definition || "");
+      if (definitionEl) definitionEl.textContent = box.dataset.definition || "";
     }
-    box.addEventListener("mouseenter", activate);
-    box.addEventListener("focus", activate);
-    box.addEventListener("touchstart", activate, { passive: true });
+    box.addEventListener("mouseenter", highlightOnly);
+    box.addEventListener("focus", highlightOnly);
+    box.addEventListener("click", function (e) {
+      e.preventDefault();
+      highlightOnly();
+      streamDoctrineTypewriter(box.dataset.definition || "");
+    });
+    box.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        highlightOnly();
+        streamDoctrineTypewriter(box.dataset.definition || "");
+      }
+    });
   });
 
   function hashStr(s) {
@@ -2680,6 +2964,33 @@
   setupRhgiKadunaAndCinV64();
   initNofrMmTickerV66();
   syncNofrMmTickerVisibilityV66();
+  function initLatticeSyncIndicesV68() {
+    var root = document.getElementById("latticeSyncIndices");
+    if (!root) return;
+    var metrics = root.querySelectorAll("[data-lattice-metric]");
+    function parseBase(el) {
+      var b = el.getAttribute("data-base");
+      if (b != null && b !== "") return parseInt(b, 10);
+      var m = (el.textContent || "").match(/(\d+)/);
+      var v = m ? parseInt(m[1], 10) : 80;
+      el.setAttribute("data-base", String(v));
+      return v;
+    }
+    metrics.forEach(function (el) { parseBase(el); });
+    function tick() {
+      metrics.forEach(function (el) {
+        var base = parseInt(el.getAttribute("data-base") || "80", 10);
+        var jitter = (Math.random() * 7 | 0) - 3;
+        var v = Math.max(62, Math.min(99, base + jitter));
+        el.textContent = v + "%";
+        el.classList.add("is-flicker");
+        window.setTimeout(function () { el.classList.remove("is-flicker"); }, 180);
+      });
+    }
+    tick();
+    window.setInterval(tick, 2100);
+  }
+  initLatticeSyncIndicesV68();
 
   function stateUsageFill(name) {
     const d3 = window.d3;
@@ -3364,6 +3675,29 @@
   if (handshakeSimBtn) {
     handshakeSimBtn.addEventListener("click", () => { void runGcslcTermiiHandshakeSimulation(); });
   }
+  var NAFC_LANG_LINES = {
+    hausa: { label: "HAUSA", line: "Kudin ruwa ya karu..." },
+    yoruba: { label: "YORUBA", line: "Owo omi ti pọ si..." },
+    igbo: { label: "IGBO", line: "Ego mmiri dịkwàrà elu..." },
+    pidgin: { label: "PIDGIN", line: "Water money don increase..." }
+  };
+  function buildNafcFiscalAlertPayload(langKey, lgaName) {
+    var L = NAFC_LANG_LINES[langKey] || NAFC_LANG_LINES.hausa;
+    return "NAFC ALERT (" + L.label + "): " + L.line + " [Translation of CBN Policy] · NODE: " + lgaName;
+  }
+  var nafcTransmitBtn = document.getElementById("nafcTransmitFiscal");
+  var nafcLangSelect = document.getElementById("nafcLangSelect");
+  var nafcLgaSelect = document.getElementById("nafcLgaSelect");
+  if (nafcTransmitBtn) {
+    nafcTransmitBtn.addEventListener("click", function () {
+      var lang = nafcLangSelect && nafcLangSelect.value ? nafcLangSelect.value : "hausa";
+      var lga = nafcLgaSelect && nafcLgaSelect.value ? nafcLgaSelect.value : "NATIONAL";
+      var payload = buildNafcFiscalAlertPayload(lang, lga);
+      pulseTermiiHandshakeLane();
+      flashTermiiTestLane();
+      appendHandshakeLog("NAFC NATIONAL FISCAL ALERT (SIM)", payload);
+    });
+  }
 
   const apiCatalogDrawer = document.getElementById("apiCatalogDrawer");
   const apiCatalogBackdrop = document.getElementById("apiCatalogBackdrop");
@@ -3429,12 +3763,6 @@
   if (apiCatalogBackdrop) {
     apiCatalogBackdrop.addEventListener("click", () => setApiCatalogOpen(false));
   }
-  document.addEventListener("click", function (e) {
-    if (e.target && e.target.closest && e.target.closest(".sovereign-cluster-btn")) {
-      window.requestAnimationFrame(renderApiCatalogAgencyMenu);
-      window.requestAnimationFrame(syncNofrMmTickerVisibilityV66);
-    }
-  }, true);
   if (apiCatalogListEl) {
     apiCatalogListEl.addEventListener("click", function (e) {
       const btn = e.target && e.target.closest && e.target.closest(".api-catalog-endpoint");
