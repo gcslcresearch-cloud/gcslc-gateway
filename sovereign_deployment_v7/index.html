@@ -1131,8 +1131,8 @@
       animation: clockMetalShimmer 7s ease-in-out infinite, clockMetalZoom 4.6s ease-in-out infinite;
     }
     @keyframes clockMetalShimmer {
-      0%, 100% { filter: brightness(1) saturate(1.05); border-color: rgba(102, 245, 255, 0.28); }
-      50% { filter: brightness(1.1) saturate(1.18); border-color: rgba(166, 251, 255, 0.55); }
+      0%, 100% { filter: brightness(1) saturate(1.05); border-color: rgba(212, 175, 55, 0.36); box-shadow: inset 0 0 10px rgba(212,175,55,0.18), 0 0 9px rgba(212,175,55,0.22); }
+      50% { filter: brightness(1.12) saturate(1.2); border-color: rgba(255, 226, 145, 0.72); box-shadow: inset 0 0 14px rgba(212,175,55,0.28), 0 0 16px rgba(212,175,55,0.42); }
     }
     .clock-prism-frame { animation: clockPrismPulse 2.4s ease-in-out infinite; }
     .clock-prism-frame:hover { transform: scale(1.08); z-index: 3; box-shadow: 0 0 18px rgba(102,245,255,0.45); }
@@ -2000,7 +2000,7 @@
       font-size: clamp(1.5rem, 5.2vw, 2.5rem);
       font-weight: 900;
       letter-spacing: 0.24em;
-      color: rgba(212, 175, 55, 0.17);
+      color: rgba(212, 175, 55, 0.20);
       pointer-events: none;
       z-index: 0;
       white-space: nowrap;
@@ -2110,7 +2110,7 @@
   </div>
 
   <div class="gov-backdrop" id="govBackdrop" aria-hidden="true"></div>
-  <div class="bridge-header">DEPARTURE TO ADVISORY HUB: <a href="https://gcslc-gateway.vercel.app/advisory.html" target="_blank" rel="noopener noreferrer">[CLOUD LINK]</a></div>
+  <div class="bridge-header">DEPARTURE TO ADVISORY HUB: <a href="https://gcslc-gateway.vercel.app/advisory.html" target="_blank" rel="noopener noreferrer">[CLOUD LINK · SOVEREIGN MIRROR]</a></div>
   <a class="advisory-fab" id="advisoryFab" href="https://gcslc-gateway.vercel.app/advisory.html" target="_blank" rel="noopener noreferrer">ACCESS ADVISORY HUB</a>
   <button type="button" class="vision-toggle" id="visionToggle" aria-controls="visionSlide" aria-expanded="false">VISION</button>
   <button type="button" class="gov-toggle" id="govToggle" aria-controls="governanceSlide" aria-expanded="false">GOVERNANCE</button>
@@ -2200,7 +2200,7 @@
         <header class="header header-apex-layer01">
           <p class="apex-row apex-row1" id="apexRowTypewriter" aria-live="polite"><span class="identity-tw apex-identity-deep-cyan" id="identityFullName">Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE</span></p>
           <p class="apex-row apex-row-nodes" id="apexRowNodes">Lagos, Rivers &amp; Diaspora Nodes Active</p>
-          <p class="apex-row apex-row2" id="apexRowRc">RC 1871418</p>
+          <p class="apex-row apex-row2" id="apexRowRc">RC 187 1418</p>
           <p class="apex-row apex-row3" id="apexRowAnchor">Everything is Anchored by the 8R Stealth Paradigm Convergence and its determinants, let’s converge for you to understand and decode.</p>
 
         <section class="paradigm-apex" aria-label="8R Stealth Paradigm determinants">
@@ -2224,16 +2224,18 @@
             <h2 class="map-title">Eagle Map — Sovereign Lattice</h2>
             <p class="map-kinetic-caption"><strong>AZK</strong> corridor · Abuja–Zaria–Kano · ward lattice to command node</p>
             <div class="map-layer-toggles" role="toolbar" aria-label="Institutional overlay toggles">
-              <label class="layer-toggle"><input type="checkbox" id="layerMil" checked data-layer="mil" /> Military / Paramilitary</label>
-              <label class="layer-toggle"><input type="checkbox" id="layerNysc" checked data-layer="nysc" /> NYSC</label>
-              <label class="layer-toggle"><input type="checkbox" id="layerJamb" checked data-layer="jamb" /> JAMB</label>
+              <label class="layer-toggle"><input type="checkbox" id="layerSmedan" checked data-layer="smedan" /> SMEDAN Overlay</label>
+              <label class="layer-toggle"><input type="checkbox" id="layerItf" checked data-layer="itf" /> ITF Training Overlay</label>
+              <label class="layer-toggle"><input type="checkbox" id="layerNema" checked data-layer="nema" /> NEMA Resilience Overlay</label>
+              <label class="layer-toggle"><input type="checkbox" id="layerWorks" checked data-layer="works" /> Ministry of Works Overlay</label>
+              <label class="layer-toggle"><input type="checkbox" id="layerBlueEconomy" checked data-layer="blue" /> Blue Economy Ministry Overlay</label>
               <label class="layer-toggle"><input type="checkbox" id="layerCngInfra" checked data-layer="cng" /> CNG Infrastructure Density</label>
               <label class="layer-toggle"><input type="checkbox" id="layerNsipSocial" checked data-layer="nsip" /> Social Investment Density</label>
             </div>
             <div class="grassroots-ribbon" id="grassrootsRibbon">
               <strong>Grassroots Math LIVE:</strong> <span id="wardStat">8,806</span> Wards · <strong id="fieldAgentsStat">123,284</strong> Field Agents · <span id="puStat">176,000</span> PUs
             </div>
-            <p id="prismDefinition" class="sr-only-def" aria-live="polite"></p>
+            <div class="definition-panel" id="definitionPanel"><p class="definition-title">8R Live Definition</p><p id="prismDefinition" class="definition-text" aria-live="polite"></p></div>
             <svg id="mapSvg" viewBox="0 0 760 680" role="img" aria-label="Nigeria map with grassroots heat and corridor"></svg>
             <div id="kadunaGmapHost" class="kaduna-gmap-host" data-triple-cloud="kaduna-lga" hidden></div>
           </article>
@@ -2422,7 +2424,7 @@
     <div class="footer-typewriter footer-typewriter--gold-shimmer" id="footerTw" title="GCSLC">
       <span class="g">HANDSHAKE //</span>
       Phone <span class="footer-node-metallic"><strong>+234 703 913 9439</strong> | <strong>+234 809 911 1515</strong></span>
-      · Email <span class="footer-node-metallic">Info@galadimanruwacenter.org</span> · <span class="footer-node-metallic">gcslc.research@gmail.com</span>
+      · Verified Email <span class="footer-node-metallic">Info@galadimanruwacenter.org</span> · <span class="footer-node-metallic">gcslc.research@gmail.com</span>
       · <strong>Copyright LW15954</strong> · <strong>SCUML RN: 151653884</strong> · Sovereign Total Convergence v33 · OAGF: "Fiscal Transparency Handshake: Active..." · Humanitarian: "NSIP Last-Mile Verification Node: Ready..." · NRS: "Sovereign Tax-Credit Handshake: Active..." · Pi-CNG: "National Napep Palliative Sync: 1:14 Verified..." · 8,806 Wards : 123,284 Field Agents · 176,000 PUs · Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau · <strong>GCSLC PROPRIETARY</strong>
     </div>
   </footer>
@@ -2768,9 +2770,23 @@
 
   const prismBoxes = [].slice.call(document.querySelectorAll(".prism-box"));
   const definitionEl = document.getElementById("prismDefinition");
+  let definitionTimer = null;
   function typeDefinitionSlow(text) {
     if (!definitionEl) return;
-    definitionEl.textContent = text || "";
+    if (definitionTimer) window.clearInterval(definitionTimer);
+    definitionEl.classList.remove("typing-slow");
+    const target = String(text || "");
+    let i = 0;
+    definitionEl.textContent = "";
+    definitionEl.classList.add("typing-slow");
+    definitionTimer = window.setInterval(function () {
+      i += 1;
+      definitionEl.textContent = target.slice(0, i);
+      if (i >= target.length) {
+        window.clearInterval(definitionTimer);
+        definitionTimer = null;
+      }
+    }, 26);
   }
 
   const apexNarrativeEl = document.getElementById("apexRowAnchor");
@@ -2801,6 +2817,10 @@
     box.addEventListener("focus", activate);
     box.addEventListener("touchstart", activate, { passive: true });
   });
+  if (prismBoxes.length) {
+    prismBoxes[0].classList.add("active");
+    typeDefinitionSlow(prismBoxes[0].dataset.definition || "");
+  }
 
   function hashStr(s) {
     let h = 0;
@@ -3391,8 +3411,8 @@
     const metrics = [
       { key: "works", label: "Infrastructure Readiness (Works)", value: profile.works, color: "#f0d78c" },
       { key: "smedan", label: "SME Potential (SMEDAN)", value: profile.smedan, color: "#66f5ff" },
-      { key: "itf", label: "Training Velocity (ITF)", value: profile.itf, color: "#ffd786" },
-      { key: "nema", label: "Safety/Resilience (NEMA)", value: profile.nema, color: "#4dd0e1" }
+      { key: "maritimeGateway", label: "Maritime Gateway Access", value: profile.maritimeGateway, color: "#ffd786" },
+      { key: "blueEconomy", label: "Blue Economy Potential", value: profile.blueEconomy, color: "#4dd0e1" }
     ];
 
     const elW = Math.max(320, root.clientWidth || 420);
@@ -3785,15 +3805,19 @@ window.GCSLC_NAFC_TERMII.from = getWhitelistedSender(window.GCSLC_NAFC_TERMII.fr
   }
 
   function stateOpportunityProfile(stateName) {
-    const seed = hashStr(stateName + "|v34");
+    const seed = hashStr(stateName + "|v40");
     const wave = Date.now() / 1800;
     const works = Math.max(44, Math.min(97, 58 + (seed % 21) + Math.sin(wave + (seed % 7)) * 6));
     const smedan = Math.max(42, Math.min(96, 54 + ((seed >> 2) % 23) + Math.cos(wave * 0.8 + (seed % 11)) * 7));
+    const maritimeGateway = Math.max(45, Math.min(98, 56 + ((seed >> 3) % 20) + Math.sin(wave * 0.86 + (seed % 9)) * 6));
+    const blueEconomy = Math.max(43, Math.min(97, 55 + ((seed >> 5) % 19) + Math.cos(wave * 0.92 + (seed % 10)) * 6));
     const itf = Math.max(40, Math.min(95, 52 + ((seed >> 4) % 19) + Math.sin(wave * 1.05 + (seed % 13)) * 6));
     const nema = Math.max(45, Math.min(98, 57 + ((seed >> 6) % 18) + Math.cos(wave * 0.9 + (seed % 17)) * 6));
     return {
       works: Number(works.toFixed(1)),
       smedan: Number(smedan.toFixed(1)),
+      maritimeGateway: Number(maritimeGateway.toFixed(1)),
+      blueEconomy: Number(blueEconomy.toFixed(1)),
       itf: Number(itf.toFixed(1)),
       nema: Number(nema.toFixed(1))
     };
@@ -3819,16 +3843,26 @@ window.GCSLC_NAFC_TERMII.from = getWhitelistedSender(window.GCSLC_NAFC_TERMII.fr
     document.getElementById("modalStateLabel").textContent = "Hot Node: " + stateName;
     const profile = stateOpportunityProfile(stateName);
     const bg = document.getElementById("burstGapPct");
-    if (bg) bg.textContent = ((profile.works + profile.smedan + profile.itf + profile.nema) / 4).toFixed(1) + "%";
+    if (bg) bg.textContent = ((profile.works + profile.smedan + profile.maritimeGateway + profile.blueEconomy) / 4).toFixed(1) + "%";
     const w = STATE_WARDS[stateName] != null ? STATE_WARDS[stateName] : Math.max(1, Math.round(WARDS / 36));
     const fa = w * CANV_PER_WARD;
     const bl = document.getElementById("burstAgentLines");
     if (bl) {
-      bl.innerHTML = "<strong>" + fa.toLocaleString() + "</strong> field agents across <strong>" + w.toLocaleString() + "</strong> ward-equivalent nodes — <strong>1 : " + CANV_PER_WARD + "</strong> agent-to-canvass ratio (grassroots lattice).<br/><span style="color:#a6d2ef">Works " + profile.works.toFixed(1) + "% · SMEDAN " + profile.smedan.toFixed(1) + "% · ITF " + profile.itf.toFixed(1) + "% · NEMA " + profile.nema.toFixed(1) + "%</span>";
+      bl.innerHTML = "<strong>" + fa.toLocaleString() + "</strong> field agents across <strong>" + w.toLocaleString() + "</strong> ward-equivalent nodes — <strong>1 : " + CANV_PER_WARD + "</strong> agent-to-canvass ratio (grassroots lattice).<br/><span style="color:#a6d2ef">Works " + profile.works.toFixed(1) + "% · SMEDAN " + profile.smedan.toFixed(1) + "% · Maritime " + profile.maritimeGateway.toFixed(1) + "% · Blue Economy " + profile.blueEconomy.toFixed(1) + "%</span>";
     }
     gapModal.classList.add("open");
     requestAnimationFrame(() => renderSocialGapChart(stateName));
     if (isSimulatedSa(stateName)) triggerTermiiSaPulse(stateName);
+    if (termiiStatusLineEl) {
+      termiiStatusLineEl.textContent = "Eagle: Go and Work · " + stateName + " · " + new Date().toLocaleTimeString();
+    }
+    if (handshakeTerminalStrip) {
+      const row = document.createElement("p");
+      row.className = "handshake-terminal-line";
+      row.innerHTML = '<span class="tag-sync">[EAGLE]</span> Eagle: Go and Work → ' + stateName + ' · Live Opportunity Gap Graph synced.';
+      handshakeTerminalStrip.prepend(row);
+      if (handshakeTerminalScroll) handshakeTerminalScroll.scrollTop = 0;
+    }
   }
 
   function formatBnBand(lo, hi) {
@@ -4001,15 +4035,21 @@ window.GCSLC_NAFC_TERMII.from = getWhitelistedSender(window.GCSLC_NAFC_TERMII.fr
     if (prev) prev.remove();
     const g = document.createElementNS(svgNSTarget, "g");
     g.setAttribute("id", "institutionalLayers");
+
     const nodes = [
-      { layer: "mil", lon: 7.4951, lat: 9.0765, r: 4.8 },
-      { layer: "mil", lon: 8.5247, lat: 11.9914, r: 4.8 },
-      { layer: "mil", lon: 3.3792, lat: 6.5244, r: 4.2 },
-      { layer: "nysc", lon: 7.3986, lat: 9.082, r: 4 },
-      { layer: "nysc", lon: 8.5167, lat: 12.0028, r: 4 },
-      { layer: "jamb", lon: 7.4411, lat: 9.0478, r: 4 },
-      { layer: "jamb", lon: 8.4943, lat: 11.9914, r: 3.8 }
+      { layer: "smedan", lon: 7.4411, lat: 9.0478, r: 4.4, fill: "rgba(212,175,55,0.72)" },
+      { layer: "smedan", lon: 3.3792, lat: 6.5244, r: 4.0, fill: "rgba(212,175,55,0.62)" },
+      { layer: "smedan", lon: 8.5247, lat: 11.9914, r: 3.8, fill: "rgba(212,175,55,0.6)" },
+      { layer: "itf", lon: 7.3986, lat: 9.082, r: 4.0, fill: "rgba(102,245,255,0.68)" },
+      { layer: "itf", lon: 8.5167, lat: 12.0028, r: 3.7, fill: "rgba(102,245,255,0.58)" },
+      { layer: "nema", lon: 7.4951, lat: 9.0765, r: 4.2, fill: "rgba(255,164,122,0.66)" },
+      { layer: "nema", lon: 3.3421, lat: 6.5388, r: 3.9, fill: "rgba(255,164,122,0.58)" },
+      { layer: "works", lon: 7.7090, lat: 11.0747, r: 4.6, fill: "rgba(255,232,171,0.72)" },
+      { layer: "works", lon: 6.9915, lat: 4.8356, r: 4.2, fill: "rgba(255,232,171,0.62)" },
+      { layer: "blue", lon: 3.4012, lat: 6.4982, r: 4.6, fill: "rgba(77,208,225,0.72)" },
+      { layer: "blue", lon: 6.9522, lat: 4.8622, r: 4.1, fill: "rgba(77,208,225,0.62)" }
     ];
+
     nodes.forEach((n) => {
       const xy = project([n.lon, n.lat]);
       const c = document.createElementNS(svgNSTarget, "circle");
@@ -4018,27 +4058,34 @@ window.GCSLC_NAFC_TERMII.from = getWhitelistedSender(window.GCSLC_NAFC_TERMII.fr
       c.setAttribute("cx", String(xy[0]));
       c.setAttribute("cy", String(xy[1]));
       c.setAttribute("r", String(n.r));
-      c.setAttribute("fill", n.layer === "mil" ? "rgba(212,175,55,0.58)" : n.layer === "nysc" ? "rgba(102,245,255,0.52)" : "rgba(255,200,120,0.55)");
-      c.setAttribute("stroke", "rgba(255,255,255,0.4)");
+      c.setAttribute("fill", n.fill);
+      c.setAttribute("stroke", "rgba(255,255,255,0.42)");
       c.setAttribute("stroke-width", "1.1");
       g.appendChild(c);
     });
+
     mapSvgEl.appendChild(g);
+
     function syncLayers() {
-      const mil = document.getElementById("layerMil");
-      const nysc = document.getElementById("layerNysc");
-      const jamb = document.getElementById("layerJamb");
+      const smedan = document.getElementById("layerSmedan");
+      const itf = document.getElementById("layerItf");
+      const nema = document.getElementById("layerNema");
+      const works = document.getElementById("layerWorks");
+      const blue = document.getElementById("layerBlueEconomy");
       g.querySelectorAll(".inst-node").forEach((node) => {
         const layer = node.getAttribute("data-layer");
         let on = true;
-        if (layer === "mil") on = !!(mil && mil.checked);
-        if (layer === "nysc") on = !!(nysc && nysc.checked);
-        if (layer === "jamb") on = !!(jamb && jamb.checked);
+        if (layer === "smedan") on = !!(smedan && smedan.checked);
+        if (layer === "itf") on = !!(itf && itf.checked);
+        if (layer === "nema") on = !!(nema && nema.checked);
+        if (layer === "works") on = !!(works && works.checked);
+        if (layer === "blue") on = !!(blue && blue.checked);
         node.setAttribute("opacity", on ? "1" : "0");
         node.style.visibility = on ? "visible" : "hidden";
       });
     }
-    ["layerMil", "layerNysc", "layerJamb"].forEach((id) => {
+
+    ["layerSmedan", "layerItf", "layerNema", "layerWorks", "layerBlueEconomy"].forEach((id) => {
       const el = document.getElementById(id);
       if (el) el.addEventListener("change", syncLayers);
     });
