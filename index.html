@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#001a33" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
-  <title>GCSLC — Sovereign Total Sync V56 · Mobile Retain</title>
+  <title>GCSLC — Sovereign Total Matrix V58 · Mobile Retain</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet" />
@@ -30,6 +30,7 @@
       --intel-h: 38px;
       --footer-core: min(108px, 28vw);
       --footer-h: calc(var(--intel-h) + var(--footer-core));
+      --api-catalog-menu-h: 56px;
     }
     * { box-sizing: border-box; }
     *, *::before, *::after {
@@ -128,7 +129,7 @@
       max-width: min(1480px, 100%);
       width: 100%;
       margin: 0 auto;
-      padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) calc(var(--footer-h) + max(20px, env(safe-area-inset-bottom))) max(12px, env(safe-area-inset-left));
+      padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) calc(var(--footer-h) + var(--api-catalog-menu-h) + max(16px, env(safe-area-inset-bottom))) max(12px, env(safe-area-inset-left));
     }
     /* V56 — mobile scale-to-fit: single column, touch targets, map fluid */
     @media (max-width: 900px) {
@@ -162,6 +163,10 @@
         font-weight: 800;
         letter-spacing: 0.06em;
         font-size: clamp(0.58rem, 2.9vw, 0.72rem);
+      }
+      .sovereign-cluster-btn {
+        min-height: 44px;
+        font-size: clamp(0.5rem, 2.8vw, 0.64rem);
       }
       .header-apex-layer01 .apex-row1 { min-height: auto; }
     }
@@ -546,6 +551,99 @@
       outline: 2px solid rgba(212, 175, 55, 0.65);
       outline-offset: 2px;
     }
+    /* V58 — Sovereign Cluster Matrix (shimmering gold active) */
+    .sovereign-cluster-toolbar {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+    }
+    .sovereign-cluster-title {
+      letter-spacing: 0.12em;
+    }
+    .sovereign-cluster-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      width: 100%;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+    .sovereign-cluster-btn {
+      min-height: 44px;
+      padding: 10px 6px;
+      border-radius: 12px;
+      border: 1px solid rgba(102, 245, 255, 0.22);
+      background: linear-gradient(145deg, rgba(0, 22, 48, 0.96), rgba(0, 12, 28, 0.92));
+      color: #dff8ff;
+      font-family: inherit;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      font-size: clamp(0.48rem, 1.35vw, 0.62rem);
+      text-transform: uppercase;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: rgba(212, 175, 55, 0.2);
+      transition: transform 0.15s ease, box-shadow 0.2s ease;
+    }
+    .sovereign-cluster-btn:hover,
+    .sovereign-cluster-btn:focus-visible {
+      outline: none;
+      filter: brightness(1.06);
+    }
+    .sovereign-cluster-btn.is-active {
+      border-color: rgba(212, 175, 55, 0.88);
+      color: #fff8e8;
+      box-shadow:
+        0 0 26px rgba(212, 175, 55, 0.42),
+        inset 0 0 22px rgba(255, 236, 180, 0.1);
+      background: linear-gradient(
+        118deg,
+        rgba(212, 175, 55, 0.42) 0%,
+        rgba(0, 26, 51, 0.94) 38%,
+        rgba(102, 245, 255, 0.14) 52%,
+        rgba(212, 175, 55, 0.36) 100%
+      );
+      background-size: 220% 100%;
+      animation: sovereignClusterGoldShimmer 2.8s ease-in-out infinite;
+    }
+    @keyframes sovereignClusterGoldShimmer {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    @media (max-width: 900px) {
+      .sovereign-cluster-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    /* Eagle Map — cluster readiness pulse (per-state) */
+    #mapSvg.eagle-readiness-pulse--economic .state {
+      animation: eagleReadinessEcon 2.5s ease-in-out infinite;
+    }
+    #mapSvg.eagle-readiness-pulse--infrastructure .state {
+      animation: eagleReadinessInfra 2.5s ease-in-out infinite;
+    }
+    #mapSvg.eagle-readiness-pulse--security .state {
+      animation: eagleReadinessSec 2.4s ease-in-out infinite;
+    }
+    #mapSvg.eagle-readiness-pulse--social .state {
+      animation: eagleReadinessSocial 2.55s ease-in-out infinite;
+    }
+    @keyframes eagleReadinessEcon {
+      0%, 100% { filter: brightness(1) drop-shadow(0 0 0 rgba(46, 204, 113, 0)); }
+      50% { filter: brightness(1.1) drop-shadow(0 0 16px rgba(46, 204, 113, 0.78)); }
+    }
+    @keyframes eagleReadinessInfra {
+      0%, 100% { filter: brightness(1) drop-shadow(0 0 0 rgba(52, 152, 219, 0)); }
+      50% { filter: brightness(1.1) drop-shadow(0 0 16px rgba(52, 152, 219, 0.82)); }
+    }
+    @keyframes eagleReadinessSec {
+      0%, 100% { filter: brightness(1) drop-shadow(0 0 0 rgba(231, 76, 60, 0)); }
+      50% { filter: brightness(1.12) drop-shadow(0 0 17px rgba(241, 196, 15, 0.72)); }
+    }
+    @keyframes eagleReadinessSocial {
+      0%, 100% { filter: brightness(1) drop-shadow(0 0 0 rgba(155, 89, 182, 0)); }
+      50% { filter: brightness(1.08) drop-shadow(0 0 16px rgba(155, 89, 182, 0.78)); }
+    }
     .sidebar-chart-min {
       margin-top: 12px;
       padding: 10px 8px;
@@ -638,6 +736,17 @@
     @keyframes termiiHandshakeBurst {
       0%, 100% { filter: brightness(1); box-shadow: none; }
       50% { filter: brightness(1.45); box-shadow: 0 0 28px rgba(212, 175, 55, 0.75), inset 0 0 18px rgba(102, 245, 255, 0.12); }
+    }
+    .termii-lane.termii-order-success .termii-inbound,
+    .termii-lane.termii-order-success .termii-outbound {
+      animation: termiiOrderSuccess 0.55s ease-in-out 4;
+    }
+    @keyframes termiiOrderSuccess {
+      0%, 100% { filter: brightness(1); box-shadow: none; }
+      50% {
+        filter: brightness(1.5);
+        box-shadow: 0 0 32px rgba(212, 175, 55, 0.88), 0 0 48px rgba(102, 245, 255, 0.35), inset 0 0 20px rgba(212, 175, 55, 0.18);
+      }
     }
     .inst-node { pointer-events: auto; cursor: help; }
     .prisms-row {
@@ -1308,7 +1417,7 @@
       left: 0;
       right: 0;
       bottom: var(--footer-core);
-      z-index: 52;
+      z-index: 54;
       min-height: var(--intel-h);
       display: flex;
       align-items: stretch;
@@ -1408,13 +1517,168 @@
       0% { transform: translateX(0); }
       100% { transform: translateX(-50%); }
     }
+    /* V57 — API Service Catalog (bottom drawer) */
+    .api-catalog-menu-btn {
+      position: fixed;
+      left: 50%;
+      bottom: calc(var(--footer-h) + max(10px, env(safe-area-inset-bottom)));
+      transform: translateX(-50%);
+      z-index: 53;
+      min-height: 48px;
+      padding: 12px 28px;
+      border-radius: 999px;
+      border: 1px solid rgba(212, 175, 55, 0.55);
+      background: linear-gradient(165deg, rgba(4, 22, 48, 0.98), rgba(0, 26, 51, 0.96));
+      color: #fff4d4;
+      font-weight: 900;
+      font-size: clamp(0.62rem, 1.65vw, 0.78rem);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45), 0 0 24px rgba(102, 245, 255, 0.18);
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: rgba(212, 175, 55, 0.2);
+    }
+    .api-catalog-menu-btn:hover,
+    .api-catalog-menu-btn:focus-visible {
+      filter: brightness(1.08);
+      outline: none;
+    }
+    .api-catalog-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 114;
+      background: rgba(0, 8, 24, 0.55);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+    .api-catalog-backdrop.show { display: block; }
+    .api-catalog-drawer {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 115;
+      max-height: min(78vh, 620px);
+      border-radius: 20px 20px 0 0;
+      border: 1px solid rgba(102, 245, 255, 0.22);
+      border-bottom: none;
+      background: linear-gradient(180deg, rgba(6, 28, 58, 0.98) 0%, rgba(0, 18, 40, 0.99) 100%);
+      box-shadow: 0 -16px 48px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(212, 175, 55, 0.12);
+      transform: translate3d(0, 105%, 0);
+      transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: transform;
+      touch-action: auto;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    .api-catalog-drawer.open {
+      transform: translate3d(0, 0, 0);
+    }
+    .api-catalog-drawer.dragging {
+      transition: none;
+    }
+    .api-catalog-grab {
+      display: grid;
+      place-items: center;
+      padding: 12px 16px 8px;
+      cursor: grab;
+      touch-action: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    .api-catalog-grab:active { cursor: grabbing; }
+    .api-catalog-handle-bar {
+      width: min(120px, 36vw);
+      height: 5px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(102, 245, 255, 0.35), rgba(212, 175, 55, 0.65), rgba(102, 245, 255, 0.35));
+      box-shadow: 0 0 14px rgba(102, 245, 255, 0.35);
+    }
+    .api-catalog-inner {
+      max-height: calc(min(78vh, 620px) - 52px);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+      padding: 0 16px 20px;
+      touch-action: pan-y;
+    }
+    .api-catalog-inner h2 {
+      margin: 0 0 14px;
+      text-align: center;
+      font-size: clamp(0.72rem, 2vw, 0.92rem);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 900;
+      line-height: 1.35;
+    }
+    .api-catalog-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .api-catalog-item {
+      margin: 0;
+    }
+    .api-catalog-item button {
+      width: 100%;
+      text-align: left;
+      padding: 14px 14px 14px 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(102, 245, 255, 0.2);
+      background: rgba(0, 26, 51, 0.85);
+      color: #eaf8ff;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .api-catalog-item button:hover,
+    .api-catalog-item button:focus-visible {
+      border-color: rgba(212, 175, 55, 0.45);
+      box-shadow: 0 0 20px rgba(102, 245, 255, 0.12);
+      outline: none;
+    }
+    .api-catalog-item .ep-tag {
+      display: inline-block;
+      font-size: 0.56rem;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #66f5ff;
+      margin-bottom: 6px;
+    }
+    .api-catalog-item .ep-title {
+      display: block;
+      font-size: clamp(0.68rem, 1.85vw, 0.82rem);
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      color: #fff8e8;
+      margin-bottom: 4px;
+    }
+    .api-catalog-item .ep-sub {
+      display: block;
+      font-size: clamp(0.58rem, 1.5vw, 0.7rem);
+      color: #9fc4d7;
+      line-height: 1.4;
+    }
+    @media (max-width: 520px) {
+      .api-catalog-menu-btn {
+        min-height: 44px;
+        padding: 10px 22px;
+        letter-spacing: 0.18em;
+      }
+    }
     .footer {
       position: fixed;
       left: 0;
       right: 0;
       bottom: 0;
       min-height: var(--footer-core);
-      z-index: 50;
+      z-index: 56;
       border-top: 1px solid rgba(102, 245, 255, 0.14);
       background: var(--surface-unified);
       padding: 8px max(12px, env(safe-area-inset-left)) calc(10px + env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-right));
@@ -1587,10 +1851,6 @@
   </style>
 </head>
 <body>
-  <div class="wm-proprietary" id="wmProprietary" aria-hidden="true">
-    <div class="wm-parallax-layer" id="wmParallaxLayer"><span>GCSLC PROPRIETARY</span></div>
-  </div>
-
   <div class="gov-backdrop" id="govBackdrop" aria-hidden="true"></div>
   <a class="advisory-fab" id="advisoryFab" href="https://galadimanruwacenter.org" target="_blank" rel="noopener noreferrer">ACCESS ADVISORY HUB</a>
   <button type="button" class="gov-toggle" id="govToggle" aria-controls="governanceSlide" aria-expanded="false">GOVERNANCE</button>
@@ -1662,20 +1922,16 @@
           <article class="map-wrap living-terminal map-masterpiece">
             <h2 class="map-title">Eagle Map — Sovereign Lattice</h2>
             <p class="map-kinetic-caption"><strong>AZK</strong> corridor · Abuja–Zaria–Kano · ward lattice to command node</p>
-            <div class="map-layer-toggles" role="toolbar" aria-label="Sovereign agency layer filter">
-              <span class="sovereign-filter-label" id="sovereignFilterLabel">Sovereign Filter</span>
-              <label class="sr-only-def" for="sovereignAgencyFilter">Select institutional agency overlay</label>
-              <select id="sovereignAgencyFilter" class="sovereign-filter-select" aria-describedby="sovereignFilterLabel">
-                <option value="all">All agencies (overlay)</option>
-                <option value="smedan">SMEDAN</option>
-                <option value="itf">ITF</option>
-                <option value="nema">NEMA</option>
-                <option value="works">Federal Ministry of Works</option>
-                <option value="nimasa">NIMASA</option>
-                <option value="npa">NPA</option>
-                <option value="blue">Blue Economy</option>
-                <option value="off">Overlays off</option>
-              </select>
+            <div class="map-layer-toggles sovereign-cluster-toolbar" role="toolbar" aria-label="Sovereign institutional cluster matrix">
+              <span class="sovereign-filter-label sovereign-cluster-title" id="sovereignFilterLabel">Sovereign Cluster Matrix</span>
+              <div class="sovereign-cluster-grid" role="group" aria-labelledby="sovereignFilterLabel">
+                <button type="button" class="sovereign-cluster-btn is-active" data-cluster="all" aria-pressed="true">All Matrix</button>
+                <button type="button" class="sovereign-cluster-btn" data-cluster="economic" aria-pressed="false">Economic</button>
+                <button type="button" class="sovereign-cluster-btn" data-cluster="infrastructure" aria-pressed="false">Infrastructure</button>
+                <button type="button" class="sovereign-cluster-btn" data-cluster="security" aria-pressed="false">Security</button>
+                <button type="button" class="sovereign-cluster-btn" data-cluster="social" aria-pressed="false">Social Impact</button>
+                <button type="button" class="sovereign-cluster-btn" data-cluster="off" aria-pressed="false">Off</button>
+              </div>
             </div>
             <div class="grassroots-ribbon" id="grassrootsRibbon">
               <strong>Grassroots Math LIVE:</strong> <span id="wardStat">8,806</span> Wards · <strong id="fieldAgentsStat">123,284</strong> Field Agents · <span id="puStat">176,000</span> PUs
@@ -1826,6 +2082,68 @@
       · <strong>Copyright LW15954</strong> · <strong>SCUML RN: 151653884</strong> · Gateway Alignment Sovereign V14 · 8,806 Wards : 123,284 Field Agents · 176,000 PUs · Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau · <strong>GCSLC PROPRIETARY</strong>
     </div>
   </footer>
+
+  <div class="wm-proprietary" id="wmProprietary" aria-hidden="true">
+    <div class="wm-parallax-layer" id="wmParallaxLayer"><span>GCSLC PROPRIETARY</span></div>
+  </div>
+
+  <button type="button" class="api-catalog-menu-btn" id="apiCatalogMenuBtn" aria-controls="apiCatalogDrawer" aria-expanded="false">Menu</button>
+  <div class="api-catalog-backdrop" id="apiCatalogBackdrop" aria-hidden="true"></div>
+  <div class="api-catalog-drawer" id="apiCatalogDrawer" role="dialog" aria-modal="true" aria-labelledby="apiCatalogTitle" aria-hidden="true">
+    <div class="api-catalog-grab" id="apiCatalogGrab" role="presentation">
+      <span class="api-catalog-handle-bar" aria-hidden="true"></span>
+    </div>
+    <div class="api-catalog-inner">
+      <h2 id="apiCatalogTitle">GCSLC API SERVICE CATALOG</h2>
+      <ul class="api-catalog-list">
+        <li class="api-catalog-item">
+          <button type="button" class="api-catalog-endpoint" data-endpoint="SIV"
+            data-name="Sovereign Identity Verify"
+            data-sub="Ward lattice, biometric-class routing, KYC handshake.">
+            <span class="ep-tag">Dish · Identity</span>
+            <span class="ep-title">Sovereign Identity Verify</span>
+            <span class="ep-sub">Ward lattice, biometric-class routing, KYC handshake.</span>
+          </button>
+        </li>
+        <li class="api-catalog-item">
+          <button type="button" class="api-catalog-endpoint" data-endpoint="MLP"
+            data-name="Maritime Logistics Pulse"
+            data-sub="NIMASA / NPA / Blue Economy corridor pulses.">
+            <span class="ep-tag">Dish · Maritime</span>
+            <span class="ep-title">Maritime Logistics Pulse</span>
+            <span class="ep-sub">NIMASA / NPA / Blue Economy corridor pulses.</span>
+          </button>
+        </li>
+        <li class="api-catalog-item">
+          <button type="button" class="api-catalog-endpoint" data-endpoint="FLH"
+            data-name="Fiscal Liquidity Handshake"
+            data-sub="CBN-class rails · treasury-adjacent liquidity attest.">
+            <span class="ep-tag">Dish · Fiscal</span>
+            <span class="ep-title">Fiscal Liquidity Handshake</span>
+            <span class="ep-sub">CBN-class rails · treasury-adjacent liquidity attest.</span>
+          </button>
+        </li>
+        <li class="api-catalog-item">
+          <button type="button" class="api-catalog-endpoint" data-endpoint="GCV"
+            data-name="Grassroots Connectivity Verify"
+            data-sub="123k+ field agents · lattice verification.">
+            <span class="ep-tag">Dish · Grassroots</span>
+            <span class="ep-title">Grassroots Connectivity Verify</span>
+            <span class="ep-sub">123k+ field agents · lattice verification.</span>
+          </button>
+        </li>
+        <li class="api-catalog-item">
+          <button type="button" class="api-catalog-endpoint" data-endpoint="IFP"
+            data-name="Industrial Feedstock Pulse"
+            data-sub="Coal / chemical / AZK-adjacent logistics.">
+            <span class="ep-tag">Dish · Industrial</span>
+            <span class="ep-title">Industrial Feedstock Pulse</span>
+            <span class="ep-sub">Coal / chemical / AZK-adjacent logistics.</span>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
 
   <script type="application/json" id="gcslcAssetLock">
 {"SOVEREIGN_ASSET_LOCK_V55":{"wards":8806,"fieldAgents":123284,"pus":176000,"deepBlue":"#001a33","gold":"#D4AF37","cyan":"#66f5ff","mockTermiiUrl":"http://127.0.0.1:8787/api/sms/send"}}
@@ -2481,13 +2799,40 @@
     }
     termiiHandshakeLogEl.scrollTop = termiiHandshakeLogEl.scrollHeight;
   }
-  async function runGcslcTermiiHandshakeSimulation() {
+  async function runGcslcTermiiHandshakeSimulation(ctx) {
     pulseTermiiHandshakeLane();
     flashTermiiTestLane();
+    var catalog = ctx && ctx.catalog === true;
+    if (catalog && termiiLaneEl) {
+      termiiLaneEl.classList.remove("termii-order-success");
+      void termiiLaneEl.offsetWidth;
+      termiiLaneEl.classList.add("termii-order-success");
+      window.setTimeout(function () {
+        if (termiiLaneEl) termiiLaneEl.classList.remove("termii-order-success");
+      }, 2400);
+    }
     var cfg = window.GCSLC_NAFC_TERMII || {};
     var endpoint = String(cfg.endpoint || ASSET.mockTermiiUrl);
+    var smsBase = catalog
+      ? ("[GCSLC/API CATALOG] Successful order — " + String(ctx.name || "Endpoint") + " (" + String(ctx.endpoint || "?") + ") — " + new Date().toISOString())
+      : ("[GCSLC/NAFC] Sovereign handshake probe — Eagle transmit (simulation). " + new Date().toISOString());
     var dataPacket = {
-      handshake: "GCSLC -> TERMII (SIMULATED)",
+      handshake: catalog ? "GCSLC API SERVICE CATALOG -> TERMII (SUCCESSFUL_ORDER)" : "GCSLC -> TERMII (SIMULATED)",
+      transmission: {
+        vector: "GCSLC_JSON_PACKET -> TERMII_MOCK_LANE -> PARTNER_NODE",
+        route: [
+          "GCSLC Core (sovereign gateway)",
+          "Termii secure lane (simulated SMS/API)",
+          "Partner node " + String(cfg.to || "+2347039139439")
+        ],
+        flow: "GCSLC → Termii (mock) → Partner (+234)"
+      },
+      catalogOrder: catalog ? {
+        simulation: "SUCCESSFUL_ORDER",
+        endpoint: String(ctx.endpoint || ""),
+        product: String(ctx.name || ""),
+        scope: String(ctx.sub || "")
+      } : undefined,
       institutional: {
         deepBlue: ASSET.deepBlue,
         gold: ASSET.gold,
@@ -2500,14 +2845,16 @@
         api_key: String(cfg.apiKey || "GCSLC_SIMULATION_KEY"),
         to: String(cfg.to || "+2347039139439"),
         from: String(cfg.from || "GCSLC"),
-        sms: "[GCSLC/NAFC] Sovereign handshake probe — Eagle transmit (simulation). " + new Date().toISOString(),
+        sms: smsBase,
         type: "plain",
         channel: "generic"
       }
     };
-    appendHandshakeLog("DATA_PACKET (outbound JSON)", dataPacket);
+    appendHandshakeLog(catalog ? "DATA_PACKET (API catalog — successful order)" : "DATA_PACKET (outbound JSON)", dataPacket);
     if (termiiStatusLineEl) {
-      termiiStatusLineEl.textContent = "Handshake queued — lane pulse active · inspect logic log for JSON Data Packet · " + new Date().toLocaleTimeString();
+      termiiStatusLineEl.textContent = catalog
+        ? ("Successful order · " + String(ctx.name || "") + " · Mock Termii pulse · JSON proof in log · " + new Date().toLocaleTimeString())
+        : ("Handshake queued — lane pulse active · inspect logic log for JSON Data Packet · " + new Date().toLocaleTimeString());
     }
     var outbound = {
       api_key: dataPacket.termii.api_key,
@@ -2518,7 +2865,7 @@
       channel: dataPacket.termii.channel
     };
     if (!cfg.live) {
-      appendHandshakeLog("MOCK_SERVER_SKIPPED (cfg.live=false) — UI-only proof complete.", outbound);
+      appendHandshakeLog(catalog ? "MOCK_SERVER_SKIPPED (cfg.live=false) — catalog order proof (UI)." : "MOCK_SERVER_SKIPPED (cfg.live=false) — UI-only proof complete.", outbound);
       return;
     }
     try {
@@ -2532,17 +2879,100 @@
       try { parsed = JSON.parse(raw); } catch (e1) { /* keep text */ }
       appendHandshakeLog("MOCK_TERMII_RESPONSE (HTTP " + res.status + ")", parsed);
       if (termiiStatusLineEl) {
-        termiiStatusLineEl.textContent = (res.ok ? "GCSLC → Mock Termii: OK · " : "GCSLC → Mock Termii: HTTP " + res.status + " · ") + new Date().toLocaleTimeString();
+        if (catalog) {
+          termiiStatusLineEl.textContent = res.ok
+            ? ("Successful order · " + String(ctx.name || "") + " · GCSLC → Mock Termii: OK · " + new Date().toLocaleTimeString())
+            : ("Successful order (sim) · " + String(ctx.name || "") + " · HTTP " + res.status + " · " + new Date().toLocaleTimeString());
+        } else {
+          termiiStatusLineEl.textContent = (res.ok ? "GCSLC → Mock Termii: OK · " : "GCSLC → Mock Termii: HTTP " + res.status + " · ") + new Date().toLocaleTimeString();
+        }
       }
     } catch (err) {
       appendHandshakeLog("MOCK_TERMII_OFFLINE (start Python mock on 127.0.0.1:8787) — payload preserved below.", outbound);
       if (termiiStatusLineEl) {
-        termiiStatusLineEl.textContent = "Mock Termii unreachable — JSON logged. Start terminal mock server, then retry. " + new Date().toLocaleTimeString();
+        termiiStatusLineEl.textContent = catalog
+          ? ("Successful order (sim) · " + String(ctx.name || "") + " · Mock offline — JSON logged · " + new Date().toLocaleTimeString())
+          : ("Mock Termii unreachable — JSON logged. Start terminal mock server, then retry. " + new Date().toLocaleTimeString());
       }
     }
   }
   if (handshakeSimBtn) {
     handshakeSimBtn.addEventListener("click", () => { void runGcslcTermiiHandshakeSimulation(); });
+  }
+
+  const apiCatalogDrawer = document.getElementById("apiCatalogDrawer");
+  const apiCatalogBackdrop = document.getElementById("apiCatalogBackdrop");
+  const apiCatalogMenuBtn = document.getElementById("apiCatalogMenuBtn");
+  const apiCatalogGrab = document.getElementById("apiCatalogGrab");
+  function setApiCatalogOpen(open) {
+    if (!apiCatalogDrawer || !apiCatalogBackdrop || !apiCatalogMenuBtn) return;
+    apiCatalogDrawer.classList.toggle("open", open);
+    apiCatalogBackdrop.classList.toggle("show", open);
+    apiCatalogMenuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+    apiCatalogDrawer.setAttribute("aria-hidden", open ? "false" : "true");
+    apiCatalogBackdrop.setAttribute("aria-hidden", open ? "false" : "true");
+    document.body.style.overflow = open ? "hidden" : "";
+    if (!open) {
+      apiCatalogDrawer.style.transform = "";
+      apiCatalogDrawer.classList.remove("dragging");
+    }
+  }
+  if (apiCatalogMenuBtn && apiCatalogDrawer) {
+    apiCatalogMenuBtn.addEventListener("click", () => setApiCatalogOpen(!apiCatalogDrawer.classList.contains("open")));
+  }
+  if (apiCatalogBackdrop) {
+    apiCatalogBackdrop.addEventListener("click", () => setApiCatalogOpen(false));
+  }
+  document.querySelectorAll(".api-catalog-endpoint").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      void runGcslcTermiiHandshakeSimulation({
+        catalog: true,
+        endpoint: btn.getAttribute("data-endpoint") || "",
+        name: btn.getAttribute("data-name") || "",
+        sub: btn.getAttribute("data-sub") || ""
+      });
+      setApiCatalogOpen(false);
+    });
+  });
+  if (apiCatalogGrab && apiCatalogDrawer) {
+    var acDragY0 = 0;
+    var acTy = 0;
+    var acActive = false;
+    var acPid = null;
+    function acPtrDown(e) {
+      if (!apiCatalogDrawer.classList.contains("open")) return;
+      acActive = true;
+      acPid = e.pointerId;
+      acDragY0 = e.clientY;
+      acTy = 0;
+      apiCatalogDrawer.classList.add("dragging");
+      try {
+        apiCatalogGrab.setPointerCapture(e.pointerId);
+      } catch (errAc) { /* ok */ }
+    }
+    function acPtrMove(e) {
+      if (!acActive || e.pointerId !== acPid) return;
+      var dy = e.clientY - acDragY0;
+      if (dy < 0) dy = 0;
+      acTy = dy;
+      apiCatalogDrawer.style.transform = "translate3d(0, " + dy + "px, 0)";
+    }
+    function acPtrUp(e) {
+      if (!acActive || e.pointerId !== acPid) return;
+      acActive = false;
+      acPid = null;
+      apiCatalogDrawer.classList.remove("dragging");
+      if (acTy > 72) setApiCatalogOpen(false);
+      else apiCatalogDrawer.style.transform = "";
+      acTy = 0;
+      try {
+        apiCatalogGrab.releasePointerCapture(e.pointerId);
+      } catch (errAc2) { /* ok */ }
+    }
+    apiCatalogGrab.addEventListener("pointerdown", acPtrDown);
+    apiCatalogGrab.addEventListener("pointermove", acPtrMove);
+    apiCatalogGrab.addEventListener("pointerup", acPtrUp);
+    apiCatalogGrab.addEventListener("pointercancel", acPtrUp);
   }
 
   const governanceSlide = document.getElementById("governanceSlide");
@@ -2558,6 +2988,10 @@
   govBackdrop.addEventListener("click", () => setGovernanceOpen(false));
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;
+    if (apiCatalogDrawer && apiCatalogDrawer.classList.contains("open")) {
+      setApiCatalogOpen(false);
+      return;
+    }
     if (governanceSlide.classList.contains("open")) setGovernanceOpen(false);
     if (nonFormalModal && nonFormalModal.classList.contains("open")) nonFormalModal.classList.remove("open");
   });
@@ -2794,70 +3228,141 @@
     return best;
   }
 
+  function applyEagleReadinessPulse(mapSvgEl, cluster) {
+    const pulseCls = [
+      "eagle-readiness-pulse--economic",
+      "eagle-readiness-pulse--infrastructure",
+      "eagle-readiness-pulse--security",
+      "eagle-readiness-pulse--social"
+    ];
+    pulseCls.forEach((c) => mapSvgEl.classList.remove(c));
+    if (cluster === "economic") mapSvgEl.classList.add("eagle-readiness-pulse--economic");
+    else if (cluster === "infrastructure") mapSvgEl.classList.add("eagle-readiness-pulse--infrastructure");
+    else if (cluster === "security") mapSvgEl.classList.add("eagle-readiness-pulse--security");
+    else if (cluster === "social") mapSvgEl.classList.add("eagle-readiness-pulse--social");
+  }
+
+  function updateStateReadinessTitles(mapSvgEl, cluster) {
+    const labelMap = {
+      economic: "Economic",
+      infrastructure: "Infrastructure",
+      security: "Security",
+      social: "Social Impact",
+      all: "All-cluster",
+      off: "Overlay off"
+    };
+    const lab = labelMap[cluster] || "Matrix";
+    mapSvgEl.querySelectorAll(".state").forEach((pathEl) => {
+      const name = pathEl.getAttribute("data-name") || "State";
+      const pct = 60 + (hashStr(name + "|" + cluster) % 41);
+      if (cluster === "off" || cluster === "all") {
+        pathEl.setAttribute("title", name + " · Eagle institutional matrix");
+      } else {
+        pathEl.setAttribute("title", lab + " readiness · " + name + " · " + pct + "% (sim)");
+      }
+    });
+  }
+
+  function setupSovereignClusterToolbar(mapSvgEl, syncFn) {
+    const tb = document.querySelector(".sovereign-cluster-toolbar");
+    if (!tb || tb.dataset.gcslcBound === "1") return;
+    tb.dataset.gcslcBound = "1";
+    tb.addEventListener("click", (e) => {
+      const btn = e.target && e.target.closest && e.target.closest(".sovereign-cluster-btn");
+      if (!btn) return;
+      e.preventDefault();
+      tb.querySelectorAll(".sovereign-cluster-btn").forEach((b) => {
+        const on = b === btn;
+        b.classList.toggle("is-active", on);
+        b.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+      if (syncFn) syncFn();
+    });
+    if (syncFn) syncFn();
+  }
+
   function buildInstitutionalLayers(project, mapSvgEl, svgNSTarget) {
     const prev = mapSvgEl.querySelector("#institutionalLayers");
     if (prev) prev.remove();
     const g = document.createElementNS(svgNSTarget, "g");
     g.setAttribute("id", "institutionalLayers");
-    const agencyMeta = {
-      smedan: { title: "SMEDAN — Small & Medium Enterprises Development Agency of Nigeria", fill: "rgba(212,175,55,0.62)" },
-      itf: { title: "ITF — Industrial Training Fund", fill: "rgba(102,245,255,0.55)" },
-      nema: { title: "NEMA — National Emergency Management Agency", fill: "rgba(255,160,90,0.58)" },
-      works: { title: "Federal Ministry of Works — infrastructure & transport corridor alignment", fill: "rgba(130,170,220,0.58)" },
-      nimasa: { title: "NIMASA — Nigerian Maritime Administration and Safety Agency", fill: "rgba(70,130,200,0.58)" },
-      npa: { title: "NPA — Nigerian Ports Authority", fill: "rgba(64,200,190,0.56)" },
-      blue: { title: "Blue Economy — maritime/coastal economic layer (policy overlay)", fill: "rgba(40,120,255,0.52)" }
+    const fillByCluster = {
+      economic: "rgba(46,204,113,0.58)",
+      infrastructure: "rgba(52,152,219,0.58)",
+      security: "rgba(241,196,15,0.62)",
+      social: "rgba(155,89,182,0.58)"
     };
     const nodes = [
-      { layer: "smedan", lon: 7.42, lat: 9.05, r: 4.9 },
-      { layer: "smedan", lon: 10.2, lat: 11.85, r: 4.4 },
-      { layer: "itf", lon: 8.52, lat: 11.99, r: 4.8 },
-      { layer: "itf", lon: 3.35, lat: 6.45, r: 4.2 },
-      { layer: "nema", lon: 7.5, lat: 9.08, r: 4.6 },
-      { layer: "nema", lon: 13.05, lat: 11.85, r: 4.3 },
-      { layer: "works", lon: 7.44, lat: 9.02, r: 4.5 },
-      { layer: "works", lon: 5.75, lat: 5.55, r: 4.2 },
-      { layer: "nimasa", lon: 3.39, lat: 6.52, r: 4.7 },
-      { layer: "nimasa", lon: 6.45, lat: 4.55, r: 4.4 },
-      { layer: "npa", lon: 8.49, lat: 11.98, r: 4.6 },
-      { layer: "npa", lon: 7.72, lat: 8.52, r: 4.2 },
-      { layer: "blue", lon: 4.28, lat: 8.32, r: 5 },
-      { layer: "blue", lon: 5.72, lat: 4.78, r: 4.5 }
+      { cluster: "economic", title: "CBN — Central Bank of Nigeria", lon: 7.495, lat: 9.076, r: 4.7 },
+      { cluster: "economic", title: "BOI — Bank of Industry", lon: 8.52, lat: 11.99, r: 4.3 },
+      { cluster: "economic", title: "NEXIM — Export-Import Bank", lon: 3.38, lat: 6.52, r: 4.2 },
+      { cluster: "economic", title: "SMEDAN — SME Development Agency", lon: 10.2, lat: 11.85, r: 4.5 },
+      { cluster: "economic", title: "SEC — Securities & Exchange Commission", lon: 7.42, lat: 9.05, r: 4.2 },
+      { cluster: "economic", title: "PenCom — National Pension Commission", lon: 13.05, lat: 11.85, r: 4 },
+      { cluster: "economic", title: "FIRS — Federal Inland Revenue Service", lon: 5.75, lat: 5.55, r: 4.4 },
+      { cluster: "economic", title: "NERC — Electricity Regulatory Commission", lon: 6.45, lat: 4.55, r: 4.1 },
+      { cluster: "infrastructure", title: "Federal Ministry of Works", lon: 7.44, lat: 9.02, r: 4.6 },
+      { cluster: "infrastructure", title: "Federal Ministry of Transportation", lon: 8.49, lat: 11.98, r: 4.4 },
+      { cluster: "infrastructure", title: "Blue Economy (Presidential priority)", lon: 4.28, lat: 8.32, r: 4.9 },
+      { cluster: "infrastructure", title: "NIMASA — Maritime Administration", lon: 3.39, lat: 6.45, r: 4.6 },
+      { cluster: "infrastructure", title: "NPA — Nigerian Ports Authority", lon: 7.72, lat: 8.52, r: 4.3 },
+      { cluster: "infrastructure", title: "FERMA — Federal Roads Maintenance", lon: 11.98, lat: 9.02, r: 4 },
+      { cluster: "infrastructure", title: "Federal Ministry of Aviation & Aerospace", lon: 5.02, lat: 7.38, r: 4.1 },
+      { cluster: "infrastructure", title: "NiMet — Meteorological Agency", lon: 8.88, lat: 9.89, r: 3.9 },
+      { cluster: "security", title: "Ministry of Defence", lon: 7.5, lat: 9.08, r: 4.7 },
+      { cluster: "security", title: "DHQ — Defence Headquarters", lon: 7.46, lat: 9.0, r: 4.2 },
+      { cluster: "security", title: "NPF — Nigeria Police Force", lon: 8.51, lat: 12.0, r: 4.4 },
+      { cluster: "security", title: "NSCDC — Civil Defence Corps", lon: 7.4, lat: 10.52, r: 4.2 },
+      { cluster: "security", title: "NIA — Intelligence Agency (sim overlay)", lon: 12.0, lat: 8.52, r: 3.8 },
+      { cluster: "security", title: "Nigerian Navy (sim anchor)", lon: 4.75, lat: 8.32, r: 4.2 },
+      { cluster: "social", title: "NEMA — Emergency Management Agency", lon: 7.5, lat: 9.07, r: 4.4 },
+      { cluster: "social", title: "Federal Ministry of Health", lon: 7.43, lat: 9.04, r: 4.1 },
+      { cluster: "social", title: "Federal Ministry of Education", lon: 6.52, lat: 9.08, r: 4 },
+      { cluster: "social", title: "NYSC — Youth Service Corps", lon: 8.516, lat: 12.0, r: 4.2 },
+      { cluster: "social", title: "JAMB — Tertiary Matriculation Board", lon: 7.44, lat: 9.048, r: 3.9 },
+      { cluster: "social", title: "ITF — Industrial Training Fund", lon: 3.35, lat: 6.48, r: 4.2 },
+      { cluster: "social", title: "NDDC — Niger Delta Development Commission", lon: 5.72, lat: 4.78, r: 4.3 },
+      { cluster: "social", title: "UBEC — Universal Basic Education", lon: 10.6, lat: 12.18, r: 3.9 }
     ];
-    nodes.forEach((n) => {
-      const meta = agencyMeta[n.layer] || { title: n.layer, fill: "rgba(200,200,200,0.5)" };
+    nodes.forEach((n, idx) => {
+      const fill = fillByCluster[n.cluster] || "rgba(200,200,200,0.5)";
       const xy = project([n.lon, n.lat]);
       const c = document.createElementNS(svgNSTarget, "circle");
-      c.setAttribute("class", "inst-node inst-" + n.layer);
-      c.setAttribute("data-layer", n.layer);
+      c.setAttribute("class", "inst-node inst-cluster-" + n.cluster);
+      c.setAttribute("data-cluster", n.cluster);
+      c.setAttribute("data-agency-idx", String(idx));
       c.setAttribute("cx", String(xy[0]));
       c.setAttribute("cy", String(xy[1]));
       c.setAttribute("r", String(n.r));
-      c.setAttribute("fill", meta.fill);
+      c.setAttribute("fill", fill);
       c.setAttribute("stroke", "rgba(255,255,255,0.42)");
       c.setAttribute("stroke-width", "1.1");
       const t = document.createElementNS(svgNSTarget, "title");
-      t.textContent = meta.title;
+      t.textContent = n.title + " · Cluster: " + n.cluster;
       c.appendChild(t);
       g.appendChild(c);
     });
     mapSvgEl.appendChild(g);
-    function syncLayers() {
-      const sel = document.getElementById("sovereignAgencyFilter");
-      const mode = sel && sel.value ? sel.value : "all";
+    function getActiveCluster() {
+      const b = document.querySelector(".sovereign-cluster-btn.is-active");
+      return b && b.getAttribute("data-cluster") ? b.getAttribute("data-cluster") : "all";
+    }
+    function syncClusterMatrix() {
+      const mode = getActiveCluster();
       g.querySelectorAll(".inst-node").forEach((node) => {
-        const layer = node.getAttribute("data-layer");
+        const cl = node.getAttribute("data-cluster");
         let on = true;
         if (mode === "off") on = false;
-        else if (mode !== "all") on = layer === mode;
+        else if (mode !== "all") on = cl === mode;
         node.setAttribute("opacity", on ? "1" : "0");
         node.style.visibility = on ? "visible" : "hidden";
         node.setAttribute("pointer-events", on ? "auto" : "none");
       });
+      applyEagleReadinessPulse(mapSvgEl, mode);
+      updateStateReadinessTitles(mapSvgEl, mode);
     }
-    const sovereignSel = document.getElementById("sovereignAgencyFilter");
-    if (sovereignSel) sovereignSel.addEventListener("change", syncLayers);
-    syncLayers();
+    window.__GCSLC_CLUSTER_SYNC__ = syncClusterMatrix;
+    return syncClusterMatrix;
   }
 
   function fetchGeoJson() {
@@ -2986,7 +3491,8 @@
 
       const corridorLL = [[7.4951, 9.0765], [7.7090, 11.0747], [8.5247, 11.9914]];
       buildWardAzkArrows(project, geo.features, corridorLL);
-      buildInstitutionalLayers(project, mapSvg, svgNS);
+      const syncClusterMatrix = buildInstitutionalLayers(project, mapSvg, svgNS);
+      setupSovereignClusterToolbar(mapSvg, syncClusterMatrix);
       let dPath = "";
       corridorLL.forEach((ll, i) => {
         const xy = project(ll);
