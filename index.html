@@ -6,7 +6,12 @@
   <meta name="theme-color" content="#001a33" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
-  <title>GCSLC — Sovereign Total Matrix V75 · NAFC Kinetic Supremacy</title>
+  <!-- Cloud distribution sync (V79): Microsoft (Edge/Teams/WebView2), Telegram (Bot API / Mini Apps), Opera (GX / instant) — wire endpoints at deploy -->
+  <meta name="gcslc-cloud-microsoft" content="distribution=pending;webview2=ready-header" />
+  <meta name="gcslc-cloud-telegram" content="distribution=pending;bot-api=ready-header" />
+  <meta name="gcslc-cloud-opera" content="distribution=pending;instant=ready-header" />
+  <meta name="msapplication-TileColor" content="#001a33" />
+  <title>GCSLC — Sovereign Total Matrix V79 · Sovereign Finality</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@500;600;700&family=Goldman:wght@400;700&display=swap" rel="stylesheet" />
@@ -449,7 +454,7 @@
       text-align: center;
       color: #D4AF37;
     }
-    /* V69–V75 — NAFC Sovereign Anchor (identity only; map + 8R untouched) */
+    /* V69–V79 — NAFC Supremacy: metallic silver prism anchor (map + 8R untouched) */
     .header-apex-layer01 .nafc-fusion-prism-v69 {
       order: 2;
       width: 100%;
@@ -510,7 +515,7 @@
       margin: 0 auto;
       max-width: min(920px, 100%);
       transform-origin: 50% 55%;
-      animation: nafcCalligraphyBreathe 10s ease-in-out infinite;
+      animation: nafcCalligraphyBreathe 8.5s ease-in-out infinite;
     }
     .nafc-fusion-calligraphy {
       display: block;
@@ -595,6 +600,18 @@
       text-align: center;
       color: rgba(210, 228, 240, 0.82);
     }
+    .nafc-rhgi-identity {
+      margin: 0 0 12px;
+      padding: 0 8px;
+      font-size: clamp(0.5rem, 1.25vw, 0.64rem);
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: none;
+      text-align: center;
+      line-height: 1.35;
+      color: #f0d78c;
+      text-shadow: 0 0 18px rgba(212, 175, 55, 0.35), 0 0 28px rgba(102, 245, 255, 0.18);
+    }
     .nafc-live-signal {
       display: flex;
       align-items: center;
@@ -604,13 +621,58 @@
       flex-wrap: wrap;
     }
     .nafc-live-signal-label {
-      font-size: clamp(0.4rem, 1vw, 0.52rem);
-      letter-spacing: 0.16em;
+      font-size: clamp(0.36rem, 0.95vw, 0.48rem);
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: rgba(165, 235, 200, 0.9);
+      color: rgba(165, 235, 200, 0.92);
       font-weight: 800;
+      text-align: center;
+      max-width: min(520px, 100%);
+      line-height: 1.35;
+    }
+    .nafc-live-signal-orbit {
+      position: relative;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .nafc-live-signal-orbit::before,
+    .nafc-live-signal-orbit::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      border: 1px solid rgba(102, 245, 255, 0.38);
+      background: conic-gradient(from 0deg, transparent 0%, rgba(102, 245, 255, 0.22) 35%, transparent 55%, rgba(0, 230, 118, 0.18) 78%, transparent 100%);
+      background-size: 180% 180%;
+      animation: nafcOrbitalPulse 3.4s ease-in-out infinite, nafcOrbitalShimmer 2.2s linear infinite;
+    }
+    .nafc-live-signal-orbit::before {
+      inset: 1px;
+      opacity: 0.85;
+    }
+    .nafc-live-signal-orbit::after {
+      inset: -6px;
+      border-color: rgba(0, 230, 118, 0.32);
+      animation-delay: 0.45s;
+      animation-duration: 2.6s, 1.85s;
+      opacity: 0.65;
+    }
+    @keyframes nafcOrbitalPulse {
+      0%, 100% { transform: scale(0.94) rotate(0deg); opacity: 0.5; }
+      50% { transform: scale(1.06) rotate(180deg); opacity: 1; }
+    }
+    @keyframes nafcOrbitalShimmer {
+      0% { background-position: 0% 50%; filter: brightness(1); }
+      50% { background-position: 100% 50%; filter: brightness(1.35); }
+      100% { background-position: 0% 50%; filter: brightness(1); }
     }
     .nafc-live-signal-node {
+      position: relative;
+      z-index: 1;
       flex: 0 0 auto;
       width: 11px;
       height: 11px;
@@ -1031,6 +1093,26 @@
       text-align: center;
       line-height: 1.35;
     }
+    .termii-handshake-status {
+      margin: 8px 0 0;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      background: rgba(0, 14, 32, 0.65);
+      font-size: clamp(0.44rem, 1.05vw, 0.54rem);
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-align: center;
+      color: #fff4d2;
+      line-height: 1.4;
+      animation: termiiGaladimaPulse 2.4s ease-in-out infinite;
+      text-shadow: 0 0 14px rgba(212, 175, 55, 0.35);
+    }
+    @keyframes termiiGaladimaPulse {
+      0%, 100% { opacity: 0.82; filter: brightness(1); box-shadow: inset 0 0 0 rgba(102, 245, 255, 0); }
+      50% { opacity: 1; filter: brightness(1.12); box-shadow: inset 0 0 22px rgba(102, 245, 255, 0.12); }
+    }
     .nafc-broadcast-panel {
       margin: 10px 0 12px;
       padding: 10px 10px 12px;
@@ -1054,6 +1136,23 @@
       color: #8eb8cc;
       text-align: center;
       letter-spacing: 0.04em;
+    }
+    .nafc-dual-channel {
+      margin: 0 0 10px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(102, 245, 255, 0.24);
+      background: rgba(0, 14, 32, 0.58);
+      display: grid;
+      gap: 6px;
+      text-align: center;
+    }
+    .nafc-channel-line {
+      font-size: clamp(0.46rem, 1.1vw, 0.56rem);
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      color: #bff4ff;
+      text-shadow: 0 0 12px rgba(102, 245, 255, 0.28);
     }
     .nafc-field-label {
       display: block;
@@ -1677,6 +1776,60 @@
       to { stroke-dashoffset: -56; }
     }
     .corridor-hit { fill: none; stroke: transparent; stroke-width: 18; cursor: pointer; pointer-events: stroke; }
+    /* V82 — Global South Corridor: AZK primary uplink hub */
+    .map-global-south-toggle-wrap {
+      display: flex;
+      justify-content: center;
+      margin: 0 0 10px;
+    }
+    .global-south-toggle {
+      min-height: 44px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(102, 245, 255, 0.28);
+      background: linear-gradient(165deg, rgba(0, 22, 48, 0.92), rgba(0, 10, 24, 0.88));
+      color: #bff4ff;
+      font-family: inherit;
+      font-weight: 900;
+      font-size: clamp(0.48rem, 1.2vw, 0.6rem);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      touch-action: manipulation;
+      box-shadow: 0 0 14px rgba(0, 40, 90, 0.35);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+    }
+    .global-south-toggle:hover,
+    .global-south-toggle:focus-visible {
+      outline: none;
+      border-color: rgba(212, 175, 55, 0.55);
+      box-shadow: 0 0 22px rgba(212, 175, 55, 0.25);
+    }
+    .global-south-toggle.is-active {
+      border-color: rgba(212, 175, 55, 0.75);
+      color: #fff4d2;
+      box-shadow:
+        0 0 0 1px rgba(212, 175, 55, 0.35),
+        0 0 24px rgba(102, 245, 255, 0.22),
+        0 0 32px rgba(212, 175, 55, 0.28);
+    }
+    .corridor-inference-spine.corridor-gs-uplink {
+      animation: corridorVelocityPulseGS 0.78s ease-in-out infinite, corridorDashFlow 1.55s linear infinite;
+      filter: url(#corridorGlowStrong) drop-shadow(0 0 14px rgba(212, 175, 55, 0.88)) drop-shadow(0 0 26px rgba(102, 245, 255, 0.42));
+    }
+    @keyframes corridorVelocityPulseGS {
+      0%, 100% { stroke-width: 9.2; opacity: 0.96; }
+      50% { stroke-width: 12.8; opacity: 1; }
+    }
+    .corridor-glow-base.corridor-gs-uplink {
+      stroke: rgba(212, 175, 55, 0.52);
+      animation: corridorGlowPulseGS 0.95s ease-in-out infinite, corridorDashFlow 1.9s linear infinite reverse;
+      filter: url(#corridorGlowSoft) drop-shadow(0 0 20px rgba(0, 229, 255, 0.38));
+    }
+    @keyframes corridorGlowPulseGS {
+      0%, 100% { stroke-width: 20; opacity: 0.88; }
+      50% { stroke-width: 26; opacity: 1; }
+    }
     .modal-backdrop {
       display: none;
       position: fixed;
@@ -2319,6 +2472,24 @@
       will-change: transform;
       animation: rhgiPresidentialScroll 95s linear infinite;
     }
+    .rhgi-presidential-line.rhgi-lattice-secure {
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #e8fff8;
+      background-image: linear-gradient(
+        95deg,
+        rgba(102, 245, 255, 0.12) 0%,
+        rgba(212, 175, 55, 0.35) 45%,
+        rgba(102, 245, 255, 0.18) 100%
+      );
+      background-size: 240% 100%;
+      animation: rhgiLatticeSecureShimmer 3.6s ease-in-out infinite;
+    }
+    @keyframes rhgiLatticeSecureShimmer {
+      0%, 100% { background-position: 0% 50%; filter: brightness(1); }
+      50% { background-position: 100% 50%; filter: brightness(1.18); }
+    }
     .rhgi-presidential-line {
       padding: 6px 10px;
       font-size: clamp(0.46rem, 1.08vw, 0.54rem);
@@ -2697,7 +2868,7 @@
             </div>
           </div>
           <div class="diag-block kaduna-rhgi-block" aria-label="RHGI — Kaduna LGA drill-down">
-            <h3 class="diag-h">RHGI · Kaduna Master Sync</h3>
+            <h3 class="diag-h">RHGI · Rural Hyper-Grassroots Initiatives · Kaduna Master Sync</h3>
             <div class="rhgi-presidential-ticker" aria-label="Sovereign Lattice live feed">
               <div class="rhgi-presidential-ticker-head">Live update · kaduna_master_payload.csv + lattice</div>
               <div class="rhgi-presidential-viewport">
@@ -2713,7 +2884,7 @@
       <div class="center-col center-col-primary">
         <header class="header header-apex-layer01">
           <p class="apex-row apex-row1" id="apexRowTypewriter" aria-live="polite"><span class="identity-tw apex-identity-deep-cyan" id="identityFullName">Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE</span></p>
-          <div class="nafc-fusion-prism-v69 nafc-kinetic-v75" id="nafcSovereignAnchor" aria-labelledby="nafcFusionTitle">
+          <div class="nafc-fusion-prism-v69 nafc-kinetic-v75 nafc-supremacy-v79" id="nafcSovereignAnchor" aria-labelledby="nafcFusionTitle">
             <div class="nafc-fusion-prism-frame">
               <div class="nafc-fusion-prism-sheen" aria-hidden="true"></div>
               <div class="nafc-fusion-prism-body">
@@ -2729,9 +2900,12 @@
                   </span>
                 </h2>
                 <p class="nafc-fusion-tagline">Sovereign Anchor · Fusion Command</p>
-                <div class="nafc-live-signal" id="nafcLiveSignalStrip" title="NAFC live signal — fused with Kaduna master stream">
-                  <span class="nafc-live-signal-node" id="nafcLiveSignalNode" aria-hidden="true"></span>
-                  <span class="nafc-live-signal-label"><span class="sr-only-def">NAFC live signal status. </span>LIVE · Kaduna data stream</span>
+                <p class="nafc-rhgi-identity" id="nafcRhgiIdentity">Rural Hyper-Grassroots Initiatives (RHGI)</p>
+                <div class="nafc-live-signal" id="nafcLiveSignalStrip" title="NAFC live signal — space-frequency lattice">
+                  <span class="nafc-live-signal-orbit" aria-hidden="true">
+                    <span class="nafc-live-signal-node" id="nafcLiveSignalNode"></span>
+                  </span>
+                  <span class="nafc-live-signal-label"><span class="sr-only-def">NAFC live signal. </span>LIVE · Kaduna data stream</span>
                 </div>
                 <div class="nafc-fusion-lang" role="group" aria-labelledby="nafcFusionLangLabel">
                   <span id="nafcFusionLangLabel" class="nafc-fusion-lang-heading">Sovereign linguistics</span>
@@ -2775,6 +2949,9 @@
           <article class="map-wrap living-terminal map-masterpiece">
             <h2 class="map-title">Eagle Map — Sovereign Lattice</h2>
             <p class="map-kinetic-caption"><strong>AZK</strong> corridor · Abuja–Zaria–Kano · ward lattice to command node</p>
+            <div class="map-global-south-toggle-wrap">
+              <button type="button" class="global-south-toggle" id="globalSouthCorridorBtn" aria-pressed="false" title="Highlight Abuja–Zaria–Kano as primary uplink hub">Global South Corridor</button>
+            </div>
             <div class="map-layer-toggles sovereign-cluster-toolbar" role="toolbar" aria-label="Sovereign institutional cluster matrix">
               <span class="sovereign-filter-label sovereign-cluster-title" id="sovereignFilterLabel">Sovereign Cluster Matrix</span>
               <div class="sovereign-cluster-grid" role="group" aria-labelledby="sovereignFilterLabel">
@@ -2811,9 +2988,14 @@
           <div class="termii-block">
             <div class="termii-label">Termii Gateway — NAFC Secure Channel</div>
             <p class="termii-nafc-note">National Alert Fusion Center (NAFC) · Inbound / Outbound secure lanes</p>
+            <p class="termii-handshake-status" id="termiiHandshakeGaladima" aria-live="polite">Handshake Status · SENDER_ID: GALADIMA_R (WHIPPED/PENDING APPROVAL)</p>
             <div class="nafc-broadcast-panel" id="nafcBroadcastPanel" aria-label="NAFC anchor LGA and fiscal transmit">
               <div class="nafc-broadcast-title">NAFC Broadcast</div>
-              <p class="nafc-broadcast-hint">Language control lives in the NAFC Sovereign Anchor above.</p>
+              <div class="nafc-dual-channel" aria-label="Termii dual-channel lock">
+                <div class="nafc-channel-line">[SMS 🛰️ SPACE-LINK]</div>
+                <div class="nafc-channel-line">[WHATSAPP 🔗 GLOBAL-SYNC]</div>
+              </div>
+              <p class="nafc-broadcast-hint">Language control lives in the NAFC Sovereign Anchor above. Dual-channel Termii lock active.</p>
               <label class="nafc-field-label" for="nafcLgaSelect">Anchor LGA</label>
               <select id="nafcLgaSelect" class="nafc-select">
                 <option value="Dambatta">Dambatta</option>
@@ -3197,6 +3379,29 @@
       j++;
     }, step);
   }
+  var CBN_NOFR_POLICY_LANG = {
+    hausa: "Manufar CBN NOFR: daidaita ruwan kudi mara-sashi da ingantaccen farashi a hanyoyin biyan kuɗi; inganta bayanai da kiyaye tsarin kudi na gida a matsayin matakin farko na shirin ruwa na Kaduna.",
+    yoruba: "Ìlànà CBN NOFR: ṣe afikun owo ti ko ni oṣuwọn pẹlu oṣuwọn ojogbon ni awọn ọna inawo; mu iduroṣinṣin ati fifipamọ́ ọrọ̀ ajé inu ilẹ wa dúró gẹgẹ bí igbésẹ̀ àkọ́kọ́ fún òǹtò omi-owo ní agbègbè Kaduna.",
+    igbo: "Iwu CBN NOFR: jikọta ego na-enweghị ụgwọ ọrụ na ọnụ ahịa dị iru eru n'ụzọ ego; kwado ikike na nchekwa data ego mpaghara dị ka nzọụkwụ mbụ maka mgbapụta mmiri ego na Kaduna.",
+    pidgin: "CBN NOFR policy: align liquidity wey no get benchmark with smarter pricing for payment rails; strengthen transparency and keep local money data safe as first step for Kaduna water-money program."
+  };
+  function streamCbnNofrPolicyToRhgiTerminal(langKey) {
+    var term = document.getElementById("kadunaRhgiTerminal");
+    if (!term || typeof streamTextToRhgiTerminal !== "function") return;
+    var lang = langKey || "hausa";
+    var lga = window.__GCSLC_RHGI_SELECTED_LGA || "";
+    var nafcSel = document.getElementById("nafcLgaSelect");
+    if (!lga && nafcSel && nafcSel.value) lga = nafcSel.value;
+    if (!lga) lga = "NATIONAL";
+    var body = CBN_NOFR_POLICY_LANG[lang] || CBN_NOFR_POLICY_LANG.hausa;
+    var ts = new Date().toISOString().replace("T", " ").replace(/\.\d{3}Z$/, " UTC");
+    var full =
+      ">> CBN NOFR POLICY (SIM) — " + String(lang).toUpperCase() + " — TARGET LGA: " + lga + "\n" +
+      "    " + body + "\n" +
+      "    SOVEREIGN TIMESTAMP: " + ts + " · NAFC HIGH-VELOCITY · KADUNA LATTICE\n" +
+      "    CHANNEL: [SMS] + [WHATSAPP] · TERMII · SENDER GALADIMA_R";
+    streamTextToRhgiTerminal(term, full, 0.65);
+  }
   function buildKadunaMasterTerminalBlock(lgaName, nodes) {
     var lines = [
       ">> KADUNA MASTER SYNC — " + String(lgaName || "").toUpperCase(),
@@ -3329,7 +3534,7 @@
       if (pres && j && j.tickerRows && j.tickerRows.length) {
         pres.innerHTML = buildRhgiPresidentialRailHtml(j.tickerRows);
       } else if (pres) {
-        var fb = '<div class="rhgi-presidential-line"><strong>RHGI</strong> · awaiting lattice handshake…</div>';
+        var fb = '<div class="rhgi-presidential-line rhgi-lattice-secure"><strong>LATTICE SECURE</strong> · 1.5M NODES BROADCAST-READY</div>';
         pres.innerHTML = fb + fb;
       }
     }
@@ -3460,6 +3665,24 @@
   tick();
   setInterval(tick, 1000);
 
+  var PRISM_INTEL_MANUAL = {
+    Refine: "INTEL MANUAL — REFINE\nStrip noise from signal; verify mandate, compress scope, and route packets through NAFC governance before field execution.\nOps: ward lattice attest + SCUML-aware receipts; escalate ambiguity to CIN.",
+    Reset: "INTEL MANUAL — RESET\nRecalibrate operational tempo; restore baselines; re-anchor execution to institutional intent.\nOps: freeze drift, re-run diagnostics, sync Termii lanes.",
+    Research: "INTEL MANUAL — RESEARCH\nEvidence-led intelligence before commitment; cross-check PU nodes and CSV ingress.\nOps: corroborate field agents vs lattice hash bands.",
+    Restructure: "INTEL MANUAL — RESTRUCTURE\nRealign institutions for accountability and measurable outcomes.\nOps: map agencies to clusters; document decision chains.",
+    Resuscitate: "INTEL MANUAL — RESUSCITATE\nRevive dormant corridors; reactivate strategic assets with disciplined stewardship.\nOps: prioritize AZK-adjacent wards; staged capital release.",
+    Revitalize: "INTEL MANUAL — REVITALIZE\nInject momentum across leadership layers; rebuild capability where erosion threatens sovereignty.\nOps: pulse NAFC linguistics + RHGI LGA drill-down.",
+    "Re-engineer": "INTEL MANUAL — RE-ENGINEER\nRedesign systems for resilience, speed, and long-cycle transparency.\nOps: API catalog alignment; NOFR liquidity handshake.",
+    Retain: "INTEL MANUAL — RETAIN\nSecure gains; protect institutional memory; sustain outcomes beyond tactical windows.\nOps: archive forensic hashes; lock ward configurations."
+  };
+  var CLUSTER_INTEL_MANUAL = {
+    all: "CLUSTER INTEL — ALL MATRIX\nOverlay every institutional cluster; Eagle readiness blends economic, infrastructure, security, and social impact.\nUse for cross-silo audits and national pulse.",
+    economic: "CLUSTER INTEL — ECONOMIC\nMonetary rails, NOFR liquidity, fiscal transparency, revenue attest.\nManual: CBN/NOFR endpoints, RMAFC handshake, fiscal trace.",
+    infrastructure: "CLUSTER INTEL — INFRASTRUCTURE\nTransport, marine, energy regulation, corridor resilience.\nManual: align FMW/FMOT signals with ward ingress and AZK spine.",
+    security: "CLUSTER INTEL — SECURITY\nDefense posture, financial integrity, civil protection, venue shield.\nManual: EP G/H/I lanes; correlate DSS/NPF incident routing.",
+    social: "CLUSTER INTEL — SOCIAL IMPACT\nHealth, education, youth, civic lattice.\nManual: CIN endpoints M/N; unions ↔ civil ↔ associations mesh.",
+    off: "CLUSTER INTEL — OVERLAY OFF\nMap nodes hidden for clean cartographic review.\nManual: re-enable cluster before API catalog / Termii orders."
+  };
   const prismBoxes = [].slice.call(document.querySelectorAll(".prism-box"));
   const definitionEl = document.getElementById("prismDefinition");
   const commandFeedEl = document.getElementById("commandDoctrineFeed");
@@ -3500,7 +3723,14 @@
       var prismLabel = "";
       var sp = box.querySelector("span");
       if (sp) prismLabel = (sp.textContent || "").trim();
-      appendRhgiTerminalAuditLine(">> 8R TYPEWRITER · " + (prismLabel || "PRISM") + " — doctrine stream live · NAFC-linked");
+      var rhgiTerm = document.getElementById("kadunaRhgiTerminal");
+      var manual = prismLabel ? PRISM_INTEL_MANUAL[prismLabel] : "";
+      var block =
+        ">> 8R DETERMINANT · " + (prismLabel || "PRISM") + " — intelligence manual · NAFC-linked\n" +
+        (manual ? manual : "INTEL MANUAL: doctrine stream engaged — see command feed.");
+      if (rhgiTerm && typeof streamTextToRhgiTerminal === "function") {
+        streamTextToRhgiTerminal(rhgiTerm, block, 0.55);
+      }
     }
     box.addEventListener("mouseenter", highlightOnly);
     box.addEventListener("focus", highlightOnly);
@@ -3617,7 +3847,7 @@
     });
   }
   wireSocialLatticeKineticV75();
-  function initNafcLinguisticsPulseV75() {
+  function initNafcLinguisticsPulseV79() {
     var sel = document.getElementById("nafcLangSelect");
     var pills = [].slice.call(document.querySelectorAll(".nafc-lang-pill"));
     if (!sel || !pills.length) return;
@@ -3658,7 +3888,7 @@
       });
     });
   }
-  initNafcLinguisticsPulseV75();
+  initNafcLinguisticsPulseV79();
 
   function stateUsageFill(name) {
     const d3 = window.d3;
@@ -4134,6 +4364,29 @@
   document.getElementById("corridorClose").addEventListener("click", () => corridorModalEl.classList.remove("open"));
   gapModal.addEventListener("click", (e) => { if (e.target === gapModal) gapModal.classList.remove("open"); });
   corridorModalEl.addEventListener("click", (e) => { if (e.target === corridorModalEl) corridorModalEl.classList.remove("open"); });
+  window.__GCSLC_GLOBAL_SOUTH_CORRIDOR__ = false;
+  function applyGlobalSouthAzkUplink(on) {
+    var map = document.getElementById("mapSvg");
+    if (!map) return;
+    var cor = map.querySelector(".corridor-inference-spine");
+    var glow = map.querySelector(".corridor-glow-base");
+    if (cor) cor.classList.toggle("corridor-gs-uplink", !!on);
+    if (glow) glow.classList.toggle("corridor-gs-uplink", !!on);
+  }
+  (function initGlobalSouthCorridorV82() {
+    var btn = document.getElementById("globalSouthCorridorBtn");
+    if (!btn) return;
+    btn.addEventListener("click", function () {
+      var on = !btn.classList.contains("is-active");
+      btn.classList.toggle("is-active", on);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+      window.__GCSLC_GLOBAL_SOUTH_CORRIDOR__ = on;
+      applyGlobalSouthAzkUplink(on);
+    });
+  })();
+  window.addEventListener("gcslc:v7grassroots", function () {
+    if (window.__GCSLC_GLOBAL_SOUTH_CORRIDOR__) applyGlobalSouthAzkUplink(true);
+  });
   const nfModalClose = document.getElementById("nfModalClose");
   if (nfModalClose && nonFormalModal) {
     nfModalClose.addEventListener("click", () => nonFormalModal.classList.remove("open"));
@@ -4144,7 +4397,7 @@
     live: true,
     endpoint: ASSET.mockTermiiUrl,
     apiKey: "GCSLC_SIMULATION_KEY",
-    from: "GCSLC",
+    from: "GALADIMA_R",
     to: "+2347039139439"
   };
 
@@ -4343,6 +4596,13 @@
   if (handshakeSimBtn) {
     handshakeSimBtn.addEventListener("click", () => { void runGcslcTermiiHandshakeSimulation(); });
   }
+  function sovereignNafcTimestamp() {
+    try {
+      return new Date().toISOString().replace("T", " ").replace(/\.\d{3}Z$/, " UTC");
+    } catch (e) {
+      return String(new Date());
+    }
+  }
   var NAFC_LANG_LINES = {
     hausa: { label: "Hausa", line: "Kudin ruwa ya karu..." },
     yoruba: { label: "Yoruba", line: "Owo omi ti pọ si..." },
@@ -4356,19 +4616,17 @@
     pidgin: "NATIONAL GRASSROOTS SIGNAL BRIDGE (TIER-1)"
   };
   function pulseNafcLanguageBroadcast(langKey) {
-    var lang = langKey || "hausa";
-    var lga = window.__GCSLC_RHGI_SELECTED_LGA || "";
-    var sel = document.getElementById("nafcLgaSelect");
-    if (!lga && sel && sel.value) lga = sel.value;
-    if (!lga) lga = "NATIONAL";
-    var pol = NAFC_POLICY_DATA[lang] || NAFC_POLICY_DATA.hausa;
-    var line = "NAFC ALERT (" + String(lang).toUpperCase() + "): " + pol + " broadcasting to " + lga + " nodes...";
-    appendRhgiTerminalAuditLine(line);
+    if (typeof streamCbnNofrPolicyToRhgiTerminal === "function") {
+      streamCbnNofrPolicyToRhgiTerminal(langKey);
+    }
   }
   function buildNafcFiscalAlertPayload(langKey, lgaName) {
     var L = NAFC_LANG_LINES[langKey] || NAFC_LANG_LINES.hausa;
     var pol = NAFC_POLICY_DATA[langKey] || NAFC_POLICY_DATA.hausa;
-    return "NAFC Alert for " + lgaName + " in " + L.label + " — " + L.line + " · POLICY: " + pol + " [Kaduna Live Sync] …";
+    var ts = sovereignNafcTimestamp();
+    return "NAFC Alert for " + lgaName + " in " + L.label + " — " + L.line + " · POLICY: " + pol +
+      " · SOVEREIGN TIMESTAMP: " + ts + " · DELIVERY: NAFC HIGH-VELOCITY PIPE · " +
+      "[SMS 🛰️ SPACE-LINK] · [WHATSAPP 🔗 GLOBAL-SYNC] · [Kaduna Live Sync] …";
   }
   var nafcTransmitBtn = document.getElementById("nafcTransmitFiscal");
   var nafcLangSelect = document.getElementById("nafcLangSelect");
@@ -4387,9 +4645,12 @@
       var lga = nafcLgaSelect && nafcLgaSelect.value ? nafcLgaSelect.value : "NATIONAL";
       var L = NAFC_LANG_LINES[lang] || NAFC_LANG_LINES.hausa;
       var payload = buildNafcFiscalAlertPayload(lang, lga);
-      var pulseLine = "NAFC Alert for " + lga + " in " + L.label + " …";
+      var pulseLine =
+        "NAFC Alert for " + lga + " in " + L.label + " … · TS " + sovereignNafcTimestamp() + " · " +
+        "[SMS 🛰️ SPACE-LINK] · [WHATSAPP 🔗 GLOBAL-SYNC]";
       pulseTermiiHandshakeLane();
       flashTermiiTestLane();
+      appendHandshakeLog("NAFC DUAL CHANNEL (SIM)", "[SMS 🛰️ SPACE-LINK] · [WHATSAPP 🔗 GLOBAL-SYNC] · Termii lock");
       appendHandshakeLog("NAFC BROADCAST PULSE (SIM)", pulseLine);
       appendHandshakeLog("NAFC NATIONAL FISCAL ALERT (SIM)", payload);
       if (typeof pulseNafcLanguageBroadcast === "function") pulseNafcLanguageBroadcast(lang);
@@ -4844,7 +5105,12 @@
         b.setAttribute("aria-pressed", on ? "true" : "false");
       });
       const cl = btn.getAttribute("data-cluster") || "";
-      if (typeof appendRhgiTerminalAuditLine === "function") {
+      const rhgiTerm = document.getElementById("kadunaRhgiTerminal");
+      const man = CLUSTER_INTEL_MANUAL[cl] || CLUSTER_INTEL_MANUAL.all;
+      const head = ">> SOVEREIGN CLUSTER · " + String(cl).toUpperCase() + " — intelligence manual\n";
+      if (rhgiTerm && typeof streamTextToRhgiTerminal === "function" && man) {
+        streamTextToRhgiTerminal(rhgiTerm, head + man, 0.52);
+      } else if (typeof appendRhgiTerminalAuditLine === "function") {
         appendRhgiTerminalAuditLine(">> CLUSTER MATRIX · " + String(cl).toUpperCase() + " — Eagle readiness vector locked · NAFC audit sync");
       }
       if (syncFn) syncFn();
