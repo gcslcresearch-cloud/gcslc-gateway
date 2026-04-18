@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!-- SOVEREIGN_INTEGRATED_MANIFEST_V1.0 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5, user-scalable=yes" />
+  <meta name="theme-color" content="#001a33" />
+  <meta name="gcslc-sovereign-integrated-manifest-v1" content="tag=SOVEREIGN_INTEGRATED_MANIFEST_V1.0;layer=nrrfc_deep_dashboard;entry_profile=./index.html;nrrfc_deep_layer=./nrrfc_deep_layer.html;bridge=V117;coal_mt=639.3M;relative_paths=1" />
+  <meta name="gcslc-re-anchor-deep-layer-v117" content="coal_reserve_lattice=639.3M_MT;industrial_bloom=synced;vault=double_lock_8r;handshake=relative" />
+  <meta name="gcslc-industrial-lattice-v99" content="node=bua_dangote_gateway;coal=639.3M_MT_synced;cement=lattice_active;nafc=industrial_ingress_led" />
+  <title>NRRFC Deep Layer · Coal Reserves Dashboard · 639.3M MT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&amp;display=swap" rel="stylesheet" />
+  <style>
+    /* SOVEREIGN_INTEGRATED_MANIFEST_V1.0 */
+    :root {
+      --navy: #001a33;
+      --gold: #d4af37;
+      --cyan: #66f5ff;
+      --text: #eaf8ff;
+      --sub: #c8e8f6;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      min-height: 100dvh;
+      font-family: "Goldman", system-ui, sans-serif;
+      background: var(--navy);
+      color: var(--text);
+      -webkit-text-size-adjust: 100%;
+    }
+    body {
+      padding: env(safe-area-inset-top, 0) 14px 28px;
+    }
+    .v115-bridge-v115 {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 8px 14px;
+      margin: 0 0 20px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(102, 245, 255, 0.28);
+      background: linear-gradient(180deg, rgba(0, 12, 30, 0.96) 0%, rgba(0, 26, 51, 0.9) 100%);
+      font-size: clamp(0.55rem, 1.45vw, 0.75rem);
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .v115-bridge-v115 a {
+      color: rgba(200, 245, 255, 0.95);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+    }
+    .v115-bridge-v115 a:hover,
+    .v115-bridge-v115 a:focus-visible {
+      color: #ffd670;
+      border-bottom-color: rgba(212, 175, 55, 0.55);
+      outline: none;
+    }
+    .v115-bridge-v115 a.is-active {
+      color: #ffd670;
+      border-bottom-color: rgba(212, 175, 55, 0.45);
+    }
+    .v115-bridge-v115__sep {
+      color: rgba(212, 175, 55, 0.45);
+    }
+    h1 {
+      font-size: clamp(1.05rem, 4.2vw, 1.45rem);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 700;
+      margin: 0 0 6px;
+    }
+    .subhead {
+      margin: 0 0 18px;
+      font-size: clamp(0.62rem, 1.65vw, 0.82rem);
+      color: var(--sub);
+      line-height: 1.5;
+      max-width: 70ch;
+    }
+    .coal-hero {
+      border-radius: 16px;
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      padding: 1.1rem 1.15rem 1.2rem;
+      margin-bottom: 16px;
+      background:
+        radial-gradient(120% 90% at 50% -20%, rgba(102, 245, 255, 0.12) 0%, transparent 55%),
+        linear-gradient(165deg, rgba(0, 18, 42, 0.92) 0%, rgba(0, 8, 22, 0.96) 100%);
+      box-shadow: inset 0 0 0 1px rgba(102, 245, 255, 0.08), 0 12px 40px rgba(0, 0, 0, 0.35);
+    }
+    .coal-hero__kicker {
+      margin: 0 0 8px;
+      font-size: clamp(0.55rem, 1.5vw, 0.72rem);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      font-weight: 800;
+    }
+    .coal-metric {
+      font-size: clamp(1.4rem, 7vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: #fff4d2;
+      text-shadow: 0 0 24px rgba(212, 175, 55, 0.35);
+      line-height: 1.1;
+    }
+    .coal-metric small {
+      display: block;
+      margin-top: 6px;
+      font-size: clamp(0.55rem, 1.45vw, 0.7rem);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(200, 245, 255, 0.85);
+      font-weight: 700;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .card {
+      border-radius: 12px;
+      border: 1px solid rgba(102, 245, 255, 0.22);
+      padding: 10px 12px;
+      background: rgba(0, 18, 40, 0.55);
+      font-size: clamp(0.52rem, 1.4vw, 0.68rem);
+      line-height: 1.45;
+      color: rgba(225, 245, 255, 0.92);
+    }
+    .card h2 {
+      margin: 0 0 8px;
+      font-size: clamp(0.58rem, 1.5vw, 0.75rem);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    .logic-list {
+      margin: 0;
+      padding-left: 1.15em;
+    }
+    .logic-list li {
+      margin-bottom: 6px;
+    }
+    .back {
+      margin-top: 12px;
+    }
+    .back a {
+      color: var(--cyan);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(102, 245, 255, 0.35);
+      font-size: clamp(0.55rem, 1.5vw, 0.72rem);
+    }
+    .back a:focus-visible {
+      outline: 2px solid rgba(212, 175, 55, 0.65);
+      outline-offset: 2px;
+    }
+    .pulse-line {
+      margin-top: 10px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(212, 175, 55, 0.28);
+      font-size: clamp(0.48rem, 1.25vw, 0.62rem);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-align: center;
+      color: rgba(240, 250, 255, 0.95);
+      animation: coalPulse 2.75s ease-in-out infinite;
+    }
+    @keyframes coalPulse {
+      0%, 100% { filter: brightness(1); box-shadow: 0 0 12px rgba(212, 175, 55, 0.15); }
+      50% { filter: brightness(1.08); box-shadow: 0 0 22px rgba(102, 245, 255, 0.18); }
+    }
+  </style>
+</head>
+<body>
+  <nav class="v115-bridge-v115" aria-label="V117 re-anchor — Entry Profile and NRRFC deep dashboard">
+    <a href="./index.html">Entry Profile (Master)</a>
+    <span class="v115-bridge-v115__sep" aria-hidden="true">·</span>
+    <a class="is-active" href="./nrrfc_deep_layer.html" aria-current="page">NRRFC coal dashboard</a>
+  </nav>
+
+  <h1>National Alert Fusion Center — NRRFC deep layer</h1>
+  <p class="subhead">
+    Deploy-safe deep dashboard: all navigation uses <strong>relative paths</strong> only (<code>./index.html</code>, <code>./nrrfc_deep_layer.html</code>) — no local disk roots, no broken Vercel handshake.
+  </p>
+
+  <section class="coal-hero" aria-labelledby="coal-lattice-head">
+    <p class="coal-hero__kicker" id="coal-lattice-head">COAL_RESERVE_LATTICE · industrial bloom</p>
+    <div class="coal-metric" role="status">
+      639.3M <span style="font-size:0.55em;vertical-align:super;">MT</span>
+      <small>Sovereign coal resuscitation envelope · BUA/Dangote gateway sync (lattice)</small>
+    </div>
+    <p class="pulse-line" aria-live="polite">COAL_RESERVE_LATTICE: 639.3M MT · INDUSTRIAL BLOOM · SOVEREIGN METRICS LOCKED</p>
+  </section>
+
+  <div class="grid">
+    <section class="card" aria-labelledby="card-nrrfc">
+      <h2 id="card-nrrfc">NRRFC fusion rails</h2>
+      <p style="margin:0">
+        Deep layer binds NAFC ingress to industrial vault telemetry: coal basins, process-heat adjacency, and SCUML-aware reporting lanes — one vector from physical reserve to institutional execution.
+      </p>
+    </section>
+    <section class="card" aria-labelledby="card-639">
+      <h2 id="card-639">639.3M MT coal logic</h2>
+      <ul class="logic-list">
+        <li><strong>Reserve envelope:</strong> 639.3M MT nominal lattice (master index industrial projection).</li>
+        <li><strong>Resuscitate (8R):</strong> φ_revive — dormant corridors re-lit; staged capital pulse under double-lock vault policy.</li>
+        <li><strong>Lattice sync:</strong> COAL_RESUSCITATION node mirrors <code>industrialProjectedRecovery</code> handshake on Entry Profile.</li>
+      </ul>
+    </section>
+    <section class="card" aria-labelledby="card-vault">
+      <h2 id="card-vault">Vault posture</h2>
+      <p style="margin:0">
+        Until Chairman vault key clears, metrics display as <strong>locked bloom</strong> — same semantics as the Entry Profile gated nodes: sovereign metrics pulse, no raw export off-lattice.
+      </p>
+    </section>
+  </div>
+
+  <p class="back">
+    <a href="./index.html">← Return to Entry Profile (master index)</a>
+  </p>
+</body>
+</html>
