@@ -28,7 +28,7 @@
   <meta name="gcslc-sovereign-identity-fix-v150" content="name_slider_retired=1;identity_first=1;deck_unclutter=1;no_bottom_sliders=1;termii_unblock=1;footer_consolidated=1;nafc_coal_clear=1" />
   <meta name="gcslc-command-deck-cleanup-v151" content="nafc_scale_0.7=1;identity_fixed_gold=1;sfp_relocated_nrrfc=1;prism_static_doctrine=1;lattice_awc_drawer_order=1;deck_no_overlap=1" />
   <meta name="gcslc-arch-restoration-v152-1" content="layout_rollback_non_map=1;nafc_landscape_wide=1;sovereign_liquidity_strike=945T_vs_50T;map_exemption=sovereignGatedMapV133;sidebar_air=1" />
-  <meta name="gcslc-institutional-header-v153" content="goldman_cyan_shimmer=1;typewriter_primary_100ms=1;header_zone_15vh=1;apex_rows_migrated_to_header=1" />
+  <meta name="gcslc-institutional-header-v153" content="goldman_cyan_shimmer=1;typewriter_primary_220ms_slow=1;header_zone_15vh=1;apex_rows_migrated_to_header=1" />
   <meta name="gcslc-nafc-stealth-recon-v154" content="nafc_scale_0.65=1;metallic_gold_calligraphy=1;turquoise_nafc_pulse=1;coal_liquidity_removed=1;linguistics_glass=1" />
   <!-- Institutional Navy Blue (#001a33) — Edge / PWA chrome -->
   <meta name="theme-color" content="#001a33" media="(prefers-color-scheme: dark)" />
@@ -1525,7 +1525,7 @@
     html.gcslc-arch-restoration-v152-1 .sidebar.sidebar-right .social-lattice-widget .lattice-sync-row {
       margin-top: 6px !important;
     }
-    /* V153 — Institutional header: high-visibility zone (~15vh), Goldman cyan shimmer + typewriter; V154 NAFC stealth scale separate */
+    /* V153 — Institutional header: high-visibility zone (~15vh), Goldman cyan shimmer + slow typewriter; V154 NAFC stealth scale separate */
     html.gcslc-institutional-header-v153 #apexRowRc,
     html.gcslc-institutional-header-v153 #apexRowAnchor {
       display: none !important;
@@ -1535,25 +1535,25 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: clamp(6px, 1.2vmin, 12px);
+      gap: clamp(8px, 1.5vmin, 14px);
       width: 100%;
-      max-width: min(1040px, 98vw);
+      max-width: min(1120px, 98vw);
       min-height: 15vh;
       margin: 0 auto;
-      padding: clamp(4px, 1vmin, 10px) 0;
+      padding: clamp(8px, 1.4vmin, 16px) 0;
       text-align: center;
       font-family: "Goldman", system-ui, sans-serif;
-      font-size: clamp(0.88rem, 2.65vmin, 1.55rem);
+      font-size: clamp(1.02rem, 3.1vmin, 1.75rem);
     }
     html.gcslc-institutional-header-v153 .gcslc-institutional-identity-v153__primary {
       margin: 0;
       padding: 0;
-      max-width: 58ch;
+      max-width: min(58ch, 96vw);
       font-family: "Goldman", system-ui, sans-serif;
       font-weight: 700;
-      letter-spacing: 0.04em;
-      line-height: 1.22;
-      font-size: 100%;
+      letter-spacing: 0.035em;
+      line-height: 1.18;
+      font-size: clamp(1.12rem, 4.6vmin, 2.55rem);
       text-transform: none;
     }
     html.gcslc-institutional-header-v153 .gcslc-institutional-identity-v153__primary-tw {
@@ -1598,12 +1598,12 @@
     html.gcslc-institutional-header-v153 .gcslc-institutional-identity-v153__secondary {
       margin: 0;
       padding: 0;
-      max-width: 54ch;
+      max-width: min(54ch, 92vw);
       font-family: "Goldman", system-ui, sans-serif;
       font-weight: 600;
       letter-spacing: 0.1em;
       line-height: 1.38;
-      font-size: 70%;
+      font-size: clamp(0.78rem, 3.22vmin, 1.78rem);
       color: transparent;
       background-image: linear-gradient(
         120deg,
@@ -1630,18 +1630,38 @@
     html.gcslc-institutional-header-v153 .gcslc-institutional-identity-v153__tertiary {
       margin: 0;
       padding: 0;
-      max-width: min(68ch, 96vw);
+      max-width: min(72ch, 96vw);
       font-family: "Goldman", system-ui, sans-serif;
       font-style: normal;
-      font-weight: 700;
-      font-size: clamp(0.62rem, 1.85vmin, 0.95rem);
-      line-height: 1.48;
-      letter-spacing: 0.03em;
-      color: #f8fafc;
-      text-shadow:
-        0 0 1px rgba(0, 0, 0, 0.85),
-        0 1px 0 rgba(212, 175, 55, 0.42),
-        0 0 22px rgba(212, 175, 55, 0.22);
+      font-weight: 800;
+      font-size: clamp(0.88rem, 2.75vmin, 1.28rem);
+      line-height: 1.42;
+      letter-spacing: 0.04em;
+      color: transparent;
+      background-image: linear-gradient(
+        118deg,
+        #fffef8 0%,
+        #fef3c7 18%,
+        #f8fafc 38%,
+        #fde68a 55%,
+        #fffbeb 72%,
+        #e2e8f0 100%
+      );
+      background-size: 220% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      text-shadow: none;
+      filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.65)) drop-shadow(0 2px 14px rgba(212, 175, 55, 0.35));
+      animation: gcslcInstitutionalCreedSheenV155 7s ease-in-out infinite;
+    }
+    @keyframes gcslcInstitutionalCreedSheenV155 {
+      0%,
+      100% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
     }
     html.gcslc-institutional-header-v153.gcslc-command-deck-cleanup-v151 .gcslc-sovereign-identity-v148 {
       align-items: center;
@@ -1655,11 +1675,11 @@
       box-shadow: 0 10px 28px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(102, 245, 255, 0.06);
     }
     html.gcslc-institutional-header-v153.gcslc-command-deck-cleanup-v151 main.app {
-      padding-top: min(calc(15vh + 112px + env(safe-area-inset-top, 0px)), 320px);
+      padding-top: min(calc(15vh + 148px + env(safe-area-inset-top, 0px)), 360px);
     }
     @media (max-width: 640px) {
       html.gcslc-institutional-header-v153.gcslc-command-deck-cleanup-v151 main.app {
-        padding-top: min(calc(15vh + 128px + env(safe-area-inset-top, 0px)), 340px);
+        padding-top: min(calc(15vh + 168px + env(safe-area-inset-top, 0px)), 380px);
       }
     }
     @media (prefers-reduced-motion: reduce) {
@@ -1677,6 +1697,18 @@
         background: none;
         -webkit-background-clip: border-box;
         background-clip: border-box;
+      }
+      html.gcslc-institutional-header-v153 .gcslc-institutional-identity-v153__tertiary {
+        animation: none !important;
+        color: #fffef5;
+        background: none;
+        -webkit-background-clip: border-box;
+        background-clip: border-box;
+        filter: none;
+        text-shadow:
+          0 0 1px rgba(0, 0, 0, 0.85),
+          0 1px 0 rgba(212, 175, 55, 0.5),
+          0 0 26px rgba(212, 175, 55, 0.28);
       }
     }
     /* V154 — NAFC stealth reconstruction: −35% footprint, metallic NAFC title, turquoise acronym pulse, glass linguistics */
@@ -1717,12 +1749,15 @@
       text-transform: uppercase !important;
       background-image: linear-gradient(
         118deg,
-        #fffef5 0%,
-        #f5e6b8 18%,
-        #d4af37 42%,
-        #fff9e6 58%,
-        #c9a227 78%,
-        #f8fafc 100%
+        #ffffff 0%,
+        #fffef5 12%,
+        #f5e6b8 28%,
+        #f8fafc 40%,
+        #d4af37 52%,
+        #fff9e6 64%,
+        #fefce8 78%,
+        #c9a227 88%,
+        #ffffff 100%
       ) !important;
       background-size: 220% 100%;
       -webkit-background-clip: text !important;
@@ -1746,12 +1781,15 @@
       filter: none !important;
       animation: nafcLetterTurquoisePulseV154 2.15s ease-in-out infinite !important;
       background-image: linear-gradient(
-        165deg,
+        168deg,
         #022c22 0%,
-        #047857 28%,
-        #0d9488 52%,
-        #14b8a6 72%,
-        #99f6e4 100%
+        #064e3b 16%,
+        #047857 32%,
+        #0f766e 48%,
+        #0d9488 62%,
+        #14b8a6 78%,
+        #5eead4 92%,
+        #ccfbf1 100%
       ) !important;
       -webkit-background-clip: text !important;
       background-clip: text !important;
@@ -1776,7 +1814,7 @@
       }
     }
     html.gcslc-nafc-stealth-recon-v154 #nafcSovereignAnchor .nafc-fusion-lang--stealth-v154 {
-      margin-top: 14px !important;
+      margin-top: 22px !important;
       width: 100%;
       max-width: 520px;
       align-self: center !important;
@@ -1792,20 +1830,27 @@
     }
     html.gcslc-nafc-stealth-recon-v154 #nafcSovereignAnchor .nafc-lang-pill {
       border-radius: 999px;
-      padding: 8px 14px;
-      border: 1px solid rgba(102, 245, 255, 0.35);
-      background: linear-gradient(165deg, rgba(0, 18, 42, 0.45), rgba(0, 8, 22, 0.55));
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      padding: 9px 16px;
+      border: 1px solid rgba(103, 232, 249, 0.42);
+      background: linear-gradient(
+        155deg,
+        rgba(0, 28, 56, 0.42) 0%,
+        rgba(0, 12, 32, 0.52) 45%,
+        rgba(0, 18, 42, 0.38) 100%
+      );
+      backdrop-filter: blur(14px) saturate(1.15);
+      -webkit-backdrop-filter: blur(14px) saturate(1.15);
       box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.08),
-        0 8px 22px rgba(0, 0, 0, 0.35),
-        0 0 0 1px rgba(0, 229, 255, 0.08);
-      color: rgba(224, 250, 255, 0.95);
+        inset 0 1px 0 rgba(255, 255, 255, 0.14),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.22),
+        0 10px 28px rgba(0, 0, 0, 0.38),
+        0 0 0 1px rgba(0, 229, 255, 0.12),
+        0 0 24px rgba(0, 229, 255, 0.12);
+      color: rgba(236, 254, 255, 0.96);
       font-weight: 800;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      transition: transform 0.2s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      transition: transform 0.2s ease, box-shadow 0.25s ease, border-color 0.25s ease, filter 0.25s ease;
     }
     html.gcslc-nafc-stealth-recon-v154 #nafcSovereignAnchor .nafc-lang-pill:hover,
     html.gcslc-nafc-stealth-recon-v154 #nafcSovereignAnchor .nafc-lang-pill:focus-visible {
@@ -1821,6 +1866,25 @@
         inset 0 0 0 1px rgba(212, 175, 55, 0.22),
         0 0 26px rgba(0, 229, 255, 0.28);
       color: #fff8e7;
+    }
+    html.gcslc-institutional-header-v153 .header.header-apex-layer01 {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      padding-bottom: clamp(6px, 1vmin, 14px);
+      box-sizing: border-box;
+    }
+    html.gcslc-institutional-header-v153 #sovereignGatedNafcV133 {
+      width: 100%;
+      max-width: min(1180px, 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    html.gcslc-nafc-stealth-recon-v154 #nafcSovereignAnchor .nafc-fusion-prism-body--stealth-v154 {
+      gap: 10px !important;
+      padding-bottom: 6px !important;
     }
     html.gcslc-institutional-header-v153 #nafcSovereignAnchor .nafc-rhgi-identity {
       line-height: 1.42 !important;
@@ -7708,7 +7772,7 @@
               </div>
             </div>
             <div class="kaduna-rhgi-scroll" id="kadunaLgaScroll" role="list"></div>
-            <p class="rhgi-console-hint-v89">Technical logs: <strong>double-tap</strong> (mobile) or <strong>double-click</strong> (desktop) the NAFC <strong>green LED</strong> to open the Secondary Feed.</p>
+            <p class="rhgi-console-hint-v89">Technical logs: open the <strong>Termii</strong> console below — <strong>double-tap</strong> (mobile) or <strong>double-click</strong> (desktop) lane headers for the Secondary Feed.</p>
           </div>
           <div id="sovereignGatedDeepLayerV132" class="sovereign-gated-region-v132">
             <div id="sovereignClearanceCurtainSidebarV132" class="sovereign-clearance-curtain-v132 sovereign-clearance-curtain--sidebar-v132" aria-hidden="true">
@@ -7777,7 +7841,7 @@
           <div id="sovereignClearanceCurtainCenterV132" class="sovereign-clearance-curtain-v132" role="dialog" aria-modal="true" aria-labelledby="sovereignClearanceTitleV132">
             <div class="sovereign-clearance-card-v132">
               <p class="sovereign-clearance-title-v132" id="sovereignClearanceTitleV132">SOVEREIGN CLEARANCE REQUIRED</p>
-              <p class="sovereign-clearance-sub-v132">Enter the Sovereign Key to reveal NAFC live lattice, Eagle coal maps, Deep-Layer metrics, and Kaduna phone-node stream.</p>
+              <p class="sovereign-clearance-sub-v132">Enter the Sovereign Key to reveal NAFC live lattice, Eagle corridor maps, Deep-Layer metrics, and Kaduna phone-node stream.</p>
               <label class="sovereign-clearance-label-v132" for="sovereignVaultKeyInputV132">Sovereign Key</label>
               <input type="password" id="sovereignVaultKeyInputV132" class="sovereign-clearance-input-v132" autocomplete="off" spellcheck="false" />
               <button type="button" id="sovereignVaultUnlockBtnV132" class="sovereign-clearance-btn-v132">Authorize</button>
@@ -7800,22 +7864,6 @@
                     <span class="nafc-letter nafc-letter-4">C</span>
                   </span>
                 </h2>
-                <p class="nafc-fusion-tagline">Sovereign Anchor · Fusion Command</p>
-                <p class="nafc-rhgi-identity nafc-rhgi-identity--primary-mission" id="nafcRhgiIdentity" title="Primary mission — Rural Hyper-Grassroots Initiatives (RHGI)">Rural Hyper-Grassroots Initiatives (RHGI)</p>
-                <p class="nafc-mission-roadmap-v83" id="nafcMissionRoadmapV83" aria-live="polite"></p>
-                <div class="nafc-live-signal nafc-live-signal--v87" id="nafcLiveSignalStrip" title="NAFC live signal — space-frequency lattice">
-                  <div class="nafc-live-signal-row-v87">
-                    <span class="nafc-sf-sat-v87" role="img" aria-label="Space-frequency handshake">🛰️</span>
-                    <span class="nafc-live-signal-orbit nafc-space-freq-orbit-v82" aria-hidden="true">
-                      <span class="nafc-live-signal-node" id="nafcLiveSignalNode" role="button" tabindex="0" title="Double-tap or double-click the green LED for Secondary Feed (technical logs)"></span>
-                    </span>
-                  </div>
-                  <div class="nafc-live-signal-copy-v87">
-                    <span class="nafc-live-signal-label"><span class="sr-only-def">NAFC space-frequency signal. </span><span id="nafcSignalLatticeLabelV147">SIGNAL: SPACE-FREQ LATTICE SYNCED</span></span>
-                    <span class="nafc-sf-uplink-v87" id="nafcKadunaUplinkV147" aria-live="polite"></span>
-                    <span class="nafc-rhgi-cloud-ingress-v88" id="nafcRhgiCloudIngressV88" aria-live="polite"></span>
-                  </div>
-                </div>
                 <div class="nafc-fusion-lang nafc-fusion-lang--stealth-v154" role="group" aria-labelledby="nafcFusionLangLabel">
                   <span id="nafcFusionLangLabel" class="nafc-fusion-lang-heading">Sovereign linguistics</span>
                   <select id="nafcLangSelect" class="nafc-lang-select-sr" aria-label="NAFC broadcast language" tabindex="-1">
@@ -7925,7 +7973,7 @@
                 <span class="termii-pulse" aria-hidden="true"></span>
               </div>
             </div>
-            <p class="termii-console-teaser-v89">Lanes live · Secondary Feed (logs) via <strong>double-tap / double-click NAFC LED</strong></p>
+            <p class="termii-console-teaser-v89">Lanes live · Secondary Feed (logs) via <strong>double-tap / double-click</strong> on active lane tiles</p>
           </div>
         </section>
       </div>
@@ -11388,28 +11436,23 @@
       var d = document.getElementById("nafcSlsDeployableV152");
       var m = document.getElementById("nafcSlsDomesticV152");
       var x = document.getElementById("nafcSlsMultV152");
+      if (!d && !m && !x) return;
       if (d) d.textContent = "₦" + Number(C.deployableTn).toFixed(1) + "T";
       if (m) m.textContent = "₦" + Number(C.domesticFaceTn).toFixed(1) + "T";
       if (x && typeof C.labelMult === "string") x.textContent = C.labelMult;
     }
     var ROT = [
-      "MISSION STATUS: INDUSTRIAL LATTICE · AZK TELEMETRY LIVE",
+      "MISSION STATUS: 8R STEALTH PARADIGM · DETERMINANTS ARMED",
       "MISSION STATUS: KADUNA NODAL MESH · MASTER CSV INGRESS ARMED",
-      "MISSION STATUS: COAL RESERVE 639.3M MT · EAGLE LATTICE PULSE",
-      "MISSION STATUS: RHGI CLOUD INGRESS · INDUSTRIAL BLOOM SYNC"
+      "MISSION STATUS: NAFC SOVEREIGN LINGUISTICS · BROADCAST READY",
+      "MISSION STATUS: AZK TELEMETRY · COMMAND DECK SYNCHRONIZED"
     ];
     var k = 0;
     var lastMeta = null;
     function refreshCoalLatticeV147() {
+      /* V155 — Coal Reserve Lattice UI retired; Eagle map retains legacy hooks */
       var node = document.getElementById("nafcCoalLatticeLiveV147");
       if (!node) return;
-      var mt = window.__GCSLC_COAL_RESERVE_MT_V147__ || 639.3e6;
-      node.textContent =
-        "COAL RESERVE LATTICE · " +
-        (mt / 1e6).toFixed(1) +
-        "M MT · EAGLE SYNC · LIVE " +
-        new Date().toISOString().slice(11, 19) +
-        "Z";
     }
     function applyKadunaMetaV146(meta) {
       if (!meta || typeof meta !== "object") return;
@@ -11441,9 +11484,7 @@
         m.textContent =
           "MISSION STATUS: KADUNA NODAL DATA · " +
           rows.toLocaleString("en-US") +
-          " ROWS · COAL RESERVE LATTICE " +
-          ((window.__GCSLC_COAL_RESERVE_MT_V147__ || 639.3e6) / 1e6).toFixed(1) +
-          "M MT LIVE";
+          " ROWS · AZK TELEMETRY LIVE";
       }
     }
     function fetchKadunaMetaV146() {
@@ -11470,9 +11511,9 @@
       var strip = document.getElementById("nafcLiveSignalStrip");
       if (strip) {
         strip.title =
-          "NAFC industrial telemetry · last pulse " +
+          "NAFC command telemetry · last pulse " +
           new Date().toISOString().slice(11, 19) +
-          "Z · coal lattice 639.3M MT · Kaduna meta refresh 60s";
+          "Z · Kaduna meta refresh 60s";
       }
     }
     function bootTelV146() {
@@ -11488,7 +11529,7 @@
   (function gcslcInstitutionalHeaderTypewriterV153() {
     var FULL =
       "Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE";
-    var delayMs = 100;
+    var delayMs = 220;
     function run() {
       var el = document.getElementById("gcslcInstitutionalPrimaryTypewriterV153");
       if (!el) return;
