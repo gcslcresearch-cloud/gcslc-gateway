@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="gcslc-vault-restoration-v133 gcslc-hardcoded-sovereign-vault-v134 gcslc-live-market-pulse-v135 gcslc-sovereign-realtime-pulse-v136 gcslc-professional-realtime-v138 gcslc-telegram-sovereign-node-v139 gcslc-debt-clearance-trickle-v140 gcslc-debt-clearance-strike-v143 gcslc-telegram-terminal-final-v145 gcslc-paradigm-unmask-v146 gcslc-paradigm-unmask-v147 gcslc-identity-pulse-sync-v148 gcslc-sovereign-identity-fix-v150 gcslc-command-deck-cleanup-v151 gcslc-arch-restoration-v152-1 gcslc-institutional-header-v153 gcslc-nafc-stealth-recon-v154">
+<html lang="en" class="gcslc-vault-restoration-v133 gcslc-hardcoded-sovereign-vault-v134 gcslc-live-market-pulse-v135 gcslc-sovereign-realtime-pulse-v136 gcslc-professional-realtime-v138 gcslc-telegram-sovereign-node-v139 gcslc-debt-clearance-trickle-v140 gcslc-debt-clearance-strike-v143 gcslc-telegram-terminal-final-v145 gcslc-paradigm-unmask-v146 gcslc-paradigm-unmask-v147 gcslc-identity-pulse-sync-v148 gcslc-sovereign-identity-fix-v150 gcslc-command-deck-cleanup-v151 gcslc-arch-restoration-v152-1 gcslc-institutional-header-v153 gcslc-velocity-sliders-v153 gcslc-command-directive-12-v162 gcslc-nafc-stealth-recon-v154">
 <head>
   <meta charset="UTF-8" />
   <!-- SOVEREIGN_INTEGRATED_MANIFEST_V1.0 -->
@@ -170,6 +170,8 @@
       --footer-h: calc(var(--intel-h) + var(--footer-core));
       --api-catalog-menu-h: 56px;
       --elite-ticker-h: 28px;
+      /* V153 — CIN/CIEN velocity sliders: height budget inside static intel widgets (no net stack growth) */
+      --gcslc-velocity-slider-h: 22px;
     }
     * { box-sizing: border-box; }
     *, *::before, *::after {
@@ -1322,10 +1324,8 @@
       display: none !important;
       pointer-events: none !important;
     }
-    html.gcslc-sovereign-identity-fix-v150 .secure-liaison-v102 {
-      margin-top: 14px;
-      position: relative;
-      z-index: 2;
+    html.gcslc-sovereign-identity-fix-v150 .footer .footer-comm-mesh-v162 {
+      margin-top: 12px;
     }
     /* V151 — COMMAND_DECK_CLEANUP: fixed gold identity, NAFC −30% deck scale, prism doctrine static, stack air */
     html.gcslc-command-deck-cleanup-v151 .gcslc-sovereign-identity-v148 {
@@ -1465,16 +1465,22 @@
     html.gcslc-arch-restoration-v152-1 .termii-panel-v15.termii-panel--pulse-v89 {
       margin-top: 14px !important;
     }
-    html.gcslc-arch-restoration-v152-1 .sidebar.sidebar-right .secure-liaison-v102 {
-      margin-bottom: 16px !important;
-    }
-    html.gcslc-arch-restoration-v152-1 .sidebar.sidebar-right .cin-ticker-block {
+    html.gcslc-arch-restoration-v152-1 .sidebar.sidebar-right .cin-ticker-block,
+    html.gcslc-arch-restoration-v152-1 .sidebar.sidebar-right .cien-ticker-block {
       margin-bottom: 16px !important;
     }
     html.gcslc-arch-restoration-v152-1 .sidebar.sidebar-right .social-lattice-widget {
       margin-top: 6px !important;
       position: relative;
       z-index: 2;
+      /* Directive #12: +10% horizontal focal (was 110% / −5%) */
+      width: 121% !important;
+      max-width: none !important;
+      margin-left: -10.5% !important;
+      box-sizing: border-box;
+    }
+    html.gcslc-arch-restoration-v152-1 .sidebar.sidebar-right {
+      overflow-x: visible;
     }
     html.gcslc-arch-restoration-v152-1 .sidebar.sidebar-right .social-lattice-widget .lattice-sync-row {
       margin-top: 6px !important;
@@ -4340,8 +4346,8 @@
     }
     .clock-row {
       display: grid;
-      grid-template-columns: repeat(6, minmax(48px, 1fr));
-      gap: 6px;
+      grid-template-columns: repeat(6, minmax(52px, 1fr));
+      gap: 8px;
       margin-bottom: 12px;
     }
     .clock-widget-v15 {
@@ -4354,57 +4360,142 @@
     .map-stack-v15 #mapSvg {
       min-height: min(62vh, 720px);
     }
-    .clock-prism-frame {
+    /* Directive #12 — Radial Telemetry Standard (open dial · radial markers only · cyan/white · thin hands · marker sync pulse) */
+    .telemetry-radial-clock-v162 {
       text-align: center;
-      padding: 5px 3px 4px;
-      background: var(--surface-unified);
-      border: 1px solid rgba(102, 245, 255, 0.16);
-      clip-path: polygon(10% 0, 90% 0, 100% 50%, 90% 100%, 10% 100%, 0 50%);
-      box-shadow: none;
-      backdrop-filter: none;
-      -webkit-backdrop-filter: none;
-      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-      animation: clockMetalShimmer 7s ease-in-out infinite;
+      padding: 4px 2px 2px;
     }
-    @keyframes clockMetalShimmer {
-      0%, 100% { filter: brightness(1) saturate(1.05); border-color: rgba(102, 245, 255, 0.28); }
-      50% { filter: brightness(1.1) saturate(1.18); border-color: rgba(166, 251, 255, 0.55); }
-    }
-    .clock-prism-frame { animation: clockPrismPulse 2.4s ease-in-out infinite; }
-    .clock-prism-frame:hover { transform: scale(1.1); z-index: 3; box-shadow: 0 0 18px rgba(102,245,255,0.45); }
-    @media (hover: none) {
-      .clock-prism-frame:active { transform: scale(1.06); }
-    }
-    @keyframes clockPrismPulse {
-      0%, 100% { box-shadow: inset 0 0 8px rgba(212,175,55,0.12), 0 0 6px rgba(102,245,255,0.15); }
-      50% { box-shadow: inset 0 0 14px rgba(212,175,55,0.22), 0 0 14px rgba(102,245,255,0.28); }
-    }
-    .clock {
-      width: 32px;
-      height: 32px;
-      margin: 0 auto 3px;
-      border-radius: 50%;
-      border: 1.5px solid rgba(149,239,255,0.88);
+    .telemetry-radial-clock-v162__face {
       position: relative;
-      background: radial-gradient(circle at center, rgba(160,237,255,0.08) 0 20%, transparent 21%), linear-gradient(155deg, rgba(8,34,74,0.95), rgba(4,16,39,0.95));
+      width: 44px;
+      height: 44px;
+      margin: 0 auto 4px;
+      border-radius: 50%;
+      background: transparent;
+      box-shadow: none;
     }
-    .clock::before {
-      content: "";
+    .telemetry-radial-clock-v162__dial {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: visible;
+      filter: drop-shadow(0 0 8px rgba(102, 245, 255, 0.22));
+    }
+    .telemetry-radial-clock-v162__ring {
+      fill: none;
+      stroke: rgba(186, 250, 255, 0.22);
+      stroke-width: 0.55;
+    }
+    .telemetry-tick-minor-v162 {
+      stroke: rgba(230, 252, 255, 0.38);
+      stroke-width: 0.45;
+      stroke-linecap: round;
+      opacity: 0.85;
+    }
+    .telemetry-tick-major-v162 {
+      stroke: rgba(248, 255, 255, 0.96);
+      stroke-width: 1.15;
+      stroke-linecap: round;
+      animation: telemetryMarkerSyncPulseV162 2.35s ease-in-out infinite;
+    }
+    @keyframes telemetryMarkerSyncPulseV162 {
+      0%,
+      100% {
+        opacity: 0.42;
+        filter: drop-shadow(0 0 2px rgba(102, 245, 255, 0.12));
+      }
+      50% {
+        opacity: 1;
+        filter: drop-shadow(0 0 6px rgba(186, 250, 255, 0.85));
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .telemetry-tick-major-v162 {
+        animation: none !important;
+        opacity: 0.92;
+      }
+    }
+    .telemetry-radial-clock-v162__hub {
       position: absolute;
       left: 50%;
       top: 50%;
-      width: 3px;
-      height: 3px;
+      width: 2px;
+      height: 2px;
       transform: translate(-50%, -50%);
       border-radius: 50%;
-      background: var(--cyan-soft);
+      background: #f4fdff;
+      box-shadow: 0 0 10px rgba(102, 245, 255, 0.85);
       z-index: 4;
     }
-    .hand { position: absolute; left: 50%; bottom: 50%; transform-origin: bottom center; border-radius: 2px; }
-    .hour { width: 2px; height: 8px; margin-left: -1px; background: #d8ecff; }
-    .minute { width: 1.8px; height: 11px; margin-left: -0.9px; background: #bee9ff; }
-    .second { width: 1px; height: 12px; margin-left: -0.5px; background: #67f4ff; }
-    .city { font-size: 0.48rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--cyan-soft); font-weight: 700; }
+    .telemetry-radial-clock-v162__face .hand {
+      position: absolute;
+      left: 50%;
+      bottom: 50%;
+      transform-origin: bottom center;
+      border-radius: 1px;
+      z-index: 3;
+    }
+    .telemetry-radial-clock-v162__face .hour {
+      width: 1px;
+      height: 10px;
+      margin-left: -0.5px;
+      background: linear-gradient(180deg, #ffffff 0%, rgba(186, 240, 255, 0.92) 100%);
+      box-shadow: 0 0 6px rgba(102, 245, 255, 0.35);
+    }
+    .telemetry-radial-clock-v162__face .minute {
+      width: 0.85px;
+      height: 13px;
+      margin-left: -0.425px;
+      background: linear-gradient(180deg, #f0fbff 0%, rgba(120, 220, 255, 0.92) 100%);
+      box-shadow: 0 0 6px rgba(102, 245, 255, 0.28);
+    }
+    .telemetry-radial-clock-v162__face .second {
+      width: 0.45px;
+      height: 14px;
+      margin-left: -0.225px;
+      background: rgba(210, 252, 255, 0.98);
+      box-shadow: 0 0 8px rgba(102, 245, 255, 0.42);
+    }
+    .telemetry-radial-clock-v162__city {
+      font-size: 0.48rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(210, 248, 255, 0.95);
+      font-weight: 700;
+      text-shadow: 0 0 12px rgba(102, 245, 255, 0.18);
+    }
+    /* Directive #12 — Footer: legal + social mesh aligned (no lateral collision with lattice column) */
+    .footer-legal-social-align-v162 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px 12px;
+      align-items: start;
+    }
+    @media (min-width: 980px) {
+      .footer-legal-social-align-v162 {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        align-items: center;
+      }
+      .footer-legal-social-align-v162 .footer-social-comm-v162 {
+        justify-self: end;
+        max-width: min(560px, 100%);
+      }
+    }
+    .footer-legal-social-align-v162 .footer-legal-text-v162 p {
+      margin: 0 0 8px;
+    }
+    .footer-legal-social-align-v162 .footer-legal-text-v162 p:last-child {
+      margin-bottom: 0;
+    }
+    .footer-social-comm-v162 .footer-comm-mesh-v162 {
+      margin-top: 0;
+    }
+    .footer-social-comm-v162 .footer-comm-mesh-v162__intel {
+      font-size: clamp(0.44rem, 1.05vw, 0.54rem);
+      margin-bottom: 6px;
+    }
     .layout-inner {
       display: block;
       width: 100%;
@@ -5386,7 +5477,7 @@
       .map-wrap { padding: 8px; }
       .kaduna-rhgi-scroll { max-height: min(200px, 46vh); }
       .rhgi-terminal-readout { font-size: clamp(0.46rem, 2.9vw, 0.56rem); }
-      .cin-ticker-viewport { height: min(180px, 42vh); }
+      .cin-ticker-viewport { height: calc(min(180px, 42vh) - var(--gcslc-velocity-slider-h)); }
       .cin-ticker-line { font-size: clamp(0.46rem, 2.8vw, 0.56rem); padding: 8px 8px; }
     }
     @keyframes footerTw {
@@ -5633,14 +5724,16 @@
         text-align: left;
       }
     }
-    .cin-ticker-block {
+    .cin-ticker-block,
+    .cien-ticker-block {
       margin-top: 12px;
       padding: 10px;
       border-radius: 12px;
       border: 1px solid rgba(102, 245, 255, 0.16);
       background: rgba(0, 26, 51, 0.55);
     }
-    .cin-ticker-block .cin-ticker-title {
+    .cin-ticker-block .cin-ticker-title,
+    .cien-ticker-block .cin-ticker-title {
       margin: 0 0 8px;
       font-size: clamp(0.58rem, 1.45vw, 0.72rem);
       letter-spacing: 0.12em;
@@ -5652,7 +5745,7 @@
     }
     .cin-ticker-viewport {
       position: relative;
-      height: min(200px, 38vh);
+      height: calc(min(200px, 38vh) - var(--gcslc-velocity-slider-h));
       overflow: hidden;
       border-radius: 10px;
       border: 1px solid rgba(212, 175, 55, 0.22);
@@ -5679,6 +5772,55 @@
       color: #66f5ff;
       font-weight: 900;
       margin-right: 6px;
+    }
+    /* V153 — Intrinsic NAFC gateway: high-velocity live-intelligence marquee (CIN/CIEN; sovereign liquidity + SIG bridge) */
+    .gcslc-velocity-message-slider-v153 {
+      margin-top: 0;
+      height: var(--gcslc-velocity-slider-h);
+      border-radius: 8px;
+      border: 1px solid rgba(0, 255, 255, 0.22);
+      background: rgba(0, 8, 18, 0.42);
+      box-shadow: inset 0 0 0 1px rgba(0, 255, 255, 0.06);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .gcslc-velocity-message-slider-v153__viewport {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      padding: 0 6px;
+      mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
+    }
+    .gcslc-velocity-message-slider-v153__marquee {
+      display: inline-flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      gap: 3rem;
+      white-space: nowrap;
+      will-change: transform;
+      animation: gcslcVelocityMarqueeIntrinsicV153 11s linear infinite;
+    }
+    .gcslc-velocity-message-slider-v153--cien .gcslc-velocity-message-slider-v153__marquee {
+      animation-duration: 10.25s;
+    }
+    @keyframes gcslcVelocityMarqueeIntrinsicV153 {
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-50%, 0, 0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .gcslc-velocity-message-slider-v153__marquee {
+        animation: none;
+      }
+    }
+    .gcslc-velocity-message-slider-v153__segment {
+      font-size: clamp(0.44rem, 1.05vw, 0.54rem);
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #00ffff;
+      text-shadow: 0 0 10px rgba(0, 255, 255, 0.35);
     }
     .social-lattice-widget {
       margin-top: 12px;
@@ -8025,7 +8167,7 @@
         
         </header>
 
-        <section class="clock-row clock-widget-v15" id="clockRow" aria-label="World clocks"></section>
+        <section class="clock-row clock-widget-v15" id="clockRow" aria-label="Radial telemetry — world clocks"></section>
 
 
         <div id="gcslcParadigmVaultMountV148" class="gcslc-paradigm-vault-mount-v148">
@@ -8109,61 +8251,6 @@
       </div>
 
       <aside class="sidebar sidebar-right">
-        <div class="secure-liaison-v102 secure-liaison-v102--logos-cyan-v103 secure-liaison-v102--stealth-cyan-v104" aria-label="Stealth comm mesh — eight-channel cyan liaison (logos only)">
-          <h3 class="secure-liaison-v102__title sr-only-def">Secure Liaison — comm mesh</h3>
-          <p class="secure-liaison-v102__intel" id="gcslcIntelChannelStatusV102" aria-live="polite">COMM_MESH: [SYCHRONIZING_PLATFORMS] · AUDIT_PENDING.</p>
-          <div class="secure-liaison-v102__nodes">
-            <a class="secure-liaison-node-v102 secure-liaison-node-v102--wa" href="https://wa.me/2347039139439" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp — live liaison (logo)">
-              <span class="secure-liaison-node-v102__ico" aria-hidden="true">
-                <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.881 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-              </span>
-              <span class="secure-liaison-node-v102__cap">WhatsApp</span>
-            </a>
-            <a class="secure-liaison-node-v102 secure-liaison-node-v102--tg" href="https://t.me/+2347039139439" target="_blank" rel="noopener noreferrer" aria-label="Telegram — sovereign node live (+2347039139439)">
-              <span class="secure-liaison-node-v102__ico" aria-hidden="true">
-                <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M9.04 15.3 8.97 19l3.99-2.14 4.04 2.97c.74.54 1.27.25 1.46-.87l2.66-12.6c.27-1.1-.42-1.6-1.13-1.31L2.58 9.48c-1.09.44-1.08 1.06-.2 1.34l4.7 1.47L18.93 6.3c.38-.24.73-.11.45.17l-8.34 8.83Z"/></svg>
-              </span>
-              <span class="secure-liaison-node-v102__cap">Telegram</span>
-            </a>
-            <div class="secure-liaison-node-v102 secure-liaison-node-v102--signal" tabindex="0" role="group" aria-label="Signal — encrypted executive channel (logo)">
-              <span class="secure-liaison-war-room-v102" role="tooltip">LEVEL 8R ENCRYPTION: EXECUTIVE SESSIONS ONLY.</span>
-              <span class="secure-liaison-node-v102__ico" aria-hidden="true">
-                <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.2 6 2.7V11c0 4.5-3.05 8.75-6 9.9-2.95-1.15-6-5.4-6-9.9V5.9l6-2.7z"/></svg>
-              </span>
-              <span class="secure-liaison-node-v102__cap">Signal</span>
-            </div>
-            <a class="secure-liaison-node-v102 secure-liaison-node-v102--li" href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn — institutional liaison (logo)">
-              <span class="secure-liaison-node-v102__ico" aria-hidden="true">
-                <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M4.98 3.5C4.98 4.328 4.328 4.98 3.5 4.98S2 4.328 2 3.5 2.672 2 3.5 2 4.98 2.672 4.98 3.5zm.02 5.5H2v11h3V9zm5 0H7v11h3v-5.6c0-1.66 1.12-2.61 2.9-2.61 1.74 0 2.1 1.24 2.1 2.85V20h3v-6.3C15 10.76 13.34 9 11.2 9 9.66 9 8.58 9.84 8.1 11h-.05V9H5z"/></svg>
-              </span>
-              <span class="secure-liaison-node-v102__cap">LinkedIn</span>
-            </a>
-            <a class="secure-liaison-node-v102 secure-liaison-node-v102--x" href="https://x.com" target="_blank" rel="noopener noreferrer" aria-label="X — broadcast liaison (logo)">
-              <span class="secure-liaison-node-v102__ico" aria-hidden="true">
-                <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-              </span>
-              <span class="secure-liaison-node-v102__cap">X</span>
-            </a>
-            <a class="secure-liaison-node-v102 secure-liaison-node-v102--bsky" href="https://bsky.app" target="_blank" rel="noopener noreferrer" aria-label="Bluesky — open lattice (logo)">
-              <span class="secure-liaison-node-v102__ico" aria-hidden="true">
-                <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M12 10.8c-1.1-2.1-4.1-6.6-6.9-8.6C3.8.8 1.9 1.9 2.1 4.5c.3 3.8 4 15.2 5.6 15.2 1.2 0 3.4-4 4.3-6.1.9 2.1 3.1 6.1 4.3 6.1 1.6 0 5.3-11.4 5.6-15.2.2-2.6-1.7-3.7-4-2.3-2.8 2-5.8 6.5-6.9 8.6z"/></svg>
-              </span>
-              <span class="secure-liaison-node-v102__cap">Bluesky</span>
-            </a>
-            <a class="secure-liaison-node-v102 secure-liaison-node-v102--tiktok" href="https://www.tiktok.com" target="_blank" rel="noopener noreferrer" aria-label="TikTok — short-form lattice (logo)">
-              <span class="secure-liaison-node-v102__ico" aria-hidden="true">
-                <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M16.6 5.82s1.84-.64 1.84-2.82h-2.7v9.4c0 .8-.68 1.46-1.52 1.46-.84 0-1.52-.66-1.52-1.48 0-.82.68-1.48 1.52-1.48.18 0 .35.04.5.1V9.1a3.3 3.3 0 00-.5-.04c-1.84 0-3.34 1.48-3.34 3.3 0 1.82 1.5 3.3 3.34 3.3 1.84 0 3.34-1.48 3.34-3.3V8.2c.7.5 1.58.8 2.52.8V6.4c-.45 0-.88-.1-1.27-.28v3.1z"/></svg>
-              </span>
-              <span class="secure-liaison-node-v102__cap">TikTok</span>
-            </a>
-            <a class="secure-liaison-node-v102 secure-liaison-node-v102--meta" href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Meta — federation lattice (logo)">
-              <span class="secure-liaison-node-v102__ico" aria-hidden="true">
-                <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2v-2.3c0-2 1.2-3.1 3-3.1.9 0 1.8.16 1.8.16V9h-1c-1 0-1.3.62-1.3 1.26V12h2.2l-.35 3H14v6.8c4.56-.93 8-4.96 8-9.8C22 6.48 17.52 2 12 2z"/></svg>
-              </span>
-              <span class="secure-liaison-node-v102__cap">Meta</span>
-            </a>
-          </div>
-        </div>
         <h2 class="governance-anchor-header-v157" id="governanceAnchorHeaderV157">Governance</h2>
         <div class="sidebar-chart-min" aria-label="Trajectory and information gap">
           <h3 class="sidebar-chart-h">Trajectory & Information Gap</h3>
@@ -8178,11 +8265,34 @@
           <p class="sidebar-chart-sub" id="nfVelocityBridgeCopy">Livestock · Artisans · Micro-Services — scaled by the SIG bridge (36 + FCT).</p>
           <div id="nfVelocityChart"></div>
         </div>
-        <div class="cin-ticker-block" aria-label="Citizens Intelligence Network — four sovereign corridors">
+        <div class="cin-ticker-block gcslc-cin-static-v153" aria-label="Citizens Intelligence Network — four sovereign corridors" data-intrinsic-gateway="nafc" data-intrinsic-channel="cin">
           <p class="cin-ticker-title">CIN — Citizens Intelligence Network</p>
           <p class="sidebar-chart-sub" style="margin:0 0 8px;text-align:center;">Northwest · Northeast · North Central · Southwest</p>
           <div class="cin-ticker-viewport" id="cinTickerViewport">
             <div class="cin-ticker-rail" id="cinTickerRail"></div>
+          </div>
+          <div class="gcslc-velocity-message-slider-v153" data-intrinsic-gateway="nafc" data-intrinsic-channel="cin-marquee" role="status" aria-live="polite">
+            <div class="gcslc-velocity-message-slider-v153__viewport">
+              <div class="gcslc-velocity-message-slider-v153__marquee">
+                <span class="gcslc-velocity-message-slider-v153__segment" id="cinVelocitySliderTextV153"></span>
+                <span class="gcslc-velocity-message-slider-v153__segment" id="cinVelocitySliderDupV153" aria-hidden="true"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cin-ticker-block cien-ticker-block gcslc-cien-static-v153" aria-label="Citizens Intelligence Extension Network — battle lattice" data-intrinsic-gateway="nafc" data-intrinsic-channel="cien">
+          <p class="cin-ticker-title">CIEN — Citizens Intelligence Extension Network</p>
+          <p class="sidebar-chart-sub" style="margin:0 0 8px;text-align:center;">176,000 PUs · 8,806 Wards · battle attest stream</p>
+          <div class="cin-ticker-viewport" id="cienTickerViewport">
+            <div class="cin-ticker-rail" id="cienTickerRail"></div>
+          </div>
+          <div class="gcslc-velocity-message-slider-v153 gcslc-velocity-message-slider-v153--cien" data-intrinsic-gateway="nafc" data-intrinsic-channel="cien-marquee" role="status" aria-live="polite">
+            <div class="gcslc-velocity-message-slider-v153__viewport">
+              <div class="gcslc-velocity-message-slider-v153__marquee">
+                <span class="gcslc-velocity-message-slider-v153__segment" id="cienVelocitySliderTextV153"></span>
+                <span class="gcslc-velocity-message-slider-v153__segment" id="cienVelocitySliderDupV153" aria-hidden="true"></span>
+              </div>
+            </div>
           </div>
         </div>
         <div class="social-lattice-widget social-lattice-widget--v64-shimmer" id="socialLatticeWidget" aria-label="Social lattice — informal sector nodes">
@@ -8379,7 +8489,8 @@
   </div>
 
   <footer class="footer footer-vault">
-    <div class="footer-legal-unified-v150" role="contentinfo" aria-label="Legal anchors and institutional contacts">
+    <div class="footer-legal-unified-v150 footer-legal-social-align-v162" role="contentinfo" aria-label="Legal anchors, contacts, and institutional social mesh">
+      <div class="footer-legal-text-v162">
       <p>
         <strong>Galadiman Ruwa Center</strong> · <strong>Galadiman Ruwa Nigeria Ltd</strong> (RC 1871418) · <strong>Copyright LW15954</strong> · <strong>SCUML RN: 151653884</strong> · Dr. Jaafaru Sa’ad Galadiman Ruwan Zazzau · <strong>GCSLC PROPRIETARY</strong>
       </p>
@@ -8387,10 +8498,114 @@
         +234 703 913 9439 · +234 809 911 1515 ·
         <a href="mailto:chairman@galadimanruwacenter.org">chairman@galadimanruwacenter.org</a> ·
         <a href="mailto:Info@galadimanruwacenter.org">Info@galadimanruwacenter.org</a> ·
-        <a href="mailto:gcslc.research@gmail.com">gcslc.research@gmail.com</a> ·
-        <a href="https://wa.me/2347039139439" target="_blank" rel="noopener noreferrer">WhatsApp</a> ·
-        <a href="https://t.me/+2347039139439" target="_blank" rel="noopener noreferrer">Telegram</a>
+        <a href="mailto:gcslc.research@gmail.com">gcslc.research@gmail.com</a>
       </p>
+      </div>
+      <div class="footer-social-comm-v162">
+      <div class="footer-comm-mesh-v162 secure-liaison-v102 secure-liaison-v102--logos-cyan-v103 secure-liaison-v102--stealth-cyan-v104" aria-label="Stealth comm mesh — eight-channel cyan liaison (logos only)">
+        <h3 class="secure-liaison-v102__title sr-only-def">Secure Liaison — comm mesh</h3>
+        <p class="footer-comm-mesh-v162__intel" id="gcslcIntelChannelStatusV102" aria-live="polite">COMM_MESH: [SYCHRONIZING_PLATFORMS] · AUDIT_PENDING.</p>
+        <div class="footer-comm-mesh-v162__nodes secure-liaison-v102__nodes">
+          <a class="secure-liaison-node-v102 secure-liaison-node-v102--wa" href="https://wa.me/2347039139439" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp — live liaison (logo)">
+
+            <span class="secure-liaison-node-v102__ico" aria-hidden="true">
+
+              <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.881 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+
+            </span>
+
+            <span class="secure-liaison-node-v102__cap">WhatsApp</span>
+
+          </a>
+
+          <a class="secure-liaison-node-v102 secure-liaison-node-v102--tg" href="https://t.me/+2347039139439" target="_blank" rel="noopener noreferrer" aria-label="Telegram — sovereign node live (+2347039139439)">
+
+            <span class="secure-liaison-node-v102__ico" aria-hidden="true">
+
+              <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M9.04 15.3 8.97 19l3.99-2.14 4.04 2.97c.74.54 1.27.25 1.46-.87l2.66-12.6c.27-1.1-.42-1.6-1.13-1.31L2.58 9.48c-1.09.44-1.08 1.06-.2 1.34l4.7 1.47L18.93 6.3c.38-.24.73-.11.45.17l-8.34 8.83Z"/></svg>
+
+            </span>
+
+            <span class="secure-liaison-node-v102__cap">Telegram</span>
+
+          </a>
+
+          <div class="secure-liaison-node-v102 secure-liaison-node-v102--signal" tabindex="0" role="group" aria-label="Signal — encrypted executive channel (logo)">
+
+            <span class="secure-liaison-war-room-v102" role="tooltip">LEVEL 8R ENCRYPTION: EXECUTIVE SESSIONS ONLY.</span>
+
+            <span class="secure-liaison-node-v102__ico" aria-hidden="true">
+
+              <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.2 6 2.7V11c0 4.5-3.05 8.75-6 9.9-2.95-1.15-6-5.4-6-9.9V5.9l6-2.7z"/></svg>
+
+            </span>
+
+            <span class="secure-liaison-node-v102__cap">Signal</span>
+
+          </div>
+
+          <a class="secure-liaison-node-v102 secure-liaison-node-v102--li" href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn — institutional liaison (logo)">
+
+            <span class="secure-liaison-node-v102__ico" aria-hidden="true">
+
+              <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M4.98 3.5C4.98 4.328 4.328 4.98 3.5 4.98S2 4.328 2 3.5 2.672 2 3.5 2 4.98 2.672 4.98 3.5zm.02 5.5H2v11h3V9zm5 0H7v11h3v-5.6c0-1.66 1.12-2.61 2.9-2.61 1.74 0 2.1 1.24 2.1 2.85V20h3v-6.3C15 10.76 13.34 9 11.2 9 9.66 9 8.58 9.84 8.1 11h-.05V9H5z"/></svg>
+
+            </span>
+
+            <span class="secure-liaison-node-v102__cap">LinkedIn</span>
+
+          </a>
+
+          <a class="secure-liaison-node-v102 secure-liaison-node-v102--x" href="https://x.com" target="_blank" rel="noopener noreferrer" aria-label="X — broadcast liaison (logo)">
+
+            <span class="secure-liaison-node-v102__ico" aria-hidden="true">
+
+              <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+
+            </span>
+
+            <span class="secure-liaison-node-v102__cap">X</span>
+
+          </a>
+
+          <a class="secure-liaison-node-v102 secure-liaison-node-v102--bsky" href="https://bsky.app" target="_blank" rel="noopener noreferrer" aria-label="Bluesky — open lattice (logo)">
+
+            <span class="secure-liaison-node-v102__ico" aria-hidden="true">
+
+              <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M12 10.8c-1.1-2.1-4.1-6.6-6.9-8.6C3.8.8 1.9 1.9 2.1 4.5c.3 3.8 4 15.2 5.6 15.2 1.2 0 3.4-4 4.3-6.1.9 2.1 3.1 6.1 4.3 6.1 1.6 0 5.3-11.4 5.6-15.2.2-2.6-1.7-3.7-4-2.3-2.8 2-5.8 6.5-6.9 8.6z"/></svg>
+
+            </span>
+
+            <span class="secure-liaison-node-v102__cap">Bluesky</span>
+
+          </a>
+
+          <a class="secure-liaison-node-v102 secure-liaison-node-v102--tiktok" href="https://www.tiktok.com" target="_blank" rel="noopener noreferrer" aria-label="TikTok — short-form lattice (logo)">
+
+            <span class="secure-liaison-node-v102__ico" aria-hidden="true">
+
+              <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M16.6 5.82s1.84-.64 1.84-2.82h-2.7v9.4c0 .8-.68 1.46-1.52 1.46-.84 0-1.52-.66-1.52-1.48 0-.82.68-1.48 1.52-1.48.18 0 .35.04.5.1V9.1a3.3 3.3 0 00-.5-.04c-1.84 0-3.34 1.48-3.34 3.3 0 1.82 1.5 3.3 3.34 3.3 1.84 0 3.34-1.48 3.34-3.3V8.2c.7.5 1.58.8 2.52.8V6.4c-.45 0-.88-.1-1.27-.28v3.1z"/></svg>
+
+            </span>
+
+            <span class="secure-liaison-node-v102__cap">TikTok</span>
+
+          </a>
+
+          <a class="secure-liaison-node-v102 secure-liaison-node-v102--meta" href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Meta — federation lattice (logo)">
+
+            <span class="secure-liaison-node-v102__ico" aria-hidden="true">
+
+              <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2v-2.3c0-2 1.2-3.1 3-3.1.9 0 1.8.16 1.8.16V9h-1c-1 0-1.3.62-1.3 1.26V12h2.2l-.35 3H14v6.8c4.56-.93 8-4.96 8-9.8C22 6.48 17.52 2 12 2z"/></svg>
+
+            </span>
+
+            <span class="secure-liaison-node-v102__cap">Meta</span>
+
+          </a>
+        </div>
+      </div>
+      </div>
     </div>
   </footer>
 
@@ -8512,6 +8727,26 @@
     "Kachia", "Kaduna North", "Kaduna South", "Kagarko", "Kajuru", "Kaura", "Kauru",
     "Kubau", "Kudan", "Lere", "Makarfi", "Sabon Gari", "Sanga", "Soba", "Zangon Kataf", "Zaria"
   ];
+  window.__GCSLC_INTRINSIC_SOVEREIGN_LIQUIDITY__ = {
+    strikeNumeratorT: 945,
+    strikeDenominatorT: 50,
+    velocityX: 18.9,
+    surplusT: 895,
+    debtStrikeT: 55,
+    ngnStackLowT: 105,
+    ngnStackHighT: 157.5,
+    sourceMeta: "gcslc-arch-restoration-v152-1+gcslc-debt-clearance-strike-v143"
+  };
+  function buildCienBattleTickerLinesV64() {
+    var nodes = window.__GCSLC_CIEN_BATTLE_V64__ || [];
+    var out = [];
+    nodes.forEach(function (n) {
+      var tag = String(n.id || "NODE");
+      var line = String(n.title || "") + " — " + String(n.subtext || "");
+      out.push({ z: tag, line: line });
+    });
+    return out;
+  }
   function buildFourCorridorTickerLinesV64() {
     var corridors = [
       { code: "NW", name: "Northwest Corridor", totalLgas: 186, states: [["Jigawa", 27], ["Kaduna", 23], ["Kano", 44], ["Katsina", 34], ["Kebbi", 21], ["Sokoto", 23], ["Zamfara", 14]] },
@@ -8766,8 +9001,9 @@
     var scroll = document.getElementById("kadunaLgaScroll");
     var term = document.getElementById("kadunaRhgiTerminal");
     var rail = document.getElementById("cinTickerRail");
+    var cienRail = document.getElementById("cienTickerRail");
     var pres = document.getElementById("rhgiPresidentialRail");
-    if (!scroll || !term || !rail) return;
+    if (!scroll || !term) return;
     function __vaultAuthorizedV133() {
       if (typeof window.__GCSLC_vaultAuthorizedForKadunaV137 === "function") {
         return window.__GCSLC_vaultAuthorizedForKadunaV137();
@@ -8838,20 +9074,30 @@
       .catch(function () {
         window.__GCSLC_CSV_HANDSHAKE__ = { ok: false, source: "Sovereign_Lattice1.5M.csv" };
       });
-    var rows = buildFourCorridorTickerLinesV64();
-    var html = "";
-    rows.forEach(function (r) {
-      html += '<div class="cin-ticker-line"><span class="cin-cor">' + r.z + "</span>" + r.line + "</div>";
-    });
-    rail.innerHTML = html + html;
+    if (rail) {
+      var rows = buildFourCorridorTickerLinesV64();
+      var html = "";
+      rows.forEach(function (r) {
+        html += '<div class="cin-ticker-line"><span class="cin-cor">' + r.z + "</span>" + r.line + "</div>";
+      });
+      rail.innerHTML = html + html;
+    }
+    if (cienRail) {
+      var crows = buildCienBattleTickerLinesV64();
+      var ch = "";
+      crows.forEach(function (r) {
+        ch += '<div class="cin-ticker-line"><span class="cin-cor">' + r.z + "</span>" + r.line + "</div>";
+      });
+      cienRail.innerHTML = ch + ch;
+    }
   }
 
   const cities = [
     { name: "Abuja", zone: "Africa/Lagos" },
-    { name: "Dubai", zone: "Asia/Dubai" },
-    { name: "Riyadh", zone: "Asia/Riyadh" },
     { name: "London", zone: "Europe/London" },
     { name: "NY", zone: "America/New_York" },
+    { name: "Dubai", zone: "Asia/Dubai" },
+    { name: "Singapore", zone: "Asia/Singapore" },
     { name: "Beijing", zone: "Asia/Shanghai" }
   ]; var __GCSLC_VAULT_KEY_V143_L7773__ = "Galadima@2026#";
   document.getElementById("wardStat").textContent = WARDS.toLocaleString();
@@ -8893,20 +9139,57 @@
     .then((j) => buildIntelTrackFromData(j.items || []))
     .catch(() => buildIntelTrackFromData(FORENSIC_FALLBACK));
 
+  function buildTelemetryDialSvgV162() {
+    var svg = '<svg class="telemetry-radial-clock-v162__dial" viewBox="0 0 100 100" aria-hidden="true">';
+    svg += '<circle class="telemetry-radial-clock-v162__ring" cx="50" cy="50" r="46.5" />';
+    var j;
+    for (j = 0; j < 60; j++) {
+      if (j % 5 === 0) continue;
+      var aMin = j * 6;
+      svg +=
+        '<line class="telemetry-tick-minor-v162" x1="50" y1="11" x2="50" y2="13.2" transform="rotate(' +
+        aMin +
+        ' 50 50)" />';
+    }
+    var i;
+    for (i = 0; i < 12; i++) {
+      var ang = i * 30;
+      svg +=
+        '<line class="telemetry-tick-major-v162" x1="50" y1="7.5" x2="50" y2="15" transform="rotate(' +
+        ang +
+        ' 50 50)" style="animation-delay:' +
+        i * 0.11 +
+        's" />';
+    }
+    svg += "</svg>";
+    return svg;
+  }
   const row = document.getElementById("clockRow");
-  cities.forEach((c) => {
-    const el = document.createElement("article");
-    el.className = "clock-prism-frame";
-    el.innerHTML = '<div class="clock" data-zone="' + c.zone + '"><span class="hand hour"></span><span class="hand minute"></span><span class="hand second"></span></div><div class="city">' + c.name + "</div>";
-    row.appendChild(el);
-  });
+  if (row) {
+    cities.forEach((c) => {
+      const el = document.createElement("article");
+      el.className = "telemetry-radial-clock-v162";
+      el.innerHTML =
+        '<div class="telemetry-radial-clock-v162__face" data-zone="' +
+        c.zone +
+        '">' +
+        buildTelemetryDialSvgV162() +
+        '<div class="telemetry-radial-clock-v162__hub" aria-hidden="true"></div>' +
+        '<span class="hand hour"></span><span class="hand minute"></span><span class="hand second"></span>' +
+        "</div>" +
+        '<div class="telemetry-radial-clock-v162__city">' +
+        c.name +
+        "</div>";
+      row.appendChild(el);
+    });
+  }
   function tick() {
-    document.querySelectorAll(".clock").forEach((clock) => {
-      const d = new Date(new Date().toLocaleString("en-US", { timeZone: clock.dataset.zone }));
+    document.querySelectorAll(".telemetry-radial-clock-v162__face").forEach((face) => {
+      const d = new Date(new Date().toLocaleString("en-US", { timeZone: face.dataset.zone }));
       const s = d.getSeconds(), m = d.getMinutes(), h = d.getHours();
-      clock.querySelector(".hour").style.transform = "translateX(-50%) rotate(" + ((h % 12) * 30 + m * 0.5) + "deg)";
-      clock.querySelector(".minute").style.transform = "translateX(-50%) rotate(" + (m * 6 + s * 0.1) + "deg)";
-      clock.querySelector(".second").style.transform = "translateX(-50%) rotate(" + (s * 6) + "deg)";
+      face.querySelector(".hour").style.transform = "translateX(-50%) rotate(" + ((h % 12) * 30 + m * 0.5) + "deg)";
+      face.querySelector(".minute").style.transform = "translateX(-50%) rotate(" + (m * 6 + s * 0.1) + "deg)";
+      face.querySelector(".second").style.transform = "translateX(-50%) rotate(" + (s * 6) + "deg)";
     });
   }
   tick();
@@ -9945,14 +10228,39 @@
     };
   }
 
+  function updateGcslcVelocitySlidersV153(optLive) {
+    var live = optLive || sampleZenithLive();
+    var L = window.__GCSLC_INTRINSIC_SOVEREIGN_LIQUIDITY__ || {};
+    var n945 = L.strikeNumeratorT != null ? L.strikeNumeratorT : 945;
+    var n50 = L.strikeDenominatorT != null ? L.strikeDenominatorT : 50;
+    var vx = L.velocityX != null ? L.velocityX : 18.9;
+    var sur = L.surplusT != null ? L.surplusT : 895;
+    var liq =
+      "SOVEREIGN LIQUIDITY STRIKE · " + n945 + "T vs " + n50 + "T · VEL " + vx + "× · SURPLUS " + sur + "T";
+    var sig =
+      "SIG " + live.ruralGap.toFixed(1) + "% · URBAN " + live.urbanConn.toFixed(1) + "% · INTRINSIC NAFC GATEWAY";
+    var cinMsg = "LIVE INTELLIGENCE · " + liq + " · " + sig + " · CIN CORRIDORS";
+    var cienMsg = "LIVE INTELLIGENCE · " + liq + " · " + sig + " · CIEN BATTLE LATTICE · WARD / PU KINETICS";
+    var a = document.getElementById("cinVelocitySliderTextV153");
+    var b = document.getElementById("cinVelocitySliderDupV153");
+    var c = document.getElementById("cienVelocitySliderTextV153");
+    var d = document.getElementById("cienVelocitySliderDupV153");
+    if (a) a.textContent = cinMsg;
+    if (b) b.textContent = cinMsg;
+    if (c) c.textContent = cienMsg;
+    if (d) d.textContent = cienMsg;
+  }
+  window.updateGcslcVelocitySlidersV153 = updateGcslcVelocitySlidersV153;
+
   function renderNonFormalVelocityIndex() {
     const root = document.getElementById("nfVelocityChart");
     const bridgeEl = document.getElementById("nfVelocityBridgeCopy");
-    if (!root || !window.d3) return;
     const live = sampleZenithLive();
     if (bridgeEl) {
       bridgeEl.innerHTML = "Non-formal velocity · <strong>36 + FCT</strong> · SIG <strong>" + live.ruralGap.toFixed(1) + "%</strong> / urban <strong>" + live.urbanConn.toFixed(1) + "%</strong>";
     }
+    updateGcslcVelocitySlidersV153(live);
+    if (!root || !window.d3) return;
     const d3 = window.d3;
     d3.select(root).selectAll("*").remove();
     const bridgeFactor = Math.max(0.42, Math.min(1.48, (100 - live.ruralGap) / 52));
