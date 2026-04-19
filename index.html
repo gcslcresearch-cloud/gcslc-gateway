@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="gcslc-vault-restoration-v133 gcslc-hardcoded-sovereign-vault-v134 gcslc-live-market-pulse-v135 gcslc-sovereign-realtime-pulse-v136 gcslc-live-pulse-vault-v137 gcslc-professional-realtime-v138 gcslc-telegram-sovereign-node-v139 gcslc-debt-clearance-trickle-v140 gcslc-debt-clearance-strike-v143 gcslc-telegram-terminal-final-v145 gcslc-paradigm-unmask-v146 gcslc-paradigm-unmask-v147 gcslc-identity-pulse-sync-v148 gcslc-sovereign-identity-fix-v150">
+<html lang="en" class="gcslc-vault-restoration-v133 gcslc-hardcoded-sovereign-vault-v134 gcslc-live-market-pulse-v135 gcslc-sovereign-realtime-pulse-v136 gcslc-live-pulse-vault-v137 gcslc-professional-realtime-v138 gcslc-telegram-sovereign-node-v139 gcslc-debt-clearance-trickle-v140 gcslc-debt-clearance-strike-v143 gcslc-telegram-terminal-final-v145 gcslc-paradigm-unmask-v146 gcslc-paradigm-unmask-v147 gcslc-identity-pulse-sync-v148 gcslc-sovereign-identity-fix-v150 gcslc-command-deck-cleanup-v151 gcslc-arch-restoration-v152-1">
 <head>
   <meta charset="UTF-8" />
   <!-- SOVEREIGN_INTEGRATED_MANIFEST_V1.0 -->
@@ -26,6 +26,8 @@
   <meta name="gcslc-paradigm-unmask-v147" content="unmask_fixed_tickers=1;market_tick_pct=0.0001;cyan_frame_pulse=1;nafc_ingress_js=1;iphone13_fold=1" />
   <meta name="gcslc-identity-pulse-sync-v148" content="sovereign_identity_header=1;sfp_trickle_s=60;cyan_shell_pulse=1;paradigm_vault_mount=1;debt_strike_primary=1" />
   <meta name="gcslc-sovereign-identity-fix-v150" content="name_slider_retired=1;identity_first=1;deck_unclutter=1;no_bottom_sliders=1;termii_unblock=1;footer_consolidated=1;nafc_coal_clear=1" />
+  <meta name="gcslc-command-deck-cleanup-v151" content="nafc_scale_0.7=1;identity_fixed_gold=1;sfp_relocated_nrrfc=1;prism_static_doctrine=1;lattice_awc_drawer_order=1;deck_no_overlap=1" />
+  <meta name="gcslc-arch-restoration-v152-1" content="layout_rollback_non_map=1;nafc_landscape_wide=1;sovereign_liquidity_strike=945T_vs_50T;map_exemption=sovereignGatedMapV133;sidebar_air=1" />
   <!-- Institutional Navy Blue (#001a33) — Edge / PWA chrome -->
   <meta name="theme-color" content="#001a33" media="(prefers-color-scheme: dark)" />
   <meta name="theme-color" content="#001a33" />
@@ -1368,6 +1370,219 @@
       margin-top: 14px;
       position: relative;
       z-index: 2;
+    }
+    /* V151 — COMMAND_DECK_CLEANUP: fixed gold identity, NAFC −30% deck scale, prism doctrine static, stack air */
+    html.gcslc-command-deck-cleanup-v151 .gcslc-sovereign-identity-v148 {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 220;
+      width: min(960px, 100vw);
+      max-width: 100%;
+      margin: 0;
+      padding: calc(8px + env(safe-area-inset-top, 0px)) 14px 10px;
+      border-radius: 0 0 14px 14px;
+      border: 1px solid rgba(212, 175, 55, 0.42);
+      border-top: none;
+      background: #001a33;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      justify-content: center;
+      text-align: center;
+    }
+    html.gcslc-command-deck-cleanup-v151 .gcslc-sovereign-identity-v148__bot {
+      display: none;
+    }
+    html.gcslc-command-deck-cleanup-v151 .gcslc-sovereign-identity-v148__title {
+      color: #d4af37;
+      text-shadow: none;
+      animation: none;
+    }
+    html.gcslc-command-deck-cleanup-v151 main.app {
+      padding-top: calc(52px + env(safe-area-inset-top, 0px));
+    }
+    html.gcslc-command-deck-cleanup-v151 #sovereignGatedNafcV133 .nafc-cyan-frame-v146 {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      width: 100%;
+    }
+    html.gcslc-command-deck-cleanup-v151 #nafcSovereignAnchor {
+      zoom: 0.7;
+      width: 70%;
+      max-width: min(520px, 70vw);
+      margin: 0 auto;
+    }
+    @supports not (zoom: 1) {
+      html.gcslc-command-deck-cleanup-v151 #nafcSovereignAnchor {
+        zoom: unset;
+        transform: scale(0.7);
+        transform-origin: top center;
+        width: 70%;
+        max-width: min(520px, 70vw);
+        margin: 0 auto;
+      }
+    }
+    html.gcslc-command-deck-cleanup-v151 .nafc-fusion-prism-body {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    html.gcslc-command-deck-cleanup-v151 .nafc-fusion-lang {
+      margin-top: auto;
+      align-self: stretch;
+      padding-top: 10px;
+    }
+    html.gcslc-command-deck-cleanup-v151 .nafc-lang-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      align-items: center;
+    }
+    html.gcslc-command-deck-cleanup-v151 .clock-row.clock-widget-v15 {
+      margin-top: 10px !important;
+      margin-bottom: 16px !important;
+    }
+    html.gcslc-command-deck-cleanup-v151 .gcslc-paradigm-vault-mount-v148 {
+      margin-top: 8px;
+    }
+    html.gcslc-command-deck-cleanup-v151 .gcslc-console-v89 {
+      margin-top: 16px;
+    }
+    html.gcslc-command-deck-cleanup-v151 section.paradigm-apex .prism-box.v8-glass {
+      opacity: 1 !important;
+      visibility: visible !important;
+      filter: none !important;
+    }
+    /* V152.1 — ARCH_RESTORATION / LINKFULL: wide landscape NAFC (rollback V151 portrait shrink), liquidity strike row, sidebar air — map markup/CSS untouched */
+    html.gcslc-arch-restoration-v152-1 #sovereignGatedNafcV133 .nafc-cyan-frame-v146 {
+      display: block !important;
+      width: 100% !important;
+    }
+    html.gcslc-arch-restoration-v152-1 #nafcSovereignAnchor {
+      zoom: 1 !important;
+      width: min(98%, 1180px) !important;
+      max-width: 1180px !important;
+      margin-left: auto !important;
+      margin-right: auto !important;
+      transform: none !important;
+    }
+    @supports not (zoom: 1) {
+      html.gcslc-arch-restoration-v152-1 #nafcSovereignAnchor {
+        zoom: unset !important;
+        transform: none !important;
+      }
+    }
+    html.gcslc-arch-restoration-v152-1 .nafc-fusion-prism-body {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: stretch !important;
+      gap: 10px !important;
+      min-height: 0 !important;
+    }
+    @media (min-width: 980px) {
+      html.gcslc-arch-restoration-v152-1 .nafc-fusion-prism-body {
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        align-items: flex-start !important;
+        justify-content: space-between !important;
+        column-gap: 18px !important;
+        row-gap: 12px !important;
+      }
+      html.gcslc-arch-restoration-v152-1 .nafc-fusion-title {
+        flex: 1 1 340px !important;
+      }
+      html.gcslc-arch-restoration-v152-1 .nafc-live-signal--v87 {
+        flex: 2 1 460px !important;
+      }
+    }
+    html.gcslc-arch-restoration-v152-1 .nafc-fusion-lang {
+      flex: 1 1 100% !important;
+      margin-top: 8px !important;
+    }
+    html.gcslc-arch-restoration-v152-1 .nafc-sovereign-liquidity-strike-v152 {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(102, 245, 255, 0.35);
+      background: linear-gradient(165deg, rgba(0, 18, 42, 0.72), rgba(0, 8, 22, 0.9));
+      box-shadow: inset 0 0 0 1px rgba(102, 245, 255, 0.08);
+      animation: nafcSlsCyanPulseV152 2.45s ease-in-out infinite;
+    }
+    html.gcslc-arch-restoration-v152-1 .nafc-sls-head {
+      font-size: clamp(0.52rem, 1.25vw, 0.68rem);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: rgba(212, 175, 55, 0.95);
+      margin: 0 0 6px;
+    }
+    html.gcslc-arch-restoration-v152-1 .nafc-sls-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      align-items: baseline;
+      justify-content: flex-start;
+      font-size: clamp(0.55rem, 1.35vw, 0.74rem);
+      line-height: 1.45;
+    }
+    html.gcslc-arch-restoration-v152-1 .nafc-sls-k {
+      color: rgba(200, 235, 255, 0.82);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-right: 4px;
+    }
+    html.gcslc-arch-restoration-v152-1 .nafc-sls-v {
+      color: rgba(140, 255, 255, 0.98);
+      font-weight: 800;
+      text-shadow: 0 0 14px rgba(0, 229, 255, 0.45);
+    }
+    html.gcslc-arch-restoration-v152-1 .nafc-sls-sep {
+      color: rgba(212, 175, 55, 0.45);
+    }
+    html.gcslc-arch-restoration-v152-1 .nafc-sls-mult {
+      color: rgba(160, 255, 255, 0.95);
+      font-weight: 800;
+      letter-spacing: 0.06em;
+    }
+    @keyframes nafcSlsCyanPulseV152 {
+      0%, 100% {
+        box-shadow: inset 0 0 0 1px rgba(102, 245, 255, 0.08), 0 0 0 rgba(0, 229, 255, 0);
+        border-color: rgba(102, 245, 255, 0.28);
+      }
+      50% {
+        box-shadow: inset 0 0 0 1px rgba(102, 245, 255, 0.18), 0 0 22px rgba(0, 229, 255, 0.35);
+        border-color: rgba(140, 250, 255, 0.55);
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html.gcslc-arch-restoration-v152-1 .nafc-sovereign-liquidity-strike-v152 {
+        animation: none !important;
+      }
+    }
+    html.gcslc-arch-restoration-v152-1 .gcslc-console-v89 {
+      margin-top: 22px !important;
+    }
+    html.gcslc-arch-restoration-v152-1 .termii-panel-v15.termii-panel--pulse-v89 {
+      margin-top: 14px !important;
+    }
+    html.gcslc-arch-restoration-v152-1 .sidebar.sidebar-right .secure-liaison-v102 {
+      margin-bottom: 16px !important;
+    }
+    html.gcslc-arch-restoration-v152-1 .sidebar.sidebar-right .cin-ticker-block {
+      margin-bottom: 16px !important;
+    }
+    html.gcslc-arch-restoration-v152-1 .sidebar.sidebar-right .social-lattice-widget {
+      margin-top: 6px !important;
+      position: relative;
+      z-index: 2;
+    }
+    html.gcslc-arch-restoration-v152-1 .sidebar.sidebar-right .social-lattice-widget .lattice-sync-row {
+      margin-top: 6px !important;
     }
     @keyframes sfpCyanTickerLivePulseV147 {
       0% {
@@ -7139,6 +7354,10 @@
         <button type="button" class="sovereign-drawer-close-v90" id="sovereignConsultDrawerCloseV90" aria-label="Close consultancy drawer">×</button>
       </div>
       <div class="gec-consultancy__frame">
+        <p class="gec-eagle-spine-v105 gec-eagle-spine-v105--v150" id="gecEagleCloudSpineV105">
+          <a href="https://galadimanruwacenter.org" target="_blank" rel="noopener noreferrer" class="gec-eagle-spine-v105__link" id="eagleCloudPrimarySpineV105">Eagle Cloud</a>
+          <span class="gec-eagle-spine-v105__note">Sovereign Spine · AWC/K-GEC · lattice corridor (V151 — anchored above hub tiles; clear of comm / social mesh)</span>
+        </p>
         <p class="gec-advisory-hub-intel-v92" id="gecAdvisoryHubIntelV92" aria-live="polite"></p>
         <div class="consultancy-cloud-hubs-v104" aria-label="Cloud advisory hubs — Edge Fortress and Telegram Mini-App">
           <div class="consultancy-cloud-hubs-v104__label">Cloud Advisory Hubs</div>
@@ -7159,10 +7378,6 @@
             </button>
           </div>
         </div>
-        <p class="gec-eagle-spine-v105 gec-eagle-spine-v105--v150" id="gecEagleCloudSpineV105">
-          <a href="https://galadimanruwacenter.org" target="_blank" rel="noopener noreferrer" class="gec-eagle-spine-v105__link" id="eagleCloudPrimarySpineV105">Eagle Cloud</a>
-          <span class="gec-eagle-spine-v105__note">Sovereign Spine · AWC/K-GEC · lattice corridor (below hub tiles — clear of comm mesh)</span>
-        </p>
         <div class="consultancy-handshake-industrial-v99" aria-label="Consultancy Hub — industrial lattice handshake">
           <p class="consultancy-handshake-industrial-v99__label">Consultancy Hub · handshake</p>
           <p class="consultancy-handshake-industrial-v99__type" id="consultancyIndustrialHandshakeV99"></p>
@@ -7302,10 +7517,10 @@
       <div class="center-col center-col-primary gcslc-nafc-full-spectrum-v106">
         <div class="gcslc-sovereign-identity-v148 gcslc-sovereign-identity-v150" id="gcslcSovereignIdentityHeaderV148" role="banner" aria-label="GCSLC Sovereign Gateway">
           <span class="gcslc-sovereign-identity-v148__bot" aria-hidden="true"></span>
-          <span class="gcslc-sovereign-identity-v148__title">GCSLC Sovereign Gateway</span>
+          <span class="gcslc-sovereign-identity-v148__title">GCSLC SOVEREIGN GATEWAY</span>
         </div>
         <header class="header header-apex-layer01">
-          <span id="identityFullName" class="sr-only-def" aria-hidden="true">GCSLC Sovereign Gateway</span>
+          <span id="identityFullName" class="sr-only-def" aria-hidden="true">GCSLC SOVEREIGN GATEWAY</span>
         <div id="sovereignGatedNafcV133" class="sovereign-gated-region-v132">
           <div id="sovereignClearanceCurtainCenterV132" class="sovereign-clearance-curtain-v132" role="dialog" aria-modal="true" aria-labelledby="sovereignClearanceTitleV132">
             <div class="sovereign-clearance-card-v132">
@@ -7349,6 +7564,16 @@
                     <span class="nafc-coal-lattice-live-v147" id="nafcCoalLatticeLiveV147" aria-live="polite"></span>
                     <span class="nafc-rhgi-cloud-ingress-v88" id="nafcRhgiCloudIngressV88" aria-live="polite"></span>
                   </div>
+                  <div class="nafc-sovereign-liquidity-strike-v152" id="nafcSovereignLiquidityStrikeV152" aria-label="Sovereign liquidity strike telemetry">
+                    <div class="nafc-sls-head">Sovereign Liquidity Strike</div>
+                    <div class="nafc-sls-row" role="group">
+                      <span class="nafc-sls-pair"><span class="nafc-sls-k">Deployable</span> <strong class="nafc-sls-v" id="nafcSlsDeployableV152">₦945.0T</strong></span>
+                      <span class="nafc-sls-sep" aria-hidden="true">·</span>
+                      <span class="nafc-sls-pair"><span class="nafc-sls-k">Domestic face</span> <strong class="nafc-sls-v" id="nafcSlsDomesticV152">₦50.0T</strong></span>
+                      <span class="nafc-sls-sep" aria-hidden="true">·</span>
+                      <span class="nafc-sls-mult" id="nafcSlsMultV152">1,890% of ₦50T face</span>
+                    </div>
+                  </div>
                 </div>
                 <div class="nafc-fusion-lang" role="group" aria-labelledby="nafcFusionLangLabel">
                   <span id="nafcFusionLangLabel" class="nafc-fusion-lang-heading">Sovereign linguistics</span>
@@ -7383,46 +7608,6 @@
 
         <section class="clock-row clock-widget-v15" id="clockRow" aria-label="World clocks"></section>
 
-        <section id="sfp-live-pulse-v137" class="sfp-live-pulse-v135 sfp-live-pulse-v137 sfp-debt-clearance-v140 sfp-debt-clearance-v143" aria-label="Superior Financial Performance — debt clearance strike &amp; live market pulse (V143)">
-          <div class="sfp-primary-anchor-v146" id="sfpPrimaryAnchorStripV146" aria-label="Sovereign debt clearance and FX stack — $700B capture anchor">
-            <span class="sfp-primary-anchor-v146__k" id="sfpPrimaryAnchorDebtV146"><strong>18.9×</strong> Debt Strike</span>
-            <span class="sfp-primary-anchor-v146__sep" aria-hidden="true">·</span>
-            <span class="sfp-primary-anchor-v146__k" id="sfpPrimaryAnchorFxV146"><strong>₦105T–₦157.5T</strong> FX Capture</span>
-          </div>
-          <div class="sfp-debt-clearance-v140__ticker" id="sfpCyanTickerFrameV147" aria-label="Live commodity ticker — market tick every 60 seconds">
-            <span class="sfp-debt-clearance-v140__ticker-track" id="sfpCyanMarketTickerV140">Live handshake…</span>
-          </div>
-          <p class="sfp-debt-clearance-v140__math" id="sfpSovereignMathCaptureV140"><strong>Titans Nuclear Logic (V145):</strong> hard-lock <strong>18.9× Debt Clearance</strong> + <strong>+₦895.0T</strong> Sovereign Surplus from <strong>10–15% capture</strong> of the <strong>$700B</strong> Global Big Tech Capex (<strong>$70B–$105B</strong>). <strong>Conversion:</strong> <strong>₦1,500/$</strong> → <strong>₦105T–₦157.5T</strong>. <strong>Strike:</strong> <strong>₦55.0T</strong> Domestic Debt cleared.</p>
-          <div class="sfp-debt-clearance-v140__body">
-            <div class="sfp-live-pulse-v135__head">
-              <h2 class="sfp-live-pulse-v135__title">Superior Financial Performance</h2>
-              <span class="sfp-live-pulse-v135__live"><span class="sfp-live-pulse-v135__live-dot" aria-hidden="true"></span><span id="sfpLivePulseStampV137">LIVE · March 2026</span></span>
-            </div>
-            <div class="sfp-live-pulse-v135__grid">
-              <article class="sfp-metric-tile-v135 sfp-metric-tile-v135--debt-led" aria-labelledby="sfpMetricDebtLabelV137">
-                <span class="sfp-metric-tile-v135__led" aria-hidden="true"></span>
-                <span id="sfpMetricDebtLabelV137" class="sfp-metric-tile-v135__label">Debt Strike</span>
-                <p id="sfpMetricDebtV137" class="sfp-metric-tile-v135__value">—</p>
-              </article>
-              <article class="sfp-metric-tile-v135 sfp-metric-tile-v135--surplus-led" aria-labelledby="sfpMetricSurplusLabelV137">
-                <span class="sfp-metric-tile-v135__led" aria-hidden="true"></span>
-                <span id="sfpMetricSurplusLabelV137" class="sfp-metric-tile-v135__label">Sovereign Surplus</span>
-                <p id="sfpMetricSurplusV137" class="sfp-metric-tile-v135__value">—</p>
-              </article>
-              <article class="sfp-metric-tile-v135" aria-labelledby="sfpMetricZenithLabelV137">
-                <span class="sfp-metric-tile-v135__led" aria-hidden="true"></span>
-                <span id="sfpMetricZenithLabelV137" class="sfp-metric-tile-v135__label">FX Capture</span>
-                <p id="sfpMetricZenithV137" class="sfp-metric-tile-v135__value">—</p>
-              </article>
-            </div>
-            <div class="sfp-benchmark-strip-v135 sfp-benchmark-strip-v140" aria-label="March 2026 commodity benchmarks">
-              <span class="sfp-benchmark-strip-v135__k">Germanium (Ge)</span> <span id="sfpBenchGeV137" class="sfp-benchmark-strip-v135__v">—</span>
-              <span class="sfp-benchmark-strip-v135__k">Silicon (Si)</span> <span id="sfpBenchSiV137" class="sfp-benchmark-strip-v135__v">—</span>
-              <span class="sfp-benchmark-strip-v135__k">Ammonia (NH₃)</span> <span id="sfpBenchNh3V140" class="sfp-benchmark-strip-v135__v">—</span>
-              <span class="sfp-benchmark-strip-v135__k">Coal Fly Ash</span> <span id="sfpBenchAshV137" class="sfp-benchmark-strip-v135__v">—</span>
-            </div>
-          </div>
-        </section>
 
         <div id="gcslcParadigmVaultMountV148" class="gcslc-paradigm-vault-mount-v148">
         <section class="paradigm-apex" aria-label="8R Stealth Paradigm determinants">
@@ -8381,29 +8566,13 @@
   const prismBoxes = [].slice.call(document.querySelectorAll(".prism-box"));
   const definitionEl = document.getElementById("prismDefinition");
   const commandFeedEl = document.getElementById("commandDoctrineFeed");
-  let doctrineStreamTimer = null;
-  function streamDoctrineTypewriter(fullText) {
+  function applyDoctrineStaticV151(fullText) {
     const text = fullText || "";
     if (definitionEl) definitionEl.textContent = text;
-    if (doctrineStreamTimer) {
-      window.clearInterval(doctrineStreamTimer);
-      doctrineStreamTimer = null;
+    if (commandFeedEl) {
+      commandFeedEl.classList.remove("command-feed-typing");
+      commandFeedEl.textContent = text;
     }
-    if (!commandFeedEl) return;
-    commandFeedEl.classList.add("command-feed-typing");
-    commandFeedEl.textContent = "";
-    var i = 0;
-    var tickMs = 34;
-    doctrineStreamTimer = window.setInterval(function () {
-      if (i >= text.length) {
-        window.clearInterval(doctrineStreamTimer);
-        doctrineStreamTimer = null;
-        commandFeedEl.classList.remove("command-feed-typing");
-        return;
-      }
-      commandFeedEl.textContent += text.charAt(i);
-      i++;
-    }, tickMs);
   }
   prismBoxes.forEach((box) => {
     let touchGate = false;
@@ -8422,7 +8591,7 @@
       });
       box.classList.add("active");
       box.classList.add("is-expanded");
-      streamDoctrineTypewriter(box.dataset.definition || "");
+      applyDoctrineStaticV151(box.dataset.definition || "");
       var prismLabel = (box.getAttribute("data-prism") || "").trim();
       if (!prismLabel) {
         var pt = box.querySelector(".prism-title");
@@ -8432,7 +8601,7 @@
       var manual = prismLabel ? PRISM_INTEL_MANUAL[prismLabel] : "";
       var block =
         ">> 8R DETERMINANT · " + (prismLabel || "PRISM") + " — intelligence manual · NAFC-linked\n" +
-        (manual ? manual : "INTEL MANUAL: doctrine stream engaged — see command feed.");
+        (manual ? manual : "INTEL MANUAL: 8R doctrine locked — static display (V151).");
       if (rhgiTerm && typeof streamTextToRhgiTerminal === "function") {
         streamTextToRhgiTerminal(rhgiTerm, block, 0.55);
       }
@@ -10963,237 +11132,25 @@
     }
   </style>
 
-  <script>
-  (function gcslcDebtClearanceMathV143() {
-    var CAPEX_USD_B = 700;
-    var CAP_LOW = 0.1;
-    var CAP_HIGH = 0.15;
-    var USD_B_LOW = CAPEX_USD_B * CAP_LOW;
-    var USD_B_HIGH = CAPEX_USD_B * CAP_HIGH;
-    var FX = 1500;
-    var NGN_T_LOW = (USD_B_LOW * 1e9 * FX) / 1e12;
-    var NGN_T_HIGH = (USD_B_HIGH * 1e9 * FX) / 1e12;
-    window.__GCSLC_DEBT_CLEARANCE_MATH_V143__ = {
-      captureUsdBillions: [USD_B_LOW, USD_B_HIGH],
-      fxNgnPerUsd: FX,
-      ngnTrillions: [NGN_T_LOW, NGN_T_HIGH],
-      domesticDebtT: 55,
-      surplusT: 895,
-      velocityX: 18.9
-    };
-    window.__GCSLC_NUCLEAR_DEBT_MATH_V145__ = {
-      bigTechGlobalCapexUsdBillions: 700,
-      capturePct: [0.1, 0.15],
-      debtClearanceMultiplier: 18.9,
-      sovereignSurplusNgnTrillions: 895,
-      narrative: "Titans Nuclear Logic — 10–15% capture of $700B Big Tech Capex → 18.9× debt clearance + +₦895.0T sovereign surplus"
-    };
-  })();
-  </script>
-
-  <script>
-  (function gcslcLiveMarketPulseV138() {
-    var TICK_MS = 60000;
-    window.__GCSLC_SFP_TRICKLE_V138__ = {
-      intervalMs: TICK_MS,
-      tickCount: 0,
-      lastTickAt: null,
-      anchorDebtX: 18.9,
-      anchorSurplusT: 895,
-      anchorCaptureB: "105–157.5"
-    };
-    var ANCHOR = {
-      benchmarkMonth: "March 2026",
-      germaniumUsdPerKg: 8598,
-      siliconUsdPerLb: 1.83,
-      ammoniaUsdPerMt: 481,
-      coalFlyAshUsdPerMt: 149,
-      debtClearanceMult: 18.9,
-      surplusTrillions: 895,
-      captureBandLowB: 70,
-      captureBandHighB: 105
-    };
-    function syncPulseLabels(d) {
-      var M = window.__GCSLC_DEBT_CLEARANCE_MATH_V143__;
-      var N = window.__GCSLC_NUCLEAR_DEBT_MATH_V145__;
-      if (!M) return;
-      /* $700B × 10–15% capture @ ₦1,500/$ → compact SFP primaries (V148) */
-      d.debtDisplayText = "18.9× Debt Strike";
-      d.sovereignSurplusLabel = "+₦" + (N && N.sovereignSurplusNgnTrillions ? N.sovereignSurplusNgnTrillions : M.surplusT).toFixed(1) + "T";
-      d.zenithTargetLabel = "₦105T–₦157.5T FX Capture";
-    }
-    window.__GCSLC_MARKET_PULSE_V138__ = window.__GCSLC_MARKET_PULSE_V137__ = {
-      benchmarkMonth: ANCHOR.benchmarkMonth,
-      germaniumUsdPerKg: ANCHOR.germaniumUsdPerKg,
-      siliconUsdPerLb: ANCHOR.siliconUsdPerLb,
-      ammoniaUsdPerMt: ANCHOR.ammoniaUsdPerMt,
-      coalFlyAshUsdPerMt: ANCHOR.coalFlyAshUsdPerMt,
-      debtClearanceMult: ANCHOR.debtClearanceMult,
-      surplusTrillions: ANCHOR.surplusTrillions,
-      captureBandLowB: ANCHOR.captureBandLowB,
-      captureBandHighB: ANCHOR.captureBandHighB,
-      debtDisplayText: "18.9× Debt Strike",
-      sovereignSurplusLabel: "+₦895.0T",
-      zenithTargetLabel: "₦105T–₦157.5T FX Capture"
-    };
-    syncPulseLabels(window.__GCSLC_MARKET_PULSE_V137__);
-    window.__GCSLC_MARKET_PULSE_V136__ = window.__GCSLC_MARKET_PULSE_V137__;
-    window.__GCSLC_MARKET_PULSE_V135__ = window.__GCSLC_MARKET_PULSE_V137__;
-
-    function el(id) {
-      return document.getElementById(id);
-    }
-
-    function flashNode(node) {
-      if (!node) return;
-      node.classList.remove("sfp-live-trickle-flash-v138");
-      void node.offsetWidth;
-      node.classList.add("sfp-live-trickle-flash-v138");
-      window.setTimeout(function () {
-        node.classList.remove("sfp-live-trickle-flash-v138");
-      }, 480);
-    }
-
-    function pulseSectionShell() {
-      var sec = el("sfp-live-pulse-v137");
-      if (!sec) return;
-      sec.classList.add("sfp-live-pulse-v138--tick-pulse");
-      window.setTimeout(function () {
-        sec.classList.remove("sfp-live-pulse-v138--tick-pulse");
-      }, 420);
-    }
-
-    function pulseCyanTickerFrameV147() {
-      var fr = el("sfpCyanTickerFrameV147");
-      if (!fr) return;
-      fr.classList.remove("sfp-cyan-ticker-live-pulse-v147");
-      void fr.offsetWidth;
-      fr.classList.add("sfp-cyan-ticker-live-pulse-v147");
-      window.setTimeout(function () {
-        fr.classList.remove("sfp-cyan-ticker-live-pulse-v147");
-      }, 720);
-    }
-
-    function pulseSfpCyanShellV148() {
-      var sec = el("sfp-live-pulse-v137");
-      if (!sec) return;
-      sec.classList.remove("sfp-live-pulse-v148--cyan-shell-pulse");
-      void sec.offsetWidth;
-      sec.classList.add("sfp-live-pulse-v148--cyan-shell-pulse");
-      window.setTimeout(function () {
-        sec.classList.remove("sfp-live-pulse-v148--cyan-shell-pulse");
-      }, 780);
-    }
-
-    function paintCyanTickerV140() {
-      var d = window.__GCSLC_MARKET_PULSE_V137__;
-      var t = el("sfpCyanMarketTickerV140");
-      if (!t) return;
-      var ge = d.germaniumUsdPerKg.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      var si = d.siliconUsdPerLb.toFixed(4);
-      var nh3 = d.ammoniaUsdPerMt.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      var ash = d.coalFlyAshUsdPerMt.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      t.textContent =
-        "Germanium ($" + ge + "/kg) | Silicon ($" + si + "/lb) | Ammonia ($" + nh3 + "/MT) | Fly Ash ($" + ash + "/MT) · API HANDSHAKE LIVE";
-    }
-
-    function paintMarketPulseV138() {
-      var d = window.__GCSLC_MARKET_PULSE_V137__;
-      syncPulseLabels(d);
-      var debtLab = el("sfpMetricDebtLabelV137");
-      if (debtLab) debtLab.textContent = "Debt Strike";
-      var zenLab = el("sfpMetricZenithLabelV137");
-      if (zenLab) zenLab.textContent = "FX Capture";
-      var debt = el("sfpMetricDebtV137");
-      var sur = el("sfpMetricSurplusV137");
-      var zen = el("sfpMetricZenithV137");
-      if (debt) debt.textContent = d.debtDisplayText || "18.9× Debt Strike";
-      if (sur) sur.textContent = d.sovereignSurplusLabel;
-      if (zen) zen.textContent = d.zenithTargetLabel || "₦105T–₦157.5T FX Capture";
-      var ge = el("sfpBenchGeV137");
-      var si = el("sfpBenchSiV137");
-      var nh3 = el("sfpBenchNh3V140");
-      var ash = el("sfpBenchAshV137");
-      if (ge) ge.textContent = "$" + d.germaniumUsdPerKg.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "/kg";
-      if (si) si.textContent = "$" + d.siliconUsdPerLb.toFixed(4) + "/lb";
-      if (nh3) nh3.textContent = "$" + d.ammoniaUsdPerMt.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "/MT";
-      if (ash) ash.textContent = "$" + d.coalFlyAshUsdPerMt.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "/MT";
-      var st = el("sfpLivePulseStampV137");
-      if (st) st.textContent = "LIVE · " + d.benchmarkMonth;
-      paintCyanTickerV140();
-      var pad = el("sfpPrimaryAnchorDebtV146");
-      var pfx = el("sfpPrimaryAnchorFxV146");
-      if (pad) {
-        pad.innerHTML = "<strong>18.9×</strong> Debt Strike";
-      }
-      if (pfx) {
-        pfx.innerHTML = "<strong>₦105T–₦157.5T</strong> FX Capture";
-      }
-    }
-
-    /* V147 — ±0.01% market tick (60s) on commodity marks; debt lane stays driven by $700B / M.velocityX */
-    function marketTickV147(cur) {
-      var pct = (Math.random() * 2 - 1) * 0.0001;
-      return cur * (1 + pct);
-    }
-
-    function trickleMarketPulseV138() {
-      try {
-        fetch("kaduna_master_payload.csv", { method: "HEAD", cache: "no-store" }).catch(function () {});
-      } catch (e) {}
-      var d = window.__GCSLC_MARKET_PULSE_V137__;
-      var tr = window.__GCSLC_SFP_TRICKLE_V138__;
-      if (tr) {
-        tr.lastTickAt = Date.now();
-        tr.tickCount += 1;
-        tr.anchorDebtX = ANCHOR.debtClearanceMult;
-        tr.anchorSurplusT = ANCHOR.surplusTrillions;
-        tr.anchorCaptureB = ANCHOR.captureBandLowB + "–" + ANCHOR.captureBandHighB;
-      }
-      d.germaniumUsdPerKg = marketTickV147(d.germaniumUsdPerKg);
-      d.siliconUsdPerLb = marketTickV147(d.siliconUsdPerLb);
-      d.ammoniaUsdPerMt = marketTickV147(d.ammoniaUsdPerMt);
-      d.coalFlyAshUsdPerMt = marketTickV147(d.coalFlyAshUsdPerMt);
-      d.debtClearanceMult = ANCHOR.debtClearanceMult;
-      d.surplusTrillions = ANCHOR.surplusTrillions;
-      d.captureBandLowB = ANCHOR.captureBandLowB;
-      d.captureBandHighB = ANCHOR.captureBandHighB;
-      syncPulseLabels(d);
-      paintMarketPulseV138();
-      pulseCyanTickerFrameV147();
-      pulseSfpCyanShellV148();
-      flashNode(el("sfpMetricDebtV137"));
-      flashNode(el("sfpMetricSurplusV137"));
-      flashNode(el("sfpMetricZenithV137"));
-      flashNode(el("sfpBenchGeV137"));
-      flashNode(el("sfpBenchSiV137"));
-      flashNode(el("sfpBenchNh3V140"));
-      flashNode(el("sfpBenchAshV137"));
-      flashNode(el("sfpCyanMarketTickerV140"));
-      flashNode(el("sfpPrimaryAnchorDebtV146"));
-      flashNode(el("sfpPrimaryAnchorFxV146"));
-      pulseSectionShell();
-    }
-
-    function boot() {
-      paintMarketPulseV138();
-      try {
-        fetch("kaduna_master_payload.csv", { method: "HEAD", cache: "no-store" }).catch(function () {});
-      } catch (e) {}
-      window.__GCSLC_paintMarketPulseV138 = paintMarketPulseV138;
-      window.__GCSLC_paintMarketPulseV137 = paintMarketPulseV138;
-      window.__GCSLC_paintMarketPulseV136 = paintMarketPulseV138;
-      window.__GCSLC_paintMarketPulseV135 = paintMarketPulseV138;
-      window.setInterval(trickleMarketPulseV138, TICK_MS);
-    }
-    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
-    else boot();
-  })();
-  </script>
 
   <script>
   (function gcslcIndustrialTelemetryV146() {
     window.__GCSLC_COAL_RESERVE_MT_V147__ = 639.3e6;
+    window.__GCSLC_SOVEREIGN_LIQUIDITY_STRIKE_V152__ = {
+      domesticFaceTn: 50,
+      deployableTn: 945,
+      labelMult: "1,890% of ₦50T face"
+    };
+    function renderSovereignLiquidityStrikeV152() {
+      var C = window.__GCSLC_SOVEREIGN_LIQUIDITY_STRIKE_V152__;
+      if (!C || typeof C !== "object") return;
+      var d = document.getElementById("nafcSlsDeployableV152");
+      var m = document.getElementById("nafcSlsDomesticV152");
+      var x = document.getElementById("nafcSlsMultV152");
+      if (d) d.textContent = "₦" + Number(C.deployableTn).toFixed(1) + "T";
+      if (m) m.textContent = "₦" + Number(C.domesticFaceTn).toFixed(1) + "T";
+      if (x && typeof C.labelMult === "string") x.textContent = C.labelMult;
+    }
     var ROT = [
       "MISSION STATUS: INDUSTRIAL LATTICE · AZK TELEMETRY LIVE",
       "MISSION STATUS: KADUNA NODAL MESH · MASTER CSV INGRESS ARMED",
@@ -11231,6 +11188,7 @@
           " · CSV INGRESS ARMED · AZK_TELEMETRY";
       }
       refreshCoalLatticeV147();
+      renderSovereignLiquidityStrikeV152();
       var ingress = document.getElementById("nafcRhgiCloudIngressV88");
       if (ingress) {
         ingress.textContent =
@@ -11266,6 +11224,7 @@
       var up0 = document.getElementById("nafcKadunaUplinkV147");
       if (up0 && !up0.textContent) up0.textContent = "KADUNA NODAL HANDSHAKE · fetching ingress…";
       refreshCoalLatticeV147();
+      renderSovereignLiquidityStrikeV152();
       fetchKadunaMetaV146();
       var strip = document.getElementById("nafcLiveSignalStrip");
       if (strip) {
