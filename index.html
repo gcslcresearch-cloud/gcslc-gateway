@@ -1091,16 +1091,22 @@
       pointer-events: auto !important;
     }
     html.gcslc-paradigm-unmask-v146 #sfp-live-pulse-v137 .sfp-primary-anchor-v146 {
+      order: -3;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: center;
       gap: 8px 14px;
+      flex: 1 1 100%;
+      width: 100%;
+      max-width: 100%;
       margin: 0;
-      padding: 8px 10px;
-      border-bottom: 1px solid rgba(102, 245, 255, 0.28);
+      padding: 10px 10px;
+      border-bottom: 2px solid rgba(102, 245, 255, 0.35);
       background: rgba(0, 18, 40, 0.55);
       text-align: center;
+      font-size: clamp(0.72rem, 2.1vw, 0.95rem);
+      box-shadow: 0 0 28px rgba(0, 230, 118, 0.12);
     }
     html.gcslc-paradigm-unmask-v146 #sfp-live-pulse-v137 .sfp-primary-anchor-v146__k {
       font-size: clamp(0.62rem, 1.65vw, 0.82rem);
@@ -1118,6 +1124,17 @@
       opacity: 0.55;
       color: rgba(102, 245, 255, 0.85);
     }
+    html.gcslc-paradigm-unmask-v146 #sfp-live-pulse-v137 .sfp-debt-clearance-v140__ticker {
+      order: -2;
+    }
+    html.gcslc-paradigm-unmask-v146 #sfp-live-pulse-v137 .sfp-debt-clearance-v140__math {
+      order: -1;
+    }
+    html.gcslc-paradigm-unmask-v146 #sfp-live-pulse-v137.sfp-debt-clearance-v140 {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
     @media (max-width: 520px) {
       html.gcslc-paradigm-unmask-v146 .paradigm-apex .prisms-row {
         grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
@@ -1126,6 +1143,12 @@
       html.gcslc-paradigm-unmask-v146 #sfp-live-pulse-v137 .sfp-primary-anchor-v146 {
         flex-direction: column;
         gap: 4px;
+      }
+    }
+    @media (max-width: 390px) {
+      html.gcslc-paradigm-unmask-v146 .paradigm-apex .prisms-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 8px !important;
       }
     }
     html.gcslc-live-market-pulse-v135 .paradigm-apex,
@@ -5397,6 +5420,57 @@
     .prism-box.v8-glass.is-expanded .prism-ico {
       filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.35));
     }
+    /* V146 — Paradigm UNMASK (post-V93): late-layer win over stealth matte so 8R vault is always luminous + tappable */
+    html.gcslc-paradigm-unmask-v146 .header-apex-layer01 .nafc-fusion-prism-v69.nafc-float-island-v89 {
+      position: relative !important;
+      top: auto !important;
+      bottom: auto !important;
+    }
+    html.gcslc-paradigm-unmask-v146 section.paradigm-apex .prism-box.v8-glass {
+      animation: glassPrismShimmer 4.2s linear infinite, azkBiolumPulseV10 1.12s ease-in-out infinite, metalFrameSheen 9s ease-in-out infinite;
+      color: var(--subhi-sovereign-gold);
+      text-shadow:
+        0 0 10px rgba(212, 175, 55, 0.45),
+        0 0 22px rgba(212, 175, 55, 0.2),
+        0 1px 0 rgba(0, 0, 0, 0.35);
+      border-color: rgba(102, 245, 255, 0.22);
+      filter: none;
+      pointer-events: auto;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: rgba(212, 175, 55, 0.22);
+    }
+    html.gcslc-paradigm-unmask-v146 section.paradigm-apex .prism-box.v8-glass::after {
+      opacity: 0.88;
+      animation: glassPrismShimmer 5s linear infinite reverse;
+    }
+    html.gcslc-paradigm-unmask-v146 section.paradigm-apex .prism-box.v8-glass .prism-ico {
+      filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.35));
+    }
+    html.gcslc-paradigm-unmask-v146 section.paradigm-apex .prism-box.v8-glass:hover,
+    html.gcslc-paradigm-unmask-v146 section.paradigm-apex .prism-box.v8-glass:focus-visible,
+    html.gcslc-paradigm-unmask-v146 section.paradigm-apex .prism-box.v8-glass.active,
+    html.gcslc-paradigm-unmask-v146 section.paradigm-apex .prism-box.v8-glass.is-expanded {
+      transform: translateY(-2px) scale(1.02);
+    }
+    html.gcslc-paradigm-unmask-v146 .nafc-cyan-frame-v146 #nafcSovereignAnchor .nafc-fusion-prism-frame {
+      animation: nafcSilverRackPulse 3.8s ease-in-out infinite;
+      filter: none;
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.06),
+        0 0 0 2px rgba(160, 175, 195, 0.28),
+        0 0 24px rgba(200, 215, 235, 0.22),
+        0 14px 44px rgba(0, 0, 0, 0.58),
+        inset 0 2px 0 rgba(255, 255, 255, 0.14),
+        inset 0 -3px 10px rgba(0, 0, 0, 0.45);
+    }
+    html.gcslc-paradigm-unmask-v146 .nafc-cyan-frame-v146 #nafcSovereignAnchor .nafc-fusion-prism-sheen {
+      opacity: 0.78;
+      animation: nafcFusionSheen 5.5s linear infinite;
+    }
+    html.gcslc-paradigm-unmask-v146 .nafc-cyan-frame-v146 #nafcSovereignAnchor .nafc-fusion-calligraphy {
+      animation: nafcCalligraphyGoldShimmer 14s ease-in-out infinite;
+      filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.22)) drop-shadow(0 3px 22px rgba(212, 175, 55, 0.28));
+    }
     .gec-advisory-hub-island-v92:not(.gcslc-edge-enterprise-hub-v94) {
       animation: none !important;
       background:
@@ -7007,13 +7081,13 @@
         <section class="clock-row clock-widget-v15" id="clockRow" aria-label="World clocks"></section>
 
         <section id="sfp-live-pulse-v137" class="sfp-live-pulse-v135 sfp-live-pulse-v137 sfp-debt-clearance-v140 sfp-debt-clearance-v143" aria-label="Superior Financial Performance — debt clearance strike &amp; live market pulse (V143)">
-          <div class="sfp-debt-clearance-v140__ticker" aria-label="Live commodity ticker — refreshes every 60 seconds">
-            <span class="sfp-debt-clearance-v140__ticker-track" id="sfpCyanMarketTickerV140">Germanium — Silicon — Ammonia — Coal Fly Ash — loading…</span>
-          </div>
           <div class="sfp-primary-anchor-v146" id="sfpPrimaryAnchorStripV146" aria-label="Sovereign debt clearance and FX stack — $700B capture anchor">
             <span class="sfp-primary-anchor-v146__k" id="sfpPrimaryAnchorDebtV146"><strong>18.9×</strong> Debt Clearance</span>
             <span class="sfp-primary-anchor-v146__sep" aria-hidden="true">·</span>
             <span class="sfp-primary-anchor-v146__k" id="sfpPrimaryAnchorFxV146"><strong>₦105T–₦157.5T</strong> FX Stack</span>
+          </div>
+          <div class="sfp-debt-clearance-v140__ticker" aria-label="Live commodity ticker — refreshes every 60 seconds">
+            <span class="sfp-debt-clearance-v140__ticker-track" id="sfpCyanMarketTickerV140">Germanium — Silicon — Ammonia — Coal Fly Ash — loading…</span>
           </div>
           <p class="sfp-debt-clearance-v140__math" id="sfpSovereignMathCaptureV140"><strong>Titans Nuclear Logic (V145):</strong> hard-lock <strong>18.9× Debt Clearance</strong> + <strong>+₦895.0T</strong> Sovereign Surplus from <strong>10–15% capture</strong> of the <strong>$700B</strong> Global Big Tech Capex (<strong>$70B–$105B</strong>). <strong>Conversion:</strong> <strong>₦1,500/$</strong> → <strong>₦105T–₦157.5T</strong>. <strong>Strike:</strong> <strong>₦55.0T</strong> Domestic Debt cleared.</p>
           <div class="sfp-debt-clearance-v140__body">
@@ -10613,9 +10687,10 @@
       var M = window.__GCSLC_DEBT_CLEARANCE_MATH_V143__;
       var N = window.__GCSLC_NUCLEAR_DEBT_MATH_V145__;
       if (!M) return;
-      d.debtDisplayText = (N && N.debtClearanceMultiplier ? N.debtClearanceMultiplier : M.velocityX) + "× Debt Clearance";
+      /* $700B × 10–15% capture @ ₦1,500/$ → hard-locked anchor strip (V146) */
+      d.debtDisplayText = "18.9× Debt Clearance";
       d.sovereignSurplusLabel = "+₦" + (N && N.sovereignSurplusNgnTrillions ? N.sovereignSurplusNgnTrillions : M.surplusT).toFixed(1) + "T";
-      d.zenithTargetLabel = "₦" + M.ngnTrillions[0].toFixed(1) + "T–₦" + M.ngnTrillions[1].toFixed(1) + "T";
+      d.zenithTargetLabel = "₦105T–₦157.5T";
     }
     window.__GCSLC_MARKET_PULSE_V138__ = window.__GCSLC_MARKET_PULSE_V137__ = {
       benchmarkMonth: ANCHOR.benchmarkMonth,
@@ -10629,7 +10704,7 @@
       captureBandHighB: ANCHOR.captureBandHighB,
       debtDisplayText: "18.9× Debt Clearance",
       sovereignSurplusLabel: "+₦895.0T",
-      zenithTargetLabel: "₦105.0T–₦157.5T"
+      zenithTargetLabel: "₦105T–₦157.5T"
     };
     syncPulseLabels(window.__GCSLC_MARKET_PULSE_V137__);
     window.__GCSLC_MARKET_PULSE_V136__ = window.__GCSLC_MARKET_PULSE_V137__;
@@ -10697,10 +10772,10 @@
       var pad = el("sfpPrimaryAnchorDebtV146");
       var pfx = el("sfpPrimaryAnchorFxV146");
       if (pad) {
-        pad.innerHTML = "<strong>" + (d.debtClearanceMult != null ? String(d.debtClearanceMult) : "18.9") + "×</strong> Debt Clearance";
+        pad.innerHTML = "<strong>18.9×</strong> Debt Clearance";
       }
       if (pfx) {
-        pfx.innerHTML = "<strong>" + (d.zenithTargetLabel || "₦105T–₦157.5T") + "</strong> FX Stack";
+        pfx.innerHTML = "<strong>₦105T–₦157.5T</strong> FX Stack";
       }
     }
 
@@ -10773,18 +10848,66 @@
       "MISSION STATUS: RHGI CLOUD INGRESS · INDUSTRIAL BLOOM SYNC"
     ];
     var k = 0;
+    var lastMeta = null;
+    function applyKadunaMetaV146(meta) {
+      if (!meta || typeof meta !== "object") return;
+      lastMeta = meta;
+      var rows = meta.row_count_raw != null ? Number(meta.row_count_raw) : null;
+      var lgaN = meta.lga_count != null ? Number(meta.lga_count) : 23;
+      var canv = meta.canvassed_rows != null ? Number(meta.canvassed_rows) : null;
+      var built = typeof meta.built_at === "string" ? meta.built_at.slice(0, 19).replace("T", " ") + "Z" : "";
+      var uplink = document.querySelector(".nafc-sf-uplink-v87");
+      if (uplink) {
+        uplink.textContent =
+          "UPLINK: KADUNA " +
+          lgaN +
+          " LGAs" +
+          (rows != null && !isNaN(rows) ? " · " + rows.toLocaleString("en-US") + " RAW ROWS" : "") +
+          (canv != null && !isNaN(canv) ? " · " + canv.toLocaleString("en-US") + " CANVASSED" : "") +
+          " · COAL_LATTICE_639.3M_MT · AZK_TELEMETRY";
+      }
+      var ingress = document.getElementById("nafcRhgiCloudIngressV88");
+      if (ingress) {
+        ingress.textContent =
+          (built ? "Ingress stamp: " + built + " · " : "") +
+          "Kaduna industrial lattice sync (telemetry)";
+      }
+      var m = document.getElementById("nafcMissionRoadmapV83");
+      if (m && rows != null && !isNaN(rows)) {
+        m.textContent =
+          "MISSION STATUS: KADUNA NODAL DATA · " +
+          rows.toLocaleString("en-US") +
+          " ROWS · COAL RESERVE LATTICE 639.3M MT LIVE";
+      }
+    }
+    function fetchKadunaMetaV146() {
+      window
+        .fetch("kaduna_harvest_meta.json", { cache: "no-store" })
+        .then(function (r) {
+          if (r.ok) return r.json();
+          return window.fetch(".kaduna_harvest_meta.json", { cache: "no-store" }).then(function (r2) {
+            return r2.ok ? r2.json() : null;
+          });
+        })
+        .then(applyKadunaMetaV146)
+        .catch(function () {});
+    }
     function pulseMissionV146() {
       var m = document.getElementById("nafcMissionRoadmapV83");
-      if (m) m.textContent = ROT[k % ROT.length];
+      if (m && !lastMeta) m.textContent = ROT[k % ROT.length];
       k += 1;
+      fetchKadunaMetaV146();
       var strip = document.getElementById("nafcLiveSignalStrip");
       if (strip) {
-        strip.title = "NAFC industrial telemetry · last pulse " + new Date().toISOString().slice(11, 19) + "Z · coal lattice 639.3M MT";
+        strip.title =
+          "NAFC industrial telemetry · last pulse " +
+          new Date().toISOString().slice(11, 19) +
+          "Z · coal lattice 639.3M MT · Kaduna meta refresh 60s";
       }
     }
     function bootTelV146() {
       pulseMissionV146();
-      window.setInterval(pulseMissionV146, 42000);
+      window.setInterval(pulseMissionV146, 60000);
     }
     if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", bootTelV146);
     else bootTelV146();
