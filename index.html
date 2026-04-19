@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="gcslc-vault-restoration-v133 gcslc-hardcoded-sovereign-vault-v134 gcslc-live-market-pulse-v135 gcslc-sovereign-realtime-pulse-v136 gcslc-professional-realtime-v138 gcslc-telegram-sovereign-node-v139 gcslc-debt-clearance-trickle-v140 gcslc-debt-clearance-strike-v143 gcslc-telegram-terminal-final-v145 gcslc-paradigm-unmask-v146 gcslc-paradigm-unmask-v147 gcslc-identity-pulse-sync-v148 gcslc-sovereign-identity-fix-v150 gcslc-command-deck-cleanup-v151 gcslc-arch-restoration-v152-1 gcslc-institutional-header-v153 gcslc-velocity-sliders-v153 gcslc-command-directive-12-v162 gcslc-nafc-stealth-recon-v154">
+<html lang="en" class="gcslc-vault-restoration-v133 gcslc-hardcoded-sovereign-vault-v134 gcslc-live-market-pulse-v135 gcslc-sovereign-realtime-pulse-v136 gcslc-professional-realtime-v138 gcslc-telegram-sovereign-node-v139 gcslc-debt-clearance-trickle-v140 gcslc-debt-clearance-strike-v143 gcslc-telegram-terminal-final-v145 gcslc-paradigm-unmask-v146 gcslc-paradigm-unmask-v147 gcslc-identity-pulse-sync-v148 gcslc-sovereign-identity-fix-v150 gcslc-command-deck-cleanup-v151 gcslc-arch-restoration-v152-1 gcslc-institutional-header-v153 gcslc-velocity-sliders-v153 gcslc-command-directive-12-v162 gcslc-command-directive-13-v163 gcslc-nafc-stealth-recon-v154">
 <head>
   <meta charset="UTF-8" />
   <!-- SOVEREIGN_INTEGRATED_MANIFEST_V1.0 -->
@@ -1473,7 +1473,7 @@
       margin-top: 6px !important;
       position: relative;
       z-index: 2;
-      /* Directive #12: +10% horizontal focal (was 110% / −5%) */
+      /* Directive #12/#13 — Lattice AWC: +10% on prior 110% band; locked for operational focal */
       width: 121% !important;
       max-width: none !important;
       margin-left: -10.5% !important;
@@ -4360,7 +4360,7 @@
     .map-stack-v15 #mapSvg {
       min-height: min(62vh, 720px);
     }
-    /* Directive #12 — Radial Telemetry Standard (open dial · radial markers only · cyan/white · thin hands · marker sync pulse) */
+    /* Directive #13 — Radial Telemetry lock: cyan-pulse markers only (no frame ring) · ultra-thin monochromatic hands · velocity feel */
     .telemetry-radial-clock-v162 {
       text-align: center;
       padding: 4px 2px 2px;
@@ -4381,52 +4381,50 @@
       height: 100%;
       pointer-events: none;
       overflow: visible;
-      filter: drop-shadow(0 0 8px rgba(102, 245, 255, 0.22));
-    }
-    .telemetry-radial-clock-v162__ring {
-      fill: none;
-      stroke: rgba(186, 250, 255, 0.22);
-      stroke-width: 0.55;
+      filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.2));
     }
     .telemetry-tick-minor-v162 {
-      stroke: rgba(230, 252, 255, 0.38);
-      stroke-width: 0.45;
+      stroke: rgba(0, 255, 255, 0.28);
+      stroke-width: 0.38;
       stroke-linecap: round;
-      opacity: 0.85;
+      opacity: 0.9;
     }
     .telemetry-tick-major-v162 {
-      stroke: rgba(248, 255, 255, 0.96);
-      stroke-width: 1.15;
+      stroke: rgba(0, 255, 255, 0.55);
+      stroke-width: 1.05;
       stroke-linecap: round;
-      animation: telemetryMarkerSyncPulseV162 2.35s ease-in-out infinite;
+      animation: telemetryCyanPulseMarkersV163 2.2s ease-in-out infinite;
     }
-    @keyframes telemetryMarkerSyncPulseV162 {
+    @keyframes telemetryCyanPulseMarkersV163 {
       0%,
       100% {
-        opacity: 0.42;
-        filter: drop-shadow(0 0 2px rgba(102, 245, 255, 0.12));
+        opacity: 0.35;
+        stroke: rgba(0, 255, 255, 0.32);
+        filter: drop-shadow(0 0 1px rgba(0, 255, 255, 0.15));
       }
       50% {
         opacity: 1;
-        filter: drop-shadow(0 0 6px rgba(186, 250, 255, 0.85));
+        stroke: rgba(0, 255, 255, 1);
+        filter: drop-shadow(0 0 12px rgba(0, 255, 255, 0.72));
       }
     }
     @media (prefers-reduced-motion: reduce) {
       .telemetry-tick-major-v162 {
         animation: none !important;
-        opacity: 0.92;
+        opacity: 0.88;
+        stroke: rgba(0, 255, 255, 0.75);
       }
     }
     .telemetry-radial-clock-v162__hub {
       position: absolute;
       left: 50%;
       top: 50%;
-      width: 2px;
-      height: 2px;
+      width: 1.5px;
+      height: 1.5px;
       transform: translate(-50%, -50%);
       border-radius: 50%;
-      background: #f4fdff;
-      box-shadow: 0 0 10px rgba(102, 245, 255, 0.85);
+      background: #e8ffff;
+      box-shadow: 0 0 8px rgba(0, 255, 255, 0.65);
       z-index: 4;
     }
     .telemetry-radial-clock-v162__face .hand {
@@ -4434,29 +4432,29 @@
       left: 50%;
       bottom: 50%;
       transform-origin: bottom center;
-      border-radius: 1px;
+      border-radius: 0.5px;
       z-index: 3;
     }
     .telemetry-radial-clock-v162__face .hour {
-      width: 1px;
+      width: 0.4px;
       height: 10px;
-      margin-left: -0.5px;
-      background: linear-gradient(180deg, #ffffff 0%, rgba(186, 240, 255, 0.92) 100%);
-      box-shadow: 0 0 6px rgba(102, 245, 255, 0.35);
+      margin-left: -0.2px;
+      background: linear-gradient(180deg, #f5ffff 0%, rgba(0, 255, 255, 0.55) 100%);
+      box-shadow: 0 0 4px rgba(0, 255, 255, 0.35);
     }
     .telemetry-radial-clock-v162__face .minute {
-      width: 0.85px;
+      width: 0.32px;
       height: 13px;
-      margin-left: -0.425px;
-      background: linear-gradient(180deg, #f0fbff 0%, rgba(120, 220, 255, 0.92) 100%);
-      box-shadow: 0 0 6px rgba(102, 245, 255, 0.28);
+      margin-left: -0.16px;
+      background: linear-gradient(180deg, #e8ffff 0%, rgba(0, 255, 255, 0.48) 100%);
+      box-shadow: 0 0 4px rgba(0, 255, 255, 0.28);
     }
     .telemetry-radial-clock-v162__face .second {
-      width: 0.45px;
+      width: 0.22px;
       height: 14px;
-      margin-left: -0.225px;
-      background: rgba(210, 252, 255, 0.98);
-      box-shadow: 0 0 8px rgba(102, 245, 255, 0.42);
+      margin-left: -0.11px;
+      background: rgba(200, 255, 255, 0.95);
+      box-shadow: 0 0 6px rgba(0, 255, 255, 0.4);
     }
     .telemetry-radial-clock-v162__city {
       font-size: 0.48rem;
@@ -4466,22 +4464,16 @@
       font-weight: 700;
       text-shadow: 0 0 12px rgba(102, 245, 255, 0.18);
     }
-    /* Directive #12 — Footer: legal + social mesh aligned (no lateral collision with lattice column) */
+    /* Directive #13 — Footer: legal rows left-aligned; dedicated social row below; mesh right-aligned (anchored, not inline with legal) */
     .footer-legal-social-align-v162 {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px 12px;
-      align-items: start;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 14px;
+      max-width: 100%;
     }
-    @media (min-width: 980px) {
-      .footer-legal-social-align-v162 {
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-        align-items: center;
-      }
-      .footer-legal-social-align-v162 .footer-social-comm-v162 {
-        justify-self: end;
-        max-width: min(560px, 100%);
-      }
+    .footer-legal-social-align-v162 .footer-legal-text-v162 {
+      text-align: left;
     }
     .footer-legal-social-align-v162 .footer-legal-text-v162 p {
       margin: 0 0 8px;
@@ -4489,12 +4481,30 @@
     .footer-legal-social-align-v162 .footer-legal-text-v162 p:last-child {
       margin-bottom: 0;
     }
+    .footer-social-comm-v162 {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      width: 100%;
+      text-align: right;
+    }
     .footer-social-comm-v162 .footer-comm-mesh-v162 {
       margin-top: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
     }
     .footer-social-comm-v162 .footer-comm-mesh-v162__intel {
       font-size: clamp(0.44rem, 1.05vw, 0.54rem);
       margin-bottom: 6px;
+      width: 100%;
+      text-align: right;
+    }
+    .footer-social-comm-v162 .secure-liaison-v102__nodes {
+      margin-left: auto;
+      width: fit-content;
+      max-width: 100%;
     }
     .layout-inner {
       display: block;
@@ -9141,7 +9151,6 @@
 
   function buildTelemetryDialSvgV162() {
     var svg = '<svg class="telemetry-radial-clock-v162__dial" viewBox="0 0 100 100" aria-hidden="true">';
-    svg += '<circle class="telemetry-radial-clock-v162__ring" cx="50" cy="50" r="46.5" />';
     var j;
     for (j = 0; j < 60; j++) {
       if (j % 5 === 0) continue;
