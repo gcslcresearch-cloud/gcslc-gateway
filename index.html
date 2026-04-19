@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="gcslc-vault-restoration-v133 gcslc-hardcoded-sovereign-vault-v134 gcslc-live-market-pulse-v135 gcslc-sovereign-realtime-pulse-v136 gcslc-professional-realtime-v138 gcslc-telegram-sovereign-node-v139 gcslc-debt-clearance-trickle-v140 gcslc-debt-clearance-strike-v143 gcslc-telegram-terminal-final-v145 gcslc-paradigm-unmask-v146 gcslc-paradigm-unmask-v147 gcslc-identity-pulse-sync-v148 gcslc-sovereign-identity-fix-v150 gcslc-command-deck-cleanup-v151 gcslc-arch-restoration-v152-1 gcslc-institutional-header-v153 gcslc-velocity-sliders-v153 gcslc-command-directive-12-v162 gcslc-command-directive-13-v163 gcslc-nafc-stealth-recon-v154">
+<html lang="en" class="gcslc-vault-restoration-v133 gcslc-hardcoded-sovereign-vault-v134 gcslc-live-market-pulse-v135 gcslc-sovereign-realtime-pulse-v136 gcslc-professional-realtime-v138 gcslc-telegram-sovereign-node-v139 gcslc-debt-clearance-trickle-v140 gcslc-debt-clearance-strike-v143 gcslc-telegram-terminal-final-v145 gcslc-paradigm-unmask-v146 gcslc-paradigm-unmask-v147 gcslc-identity-pulse-sync-v148 gcslc-sovereign-identity-fix-v150 gcslc-command-deck-cleanup-v151 gcslc-arch-restoration-v152-1 gcslc-institutional-header-v153 gcslc-velocity-sliders-v153 gcslc-command-directive-12-v162 gcslc-command-directive-13-v163 gcslc-nafc-stealth-recon-v154 gcslc-final-architectural-strike-v155">
 <head>
   <meta charset="UTF-8" />
   <!-- SOVEREIGN_INTEGRATED_MANIFEST_V1.0 -->
@@ -30,6 +30,7 @@
   <meta name="gcslc-arch-restoration-v152-1" content="layout_rollback_non_map=1;nafc_landscape_wide=1;sovereign_liquidity_strike=945T_vs_50T;map_exemption=sovereignGatedMapV133;sidebar_air=1" />
   <meta name="gcslc-institutional-header-v153" content="goldman_cyan_shimmer=1;typewriter_primary_260ms_slow=1;primary_32px=1;sub_20px=1;creed_16px_regular=1;creed_margin_50px=1;apex_rows_migrated_to_header=1" />
   <meta name="gcslc-nafc-stealth-recon-v154" content="nafc_scale_0.65=1;metallic_gold_calligraphy=1;turquoise_nafc_pulse=1;coal_liquidity_removed=1;linguistics_glass=1" />
+  <meta name="gcslc-final-architectural-strike-v155" content="sovereign_gateway_v90_removed=1;intrinsic_nafc_telemetry=1;corporate_social_row_v155=1;nafc_landscape_wide_locked=1;map_shell_exemption=sovereignGatedMapV133" />
   <!-- Institutional Navy Blue (#001a33) — Edge / PWA chrome -->
   <meta name="theme-color" content="#001a33" media="(prefers-color-scheme: dark)" />
   <meta name="theme-color" content="#001a33" />
@@ -761,20 +762,6 @@
         gap: 8px !important;
       }
     }
-    html.gcslc-professional-realtime-v138 #sovereignGatewayNodeV90 {
-      min-height: 48px;
-      min-width: 48px;
-      padding: 12px 14px;
-      touch-action: manipulation;
-    }
-    html.gcslc-professional-realtime-v138 #eagleCloudPortalPrimaryV105 {
-      min-height: 44px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 10px 14px;
-      touch-action: manipulation;
-    }
     /* V139 — Telegram sovereign node: live green LED (24/7) + footer quick connect (no fixed overlay — keeps 8R prisms unobstructed) */
     @keyframes gcslcTelegramLiveLedV139 {
       0%, 100% {
@@ -1247,13 +1234,6 @@
     }
     html.gcslc-sovereign-identity-fix-v150 .app {
       padding-bottom: max(12px, env(safe-area-inset-bottom)) !important;
-    }
-    .gec-eagle-spine-v105--v150 {
-      margin: 12px 0 14px;
-      padding: 10px 10px 12px;
-      border-radius: 12px;
-      border: 1px solid rgba(102, 245, 255, 0.22);
-      background: rgba(0, 14, 36, 0.5);
     }
     html.gcslc-sovereign-identity-fix-v150 .nafc-live-signal-copy-v87 {
       display: flex;
@@ -3107,6 +3087,48 @@
       gap: 4px;
       max-width: min(560px, 100%);
     }
+    html.gcslc-final-architectural-strike-v155 .nafc-intrinsic-gateway-strip-v155 {
+      width: 100%;
+      margin-top: 10px;
+    }
+    html.gcslc-final-architectural-strike-v155 .nafc-intrinsic-gateway-strip-v155__row {
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      align-items: center;
+    }
+    html.gcslc-final-architectural-strike-v155 .nafc-intrinsic-gateway-strip-v155__copy.nafc-live-signal-copy-v87 {
+      align-items: flex-start;
+      text-align: left;
+      flex: 1 1 min(320px, 100%);
+      max-width: none;
+      font-size: clamp(0.34rem, 0.88vw, 0.46rem);
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      line-height: 1.45;
+      color: rgba(210, 245, 255, 0.94);
+      text-shadow: 0 0 12px rgba(102, 245, 255, 0.22);
+    }
+    @keyframes nafcIntrinsicGatewayPulseV155 {
+      0%, 100% {
+        box-shadow:
+          0 0 0 1px rgba(102, 245, 255, 0.14),
+          0 0 16px rgba(102, 245, 255, 0.12);
+      }
+      50% {
+        box-shadow:
+          0 0 0 1px rgba(102, 245, 255, 0.38),
+          0 0 30px rgba(102, 245, 255, 0.28);
+      }
+    }
+    html.gcslc-final-architectural-strike-v155 .nafc-intrinsic-gateway-strip-v155.nafc-live-signal--v87 {
+      border-radius: 12px;
+      animation: nafcIntrinsicGatewayPulseV155 3.2s ease-in-out infinite;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html.gcslc-final-architectural-strike-v155 .nafc-intrinsic-gateway-strip-v155.nafc-live-signal--v87 {
+        animation: none !important;
+      }
+    }
     .nafc-sf-uplink-v87 {
       font-size: clamp(0.3rem, 0.82vw, 0.42rem);
       font-weight: 800;
@@ -4484,27 +4506,92 @@
     .footer-social-comm-v162 {
       display: flex;
       flex-direction: column;
-      align-items: flex-end;
+      align-items: stretch;
       width: 100%;
       text-align: right;
+      gap: 8px;
     }
-    .footer-social-comm-v162 .footer-comm-mesh-v162 {
-      margin-top: 0;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-    }
-    .footer-social-comm-v162 .footer-comm-mesh-v162__intel {
+    .footer-corporate-social-row-v155__intel {
       font-size: clamp(0.44rem, 1.05vw, 0.54rem);
-      margin-bottom: 6px;
+      margin: 0;
       width: 100%;
       text-align: right;
     }
-    .footer-social-comm-v162 .secure-liaison-v102__nodes {
-      margin-left: auto;
-      width: fit-content;
-      max-width: 100%;
+    @keyframes footerCorporateSocialPulseGlowV155 {
+      0%, 100% {
+        box-shadow:
+          0 0 0 1px rgba(102, 245, 255, 0.14),
+          0 0 14px rgba(102, 245, 255, 0.12),
+          inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+      }
+      50% {
+        box-shadow:
+          0 0 0 1px rgba(102, 245, 255, 0.38),
+          0 0 28px rgba(102, 245, 255, 0.35),
+          inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+      }
+    }
+    .footer-corporate-social-row-v155 {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 12px 16px;
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(102, 245, 255, 0.22);
+      background: rgba(0, 10, 26, 0.55);
+      animation: footerCorporateSocialPulseGlowV155 2.8s ease-in-out infinite;
+    }
+    .footer-corporate-social-row-v155__link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 900;
+      font-size: clamp(0.52rem, 1.15vw, 0.68rem);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      transition: filter 0.15s ease, transform 0.12s ease;
+    }
+    .footer-corporate-social-row-v155__link:hover,
+    .footer-corporate-social-row-v155__link:focus-visible {
+      outline: none;
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+    }
+    .footer-corporate-social-row-v155__ico {
+      display: inline-flex;
+      width: 18px;
+      height: 18px;
+    }
+    .footer-corporate-social-row-v155__ico svg {
+      width: 18px;
+      height: 18px;
+      display: block;
+    }
+    .footer-corporate-social-row-v155__link--x {
+      background: #000000;
+    }
+    .footer-corporate-social-row-v155__link--linkedin {
+      background: #0077b5;
+    }
+    .footer-corporate-social-row-v155__link--facebook {
+      background: #1877f2;
+    }
+    .footer-corporate-social-row-v155__link--instagram {
+      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .footer-corporate-social-row-v155 {
+        animation: none !important;
+      }
     }
     .layout-inner {
       display: block;
@@ -6032,331 +6119,6 @@
       }
       .nofr-mm-viewport { padding: 10px 0 12px; }
     }
-    /* V90 — Browser Consultancy Hub: Sovereign Gateway node + slide drawer */
-    .sovereign-gateway-node-v90 {
-      position: fixed;
-      top: calc(max(10px, env(safe-area-inset-top)) + 48px + 80px);
-      right: calc(max(12px, env(safe-area-inset-right)) + 44px);
-      z-index: 130;
-      overflow: hidden;
-      isolation: isolate;
-      min-height: 48px;
-      min-width: min(220px, 52vw);
-      padding: 10px 18px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border: none;
-      border-radius: 14px;
-      cursor: pointer;
-      touch-action: manipulation;
-      -webkit-tap-highlight-color: rgba(212, 175, 55, 0.25);
-      color: #fff8e8;
-      font-weight: 900;
-      font-size: clamp(0.52rem, 1.45vw, 0.68rem);
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      text-align: center;
-      line-height: 1.2;
-      background:
-        linear-gradient(145deg, rgba(255, 255, 255, 0.06) 0%, transparent 42%),
-        linear-gradient(210deg, rgba(0, 0, 0, 0.35) 0%, rgba(0, 26, 51, 0.92) 100%);
-      box-shadow:
-        0 0 0 1px rgba(212, 175, 55, 0.35),
-        inset 0 2px 0 rgba(255, 255, 255, 0.12),
-        inset 0 -3px 0 rgba(0, 0, 0, 0.35),
-        0 8px 0 rgba(0, 8, 20, 0.55),
-        0 10px 28px rgba(0, 0, 0, 0.45),
-        0 0 22px rgba(212, 175, 55, 0.35);
-      animation: sovereignGatewayShimmerV90 3.2s ease-in-out infinite;
-    }
-    .sovereign-gateway-node-v90:hover,
-    .sovereign-gateway-node-v90:focus-visible {
-      filter: brightness(1.08);
-      outline: none;
-    }
-    .sovereign-gateway-node-v90__sheen {
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      pointer-events: none;
-      background: linear-gradient(118deg, transparent 28%, rgba(102, 245, 255, 0.22) 48%, rgba(212, 175, 55, 0.16) 52%, transparent 72%);
-      background-size: 220% 100%;
-      opacity: 0.85;
-      animation: sovereignGatewaySheenV90 5s linear infinite;
-    }
-    .sovereign-gateway-node-v90__label {
-      position: relative;
-      z-index: 1;
-    }
-    @keyframes sovereignGatewayShimmerV90 {
-      0%, 100% { box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.35), inset 0 2px 0 rgba(255, 255, 255, 0.12), inset 0 -3px 0 rgba(0, 0, 0, 0.35), 0 8px 0 rgba(0, 8, 20, 0.55), 0 10px 28px rgba(0, 0, 0, 0.45), 0 0 18px rgba(212, 175, 55, 0.35); }
-      50% { box-shadow: 0 0 0 1px rgba(102, 245, 255, 0.45), inset 0 2px 0 rgba(255, 255, 255, 0.16), inset 0 -3px 0 rgba(0, 0, 0, 0.35), 0 8px 0 rgba(0, 8, 20, 0.55), 0 14px 36px rgba(0, 0, 0, 0.48), 0 0 32px rgba(102, 245, 255, 0.28); }
-    }
-    @keyframes sovereignGatewaySheenV90 {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 100% 50%; }
-    }
-    .sovereign-drawer-backdrop-v90 {
-      position: fixed;
-      inset: 0;
-      z-index: 198;
-      background: rgba(0, 10, 24, 0.55);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.32s ease;
-    }
-    .sovereign-drawer-backdrop-v90.is-open {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .sovereign-consult-drawer-v90 {
-      position: fixed;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      width: min(520px, 94vw);
-      max-width: 100%;
-      z-index: 199;
-      transform: translateX(104%);
-      transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-      background:
-        radial-gradient(120% 80% at 100% 0%, rgba(102, 245, 255, 0.08) 0%, transparent 42%),
-        var(--bg0);
-      box-shadow:
-        -8px 0 40px rgba(0, 0, 0, 0.55),
-        inset 1px 0 0 rgba(102, 245, 255, 0.12);
-      border-left: 1px solid rgba(212, 175, 55, 0.22);
-      overflow: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-    .sovereign-consult-drawer-v90.is-open {
-      transform: translateX(0);
-    }
-    .sovereign-consult-drawer-v90__inner {
-      padding: max(12px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
-    }
-    .sovereign-consult-drawer-v90__head {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 0.75rem;
-      margin-bottom: 6px;
-    }
-    .sovereign-drawer-title-v90 {
-      font-family: "Goldman", system-ui, -apple-system, "Segoe UI", sans-serif;
-      font-weight: 800;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: #f0d78c;
-      text-shadow: 0 0 18px rgba(212, 175, 55, 0.35);
-    }
-    .sovereign-consult-drawer-v90 .gec-consultancy__title {
-      margin: 0;
-      text-align: left;
-    }
-    .sovereign-drawer-close-v90 {
-      flex: 0 0 auto;
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      border: 1px solid rgba(212, 175, 55, 0.38);
-      background: rgba(0, 26, 51, 0.92);
-      color: #eaf8ff;
-      font-size: 1.35rem;
-      line-height: 1;
-      cursor: pointer;
-      touch-action: manipulation;
-    }
-    .sovereign-drawer-close-v90:hover,
-    .sovereign-drawer-close-v90:focus-visible {
-      outline: none;
-      filter: brightness(1.1);
-    }
-    .gec-vault-telemetry-bar-v160 {
-      margin: 12px 0 0;
-      padding: 8px 10px;
-      border-radius: 10px;
-      border: 1px solid rgba(102, 245, 255, 0.3);
-      background: rgba(6, 14, 26, 0.48);
-      box-shadow:
-        inset 0 0 0 1px rgba(102, 245, 255, 0.1),
-        0 0 18px rgba(102, 245, 255, 0.14);
-      font-size: clamp(0.34rem, 0.85vw, 0.46rem);
-      font-weight: 800;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      text-align: center;
-      color: rgba(185, 244, 255, 0.96);
-      line-height: 1.45;
-    }
-    .sovereign-drawer-actions-v90 {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 14px;
-    }
-    .sovereign-drawer-actions-v90 {
-      font-family: "Goldman", system-ui, -apple-system, "Segoe UI", sans-serif;
-    }
-    .sovereign-drawer-actions-v90 .btn-termii-test {
-      text-align: center;
-      justify-content: center;
-    }
-    .sovereign-consult-drawer-v90 .gec-pillar__k,
-    .sovereign-consult-drawer-v90 .gec-case-study__label {
-      font-family: "Goldman", system-ui, -apple-system, "Segoe UI", sans-serif;
-    }
-    @media (max-width: 520px) {
-      .sovereign-gateway-node-v90 {
-        min-width: min(168px, 50vw);
-        min-height: 44px;
-        padding: 8px 12px;
-        font-size: 0.56rem;
-        letter-spacing: 0.16em;
-      }
-    }
-    /* V92 — GEC Advisory Hub island + Universal Paradigm + Secondary Feed */
-    .gec-advisory-hub-island-v92 {
-      flex-direction: column;
-      gap: 4px;
-      border-radius: 18px;
-      max-width: min(280px, 58vw);
-      background:
-        linear-gradient(145deg, rgba(255, 255, 255, 0.11) 0%, transparent 42%),
-        linear-gradient(210deg, rgba(0, 0, 0, 0.35) 0%, rgba(0, 26, 51, 0.92) 100%);
-      box-shadow:
-        0 0 0 1px rgba(212, 175, 55, 0.55),
-        inset 0 2px 0 rgba(255, 255, 255, 0.14),
-        inset 0 -3px 0 rgba(0, 0, 0, 0.35),
-        0 10px 0 rgba(0, 8, 20, 0.55),
-        0 10px 28px rgba(0, 0, 0, 0.45),
-        0 0 26px rgba(212, 175, 55, 0.55),
-        0 0 48px rgba(212, 175, 55, 0.22);
-      animation: gecAdvisoryHubGoldPulseV92 3.4s ease-in-out infinite;
-    }
-    .gec-advisory-hub-island-v92 .sovereign-gateway-node-v90__label {
-      letter-spacing: 0.18em;
-      text-shadow:
-        0 0 10px rgba(212, 175, 55, 0.45),
-        0 0 22px rgba(212, 175, 55, 0.2);
-    }
-    .gec-advisory-hub-island-v92 .gec-advisory-hub-island__sub-v92 {
-      position: relative;
-      z-index: 1;
-      display: block;
-      max-width: 100%;
-      font-size: clamp(0.34rem, 0.88vw, 0.46rem);
-      font-weight: 800;
-      letter-spacing: 0.06em;
-      line-height: 1.25;
-      color: rgba(255, 244, 210, 0.92);
-      text-shadow: 0 0 12px rgba(212, 175, 55, 0.35);
-    }
-    @keyframes gecAdvisoryHubGoldPulseV92 {
-      0%, 100% { filter: saturate(1.05) brightness(1); box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.55), inset 0 2px 0 rgba(255, 255, 255, 0.14), inset 0 -3px 0 rgba(0, 0, 0, 0.35), 0 10px 0 rgba(0, 8, 20, 0.55), 0 10px 28px rgba(0, 0, 0, 0.45), 0 0 26px rgba(212, 175, 55, 0.55), 0 0 56px rgba(212, 175, 55, 0.18); }
-      50% { filter: saturate(1.12) brightness(1.06); box-shadow: 0 0 0 1px rgba(255, 236, 170, 0.7), inset 0 2px 0 rgba(255, 255, 255, 0.18), inset 0 -3px 0 rgba(0, 0, 0, 0.35), 0 10px 0 rgba(0, 8, 20, 0.55), 0 14px 36px rgba(0, 0, 0, 0.48), 0 0 36px rgba(212, 175, 55, 0.75), 0 0 72px rgba(212, 175, 55, 0.28); }
-    }
-    .universal-paradigm-ticker-v92 {
-      margin: 12px 0 14px;
-      padding: 10px 10px 12px;
-      border-radius: 14px;
-      border: 1px solid rgba(102, 245, 255, 0.28);
-      background: rgba(6, 14, 26, 0.42);
-      box-shadow:
-        inset 0 0 0 1px rgba(102, 245, 255, 0.12),
-        0 0 22px rgba(102, 245, 255, 0.14);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-    }
-    .universal-paradigm-ticker-v92__label {
-      margin: 0 0 6px;
-      font-family: "Goldman", system-ui, -apple-system, "Segoe UI", sans-serif;
-      font-size: clamp(0.34rem, 0.88vw, 0.44rem);
-      font-weight: 900;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      text-align: center;
-      color: rgba(212, 175, 55, 0.9);
-    }
-    .universal-paradigm-ticker-v92__line {
-      margin: 0;
-      min-height: 2.8em;
-      font-size: clamp(0.38rem, 0.95vw, 0.5rem);
-      font-weight: 700;
-      line-height: 1.45;
-      text-align: center;
-      color: rgba(225, 245, 255, 0.94);
-      transition: opacity 0.35s ease;
-    }
-    .gec-advisory-hub-intel-v92 {
-      margin: 0 0 10px;
-      font-size: clamp(0.4rem, 1.02vw, 0.54rem);
-      line-height: 1.45;
-      text-align: left;
-      color: rgba(225, 245, 255, 0.92);
-      white-space: pre-line;
-    }
-    .gec-eagle-spine-v105 {
-      margin: 0 0 12px;
-      padding: 8px 10px;
-      border-radius: 10px;
-      border: 1px solid rgba(102, 245, 255, 0.22);
-      background: linear-gradient(168deg, rgba(0, 14, 34, 0.88) 0%, rgba(0, 26, 51, 0.82) 100%);
-      box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.12), 0 0 18px rgba(102, 245, 255, 0.08);
-      font-size: clamp(0.38rem, 0.95vw, 0.5rem);
-      font-weight: 800;
-      line-height: 1.5;
-      letter-spacing: 0.06em;
-      text-align: center;
-      color: rgba(215, 240, 255, 0.94);
-    }
-    .gec-eagle-spine-v105__link {
-      text-decoration: none;
-      font-weight: 900;
-      background: linear-gradient(118deg, #bff4ff 0%, #66f5ff 42%, #d4af37 78%, #e8f8ff 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      animation: eagleSpineCyanShimmerV105 4.2s ease-in-out infinite;
-    }
-    .gec-eagle-spine-v105__link:hover,
-    .gec-eagle-spine-v105__link:focus-visible {
-      outline: none;
-      filter: brightness(1.12);
-    }
-    .gec-eagle-spine-v105__note {
-      display: block;
-      margin-top: 4px;
-      font-size: clamp(0.34rem, 0.85vw, 0.44rem);
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      color: rgba(212, 175, 55, 0.88);
-      text-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
-    }
-    @keyframes eagleSpineCyanShimmerV105 {
-      0%, 100% { filter: brightness(1); }
-      50% { filter: brightness(1.14); }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .gec-eagle-spine-v105__link {
-        animation: none !important;
-      }
-    }
-    .rhgi-eagle-cloud-spine-v105 {
-      color: rgba(102, 245, 255, 0.95);
-      font-weight: 800;
-      text-decoration: none;
-      border-bottom: 1px solid rgba(212, 175, 55, 0.45);
-    }
-    .rhgi-eagle-cloud-spine-v105:hover,
-    .rhgi-eagle-cloud-spine-v105:focus-visible {
-      outline: none;
-      color: rgba(212, 175, 55, 0.98);
-      border-bottom-color: rgba(102, 245, 255, 0.55);
-    }
     #gcslcConsoleToggle {
       display: none !important;
     }
@@ -6527,130 +6289,11 @@
       animation: nafcCalligraphyGoldShimmer 14s ease-in-out infinite;
       filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.22)) drop-shadow(0 3px 22px rgba(212, 175, 55, 0.28));
     }
-    .gec-advisory-hub-island-v92:not(.gcslc-edge-enterprise-hub-v94) {
-      animation: none !important;
-      background:
-        linear-gradient(145deg, rgba(255, 255, 255, 0.06) 0%, transparent 42%),
-        linear-gradient(210deg, rgba(0, 0, 0, 0.35) 0%, rgba(0, 26, 51, 0.92) 100%);
-      box-shadow:
-        0 0 0 1px rgba(212, 175, 55, 0.35),
-        inset 0 2px 0 rgba(255, 255, 255, 0.1),
-        inset 0 -3px 0 rgba(0, 0, 0, 0.35),
-        0 8px 0 rgba(0, 8, 20, 0.55),
-        0 10px 22px rgba(0, 0, 0, 0.4);
-      filter: saturate(0.85);
-    }
-    .gec-advisory-hub-island-v92:not(.gcslc-edge-enterprise-hub-v94):hover,
-    .gec-advisory-hub-island-v92:not(.gcslc-edge-enterprise-hub-v94):focus-visible {
-      filter: brightness(1.08);
-    }
-    /* V94 — Microsoft Edge Mirror: metallic silver prism (Enterprise Grade) + Frame 1004179049 luminosity parity */
-    .rhgi-g-anchor-v94 {
-      margin: 0 0 12px;
-      padding: 10px 10px 12px;
-      border-radius: 12px;
-      border: 1px solid rgba(212, 175, 55, 0.22);
-      background: rgba(0, 26, 51, 0.35);
-      font-size: clamp(0.38rem, 0.95vw, 0.5rem);
-      line-height: 1.45;
-      color: rgba(225, 245, 255, 0.92);
-      box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.08);
-    }
-    .rhgi-g-anchor-v94 strong {
-      color: rgba(240, 215, 140, 0.95);
-    }
-    html.gcslc-edge-mirror-v94 .gcslc-edge-enterprise-hub-v94 {
-      position: relative;
-      isolation: isolate;
-      clip-path: polygon(6% 0, 94% 0, 100% 50%, 94% 100%, 6% 100%, 0 50%);
-      border-radius: 16px;
-      border: 1px solid rgba(210, 220, 235, 0.55);
-      background:
-        linear-gradient(135deg, rgba(255, 255, 255, 0.14) 0%, transparent 46%),
-        linear-gradient(210deg, rgba(120, 135, 155, 0.22) 0%, rgba(0, 26, 51, 0.96) 52%, rgba(0, 8, 18, 0.94) 100%);
-      box-shadow:
-        0 0 0 1px rgba(200, 215, 230, 0.35),
-        inset 0 2px 0 rgba(255, 255, 255, 0.16),
-        inset 0 -3px 0 rgba(0, 0, 0, 0.35),
-        0 10px 0 rgba(0, 8, 20, 0.5),
-        0 12px 30px rgba(0, 0, 0, 0.42),
-        0 0 22px rgba(200, 215, 230, 0.22);
-      color: #f2f6ff;
-      animation: edgeSilverPrismSheenV94 5.2s linear infinite;
-    }
-    html.gcslc-edge-mirror-v94 .gcslc-edge-enterprise-hub-v94 .sovereign-gateway-node-v90__sheen {
-      background: linear-gradient(
-        118deg,
-        transparent 0%,
-        rgba(255, 255, 255, 0.12) 40%,
-        rgba(210, 220, 235, 0.22) 50%,
-        rgba(102, 245, 255, 0.08) 62%,
-        transparent 100%
-      );
-      opacity: 0.72;
-    }
-    html.gcslc-edge-mirror-v94 .gcslc-edge-enterprise-hub-v94 .sovereign-gateway-node-v90__label {
-      letter-spacing: 0.16em;
-      text-shadow:
-        0 0 10px rgba(230, 240, 255, 0.35),
-        0 0 18px rgba(200, 215, 230, 0.18);
-    }
-    @keyframes edgeSilverPrismSheenV94 {
-      0% { filter: saturate(1.02) brightness(1); }
-      50% { filter: saturate(1.08) brightness(1.04); }
-      100% { filter: saturate(1.02) brightness(1); }
-    }
-    html.gcslc-edge-mirror-v94 .sovereign-consult-drawer-v90.gcslc-edge-enterprise-drawer-v94 {
-      border-left: 1px solid rgba(200, 215, 230, 0.38);
-      background:
-        radial-gradient(120% 80% at 100% 0%, rgba(200, 215, 230, 0.1) 0%, transparent 44%),
-        var(--subhi-sovereign-navy);
-      box-shadow:
-        -10px 0 44px rgba(0, 0, 0, 0.55),
-        inset 1px 0 0 rgba(200, 215, 230, 0.14);
-    }
-    html.gcslc-edge-mirror-v94 .sovereign-drawer-title-v90 {
-      text-shadow: 0 0 14px rgba(200, 215, 230, 0.22), 0 0 22px rgba(212, 175, 55, 0.12);
-    }
-    html.gcslc-edge-mirror-v94 #identityFullName {
+    #identityFullName {
       display: inline-block;
       max-width: 100%;
       white-space: pre-line;
       vertical-align: top;
-    }
-    /* V107 — Edge mobile Fortress: silver bevel + institutional navy · safe-area · crisp compositing */
-    @media (max-width: 900px) {
-      html.gcslc-edge-mirror-v94.gcslc-edge-mobile-fortress-v107 .gcslc-edge-enterprise-hub-v94 {
-        clip-path: polygon(5% 0, 95% 0, 100% 50%, 95% 100%, 5% 100%, 0 50%);
-        padding: max(10px, env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px))
-          max(12px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px));
-        -webkit-transform: translate3d(0, 0, 0);
-        transform: translate3d(0, 0, 0);
-        -webkit-backface-visibility: hidden;
-        backface-visibility: hidden;
-        border-color: rgba(210, 220, 235, 0.62);
-        background:
-          linear-gradient(135deg, rgba(255, 255, 255, 0.16) 0%, transparent 46%),
-          linear-gradient(210deg, rgba(130, 145, 165, 0.26) 0%, rgba(0, 26, 51, 0.98) 52%, rgba(0, 8, 18, 0.96) 100%);
-        box-shadow:
-          0 0 0 1px rgba(200, 215, 230, 0.42),
-          inset 0 2px 0 rgba(255, 255, 255, 0.2),
-          inset 0 -3px 0 rgba(0, 0, 0, 0.38),
-          0 10px 0 rgba(0, 8, 20, 0.52),
-          0 14px 34px rgba(0, 0, 0, 0.48),
-          0 0 26px rgba(200, 215, 230, 0.28);
-      }
-      html.gcslc-edge-mirror-v94.gcslc-edge-mobile-fortress-v107 .sovereign-consult-drawer-v90.gcslc-edge-enterprise-drawer-v94 {
-        padding-top: max(12px, env(safe-area-inset-top, 0px));
-        padding-bottom: max(16px, env(safe-area-inset-bottom, 0px));
-        padding-left: max(12px, env(safe-area-inset-left, 0px));
-        padding-right: max(12px, env(safe-area-inset-right, 0px));
-        -webkit-transform: translateZ(0);
-        transform: translateZ(0);
-        background:
-          radial-gradient(120% 80% at 100% 0%, rgba(200, 215, 230, 0.12) 0%, transparent 44%),
-          linear-gradient(180deg, #001a33 0%, #001428 100%);
-      }
     }
     /* V98 — BANKING HUB: Financial Lattice vault · LEVI liquidity ticker · silver bevel · corporate lux */
     .financial-lattice-vault-v98 {
@@ -7658,175 +7301,6 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
-    .consultancy-cloud-hubs-v104 {
-      margin: 12px 0 14px;
-      padding: 10px 10px 12px;
-      border-radius: 12px;
-      border: 1px solid rgba(102, 245, 255, 0.22);
-      background: linear-gradient(168deg, rgba(0, 14, 34, 0.95) 0%, rgba(0, 22, 48, 0.92) 100%);
-      box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.1), 0 0 22px rgba(102, 245, 255, 0.08);
-    }
-    .consultancy-cloud-hubs-v104__label {
-      margin: 0 0 8px;
-      font-size: clamp(0.34rem, 0.82vw, 0.44rem);
-      font-weight: 900;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      text-align: center;
-      color: rgba(212, 175, 55, 0.9);
-      text-shadow: 0 0 12px rgba(212, 175, 55, 0.22);
-    }
-    .consultancy-cloud-hubs-v104__grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px;
-    }
-    .consultancy-hub-tile-v104 {
-      margin: 0;
-      padding: 10px 8px 11px;
-      border-radius: 12px;
-      border: 1px solid rgba(102, 245, 255, 0.28);
-      background: linear-gradient(175deg, rgba(0, 12, 30, 0.96) 0%, rgba(0, 26, 51, 0.88) 100%);
-      color: rgba(220, 248, 255, 0.96);
-      font: inherit;
-      cursor: pointer;
-      touch-action: manipulation;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      text-align: center;
-      box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.08);
-      transition: filter 0.15s ease, transform 0.12s ease;
-      animation: consultancyHubCyanPulseV104 3.4s ease-in-out infinite;
-    }
-    .consultancy-hub-tile-v104:hover,
-    .consultancy-hub-tile-v104:focus-visible {
-      outline: none;
-      filter: brightness(1.08);
-      transform: translateY(-1px);
-    }
-    .consultancy-hub-tile-v104__ico {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 36px;
-      height: 36px;
-    }
-    .consultancy-hub-tile-v104__ico svg {
-      width: 30px;
-      height: 30px;
-      display: block;
-      filter: drop-shadow(0 0 10px rgba(102, 245, 255, 0.35));
-    }
-    .consultancy-hub-tile-v104__cap {
-      font-size: clamp(0.32rem, 0.78vw, 0.42rem);
-      font-weight: 900;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      line-height: 1.35;
-      color: rgba(200, 245, 255, 0.94);
-    }
-    .consultancy-hub-tile-v104__sub {
-      display: block;
-      margin-top: 2px;
-      font-size: clamp(0.3rem, 0.72vw, 0.38rem);
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: none;
-      color: rgba(212, 175, 55, 0.88);
-    }
-    @keyframes consultancyHubCyanPulseV104 {
-      0%, 100% {
-        box-shadow:
-          inset 0 0 0 1px rgba(102, 245, 255, 0.12),
-          0 0 14px rgba(102, 245, 255, 0.18);
-      }
-      50% {
-        box-shadow:
-          inset 0 0 0 1px rgba(102, 245, 255, 0.26),
-          0 0 24px rgba(102, 245, 255, 0.32);
-      }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .consultancy-hub-tile-v104 {
-        animation: none !important;
-      }
-    }
-    /* Advisory hub — fixed stacked modules (no carousels): glass + cyan edge (NAFC family) */
-    .gec-advisory-hub-fixed-stack-v159 {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin: 0 0 14px;
-    }
-    .gec-advisory-hub-fixed-stack-v159 .consultancy-cloud-hubs-v104,
-    .gec-advisory-hub-fixed-stack-v159 .consultancy-handshake-industrial-v99,
-    .gec-advisory-hub-fixed-stack-v159 .gec-case-study-ticker-v87 {
-      margin: 0;
-      border-radius: 14px;
-      border: 1px solid rgba(102, 245, 255, 0.32);
-      background: rgba(6, 14, 26, 0.42);
-      box-shadow:
-        inset 0 0 0 1px rgba(102, 245, 255, 0.12),
-        0 0 24px rgba(102, 245, 255, 0.16);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-    }
-    .gec-advisory-hub-fixed-stack-v159 .consultancy-cloud-hubs-v104__grid {
-      grid-template-columns: 1fr;
-      gap: 10px;
-    }
-    .gec-advisory-hub-fixed-stack-v159 .consultancy-hub-tile-v104 {
-      animation: none !important;
-      border-color: rgba(102, 245, 255, 0.34);
-      box-shadow:
-        inset 0 0 0 1px rgba(102, 245, 255, 0.14),
-        0 0 18px rgba(102, 245, 255, 0.18);
-    }
-    .gec-advisory-hub-fixed-stack-v159 .consultancy-handshake-industrial-v99__type {
-      min-height: 0;
-    }
-    .secure-liaison-advisory-row-v103 {
-      margin-top: 10px;
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px;
-    }
-    .secure-liaison-advisory-btn-v103 {
-      margin: 0;
-      padding: 8px 8px 10px;
-      border-radius: 12px;
-      border: 1px solid rgba(212, 175, 55, 0.35);
-      background: linear-gradient(168deg, rgba(0, 16, 38, 0.96) 0%, rgba(0, 26, 51, 0.88) 100%);
-      color: rgba(235, 248, 255, 0.94);
-      font-family: inherit;
-      font-weight: 900;
-      font-size: clamp(0.36rem, 0.88vw, 0.48rem);
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      text-align: center;
-      line-height: 1.35;
-      cursor: pointer;
-      touch-action: manipulation;
-      box-shadow: inset 0 0 0 1px rgba(102, 245, 255, 0.08);
-      transition: filter 0.15s ease, transform 0.12s ease;
-    }
-    .secure-liaison-advisory-btn-v103 .secure-liaison-advisory-sub-v103 {
-      display: block;
-      margin-top: 4px;
-      font-size: clamp(0.32rem, 0.78vw, 0.42rem);
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: none;
-      color: rgba(200, 240, 255, 0.88);
-    }
-    .secure-liaison-advisory-btn-v103:hover,
-    .secure-liaison-advisory-btn-v103:focus-visible {
-      outline: none;
-      filter: brightness(1.08);
-      transform: translateY(-1px);
-    }
     .sovereign-intel-layers-v103 {
       margin-top: 10px;
       padding: 10px 10px 12px;
@@ -7918,83 +7392,6 @@
     <span class="v115-bridge-v115__sep" aria-hidden="true">·</span>
     <a class="v115-bridge-v115__link" href="./nrrfc_deep_layer.html">NRRFC Deep-Layer</a>
   </nav>
-  <button type="button" class="sovereign-gateway-node-v90 gec-advisory-hub-island-v92" id="sovereignGatewayNodeV90" aria-controls="sovereignConsultDrawerV90" aria-expanded="false" aria-label="Open advisory hub">
-    <span class="sovereign-gateway-node-v90__sheen" aria-hidden="true"></span>
-    <span class="sovereign-gateway-node-v90__label" id="sovereignGatewayHubLabelV90">GEC ADVISORY HUB</span>
-    <span class="gec-advisory-hub-island__sub-v92" id="gecAdvisoryHubIslandSubV92"></span>
-  </button>
-  <div class="sovereign-drawer-backdrop-v90" id="sovereignConsultDrawerBackdropV90" hidden></div>
-  <aside class="sovereign-consult-drawer-v90" id="sovereignConsultDrawerV90" aria-hidden="true" aria-labelledby="sovereignConsultDrawerTitleV90">
-    <div class="sovereign-consult-drawer-v90__inner">
-      <div class="sovereign-consult-drawer-v90__head">
-        <h2 id="sovereignConsultDrawerTitleV90" class="gec-consultancy__title sovereign-drawer-title-v90">Advisory Hub</h2>
-        <button type="button" class="sovereign-drawer-close-v90" id="sovereignConsultDrawerCloseV90" aria-label="Close consultancy drawer">×</button>
-      </div>
-      <div class="gec-consultancy__frame">
-        <p class="gec-eagle-spine-v105 gec-eagle-spine-v105--v150" id="gecEagleCloudSpineV105">
-          <a href="https://galadimanruwacenter.org" target="_blank" rel="noopener noreferrer" class="gec-eagle-spine-v105__link" id="eagleCloudPrimarySpineV105">Eagle Cloud</a>
-          <span class="gec-eagle-spine-v105__note">Sovereign Spine · AWC/K-GEC · lattice corridor (V151 — anchored above hub tiles; clear of comm / social mesh)</span>
-        </p>
-        <p class="gec-advisory-hub-intel-v92" id="gecAdvisoryHubIntelV92" aria-live="polite"></p>
-        <div class="gec-advisory-hub-fixed-stack-v159" aria-label="Institutional advisory modules — fixed stack">
-          <div class="consultancy-cloud-hubs-v104" aria-label="Cloud advisory hubs — Edge Fortress and Telegram Mini-App">
-            <div class="consultancy-cloud-hubs-v104__label">Cloud Advisory Hubs</div>
-            <div class="consultancy-cloud-hubs-v104__grid">
-              <button type="button" class="consultancy-hub-tile-v104 consultancy-hub-tile-v104--edge" id="consultancyFortressEdgeHubV104">
-                <span class="consultancy-hub-tile-v104__ico" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M5 4.5h14A1.5 1.5 0 0120.5 6v12A1.5 1.5 0 0119 19.5H5A1.5 1.5 0 013.5 18V6A1.5 1.5 0 015 4.5zm0 2.25V18h14V6.75H5zM7 8.25h10v1.5H7v-1.5z"/></svg>
-                </span>
-                <span class="consultancy-hub-tile-v104__cap">Fortress Hub</span>
-                <span class="consultancy-hub-tile-v104__sub">Microsoft Edge · enterprise mirror</span>
-              </button>
-              <button type="button" class="consultancy-hub-tile-v104 consultancy-hub-tile-v104--telegram" id="consultancyMiniAppTelegramHubV104">
-                <span class="consultancy-hub-tile-v104__ico" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M9.04 15.3 8.97 19l3.99-2.14 4.04 2.97c.74.54 1.27.25 1.46-.87l2.66-12.6c.27-1.1-.42-1.6-1.13-1.31L2.58 9.48c-1.09.44-1.08 1.06-.2 1.34l4.7 1.47L18.93 6.3c.38-.24.73-.11.45.17l-8.34 8.83Z"/></svg>
-                </span>
-                <span class="consultancy-hub-tile-v104__cap">Mini-App Hub</span>
-                <span class="consultancy-hub-tile-v104__sub">Telegram · sovereign WebView</span>
-              </button>
-            </div>
-          </div>
-          <div class="consultancy-handshake-industrial-v99" aria-label="Consultancy Hub — industrial lattice handshake">
-            <p class="consultancy-handshake-industrial-v99__label">Consultancy Hub · handshake</p>
-            <p class="consultancy-handshake-industrial-v99__type" id="consultancyIndustrialHandshakeV99">AWC/K-GEC: Optimizing Vertical Integration for African Conglomerates.<br /><br />8R Paradigm: Resetting Supply Chain Fragility via Space-Freq Logic.</p>
-          </div>
-          <div class="gec-case-study-ticker-v87" aria-live="polite">
-            <p class="gec-case-study__label">Case study 02</p>
-            <p class="gec-case-study__line" id="gecCaseStudyTickerLine">Case 02: Riyadh Sovereign Cloud — AWC/K-GEC securing National Data Assets.</p>
-          </div>
-        </div>
-        <p class="rhgi-g-anchor-v94" id="rhgiGAnchorV94"><strong>G-Anchor · RHGI:</strong> Rural Hyper-Grassroots Initiatives remain the shared sovereign foundation for the Google-class hub, the Microsoft Edge enterprise mirror, and the <a href="https://galadimanruwacenter.org" target="_blank" rel="noopener noreferrer" class="rhgi-eagle-cloud-spine-v105">Eagle Cloud</a> sovereign spine.</p>
-        <div class="universal-paradigm-ticker-v92" aria-label="Universal Paradigm — fixed line">
-          <div class="universal-paradigm-ticker-v92__label">Universal Paradigm</div>
-          <p class="universal-paradigm-ticker-v92__line" id="universalParadigmTickerLineV92">COMM_MESH: [SYCHRONIZING_PLATFORMS] · AUDIT_PENDING.</p>
-        </div>
-        <p class="gec-consultancy__rhgi">
-          <strong>RHGI — Proven Ground:</strong> Rural Hyper-Grassroots Initiatives field the live mesh where Eagle Cloud intelligence is trained, verified, and scaled into sovereign execution.
-        </p>
-        <div class="gec-consultancy__grid">
-          <div class="gec-pillar">
-            <span class="gec-pillar__k">Economics</span>
-            <span class="gec-pillar__v">Macro-fiscal architecture, NOFR-aligned liquidity logic, and corridor-grade price intelligence.</span>
-          </div>
-          <div class="gec-pillar">
-            <span class="gec-pillar__k">Energy</span>
-            <span class="gec-pillar__v">Transition-grade power strategy. AZK Corridor Ingestion: 639M MT. Infrastructure risk telemetry: Active.</span>
-          </div>
-          <div class="gec-pillar">
-            <span class="gec-pillar__k">Security</span>
-            <span class="gec-pillar__v">Powered by Sovereign Cloud Security. Data Resides in Nigerian National Infrastructure. Tier-4 Compliance.</span>
-          </div>
-        </div>
-        <p class="gec-vault-telemetry-bar-v160" id="gecVaultTelemetryBarV160" aria-label="Vault system telemetry">SYSTEM LOAD: 12% | CORRIDOR SYNC: 100% | GLOBAL RELAY: STABLE.</p>
-        <div class="sovereign-drawer-actions-v90">
-          <a class="btn-termii-test btn-handshake-sim gec-eagle-cloud-portal-v105" href="https://galadimanruwacenter.org" target="_blank" rel="noopener noreferrer" id="eagleCloudPortalPrimaryV105">AUTHENTICATE INVESTOR VAULT ACCESS</a>
-          <a class="btn-termii-test btn-handshake-sim btn-chairman-wa-v88 execute-handshake-anchor-v93" id="chairmanConsultWaV90" href="https://wa.me/2347039139439" target="_blank" rel="noopener noreferrer">Execute Handshake</a>
-        </div>
-      </div>
-    </div>
-  </aside>
   <button type="button" class="gov-toggle" id="govToggle" aria-controls="governanceSlide" aria-expanded="false">GOVERNANCE</button>
   <aside class="governance-slide" id="governanceSlide" aria-label="Governance and legal anchors">
     <h2>Governance — Legal Anchors</h2>
@@ -8162,6 +7559,13 @@
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+          <div class="nafc-intrinsic-gateway-strip-v155 nafc-live-signal nafc-live-signal--v87" id="nafcLiveSignalStrip" aria-live="polite">
+            <div class="nafc-live-signal-row-v87 nafc-intrinsic-gateway-strip-v155__row">
+              <span class="nafc-live-signal-orbit" aria-hidden="true"><span id="nafcLiveSignalNode" class="nafc-live-signal-node" role="presentation"></span></span>
+              <span class="nafc-live-signal-label">Intrinsic gateway</span>
+              <span class="nafc-live-signal-copy-v87 nafc-intrinsic-gateway-strip-v155__copy" id="nafcIntrinsicTelemetryV155"></span>
             </div>
           </div>
           </div>
@@ -8512,109 +7916,25 @@
       </p>
       </div>
       <div class="footer-social-comm-v162">
-      <div class="footer-comm-mesh-v162 secure-liaison-v102 secure-liaison-v102--logos-cyan-v103 secure-liaison-v102--stealth-cyan-v104" aria-label="Stealth comm mesh — eight-channel cyan liaison (logos only)">
-        <h3 class="secure-liaison-v102__title sr-only-def">Secure Liaison — comm mesh</h3>
-        <p class="footer-comm-mesh-v162__intel" id="gcslcIntelChannelStatusV102" aria-live="polite">COMM_MESH: [SYCHRONIZING_PLATFORMS] · AUDIT_PENDING.</p>
-        <div class="footer-comm-mesh-v162__nodes secure-liaison-v102__nodes">
-          <a class="secure-liaison-node-v102 secure-liaison-node-v102--wa" href="https://wa.me/2347039139439" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp — live liaison (logo)">
-
-            <span class="secure-liaison-node-v102__ico" aria-hidden="true">
-
-              <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.881 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-
-            </span>
-
-            <span class="secure-liaison-node-v102__cap">WhatsApp</span>
-
+        <p class="footer-comm-mesh-v162__intel footer-corporate-social-row-v155__intel" id="gcslcIntelChannelStatusV102" aria-live="polite">COMM_MESH: [SYCHRONIZING_PLATFORMS] · AUDIT_PENDING.</p>
+        <div class="footer-corporate-social-row-v155" role="navigation" aria-label="Corporate social — X, LinkedIn, Facebook, Instagram">
+          <a class="footer-corporate-social-row-v155__link footer-corporate-social-row-v155__link--x" href="https://x.com" target="_blank" rel="noopener noreferrer" aria-label="X">
+            <span class="footer-corporate-social-row-v155__ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></span>
+            <span class="footer-corporate-social-row-v155__cap">X</span>
           </a>
-
-          <a class="secure-liaison-node-v102 secure-liaison-node-v102--tg" href="https://t.me/+2347039139439" target="_blank" rel="noopener noreferrer" aria-label="Telegram — sovereign node live (+2347039139439)">
-
-            <span class="secure-liaison-node-v102__ico" aria-hidden="true">
-
-              <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M9.04 15.3 8.97 19l3.99-2.14 4.04 2.97c.74.54 1.27.25 1.46-.87l2.66-12.6c.27-1.1-.42-1.6-1.13-1.31L2.58 9.48c-1.09.44-1.08 1.06-.2 1.34l4.7 1.47L18.93 6.3c.38-.24.73-.11.45.17l-8.34 8.83Z"/></svg>
-
-            </span>
-
-            <span class="secure-liaison-node-v102__cap">Telegram</span>
-
+          <a class="footer-corporate-social-row-v155__link footer-corporate-social-row-v155__link--linkedin" href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+            <span class="footer-corporate-social-row-v155__ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M4.98 3.5C4.98 4.328 4.328 4.98 3.5 4.98S2 4.328 2 3.5 2.672 2 3.5 2 4.98 2.672 4.98 3.5zm.02 5.5H2v11h3V9zm5 0H7v11h3v-5.6c0-1.66 1.12-2.61 2.9-2.61 1.74 0 2.1 1.24 2.1 2.85V20h3v-6.3C15 10.76 13.34 9 11.2 9 9.66 9 8.58 9.84 8.1 11h-.05V9H5z"/></svg></span>
+            <span class="footer-corporate-social-row-v155__cap">LinkedIn</span>
           </a>
-
-          <div class="secure-liaison-node-v102 secure-liaison-node-v102--signal" tabindex="0" role="group" aria-label="Signal — encrypted executive channel (logo)">
-
-            <span class="secure-liaison-war-room-v102" role="tooltip">LEVEL 8R ENCRYPTION: EXECUTIVE SESSIONS ONLY.</span>
-
-            <span class="secure-liaison-node-v102__ico" aria-hidden="true">
-
-              <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.2 6 2.7V11c0 4.5-3.05 8.75-6 9.9-2.95-1.15-6-5.4-6-9.9V5.9l6-2.7z"/></svg>
-
-            </span>
-
-            <span class="secure-liaison-node-v102__cap">Signal</span>
-
-          </div>
-
-          <a class="secure-liaison-node-v102 secure-liaison-node-v102--li" href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn — institutional liaison (logo)">
-
-            <span class="secure-liaison-node-v102__ico" aria-hidden="true">
-
-              <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M4.98 3.5C4.98 4.328 4.328 4.98 3.5 4.98S2 4.328 2 3.5 2.672 2 3.5 2 4.98 2.672 4.98 3.5zm.02 5.5H2v11h3V9zm5 0H7v11h3v-5.6c0-1.66 1.12-2.61 2.9-2.61 1.74 0 2.1 1.24 2.1 2.85V20h3v-6.3C15 10.76 13.34 9 11.2 9 9.66 9 8.58 9.84 8.1 11h-.05V9H5z"/></svg>
-
-            </span>
-
-            <span class="secure-liaison-node-v102__cap">LinkedIn</span>
-
+          <a class="footer-corporate-social-row-v155__link footer-corporate-social-row-v155__link--facebook" href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+            <span class="footer-corporate-social-row-v155__ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2v-2.3c0-2 1.2-3.1 3-3.1.9 0 1.8.16 1.8.16V9h-1c-1 0-1.3.62-1.3 1.26V12h2.2l-.35 3H14v6.8c4.56-.93 8-4.96 8-9.8C22 6.48 17.52 2 12 2z"/></svg></span>
+            <span class="footer-corporate-social-row-v155__cap">Facebook</span>
           </a>
-
-          <a class="secure-liaison-node-v102 secure-liaison-node-v102--x" href="https://x.com" target="_blank" rel="noopener noreferrer" aria-label="X — broadcast liaison (logo)">
-
-            <span class="secure-liaison-node-v102__ico" aria-hidden="true">
-
-              <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-
-            </span>
-
-            <span class="secure-liaison-node-v102__cap">X</span>
-
-          </a>
-
-          <a class="secure-liaison-node-v102 secure-liaison-node-v102--bsky" href="https://bsky.app" target="_blank" rel="noopener noreferrer" aria-label="Bluesky — open lattice (logo)">
-
-            <span class="secure-liaison-node-v102__ico" aria-hidden="true">
-
-              <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M12 10.8c-1.1-2.1-4.1-6.6-6.9-8.6C3.8.8 1.9 1.9 2.1 4.5c.3 3.8 4 15.2 5.6 15.2 1.2 0 3.4-4 4.3-6.1.9 2.1 3.1 6.1 4.3 6.1 1.6 0 5.3-11.4 5.6-15.2.2-2.6-1.7-3.7-4-2.3-2.8 2-5.8 6.5-6.9 8.6z"/></svg>
-
-            </span>
-
-            <span class="secure-liaison-node-v102__cap">Bluesky</span>
-
-          </a>
-
-          <a class="secure-liaison-node-v102 secure-liaison-node-v102--tiktok" href="https://www.tiktok.com" target="_blank" rel="noopener noreferrer" aria-label="TikTok — short-form lattice (logo)">
-
-            <span class="secure-liaison-node-v102__ico" aria-hidden="true">
-
-              <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M16.6 5.82s1.84-.64 1.84-2.82h-2.7v9.4c0 .8-.68 1.46-1.52 1.46-.84 0-1.52-.66-1.52-1.48 0-.82.68-1.48 1.52-1.48.18 0 .35.04.5.1V9.1a3.3 3.3 0 00-.5-.04c-1.84 0-3.34 1.48-3.34 3.3 0 1.82 1.5 3.3 3.34 3.3 1.84 0 3.34-1.48 3.34-3.3V8.2c.7.5 1.58.8 2.52.8V6.4c-.45 0-.88-.1-1.27-.28v3.1z"/></svg>
-
-            </span>
-
-            <span class="secure-liaison-node-v102__cap">TikTok</span>
-
-          </a>
-
-          <a class="secure-liaison-node-v102 secure-liaison-node-v102--meta" href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Meta — federation lattice (logo)">
-
-            <span class="secure-liaison-node-v102__ico" aria-hidden="true">
-
-              <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2v-2.3c0-2 1.2-3.1 3-3.1.9 0 1.8.16 1.8.16V9h-1c-1 0-1.3.62-1.3 1.26V12h2.2l-.35 3H14v6.8c4.56-.93 8-4.96 8-9.8C22 6.48 17.52 2 12 2z"/></svg>
-
-            </span>
-
-            <span class="secure-liaison-node-v102__cap">Meta</span>
-
+          <a class="footer-corporate-social-row-v155__link footer-corporate-social-row-v155__link--instagram" href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <span class="footer-corporate-social-row-v155__ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm0 2a3 3 0 00-3 3v10a3 3 0 003 3h10a3 3 0 003-3V7a3 3 0 00-3-3H7zm5 3.5A5.5 5.5 0 1112 17a5.5 5.5 0 010-9.5zm0 2A3.5 3.5 0 1012 15a3.5 3.5 0 000-7zM18 7a1 1 0 110 2 1 1 0 010-2z"/></svg></span>
+            <span class="footer-corporate-social-row-v155__cap">Instagram</span>
           </a>
         </div>
-      </div>
       </div>
     </div>
   </footer>
@@ -8746,6 +8066,34 @@
     ngnStackLowT: 105,
     ngnStackHighT: 157.5,
     sourceMeta: "gcslc-arch-restoration-v152-1+gcslc-debt-clearance-strike-v143"
+  };
+  window.paintNafcIntrinsicTelemetryV155 = function () {
+    var el = document.getElementById("nafcIntrinsicTelemetryV155");
+    if (!el) return;
+    var L = window.__GCSLC_INTRINSIC_SOVEREIGN_LIQUIDITY__ || {};
+    var n945 = L.strikeNumeratorT != null ? L.strikeNumeratorT : 945;
+    var n50 = L.strikeDenominatorT != null ? L.strikeDenominatorT : 50;
+    var vx = L.velocityX != null ? L.velocityX : 18.9;
+    var sur = L.surplusT != null ? L.surplusT : 895;
+    var debt = L.debtStrikeT != null ? L.debtStrikeT : 55;
+    var lo = L.ngnStackLowT != null ? L.ngnStackLowT : 105;
+    var hi = L.ngnStackHighT != null ? L.ngnStackHighT : 157.5;
+    el.textContent =
+      "INTRINSIC GATEWAY · ₦" +
+      n945 +
+      "T / " +
+      n50 +
+      "T · VEL " +
+      vx +
+      "× · SURPLUS " +
+      sur +
+      "T · DEBT " +
+      debt +
+      "T · NGN " +
+      lo +
+      "–" +
+      hi +
+      "T · NAFC LANDSCAPE TELEMETRY (LOCKED)";
   };
   function buildCienBattleTickerLinesV64() {
     var nodes = window.__GCSLC_CIEN_BATTLE_V64__ || [];
@@ -9501,8 +8849,7 @@
           n.closest("a[href*='api.whatsapp.com']") ||
           n.closest(".secure-liaison-node-v102--wa") ||
           n.closest(".execute-handshake-anchor-v93") ||
-          n.closest("#chairmanHandshakeWaBtn") ||
-          n.closest("#chairmanConsultWaV90");
+          n.closest("#chairmanHandshakeWaBtn");
         var sig = n.closest(".secure-liaison-node-v102--signal");
         if (wa || sig) publishFacetimeLiaisonHintV106();
       },
@@ -9566,46 +8913,12 @@
       engine: plat.engine || "generic"
     };
 
-    function hubIntelFortressV105() {
-      return (
-        "AWC/K-GEC: Institutional Fortress Mode Active.\n\n" +
-        "Strategy: Azure Sovereign Cloud Compliance & Enterprise 8R Reset."
-      );
-    }
-    function hubIntelLatticeV105() {
-      return (
-        "AWC/K-GEC: Mobile Infrastructure Mode Active.\n\n" +
-        "Strategy: Hyper-Grassroots Messaging & Mini-App Sovereignty."
-      );
-    }
-    function hubIntelDefaultV105() {
-      return (
-        "Galadiman Ruwa Nigeria Ltd (RC 1871418) — AWC/K-GEC advisory backbone synchronized.\n\n" +
-        "Eagle Cloud (above) is the sovereign spine for execution, training, and NAFC-grade alignment across all hubs."
-      );
-    }
-    function hubIntelCopyV92(p) {
-      if (p.id === "edge") return hubIntelFortressV105();
-      if (p.id === "telegram") return hubIntelLatticeV105();
-      return hubIntelDefaultV105();
-    }
-
     function handshakeTypewriterLineV92(p) {
       if (p.id === "edge") {
         return "Sovereign Enterprise Architecture Syncing...\n\nOptimizing 8R Paradigm for Azure Riyadh/Dubai Regions.";
       }
       if (p.id === "telegram") return "Sovereign Mini-App Node Active.";
       return "Handshaking with " + p.label + " Gateway… GEC Strategy optimized for your lane.";
-    }
-
-    var PARADIGM_LINES_V92 = [
-      "COMM_MESH: [SYCHRONIZING_PLATFORMS] · AUDIT_PENDING."
-    ];
-
-    function startUniversalParadigmTickerV92() {
-      var lineEl = document.getElementById("universalParadigmTickerLineV92");
-      if (!lineEl) return;
-      lineEl.textContent = PARADIGM_LINES_V92[0] || "";
     }
 
     function buildGaladimaHandshakeMessageV92() {
@@ -9629,60 +8942,13 @@
 
     function applyGaladimaHandshakeLinksV92() {
       var href = "https://wa.me/2347039139439?text=" + encodeURIComponent(buildGaladimaHandshakeMessageV92());
-      ["chairmanHandshakeWaBtn", "chairmanConsultWaV90"].forEach(function (id) {
-        var a = document.getElementById(id);
-        if (a) a.setAttribute("href", href);
-      });
+      var a = document.getElementById("chairmanHandshakeWaBtn");
+      if (a) a.setAttribute("href", href);
     }
     window.__GCSLC_REFRESH_GALADIMA_HANDSHAKE_V92__ = applyGaladimaHandshakeLinksV92;
-
-    function paintHubIntelV92() {
-      var intel = document.getElementById("gecAdvisoryHubIntelV92");
-      var sub = document.getElementById("gecAdvisoryHubIslandSubV92");
-      var t = hubIntelCopyV92(plat);
-      if (intel) intel.textContent = t;
-      if (sub) {
-        if (plat.id === "edge") sub.textContent = "Institutional Fortress · Eagle Cloud spine · GRNL (RC 1871418)";
-        else if (plat.id === "telegram") sub.textContent = "Mobile Infrastructure · Eagle Cloud spine · GRNL (RC 1871418)";
-        else sub.textContent = "AWC/K-GEC · Eagle Cloud spine · GRNL (RC 1871418)";
-      }
-      var titleEl = document.getElementById("sovereignConsultDrawerTitleV90");
-      var hubLab = document.getElementById("sovereignGatewayHubLabelV90");
-      if (plat.id === "edge") {
-        if (titleEl) titleEl.textContent = "Institutional Fortress Hub";
-        if (hubLab) hubLab.textContent = "FORTRESS · AWC/K-GEC";
-      } else if (plat.id === "telegram") {
-        if (titleEl) titleEl.textContent = "Telegram Lattice Hub";
-        if (hubLab) hubLab.textContent = "LATTICE · AWC/K-GEC";
-      } else {
-        if (titleEl) titleEl.textContent = "GEC Advisory Hub";
-        if (hubLab) hubLab.textContent = "GEC ADVISORY HUB";
-      }
-    }
-
-    function applyEdgeEnterpriseMirrorV94() {
-      var root = document.documentElement;
-      var hubBtn = document.getElementById("sovereignGatewayNodeV90");
-      var drawer = document.getElementById("sovereignConsultDrawerV90");
-      if (plat.id !== "edge") {
-        root.classList.remove("gcslc-edge-mirror-v94");
-        if (hubBtn) {
-          hubBtn.classList.remove("gcslc-edge-enterprise-hub-v94");
-          hubBtn.setAttribute("aria-label", "Open GEC Advisory Hub — Eagle Cloud sovereign spine");
-        }
-        if (drawer) drawer.classList.remove("gcslc-edge-enterprise-drawer-v94");
-        return;
-      }
-      root.classList.add("gcslc-edge-mirror-v94");
-      if (hubBtn) {
-        hubBtn.classList.add("gcslc-edge-enterprise-hub-v94");
-        hubBtn.setAttribute(
-          "aria-label",
-          "Open Institutional Fortress Hub — Microsoft Edge · Eagle Cloud sovereign spine"
-        );
-      }
-      if (drawer) drawer.classList.add("gcslc-edge-enterprise-drawer-v94");
-    }
+    window.__GCSLC_ADVISORY_GATEWAY_V103__ = function () {
+      /* V155: legacy advisory hub UI retired */
+    };
 
     function runHandshakeTypewriterV92() {
       if (document.documentElement.classList.contains("gcslc-sovereign-identity-fix-v150")) return;
@@ -9702,85 +8968,15 @@
       }, 24);
     }
 
-    var __GCSLC_INDUSTRIAL_TW_V99__ = [];
-    function clearConsultancyIndustrialTypewriterV99() {
-      __GCSLC_INDUSTRIAL_TW_V99__.forEach(function (id) {
-        try {
-          window.clearInterval(id);
-          window.clearTimeout(id);
-        } catch (e1) { /* no-op */ }
-      });
-      __GCSLC_INDUSTRIAL_TW_V99__ = [];
-    }
-    function runConsultancyIndustrialTypewriterV99() {
-      clearConsultancyIndustrialTypewriterV99();
-    }
-
-    window.__GCSLC_ADVISORY_GATEWAY_V103__ = function (mode) {
-      setSovereignDrawerOpenV92(true);
-      var intel = document.getElementById("gecAdvisoryHubIntelV92");
-      var sub = document.getElementById("gecAdvisoryHubIslandSubV92");
-      var titleEl = document.getElementById("sovereignConsultDrawerTitleV90");
-      var hubLab = document.getElementById("sovereignGatewayHubLabelV90");
-      if (mode === "telegram") {
-        if (titleEl) titleEl.textContent = "Telegram Lattice Hub";
-        if (intel) intel.textContent = hubIntelLatticeV105();
-        if (sub) sub.textContent = "Mobile Infrastructure · Eagle Cloud spine · GRNL (RC 1871418)";
-        if (hubLab) hubLab.textContent = "LATTICE · AWC/K-GEC";
-      } else if (mode === "edge") {
-        if (titleEl) titleEl.textContent = "Institutional Fortress Hub";
-        if (intel) intel.textContent = hubIntelFortressV105();
-        if (sub) sub.textContent = "Institutional Fortress · Eagle Cloud spine · GRNL (RC 1871418)";
-        if (hubLab) hubLab.textContent = "FORTRESS · AWC/K-GEC";
-      }
-    };
-
-    function setSovereignDrawerOpenV92(open) {
-      var d = document.getElementById("sovereignConsultDrawerV90");
-      var b = document.getElementById("sovereignConsultDrawerBackdropV90");
-      var btn = document.getElementById("sovereignGatewayNodeV90");
-      var led = document.getElementById("nafcLiveSignalNode");
-      if (!d || !b) return;
-      var on = !!open;
-      d.classList.toggle("is-open", on);
-      b.classList.toggle("is-open", on);
-      if (on) b.removeAttribute("hidden");
-      else b.setAttribute("hidden", "");
-      d.setAttribute("aria-hidden", on ? "false" : "true");
-      if (btn) btn.setAttribute("aria-expanded", on ? "true" : "false");
-      document.body.style.overflow = on ? "hidden" : "";
-      if (on) {
-        paintHubIntelV92();
-        if (plat.id !== "edge") {
-          runConsultancyIndustrialTypewriterV99();
-          if (led) led.classList.add("nafc-live-signal-node--industrial-ingress");
-        } else {
-          clearConsultancyIndustrialTypewriterV99();
-          if (led) led.classList.remove("nafc-live-signal-node--industrial-ingress");
-        }
-      } else {
-        clearConsultancyIndustrialTypewriterV99();
-        if (led) led.classList.remove("nafc-live-signal-node--industrial-ingress");
-      }
-    }
-
     function bootV92() {
-      applyEdgeEnterpriseMirrorV94();
-      paintHubIntelV92();
+      try {
+        document.documentElement.classList.remove("gcslc-edge-mirror-v94");
+      } catch (eRm) { /* no-op */ }
       applyGaladimaHandshakeLinksV92();
       runHandshakeTypewriterV92();
-      startUniversalParadigmTickerV92();
       var nafcSel = document.getElementById("nafcLgaSelect");
       if (nafcSel) nafcSel.addEventListener("change", applyGaladimaHandshakeLinksV92);
-      var openBtn = document.getElementById("sovereignGatewayNodeV90");
-      var closeBtn = document.getElementById("sovereignConsultDrawerCloseV90");
-      var backdrop = document.getElementById("sovereignConsultDrawerBackdropV90");
-      if (openBtn) openBtn.addEventListener("click", function () { setSovereignDrawerOpenV92(true); });
-      if (closeBtn) closeBtn.addEventListener("click", function () { setSovereignDrawerOpenV92(false); });
-      if (backdrop) backdrop.addEventListener("click", function () { setSovereignDrawerOpenV92(false); });
-      document.addEventListener("keydown", function (e) {
-        if (e.key === "Escape") setSovereignDrawerOpenV92(false);
-      });
+      if (typeof window.paintNafcIntrinsicTelemetryV155 === "function") window.paintNafcIntrinsicTelemetryV155();
     }
 
     if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", bootV92);
@@ -9936,18 +9132,6 @@
         if (buf.indexOf(SECRET) !== -1) unlockVaultV104();
       }
     });
-    var fortHub = document.getElementById("consultancyFortressEdgeHubV104");
-    var miniHub = document.getElementById("consultancyMiniAppTelegramHubV104");
-    if (fortHub) {
-      fortHub.addEventListener("click", function () {
-        if (typeof window.__GCSLC_ADVISORY_GATEWAY_V103__ === "function") window.__GCSLC_ADVISORY_GATEWAY_V103__("edge");
-      });
-    }
-    if (miniHub) {
-      miniHub.addEventListener("click", function () {
-        if (typeof window.__GCSLC_ADVISORY_GATEWAY_V103__ === "function") window.__GCSLC_ADVISORY_GATEWAY_V103__("telegram");
-      });
-    }
   })();
 
   (function initHandshakeKadunaPayloadSyncV93() {
@@ -9986,11 +9170,8 @@
       });
     }
     function bindV93() {
-      ["chairmanHandshakeWaBtn", "chairmanConsultWaV90"].forEach(function (id) {
-        var a = document.getElementById(id);
-        if (!a) return;
-        a.addEventListener("pointerdown", onHandshakeBeforeNavigateV93, { passive: true });
-      });
+      var handshakeWa = document.getElementById("chairmanHandshakeWaBtn");
+      if (handshakeWa) handshakeWa.addEventListener("pointerdown", onHandshakeBeforeNavigateV93, { passive: true });
     }
     if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", bindV93);
     else bindV93();
@@ -10258,6 +9439,7 @@
     if (b) b.textContent = cinMsg;
     if (c) c.textContent = cienMsg;
     if (d) d.textContent = cienMsg;
+    if (typeof window.paintNafcIntrinsicTelemetryV155 === "function") window.paintNafcIntrinsicTelemetryV155();
   }
   window.updateGcslcVelocitySlidersV153 = updateGcslcVelocitySlidersV153;
 
