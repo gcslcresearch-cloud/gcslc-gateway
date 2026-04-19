@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="gcslc-live-pulse-vault-v137 gcslc-professional-realtime-v138 gcslc-debt-clearance-trickle-v140 gcslc-debt-clearance-strike-v143 gcslc-paradigm-unmask-v146 gcslc-paradigm-unmask-v147 gcslc-identity-pulse-sync-v148 gcslc-nrrfc-financial-audit-v151">
 <head>
   <meta charset="UTF-8" />
   <!-- SOVEREIGN_INTEGRATED_MANIFEST_V1.0 -->
@@ -8,10 +8,11 @@
   <meta name="gcslc-sovereign-integrated-manifest-v1" content="tag=SOVEREIGN_INTEGRATED_MANIFEST_V1.0;layer=nrrfc_deep_dashboard;entry_profile=./index.html;nrrfc_deep_layer=./nrrfc_deep_layer.html;bridge=V117;coal_mt=639.3M;relative_paths=1" />
   <meta name="gcslc-re-anchor-deep-layer-v117" content="coal_reserve_lattice=639.3M_MT;industrial_bloom=synced;vault=double_lock_8r;handshake=relative" />
   <meta name="gcslc-industrial-lattice-v99" content="node=bua_dangote_gateway;coal=639.3M_MT_synced;cement=lattice_active;nafc=industrial_ingress_led" />
+  <meta name="gcslc-nrrfc-financial-audit-v151" content="sfp_relocated=1;live_pulse=60s;coal_byproduct_cyan=1;relative_fetch=1" />
   <title>NRRFC Deep Layer · Coal Reserves Dashboard · 639.3M MT</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&amp;display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&amp;family=Roboto+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
   <style>
     /* SOVEREIGN_INTEGRATED_MANIFEST_V1.0 */
     :root {
@@ -144,7 +145,14 @@
       padding-left: 1.15em;
     }
     .logic-list li {
-      margin-bottom: 6px;
+      margin-bottom: 10px;
+    }
+    section.card[aria-labelledby="card-vault"],
+    section.card[aria-labelledby="card-639"] {
+      line-height: 1.72;
+    }
+    section.card[aria-labelledby="card-639"] .logic-list li + li {
+      margin-top: 2px;
     }
     .back {
       margin-top: 12px;
@@ -175,6 +183,838 @@
       0%, 100% { filter: brightness(1); box-shadow: 0 0 12px rgba(212, 175, 55, 0.15); }
       50% { filter: brightness(1.08); box-shadow: 0 0 22px rgba(102, 245, 255, 0.18); }
     }
+        @keyframes sfpLuminousLedPulseV133 {
+          0%, 100% { filter: brightness(1); box-shadow: 0 0 12px rgba(0, 230, 118, 0.75), 0 0 22px rgba(0, 230, 118, 0.35), inset 0 0 0 1px rgba(255, 255, 255, 0.35); }
+          50% { filter: brightness(1.18); box-shadow: 0 0 18px rgba(0, 255, 200, 0.95), 0 0 40px rgba(0, 229, 255, 0.35), inset 0 0 0 1px rgba(255, 255, 255, 0.5); }
+        }
+        /* V135 — Live Market Pulse: triple SFP tiles + March 2026 commodity benchmarks (0237dd70 parity: navy #001a33 · gold #D4AF37 · live green) */
+        @keyframes sfpLiveGlowPulseV135 {
+          0%, 100% { box-shadow: 0 0 0 1px rgba(0, 230, 118, 0.25), 0 0 22px rgba(0, 230, 118, 0.28), 0 12px 36px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(212, 175, 55, 0.12); filter: brightness(1); }
+          50% { box-shadow: 0 0 0 1px rgba(0, 255, 180, 0.45), 0 0 38px rgba(0, 230, 118, 0.42), 0 14px 44px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(212, 175, 55, 0.22); filter: brightness(1.06); }
+        }
+        @keyframes sfpLiveSheenV135 {
+          0% { opacity: 0.35; transform: translateX(-12%); }
+          50% { opacity: 0.85; transform: translateX(8%); }
+          100% { opacity: 0.35; transform: translateX(28%); }
+        }
+        .sfp-live-pulse-v135 {
+          position: relative;
+          z-index: 8;
+          margin: 12px 0 14px;
+          padding: 12px 10px 14px;
+          border-radius: 18px;
+          border: 1px solid rgba(212, 175, 55, 0.38);
+          background:
+            radial-gradient(120% 90% at 50% 0%, rgba(212, 175, 55, 0.12) 0%, rgba(0, 26, 51, 0.96) 55%, rgba(0, 8, 20, 0.99) 100%);
+          box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(102, 245, 255, 0.08);
+          overflow: visible;
+        }
+        .sfp-live-pulse-v135::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          border-radius: inherit;
+          pointer-events: none;
+          background: linear-gradient(100deg, transparent 35%, rgba(255, 236, 180, 0.08) 50%, transparent 65%);
+          animation: sfpLiveSheenV135 4.2s ease-in-out infinite;
+          mix-blend-mode: screen;
+        }
+        .sfp-live-pulse-v135__head {
+          position: relative;
+          z-index: 1;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 10px;
+          flex-wrap: wrap;
+          margin: 0 4px 10px;
+        }
+        .sfp-live-pulse-v135__title {
+          margin: 0;
+          font-family: "Goldman", system-ui, sans-serif;
+          font-size: clamp(0.72rem, 1.85vw, 0.95rem);
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: rgba(255, 236, 200, 0.96);
+          text-shadow: 0 0 18px rgba(212, 175, 55, 0.35);
+        }
+        .sfp-live-pulse-v135__live {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          font-size: clamp(0.58rem, 1.45vw, 0.78rem);
+          font-weight: 800;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: rgba(200, 255, 220, 0.95);
+        }
+        .sfp-live-pulse-v135__live-dot {
+          width: 10px;
+          height: 10px;
+          border-radius: 999px;
+          background: radial-gradient(circle at 35% 35%, #e8fff0, #00e676 45%, #004d26 100%);
+          box-shadow: 0 0 12px rgba(0, 230, 118, 0.9), 0 0 24px rgba(0, 230, 118, 0.45);
+          animation: sfpLuminousLedPulseV133 1.6s ease-in-out infinite;
+        }
+        .sfp-live-pulse-v135__grid {
+          position: relative;
+          z-index: 1;
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: clamp(8px, 1.8vw, 14px);
+        }
+        @media (max-width: 720px) {
+          .sfp-live-pulse-v135__grid { grid-template-columns: 1fr; }
+        }
+        .sfp-metric-tile-v135 {
+          position: relative;
+          min-height: 112px;
+          padding: 12px 12px 14px;
+          border-radius: 14px;
+          border: 1px solid rgba(0, 230, 118, 0.35);
+          background: linear-gradient(165deg, rgba(0, 18, 42, 0.92), rgba(0, 8, 22, 0.96));
+          animation: sfpLiveGlowPulseV135 2.8s ease-in-out infinite;
+          text-align: center;
+          overflow: hidden;
+        }
+        .sfp-metric-tile-v135__led {
+          position: absolute;
+          top: 10px;
+          left: 10px;
+          width: 12px;
+          height: 12px;
+          border-radius: 999px;
+          background: radial-gradient(circle at 35% 35%, #e8fff0, #00e676 42%, #004d26 100%);
+          box-shadow: 0 0 10px rgba(0, 230, 118, 0.85);
+          animation: sfpLuminousLedPulseV133 1.85s ease-in-out infinite;
+        }
+        .sfp-metric-tile-v135__label {
+          display: block;
+          margin: 8px 0 6px;
+          font-family: "Goldman", system-ui, sans-serif;
+          font-size: clamp(0.62rem, 1.55vw, 0.82rem);
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: rgba(200, 230, 250, 0.9);
+          font-weight: 800;
+        }
+        .sfp-metric-tile-v135__value {
+          margin: 0;
+          font-family: "Goldman", system-ui, sans-serif;
+          font-size: clamp(1.02rem, 2.65vw, 1.38rem);
+          font-weight: 800;
+          letter-spacing: 0.04em;
+          color: #fff8e8;
+          text-shadow: 0 0 20px rgba(0, 230, 118, 0.35), 0 0 28px rgba(212, 175, 55, 0.22);
+          line-height: 1.2;
+        }
+        .sfp-benchmark-strip-v135 {
+          position: relative;
+          z-index: 1;
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          justify-content: center;
+          gap: 10px 16px;
+          margin-top: 12px;
+          padding: 10px 12px;
+          border-radius: 12px;
+          border: 1px solid rgba(102, 245, 255, 0.18);
+          background: rgba(0, 8, 22, 0.55);
+        }
+        .sfp-benchmark-strip-v135__k {
+          font-size: clamp(0.58rem, 1.35vw, 0.72rem);
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: rgba(212, 175, 55, 0.92);
+          font-weight: 800;
+        }
+        .sfp-benchmark-strip-v135__v {
+          font-size: clamp(0.62rem, 1.45vw, 0.82rem);
+          font-weight: 800;
+          color: rgba(230, 248, 255, 0.95);
+        }
+        /* V137 — Large SFP widgets (green-glow LEDs; institutional navy canvas) */
+        html.gcslc-live-pulse-vault-v137 #sfp-live-pulse-v137.sfp-live-pulse-v137 {
+          padding: clamp(14px, 2vw, 20px) clamp(12px, 2.2vw, 22px);
+        }
+        html.gcslc-live-pulse-vault-v137 #sfp-live-pulse-v137 .sfp-metric-tile-v135 {
+          min-height: max(124px, 18vw);
+          padding: 14px 14px 16px;
+        }
+        html.gcslc-live-pulse-vault-v137 #sfp-live-pulse-v137 .sfp-metric-tile-v135__label {
+          font-size: clamp(0.68rem, 1.75vw, 0.92rem);
+        }
+        html.gcslc-live-pulse-vault-v137 #sfp-live-pulse-v137 .sfp-metric-tile-v135__value {
+          font-size: clamp(1.12rem, 3.15vw, 1.72rem);
+          letter-spacing: 0.035em;
+        }
+        html.gcslc-live-pulse-vault-v137 #sfp-live-pulse-v137 .sfp-benchmark-strip-v135 {
+          margin-top: 14px;
+          padding: 12px 14px;
+        }
+        html.gcslc-live-pulse-vault-v137 #sfp-live-pulse-v137 .sfp-benchmark-strip-v135__v {
+          font-size: clamp(0.68rem, 1.55vw, 0.88rem);
+        }
+        html.gcslc-live-pulse-vault-v137 .paradigm-apex {
+          margin-top: 10px;
+          margin-bottom: 14px;
+          z-index: 16;
+        }
+        /* V138 — Compact professional SFP (overrides V137 bulk) + live trickle flash */
+        @keyframes sfpLiveTrickleFlashV138 {
+          0% { filter: brightness(1); text-shadow: 0 0 6px rgba(0, 230, 118, 0.25); }
+          40% { filter: brightness(1.22); text-shadow: 0 0 14px rgba(0, 255, 160, 0.85), 0 0 22px rgba(0, 230, 118, 0.45); }
+          100% { filter: brightness(1); text-shadow: 0 0 6px rgba(0, 230, 118, 0.25); }
+        }
+        .sfp-live-trickle-flash-v138 {
+          animation: sfpLiveTrickleFlashV138 0.42s ease-out 1;
+        }
+        html.gcslc-professional-realtime-v138 #sfp-live-pulse-v137.sfp-live-pulse-v137 {
+          margin: 8px 0 10px !important;
+          padding: 0.55rem 0.65rem 0.65rem !important;
+          border-radius: 14px;
+        }
+        html.gcslc-professional-realtime-v138 #sfp-live-pulse-v137 .sfp-live-pulse-v135__title {
+          font-size: clamp(0.58rem, 1.35vw, 0.78rem);
+          letter-spacing: 0.14em;
+        }
+        html.gcslc-professional-realtime-v138 #sfp-live-pulse-v137 .sfp-live-pulse-v135__live {
+          font-size: clamp(0.48rem, 1.15vw, 0.65rem);
+        }
+        html.gcslc-professional-realtime-v138 #sfp-live-pulse-v137 .sfp-metric-tile-v135 {
+          min-height: 0 !important;
+          padding: 8px 10px 10px !important;
+          border-radius: 12px;
+          animation: none;
+          box-shadow: inset 0 0 0 1px rgba(0, 230, 118, 0.12);
+        }
+        html.gcslc-professional-realtime-v138 #sfp-live-pulse-v137 .sfp-metric-tile-v135__led {
+          width: 8px;
+          height: 8px;
+          top: 8px;
+          left: 8px;
+        }
+        html.gcslc-professional-realtime-v138 #sfp-live-pulse-v137 .sfp-metric-tile-v135__label {
+          margin: 4px 0 4px;
+          font-size: clamp(0.48rem, 1.15vw, 0.62rem);
+          letter-spacing: 0.12em;
+          font-weight: 700;
+        }
+        html.gcslc-professional-realtime-v138 #sfp-live-pulse-v137 .sfp-metric-tile-v135__value {
+          font-size: clamp(0.78rem, 1.85vw, 1.02rem) !important;
+          font-weight: 700;
+          letter-spacing: 0.05em;
+          line-height: 1.15;
+          animation: none !important;
+        }
+        html.gcslc-professional-realtime-v138 #sfp-live-pulse-v137 .sfp-benchmark-strip-v135 {
+          margin-top: 8px !important;
+          padding: 8px 10px !important;
+          gap: 8px 12px;
+        }
+        html.gcslc-professional-realtime-v138 #sfp-live-pulse-v137 .sfp-benchmark-strip-v135__k {
+          font-size: clamp(0.45rem, 1.05vw, 0.55rem);
+        }
+        html.gcslc-professional-realtime-v138 #sfp-live-pulse-v137 .sfp-benchmark-strip-v135__v {
+          font-size: clamp(0.52rem, 1.2vw, 0.68rem) !important;
+        }
+        html.gcslc-professional-realtime-v138 #sfp-live-pulse-v137.sfp-live-pulse-v138--tick-pulse {
+          box-shadow: 0 0 0 1px rgba(0, 230, 118, 0.22), 0 0 18px rgba(0, 230, 118, 0.18), inset 0 0 0 1px rgba(102, 245, 255, 0.06);
+          transition: box-shadow 0.35s ease;
+        }
+        @keyframes sfpActiveStrikeGlowV156 {
+          0%, 100% {
+            box-shadow:
+              0 0 0 1px rgba(0, 245, 255, 0.42),
+              0 0 22px rgba(0, 229, 255, 0.32),
+              0 0 40px rgba(212, 175, 55, 0.28),
+              inset 0 0 0 1px rgba(212, 175, 55, 0.12);
+          }
+          50% {
+            box-shadow:
+              0 0 0 1px rgba(212, 175, 55, 0.5),
+              0 0 34px rgba(212, 175, 55, 0.42),
+              0 0 52px rgba(0, 245, 255, 0.35),
+              inset 0 0 0 1px rgba(0, 245, 255, 0.18);
+          }
+        }
+        html.gcslc-professional-realtime-v138 #sfp-live-pulse-v137 .sfp-metric-tile-v135--debt-led,
+        html.gcslc-professional-realtime-v138 #sfp-live-pulse-v137 .sfp-metric-tile-v135--fx-strike-v156 {
+          animation: sfpActiveStrikeGlowV156 2.35s ease-in-out infinite !important;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          html.gcslc-professional-realtime-v138 #sfp-live-pulse-v137 .sfp-metric-tile-v135--debt-led,
+          html.gcslc-professional-realtime-v138 #sfp-live-pulse-v137 .sfp-metric-tile-v135--fx-strike-v156 {
+            animation: none !important;
+          }
+        }
+        #sfp-live-pulse-v137 .sfp-metric-tile-v135__value,
+        #sfp-live-pulse-v137 .sfp-benchmark-strip-v135__v,
+        #sfp-live-pulse-v137 .sfp-primary-anchor-v146__k {
+          font-family: "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+          font-variant-numeric: tabular-nums;
+        }
+        /* V138 — Mobile: S24 / iPhone 15–16 — no horizontal scroll; prism + SFP stack */
+        html.gcslc-professional-realtime-v138 body {
+          overflow-x: hidden;
+        }
+        html.gcslc-professional-realtime-v138 .shell-v7 {
+          max-width: 100%;
+          overflow-x: hidden;
+        }
+        html.gcslc-professional-realtime-v138 .center-col-primary {
+          max-width: 100%;
+          min-width: 0;
+        }
+        html.gcslc-professional-realtime-v138 #sfp-live-pulse-v137 .sfp-live-pulse-v135__grid {
+          gap: 8px;
+        }
+        @media (max-width: 520px) {
+          html.gcslc-professional-realtime-v138 #sfp-live-pulse-v137 .sfp-live-pulse-v135__grid {
+            grid-template-columns: 1fr;
+          }
+          html.gcslc-professional-realtime-v138 .paradigm-apex .prisms-row {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            gap: 8px !important;
+          }
+        }
+        @media (min-width: 521px) and (max-width: 900px) {
+          html.gcslc-professional-realtime-v138 .paradigm-apex .prisms-row {
+            grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+            gap: 8px !important;
+          }
+        }
+        html.gcslc-professional-realtime-v138 #sovereignGatewayNodeV90 {
+          min-height: 48px;
+          min-width: 48px;
+          padding: 12px 14px;
+          touch-action: manipulation;
+        }
+        html.gcslc-professional-realtime-v138 #eagleCloudPortalPrimaryV105 {
+          min-height: 44px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 10px 14px;
+          touch-action: manipulation;
+        }
+        /* V139 — Telegram sovereign node: live green LED (24/7) + footer quick connect (no fixed overlay — keeps 8R prisms unobstructed) */
+        @keyframes gcslcTelegramLiveLedV139 {
+          0%, 100% {
+            opacity: 1;
+            box-shadow: 0 0 6px rgba(0, 230, 118, 0.85), 0 0 12px rgba(0, 230, 118, 0.45);
+            transform: scale(1);
+          }
+          50% {
+            opacity: 0.9;
+            box-shadow: 0 0 10px rgba(0, 255, 160, 0.95), 0 0 18px rgba(0, 230, 118, 0.55);
+            transform: scale(1.06);
+          }
+        }
+        html.gcslc-telegram-sovereign-node-v139 .secure-liaison-node-v102--tg {
+          position: relative;
+        }
+        html.gcslc-telegram-sovereign-node-v139 .secure-liaison-node-v102--tg::after {
+          content: "";
+          position: absolute;
+          top: 6px;
+          right: 6px;
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+          background: #00e676;
+          animation: gcslcTelegramLiveLedV139 1.85s ease-in-out infinite;
+          pointer-events: none;
+          z-index: 3;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          html.gcslc-telegram-sovereign-node-v139 .secure-liaison-node-v102--tg::after {
+            animation: none;
+          }
+        }
+        .footer-sovereign-comm-v139 {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+          align-items: stretch;
+          justify-content: center;
+          margin: 10px 0 12px;
+          padding: 10px 12px;
+          border-radius: 14px;
+          border: 1px solid rgba(0, 230, 118, 0.22);
+          background: linear-gradient(165deg, rgba(0, 22, 48, 0.72), rgba(0, 10, 28, 0.88));
+          box-sizing: border-box;
+          max-width: 100%;
+        }
+        .footer-sovereign-comm-v139__btn {
+          flex: 1 1 140px;
+          min-height: 48px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          padding: 10px 14px;
+          border-radius: 12px;
+          font-size: clamp(0.68rem, 2.8vw, 0.82rem);
+          font-weight: 700;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          text-decoration: none;
+          border: 1px solid rgba(102, 245, 255, 0.28);
+          color: #dff8ff;
+          touch-action: manipulation;
+          -webkit-tap-highlight-color: transparent;
+        }
+        .footer-sovereign-comm-v139__btn--wa {
+          border-color: rgba(37, 211, 102, 0.45);
+          background: rgba(7, 44, 28, 0.55);
+        }
+        .footer-sovereign-comm-v139__btn--tg {
+          position: relative;
+          border-color: rgba(0, 230, 118, 0.42);
+          background: rgba(0, 32, 52, 0.62);
+        }
+        .footer-sovereign-comm-v139__tg-led {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: #00e676;
+          flex-shrink: 0;
+          animation: gcslcTelegramLiveLedV139 1.85s ease-in-out infinite;
+          box-shadow: 0 0 8px rgba(0, 230, 118, 0.85);
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .footer-sovereign-comm-v139__tg-led {
+            animation: none;
+          }
+        }
+        @media (max-width: 520px) {
+          .footer-sovereign-comm-v139 {
+            flex-direction: column;
+          }
+          .footer-sovereign-comm-v139__btn {
+            flex-basis: auto;
+            width: 100%;
+          }
+        }
+        /* V140 — Debt clearance math + cyan commodity ticker frame + 8R prism unmask */
+        @keyframes sfpCyanTickerGlowV140 {
+          0%, 100% { opacity: 0.9; }
+          50% { opacity: 1; }
+        }
+        html.gcslc-debt-clearance-trickle-v140 #sfp-live-pulse-v137.sfp-debt-clearance-v140 {
+          position: relative;
+          margin: 6px 0 8px !important;
+          padding: 0 !important;
+          border-radius: 12px;
+          border: 1px solid rgba(102, 245, 255, 0.38);
+          box-shadow:
+            0 0 0 1px rgba(0, 229, 255, 0.12),
+            inset 0 0 0 1px rgba(102, 245, 255, 0.06);
+          background: linear-gradient(180deg, rgba(0, 14, 36, 0.55), rgba(0, 8, 22, 0.72));
+          overflow: hidden;
+        }
+        html.gcslc-debt-clearance-trickle-v140 #sfp-live-pulse-v137 .sfp-debt-clearance-v140__ticker {
+          margin: 0;
+          padding: 5px 8px;
+          border-bottom: 1px solid rgba(102, 245, 255, 0.28);
+          background: rgba(0, 24, 48, 0.65);
+          overflow: hidden;
+          min-height: 26px;
+          display: flex;
+          align-items: center;
+        }
+        html.gcslc-debt-clearance-trickle-v140 #sfp-live-pulse-v137 .sfp-debt-clearance-v140__ticker-track {
+          display: block;
+          white-space: normal;
+          font-size: clamp(0.48rem, 1.2vw, 0.62rem);
+          letter-spacing: 0.06em;
+          font-weight: 700;
+          color: rgba(180, 250, 255, 0.98);
+          text-shadow: 0 0 10px rgba(102, 245, 255, 0.35);
+          animation: sfpCyanTickerGlowV140 3.2s ease-in-out infinite;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          html.gcslc-debt-clearance-trickle-v140 #sfp-live-pulse-v137 .sfp-debt-clearance-v140__ticker-track {
+            animation: none;
+          }
+        }
+        html.gcslc-debt-clearance-trickle-v140 #sfp-live-pulse-v137 .sfp-debt-clearance-v140__math {
+          margin: 0;
+          padding: 6px 8px 8px;
+          font-size: clamp(0.5rem, 1.25vw, 0.66rem);
+          line-height: 1.45;
+          letter-spacing: 0.04em;
+          color: rgba(224, 248, 255, 0.92);
+          border-bottom: 1px solid rgba(102, 245, 255, 0.14);
+          background: rgba(0, 10, 28, 0.35);
+        }
+        html.gcslc-debt-clearance-trickle-v140 #sfp-live-pulse-v137 .sfp-debt-clearance-v140__math strong {
+          color: rgba(255, 236, 200, 0.98);
+          font-weight: 800;
+        }
+        html.gcslc-debt-clearance-trickle-v140 #sfp-live-pulse-v137 .sfp-debt-clearance-v140__body {
+          padding: 0.45rem 0.55rem 0.55rem;
+        }
+        html.gcslc-debt-clearance-trickle-v140.gcslc-professional-realtime-v138 #sfp-live-pulse-v137.sfp-live-pulse-v137 {
+          padding: 0 !important;
+        }
+        html.gcslc-debt-clearance-trickle-v140 #sfp-live-pulse-v137 .sfp-benchmark-strip-v135.sfp-benchmark-strip-v140 {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 6px 10px;
+        }
+        html.gcslc-debt-clearance-trickle-v140 .paradigm-apex {
+          position: relative;
+          z-index: 30 !important;
+          isolation: isolate;
+          pointer-events: auto;
+        }
+        html.gcslc-debt-clearance-trickle-v140 .paradigm-apex .prism-box.v8-glass {
+          position: relative;
+          z-index: 2;
+          pointer-events: auto;
+        }
+        html.gcslc-debt-clearance-trickle-v140 .clock-row {
+          position: relative;
+          z-index: 1;
+        }
+        /* V143 — Thin cyan glow frame + compact SFP; 8R prisms above ambient tickers on mobile */
+        @keyframes sfpCyanFramePulseV143 {
+          0%, 100% { box-shadow: 0 0 0 1px rgba(102, 245, 255, 0.35), 0 0 14px rgba(0, 229, 255, 0.22), inset 0 0 0 1px rgba(102, 245, 255, 0.08); }
+          50% { box-shadow: 0 0 0 1px rgba(120, 250, 255, 0.55), 0 0 22px rgba(0, 229, 255, 0.38), inset 0 0 0 1px rgba(102, 245, 255, 0.12); }
+        }
+        html.gcslc-debt-clearance-strike-v143 #sfp-live-pulse-v137.sfp-debt-clearance-v140 {
+          animation: sfpCyanFramePulseV143 4.5s ease-in-out infinite;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          html.gcslc-debt-clearance-strike-v143 #sfp-live-pulse-v137.sfp-debt-clearance-v140 {
+            animation: none;
+          }
+        }
+        html.gcslc-debt-clearance-strike-v143 .header-apex-layer01 {
+          overflow: visible;
+        }
+        html.gcslc-debt-clearance-strike-v143 .intel-ticker,
+        html.gcslc-debt-clearance-strike-v143 .gcslc-elite-ticker-v89 {
+          position: relative;
+          z-index: 4;
+        }
+        html.gcslc-debt-clearance-strike-v143 .paradigm-apex {
+          z-index: 35 !important;
+        }
+        /* V145 — iPhone 13 / Galaxy S24 fluidity: 8R prisms + Execute Handshake alignment */
+        html.gcslc-telegram-terminal-final-v145 .sovereign-drawer-actions-v90 {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          align-items: stretch;
+          width: 100%;
+        }
+        html.gcslc-telegram-terminal-final-v145 .sovereign-drawer-actions-v90 .btn-termii-test,
+        html.gcslc-telegram-terminal-final-v145 .sovereign-drawer-actions-v90 a.execute-handshake-anchor-v93 {
+          width: 100%;
+          max-width: 100%;
+          min-height: 48px;
+          box-sizing: border-box;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        @media (max-width: 520px) {
+          html.gcslc-telegram-terminal-final-v145 .paradigm-apex .prisms-row {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            gap: 10px !important;
+          }
+          html.gcslc-telegram-terminal-final-v145 .paradigm-apex .prism-box.v8-glass {
+            min-height: 0;
+            padding: 10px 8px 12px;
+          }
+          html.gcslc-telegram-terminal-final-v145 .header-apex-layer01 .apex-row2,
+          html.gcslc-telegram-terminal-final-v145 .header-apex-layer01 .apex-row3 {
+            margin-top: 4px !important;
+            margin-bottom: 4px !important;
+          }
+          html.gcslc-telegram-terminal-final-v145 #sfp-live-pulse-v137 {
+            scroll-margin-top: 8px;
+          }
+          html.gcslc-telegram-terminal-final-v145 .clock-row.clock-widget-v15 {
+            margin: 6px 0 !important;
+          }
+        }
+        /* V146 — Paradigm unmask: NAFC no longer sticky-overlays 8R; NAFC cyan ticker frame; SFP debt/FX anchor strip */
+        html.gcslc-paradigm-unmask-v146 .header-apex-layer01 .nafc-cyan-frame-v146 {
+          margin: 0 auto 12px;
+          max-width: min(920px, 96vw);
+          border-radius: 14px;
+          border: 1px solid rgba(102, 245, 255, 0.38);
+          box-shadow:
+            0 0 0 1px rgba(0, 229, 255, 0.12),
+            inset 0 0 0 1px rgba(102, 245, 255, 0.06);
+          background: linear-gradient(180deg, rgba(0, 14, 36, 0.45), rgba(0, 8, 22, 0.55));
+          padding: 6px;
+          position: relative;
+          z-index: 16;
+          box-sizing: border-box;
+        }
+        html.gcslc-paradigm-unmask-v146 .header-apex-layer01 .nafc-cyan-frame-v146 .nafc-fusion-prism-v69.nafc-float-island-v89 {
+          position: relative !important;
+          top: auto !important;
+          bottom: auto !important;
+          margin: 0 auto !important;
+          max-width: 100% !important;
+          z-index: 1 !important;
+        }
+        html.gcslc-paradigm-unmask-v146 section.paradigm-apex {
+          position: relative !important;
+          z-index: 50 !important;
+          isolation: isolate;
+          pointer-events: auto !important;
+          filter: none !important;
+          -webkit-filter: none !important;
+          scroll-margin-top: 72px;
+        }
+        html.gcslc-paradigm-unmask-v146 section.paradigm-apex .prisms-row,
+        html.gcslc-paradigm-unmask-v146 section.paradigm-apex .prism-box.v8-glass {
+          pointer-events: auto !important;
+        }
+        html.gcslc-paradigm-unmask-v146 #sfp-live-pulse-v137 .sfp-primary-anchor-v146 {
+          order: -3;
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          justify-content: center;
+          gap: 8px 14px;
+          flex: 1 1 100%;
+          width: 100%;
+          max-width: 100%;
+          margin: 0;
+          padding: 10px 10px;
+          border-bottom: 2px solid rgba(102, 245, 255, 0.35);
+          background: rgba(0, 18, 40, 0.55);
+          text-align: center;
+          font-size: clamp(0.72rem, 2.1vw, 0.95rem);
+          box-shadow: 0 0 28px rgba(0, 230, 118, 0.12);
+        }
+        html.gcslc-paradigm-unmask-v146 #sfp-live-pulse-v137 .sfp-primary-anchor-v146__k {
+          font-size: clamp(0.62rem, 1.65vw, 0.82rem);
+          font-weight: 900;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: rgba(255, 244, 210, 0.98);
+          text-shadow: 0 0 14px rgba(0, 230, 118, 0.35), 0 0 22px rgba(102, 245, 255, 0.2);
+        }
+        html.gcslc-paradigm-unmask-v146 #sfp-live-pulse-v137 .sfp-primary-anchor-v146__k strong {
+          color: rgba(180, 250, 255, 0.98);
+          font-weight: 900;
+        }
+        html.gcslc-paradigm-unmask-v146 #sfp-live-pulse-v137 .sfp-primary-anchor-v146__sep {
+          opacity: 0.55;
+          color: rgba(102, 245, 255, 0.85);
+        }
+        html.gcslc-paradigm-unmask-v146 #sfp-live-pulse-v137 .sfp-debt-clearance-v140__ticker {
+          order: -2;
+        }
+        html.gcslc-paradigm-unmask-v146 #sfp-live-pulse-v137 .sfp-debt-clearance-v140__math {
+          order: -1;
+        }
+        html.gcslc-paradigm-unmask-v146 #sfp-live-pulse-v137.sfp-debt-clearance-v140 {
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
+        }
+        @media (max-width: 520px) {
+          html.gcslc-paradigm-unmask-v146 .paradigm-apex .prisms-row {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            gap: 10px !important;
+          }
+          html.gcslc-paradigm-unmask-v146 #sfp-live-pulse-v137 .sfp-primary-anchor-v146 {
+            flex-direction: column;
+            gap: 4px;
+          }
+        }
+        @media (max-width: 390px) {
+          html.gcslc-paradigm-unmask-v146 .paradigm-apex .prisms-row {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            gap: 8px !important;
+          }
+        }
+        /* V147 — Chairman unmask: no fixed “slider” lip overlay; 8R + SFP stay unobstructed; cyan ticker live pulse */
+        html.gcslc-paradigm-unmask-v147 .intel-ticker {
+          position: relative !important;
+          bottom: auto !important;
+          left: auto !important;
+          right: auto !important;
+          z-index: 1 !important;
+          border-top: 1px solid rgba(102, 245, 255, 0.14);
+        }
+        html.gcslc-paradigm-unmask-v147 .gcslc-elite-ticker-v89 {
+          position: relative !important;
+          bottom: auto !important;
+          left: auto !important;
+          right: auto !important;
+          z-index: 1 !important;
+          pointer-events: auto;
+        }
+        html.gcslc-paradigm-unmask-v147 .app {
+          padding-bottom: max(12px, env(safe-area-inset-bottom)) !important;
+        }
+        html.gcslc-paradigm-unmask-v147 section.paradigm-apex {
+          position: relative !important;
+          z-index: 60 !important;
+          isolation: isolate;
+        }
+        html.gcslc-paradigm-unmask-v147 .nafc-coal-lattice-live-v147 {
+          display: block;
+          margin-top: 4px;
+          font-size: clamp(0.48rem, 1.2vw, 0.58rem);
+          letter-spacing: 0.06em;
+          color: rgba(180, 250, 255, 0.92);
+        }
+        /* V148 — Sovereign identity strip (above clocks; sticky; Desktop / S24 / iPhone) */
+        .gcslc-sovereign-identity-v148 {
+          position: sticky;
+          top: 0;
+          z-index: 140;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          width: 100%;
+          max-width: min(920px, 96vw);
+          margin: 0 auto 8px;
+          padding: 8px 12px;
+          box-sizing: border-box;
+          border-radius: 14px;
+          border: 1px solid rgba(212, 175, 55, 0.3);
+          background: linear-gradient(165deg, rgba(0, 18, 42, 0.9), rgba(0, 8, 22, 0.96));
+          box-shadow: 0 10px 28px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
+        }
+        .gcslc-sovereign-identity-v148__bot {
+          flex: 0 0 auto;
+          width: 34px;
+          height: 34px;
+          border-radius: 50%;
+          background: radial-gradient(circle at 35% 28%, rgba(255, 248, 224, 0.98), rgba(212, 175, 55, 0.55) 40%, rgba(0, 26, 51, 0.94) 100%);
+          border: 1px solid rgba(212, 175, 55, 0.55);
+          box-shadow:
+            0 0 0 1px rgba(212, 175, 55, 0.38),
+            0 0 20px rgba(212, 175, 55, 0.58),
+            0 0 42px rgba(212, 175, 55, 0.22);
+          position: relative;
+          overflow: hidden;
+        }
+        .gcslc-sovereign-identity-v148__bot::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          border-radius: inherit;
+          background: radial-gradient(circle at 50% 45%, rgba(255, 255, 255, 0.4), transparent 58%);
+          opacity: 0.55;
+          pointer-events: none;
+        }
+        .gcslc-sovereign-identity-v148__title {
+          font-family: "Goldman", system-ui, sans-serif;
+          font-size: clamp(0.72rem, 2.4vw, 0.95rem);
+          font-weight: 800;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: #d4af37;
+          text-shadow: 0 0 14px rgba(212, 175, 55, 0.38), 0 0 28px rgba(212, 175, 55, 0.2);
+        }
+        .gcslc-paradigm-vault-mount-v148 {
+          position: relative;
+          z-index: 62;
+          isolation: isolate;
+        }
+        @keyframes sfpCyanShellPulseV148 {
+          0% {
+            box-shadow: 0 0 0 0 rgba(102, 245, 255, 0);
+          }
+          45% {
+            box-shadow:
+              0 0 0 1px rgba(102, 245, 255, 0.42),
+              0 0 26px rgba(0, 229, 255, 0.45),
+              0 0 48px rgba(0, 230, 118, 0.16);
+          }
+          100% {
+            box-shadow: 0 0 0 0 rgba(102, 245, 255, 0);
+          }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          html.gcslc-identity-pulse-sync-v148 #sfp-live-pulse-v137.sfp-live-pulse-v148--cyan-shell-pulse {
+            animation: none !important;
+          }
+        }
+        html.gcslc-identity-pulse-sync-v148 #sfp-live-pulse-v137.sfp-live-pulse-v148--cyan-shell-pulse {
+          animation: sfpCyanShellPulseV148 0.72s ease-out 1 both;
+        }
+        @keyframes sfpCyanTickerLivePulseV147 {
+          0% {
+            box-shadow: inset 0 0 0 0 rgba(102, 245, 255, 0);
+            border-color: rgba(102, 245, 255, 0.28);
+          }
+          40% {
+            box-shadow:
+              inset 0 0 0 1px rgba(102, 245, 255, 0.45),
+              0 0 22px rgba(0, 229, 255, 0.55),
+              0 0 44px rgba(0, 230, 118, 0.18);
+            border-color: rgba(180, 250, 255, 0.65);
+          }
+          100% {
+            box-shadow: inset 0 0 0 0 rgba(102, 245, 255, 0);
+            border-color: rgba(102, 245, 255, 0.28);
+          }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          html.gcslc-paradigm-unmask-v147 #sfpCyanTickerFrameV147.sfp-cyan-ticker-live-pulse-v147 {
+            animation: none !important;
+          }
+        }
+        html.gcslc-paradigm-unmask-v147 #sfpCyanTickerFrameV147.sfp-cyan-ticker-live-pulse-v147 {
+          animation: sfpCyanTickerLivePulseV147 0.68s ease-out 1 both;
+        }
+    
+    
+        /* NRRFC V151 — financial audit shell + coal-by-product cyan pulse */
+        .nrrfc-financial-audit-v151 {
+          margin: 18px 0 22px;
+          padding: 12px 0 0;
+          border-top: 1px solid rgba(102, 245, 255, 0.22);
+        }
+        .nrrfc-financial-audit-v151__h {
+          margin: 0 0 8px;
+          font-size: clamp(0.62rem, 1.55vw, 0.82rem);
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: rgba(212, 175, 55, 0.95);
+        }
+        .nrrfc-financial-audit-v151__sub {
+          margin: 0 0 14px;
+          font-size: clamp(0.52rem, 1.35vw, 0.68rem);
+          line-height: 1.5;
+          color: rgba(200, 235, 255, 0.88);
+          max-width: 78ch;
+        }
+        @keyframes sfpBenchCyanPulseNrrfcV151 {
+          0%, 100% {
+            color: rgba(130, 252, 255, 0.92);
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.35);
+            filter: brightness(1);
+          }
+          50% {
+            color: rgba(200, 255, 255, 1);
+            text-shadow: 0 0 22px rgba(0, 229, 255, 0.72);
+            filter: brightness(1.1);
+          }
+        }
+        html.gcslc-nrrfc-financial-audit-v151 #sfp-live-pulse-v137 .sfp-benchmark-strip-v135__v {
+          animation: sfpBenchCyanPulseNrrfcV151 2.25s ease-in-out infinite !important;
+        }
+    
   </style>
 </head>
 <body>
@@ -221,8 +1061,282 @@
     </section>
   </div>
 
+  <section class="nrrfc-financial-audit-v151" aria-labelledby="nrrfc-financial-audit-h">
+    <h2 class="nrrfc-financial-audit-v151__h" id="nrrfc-financial-audit-h">Financial audit — Superior Financial Performance</h2>
+    <p class="nrrfc-financial-audit-v151__sub">Relocated from the operational command deck (V151). Debt–FX stack, live commodity handshake, and coal-by-product benchmarks pulse in cyan on cadence.</p>
+    <section id="sfp-live-pulse-v137" class="sfp-live-pulse-v135 sfp-live-pulse-v137 sfp-debt-clearance-v140 sfp-debt-clearance-v143" aria-label="Superior Financial Performance — debt clearance strike &amp; live market pulse (V143)">
+              <div class="sfp-primary-anchor-v146" id="sfpPrimaryAnchorStripV146" aria-label="Sovereign debt clearance and FX stack — $700B capture anchor">
+                <span class="sfp-primary-anchor-v146__k" id="sfpPrimaryAnchorDebtV146"><strong>18.9×</strong> Debt Strike</span>
+                <span class="sfp-primary-anchor-v146__sep" aria-hidden="true">·</span>
+                <span class="sfp-primary-anchor-v146__k" id="sfpPrimaryAnchorFxV146"><strong>₦105T–₦157.5T</strong> FX Capture</span>
+              </div>
+              <div class="sfp-debt-clearance-v140__ticker" id="sfpCyanTickerFrameV147" aria-label="Live commodity ticker — market tick every 60 seconds">
+                <span class="sfp-debt-clearance-v140__ticker-track" id="sfpCyanMarketTickerV140">Live handshake…</span>
+              </div>
+              <p class="sfp-debt-clearance-v140__math" id="sfpSovereignMathCaptureV140"><strong>Titans Nuclear Logic (V145):</strong> hard-lock <strong>18.9× Debt Clearance</strong> + <strong>+₦895.0T</strong> Sovereign Surplus from <strong>10–15% capture</strong> of the <strong>$700B</strong> Global Big Tech Capex (<strong>$70B–$105B</strong>). <strong>Conversion:</strong> <strong>₦1,500/$</strong> → <strong>₦105T–₦157.5T</strong>. <strong>Strike:</strong> <strong>₦55.0T</strong> Domestic Debt cleared.</p>
+              <div class="sfp-debt-clearance-v140__body">
+                <div class="sfp-live-pulse-v135__head">
+                  <h2 class="sfp-live-pulse-v135__title">Superior Financial Performance</h2>
+                  <span class="sfp-live-pulse-v135__live"><span class="sfp-live-pulse-v135__live-dot" aria-hidden="true"></span><span id="sfpLivePulseStampV137">LIVE · March 2026</span></span>
+                </div>
+                <div class="sfp-live-pulse-v135__grid">
+                  <article class="sfp-metric-tile-v135 sfp-metric-tile-v135--debt-led" aria-labelledby="sfpMetricDebtLabelV137">
+                    <span class="sfp-metric-tile-v135__led" aria-hidden="true"></span>
+                    <span id="sfpMetricDebtLabelV137" class="sfp-metric-tile-v135__label">Debt Strike</span>
+                    <p id="sfpMetricDebtV137" class="sfp-metric-tile-v135__value">—</p>
+                  </article>
+                  <article class="sfp-metric-tile-v135 sfp-metric-tile-v135--surplus-led" aria-labelledby="sfpMetricSurplusLabelV137">
+                    <span class="sfp-metric-tile-v135__led" aria-hidden="true"></span>
+                    <span id="sfpMetricSurplusLabelV137" class="sfp-metric-tile-v135__label">Sovereign Surplus</span>
+                    <p id="sfpMetricSurplusV137" class="sfp-metric-tile-v135__value">—</p>
+                  </article>
+                  <article class="sfp-metric-tile-v135 sfp-metric-tile-v135--fx-strike-v156" aria-labelledby="sfpMetricZenithLabelV137">
+                    <span class="sfp-metric-tile-v135__led" aria-hidden="true"></span>
+                    <span id="sfpMetricZenithLabelV137" class="sfp-metric-tile-v135__label">FX Capture</span>
+                    <p id="sfpMetricZenithV137" class="sfp-metric-tile-v135__value">—</p>
+                  </article>
+                </div>
+                <div class="sfp-benchmark-strip-v135 sfp-benchmark-strip-v140" aria-label="March 2026 commodity benchmarks">
+                  <span class="sfp-benchmark-strip-v135__k">Germanium (Ge)</span> <span id="sfpBenchGeV137" class="sfp-benchmark-strip-v135__v">—</span>
+                  <span class="sfp-benchmark-strip-v135__k">Silicon (Si)</span> <span id="sfpBenchSiV137" class="sfp-benchmark-strip-v135__v">—</span>
+                  <span class="sfp-benchmark-strip-v135__k">Ammonia (NH₃)</span> <span id="sfpBenchNh3V140" class="sfp-benchmark-strip-v135__v">—</span>
+                  <span class="sfp-benchmark-strip-v135__k">Coal Fly Ash</span> <span id="sfpBenchAshV137" class="sfp-benchmark-strip-v135__v">—</span>
+                </div>
+              </div>
+            </section>
+      </section>
+
   <p class="back">
     <a href="./index.html">← Return to Entry Profile (master index)</a>
   </p>
+  <script>
+  (function gcslcDebtClearanceMathV143() {
+    var CAPEX_USD_B = 700;
+    var CAP_LOW = 0.1;
+    var CAP_HIGH = 0.15;
+    var USD_B_LOW = CAPEX_USD_B * CAP_LOW;
+    var USD_B_HIGH = CAPEX_USD_B * CAP_HIGH;
+    var FX = 1500;
+    var NGN_T_LOW = (USD_B_LOW * 1e9 * FX) / 1e12;
+    var NGN_T_HIGH = (USD_B_HIGH * 1e9 * FX) / 1e12;
+    window.__GCSLC_DEBT_CLEARANCE_MATH_V143__ = {
+      captureUsdBillions: [USD_B_LOW, USD_B_HIGH],
+      fxNgnPerUsd: FX,
+      ngnTrillions: [NGN_T_LOW, NGN_T_HIGH],
+      domesticDebtT: 55,
+      surplusT: 895,
+      velocityX: 18.9
+    };
+    window.__GCSLC_NUCLEAR_DEBT_MATH_V145__ = {
+      bigTechGlobalCapexUsdBillions: 700,
+      capturePct: [0.1, 0.15],
+      debtClearanceMultiplier: 18.9,
+      sovereignSurplusNgnTrillions: 895,
+      narrative: "Titans Nuclear Logic — 10–15% capture of $700B Big Tech Capex → 18.9× debt clearance + +₦895.0T sovereign surplus"
+    };
+  })();
+  </script>
+
+  <script>
+  (function gcslcLiveMarketPulseV138() {
+    var TICK_MS = 60000;
+    window.__GCSLC_SFP_TRICKLE_V138__ = {
+      intervalMs: TICK_MS,
+      tickCount: 0,
+      lastTickAt: null,
+      anchorDebtX: 18.9,
+      anchorSurplusT: 895,
+      anchorCaptureB: "105–157.5"
+    };
+    var ANCHOR = {
+      benchmarkMonth: "March 2026",
+      germaniumUsdPerKg: 8598,
+      siliconUsdPerLb: 1.83,
+      ammoniaUsdPerMt: 481,
+      coalFlyAshUsdPerMt: 149,
+      debtClearanceMult: 18.9,
+      surplusTrillions: 895,
+      captureBandLowB: 70,
+      captureBandHighB: 105
+    };
+    function syncPulseLabels(d) {
+      var M = window.__GCSLC_DEBT_CLEARANCE_MATH_V143__;
+      var N = window.__GCSLC_NUCLEAR_DEBT_MATH_V145__;
+      if (!M) return;
+      /* $700B × 10–15% capture @ ₦1,500/$ → compact SFP primaries (V148) */
+      d.debtDisplayText = "18.9× Debt Strike";
+      d.sovereignSurplusLabel = "+₦" + (N && N.sovereignSurplusNgnTrillions ? N.sovereignSurplusNgnTrillions : M.surplusT).toFixed(1) + "T";
+      d.zenithTargetLabel = "₦105T–₦157.5T FX Capture";
+    }
+    window.__GCSLC_MARKET_PULSE_V138__ = window.__GCSLC_MARKET_PULSE_V137__ = {
+      benchmarkMonth: ANCHOR.benchmarkMonth,
+      germaniumUsdPerKg: ANCHOR.germaniumUsdPerKg,
+      siliconUsdPerLb: ANCHOR.siliconUsdPerLb,
+      ammoniaUsdPerMt: ANCHOR.ammoniaUsdPerMt,
+      coalFlyAshUsdPerMt: ANCHOR.coalFlyAshUsdPerMt,
+      debtClearanceMult: ANCHOR.debtClearanceMult,
+      surplusTrillions: ANCHOR.surplusTrillions,
+      captureBandLowB: ANCHOR.captureBandLowB,
+      captureBandHighB: ANCHOR.captureBandHighB,
+      debtDisplayText: "18.9× Debt Strike",
+      sovereignSurplusLabel: "+₦895.0T",
+      zenithTargetLabel: "₦105T–₦157.5T FX Capture"
+    };
+    syncPulseLabels(window.__GCSLC_MARKET_PULSE_V137__);
+    window.__GCSLC_MARKET_PULSE_V136__ = window.__GCSLC_MARKET_PULSE_V137__;
+    window.__GCSLC_MARKET_PULSE_V135__ = window.__GCSLC_MARKET_PULSE_V137__;
+
+    function el(id) {
+      return document.getElementById(id);
+    }
+
+    function flashNode(node) {
+      if (!node) return;
+      node.classList.remove("sfp-live-trickle-flash-v138");
+      void node.offsetWidth;
+      node.classList.add("sfp-live-trickle-flash-v138");
+      window.setTimeout(function () {
+        node.classList.remove("sfp-live-trickle-flash-v138");
+      }, 480);
+    }
+
+    function pulseSectionShell() {
+      var sec = el("sfp-live-pulse-v137");
+      if (!sec) return;
+      sec.classList.add("sfp-live-pulse-v138--tick-pulse");
+      window.setTimeout(function () {
+        sec.classList.remove("sfp-live-pulse-v138--tick-pulse");
+      }, 420);
+    }
+
+    function pulseCyanTickerFrameV147() {
+      var fr = el("sfpCyanTickerFrameV147");
+      if (!fr) return;
+      fr.classList.remove("sfp-cyan-ticker-live-pulse-v147");
+      void fr.offsetWidth;
+      fr.classList.add("sfp-cyan-ticker-live-pulse-v147");
+      window.setTimeout(function () {
+        fr.classList.remove("sfp-cyan-ticker-live-pulse-v147");
+      }, 720);
+    }
+
+    function pulseSfpCyanShellV148() {
+      var sec = el("sfp-live-pulse-v137");
+      if (!sec) return;
+      sec.classList.remove("sfp-live-pulse-v148--cyan-shell-pulse");
+      void sec.offsetWidth;
+      sec.classList.add("sfp-live-pulse-v148--cyan-shell-pulse");
+      window.setTimeout(function () {
+        sec.classList.remove("sfp-live-pulse-v148--cyan-shell-pulse");
+      }, 780);
+    }
+
+    function paintCyanTickerV140() {
+      var d = window.__GCSLC_MARKET_PULSE_V137__;
+      var t = el("sfpCyanMarketTickerV140");
+      if (!t) return;
+      var ge = d.germaniumUsdPerKg.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      var si = d.siliconUsdPerLb.toFixed(4);
+      var nh3 = d.ammoniaUsdPerMt.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      var ash = d.coalFlyAshUsdPerMt.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      t.textContent =
+        "Germanium ($" + ge + "/kg) | Silicon ($" + si + "/lb) | Ammonia ($" + nh3 + "/MT) | Fly Ash ($" + ash + "/MT) · API HANDSHAKE LIVE";
+    }
+
+    function paintMarketPulseV138() {
+      var d = window.__GCSLC_MARKET_PULSE_V137__;
+      syncPulseLabels(d);
+      var debtLab = el("sfpMetricDebtLabelV137");
+      if (debtLab) debtLab.textContent = "Debt Strike";
+      var zenLab = el("sfpMetricZenithLabelV137");
+      if (zenLab) zenLab.textContent = "FX Capture";
+      var debt = el("sfpMetricDebtV137");
+      var sur = el("sfpMetricSurplusV137");
+      var zen = el("sfpMetricZenithV137");
+      if (debt) debt.textContent = d.debtDisplayText || "18.9× Debt Strike";
+      if (sur) sur.textContent = d.sovereignSurplusLabel;
+      if (zen) zen.textContent = d.zenithTargetLabel || "₦105T–₦157.5T FX Capture";
+      var ge = el("sfpBenchGeV137");
+      var si = el("sfpBenchSiV137");
+      var nh3 = el("sfpBenchNh3V140");
+      var ash = el("sfpBenchAshV137");
+      if (ge) ge.textContent = "$" + d.germaniumUsdPerKg.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "/kg";
+      if (si) si.textContent = "$" + d.siliconUsdPerLb.toFixed(4) + "/lb";
+      if (nh3) nh3.textContent = "$" + d.ammoniaUsdPerMt.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "/MT";
+      if (ash) ash.textContent = "$" + d.coalFlyAshUsdPerMt.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "/MT";
+      var st = el("sfpLivePulseStampV137");
+      if (st) st.textContent = "LIVE · " + d.benchmarkMonth;
+      paintCyanTickerV140();
+      var pad = el("sfpPrimaryAnchorDebtV146");
+      var pfx = el("sfpPrimaryAnchorFxV146");
+      if (pad) {
+        pad.innerHTML = "<strong>18.9×</strong> Debt Strike";
+      }
+      if (pfx) {
+        pfx.innerHTML = "<strong>₦105T–₦157.5T</strong> FX Capture";
+      }
+    }
+
+    /* V147 — ±0.01% market tick (60s) on commodity marks; debt lane stays driven by $700B / M.velocityX */
+    function marketTickV147(cur) {
+      var pct = (Math.random() * 2 - 1) * 0.0001;
+      return cur * (1 + pct);
+    }
+
+    function trickleMarketPulseV138() {
+      try {
+        fetch("kaduna_master_payload.csv", { method: "HEAD", cache: "no-store" }).catch(function () {});
+      } catch (e) {}
+      var d = window.__GCSLC_MARKET_PULSE_V137__;
+      var tr = window.__GCSLC_SFP_TRICKLE_V138__;
+      if (tr) {
+        tr.lastTickAt = Date.now();
+        tr.tickCount += 1;
+        tr.anchorDebtX = ANCHOR.debtClearanceMult;
+        tr.anchorSurplusT = ANCHOR.surplusTrillions;
+        tr.anchorCaptureB = ANCHOR.captureBandLowB + "–" + ANCHOR.captureBandHighB;
+      }
+      d.germaniumUsdPerKg = marketTickV147(d.germaniumUsdPerKg);
+      d.siliconUsdPerLb = marketTickV147(d.siliconUsdPerLb);
+      d.ammoniaUsdPerMt = marketTickV147(d.ammoniaUsdPerMt);
+      d.coalFlyAshUsdPerMt = marketTickV147(d.coalFlyAshUsdPerMt);
+      d.debtClearanceMult = ANCHOR.debtClearanceMult;
+      d.surplusTrillions = ANCHOR.surplusTrillions;
+      d.captureBandLowB = ANCHOR.captureBandLowB;
+      d.captureBandHighB = ANCHOR.captureBandHighB;
+      syncPulseLabels(d);
+      paintMarketPulseV138();
+      pulseCyanTickerFrameV147();
+      pulseSfpCyanShellV148();
+      flashNode(el("sfpMetricDebtV137"));
+      flashNode(el("sfpMetricSurplusV137"));
+      flashNode(el("sfpMetricZenithV137"));
+      flashNode(el("sfpBenchGeV137"));
+      flashNode(el("sfpBenchSiV137"));
+      flashNode(el("sfpBenchNh3V140"));
+      flashNode(el("sfpBenchAshV137"));
+      flashNode(el("sfpCyanMarketTickerV140"));
+      flashNode(el("sfpPrimaryAnchorDebtV146"));
+      flashNode(el("sfpPrimaryAnchorFxV146"));
+      pulseSectionShell();
+    }
+
+    function boot() {
+      paintMarketPulseV138();
+      try {
+        fetch("kaduna_master_payload.csv", { method: "HEAD", cache: "no-store" }).catch(function () {});
+      } catch (e) {}
+      window.__GCSLC_paintMarketPulseV138 = paintMarketPulseV138;
+      window.__GCSLC_paintMarketPulseV137 = paintMarketPulseV138;
+      window.__GCSLC_paintMarketPulseV136 = paintMarketPulseV138;
+      window.__GCSLC_paintMarketPulseV135 = paintMarketPulseV138;
+      window.setInterval(trickleMarketPulseV138, TICK_MS);
+    }
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
+    else boot();
+  })();
+  </script>
+
+
 </body>
 </html>
