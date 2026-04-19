@@ -1315,6 +1315,13 @@
       border-bottom-color: rgba(102, 245, 255, 0.45);
       outline: none;
     }
+    /* Fixed operational view — bottom API catalog drawer control retired (no slide-up “Menu” terminal) */
+    html.gcslc-sovereign-identity-fix-v150 .api-catalog-menu-btn,
+    html.gcslc-sovereign-identity-fix-v150 #apiCatalogDrawer,
+    html.gcslc-sovereign-identity-fix-v150 #apiCatalogBackdrop {
+      display: none !important;
+      pointer-events: none !important;
+    }
     html.gcslc-sovereign-identity-fix-v150 .secure-liaison-v102 {
       margin-top: 14px;
       position: relative;
@@ -1472,6 +1479,7 @@
     html.gcslc-arch-restoration-v152-1 .sidebar.sidebar-right .social-lattice-widget .lattice-sync-row {
       margin-top: 6px !important;
     }
+    /* Final immutable header — primary 30px cyan shimmer · secondary 18px silver · branding 14px light · 60px bottom margin before NAFC */
     /* Directive #9 — Institutional identity: absolute hardcode (30px / 18px / 14px, 60px tertiary margin); Goldman + cyan/silver/creed; no responsive rescaling */
     /* V153 — Institutional header: high-visibility zone (~15vh), Goldman cyan shimmer + slow typewriter; V154 NAFC stealth scale separate */
     html.gcslc-institutional-header-v153 #apexRowRc,
@@ -6015,6 +6023,23 @@
       outline: none;
       filter: brightness(1.1);
     }
+    .gec-vault-telemetry-bar-v160 {
+      margin: 12px 0 0;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(102, 245, 255, 0.3);
+      background: rgba(6, 14, 26, 0.48);
+      box-shadow:
+        inset 0 0 0 1px rgba(102, 245, 255, 0.1),
+        0 0 18px rgba(102, 245, 255, 0.14);
+      font-size: clamp(0.34rem, 0.85vw, 0.46rem);
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-align: center;
+      color: rgba(185, 244, 255, 0.96);
+      line-height: 1.45;
+    }
     .sovereign-drawer-actions-v90 {
       display: flex;
       flex-direction: column;
@@ -6085,10 +6110,14 @@
     .universal-paradigm-ticker-v92 {
       margin: 12px 0 14px;
       padding: 10px 10px 12px;
-      border-radius: 12px;
-      border: 1px solid rgba(212, 175, 55, 0.3);
-      background: linear-gradient(165deg, rgba(0, 22, 48, 0.88) 0%, rgba(0, 8, 22, 0.92) 100%);
-      box-shadow: inset 0 0 0 1px rgba(102, 245, 255, 0.08);
+      border-radius: 14px;
+      border: 1px solid rgba(102, 245, 255, 0.28);
+      background: rgba(6, 14, 26, 0.42);
+      box-shadow:
+        inset 0 0 0 1px rgba(102, 245, 255, 0.12),
+        0 0 22px rgba(102, 245, 255, 0.14);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
     }
     .universal-paradigm-ticker-v92__label {
       margin: 0 0 6px;
@@ -7572,6 +7601,40 @@
         animation: none !important;
       }
     }
+    /* Advisory hub — fixed stacked modules (no carousels): glass + cyan edge (NAFC family) */
+    .gec-advisory-hub-fixed-stack-v159 {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 0 0 14px;
+    }
+    .gec-advisory-hub-fixed-stack-v159 .consultancy-cloud-hubs-v104,
+    .gec-advisory-hub-fixed-stack-v159 .consultancy-handshake-industrial-v99,
+    .gec-advisory-hub-fixed-stack-v159 .gec-case-study-ticker-v87 {
+      margin: 0;
+      border-radius: 14px;
+      border: 1px solid rgba(102, 245, 255, 0.32);
+      background: rgba(6, 14, 26, 0.42);
+      box-shadow:
+        inset 0 0 0 1px rgba(102, 245, 255, 0.12),
+        0 0 24px rgba(102, 245, 255, 0.16);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .gec-advisory-hub-fixed-stack-v159 .consultancy-cloud-hubs-v104__grid {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .gec-advisory-hub-fixed-stack-v159 .consultancy-hub-tile-v104 {
+      animation: none !important;
+      border-color: rgba(102, 245, 255, 0.34);
+      box-shadow:
+        inset 0 0 0 1px rgba(102, 245, 255, 0.14),
+        0 0 18px rgba(102, 245, 255, 0.18);
+    }
+    .gec-advisory-hub-fixed-stack-v159 .consultancy-handshake-industrial-v99__type {
+      min-height: 0;
+    }
     .secure-liaison-advisory-row-v103 {
       margin-top: 10px;
       display: grid;
@@ -7721,33 +7784,39 @@
           <span class="gec-eagle-spine-v105__note">Sovereign Spine · AWC/K-GEC · lattice corridor (V151 — anchored above hub tiles; clear of comm / social mesh)</span>
         </p>
         <p class="gec-advisory-hub-intel-v92" id="gecAdvisoryHubIntelV92" aria-live="polite"></p>
-        <div class="consultancy-cloud-hubs-v104" aria-label="Cloud advisory hubs — Edge Fortress and Telegram Mini-App">
-          <div class="consultancy-cloud-hubs-v104__label">Cloud Advisory Hubs</div>
-          <div class="consultancy-cloud-hubs-v104__grid">
-            <button type="button" class="consultancy-hub-tile-v104 consultancy-hub-tile-v104--edge" id="consultancyFortressEdgeHubV104">
-              <span class="consultancy-hub-tile-v104__ico" aria-hidden="true">
-                <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M5 4.5h14A1.5 1.5 0 0120.5 6v12A1.5 1.5 0 0119 19.5H5A1.5 1.5 0 013.5 18V6A1.5 1.5 0 015 4.5zm0 2.25V18h14V6.75H5zM7 8.25h10v1.5H7v-1.5z"/></svg>
-              </span>
-              <span class="consultancy-hub-tile-v104__cap">Fortress Hub</span>
-              <span class="consultancy-hub-tile-v104__sub">Microsoft Edge · enterprise mirror</span>
-            </button>
-            <button type="button" class="consultancy-hub-tile-v104 consultancy-hub-tile-v104--telegram" id="consultancyMiniAppTelegramHubV104">
-              <span class="consultancy-hub-tile-v104__ico" aria-hidden="true">
-                <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M9.04 15.3 8.97 19l3.99-2.14 4.04 2.97c.74.54 1.27.25 1.46-.87l2.66-12.6c.27-1.1-.42-1.6-1.13-1.31L2.58 9.48c-1.09.44-1.08 1.06-.2 1.34l4.7 1.47L18.93 6.3c.38-.24.73-.11.45.17l-8.34 8.83Z"/></svg>
-              </span>
-              <span class="consultancy-hub-tile-v104__cap">Mini-App Hub</span>
-              <span class="consultancy-hub-tile-v104__sub">Telegram · sovereign WebView</span>
-            </button>
+        <div class="gec-advisory-hub-fixed-stack-v159" aria-label="Institutional advisory modules — fixed stack">
+          <div class="consultancy-cloud-hubs-v104" aria-label="Cloud advisory hubs — Edge Fortress and Telegram Mini-App">
+            <div class="consultancy-cloud-hubs-v104__label">Cloud Advisory Hubs</div>
+            <div class="consultancy-cloud-hubs-v104__grid">
+              <button type="button" class="consultancy-hub-tile-v104 consultancy-hub-tile-v104--edge" id="consultancyFortressEdgeHubV104">
+                <span class="consultancy-hub-tile-v104__ico" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M5 4.5h14A1.5 1.5 0 0120.5 6v12A1.5 1.5 0 0119 19.5H5A1.5 1.5 0 013.5 18V6A1.5 1.5 0 015 4.5zm0 2.25V18h14V6.75H5zM7 8.25h10v1.5H7v-1.5z"/></svg>
+                </span>
+                <span class="consultancy-hub-tile-v104__cap">Fortress Hub</span>
+                <span class="consultancy-hub-tile-v104__sub">Microsoft Edge · enterprise mirror</span>
+              </button>
+              <button type="button" class="consultancy-hub-tile-v104 consultancy-hub-tile-v104--telegram" id="consultancyMiniAppTelegramHubV104">
+                <span class="consultancy-hub-tile-v104__ico" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M9.04 15.3 8.97 19l3.99-2.14 4.04 2.97c.74.54 1.27.25 1.46-.87l2.66-12.6c.27-1.1-.42-1.6-1.13-1.31L2.58 9.48c-1.09.44-1.08 1.06-.2 1.34l4.7 1.47L18.93 6.3c.38-.24.73-.11.45.17l-8.34 8.83Z"/></svg>
+                </span>
+                <span class="consultancy-hub-tile-v104__cap">Mini-App Hub</span>
+                <span class="consultancy-hub-tile-v104__sub">Telegram · sovereign WebView</span>
+              </button>
+            </div>
+          </div>
+          <div class="consultancy-handshake-industrial-v99" aria-label="Consultancy Hub — industrial lattice handshake">
+            <p class="consultancy-handshake-industrial-v99__label">Consultancy Hub · handshake</p>
+            <p class="consultancy-handshake-industrial-v99__type" id="consultancyIndustrialHandshakeV99">AWC/K-GEC: Optimizing Vertical Integration for African Conglomerates.<br /><br />8R Paradigm: Resetting Supply Chain Fragility via Space-Freq Logic.</p>
+          </div>
+          <div class="gec-case-study-ticker-v87" aria-live="polite">
+            <p class="gec-case-study__label">Case study 02</p>
+            <p class="gec-case-study__line" id="gecCaseStudyTickerLine">Case 02: Riyadh Sovereign Cloud — AWC/K-GEC securing National Data Assets.</p>
           </div>
         </div>
-        <div class="consultancy-handshake-industrial-v99" aria-label="Consultancy Hub — industrial lattice handshake">
-          <p class="consultancy-handshake-industrial-v99__label">Consultancy Hub · handshake</p>
-          <p class="consultancy-handshake-industrial-v99__type" id="consultancyIndustrialHandshakeV99"></p>
-        </div>
         <p class="rhgi-g-anchor-v94" id="rhgiGAnchorV94"><strong>G-Anchor · RHGI:</strong> Rural Hyper-Grassroots Initiatives remain the shared sovereign foundation for the Google-class hub, the Microsoft Edge enterprise mirror, and the <a href="https://galadimanruwacenter.org" target="_blank" rel="noopener noreferrer" class="rhgi-eagle-cloud-spine-v105">Eagle Cloud</a> sovereign spine.</p>
-        <div class="universal-paradigm-ticker-v92" aria-label="Universal Paradigm ticker">
+        <div class="universal-paradigm-ticker-v92" aria-label="Universal Paradigm — fixed line">
           <div class="universal-paradigm-ticker-v92__label">Universal Paradigm</div>
-          <p class="universal-paradigm-ticker-v92__line" id="universalParadigmTickerLineV92"></p>
+          <p class="universal-paradigm-ticker-v92__line" id="universalParadigmTickerLineV92">COMM_MESH: [SYCHRONIZING_PLATFORMS] · AUDIT_PENDING.</p>
         </div>
         <p class="gec-consultancy__rhgi">
           <strong>RHGI — Proven Ground:</strong> Rural Hyper-Grassroots Initiatives field the live mesh where Eagle Cloud intelligence is trained, verified, and scaled into sovereign execution.
@@ -7759,19 +7828,16 @@
           </div>
           <div class="gec-pillar">
             <span class="gec-pillar__k">Energy</span>
-            <span class="gec-pillar__v">Transition-grade power strategy, resilience meshing, and infrastructure risk telemetry.</span>
+            <span class="gec-pillar__v">Transition-grade power strategy. AZK Corridor Ingestion: 639M MT. Infrastructure risk telemetry: Active.</span>
           </div>
           <div class="gec-pillar">
             <span class="gec-pillar__k">Security</span>
-            <span class="gec-pillar__v">Strategic integrity, institutional continuity, and CIN-ready threat-to-signal translation.</span>
+            <span class="gec-pillar__v">Powered by Sovereign Cloud Security. Data Resides in Nigerian National Infrastructure. Tier-4 Compliance.</span>
           </div>
         </div>
-        <div class="gec-case-study-ticker-v87" aria-live="polite">
-          <p class="gec-case-study__label">Case study</p>
-          <p class="gec-case-study__line" id="gecCaseStudyTickerLine">Case 01: Silicon Valley Alignment - 8R Logic applied to Generative AI Stability.</p>
-        </div>
+        <p class="gec-vault-telemetry-bar-v160" id="gecVaultTelemetryBarV160" aria-label="Vault system telemetry">SYSTEM LOAD: 12% | CORRIDOR SYNC: 100% | GLOBAL RELAY: STABLE.</p>
         <div class="sovereign-drawer-actions-v90">
-          <a class="btn-termii-test btn-handshake-sim gec-eagle-cloud-portal-v105" href="https://galadimanruwacenter.org" target="_blank" rel="noopener noreferrer" id="eagleCloudPortalPrimaryV105">Eagle Cloud — Sovereign Portal</a>
+          <a class="btn-termii-test btn-handshake-sim gec-eagle-cloud-portal-v105" href="https://galadimanruwacenter.org" target="_blank" rel="noopener noreferrer" id="eagleCloudPortalPrimaryV105">AUTHENTICATE INVESTOR VAULT ACCESS</a>
           <a class="btn-termii-test btn-handshake-sim btn-chairman-wa-v88 execute-handshake-anchor-v93" id="chairmanConsultWaV90" href="https://wa.me/2347039139439" target="_blank" rel="noopener noreferrer">Execute Handshake</a>
         </div>
       </div>
@@ -7796,6 +7862,10 @@
       <strong>Communication Nodes</strong>
       Emails: <a class="footer-node-metallic gcslc-primary-contact-v108" href="mailto:chairman@galadimanruwacenter.org" id="gcslcPrimaryContactLockV108">chairman@galadimanruwacenter.org</a> <span class="footer-node-metallic">(primary)</span> · <a class="footer-node-metallic" href="mailto:Info@galadimanruwacenter.org">Info@galadimanruwacenter.org</a> | <a class="footer-node-metallic" href="mailto:gcslc.research@gmail.com">gcslc.research@gmail.com</a><br />
       Phone: +234 703 913 9439 | +234 809 911 1515
+    </div>
+    <div class="legal-block legal-block--galadima-r-gateway-v160">
+      <strong>Termii / Network verification</strong>
+      Institutional Gateway: GALADIMA_R | DND Compliant | Zero-Spam Transactional Lane.
     </div>
   </aside>
 
@@ -9243,17 +9313,7 @@
     function startUniversalParadigmTickerV92() {
       var lineEl = document.getElementById("universalParadigmTickerLineV92");
       if (!lineEl) return;
-      var idx = 0;
-      function tick() {
-        lineEl.style.opacity = "0.65";
-        window.setTimeout(function () {
-          lineEl.textContent = PARADIGM_LINES_V92[idx % PARADIGM_LINES_V92.length];
-          idx += 1;
-          lineEl.style.opacity = "1";
-        }, 160);
-      }
-      tick();
-      window.setInterval(tick, 7200);
+      lineEl.textContent = PARADIGM_LINES_V92[0] || "";
     }
 
     function buildGaladimaHandshakeMessageV92() {
@@ -9359,40 +9419,9 @@
         } catch (e1) { /* no-op */ }
       });
       __GCSLC_INDUSTRIAL_TW_V99__ = [];
-      var el = document.getElementById("consultancyIndustrialHandshakeV99");
-      if (el) el.textContent = "";
     }
     function runConsultancyIndustrialTypewriterV99() {
       clearConsultancyIndustrialTypewriterV99();
-      var el = document.getElementById("consultancyIndustrialHandshakeV99");
-      if (!el) return;
-      var lines = [
-        "AWC/K-GEC: Optimizing Vertical Integration for African Conglomerates...",
-        "8R Paradigm: Resetting Supply Chain Fragility via Space-Freq Logic."
-      ];
-      var pos = 0;
-      var timer = window.setInterval(function () {
-        if (pos < lines[0].length) {
-          pos += 1;
-          el.textContent = lines[0].slice(0, pos);
-          return;
-        }
-        window.clearInterval(timer);
-        var t0 = window.setTimeout(function () {
-          var pos2 = 0;
-          var timer2 = window.setInterval(function () {
-            if (pos2 < lines[1].length) {
-              pos2 += 1;
-              el.textContent = lines[0] + "\n\n" + lines[1].slice(0, pos2);
-            } else {
-              window.clearInterval(timer2);
-            }
-          }, 26);
-          __GCSLC_INDUSTRIAL_TW_V99__.push(timer2);
-        }, 420);
-        __GCSLC_INDUSTRIAL_TW_V99__.push(t0);
-      }, 26);
-      __GCSLC_INDUSTRIAL_TW_V99__.push(timer);
     }
 
     window.__GCSLC_ADVISORY_GATEWAY_V103__ = function (mode) {
@@ -9815,23 +9844,7 @@
   }
   initNafcLinguisticsPulseV79();
   function initGecCaseStudyTickerV87() {
-    var el = document.getElementById("gecCaseStudyTickerLine");
-    if (!el) return;
-    var cases = [
-      "Case 01: Silicon Valley Alignment - 8R Logic applied to Generative AI Stability.",
-      "Case 02: Riyadh Sovereign Cloud - AWC/K-GEC securing National Data Assets.",
-      "Case 03: Global South Connectivity - RHGI bridging the 50% Rural Gap."
-    ];
-    var i = 1;
-    function tick() {
-      el.style.opacity = "0";
-      window.setTimeout(function () {
-        el.textContent = cases[i];
-        i = (i + 1) % cases.length;
-        el.style.opacity = "1";
-      }, 180);
-    }
-    window.setInterval(tick, 7200);
+    /* Case study 02 is fixed in markup — no carousel */
   }
   initGecCaseStudyTickerV87();
 
