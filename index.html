@@ -35,7 +35,7 @@
   <meta name="gcslc-command-directive-v19" content="8r_prism_neon_glass_breath=1;intelligence_modal_typewriter=1;determinant_messages_hardcoded=1" />
   <meta name="gcslc-command-directive-v20" content="social_mesh_ready_pulse=1;global_south_cyan_trigger_typewriter=1;institutional_hub_static=1;footer_sliders_absent=1;radial_clocks_primary_timekeepers=1" />
   <meta name="gcslc-command-directive-v21" content="institutional_client_scanning_grid=1;social_mesh_system_readiness_pulse=1;global_south_intelligence_bridge_msg=1;8r_cyan_pulse_typewriter_v19=1" />
-  <meta name="gcslc-command-directive-v22" content="security_triad_modal_sn_sc_sa=1;sector_intel_silos_v22=1;master_list_scroll_ew_push=1;executive_social_pulse_v22=1;zero_footer_law=1" />
+  <meta name="gcslc-command-directive-v22" content="security_triad_modal_sn_sc_sa=1;sector_intel_silos_v22=1;master_list_scroll_ew_push=1;executive_social_pulse_v22=1;zero_footer_law=1;nafc_termii_master_key_ew_engine=1;kinetic_reach_cluster_matrix=1;livestock_services_lattice_588=1" />
   <!-- Institutional Navy Blue (#001a33) — Edge / PWA chrome -->
   <meta name="theme-color" content="#001a33" media="(prefers-color-scheme: dark)" />
   <meta name="theme-color" content="#001a33" />
@@ -3990,6 +3990,76 @@
       box-shadow: 0 0 18px rgba(212, 175, 55, 0.28);
     }
     .nafc-transmit-btn:active { transform: scale(0.98); }
+    .nafc-ew-engine-v22 {
+      margin: 0 0 12px;
+      padding: 10px 10px 8px;
+      border-radius: 12px;
+      border: 1px solid rgba(102, 245, 255, 0.28);
+      background: rgba(0, 10, 28, 0.55);
+    }
+    .nafc-ew-engine-v22__head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px 12px;
+      margin: 0 0 8px;
+    }
+    .nafc-ew-engine-v22__title {
+      font-size: clamp(0.48rem, 1.1vw, 0.58rem);
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(240, 215, 140, 0.95);
+    }
+    .nafc-ew-engine-v22__lock {
+      font-size: clamp(0.4rem, 0.95vw, 0.5rem);
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      color: rgba(185, 240, 255, 0.92);
+    }
+    .nafc-ew-engine-v22__row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin: 0 0 8px;
+    }
+    .nafc-ew-triad-btn {
+      min-height: 44px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      cursor: pointer;
+      touch-action: manipulation;
+      color: #f8ffff;
+      font-size: clamp(0.52rem, 1.2vw, 0.64rem);
+    }
+    .nafc-ew-triad-btn--sn {
+      background: linear-gradient(165deg, rgba(0, 80, 90, 0.55), rgba(0, 12, 30, 0.92));
+      border-color: rgba(0, 255, 255, 0.45);
+      box-shadow: 0 0 14px rgba(0, 255, 255, 0.18);
+    }
+    .nafc-ew-triad-btn--sc {
+      background: linear-gradient(165deg, rgba(90, 70, 0, 0.55), rgba(0, 12, 30, 0.92));
+      border-color: rgba(255, 214, 64, 0.55);
+      box-shadow: 0 0 14px rgba(255, 214, 64, 0.16);
+    }
+    .nafc-ew-triad-btn--sa {
+      background: linear-gradient(165deg, rgba(90, 10, 10, 0.55), rgba(0, 8, 22, 0.94));
+      border-color: rgba(255, 80, 80, 0.55);
+      box-shadow: 0 0 16px rgba(255, 60, 60, 0.22);
+    }
+    .nafc-ew-engine-v22__hint {
+      margin: 0;
+      font-size: clamp(0.42rem, 1vw, 0.52rem);
+      line-height: 1.45;
+      color: rgba(160, 210, 235, 0.9);
+    }
+    .nafc-ew-engine-v22__hint code {
+      font-size: 0.95em;
+      color: rgba(185, 255, 255, 0.95);
+    }
     .termii-lane.termii-sa-active .termii-outbound { box-shadow: 0 0 22px rgba(255, 90, 60, 0.55), inset 0 0 20px rgba(255, 60, 40, 0.15); }
     .termii-lane.termii-sa-active .termii-outbound .termii-pulse {
       animation-duration: 0.42s !important;
@@ -4908,6 +4978,9 @@
     html.gcslc-command-directive-v20 .gcslc-institutional-cloud-hub-v17__mesh-link--wa-personal {
       background: #25d366;
     }
+    html.gcslc-command-directive-v20 .gcslc-institutional-cloud-hub-v17__mesh-link--wa-exec {
+      background: #25d366;
+    }
     html.gcslc-command-directive-v20 .gcslc-institutional-hub--static-v20 {
       position: relative;
       z-index: 8;
@@ -5378,14 +5451,87 @@
       line-height: 1.5;
       color: rgba(215, 240, 255, 0.92);
     }
-    html.gcslc-command-directive-v22 .gcslc-mesh-executive-handshake-v22 .gcslc-mesh-social-pulse-v20 {
+    @keyframes gcslcLivestockYieldPulseV22 {
+      0%,
+      100% {
+        color: rgba(185, 255, 255, 0.95);
+        text-shadow: 0 0 12px rgba(102, 245, 255, 0.22);
+        filter: brightness(1);
+      }
+      50% {
+        color: #f5ffff;
+        text-shadow: 0 0 22px rgba(0, 255, 255, 0.45), 0 0 40px rgba(212, 175, 55, 0.22);
+        filter: brightness(1.12);
+      }
+    }
+    .gcslc-livestock-lattice-v22 {
+      margin: 0 0 14px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(102, 245, 255, 0.28);
+      background: linear-gradient(168deg, rgba(0, 36, 64, 0.42), rgba(0, 8, 22, 0.88));
+      box-shadow: 0 0 24px rgba(0, 255, 255, 0.08);
+    }
+    .gcslc-livestock-lattice-v22__title {
+      margin: 0 0 8px;
+      font-size: clamp(0.52rem, 1.2vw, 0.64rem);
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(212, 175, 55, 0.95);
+      text-shadow: 0 0 10px rgba(102, 245, 255, 0.18);
+    }
+    .gcslc-livestock-lattice-v22__body {
+      margin: 0 0 10px;
+      font-size: clamp(0.52rem, 1.15vw, 0.64rem);
+      line-height: 1.5;
+      color: rgba(210, 240, 255, 0.92);
+    }
+    .gcslc-livestock-lattice-v22__yield {
+      margin: 0;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 8px 12px;
+    }
+    .gcslc-livestock-lattice-v22__yield-nbr {
+      font-family: "Goldman", system-ui, sans-serif;
+      font-size: clamp(0.95rem, 2.4vw, 1.25rem);
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      animation: gcslcLivestockYieldPulseV22 2.1s ease-in-out infinite;
+    }
+    .gcslc-livestock-lattice-v22__yield-lbl {
+      font-size: clamp(0.46rem, 1.05vw, 0.56rem);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(180, 235, 255, 0.88);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .gcslc-livestock-lattice-v22__yield-nbr {
+        animation: none !important;
+      }
+    }
+    .gcslc-mesh-ready-state-v22 {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px 12px;
+    }
+    html.gcslc-command-directive-v22 .gcslc-institutional-hub--static-v22 {
+      position: relative;
+      z-index: 8;
+      isolation: isolate;
+    }
+    html.gcslc-command-directive-v22 .gcslc-mesh-ready-state-v22 .gcslc-mesh-social-pulse-v20 {
       animation:
         meshSocialReadyPulseV20 2.4s ease-in-out infinite alternate,
         meshSocialSystemReadyV21 1.85s ease-in-out infinite,
         meshExecutiveHandshakePulseV22 1.15s ease-in-out infinite;
     }
     @media (prefers-reduced-motion: reduce) {
-      html.gcslc-command-directive-v22 .gcslc-mesh-executive-handshake-v22 .gcslc-mesh-social-pulse-v20 {
+      html.gcslc-command-directive-v22 .gcslc-mesh-ready-state-v22 .gcslc-mesh-social-pulse-v20 {
         animation: none !important;
         border-color: rgba(102, 245, 255, 0.55);
         box-shadow: 0 0 0 1px rgba(102, 245, 255, 0.28), 0 0 14px rgba(0, 255, 255, 0.18);
@@ -8536,6 +8682,7 @@
                 <button type="button" class="sovereign-cluster-btn" data-cluster="infrastructure" aria-pressed="false">Infrastructure</button>
                 <button type="button" class="sovereign-cluster-btn" data-cluster="security" aria-pressed="false">Security</button>
                 <button type="button" class="sovereign-cluster-btn" data-cluster="social" aria-pressed="false">Social Impact</button>
+                <button type="button" class="sovereign-cluster-btn" data-cluster="kinetic" aria-pressed="false">Kinetic Reach</button>
                 <button type="button" class="sovereign-cluster-btn" data-cluster="off" aria-pressed="false">Off</button>
               </div>
             </div>
@@ -8700,6 +8847,18 @@
             <div class="nafc-channel-line">[WHATSAPP 🔗 GLOBAL-SYNC]</div>
           </div>
           <p class="nafc-broadcast-hint">Language control lives in the NAFC Sovereign Anchor above. Dual-channel Termii lock — select LGA, then transmit.</p>
+          <div class="nafc-ew-engine-v22" aria-label="Early Warning Triad — Termii master key">
+            <div class="nafc-ew-engine-v22__head">
+              <span class="nafc-ew-engine-v22__title">Early Warning Triad</span>
+              <span class="nafc-ew-engine-v22__lock" id="nafcEwMasterKeyStatusV22">Master key: LOCKED — run Termii handshake</span>
+            </div>
+            <div class="nafc-ew-engine-v22__row" role="group" aria-label="SN SC SA national lane (simulation)">
+              <button type="button" class="nafc-ew-triad-btn nafc-ew-triad-btn--sn" id="nafcEwTransmitSnV22">SN</button>
+              <button type="button" class="nafc-ew-triad-btn nafc-ew-triad-btn--sc" id="nafcEwTransmitScV22">SC</button>
+              <button type="button" class="nafc-ew-triad-btn nafc-ew-triad-btn--sa" id="nafcEwTransmitSaV22">SA</button>
+            </div>
+            <p class="nafc-ew-engine-v22__hint" id="nafcEwTriadHintV22"><strong>Termii master key:</strong> run <code>TEST_HANDSHAKE</code> or WhatsApp mock — then arm SN / SC / SA to national handsets (simulation · ref 1004179649).</p>
+          </div>
           <label class="nafc-field-label" for="nafcLgaSelect">Anchor LGA</label>
           <select id="nafcLgaSelect" class="nafc-select">
             <option value="Dambatta">Dambatta</option>
@@ -8816,6 +8975,14 @@
           </article>
         </div>
       </div>
+      <div class="gcslc-livestock-lattice-v22" aria-label="Livestock and Services lattice">
+        <h3 class="gcslc-livestock-lattice-v22__title">Livestock &amp; Services Lattice</h3>
+        <p class="gcslc-livestock-lattice-v22__body">Grassroots livestock routes, services corridors, and informal-enterprise bridges — RHGI telemetry fused to the Cloud Advisory Hub.</p>
+        <p class="gcslc-livestock-lattice-v22__yield" id="gcslcLivestockLatticeYieldV22">
+          <span class="gcslc-livestock-lattice-v22__yield-nbr">₦58.8B</span>
+          <span class="gcslc-livestock-lattice-v22__yield-lbl">Ecosystem Yield — live revenue stream (ref 1004179645)</span>
+        </p>
+      </div>
       <div class="gcslc-institutional-cloud-hub-v17__mesh">
         <p class="gcslc-institutional-cloud-hub-v17__mesh-title">GLOBAL COMMUNICATIONS MESH</p>
         <p class="gcslc-institutional-cloud-hub-v17__mesh-exec">
@@ -8823,7 +8990,7 @@
           · Personal WhatsApp <a href="tel:+2348099111515">+234 809 911 1515</a>
         </p>
         <div class="gcslc-institutional-cloud-hub-v17__mesh-row gcslc-mesh-social-sync-v20 gcslc-mesh-social-sync-v21" role="navigation" aria-label="Global Communications Mesh — social sync (Chairman live and authorized)">
-          <span class="gcslc-mesh-executive-handshake-v22" role="group" aria-label="Executive handshake — live pulse">
+          <span class="gcslc-mesh-ready-state-v22" role="group" aria-label="Ready-state channels — executive line +234 703 913 9439">
           <a class="gcslc-institutional-cloud-hub-v17__mesh-link gcslc-institutional-cloud-hub-v17__mesh-link--bluesky gcslc-mesh-social-pulse-v20" href="tel:+2347039139439" aria-label="Bluesky — executive line +234 703 913 9439">
             <span class="gcslc-institutional-cloud-hub-v17__mesh-ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M12 3.5c2.6 0 4.7 1.9 5.2 4.4.5-.3 1.1-.5 1.8-.5 2 0 3.6 1.6 3.6 3.6 0 6.2-5.4 10.8-10.6 15-5.2-4.2-10.6-8.8-10.6-15 0-2 1.6-3.6 3.6-3.6.7 0 1.3.2 1.8.5.5-2.5 2.6-4.4 5.2-4.4z"/></svg></span>
             <span>Bluesky</span>
@@ -8836,7 +9003,7 @@
             <span class="gcslc-institutional-cloud-hub-v17__mesh-ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false" fill="none"><path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M5 12a7 7 0 0114 0"/><path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M8.5 12a3.5 3.5 0 017 0"/><path fill="currentColor" d="M12 13.25a1.25 1.25 0 100-2.5 1.25 1.25 0 000 2.5z"/></svg></span>
             <span>Signal</span>
           </a>
-          <a class="gcslc-institutional-cloud-hub-v17__mesh-link gcslc-institutional-cloud-hub-v17__mesh-link--wa-personal gcslc-mesh-social-pulse-v20" href="https://wa.me/2348099111515" target="_blank" rel="noopener noreferrer" aria-label="Personal WhatsApp +234 809 911 1515">
+          <a class="gcslc-institutional-cloud-hub-v17__mesh-link gcslc-institutional-cloud-hub-v17__mesh-link--wa-exec gcslc-mesh-social-pulse-v20" href="https://wa.me/2347039139439" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp executive line +234 703 913 9439">
             <span class="gcslc-institutional-cloud-hub-v17__mesh-ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M19.05 4.77A9.96 9.96 0 0012 2C6.48 2 2 6.48 2 12a9.9 9.9 0 001.37 5.05L2 22l5.08-1.33A9.96 9.96 0 0012 22h.01c5.52 0 10-4.48 10-10 0-2.67-1.04-5.18-2.96-7.07zM12 20.4h-.01a8.4 8.4 0 01-4.26-1.16l-.3-.18-3.1.81.83-3.02-.2-.3a8.44 8.44 0 113.94 3.85zM16.5 14.3c-.28-.14-1.65-.81-1.9-.9-.26-.1-.45-.14-.64.14-.19.28-.74.9-.91 1.08-.17.18-.34.2-.62.07-.28-.14-1.18-.44-2.25-1.4-.83-.74-1.39-1.65-1.55-1.93-.17-.28-.02-.43.13-.57.13-.13.28-.34.42-.51.14-.17.19-.28.28-.47.1-.19.05-.35-.02-.5-.07-.14-.64-1.54-.88-2.11-.23-.56-.47-.48-.64-.49l-.55-.01c-.19 0-.5.07-.76.35-.26.28-1 1-1 2.44s1.02 2.83 1.16 3.02c.14.19 2 3.05 4.84 4.28.68.29 1.21.46 1.62.59.68.22 1.3.19 1.79.12.55-.08 1.65-.67 1.88-1.32.23-.65.23-1.21.16-1.32-.07-.11-.25-.18-.53-.32z"/></svg></span>
             <span>WhatsApp</span>
           </a>
@@ -8844,11 +9011,11 @@
             <span class="gcslc-institutional-cloud-hub-v17__mesh-ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M21.95 3.48a1.9 1.9 0 00-1.96-.37L3.5 10.2c-1.18.5-1.17 2.2.02 2.68l4.45 1.74 1.73 5.5c.23.73 1.1 1 1.64.45l2.45-2.51 5.1 3.76c.95.7 2.3.17 2.58-1.04L22.03 5.2c.2-.86-.1-1.76-.08-1.72zM18.4 7.62l-8.2 7.55c-.2.18-.52.2-.75.05l-2.4-1.5a.52.52 0 01-.05-.84l9.9-8.9c.35-.32.86.14.5.64z"/></svg></span>
             <span>Telegram</span>
           </a>
-          </span>
           <a class="gcslc-institutional-cloud-hub-v17__mesh-link gcslc-institutional-cloud-hub-v17__mesh-link--tiktok gcslc-mesh-social-pulse-v20" href="https://www.tiktok.com/@galadiman.ruwa.ce" target="_blank" rel="noopener noreferrer" aria-label="TikTok @galadiman.ruwa.ce">
             <span class="gcslc-institutional-cloud-hub-v17__mesh-ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 11-2.88-2.9c.08 0 .15 0 .22.01V9.4a6.33 6.33 0 00-1-.05A6.34 6.34 0 005 15.66 6.34 6.34 0 0011.34 22a6.34 6.34 0 006.33-6.34c0-.09 0-.18-.01-.27V9.52a8.16 8.16 0 004.93 1.67v-3.4a4.85 4.85 0 01-3.01-1.1z"/></svg></span>
             <span>TikTok</span>
           </a>
+          </span>
           <a class="gcslc-institutional-cloud-hub-v17__mesh-link gcslc-institutional-cloud-hub-v17__mesh-link--facebook gcslc-mesh-social-pulse-v20" href="https://www.facebook.com/search/top?q=Galadiman%20Ruwa%20Promotion" target="_blank" rel="noopener noreferrer" aria-label="Facebook Galadiman Ruwa Promotion">
             <span class="gcslc-institutional-cloud-hub-v17__mesh-ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2v-2.3c0-2 1.2-3.1 3-3.1.9 0 1.8.16 1.8.16V9h-1c-1 0-1.3.62-1.3 1.26V12h2.2l-.35 3H14v6.8c4.56-.93 8-4.96 8-9.8C22 6.48 17.52 2 12 2z"/></svg></span>
             <span>Facebook</span>
@@ -8878,7 +9045,7 @@
     </div>
   </div>
 
-  <div class="modal-backdrop gcslc-sovereign-alert-modal-v22 gcslc-sovereign-alert-modal-v22--sa" id="gcslcSovereignAlertModalV22" role="alertdialog" aria-modal="true" aria-labelledby="gcslcSovereignAlertTitleV22" aria-describedby="gcslcSovereignAlertTypewriterV22" aria-hidden="true">
+  <div class="modal-backdrop gcslc-sovereign-alert-modal-v22" id="gcslcSovereignAlertModalV22" role="alertdialog" aria-modal="true" aria-labelledby="gcslcSovereignAlertTitleV22" aria-describedby="gcslcSovereignAlertTypewriterV22" aria-hidden="true">
     <div class="gcslc-sovereign-alert-modal-v22__card" role="document">
       <div class="gcslc-sovereign-alert-modal-v22__triad" aria-hidden="true">
         <span class="gcslc-sovereign-alert-modal-v22__badge gcslc-sovereign-alert-modal-v22__badge--sn">SN</span>
@@ -9602,6 +9769,8 @@
     infrastructure: "CLUSTER INTEL — INFRASTRUCTURE\nTransport, marine, energy regulation, corridor resilience.\nManual: align FMW/FMOT signals with ward ingress and AZK spine.",
     security: "CLUSTER INTEL — SECURITY\nDefense posture, financial integrity, civil protection, venue shield.\nManual: EP G/H/I lanes; correlate DSS/NPF incident routing.",
     social: "CLUSTER INTEL — SOCIAL IMPACT\nHealth, education, youth, civic lattice.\nManual: CIN endpoints M/N; unions ↔ civil ↔ associations mesh.",
+    kinetic:
+      "Syncing 8,806 Wards & 176,846 Polling Units. 123,284 Field Agents Active. Model 15-15 Handshake Verified. Ground-Truth capture: 100%.",
     off: "CLUSTER INTEL — OVERLAY OFF\nMap nodes hidden for clean cartographic review.\nManual: re-enable cluster before API catalog / Termii orders."
   };
   const prismBoxes = [].slice.call(document.querySelectorAll(".prism-box"));
@@ -11012,6 +11181,145 @@
       if (m && m.classList.contains("open")) closeGcslcGlobalSouthModalV20();
     });
   })();
+  (function initGcslcSovereignAlertV22() {
+    var __gcslcEwTypewriterTimerV22 = null;
+    function clearGcslcEwTypewriterV22() {
+      if (__gcslcEwTypewriterTimerV22) {
+        clearInterval(__gcslcEwTypewriterTimerV22);
+        __gcslcEwTypewriterTimerV22 = null;
+      }
+    }
+    function runGcslcEwTypewriterV22(el, text, msPerChar) {
+      clearGcslcEwTypewriterV22();
+      if (!el) return;
+      var full = String(text || "");
+      var reduced = typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (reduced) {
+        el.textContent = full;
+        return;
+      }
+      el.textContent = "";
+      var i = 0;
+      var ms = msPerChar || 14;
+      __gcslcEwTypewriterTimerV22 = window.setInterval(function () {
+        i += 1;
+        el.textContent = full.slice(0, i);
+        if (i >= full.length) clearGcslcEwTypewriterV22();
+      }, ms);
+    }
+    function normalizeEwTierV22(t) {
+      var x = String(t || "sn").toLowerCase();
+      if (x === "security" || x === "severe") return "sa";
+      if (x === "caution") return "sc";
+      if (x === "standard" || x === "node") return "sn";
+      return x === "sa" || x === "sc" || x === "sn" ? x : "sn";
+    }
+    function openGcslcSovereignAlertV22(tier, opts) {
+      opts = opts || {};
+      var t = normalizeEwTierV22(tier);
+      var modal = document.getElementById("gcslcSovereignAlertModalV22");
+      var tw = document.getElementById("gcslcSovereignAlertTypewriterV22");
+      var kick = document.getElementById("gcslcSovereignAlertKickerV22");
+      if (!modal || !tw) return;
+      clearGcslcEwTypewriterV22();
+      tw.textContent = "";
+      modal.classList.remove("gcslc-sovereign-alert-modal-v22--sn", "gcslc-sovereign-alert-modal-v22--sc", "gcslc-sovereign-alert-modal-v22--sa", "gcslc-sovereign-alert-modal-v22--fullscreen");
+      modal.classList.add("gcslc-sovereign-alert-modal-v22--" + t);
+      if (t === "sa") modal.classList.add("gcslc-sovereign-alert-modal-v22--fullscreen");
+      if (kick) {
+        var labels = { sn: "SN — Standard Node (Cyan)", sc: "SC — Sector Caution (Yellow)", sa: "SA — Sovereign Alert (Red)" };
+        kick.textContent = labels[t] + (opts.source ? " · Source: " + opts.source : "");
+      }
+      var msg = opts.message;
+      if (!msg) {
+        msg =
+          t === "sa"
+            ? "[SEVERITY: SA] National Alert Fusion Center (NAFC) — maximum-priority sovereign alert. Secure lanes: ARMED. Acknowledge to continue."
+            : t === "sc"
+              ? "[CAUTION: SC] NAFC sector caution envelope. Review dual-channel status before national broadcast."
+              : "[NODE: SN] NAFC standard ingress — institutional heartbeat synchronized.";
+      }
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden", "false");
+      runGcslcEwTypewriterV22(tw, msg, t === "sa" ? 12 : 14);
+    }
+    function closeGcslcSovereignAlertV22() {
+      var modal = document.getElementById("gcslcSovereignAlertModalV22");
+      var tw = document.getElementById("gcslcSovereignAlertTypewriterV22");
+      var kick = document.getElementById("gcslcSovereignAlertKickerV22");
+      if (!modal) return;
+      clearGcslcEwTypewriterV22();
+      modal.classList.remove(
+        "open",
+        "gcslc-sovereign-alert-modal-v22--fullscreen",
+        "gcslc-sovereign-alert-modal-v22--sn",
+        "gcslc-sovereign-alert-modal-v22--sc",
+        "gcslc-sovereign-alert-modal-v22--sa"
+      );
+      modal.setAttribute("aria-hidden", "true");
+      if (tw) tw.textContent = "";
+      if (kick) kick.textContent = "";
+    }
+    window.GCSLC_openSovereignAlertV22 = openGcslcSovereignAlertV22;
+    window.GCSLC_closeSovereignAlertV22 = closeGcslcSovereignAlertV22;
+    var ewCloseBtn = document.getElementById("gcslcSovereignAlertCloseV22");
+    if (ewCloseBtn) ewCloseBtn.addEventListener("click", closeGcslcSovereignAlertV22);
+    var ewModal = document.getElementById("gcslcSovereignAlertModalV22");
+    if (ewModal) {
+      ewModal.addEventListener("click", function (e) {
+        if (e.target === ewModal) closeGcslcSovereignAlertV22();
+      });
+    }
+    window.addEventListener("gcslc:nafc-early-warning", function (e) {
+      var d = e && e.detail ? e.detail : {};
+      openGcslcSovereignAlertV22(d.tier || d.severity || "sn", {
+        message: d.message,
+        source: d.source || "event"
+      });
+    });
+    document.addEventListener(
+      "keydown",
+      function (e) {
+        if (e.key !== "Escape") return;
+        var m = document.getElementById("gcslcSovereignAlertModalV22");
+        if (m && m.classList.contains("open")) {
+          closeGcslcSovereignAlertV22();
+          e.preventDefault();
+        }
+      },
+      true
+    );
+    var ewGrid = document.getElementById("gcslcInstitutionalMasterListV22");
+    if (ewGrid) {
+      ewGrid.addEventListener("click", function (e) {
+        var btn = e.target && e.target.closest ? e.target.closest(".gcslc-client-node-ew-v22") : null;
+        if (!btn) return;
+        var agency = btn.getAttribute("data-agency") || (btn.textContent || "").trim();
+        var base = (btn.getAttribute("data-ew-tier") || "sn").toLowerCase();
+        var tier = base;
+        if (e.shiftKey) tier = "sa";
+        else if (e.altKey) tier = "sc";
+        var ts =
+          typeof sovereignNafcTimestamp === "function"
+            ? sovereignNafcTimestamp()
+            : new Date().toISOString();
+        var msg =
+          "Early Warning · INSTITUTIONAL PUSH\nAgency: " +
+          agency +
+          "\nNAFC fusion: " +
+          tier.toUpperCase() +
+          "\nTimestamp: " +
+          ts +
+          "\nLane: AUTHORIZED (simulation) — Directive #22.";
+        openGcslcSovereignAlertV22(tier, { message: msg, source: "agency:" + agency });
+        try {
+          if (typeof appendHandshakeLog === "function") {
+            appendHandshakeLog("EARLY WARNING · " + tier.toUpperCase(), "AGENCY " + agency + " → NAFC (Directive #22)");
+          }
+        } catch (errEw) {}
+      });
+    }
+  })();
   window.addEventListener("gcslc:v7grassroots", function () {
     if (window.__GCSLC_GLOBAL_SOUTH_CORRIDOR__) applyGlobalSouthAzkUplink(true);
   });
@@ -11072,6 +11380,8 @@
   async function runGcslcTermiiHandshakeSimulation(ctx) {
     pulseTermiiHandshakeLane();
     flashTermiiTestLane();
+    window.__GCSLC_TERMII_MASTER_KEY_V22__ = true;
+    if (typeof window.__GCSLC_updateEwMasterKeyUiV22 === "function") window.__GCSLC_updateEwMasterKeyUiV22();
     var catalog = ctx && ctx.catalog === true;
     var agencyIdCatalog = catalog && ctx && ctx.agencyId ? String(ctx.agencyId) : "";
     var endpointCodeCatalog = catalog && ctx && ctx.endpointCode ? String(ctx.endpointCode) : "";
@@ -11249,6 +11559,8 @@
   async function runGcslcTermiiWhatsappMock() {
     pulseTermiiHandshakeLane();
     flashTermiiTestLane();
+    window.__GCSLC_TERMII_MASTER_KEY_V22__ = true;
+    if (typeof window.__GCSLC_updateEwMasterKeyUiV22 === "function") window.__GCSLC_updateEwMasterKeyUiV22();
     if (termiiWaMockLogEl) termiiWaMockLogEl.textContent = "";
     var cfg = window.GCSLC_NAFC_TERMII || {};
     var to = termiiWaToInput && termiiWaToInput.value ? String(termiiWaToInput.value).trim() : String(cfg.to || "+2347039139439");
@@ -11388,8 +11700,70 @@
       appendHandshakeLog("NAFC BROADCAST PULSE (SIM)", pulseLine);
       appendHandshakeLog("NAFC NATIONAL FISCAL ALERT (SIM)", payload);
       if (typeof pulseNafcLanguageBroadcast === "function") pulseNafcLanguageBroadcast(lang);
+      var termiiBodyEl = document.getElementById("termiiWaBodyInput");
+      var termiiBody = termiiBodyEl ? String(termiiBodyEl.value || "") : "";
+      if (/SIGNAL:\s*SA|\[SIGNAL:SA\]|SECURITY_ALERT:\s*SA|\bSA\s+INGRESS\b/i.test(termiiBody)) {
+        appendHandshakeLog("NAFC EARLY WARNING (SA)", "Termii ingress matched SIGNAL:SA — Sovereign Alert modal armed (Directive #22).");
+        try {
+          window.dispatchEvent(
+            new CustomEvent("gcslc:nafc-early-warning", {
+              detail: {
+                tier: "sa",
+                source: "nafc-termii-ingress",
+                message:
+                  "[SEVERITY: SA] NAFC fused an SA-class signal from Termii / institutional ingress.\nLGA anchor: " +
+                  lga +
+                  "\nDual-channel Termii lock: ARMED (simulation).\nTimestamp: " +
+                  sovereignNafcTimestamp() +
+                  "\nDirective #22 — acknowledge to clear.",
+              },
+            })
+          );
+        } catch (errSa) {}
+      }
     });
   }
+  (function initNafcEwTriadEngineV22() {
+    function updateEwMasterKeyUiV22() {
+      var el = document.getElementById("nafcEwMasterKeyStatusV22");
+      var ok = !!window.__GCSLC_TERMII_MASTER_KEY_V22__;
+      if (el) {
+        el.textContent = ok
+          ? "Master key: ARMED — Termii handshake verified"
+          : "Master key: LOCKED — run TEST_HANDSHAKE or WhatsApp mock";
+      }
+    }
+    window.__GCSLC_updateEwMasterKeyUiV22 = updateEwMasterKeyUiV22;
+    updateEwMasterKeyUiV22();
+    function bindEwTriadV22(id, tier) {
+      var btn = document.getElementById(id);
+      if (!btn) return;
+      btn.addEventListener("click", function () {
+        if (!window.__GCSLC_TERMII_MASTER_KEY_V22__) {
+          if (typeof appendHandshakeLog === "function") {
+            appendHandshakeLog(
+              "EARLY WARNING (BLOCKED)",
+              "Termii master key required — run TEST_HANDSHAKE: GCSLC→TERMII (SIMULATED) or WhatsApp mock first (Directive #22)."
+            );
+          }
+          return;
+        }
+        var msg =
+          "NAFC Early Warning Triad · Termii master key verified.\nTier: " +
+          String(tier).toUpperCase() +
+          " · National handset route (simulation) · Partner: +2347039139439 · Ref 1004179649.";
+        if (typeof window.GCSLC_openSovereignAlertV22 === "function") {
+          window.GCSLC_openSovereignAlertV22(tier, { message: msg, source: "nafc-ew-triad-engine" });
+        }
+        if (typeof appendHandshakeLog === "function") {
+          appendHandshakeLog("NAFC TRIAD · " + String(tier).toUpperCase(), "Termii master key · national lane (simulation)");
+        }
+      });
+    }
+    bindEwTriadV22("nafcEwTransmitSnV22", "sn");
+    bindEwTriadV22("nafcEwTransmitScV22", "sc");
+    bindEwTriadV22("nafcEwTransmitSaV22", "sa");
+  })();
 
   const apiCatalogDrawer = document.getElementById("apiCatalogDrawer");
   const apiCatalogBackdrop = document.getElementById("apiCatalogBackdrop");
@@ -11406,7 +11780,7 @@
     if (!apiCatalogListEl || !reg || !reg.length) return;
     const mode = getActiveClusterForCatalog();
     const show = reg.filter(function (a) {
-      return mode === "all" || mode === "off" || a.cluster === mode;
+      return mode === "all" || mode === "kinetic" || mode === "off" || a.cluster === mode;
     });
     apiCatalogListEl.innerHTML = "";
     show.forEach(function (a) {
@@ -11811,13 +12185,14 @@
       security: "Security",
       social: "Social Impact",
       all: "All-cluster",
+      kinetic: "Kinetic Reach",
       off: "Overlay off"
     };
     const lab = labelMap[cluster] || "Matrix";
     mapSvgEl.querySelectorAll(".state").forEach((pathEl) => {
       const name = pathEl.getAttribute("data-name") || "State";
       const pct = 60 + (hashStr(name + "|" + cluster) % 41);
-      if (cluster === "off" || cluster === "all") {
+      if (cluster === "off" || cluster === "all" || cluster === "kinetic") {
         pathEl.setAttribute("title", name + " · Eagle institutional matrix");
       } else {
         pathEl.setAttribute("title", lab + " readiness · " + name + " · " + pct + "% (sim)");
@@ -11898,7 +12273,8 @@
         const cl = node.getAttribute("data-cluster");
         let on = true;
         if (mode === "off") on = false;
-        else if (mode !== "all") on = cl === mode;
+        else if (mode === "all" || mode === "kinetic") on = true;
+        else on = cl === mode;
         node.setAttribute("opacity", on ? "1" : "0");
         node.style.visibility = on ? "visible" : "hidden";
         node.setAttribute("pointer-events", on ? "auto" : "none");
