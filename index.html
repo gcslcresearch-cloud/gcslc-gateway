@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="gcslc-vault-restoration-v133 gcslc-hardcoded-sovereign-vault-v134 gcslc-live-market-pulse-v135 gcslc-sovereign-realtime-pulse-v136 gcslc-professional-realtime-v138 gcslc-telegram-sovereign-node-v139 gcslc-debt-clearance-trickle-v140 gcslc-debt-clearance-strike-v143 gcslc-telegram-terminal-final-v145 gcslc-paradigm-unmask-v146 gcslc-paradigm-unmask-v147 gcslc-identity-pulse-sync-v148 gcslc-sovereign-identity-fix-v150 gcslc-command-deck-cleanup-v151 gcslc-arch-restoration-v152-1 gcslc-institutional-header-v153 gcslc-velocity-sliders-v153 gcslc-command-directive-12-v162 gcslc-command-directive-13-v163 gcslc-nafc-stealth-recon-v154 gcslc-final-architectural-strike-v155">
+<html lang="en" class="gcslc-vault-restoration-v133 gcslc-hardcoded-sovereign-vault-v134 gcslc-live-market-pulse-v135 gcslc-sovereign-realtime-pulse-v136 gcslc-professional-realtime-v138 gcslc-telegram-sovereign-node-v139 gcslc-debt-clearance-trickle-v140 gcslc-debt-clearance-strike-v143 gcslc-telegram-terminal-final-v145 gcslc-paradigm-unmask-v146 gcslc-paradigm-unmask-v147 gcslc-identity-pulse-sync-v148 gcslc-sovereign-identity-fix-v150 gcslc-command-deck-cleanup-v151 gcslc-arch-restoration-v152-1 gcslc-institutional-header-v153 gcslc-velocity-sliders-v153 gcslc-command-directive-12-v162 gcslc-command-directive-13-v163 gcslc-nafc-stealth-recon-v154 gcslc-final-architectural-strike-v155 gcslc-command-directive-v156-1">
 <head>
   <meta charset="UTF-8" />
   <!-- SOVEREIGN_INTEGRATED_MANIFEST_V1.0 -->
@@ -31,6 +31,7 @@
   <meta name="gcslc-institutional-header-v153" content="goldman_cyan_shimmer=1;typewriter_primary_260ms_slow=1;primary_32px=1;sub_20px=1;creed_16px_regular=1;creed_margin_50px=1;apex_rows_migrated_to_header=1" />
   <meta name="gcslc-nafc-stealth-recon-v154" content="nafc_scale_0.65=1;metallic_gold_calligraphy=1;turquoise_nafc_pulse=1;coal_liquidity_removed=1;linguistics_glass=1" />
   <meta name="gcslc-final-architectural-strike-v155" content="sovereign_gateway_v90_removed=1;intrinsic_nafc_telemetry=1;corporate_social_row_v155=1;nafc_landscape_wide_locked=1;map_shell_exemption=sovereignGatedMapV133" />
+  <meta name="gcslc-command-directive-v156-1" content="cin_cien_velocity_dock=footer_below_social;identity_stack_clearance=1;map_exemption=sovereignGatedMapV133;nafc_landscape_wide_locked=1;high_velocity_azk_kaduna=1" />
   <!-- Institutional Navy Blue (#001a33) — Edge / PWA chrome -->
   <meta name="theme-color" content="#001a33" media="(prefers-color-scheme: dark)" />
   <meta name="theme-color" content="#001a33" />
@@ -4593,6 +4594,45 @@
         animation: none !important;
       }
     }
+    /* V156.1 — CIN/CIEN velocity marquees relocated to footer (below corporate social); sovereign identity / legal text clearance */
+    html.gcslc-command-directive-v156-1 .gcslc-sovereign-identity-v148,
+    html.gcslc-command-directive-v156-1 #gcslcSovereignIdentityHeaderV148 {
+      position: relative;
+      z-index: 40;
+      isolation: isolate;
+    }
+    html.gcslc-command-directive-v156-1 .footer-legal-text-v162 {
+      position: relative;
+      z-index: 8;
+    }
+    html.gcslc-command-directive-v156-1 .gcslc-velocity-dock-v156-1 {
+      width: 100%;
+      margin-top: 14px;
+      padding: 12px 0 2px;
+      border-top: 1px solid rgba(102, 245, 255, 0.2);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: stretch;
+      position: relative;
+      z-index: 1;
+    }
+    html.gcslc-command-directive-v156-1 .gcslc-velocity-dock-v156-1__label {
+      margin: 0;
+      font-size: clamp(0.42rem, 1vw, 0.56rem);
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-align: right;
+      color: rgba(212, 175, 55, 0.88);
+    }
+    html.gcslc-command-directive-v156-1 .gcslc-velocity-message-slider-v153--footer-v156 {
+      --gcslc-velocity-slider-h: 28px;
+      width: 100%;
+    }
+    html.gcslc-command-directive-v156-1 footer.footer.footer-vault {
+      padding-bottom: max(14px, env(safe-area-inset-bottom, 0px));
+    }
     .layout-inner {
       display: block;
       width: 100%;
@@ -5574,7 +5614,7 @@
       .map-wrap { padding: 8px; }
       .kaduna-rhgi-scroll { max-height: min(200px, 46vh); }
       .rhgi-terminal-readout { font-size: clamp(0.46rem, 2.9vw, 0.56rem); }
-      .cin-ticker-viewport { height: calc(min(180px, 42vh) - var(--gcslc-velocity-slider-h)); }
+      .cin-ticker-viewport { height: min(180px, 42vh); }
       .cin-ticker-line { font-size: clamp(0.46rem, 2.8vw, 0.56rem); padding: 8px 8px; }
     }
     @keyframes footerTw {
@@ -5842,7 +5882,7 @@
     }
     .cin-ticker-viewport {
       position: relative;
-      height: calc(min(200px, 38vh) - var(--gcslc-velocity-slider-h));
+      height: min(200px, 38vh);
       overflow: hidden;
       border-radius: 10px;
       border: 1px solid rgba(212, 175, 55, 0.22);
@@ -7685,28 +7725,12 @@
           <div class="cin-ticker-viewport" id="cinTickerViewport">
             <div class="cin-ticker-rail" id="cinTickerRail"></div>
           </div>
-          <div class="gcslc-velocity-message-slider-v153" data-intrinsic-gateway="nafc" data-intrinsic-channel="cin-marquee" role="status" aria-live="polite">
-            <div class="gcslc-velocity-message-slider-v153__viewport">
-              <div class="gcslc-velocity-message-slider-v153__marquee">
-                <span class="gcslc-velocity-message-slider-v153__segment" id="cinVelocitySliderTextV153"></span>
-                <span class="gcslc-velocity-message-slider-v153__segment" id="cinVelocitySliderDupV153" aria-hidden="true"></span>
-              </div>
-            </div>
-          </div>
         </div>
         <div class="cin-ticker-block cien-ticker-block gcslc-cien-static-v153" aria-label="Citizens Intelligence Extension Network — battle lattice" data-intrinsic-gateway="nafc" data-intrinsic-channel="cien">
           <p class="cin-ticker-title">CIEN — Citizens Intelligence Extension Network</p>
           <p class="sidebar-chart-sub" style="margin:0 0 8px;text-align:center;">176,000 PUs · 8,806 Wards · battle attest stream</p>
           <div class="cin-ticker-viewport" id="cienTickerViewport">
             <div class="cin-ticker-rail" id="cienTickerRail"></div>
-          </div>
-          <div class="gcslc-velocity-message-slider-v153 gcslc-velocity-message-slider-v153--cien" data-intrinsic-gateway="nafc" data-intrinsic-channel="cien-marquee" role="status" aria-live="polite">
-            <div class="gcslc-velocity-message-slider-v153__viewport">
-              <div class="gcslc-velocity-message-slider-v153__marquee">
-                <span class="gcslc-velocity-message-slider-v153__segment" id="cienVelocitySliderTextV153"></span>
-                <span class="gcslc-velocity-message-slider-v153__segment" id="cienVelocitySliderDupV153" aria-hidden="true"></span>
-              </div>
-            </div>
           </div>
         </div>
         <div class="social-lattice-widget social-lattice-widget--v64-shimmer" id="socialLatticeWidget" aria-label="Social lattice — informal sector nodes">
@@ -7934,6 +7958,26 @@
             <span class="footer-corporate-social-row-v155__ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm0 2a3 3 0 00-3 3v10a3 3 0 003 3h10a3 3 0 003-3V7a3 3 0 00-3-3H7zm5 3.5A5.5 5.5 0 1112 17a5.5 5.5 0 010-9.5zm0 2A3.5 3.5 0 1012 15a3.5 3.5 0 000-7zM18 7a1 1 0 110 2 1 1 0 010-2z"/></svg></span>
             <span class="footer-corporate-social-row-v155__cap">Instagram</span>
           </a>
+        </div>
+        <div class="gcslc-velocity-dock-v156-1" aria-label="CIN / CIEN high-velocity command lanes — footer dock">
+          <div class="gcslc-velocity-dock-v156-1__label" id="gcslcVelocityDockLabelCinV156">CIN — command velocity</div>
+          <div class="gcslc-velocity-message-slider-v153 gcslc-velocity-message-slider-v153--footer-v156" data-intrinsic-gateway="nafc" data-intrinsic-channel="cin-marquee" role="status" aria-live="polite">
+            <div class="gcslc-velocity-message-slider-v153__viewport">
+              <div class="gcslc-velocity-message-slider-v153__marquee">
+                <span class="gcslc-velocity-message-slider-v153__segment" id="cinVelocitySliderTextV153"></span>
+                <span class="gcslc-velocity-message-slider-v153__segment" id="cinVelocitySliderDupV153" aria-hidden="true"></span>
+              </div>
+            </div>
+          </div>
+          <div class="gcslc-velocity-dock-v156-1__label" id="gcslcVelocityDockLabelCienV156">CIEN — command velocity</div>
+          <div class="gcslc-velocity-message-slider-v153 gcslc-velocity-message-slider-v153--cien gcslc-velocity-message-slider-v153--footer-v156" data-intrinsic-gateway="nafc" data-intrinsic-channel="cien-marquee" role="status" aria-live="polite">
+            <div class="gcslc-velocity-message-slider-v153__viewport">
+              <div class="gcslc-velocity-message-slider-v153__marquee">
+                <span class="gcslc-velocity-message-slider-v153__segment" id="cienVelocitySliderTextV153"></span>
+                <span class="gcslc-velocity-message-slider-v153__segment" id="cienVelocitySliderDupV153" aria-hidden="true"></span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -9429,8 +9473,22 @@
       "SOVEREIGN LIQUIDITY STRIKE · " + n945 + "T vs " + n50 + "T · VEL " + vx + "× · SURPLUS " + sur + "T";
     var sig =
       "SIG " + live.ruralGap.toFixed(1) + "% · URBAN " + live.urbanConn.toFixed(1) + "% · INTRINSIC NAFC GATEWAY";
-    var cinMsg = "LIVE INTELLIGENCE · " + liq + " · " + sig + " · CIN CORRIDORS";
-    var cienMsg = "LIVE INTELLIGENCE · " + liq + " · " + sig + " · CIEN BATTLE LATTICE · WARD / PU KINETICS";
+    var cinLead = "AZK Corridor Operationalized";
+    var cienLead = "Kaduna Nodal Handshake Active";
+    var cinMsg =
+      cinLead +
+      " · LIVE INTELLIGENCE · " +
+      liq +
+      " · " +
+      sig +
+      " · CIN CORRIDORS · HIGH-VELOCITY";
+    var cienMsg =
+      cienLead +
+      " · LIVE INTELLIGENCE · " +
+      liq +
+      " · " +
+      sig +
+      " · CIEN BATTLE LATTICE · WARD / PU KINETICS · HIGH-VELOCITY";
     var a = document.getElementById("cinVelocitySliderTextV153");
     var b = document.getElementById("cinVelocitySliderDupV153");
     var c = document.getElementById("cienVelocitySliderTextV153");
