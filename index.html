@@ -185,6 +185,55 @@
     }
   })();
   </script>
+  <script>
+  (function gcslcKgecOsEnvelopeV203() {
+    var CK = "gcslc_sovereign_session";
+    function readCk(name) {
+      try {
+        var parts = ("; " + document.cookie).split("; " + name + "=");
+        if (parts.length < 2) return "";
+        return decodeURIComponent(parts.pop().split(";").shift() || "");
+      } catch (e) {
+        return "";
+      }
+    }
+    function refreshKgecOsDormancy() {
+      var ok = readCk(CK) && readCk(CK) !== "0";
+      var root = document.documentElement;
+      if (!ok) root.classList.add("gcslc-kgec-dormant-v203");
+      else root.classList.remove("gcslc-kgec-dormant-v203");
+    }
+    refreshKgecOsDormancy();
+    window.gcslcRefreshKgecOsV203 = refreshKgecOsDormancy;
+    window.gcslcPingKgecPrivateCoreV203 = function () {
+      return fetch("/api/kgec/ping", { credentials: "include" }).then(function (r) {
+        return r.json().catch(function () {
+          return {};
+        });
+      });
+    };
+    window.gcslcMintHttpSovereignSessionV203 = function (key) {
+      return fetch("/api/sovereign/mint-session", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key: String(key || "") }),
+      })
+        .then(function (r) {
+          return r.json().catch(function () {
+            return {};
+          });
+        })
+        .then(function (j) {
+          if (j && j.ok && typeof window.gcslcRefreshKgecOsV203 === "function") window.gcslcRefreshKgecOsV203();
+          return j;
+        })
+        .catch(function () {
+          return { ok: false };
+        });
+    };
+  })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Cormorant+SC:wght@500;600;700&family=Goldman:wght@400;700&display=swap" rel="stylesheet" />
@@ -379,6 +428,76 @@
       grid-template-columns: minmax(200px, 1.15fr) minmax(340px, 4.25fr) minmax(160px, 0.9fr);
       gap: 12px;
       align-items: start;
+    }
+    /* V203 — Strategist deck: Governance | AZK | Feed (Termii flank) + identity mast */
+    main.app.gcslc-v203 {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: stretch;
+    }
+    .gcslc-brand-mast-v203 {
+      width: 100%;
+      margin: 0;
+      padding: 12px 14px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(102, 245, 255, 0.22);
+      background: linear-gradient(165deg, rgba(0, 18, 42, 0.55), rgba(0, 8, 22, 0.62));
+      box-shadow: 0 10px 34px rgba(0, 0, 0, 0.35);
+      position: relative;
+      z-index: 5;
+    }
+    .gcslc-brand-mast-v203 .gcslc-institutional-identity-v153__stack {
+      gap: 8px;
+    }
+    .shell-v7.gcslc-strategist-deck-v203 {
+      grid-template-columns: minmax(240px, 1.05fr) minmax(360px, 2.35fr) minmax(280px, 1.1fr);
+      align-items: start;
+    }
+    .gcslc-governance-rail-v203__lede {
+      margin: 0 0 8px;
+      font-size: clamp(0.46rem, 1.05vw, 0.58rem);
+      line-height: 1.45;
+      color: rgba(214, 238, 252, 0.9);
+    }
+    .gcslc-governance-rail-v203__btn {
+      width: 100%;
+      min-height: 40px;
+      border-radius: 10px;
+      border: 1px solid rgba(212, 175, 55, 0.45);
+      background: rgba(0, 12, 30, 0.9);
+      color: #fff8e8;
+      font-family: inherit;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      font-size: clamp(0.44rem, 1vw, 0.56rem);
+      cursor: pointer;
+    }
+    .gcslc-feed-flank-head-v203 {
+      display: none;
+    }
+    /* V203 — K-GEC OS dormant envelope (no Sovereign session cookie) */
+    html.gcslc-kgec-dormant-v203 #sovereignGatedMapV133 {
+      position: relative;
+      pointer-events: none;
+      filter: grayscale(0.45) contrast(0.92);
+      opacity: 0.78;
+    }
+    html.gcslc-kgec-dormant-v203 #sovereignGatedMapV133::after {
+      content: "K-GEC / AWC-C&D · OS DORMANT — SOVEREIGN SESSION REQUIRED";
+      position: absolute;
+      inset: auto 10px 10px 10px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(212, 175, 55, 0.45);
+      background: rgba(0, 8, 22, 0.88);
+      color: rgba(255, 248, 232, 0.95);
+      font-size: clamp(0.42rem, 1vw, 0.54rem);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-align: center;
+      pointer-events: none;
+      z-index: 30;
     }
 
     /* V132 — Hardcoded Sovereign Locks (NAFC + Deep-Layer gates; SFP power hook always visible) */
@@ -9477,10 +9596,30 @@
     </div>
   </aside>
 
-  <main class="app">
-    <div class="shell-v7">
+  <main class="app gcslc-v203">
+    <div class="gcslc-brand-mast-v203" id="gcslcBrandMastV203" role="region" aria-label="Institutional identity — Galadiman Ruwa Center">
+        <div class="gcslc-sovereign-identity-v148 gcslc-sovereign-identity-v150 gcslc-institutional-identity-v153" id="gcslcSovereignIdentityHeaderV148" role="banner" aria-label="Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE">
+          <div class="gcslc-institutional-identity-v153__stack">
+            <h1 class="gcslc-institutional-identity-v153__primary" id="gcslcInstitutionalPrimaryHeadingV153" aria-label="Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE">
+              <span class="gcslc-institutional-identity-v153__primary-tw" id="gcslcInstitutionalPrimaryTypewriterV153" aria-hidden="true"></span>
+              <span class="sr-only-def">Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE</span>
+            </h1>
+            <p class="gcslc-institutional-identity-v153__secondary">Galadiman Ruwa Nigeria Ltd</p>
+            <p class="gcslc-institutional-identity-v153__tertiary">
+              Everything is powered by the 8R Stealth Paradigm Convergence and its Determinants. We decode Nigeria’s information and business life opportunities. Join us to understand and decode.
+            </p>
+          </div>
+      </div>
+
+    <div class="shell-v7 gcslc-strategist-deck-v203">
       <aside class="sidebar sidebar-left sidebar-diagnostics-v15">
         <div class="diagnostic-lane" aria-label="Diagnostic lane — live lattice">
+        <div class="diag-block gcslc-governance-rail-v203" aria-label="Governance panel — K-GEC flank">
+            <h3 class="diag-h">Governance — Legal &amp; Compliance</h3>
+            <p class="gcslc-governance-rail-v203__lede">SCUML · NCC transactional posture · Termii <code>GALADIMA_R</code> lane. Full ledger via <strong>GOVERNANCE</strong> rail.</p>
+            <button type="button" class="gcslc-governance-rail-v203__btn" id="govToggleFromLeftFlank">Open governance ledger</button>
+          </div>
+        
           <div class="diag-block">
             <h3 class="diag-h">5-Yr Information Gap</h3>
             <div id="apexTrajectoryChart"></div>
@@ -9556,17 +9695,6 @@
 
       <div class="center-col center-col-primary gcslc-nafc-full-spectrum-v106">
         <!-- INSTITUTIONAL_IDENTITY_DIRECTIVE9: primary (typewriter), secondary, tertiary — absolute hardcode; do not alter without a new sovereign directive -->
-        <div class="gcslc-sovereign-identity-v148 gcslc-sovereign-identity-v150 gcslc-institutional-identity-v153" id="gcslcSovereignIdentityHeaderV148" role="banner" aria-label="Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE">
-          <div class="gcslc-institutional-identity-v153__stack">
-            <h1 class="gcslc-institutional-identity-v153__primary" id="gcslcInstitutionalPrimaryHeadingV153" aria-label="Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE">
-              <span class="gcslc-institutional-identity-v153__primary-tw" id="gcslcInstitutionalPrimaryTypewriterV153" aria-hidden="true"></span>
-              <span class="sr-only-def">Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE</span>
-            </h1>
-            <p class="gcslc-institutional-identity-v153__secondary">Galadiman Ruwa Nigeria Ltd</p>
-            <p class="gcslc-institutional-identity-v153__tertiary">
-              Everything is powered by the 8R Stealth Paradigm Convergence and its Determinants. We decode Nigeria’s information and business life opportunities. Join us to understand and decode.
-            </p>
-          </div>
         </div>
         <header class="header header-apex-layer01">
           <span id="identityFullName" class="sr-only-def" aria-hidden="true">Galadiman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE</span>
@@ -9717,6 +9845,11 @@
         </section>
         </div>
 
+        
+      </div>
+
+      <aside class="sidebar sidebar-right">
+        <div class="gcslc-feed-flank-head-v203" aria-hidden="false"></div>
         <section class="termii-panel-v15 termii-panel--pulse-v89" aria-label="Termii secure pulse">
           <div class="termii-block termii-block--pulse-v89">
             <div class="termii-lane" id="termiiLane">
@@ -9732,9 +9865,7 @@
             <p class="termii-console-teaser-v89">Lanes live · Secondary Feed (logs) via <strong>double-tap / double-click</strong> on active lane tiles</p>
           </div>
         </section>
-      </div>
 
-      <aside class="sidebar sidebar-right">
         <h2 class="governance-anchor-header-v157" id="governanceAnchorHeaderV157">Governance</h2>
         <div class="sidebar-chart-min" aria-label="Trajectory and information gap">
           <h3 class="sidebar-chart-h">Trajectory & Information Gap</h3>
@@ -11341,6 +11472,14 @@
         document.documentElement.classList.remove("gcslc-cluster-deadbolt-v201");
         document.documentElement.classList.add("gcslc-cluster-session-v201");
       } catch (eCls) { /* no-op */ }
+      try {
+        if (typeof window.gcslcMintHttpSovereignSessionV203 === "function") {
+          window.gcslcMintHttpSovereignSessionV203(window.__GCSLC_VAULT_KEY_V134__ || "");
+        }
+      } catch (eMint) { /* no-op */ }
+      try {
+        if (typeof window.gcslcRefreshKgecOsV203 === "function") window.gcslcRefreshKgecOsV203();
+      } catch (eK) { /* no-op */ }
       var st = document.getElementById("sovereignVaultStatusV132");
       if (st) st.textContent = "";
       var cur = document.getElementById("sovereignClearanceCurtainCenterV132");
@@ -13190,6 +13329,10 @@
   const govRailBtn = document.getElementById("govToggleFromRail");
   if (govRailBtn) {
     govRailBtn.addEventListener("click", () => setGovernanceOpen(!governanceSlide.classList.contains("open")));
+  }
+  const govLeftFlank = document.getElementById("govToggleFromLeftFlank");
+  if (govLeftFlank) {
+    govLeftFlank.addEventListener("click", () => setGovernanceOpen(!governanceSlide.classList.contains("open")));
   }
   (function gcslcNutritionExecutiveHealthV201() {
     var host = document.getElementById("gcslcNutritionAssetsV201");
