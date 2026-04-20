@@ -156,7 +156,8 @@
   })();
   </script>
   <script>
-  (function gcslcClusterDeadboltCosmeticV201() {
+  /* V202 — Cluster fortress: matrix stays deadbolted until Sovereign Key success mints session cookies (no localStorage-only bypass). */
+  (function gcslcClusterDeadboltFortressV202() {
     var CK_SESSION = "gcslc_sovereign_session";
     var CK_CHAIR365 = "gcslc_chairman_365";
     function readCk(name) {
@@ -168,26 +169,14 @@
         return "";
       }
     }
-    function writeSessionCookie() {
-      try {
-        var maxAge365 = 365 * 24 * 60 * 60;
-        document.cookie = CK_SESSION + "=1; path=/; max-age=" + maxAge365 + "; SameSite=Lax";
-      } catch (e) { /* no-op */ }
-    }
-    function hasSovereignSessionCookie() {
+    function hasSovereignKeySessionMinted() {
       var s = readCk(CK_SESSION);
       if (s && s !== "0") return true;
       if (readCk(CK_CHAIR365) === "1") return true;
-      try {
-        if (localStorage.getItem("gcslc_sovereign_v133_permanent_handshake") === "1" || localStorage.getItem("gcslc_sovereign_v132_authorized") === "1") {
-          writeSessionCookie();
-          return true;
-        }
-      } catch (e2) { /* no-op */ }
       return false;
     }
     var root = document.documentElement;
-    if (hasSovereignSessionCookie()) {
+    if (hasSovereignKeySessionMinted()) {
       root.classList.add("gcslc-cluster-session-v201");
       root.classList.remove("gcslc-cluster-deadbolt-v201");
     } else {
