@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta name="theme-color" content="#061018">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -380,6 +380,7 @@
     .tz-cell {
       text-align: center;
       padding: 0.4rem 0.2rem;
+      min-height: 44px;
       min-width: 0;
       border-radius: 10px;
       border: 2px solid transparent;
@@ -396,6 +397,7 @@
         ) border-box;
       background-size: 100% 100%, 320% 320%;
       animation: tz-bluelaser-pulse 4.5s ease-in-out infinite;
+      touch-action: manipulation;
     }
     @keyframes tz-bluelaser-pulse {
       0%, 100% {
@@ -518,6 +520,9 @@
       margin: 0 auto;
       padding: clamp(0.65rem, 2.5vw, 1.15rem);
       padding-bottom: 1.75rem;
+    }
+    .shell {
+      padding-bottom: 116px;
     }
 
     .live-badge {
@@ -677,6 +682,396 @@
       font-size: 0.78rem;
       color: var(--text);
       line-height: 1.45;
+    }
+
+    /* V158 — Sovereign Console passphrase (masked) */
+    .sovereign-console-v158 {
+      margin: 0.2rem 0 0.95rem;
+      padding: clamp(0.72rem, 2.5vw, 0.95rem);
+      border-radius: 14px;
+      border: 1px solid rgba(232, 197, 71, 0.28);
+      background: linear-gradient(160deg, rgba(8, 20, 35, 0.86), rgba(4, 10, 18, 0.94));
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.32), inset 0 0 16px rgba(232, 197, 71, 0.06);
+    }
+    .sovereign-console-v158__title {
+      margin: 0 0 0.28rem;
+      font-size: 0.74rem;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--gold-bright);
+      font-family: ui-monospace, "Cascadia Code", monospace;
+    }
+    .sovereign-console-v158__sub {
+      margin: 0 0 0.52rem;
+      font-size: 0.66rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .sovereign-console-v158__pass {
+      width: 100%;
+      padding: 0.56rem 0.62rem;
+      border-radius: 9px;
+      border: 1px solid rgba(0, 229, 255, 0.24);
+      background: rgba(0, 16, 30, 0.88);
+      color: rgba(232, 238, 244, 0.94);
+      font-size: 0.82rem;
+      font-family: ui-monospace, "Cascadia Code", monospace;
+      letter-spacing: 0.03em;
+    }
+    .sovereign-console-v158__pass:focus {
+      outline: 1px solid rgba(0, 229, 255, 0.6);
+      box-shadow: 0 0 0 2px rgba(0, 229, 255, 0.2);
+    }
+    .sovereign-console-v158__status {
+      margin-top: 0.56rem;
+      padding: 0.52rem 0.58rem;
+      border-radius: 9px;
+      border: 1px solid rgba(232, 197, 71, 0.25);
+      background: rgba(0, 18, 30, 0.68);
+    }
+    .sovereign-console-v158__status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.55rem;
+      flex-wrap: wrap;
+    }
+    .sovereign-console-v158__locks {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.34rem;
+      color: rgba(255, 242, 170, 0.95);
+      font-size: 0.74rem;
+      line-height: 1;
+    }
+    .sovereign-console-v158__locks.is-hidden {
+      display: none !important;
+    }
+    .sovereign-console-v158__state {
+      font-family: ui-monospace, "Cascadia Code", monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255, 235, 160, 0.95);
+      font-weight: 800;
+    }
+    .sovereign-console-v158__state.is-active {
+      animation: sovereignUnlockPulseV158 1.1s ease-in-out infinite;
+    }
+    .sovereign-console-v158__bridge {
+      margin-top: 0.38rem;
+      font-size: 0.61rem;
+      letter-spacing: 0.05em;
+      color: rgba(143, 163, 191, 0.96);
+      text-transform: uppercase;
+    }
+    .sovereign-console-v158__recovery {
+      margin-top: 0.4rem;
+      font-family: ui-monospace, "Cascadia Code", monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.05em;
+      color: rgba(245, 230, 175, 0.9);
+    }
+    .sovereign-console-v158__recovery strong {
+      color: rgba(255, 237, 166, 0.92);
+      transition: color 0.25s ease, text-shadow 0.25s ease, filter 0.25s ease;
+    }
+    .sovereign-console-v158__recovery strong.is-active {
+      animation: sovereignGoldShimmerV158 1.7s ease-in-out infinite;
+    }
+    @keyframes sovereignUnlockPulseV158 {
+      0%, 100% {
+        color: rgba(160, 246, 255, 0.95);
+        text-shadow: 0 0 12px rgba(0, 229, 255, 0.45);
+      }
+      50% {
+        color: rgba(205, 255, 255, 0.99);
+        text-shadow: 0 0 24px rgba(0, 229, 255, 0.75), 0 0 38px rgba(0, 229, 255, 0.35);
+      }
+    }
+    @keyframes sovereignGoldShimmerV158 {
+      0%, 100% {
+        color: rgba(255, 235, 154, 0.94);
+        text-shadow: 0 0 12px rgba(232, 197, 71, 0.35);
+        filter: brightness(1);
+      }
+      50% {
+        color: rgba(255, 248, 206, 0.99);
+        text-shadow: 0 0 20px rgba(232, 197, 71, 0.6), 0 0 34px rgba(255, 240, 163, 0.35);
+        filter: brightness(1.12);
+      }
+    }
+    body.sovereign-vault-unlocked-v158 .sovereign-console-v158__locks {
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    body.sovereign-vault-unlocked-v158 .sovereign-console-v158__state {
+      animation: sovereignUnlockPulseV158 1.1s ease-in-out infinite;
+    }
+    body.sovereign-vault-unlocked-v158 .sovereign-console-v158__recovery strong {
+      animation: sovereignGoldShimmerV158 1.7s ease-in-out infinite;
+    }
+    .footer-clock-heartbeat-v160 {
+      margin: 0.6rem auto 0.2rem;
+      max-width: 780px;
+      padding-top: 0.35rem;
+      border-top: 1px solid rgba(232, 197, 71, 0.16);
+    }
+    .footer-clocks-v160 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.36rem;
+    }
+    @media (max-width: 560px) {
+      .footer-clocks-v160 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    @media (max-width: 430px) {
+      .header h1.goldman-head {
+        font-size: clamp(0.7rem, 3.9vw, 0.88rem);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .wow-spine-sub {
+        font-size: clamp(0.6rem, 2.8vw, 0.74rem);
+      }
+      .impact-tag {
+        font-size: clamp(0.54rem, 2.3vw, 0.66rem);
+      }
+      .tz-bar-inner {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.4rem;
+      }
+      .tz-cell {
+        min-height: 48px;
+        padding: 0.5rem 0.25rem;
+      }
+      .tz-city {
+        font-size: 0.56rem;
+      }
+      .tz-tag {
+        font-size: 0.5rem;
+      }
+      .tz-time {
+        font-size: 0.68rem;
+      }
+      .basement-social-v158 {
+        gap: 0.4rem;
+        padding-bottom: calc(0.6rem + env(safe-area-inset-bottom));
+      }
+      .basement-social-v158 a {
+        min-width: 82px;
+        min-height: 46px;
+        font-size: 0.6rem;
+        padding: 0.42rem 0.58rem;
+      }
+      .footer-signature-metallic {
+        margin-bottom: 0.35rem;
+      }
+      .shell {
+        padding-bottom: 146px;
+      }
+    }
+    @media (min-width: 431px) and (max-width: 520px) {
+      .header h1.goldman-head {
+        font-size: clamp(0.78rem, 3.4vw, 0.98rem);
+      }
+      .shell {
+        padding-bottom: 136px;
+      }
+      .basement-social-v158 a {
+        min-height: 46px;
+      }
+    }
+
+    /* V155 — CIEN Kaduna ingestion: fetch + JSON-anchor fallback */
+    .cien-card {
+      margin: 1rem 0 0.95rem;
+      padding: clamp(0.85rem, 2.8vw, 1.1rem);
+      border-radius: 16px;
+      border: 1px solid rgba(0, 229, 255, 0.26);
+      background: linear-gradient(165deg, rgba(6, 24, 38, 0.78), rgba(2, 10, 22, 0.92));
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.34), inset 0 0 18px rgba(0, 229, 255, 0.08);
+    }
+    .cien-head {
+      margin: 0 0 0.2rem;
+      font-size: clamp(0.82rem, 2.5vw, 0.98rem);
+      letter-spacing: 0.06em;
+    }
+    .cien-sub {
+      margin: 0;
+      font-size: 0.7rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .cien-status-line {
+      margin: 0.6rem 0 0;
+      padding: 0.45rem 0.55rem;
+      border-radius: 9px;
+      border: 1px solid rgba(0, 255, 157, 0.25);
+      background: rgba(0, 25, 18, 0.42);
+      color: rgba(190, 255, 220, 0.95);
+      font-family: ui-monospace, "Cascadia Code", monospace;
+      font-size: 0.66rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .cien-status-line.is-fallback {
+      border-color: rgba(232, 197, 71, 0.3);
+      color: rgba(255, 244, 190, 0.96);
+      background: rgba(45, 32, 0, 0.28);
+    }
+    .cien-velocity-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 0.55rem;
+      margin-top: 0.65rem;
+    }
+    .cien-velocity-label {
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+    }
+    .cien-velocity-value {
+      font-family: ui-monospace, "Cascadia Code", monospace;
+      font-size: 0.66rem;
+      color: var(--cyan);
+      font-weight: 700;
+    }
+    .cien-velocity-slider {
+      grid-column: 1 / -1;
+      width: 100%;
+      accent-color: #00e5ff;
+      cursor: pointer;
+    }
+    .cien-node-grid {
+      margin-top: 0.7rem;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.5rem;
+    }
+    .cien-node-cell {
+      padding: 0.5rem 0.55rem;
+      border-radius: 10px;
+      border: 1px solid rgba(0, 229, 255, 0.2);
+      background: rgba(5, 20, 35, 0.72);
+      min-height: 52px;
+    }
+    .cien-node-cell__k {
+      display: block;
+      font-size: 0.56rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.2rem;
+    }
+    .cien-node-cell__v {
+      display: block;
+      font-family: ui-monospace, "Cascadia Code", monospace;
+      font-size: 0.72rem;
+      color: var(--text);
+      word-break: break-word;
+    }
+    .cien-node-cell__v.is-live {
+      color: var(--emerald);
+      text-shadow: 0 0 12px rgba(0, 255, 157, 0.35);
+      animation: cienNodePulseV155 1.25s ease-in-out infinite;
+    }
+    @keyframes cienNodePulseV155 {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.86; }
+    }
+    @media (max-width: 560px) {
+      .cien-node-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* V158 — basement cleanup: bars at absolute bottom + social strip */
+    .basement-dock-v158 {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 85;
+      pointer-events: none;
+      background: linear-gradient(180deg, rgba(2, 8, 14, 0.06), rgba(2, 8, 14, 0.8));
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border-top: 1px solid rgba(232, 197, 71, 0.15);
+      padding-top: 6px;
+    }
+    .basement-bars-v158 {
+      display: grid;
+      gap: 3px;
+      padding: 5px 10px 4px;
+    }
+    .basement-bars-v158 span {
+      display: block;
+      height: 6px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(0, 0, 0, 0.95), rgba(12, 18, 28, 0.94), rgba(0, 0, 0, 0.95));
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+    }
+    .basement-social-v158 {
+      pointer-events: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.24rem 0.5rem 0.55rem;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .basement-social-v158 a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      min-width: 72px;
+      text-decoration: none;
+      padding: 0.32rem 0.48rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(4, 12, 20, 0.84);
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      animation: basementSocialPulseV158 1.45s ease-in-out infinite;
+      white-space: nowrap;
+    }
+    .basement-social-v158__x {
+      color: #ffffff;
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.18);
+    }
+    .basement-social-v158__linkedin {
+      color: #0a66c2;
+      box-shadow: 0 0 12px rgba(10, 102, 194, 0.24);
+    }
+    .basement-social-v158__facebook {
+      color: #1877f2;
+      box-shadow: 0 0 12px rgba(24, 119, 242, 0.22);
+    }
+    .basement-social-v158__instagram {
+      color: #f56040;
+      box-shadow: 0 0 12px rgba(245, 96, 64, 0.24);
+    }
+    @keyframes basementSocialPulseV158 {
+      0%, 100% {
+        transform: translateY(0);
+        filter: brightness(1);
+      }
+      50% {
+        transform: translateY(-1px);
+        filter: brightness(1.16);
+      }
     }
 
     /* 8R Prism Vault */
@@ -1068,7 +1463,9 @@
       .goldman-head,
       .wow-spine-sub,
       .footer-signature-metallic,
-      .tz-cell {
+      .tz-cell,
+      .cien-node-cell__v.is-live,
+      .basement-social-v158 a {
         animation: none !important;
       }
       .goldman-head { background-position: 0% 40%; }
@@ -1118,6 +1515,30 @@
     </header>
 
     <main class="container">
+      <section class="sovereign-console-v158" aria-label="Sovereign Console">
+        <p class="sovereign-console-v158__title">Sovereign Console — Vault Passphrase</p>
+        <p class="sovereign-console-v158__sub">Passphrase masking is enforced for bystander protection.</p>
+        <input
+          id="sovereignConsolePassphraseV158"
+          class="sovereign-console-v158__pass"
+          type="password"
+          placeholder="●●●●●●"
+          aria-label="Vault Passphrase"
+          autocomplete="new-password"
+          spellcheck="false"
+        />
+        <div class="sovereign-console-v158__status" aria-live="polite">
+          <div class="sovereign-console-v158__status-row">
+            <span class="sovereign-console-v158__locks" id="sovereignConsoleLocksV158" aria-hidden="true">
+              <span>🔒</span><span>🔒</span><span>🔒</span>
+            </span>
+            <span class="sovereign-console-v158__state" id="sovereignConsoleStateV158">Vault Locked</span>
+          </div>
+          <p class="sovereign-console-v158__bridge" id="sovereignConsoleBridgeV158">Industrial Sovereign BUA/Dangote Gateway · Sovereign Lattice Eagle Corridor</p>
+          <p class="sovereign-console-v158__recovery">Projected Value Recovery: <strong id="sovereignConsoleRecoveryV158">$20.7B</strong></p>
+        </div>
+      </section>
+
       <section class="sfp-card glass-panel" aria-labelledby="sfp-heading">
         <span class="live-badge">Live stream</span>
         <h3 id="sfp-heading" class="goldman-head">SUPERIOR FINANCIAL PERFORMANCE (SFP)</h3>
@@ -1153,6 +1574,36 @@
               </tr>
             </tbody>
           </table>
+        </div>
+      </section>
+
+      <section class="cien-card" id="cienKadunaWidgetV155" aria-label="CIEN Kaduna Nodal Feed">
+        <span class="live-badge">CIEN live</span>
+        <h3 class="goldman-head cien-head">Citizens Intelligence Election Network (CIEN) — Kaduna Nodal Feed</h3>
+        <p class="cien-sub">High-velocity lane: streamed from <code>kaduna_master_payload.csv</code> using robust local fetch with JSON-anchor fallback.</p>
+        <p class="cien-status-line" id="cienDataSourceV155">CIEN STREAM: JSON-ANCHOR PRIMED.</p>
+        <div class="cien-velocity-row">
+          <label class="cien-velocity-label" for="cienVelocitySliderV155">High-Velocity Slider</label>
+          <span class="cien-velocity-value" id="cienVelocityValueV155">800 ms/cycle</span>
+          <input id="cienVelocitySliderV155" class="cien-velocity-slider" type="range" min="200" max="1800" step="100" value="800" />
+        </div>
+        <div class="cien-node-grid">
+          <div class="cien-node-cell">
+            <span class="cien-node-cell__k">LGA</span>
+            <span class="cien-node-cell__v is-live" id="cienNodeLgaV155">—</span>
+          </div>
+          <div class="cien-node-cell">
+            <span class="cien-node-cell__k">State</span>
+            <span class="cien-node-cell__v is-live" id="cienNodeStateV155">—</span>
+          </div>
+          <div class="cien-node-cell">
+            <span class="cien-node-cell__k">Phone</span>
+            <span class="cien-node-cell__v" id="cienNodePhoneV155">—</span>
+          </div>
+          <div class="cien-node-cell">
+            <span class="cien-node-cell__k">Polling Unit</span>
+            <span class="cien-node-cell__v is-live" id="cienNodePuV155">—</span>
+          </div>
         </div>
       </section>
 
@@ -1197,7 +1648,22 @@
       <p>+234 809 911 1515 · © 2026 GCSLC LTD/GTE · Proprietary sovereign framework</p>
       <p class="footer-signature-metallic">Dr. Sa'ad Jaafaru</p>
       <p class="footer-ip">Copyright · Proprietary framework · IP LW15954</p>
+      <div class="footer-clock-heartbeat-v160" aria-label="Operational clocks">
+        <div class="footer-clocks-v160" id="footerClockBarV160" aria-live="polite"></div>
+      </div>
     </footer>
+  </div>
+  <div class="basement-dock-v158" aria-label="Basement dock">
+    <div class="basement-bars-v158" aria-hidden="true">
+      <span></span>
+      <span></span>
+    </div>
+    <nav class="basement-social-v158" aria-label="Social channels">
+      <a class="basement-social-v158__x" href="https://x.com" target="_blank" rel="noopener noreferrer">X</a>
+      <a class="basement-social-v158__linkedin" href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      <a class="basement-social-v158__facebook" href="https://www.facebook.com" target="_blank" rel="noopener noreferrer">Facebook</a>
+      <a class="basement-social-v158__instagram" href="https://www.instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a>
+    </nav>
   </div>
 
   <div class="modal-backdrop" id="rModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
@@ -1232,6 +1698,7 @@
     </div>
   </div>
 
+  <script src="kaduna-data.js"></script>
   <script>
     (function () {
       var zones = [
@@ -1242,14 +1709,20 @@
         { city: 'Singapore', tag: 'Arbitrage', tz: 'Asia/Singapore' },
         { city: 'Beijing', tag: 'Tech · CST (UTC+8)', tz: 'Asia/Shanghai' }
       ];
+      var clockModeV158 = 'local';
 
       function renderClocks() {
-        var el = document.getElementById('tzBar');
-        if (!el) return;
+        var clockTargets = [
+          document.getElementById('tzBar'),
+          document.getElementById('footerClockBarV160')
+        ].filter(Boolean);
+        if (!clockTargets.length) return;
         var now = new Date();
-        el.innerHTML = zones.map(function (z) {
+        var markup = zones.map(function (z) {
+          var zone = clockModeV158 === 'utc' ? 'Etc/UTC' : 'Africa/Lagos';
+          var tag = clockModeV158 === 'utc' ? 'Global Sync (GMT/UTC)' : 'Local Abuja Time';
           var parts = new Intl.DateTimeFormat('en-GB', {
-            timeZone: z.tz,
+            timeZone: zone,
             hour: '2-digit',
             minute: '2-digit',
             second: '2-digit',
@@ -1261,17 +1734,18 @@
             if (p.type === 'minute') M = p.value;
             if (p.type === 'second') S = p.value;
           });
-          var syncTitle = z.tz === 'Asia/Shanghai'
-            ? ' title="Beijing sync · IANA Asia/Shanghai (China Standard Time)"'
-            : '';
+          var syncTitle = ' title="Tap to toggle Local Abuja Time / Global Sync (UTC)"';
           return (
-            '<div class="tz-cell"' + syncTitle + '>' +
+            '<button type="button" class="tz-cell" data-clock-toggle="v158"' + syncTitle + '>' +
               '<span class="tz-city">' + z.city + '</span>' +
-              '<span class="tz-tag">' + z.tag + '</span>' +
-              '<span class="tz-time" data-tz="' + z.tz + '">' + H + ':' + M + ':' + S + '</span>' +
-            '</div>'
+              '<span class="tz-tag">' + tag + '</span>' +
+              '<span class="tz-time" data-tz="' + zone + '">' + H + ':' + M + ':' + S + '</span>' +
+            '</button>'
           );
         }).join('');
+        clockTargets.forEach(function (el) {
+          el.innerHTML = markup;
+        });
       }
 
       /* Live market pulse — March 2026 anchors */
@@ -1492,6 +1966,13 @@
 
       renderClocks();
       setInterval(renderClocks, 1000);
+      [document.getElementById('tzBar'), document.getElementById('footerClockBarV160')].filter(Boolean).forEach(function (clockHost) {
+        clockHost.addEventListener('click', function (e) {
+          if (!e.target.closest('[data-clock-toggle="v158"]')) return;
+          clockModeV158 = clockModeV158 === 'utc' ? 'local' : 'utc';
+          renderClocks();
+        });
+      });
 
       updateTicker();
       setInterval(updateTicker, 2800);
@@ -1502,6 +1983,229 @@
       setInterval(updateSfpDisplay, 5000);
       updateDebtCards();
       setInterval(updateDebtCards, 6000);
+
+      /* V155 Kaduna CSV integration for CIEN */
+      function parseCsvLineV155(line) {
+        var out = [];
+        var cur = "";
+        var i = 0;
+        var inQ = false;
+        while (i < line.length) {
+          var ch = line.charAt(i);
+          if (ch === '"') {
+            var next = line.charAt(i + 1);
+            if (inQ && next === '"') {
+              cur += '"';
+              i += 2;
+              continue;
+            }
+            inQ = !inQ;
+            i += 1;
+            continue;
+          }
+          if (ch === "," && !inQ) {
+            out.push(cur);
+            cur = "";
+            i += 1;
+            continue;
+          }
+          cur += ch;
+          i += 1;
+        }
+        out.push(cur);
+        return out;
+      }
+
+      function parseKadunaCsvV155(text) {
+        if (!text) return [];
+        var lines = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n").filter(Boolean);
+        if (lines.length < 2) return [];
+        var headers = parseCsvLineV155(lines[0]).map(function (h) { return String(h || "").trim(); });
+        var out = [];
+        for (var i = 1; i < lines.length; i += 1) {
+          var row = parseCsvLineV155(lines[i]);
+          if (!row.length) continue;
+          var item = {};
+          for (var j = 0; j < headers.length; j += 1) {
+            var key = headers[j] || ("col_" + j);
+            item[key] = String(row[j] || "").trim();
+          }
+          if (item.LGA || item.Phone || item.PU) out.push(item);
+        }
+        return out;
+      }
+
+      function normalizeKadunaRowsV155(rows) {
+        return (rows || []).map(function (r) {
+          return {
+            LGA: String((r && (r.LGA || r.lga)) || "").trim(),
+            State: String((r && (r.State || r.state || "Kaduna")) || "Kaduna").trim(),
+            Phone: String((r && (r.Phone || r.phone || r.PHONE)) || "").trim(),
+            PU: String((r && (r.PU || r.pu)) || "").trim()
+          };
+        }).filter(function (r) {
+          return r.LGA || r.Phone || r.PU;
+        });
+      }
+
+      function setCienStatusV155(message, isFallback) {
+        var st = document.getElementById("cienDataSourceV155");
+        if (!st) return;
+        st.textContent = message;
+        st.classList.toggle("is-fallback", !!isFallback);
+      }
+
+      function renderCienNodeV155(row, idx, total) {
+        var lga = document.getElementById("cienNodeLgaV155");
+        var state = document.getElementById("cienNodeStateV155");
+        var phone = document.getElementById("cienNodePhoneV155");
+        var pu = document.getElementById("cienNodePuV155");
+        if (lga) lga.textContent = row && row.LGA ? row.LGA : "—";
+        if (state) state.textContent = row && row.State ? row.State : "Kaduna";
+        if (phone) phone.textContent = row && row.Phone ? row.Phone : "—";
+        if (pu) pu.textContent = row && row.PU ? row.PU : "—";
+        setCienStatusV155(
+          "CIEN STREAM: NODE " + (idx + 1) + "/" + total + " · KADUNA FEED ACTIVE",
+          false
+        );
+      }
+
+      function wireCienVelocityLabelV155(ms) {
+        var vel = document.getElementById("cienVelocityValueV155");
+        if (vel) vel.textContent = String(ms) + " ms/cycle";
+      }
+
+      function loadKadunaRowsV155() {
+        var fallbackRows = normalizeKadunaRowsV155(window.KADUNA_CSV_DATA_V155);
+        if (fallbackRows.length) {
+          return Promise.resolve({ rows: fallbackRows, source: "json-anchor" });
+        }
+        return fetch("kaduna_master_payload.csv", { cache: "no-store", mode: "same-origin" })
+          .then(function (res) {
+            if (!res.ok) {
+              throw new Error("HTTP_" + res.status);
+            }
+            return res.text();
+          })
+          .then(function (csvText) {
+            var rows = normalizeKadunaRowsV155(parseKadunaCsvV155(csvText));
+            if (!rows.length) {
+              throw new Error("CSV_EMPTY");
+            }
+            return { rows: rows, source: "csv-fetch" };
+          })
+          .catch(function () {
+            if (fallbackRows.length) {
+              return { rows: fallbackRows, source: "json-anchor" };
+            }
+            return { rows: [], source: "none" };
+          });
+      }
+
+      (function initCienKadunaV155() {
+        var widget = document.getElementById("cienKadunaWidgetV155");
+        if (!widget) return;
+
+        var slider = document.getElementById("cienVelocitySliderV155");
+        var timer = null;
+        var idx = 0;
+        var rows = [];
+
+        function tick() {
+          if (!rows.length) return;
+          renderCienNodeV155(rows[idx], idx, rows.length);
+          idx = (idx + 1) % rows.length;
+        }
+
+        function startCycle() {
+          if (timer) clearInterval(timer);
+          var speed = slider ? parseInt(slider.value, 10) : 800;
+          if (!isFinite(speed) || speed < 200) speed = 800;
+          wireCienVelocityLabelV155(speed);
+          timer = setInterval(tick, speed);
+        }
+        function igniteKadunaV161(forceFirst) {
+          if (!rows.length) return;
+          if (forceFirst) {
+            idx = 0;
+            renderCienNodeV155(rows[0], 0, rows.length);
+          }
+          startCycle();
+        }
+
+        if (slider) {
+          slider.value = "800";
+          slider.addEventListener("input", startCycle);
+        }
+
+        var instantRows = normalizeKadunaRowsV155(window.KADUNA_CSV_DATA_V155);
+        if (instantRows.length) {
+          rows = instantRows;
+          igniteKadunaV161(true);
+          setCienStatusV155("CIEN STREAM: JSON-ANCHOR ACTIVE · HIGH-VELOCITY RUNNING.", true);
+        }
+        window.GCSLC_igniteKadunaV161 = igniteKadunaV161;
+
+        loadKadunaRowsV155().then(function (payload) {
+          rows = payload.rows || [];
+          if (!rows.length) {
+            setCienStatusV155("CIEN STREAM: Kaduna feed unavailable (no CSV + no JSON anchor).", true);
+            return;
+          }
+
+          if (payload.source === "json-anchor") {
+            setCienStatusV155("CIEN STREAM: JSON-ANCHOR ACTIVE (CSV fetch blocked/fallback engaged).", true);
+          } else {
+            setCienStatusV155("CIEN STREAM: CSV FETCH ACTIVE (LOCAL ORIGIN READY).", false);
+          }
+
+          tick();
+          startCycle();
+        });
+      })();
+
+      /* V158 master ignition handshake */
+      (function initSovereignIgnitionV158() {
+        var pass = document.getElementById("sovereignConsolePassphraseV158");
+        var locks = document.getElementById("sovereignConsoleLocksV158");
+        var state = document.getElementById("sovereignConsoleStateV158");
+        var bridge = document.getElementById("sovereignConsoleBridgeV158");
+        var recovery = document.getElementById("sovereignConsoleRecoveryV158");
+        if (!pass || !locks || !state || !bridge || !recovery) return;
+        var key = "Galadima@2026#";
+        var storeKey = "gcslc_vault_passphrase_v161";
+
+        function applyState() {
+          var ok = String(pass.value || "") === key;
+          document.body.classList.toggle("sovereign-vault-unlocked-v158", ok);
+          locks.classList.toggle("is-hidden", ok);
+          state.classList.toggle("is-active", ok);
+          recovery.classList.toggle("is-active", ok);
+          locks.style.display = ok ? "none" : "";
+          if (ok) {
+            try { window.localStorage.setItem(storeKey, key); } catch (_) {}
+            state.textContent = "SYSTEM ACTIVE";
+            bridge.textContent = "Industrial Sovereign BUA/Dangote Gateway · Sovereign Lattice Eagle Corridor · LIVE";
+            if (typeof window.GCSLC_igniteKadunaV161 === "function") {
+              window.GCSLC_igniteKadunaV161(true);
+            }
+          } else {
+            if (!String(pass.value || "").trim()) {
+              try { window.localStorage.removeItem(storeKey); } catch (_) {}
+            }
+            state.textContent = "Vault Locked";
+            bridge.textContent = "Industrial Sovereign BUA/Dangote Gateway · Sovereign Lattice Eagle Corridor";
+          }
+        }
+
+        pass.addEventListener("input", applyState);
+        pass.addEventListener("change", applyState);
+        try {
+          var saved = window.localStorage.getItem(storeKey) || String(window.GCSLC_VAULT_PASSPHRASE || "");
+          if (saved === key) pass.value = saved;
+        } catch (_) {}
+        applyState();
+      })();
     })();
 
     (function () {
@@ -1569,6 +2273,18 @@
     })();
 
     (function () {
+      function autoIgniteV161() {
+        document.body.classList.remove("auth-shield-active");
+        var overlay = document.querySelector(".auth-shield-overlay");
+        if (overlay) {
+          overlay.classList.add("auth-shield--dismissed");
+          overlay.setAttribute("aria-hidden", "true");
+          overlay.style.pointerEvents = "none";
+        }
+      }
+      if (document.readyState === "complete") autoIgniteV161();
+      window.addEventListener("load", autoIgniteV161, { once: true });
+
       document.addEventListener('contextmenu', function (e) {
         if (e.target.closest && e.target.closest('#rModal.is-open, #arbModal.is-open')) return;
         e.preventDefault();
