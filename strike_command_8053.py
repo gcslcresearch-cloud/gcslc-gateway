@@ -28,6 +28,11 @@ def _load_module(name: str, path: str):
 
 continental_logic = _load_module("awc_continental_logic", os.path.join(_GATEWAY, "continental_logic.py"))
 
+
+def _env_trim(key: str) -> str:
+    return (os.environ.get(key) or "").strip()
+
+
 # D8 IP Lockdown: only current Abuja IP sees clear data; others get 14px blur + Unauthorized WL Access
 def _is_abuja_ip():
     allowed = [x.strip() for x in os.environ.get("GCSLC_ABUJA_IPS", "127.0.0.1,::1").split(",") if x.strip()]
@@ -50,6 +55,9 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
+
+if "chairman_verified" not in st.session_state:
+    st.session_state.chairman_verified = False
 
 # Sovereign aesthetic — Navy & Gold
 st.markdown("""
@@ -175,14 +183,29 @@ st.markdown(f"**Alignment:** {capital['alignment_narrative']}")
 st.caption("D8 Retain anchors capital in-country; Eagle validates bank node as Secured Asset.")
 st.markdown("---")
 
-# ——— Institutional Partners (Dangote, BUA, Zenith, GTCO) ———
+# ——— Institutional Partners (V204 — public DOM: Sovereign Institutional Partner [ID]) ———
 partners = continental_logic.get_institutional_partners()
 st.write("### 🏛️ Institutional Partners — Fully Loaded")
+_v204_ck = st.text_input(
+    "Chairman session (reveals Wise Men names)",
+    type="password",
+    key="v204_chairman_8053",
+    help="Match GCSLC_CHAIRMAN_KEY in the private vault to reveal institutional names.",
+)
+if _env_trim("GCSLC_CHAIRMAN_KEY") and _v204_ck and _v204_ck == _env_trim("GCSLC_CHAIRMAN_KEY"):
+    st.session_state.chairman_verified = True
+_v204_reveal = bool(st.session_state.chairman_verified)
 for p in partners:
-    with st.expander(f"**{p['name']}** — {p['sector']}", expanded=(p['name'] in ("Dangote", "BUA"))):
+    _pub = continental_logic.partner_public_name(p, _v204_reveal)
+    with st.expander(
+        f"**{_pub}** — {p['sector']}",
+        expanded=(p.get("sip_id") in (1, 2)),
+    ):
         st.markdown("**Assets bid on:** " + "; ".join(f"*{a}*" for a in p["assets_bid"]))
         st.markdown("**8R Resuscitation:** " + p["8r_resuscitation"])
-st.caption("Dangote, BUA, Zenith Bank, GTCO — sovereign value chains under 8R Strike Command.")
+st.caption(
+    "Sovereign Institutional Partner [ID] labels are the public default; verified Chairman session reveals internal names."
+)
 st.markdown("---")
 
 # ——— 8R Determinants quick ref ———

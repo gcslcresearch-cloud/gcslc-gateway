@@ -11,7 +11,10 @@ Sannu a hankali.
 
 import os
 import sys
+import json
 import urllib.parse
+import urllib.error
+import urllib.request
 import importlib.util
 import math
 import time
@@ -39,6 +42,8 @@ _BASE = os.path.dirname(os.path.abspath(__file__))
 _GATEWAY = os.path.join(_BASE, "African_Gateway.")
 if _BASE not in sys.path:
     sys.path.insert(0, _BASE)
+
+import kgec_session  # noqa: E402  — after path bootstrap for package root
 
 def _load_module(name: str, path: str):
     spec = importlib.util.spec_from_file_location(name, path)
@@ -73,6 +78,11 @@ TOTAL_POWER_MW_S24 = 1203
 REALTIME_ENGINE_INTERVAL_SEC = int(os.environ.get("GCSLC_AWC_REALTIME_INTERVAL_SEC", "60"))
 CAC_AV_CODE = "176917792057"
 CHAIRMAN_LOCK = "Dr. Sa'ad Jaafaru"
+
+
+def _env_trim(key: str) -> str:
+    return (os.environ.get(key) or "").strip()
+
 
 # Talon Lock: K-GEC / Apex Eagle — resolve relative to this file's directory (repo root when run standalone)
 def _resolve_eagle_asset_path() -> Optional[str]:
@@ -181,10 +191,45 @@ _defaults = {
     "nigeria_selected": False,
     "autonomous_sniff_enabled": True,
     "autonomous_sniff_index": 0,
+    "chairman_verified": False,
+    "sovereign_key_unlocked": False,
+    "gcslc_sovereign_session": None,
 }
 for key, val in _defaults.items():
     if key not in st.session_state:
         st.session_state[key] = val
+
+# V203 Heavy Lock: invalidate stale opaque session if vault secret rotated
+_tok = st.session_state.get("gcslc_sovereign_session")
+if _tok and not kgec_session.verify_gcslc_sovereign_session(_tok):
+    st.session_state.gcslc_sovereign_session = None
+    st.session_state.chairman_verified = False
+
+
+def _v203_kgec_session_live() -> bool:
+    return kgec_session.kgec_os_may_respond(st.session_state.get("gcslc_sovereign_session"))
+
+
+def _v203_termii_handshake_probe() -> str:
+    """Server-side only — never emits API keys to the DOM."""
+    if not _v203_kgec_session_live():
+        return "Heavy Lock: gcslc_sovereign_session not detected — K-GEC dormant (non-responsive to pings)."
+    base = _env_trim("GCSLC_TERMII_BASE_URL").rstrip("/")
+    if not base:
+        return "Termii: base URL not configured server-side (GCSLC_TERMII_BASE_URL)."
+    try:
+        req = urllib.request.Request(
+            base if base.startswith("http") else "https://" + base,
+            headers={"User-Agent": "GCSLC-AWC-KGEC-V203"},
+            method="GET",
+        )
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            return f"Termii handshake: HTTP {getattr(resp, 'status', 200)} — session-gated (opaque)."
+    except urllib.error.HTTPError as e:
+        return f"Termii handshake: HTTP {e.code} — endpoint contacted; credentials remain server-only."
+    except Exception as e:
+        return f"Termii handshake dormant: {type(e).__name__}."
+
 
 # Autonomous Sniff: ?autonomous=1 → Eagle strikes next $10B+ node (Phase 4 fused state)
 try:
@@ -329,7 +374,9 @@ section[data-testid="stSidebar"] h2, section[data-testid="stSidebar"] h3 {
 .gcslc-sovereign-footer { position: fixed; bottom: 0; left: 0; right: 0; z-index: 999; background: linear-gradient(180deg, rgba(0,26,51,0.97) 0%, #001a33 100%); border-top: 2px solid rgba(212,175,55,0.4); padding: 0.45rem 1rem; font-size: 0.75rem; color: #D4AF37; text-align: center; }
 .gcslc-sovereign-footer .cac { letter-spacing: 0.1em; opacity: 0.95; }
 .gcslc-sovereign-footer .chairman { font-weight: 700; margin-top: 0.2rem; }
-.main .block-container { padding-bottom: 4rem !important; }
+.main .block-container { padding-bottom: 6.5rem !important; }
+.awc-v203-rail-wrap { margin-bottom: 0.75rem; }
+.awc-v203-rail-wrap [data-testid="stHorizontalBlock"] { align-items: stretch !important; }
 /* Sovereign Pulse: 3s Green -> White -> Green -> GCSLC Gold Shimmer #FFD700 + glitter overlay */
 @keyframes sovereign-pulse {
     0%   { box-shadow: 0 0 24px #008751, 0 0 48px rgba(0,135,81,0.7); border-color: #008751; }
@@ -427,6 +474,28 @@ body.gcslc-blur-defend [data-testid="stAppViewContainer"] { filter: blur(14px); 
 body.gcslc-blur-defend .gcslc-sovereign-strip-top, body.gcslc-blur-defend .gcslc-sovereign-strip-bottom { display: block !important; }
 .gcslc-header-opportunity-pulse { animation: gcslc-gold-pulse 0.6s ease-in-out 4; }
 @keyframes gcslc-gold-pulse { 0%, 100% { filter: brightness(1); box-shadow: 0 0 0 rgba(255,215,0,0); } 50% { filter: brightness(1.4); box-shadow: 0 0 24px rgba(255,215,0,0.8); } }
+
+/* V204 NTWS — AZK Stealth Lattice: background lattice until Sovereign Key clears container */
+.awc-azk-lattice-stealth {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    filter: blur(5px) saturate(0.75);
+    opacity: 0.4;
+    transition: filter 0.35s ease, opacity 0.35s ease;
+}
+.awc-azk-lattice-clear {
+    filter: none !important;
+    opacity: 1 !important;
+}
+.awc-symmetry-flank {
+    min-height: 260px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 215, 0, 0.24);
+    background: rgba(0, 26, 51, 0.42);
+    padding: 0.65rem 0.75rem;
+    box-sizing: border-box;
+}
 
 /* 4K display: Phase 4 Glassmorphism polish — stronger blur, larger radius, scaled typography */
 @media (min-width: 2560px) {
@@ -594,6 +663,58 @@ with st.sidebar:
     st.markdown("**CAC:** " + CAC_AV_CODE)
     st.markdown("**Chairman Lock:** " + CHAIRMAN_LOCK)
     st.markdown("---")
+    st.markdown("**V203 — K-GEC Heavy Lock / NTWS**")
+    _v204_sk = st.text_input(
+        "Sovereign Key (AZK lattice clarity)",
+        type="password",
+        key="v204_sovereign_key",
+        help="NTWS: match GCSLC_SOVEREIGN_KEY in the private vault to unlock tactical map clarity.",
+    )
+    _v204_ck = st.text_input(
+        "Chairman persistent handshake (K-GEC + Wise Men)",
+        type="password",
+        key="v204_chairman",
+        help="Match GCSLC_CHAIRMAN_KEY to mint gcslc_sovereign_session (server-side) and reveal institutional names.",
+    )
+    if _env_trim("GCSLC_SOVEREIGN_KEY") and _v204_sk and _v204_sk == _env_trim("GCSLC_SOVEREIGN_KEY"):
+        st.session_state.sovereign_key_unlocked = True
+    if _env_trim("GCSLC_CHAIRMAN_KEY") and _v204_ck and _v204_ck == _env_trim("GCSLC_CHAIRMAN_KEY"):
+        st.session_state.chairman_verified = True
+        _minted = kgec_session.mint_gcslc_sovereign_session()
+        if _minted:
+            st.session_state.gcslc_sovereign_session = _minted
+    st.caption(
+        "Stealth: AZK lattice by default. Sovereign Key clears lattice. Chairman handshake mints gcslc_sovereign_session (server)."
+    )
+    if st.session_state.get("sovereign_key_unlocked"):
+        st.success("Sovereign Key verified — AZK tactical clarity active.")
+    _sess_live = _v203_kgec_session_live()
+    if _sess_live:
+        st.success("Heavy Lock: Chairman session active — K-GEC OS may respond to gated pings.")
+    else:
+        st.info("Heavy Lock: gcslc_sovereign_session not minted — K-GEC core dormant until Chairman handshake (server vault).")
+    if st.button("Release Chairman session", key="v203_release_session"):
+        st.session_state.chairman_verified = False
+        st.session_state.gcslc_sovereign_session = None
+        st.session_state.sovereign_key_unlocked = False
+        st.rerun()
+    with st.expander("K-GEC OS (Komigen) — Exclusively private backbone", expanded=False):
+        if not _sess_live:
+            st.error(
+                "Dormant: K-GEC private engine is non-responsive until a valid Chairman session is minted server-side. "
+                "No runtime logic is shipped to the browser."
+            )
+        else:
+            st.caption(
+                "Chairman 24/7/365 session: private engine authorized. Interface only — Komigen remains off-DOM; "
+                "vault URIs never embedded in HTML/JS."
+            )
+        _kgec_if = _env_trim("GCSLC_KGEC_PRIVATE_INTERFACE_URL")
+        if _sess_live and _kgec_if:
+            st.code("K-GEC private interface: bound in vault (server) — not exposed to Inspect Element.", language="text")
+        elif _sess_live:
+            st.info("Bind GCSLC_KGEC_PRIVATE_INTERFACE_URL in the private vault for production interface routing.")
+    st.markdown("---")
     # Sovereign Frequency — Eagle + SWAT fusion audio (assets/eagle_swat_fusion.mp3)
     _audio_path = os.path.join(_BASE, "assets", "eagle_swat_fusion.mp3")
     if os.path.isfile(_audio_path):
@@ -680,24 +801,41 @@ with st.sidebar:
         st.markdown(continental_logic.SANTIAGO_COMPLIANCE)
     st.markdown("---")
 
+# Opaque browser marker for BFF / edge parity (not HttpOnly — secrets never placed here; HMAC only server-minted).
+if _v203_kgec_session_live() and st.session_state.get("gcslc_sovereign_session"):
+    _opaque = json.dumps(st.session_state["gcslc_sovereign_session"])
+    st.components.v1.html(
+        f"""<script>
+(function(){{var t={_opaque};try{{document.cookie="gcslc_sovereign_session="+encodeURIComponent(t)
++"; path=/; SameSite=Lax; Secure";}}catch(e){{}} }})();
+</script>""",
+        height=0,
+    )
+
 # --- Sovereign Rationale: Big Tech Handshake Manifesto (linked to Natural Gas, Gold, Rare Earth) ---
 with st.expander("**Sovereign Rationale — Big Tech Handshake Manifesto**", expanded=False):
     st.markdown(continental_logic.BIG_TECH_HANDSHAKE_MANIFESTO)
     st.caption("Linked SSMV corridors: **" + "**, **".join(continental_logic.SSMV_CORRIDORS_MANIFESTO) + "**")
 
-# --- Map container: Sovereign Cloud / Sovereign Glass — Continental View + Eagle's Talon ---
-st.write("### Sovereign Cloud — The Sovereign Glass (Continental View)")
-st.caption("**GCSLC Sovereign Diagnostic** | **Live Eagle Engine:** Sniffer hovers over map → on node click, high-velocity **Talon Strike** with **play_swat** 180 Hz audio sync. ($10B+ nodes: golden radar sweep.)")
-# Talon Lock 100%: Force Sovereign Glass fallback so nodes always appear (GPU/WebGL disabled or not)
-st.markdown(SOVEREIGN_GLASS_MAP_FALLBACK_HTML, unsafe_allow_html=True)
+# --- Map container: AZK Lattice (V204) + Symmetry Flanks — Continental View + Eagle's Talon ---
+st.write("### Sovereign Cloud — AZK Lattice (Stealth Map)")
+st.caption(
+    "**GCSLC Sovereign Diagnostic** | **NTWS:** AZK remains a low-opacity lattice until the Sovereign Key unlocks tactical clarity. "
+    "Eagle strike remains sidebar-gated; K-GEC OS is interfaced here as a black box to the public cloud."
+)
+_v204_stealth = not bool(st.session_state.get("sovereign_key_unlocked"))
+_lattice_class = "awc-azk-lattice-clear" if not _v204_stealth else "awc-azk-lattice-stealth"
 map_container_class = _get_map_container_class(
     st.session_state.selected_node,
     st.session_state.pulse_triggered,
     continental_logic.is_10b_plus_opportunity,
 )
-# Build deck; if .json/data or import missing, deck is None — use inline fallback
 try:
-    deck = africa_map.build_africa_deck(selected_node=st.session_state.selected_node, opacity=0.85)
+    deck = africa_map.build_africa_deck(
+        selected_node=st.session_state.selected_node,
+        opacity=0.85,
+        stealth_lattice=_v204_stealth,
+    )
 except Exception:
     deck = None
 # Live Eagle Engine: high-fidelity Sniffer (hover) → Talon Strike (on node click, 180 Hz play_swat)
@@ -725,17 +863,59 @@ EAGLE_TALON_SVG = '''<svg class="awc-eagle-talon" width="72" height="52" viewBox
 show_talon_strike = st.session_state.pulse_triggered and st.session_state.selected_node
 show_sniffer_hover = deck and not show_talon_strike
 eagle_html = EAGLE_TALON_SVG if show_talon_strike else (EAGLE_SNIFFER_SVG if show_sniffer_hover else "")
-if deck:
-    st.markdown(
-        f'<div class="{map_container_class}" style="padding: 8px; position: relative;">'
-        f'<span class="gcslc-proprietary-watermark" aria-hidden="true">Proprietary Methodology</span>{eagle_html}',
-        unsafe_allow_html=True,
+_wl_row = _cached_wl_velocity()
+_fr_row, _delay_row = _cached_friction()
+st.markdown('<div class="awc-v203-rail-wrap">', unsafe_allow_html=True)
+st.caption("V203 Strategist rail — Governance | AZK | Secondary + Termii (Galadiman Ruwa Center footer preserved below).")
+_flank_l, _flank_mid, _flank_r = st.columns([1, 2.4, 1])
+with _flank_l:
+    st.markdown('<div class="awc-symmetry-flank">', unsafe_allow_html=True)
+    st.markdown("##### Governance Panel")
+    st.caption("D6 / D8 symmetry — flank of the AZK lattice (Heavy Lock aware).")
+    st.metric(
+        "Wealth retention lock (D8)",
+        f"{int(continental_logic.WEALTH_RETENTION_LOCK * 100)}%",
+        help="Talon Lock — sovereign retention posture",
     )
-    try:
-        st.pydeck_chart(deck, use_container_width=True)  # 2026 equivalent stretch; may fail if GPU/WebGL disabled
-    except Exception:
-        pass  # Fallback already shown above — nodes always visible
+    st.markdown(
+        "- NTWS: stealth lattice default\n"
+        "- CAC + Chairman: session-gated identifiers\n"
+        "- Institutional names: K-GEC private layer"
+    )
     st.markdown("</div>", unsafe_allow_html=True)
+with _flank_mid:
+    st.markdown(f'<div class="{_lattice_class}" style="margin-bottom: 8px;">', unsafe_allow_html=True)
+    st.markdown(SOVEREIGN_GLASS_MAP_FALLBACK_HTML, unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
+    if deck:
+        st.markdown(
+            f'<div class="{map_container_class} {_lattice_class}" style="padding: 8px; position: relative;">'
+            f'<span class="gcslc-proprietary-watermark" aria-hidden="true">Proprietary Methodology</span>{eagle_html}',
+            unsafe_allow_html=True,
+        )
+        try:
+            st.pydeck_chart(deck, use_container_width=True)  # may fail if GPU/WebGL disabled
+        except Exception:
+            pass
+        st.markdown("</div>", unsafe_allow_html=True)
+with _flank_r:
+    st.markdown('<div class="awc-symmetry-flank">', unsafe_allow_html=True)
+    st.markdown("##### Secondary Feed")
+    st.caption("Nodal pulses — mirrored with Governance.")
+    st.metric("WL velocity (9.6× family)", f"{_wl_row:.2f}×")
+    st.metric("WL friction (mineral delay)", f"{_fr_row:.2f}×", f"{_delay_row} mo")
+    st.markdown("---")
+    st.markdown("##### Termii Handshake")
+    st.caption("Server-gated — no API keys in the DOM.")
+    if not _v203_kgec_session_live():
+        st.info("Dormant: pings disabled until gcslc_sovereign_session is minted (Chairman handshake).")
+    else:
+        if st.button("Ping Termii base (session-only)", key="v203_termii_ping"):
+            st.session_state["_v203_termii_msg"] = _v203_termii_handshake_probe()
+        if st.session_state.get("_v203_termii_msg"):
+            st.caption(st.session_state["_v203_termii_msg"])
+    st.markdown("</div>", unsafe_allow_html=True)
+st.markdown("</div>", unsafe_allow_html=True)
 if st.session_state.pulse_triggered and st.session_state.selected_node:
     st.session_state.pulse_triggered = False
 
@@ -931,12 +1111,17 @@ with radar_t3:
     )
     st.caption("The Eagle's strike on Energy and Minerals generates Jobs (FTE), Security (index), and Health (compliance / air quality).")
 
-# --- The Wise Men: Institutional Partner nodes (Dangote / BUA / Zenith / GTCO) ---
+# --- The Wise Men: Institutional Partner nodes (V204 — public DOM uses Sovereign Institutional Partner [ID]) ---
 st.markdown("---")
 st.write("### The Wise Men — Institutional Partners")
-st.caption("Nigeria's industrial and financial giants: how the **8R Strike** resuscitates the assets they bid on.")
+st.caption(
+    "How the **8R Strike** resuscitates corridor assets. "
+    "Partner identities render as **Sovereign Institutional Partner [ID]** unless the Chairman session key is verified."
+)
+_v204_reveal_names = _v203_kgec_session_live()
 for partner in continental_logic.get_institutional_partners():
-    with st.expander(f"**{partner['name']}** — {partner['sector']}"):
+    _pub = continental_logic.partner_public_name(partner, _v204_reveal_names)
+    with st.expander(f"**{_pub}** — {partner['sector']}"):
         st.markdown("**Assets bid on:** " + "; ".join(f"*{a}*" for a in partner["assets_bid"]))
         st.markdown("**8R Resuscitation:** " + partner["8r_resuscitation"])
 

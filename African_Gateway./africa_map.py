@@ -152,11 +152,13 @@ def build_africa_deck(
     nigeria_selected: Optional[bool] = None,
     opacity: float = 0.85,
     map_style: Optional[str] = None,
+    stealth_lattice: bool = True,
 ) -> Any:
     """
     Build a pydeck Deck: Africa outline + Nigeria, Ghana, South Africa, Egypt (GeoJSON),
     Dubai (UAE) Strategic Partner point, glitter. selected_node centers view and highlights that node.
     D7: update_triggers so map redraws only when GE snips (selected_node / data change).
+    V204 NTWS: when stealth_lattice is True, layers stay low-opacity (background lattice); tooltips off.
     """
     try:
         import time
@@ -168,6 +170,8 @@ def build_africa_deck(
         selected_node = "nigeria" if nigeria_selected else None
     # GE snip bucket: map redraws only when this or selected_node changes (D7 thermal relief)
     snip_bucket = int(time.time() // 60)
+    # V204 Stealth Map: lattice mode scales down effective opacity (tactical clarity requires Sovereign Key)
+    eff_opacity = opacity * (0.26 if stealth_lattice else 1.0)
 
     # Africa outline
     africa_layer = pdk.Layer(
@@ -175,10 +179,10 @@ def build_africa_deck(
         [get_africa_geojson()],
         id="africa-outline",
         get_fill_color=GCSLC_GOLD + [int(255 * 0.15)],
-        get_line_color=GCSLC_GOLD + [int(255 * opacity)],
+        get_line_color=GCSLC_GOLD + [int(255 * eff_opacity)],
         get_line_width=40,
         line_width_min_pixels=1,
-        opacity=opacity,
+        opacity=eff_opacity,
         pickable=False,
         update_triggers={"get_fill_color": snip_bucket},
     )
@@ -188,12 +192,12 @@ def build_africa_deck(
         "GeoJsonLayer",
         [get_nigeria_geojson()],
         id="nigeria-sovereign",
-        get_fill_color=_node_fill_color("nigeria", selected_node) + [int(255 * opacity)],
+        get_fill_color=_node_fill_color("nigeria", selected_node) + [int(255 * eff_opacity)],
         get_line_color=GCSLC_GOLD_SHIMMER + [255],
         get_line_width=60,
         line_width_min_pixels=2,
-        opacity=opacity,
-        pickable=True,
+        opacity=eff_opacity,
+        pickable=not stealth_lattice,
         update_triggers={"get_fill_color": (selected_node or "", snip_bucket)},
     )
     ghana_layer = pdk.Layer(
@@ -204,8 +208,8 @@ def build_africa_deck(
         get_line_color=GCSLC_GOLD_SHIMMER + [200],
         get_line_width=50,
         line_width_min_pixels=2,
-        opacity=opacity,
-        pickable=True,
+        opacity=eff_opacity,
+        pickable=not stealth_lattice,
         update_triggers={"get_fill_color": (selected_node or "", snip_bucket)},
     )
     south_africa_layer = pdk.Layer(
@@ -216,8 +220,8 @@ def build_africa_deck(
         get_line_color=GCSLC_GOLD_SHIMMER + [200],
         get_line_width=50,
         line_width_min_pixels=2,
-        opacity=opacity,
-        pickable=True,
+        opacity=eff_opacity,
+        pickable=not stealth_lattice,
         update_triggers={"get_fill_color": (selected_node or "", snip_bucket)},
     )
     egypt_layer = pdk.Layer(
@@ -228,8 +232,8 @@ def build_africa_deck(
         get_line_color=GCSLC_GOLD_SHIMMER + [200],
         get_line_width=50,
         line_width_min_pixels=2,
-        opacity=opacity,
-        pickable=True,
+        opacity=eff_opacity,
+        pickable=not stealth_lattice,
         update_triggers={"get_fill_color": (selected_node or "", snip_bucket)},
     )
 
@@ -245,7 +249,8 @@ def build_africa_deck(
         get_line_color=GCSLC_GOLD_SHIMMER + [255],
         radius_min_pixels=12,
         radius_max_pixels=24,
-        pickable=True,
+        opacity=eff_opacity,
+        pickable=not stealth_lattice,
         update_triggers={"get_fill_color": (selected_node or "", snip_bucket)},
     )
 
@@ -257,10 +262,11 @@ def build_africa_deck(
         id="glitter",
         get_position=["lon", "lat"],
         get_radius="size",
-        get_fill_color=GLITTER_GOLD + [int(255 * 0.9)],
+        get_fill_color=GLITTER_GOLD + [int(255 * (0.35 if stealth_lattice else 0.9))],
         get_line_color=GCSLC_GOLD + [180],
         radius_min_pixels=1,
         radius_max_pixels=4,
+        opacity=eff_opacity,
         pickable=False,
         update_triggers={"get_position": snip_bucket, "get_radius": snip_bucket},
     )
@@ -274,11 +280,12 @@ def build_africa_deck(
         lat, lon, zoom = 8.0, 9.0, 2.8
     view_state = pdk.ViewState(latitude=lat, longitude=lon, zoom=zoom, pitch=0, bearing=0)
 
+    _tip = False if stealth_lattice else {"text": "{name}"}
     deck = pdk.Deck(
         layers=[africa_layer, nigeria_layer, ghana_layer, south_africa_layer, egypt_layer, dubai_layer, glitter_layer],
         initial_view_state=view_state,
-        map_style=map_style or "light",
-        tooltip={"text": "{name}"},
+        map_style=map_style or ("dark" if stealth_lattice else "light"),
+        tooltip=_tip,
     )
     return deck
 

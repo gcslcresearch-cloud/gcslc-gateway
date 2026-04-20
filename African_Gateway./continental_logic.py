@@ -323,32 +323,49 @@ def get_sovereign_wellbeing_index() -> List[Dict[str, Any]]:
 
 
 # --- The Wise Men: Institutional Partner nodes (Nigeria industrial & financial giants) ---
+# V204: `name` is chairman/K-GEC layer only; public DOM must use partner_public_name().
 INSTITUTIONAL_PARTNERS: List[Dict[str, Any]] = [
     {
+        "sip_id": 1,
         "name": "Dangote",
         "sector": "Industrial",
         "assets_bid": ["Cement & limestone corridors", "Refinery & petrochemicals", "Minerals logistics"],
         "8r_resuscitation": "D1 Refine unlocks high-purity limestone corridors; D2 Reset aligns SPV→SSMV for refinery offtake; D5 Resuscitate revives stranded refinery assets under sovereign retention.",
     },
     {
+        "sip_id": 2,
         "name": "BUA",
         "sector": "Industrial",
         "assets_bid": ["Cement & mining", "Sugar & infrastructure", "Energy offtake"],
         "8r_resuscitation": "D1 Refine secures mineral corridors for cement; D6 Revitalize restores demand shock resilience; D8 Retain keeps 95% sovereign value in-country for infrastructure build.",
     },
     {
+        "sip_id": 3,
         "name": "Zenith Bank",
         "sector": "Financial",
         "assets_bid": ["SSMV financing rails", "Gold-backed fintech", "FX hedging for corridors"],
         "8r_resuscitation": "D2 Reset structures SPV→SSMV financing; D3 Research aligns rare earth coords to trade finance; D8 Retain reduces capital flight and anchors FX stability.",
     },
     {
+        "sip_id": 4,
         "name": "GTCO (Guaranty Trust)",
         "sector": "Financial",
         "assets_bid": ["Wealth retention products", "Mineral corridor banking", "Sovereign bond alignment"],
         "8r_resuscitation": "D2 Reset enables SSMV-linked wealth products; D4 Restructure supports sovereign bond issuance; D8 Retain protects $170.85B anchor through domestic custody.",
     },
 ]
+
+
+def partner_public_name(partner: Dict[str, Any], reveal_actual_institutional_name: bool) -> str:
+    """
+    V204 Institution Name Lock: public DOM label unless chairman-verified session reveals internal `name`.
+    """
+    if reveal_actual_institutional_name:
+        return str(partner.get("name", "—"))
+    sid = partner.get("sip_id")
+    if sid is None:
+        return "Sovereign Institutional Partner [?]"
+    return f"Sovereign Institutional Partner [{sid}]"
 
 
 def get_institutional_partners() -> List[Dict[str, Any]]:
