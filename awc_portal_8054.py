@@ -806,8 +806,7 @@ if _v203_kgec_session_live() and st.session_state.get("gcslc_sovereign_session")
     _opaque = json.dumps(st.session_state["gcslc_sovereign_session"])
     st.components.v1.html(
         f"""<script>
-(function(){{var t={_opaque};try{{document.cookie="gcslc_sovereign_session="+encodeURIComponent(t)
-+"; path=/; SameSite=Lax; Secure";}}catch(e){{}} }})();
+(function(){{var t={_opaque};try{{var s=window.location.protocol==="https:"?"; Secure":"";document.cookie="gcslc_sovereign_session="+encodeURIComponent(t)+"; path=/; SameSite=Lax"+s;}}catch(e){{}} }})();
 </script>""",
         height=0,
     )
