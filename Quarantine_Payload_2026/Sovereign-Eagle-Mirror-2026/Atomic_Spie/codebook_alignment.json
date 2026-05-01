@@ -1,0 +1,16 @@
+{
+  "canonical_pu_source": "https://raw.githubusercontent.com/Emeka-Onwuepe/Polling_Units_in_Nigeria/main/Nigeria_polling_units.csv",
+  "national_row_count": 176846,
+  "join_key_pu": "code — unique polling unit id (string)",
+  "join_key_ward_cluster": "First three '/' segments of code = INEC state_code/lg_code/ward_code (illustration: 18/04/12 for Rigasa, Kaduna)",
+  "spike_ward": {
+    "name": "Rigasa",
+    "lga": "Igabi",
+    "state": "Kaduna",
+    "azk_rationale": "Neighbourhood under Igabi LGA along AZK pilot spine (Kaduna · Steel Exchange node).",
+    "ward_token": "18/04/12",
+    "expected_pu_count": 153
+  },
+  "hdx_cod_note": "Current HDX nga_admin_boundaries.geojson.zip admin3 list is 714 administrative units, not 1:1 with 8,806 INEC registration areas. Forensic ADM3_PCODE binding to INEC ward_token is a separate crosswalk table for national deployment.",
+  "lattice_placement": "Emeka CSV has no coordinates; Rigasa spike uses a golden-angle disk on the temikeezy ward centroid (wards.json) for spatial stress until INEC or OCDS releases official PU coordinates."
+}

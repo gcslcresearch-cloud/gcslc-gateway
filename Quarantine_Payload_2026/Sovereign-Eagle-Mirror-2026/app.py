@@ -17,6 +17,7 @@ from branca.element import Element
 from folium.map import CustomPane
 from folium.plugins import AntPath, Fullscreen
 
+from atomic_spie import build_rigasa_spike_bundle
 from gcslc_deep_join import NATIONAL_WARD_TOTAL, build_fused_catalog
 from ng_connectivity import (
     GEOBOUNDARIES_API_NGA_ADM2,
@@ -40,6 +41,8 @@ COAL_NODES_JSON = BASE_DIR / "Part_02_Finance" / "data" / "coal_reserve_nodes.js
 ZOOM_LGA_EMERGE = 8
 ZOOM_WARD_EMERGE = 11
 ZOOM_WARD_LABELS = 12
+# Pinch-to-atomize (Rigasa spike): cyan mist → solid nodes as zoom deepens
+ZOOM_ATOM_EMERGE = 13
 
 GEOBOUNDARIES_API_NGA_ADM1 = "https://www.geoboundaries.org/api/current/gbOpen/NGA/ADM1/"
 # Abuja–Zaria–Kano pilot spine (“Million Steel Rods” corridor nodes)
@@ -132,6 +135,11 @@ def _load_phase2_spine_bundle() -> dict:
     }
 
 
+@st.cache_data(ttl=86400, show_spinner="Atomic Spie · Rigasa lattice mount…")
+def _rigasa_spike_bundle_cached() -> dict:
+    return build_rigasa_spike_bundle()
+
+
 def _ward_style_with_asset(
     feature: dict,
     asset_states: frozenset[str],
@@ -158,29 +166,68 @@ def _ward_style_with_asset(
     }
 
 
-def _inject_phase2_zoom_and_labels(
+def _inject_drill_panes_atomic_fps(
     m: folium.Map,
     z_lga: int,
     z_ward: int,
+    z_atom: int,
+    has_atomic: bool,
 ) -> None:
-    """Pinch tiers: states → LGAs (≥z_lga) → wards (≥z_w). Mobile: pinch-zoom for drill-down."""
+    """Pinch tiers + Atom pane + RAF FPS HUD (desktop / mobile glass reference)."""
     mn = m.get_name()
+    atom_js = "1" if has_atomic else "0"
     m.get_root().html.add_child(
         Element(
             f"""
 <script>
 (function() {{
-  var zL = {int(z_lga)}, zW = {int(z_ward)};
+  var zL = {int(z_lga)}, zW = {int(z_ward)}, zA = {int(z_atom)};
+  var hasAtom = {atom_js} === "1";
   function arm() {{
     var mp = window["{mn}"];
     if (!mp || !mp.getPane) {{ requestAnimationFrame(arm); return; }}
     var ps = mp.getPane("federationStates");
     var pl = mp.getPane("lgaHeartbeat");
     var pw = mp.getPane("wardReveal");
+    var pa = hasAtom ? mp.getPane("atomicLattice") : null;
     if (!ps || !pl || !pw) {{ requestAnimationFrame(arm); return; }}
+    if (hasAtom && !pa) {{ requestAnimationFrame(arm); return; }}
     [pl, pw].forEach(function(p) {{
       p.style.transition = "opacity 0.45s cubic-bezier(0.33,1,0.68,1)";
     }});
+    if (pa) {{
+      pa.style.transition = "opacity 0.5s cubic-bezier(0.33,1,0.68,1)";
+    }}
+    var root = mp.getContainer();
+    var hud = document.createElement("div");
+    hud.setAttribute("aria-hidden", "true");
+    hud.style.cssText = "position:absolute;bottom:10px;left:10px;z-index:900;font-size:11px;font-weight:700;padding:6px 10px;border-radius:8px;pointer-events:none;background:rgba(0,0,128,0.88);color:#00E5FF;border:1px solid #BF953F;box-shadow:0 2px 10px rgba(0,0,0,0.45);";
+    hud.textContent = "FPS · …";
+    root.appendChild(hud);
+    var fc = 0, lt = performance.now(), fpsVal = 0;
+    function fpsLoop(t) {{
+      fc++;
+      if (t - lt >= 1000) {{ fpsVal = fc; fc = 0; lt = t; }}
+      requestAnimationFrame(fpsLoop);
+    }}
+    requestAnimationFrame(fpsLoop);
+    function atomMist(z) {{
+      if (!hasAtom || !pa || pa.style.opacity === "0") return;
+      var t = Math.min(1, Math.max(0, (z - zA) / 4.5));
+      var op = 0.18 + t * 0.78;
+      var rpx = 2 + t * 7;
+      var sw = 0.6 + t * 1.8;
+      var nodes = root.querySelectorAll("circle.gcslc-atom-node, path.gcslc-atom-node");
+      for (var i = 0; i < nodes.length; i++) {{
+        var p = nodes[i];
+        if (p.tagName.toLowerCase() === "circle") {{
+          p.setAttribute("r", rpx);
+          p.setAttribute("stroke-width", sw);
+          p.setAttribute("stroke-opacity", op);
+          p.setAttribute("fill-opacity", op * 0.85);
+        }}
+      }}
+    }}
     function sync() {{
       var z = mp.getZoom();
       pl.style.opacity = (z >= zL) ? "1" : "0";
@@ -188,9 +235,16 @@ def _inject_phase2_zoom_and_labels(
       pw.style.opacity = (z >= zW) ? "1" : "0";
       pw.style.pointerEvents = (z >= zW) ? "auto" : "none";
       ps.style.opacity = "1";
+      if (pa) {{
+        pa.style.opacity = (z >= zA) ? "1" : "0";
+        pa.style.pointerEvents = (z >= zA) ? "auto" : "none";
+      }}
+      atomMist(z);
+      hud.textContent = "FPS · " + fpsVal + " · z " + z.toFixed(1) + " · Atom ≥" + zA;
     }}
     mp.on("zoomend", sync);
     mp.on("zoom", sync);
+    mp.on("moveend", sync);
     sync();
   }}
   arm();
@@ -205,6 +259,7 @@ def _build_federation_map(
     states_geojson: dict | None,
     phase2: dict | None,
     asset_states: frozenset[str],
+    atomic_bundle: dict | None,
 ) -> folium.Map:
     center_lat = sum(n["lat"] for n in AZK_CORRIDOR_NODES) / len(AZK_CORRIDOR_NODES)
     center_lon = sum(n["lon"] for n in AZK_CORRIDOR_NODES) / len(AZK_CORRIDOR_NODES)
@@ -215,13 +270,20 @@ def _build_federation_map(
         tiles=None,
         width="100%",
         height="460px",
-        prefer_canvas=True,
+        prefer_canvas=False,
         zoom_control=True,
     )
 
     CustomPane("federationStates", z_index=380, pointer_events=True).add_to(m)
     CustomPane("lgaHeartbeat", z_index=430, pointer_events=True).add_to(m)
     CustomPane("wardReveal", z_index=468, pointer_events=False).add_to(m)
+    atom_ok = (
+        atomic_bundle is not None
+        and isinstance(atomic_bundle.get("frame"), pd.DataFrame)
+        and len(atomic_bundle["frame"]) > 0
+    )
+    if atom_ok:
+        CustomPane("atomicLattice", z_index=490, pointer_events=True).add_to(m)
 
     folium.TileLayer(
         tiles="CartoDB dark_matter",
@@ -276,6 +338,9 @@ path.gcslc-ward-base:hover, path.gcslc-ward-eightrec-asset:hover {
 }
 @media (prefers-reduced-motion: reduce) {
   path.gcslc-lga-sovereign-heartbeat, path.gcslc-ward-eightrec-asset { animation: none !important; }
+}
+path.gcslc-atom-node {
+  transition: fill-opacity 0.35s ease, stroke-opacity 0.35s ease;
 }
 """
     m.get_root().header.add_child(
@@ -376,7 +441,29 @@ path.gcslc-ward-base:hover, path.gcslc-ward-eightrec-asset:hover {
                 tooltip=tip,
                 smooth_factor=0.5,
             ).add_to(fg_ward)
-            _inject_phase2_zoom_and_labels(m, ZOOM_LGA_EMERGE, ZOOM_WARD_EMERGE)
+
+    if atom_ok:
+        df_atom = atomic_bundle["frame"]
+        fg_atom = folium.FeatureGroup(
+            name="Atomic Spie · Kaduna Igabi Rigasa (153 PU · AZK corridor)",
+        ).add_to(m)
+        for _, row in df_atom.iterrows():
+            folium.CircleMarker(
+                location=[float(row["lat"]), float(row["lon"])],
+                radius=3,
+                pane="atomicLattice",
+                color=CYAN,
+                weight=1,
+                fill=True,
+                fillColor=CYAN,
+                fillOpacity=0.28,
+                opacity=0.48,
+                className="gcslc-atom-node",
+                tooltip=folium.Tooltip(
+                    f"{row['code']} · {row.get('location', '')}"[:220],
+                    sticky=True,
+                ),
+            ).add_to(fg_atom)
 
     fg_azk = folium.FeatureGroup(name="AZK · Million Steel Rods").add_to(m)
     azk_ll = [[n["lat"], n["lon"]] for n in AZK_CORRIDOR_NODES]
@@ -428,6 +515,13 @@ path.gcslc-ward-base:hover, path.gcslc-ward-eightrec-asset:hover {
         title_cancel="Exit full screen",
     ).add_to(m)
     folium.LayerControl(collapsed=False).add_to(m)
+    _inject_drill_panes_atomic_fps(
+        m,
+        ZOOM_LGA_EMERGE,
+        ZOOM_WARD_EMERGE,
+        ZOOM_ATOM_EMERGE,
+        atom_ok,
+    )
     m.fit_bounds([[4.15, 2.55], [13.95, 14.68]])
     return m
 
@@ -689,7 +783,22 @@ if _spine.get("ward_rows"):
         f"{'VALID' if _spine.get('valid') else 'REVIEW'}"
     )
 
-_federation_map = _build_federation_map(_states_geojson, _phase2, _asset_states)
+try:
+    _atomic_bundle = _rigasa_spike_bundle_cached()
+except Exception as _atom_exc:
+    _atomic_bundle = None
+    st.caption(f"Atomic Spie unavailable (CSV / validation): {_atom_exc}")
+else:
+    _ar = _atomic_bundle["report"]
+    st.caption(
+        f"Atomic Spie · Rigasa Igabi · ward_token {_ar['ward_token']} · {_ar['pu_rows']} PU · "
+        f"orphans {_ar['orphan_rows']} · Z_atom={ZOOM_ATOM_EMERGE} · FPS HUD on glass · "
+        "pinch past wards to atomize"
+    )
+
+_federation_map = _build_federation_map(
+    _states_geojson, _phase2, _asset_states, _atomic_bundle
+)
 _map_embed = _federation_map._repr_html_()
 _MAP_GLASS_HTML = (
     """
@@ -796,7 +905,9 @@ html, body { margin: 0; background: transparent !important; }
     + str(ZOOM_LGA_EMERGE)
     + """, wards ≥ zoom """
     + str(ZOOM_WARD_EMERGE)
-    + """ · HDX ward labels (sticky tap) · LGA heartbeat #BF953F · deep blue shell #000080 · AZK spine</p>
+    + """ · atoms ≥ zoom """
+    + str(ZOOM_ATOM_EMERGE)
+    + """ (mist→solid) · HDX ward labels (sticky tap) · LGA heartbeat #BF953F · deep blue shell #000080 · AZK spine</p>
     </div>
     <div class="mirror-folium-host">"""
     + _map_embed
@@ -823,8 +934,9 @@ c1.metric("States + FCT", "37")
 c2.metric("LGAs (heartbeat)", "774")
 c3.metric("Wards (HDX + join)", "8,806")
 st.caption(
-    f"Pinch drill-down · LGAs emerge zoom ≥ {ZOOM_LGA_EMERGE} · wards emerge zoom ≥ {ZOOM_WARD_EMERGE} · "
-    f"sticky ward/LGA/state tooltips (tap on S24 / iPhone)."
+    f"Pinch drill-down · LGAs ≥ {ZOOM_LGA_EMERGE} · wards ≥ {ZOOM_WARD_EMERGE} · "
+    f"Atomic Spie (Rigasa) ≥ {ZOOM_ATOM_EMERGE} · FPS HUD bottom-left on map · "
+    "sticky tooltips on mobile glass."
 )
 
 
