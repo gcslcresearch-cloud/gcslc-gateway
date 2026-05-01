@@ -21,7 +21,15 @@ except ImportError:
     st_folium = None  # type: ignore[misc, assignment]
 from branca.element import Element
 from folium.map import CustomPane
-from folium.plugins import AntPath, Fullscreen
+from folium.plugins import AntPath, Fullscreen, HeatMap
+
+from forensic_intel import (
+    DOUBLE_ZERO_GREY_GRADIENT,
+    LAGOS_MAINLAND_POP_PER_POS_REF,
+    build_double_zero_triples,
+    komi_popup_html,
+    nearest_azk_node,
+)
 
 from atomic_spie import (
     build_national_pu_geodataframe,
@@ -29,6 +37,8 @@ from atomic_spie import (
     parse_st_folium_zoom,
     subset_pus_for_viewport,
 )
+from sovereign_nl_query import resolve_sovereign_nl_query
+from vigil_feed import load_recent_events, merge_vigil_sources
 from gcslc_deep_join import NATIONAL_WARD_TOTAL, build_fused_catalog
 from ng_connectivity import (
     GEOBOUNDARIES_API_NGA_ADM2,
@@ -59,6 +69,30 @@ VANDALISM_INCIDENTS_JSON = (
 )
 CBN_FINANCIAL_JSON = BASE_DIR / "Part_02_Finance" / "data" / "cbn_financial_access_points.json"
 SOCIAL_SERVICE_HUBS_JSON = BASE_DIR / "Part_04_Social" / "data" / "social_service_hubs.json"
+TRADE_COMMERCE_JSON = BASE_DIR / "Part_02_Finance" / "data" / "trade_commerce_nodes.json"
+FIN_INCLUSION_POS_JSON = BASE_DIR / "Part_02_Finance" / "data" / "financial_inclusion_pos.json"
+MICRO_ASSETS_JSON = BASE_DIR / "Part_04_Social" / "data" / "micro_assets_capillaries.json"
+SIGNAL_BLACKOUTS_JSON = BASE_DIR / "Part_01_Telecom" / "data" / "signal_blackouts.json"
+VIGIL_FEED_JSON = BASE_DIR / "Part_01_Telecom" / "data" / "vigil_feed_events.json"
+LAGOS_STRIKE_JSON = BASE_DIR / "Part_02_Finance" / "data" / "lagos_mainland_strike_points.json"
+NORTHERN_MARKET_VECTORS_JSON = (
+    BASE_DIR / "Part_02_Finance" / "data" / "northern_market_azk_vectors.json"
+)
+VECTOR_GREEN = "#2ECC71"
+
+# Financial inclusion gap palette (commerce high · formal thin → warm)
+FIN_GAP_SEVERE = "#E85D04"
+FIN_GAP_MODERATE = "#F4A261"
+FIN_GAP_NARROW = "#2DC6A4"
+
+ESRI_WORLD_IMAGERY = (
+    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/"
+    "tile/{z}/{y}/{x}"
+)
+ESRI_REF_LABELS = (
+    "https://server.arcgisonline.com/ArcGIS/rest/services/Reference/"
+    "World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"
+)
 
 
 def _parse_azk_alignment_flag(raw: object) -> bool:
@@ -239,6 +273,100 @@ def _validate_lat_lon_points(rows: list) -> list[dict]:
     return out
 
 
+def _fin_inclusion_gap_style(row: dict) -> tuple[str, str]:
+    """Map inclusion_gap → stroke/fill color + CSS class (POS matrix)."""
+    gap = str(row.get("inclusion_gap", "moderate")).strip().lower()
+    if gap == "severe":
+        return FIN_GAP_SEVERE, "gcslc-fin-gap-severe"
+    if gap == "narrow":
+        return FIN_GAP_NARROW, "gcslc-fin-gap-narrow"
+    return FIN_GAP_MODERATE, "gcslc-fin-gap-moderate"
+
+
+@st.cache_data(ttl=86400, show_spinner=False)
+def _load_trade_commerce_nodes() -> list[dict]:
+    if not TRADE_COMMERCE_JSON.is_file():
+        return []
+    raw = json.loads(TRADE_COMMERCE_JSON.read_text(encoding="utf-8"))
+    return _validate_lat_lon_points(raw.get("nodes") or [])
+
+
+@st.cache_data(ttl=86400, show_spinner=False)
+def _load_financial_inclusion_pos() -> list[dict]:
+    if not FIN_INCLUSION_POS_JSON.is_file():
+        return []
+    raw = json.loads(FIN_INCLUSION_POS_JSON.read_text(encoding="utf-8"))
+    return _validate_lat_lon_points(raw.get("points") or [])
+
+
+@st.cache_data(ttl=86400, show_spinner=False)
+def _load_micro_assets_capillaries() -> list[dict]:
+    if not MICRO_ASSETS_JSON.is_file():
+        return []
+    raw = json.loads(MICRO_ASSETS_JSON.read_text(encoding="utf-8"))
+    return _validate_lat_lon_points(raw.get("micro_assets") or [])
+
+
+@st.cache_data(ttl=86400, show_spinner=False)
+def _load_signal_blackout_events() -> list[dict]:
+    if not SIGNAL_BLACKOUTS_JSON.is_file():
+        return []
+    raw = json.loads(SIGNAL_BLACKOUTS_JSON.read_text(encoding="utf-8"))
+    out: list[dict] = []
+    for row in raw.get("events") or []:
+        if not isinstance(row, dict):
+            continue
+        try:
+            float(row["lat"])
+            float(row["lon"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        out.append(row)
+    return out
+
+
+@st.cache_data(ttl=45, show_spinner=False)
+def _load_vigil_registry_events() -> list[dict]:
+    return load_recent_events(VIGIL_FEED_JSON, limit=120)
+
+
+@st.cache_data(ttl=86400, show_spinner=False)
+def _load_lagos_strike_points() -> list[dict]:
+    if not LAGOS_STRIKE_JSON.is_file():
+        return []
+    raw = json.loads(LAGOS_STRIKE_JSON.read_text(encoding="utf-8"))
+    return _validate_lat_lon_points(raw.get("points") or [])
+
+
+@st.cache_data(ttl=86400, show_spinner=False)
+def _load_northern_market_vectors() -> list[dict]:
+    if not NORTHERN_MARKET_VECTORS_JSON.is_file():
+        return []
+    raw = json.loads(NORTHERN_MARKET_VECTORS_JSON.read_text(encoding="utf-8"))
+    rows = raw.get("markets") or []
+    out: list[dict] = []
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        try:
+            float(row["lat"])
+            float(row["lon"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        out.append(row)
+    return out
+
+
+def _binji_void_points(fin_rows: list[dict]) -> list[dict]:
+    """POS anchors for Binji–Lagos strike (Binji + Danchadi corridor)."""
+    out: list[dict] = []
+    for row in fin_rows:
+        z = str(row.get("zone", "")).strip().lower()
+        if z in {"binji", "danchadi"}:
+            out.append(row)
+    return out
+
+
 @st.cache_data(ttl=86400, show_spinner=False)
 def _coal_asset_state_names() -> frozenset[str]:
     if not COAL_NODES_JSON.is_file():
@@ -329,6 +457,89 @@ def _atomic_viewport_feature_group(
                 tooltip=folium.Tooltip(f"{code} · {loc}", sticky=True),
             ).add_to(fg)
     return fg
+
+
+def _build_strike_audit_map(
+    *,
+    center_lat: float,
+    center_lon: float,
+    zoom_start: int,
+    points: list[dict],
+    circle_class: str,
+    komi_intel: bool,
+) -> folium.Map:
+    """Split-panel Lagos vs Binji audit — saturated blue fabric vs gold-in-void POS."""
+    m = folium.Map(
+        location=[center_lat, center_lon],
+        zoom_start=zoom_start,
+        tiles=None,
+        width="100%",
+        height="520px",
+        max_zoom=22,
+    )
+    folium.TileLayer(
+        tiles="CartoDB dark_matter",
+        attr="© OSM © CARTO",
+        name="Basemap",
+        overlay=False,
+        control=True,
+        max_zoom=22,
+    ).add_to(m)
+    strike_css = """
+@keyframes gcs-strike-gold-pulse {
+  0%,100% { filter: drop-shadow(0 0 5px rgba(191,149,63,0.55)); }
+  50% { filter: drop-shadow(0 0 16px rgba(191,149,63,0.92)); }
+}
+circle.gcslc-strike-binji {
+  animation: gcs-strike-gold-pulse 2.1s ease-in-out infinite !important;
+  stroke: #00E5FF !important;
+  fill: #BF953F !important;
+}
+circle.gcslc-strike-lagos {
+  stroke: #0066CC !important;
+  fill: rgba(0,229,255,0.55) !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  circle.gcslc-strike-binji { animation: none !important; }
+}
+"""
+    m.get_root().header.add_child(
+        Element(
+            f"<style>"
+            f".leaflet-container{{background:{SHELL}!important;}}"
+            f"{strike_css}"
+            f"</style>"
+        )
+    )
+    for row in points:
+        lbl = str(row.get("label") or row.get("name", "Audit node"))[:160]
+        tip = lbl[:220]
+        popup = None
+        if komi_intel:
+            popup = folium.Popup(
+                komi_popup_html(
+                    lbl,
+                    row,
+                    lagos_pop_per_pos_ref=LAGOS_MAINLAND_POP_PER_POS_REF,
+                ),
+                max_width=300,
+            )
+        cm_kw: dict = {
+            "location": [float(row["lat"]), float(row["lon"])],
+            "radius": 8,
+            "color": CYAN,
+            "weight": 2,
+            "fill": True,
+            "fillOpacity": 0.55,
+            "opacity": 0.95,
+            "tooltip": folium.Tooltip(tip, sticky=True),
+            "className": f"gcslc-friction-node {circle_class}",
+        }
+        if popup is not None:
+            cm_kw["popup"] = popup
+        folium.CircleMarker(**cm_kw).add_to(m)
+    folium.LayerControl(collapsed=True).add_to(m)
+    return m
 
 
 def _ward_style_with_asset(
@@ -481,6 +692,17 @@ def _build_federation_map(
     cbn_points: list[dict] | None = None,
     show_social_hubs: bool = False,
     social_points: list[dict] | None = None,
+    show_trade_commerce: bool = False,
+    trade_nodes: list[dict] | None = None,
+    show_financial_inclusion_pos: bool = False,
+    financial_inclusion_points: list[dict] | None = None,
+    show_micro_assets: bool = False,
+    micro_asset_points: list[dict] | None = None,
+    show_double_zero: bool = False,
+    double_zero_triples: list[list[float]] | None = None,
+    show_azk_vectors: bool = False,
+    northern_markets: list[dict] | None = None,
+    show_komi_intel: bool = False,
 ) -> folium.Map:
     center_lat = sum(n["lat"] for n in AZK_CORRIDOR_NODES) / len(AZK_CORRIDOR_NODES)
     center_lon = sum(n["lon"] for n in AZK_CORRIDOR_NODES) / len(AZK_CORRIDOR_NODES)
@@ -493,12 +715,16 @@ def _build_federation_map(
         height="800px",
         prefer_canvas=False,
         zoom_control=True,
+        max_zoom=22,
     )
 
     CustomPane("federationStates", z_index=380, pointer_events=True).add_to(m)
     CustomPane("lgaHeartbeat", z_index=430, pointer_events=True).add_to(m)
     CustomPane("wardReveal", z_index=468, pointer_events=False).add_to(m)
     CustomPane("atomicLattice", z_index=490, pointer_events=True).add_to(m)
+    CustomPane("microCapillary", z_index=501, pointer_events=False).add_to(m)
+    CustomPane("tradeCommerce", z_index=502, pointer_events=False).add_to(m)
+    CustomPane("frictionFinInclusion", z_index=503, pointer_events=False).add_to(m)
     # Friction overlays — above lattice mist, below AZK spine (compact markers; sidebar toggles)
     CustomPane("frictionSocial", z_index=504, pointer_events=False).add_to(m)
     CustomPane("frictionCBN", z_index=505, pointer_events=False).add_to(m)
@@ -507,11 +733,31 @@ def _build_federation_map(
     CustomPane("azkSpine", z_index=620, pointer_events=False).add_to(m)
 
     folium.TileLayer(
+        tiles=ESRI_WORLD_IMAGERY,
+        attr="Tiles © Esri — Source: Esri, Maxar, Earthstar Geographics · Default for village audit",
+        name="Esri · World Imagery (default · hyper-zoom)",
+        overlay=False,
+        control=True,
+        max_zoom=22,
+        max_native_zoom=19,
+    ).add_to(m)
+    folium.TileLayer(
         tiles="CartoDB dark_matter",
         attr="© OpenStreetMap © CARTO · Sovereign Navy basemap",
         name="Sovereign Navy · Dark Matter",
         overlay=False,
         control=True,
+        max_zoom=22,
+    ).add_to(m)
+    folium.TileLayer(
+        tiles=ESRI_REF_LABELS,
+        attr="© Esri · Reference labels · streets / settlements",
+        name="Esri · Hybrid labels (overlay · ON by default)",
+        overlay=True,
+        control=True,
+        show=True,
+        max_zoom=22,
+        max_native_zoom=19,
     ).add_to(m)
 
     pulse_css = """
@@ -615,6 +861,29 @@ circle.gcslc-friction-social, path.gcslc-friction-social {
   stroke: #7FD4B8 !important;
   fill: #7FD4B8 !important;
 }
+circle.gcslc-trade-livestock, path.gcslc-trade-livestock {
+  stroke: #00E5FF !important;
+  fill: #BF953F !important;
+  stroke-width: 2px !important;
+  filter: drop-shadow(0 0 6px rgba(191,149,63,0.55));
+}
+circle.gcslc-fin-gap-severe, path.gcslc-fin-gap-severe {
+  stroke: #E85D04 !important;
+  fill: #E85D04 !important;
+}
+circle.gcslc-fin-gap-moderate, path.gcslc-fin-gap-moderate {
+  stroke: #F4A261 !important;
+  fill: #F4A261 !important;
+}
+circle.gcslc-fin-gap-narrow, path.gcslc-fin-gap-narrow {
+  stroke: #2DC6A4 !important;
+  fill: #2DC6A4 !important;
+}
+circle.gcslc-micro-capillary, path.gcslc-micro-capillary {
+  stroke: rgba(240,244,255,0.85) !important;
+  fill: rgba(0,229,255,0.35) !important;
+  stroke-width: 1px !important;
+}
 @media (prefers-reduced-motion: reduce) {
   path.gcslc-lga-sovereign-heartbeat, path.gcslc-ward-eightrec-asset,
   circle.gcslc-atom-industrial, path.gcslc-atom-industrial,
@@ -624,12 +893,58 @@ circle.gcslc-friction-social, path.gcslc-friction-social {
 path.gcslc-atom-node {
   transition: fill-opacity 0.35s ease, stroke-opacity 0.35s ease;
 }
+.leaflet-popup-content .gcslc-komi-card {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-size: 11px !important;
+  color: #00E5FF !important;
+  background: rgba(0,0,128,0.94) !important;
+  padding: 10px 12px !important;
+  border-radius: 10px !important;
+  border: 1px solid #BF953F !important;
+  max-width: 280px !important;
+}
+.leaflet-popup-content .gcslc-komi-h {
+  font-weight: 700 !important;
+  letter-spacing: 0.06em !important;
+  margin-bottom: 6px !important;
+  color: #00E5FF !important;
+}
+.leaflet-popup-content .gcslc-komi-k {
+  color: rgba(240,244,255,0.78) !important;
+  margin-right: 6px !important;
+}
+/* iPhone portrait · Komi popups + layer picker stay inside safe area / readable */
+.leaflet-popup-content-wrapper {
+  max-width: min(280px, 92vw) !important;
+}
+.leaflet-popup-content {
+  margin: 12px 14px !important;
+  touch-action: manipulation !important;
+  -webkit-text-size-adjust: 100% !important;
+}
+@media screen and (max-width: 430px) {
+  .leaflet-popup-content .gcslc-komi-card {
+    font-size: clamp(10px, 3.2vw, 12px) !important;
+    max-width: min(280px, 90vw) !important;
+    padding: 12px 14px !important;
+  }
+  .leaflet-control-layers {
+    font-size: 11px !important;
+    max-width: min(240px, 85vw) !important;
+  }
+  .leaflet-control-layers-expanded {
+    max-height: min(360px, 55vh) !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+}
 """
     m.get_root().header.add_child(
         Element(
             f"<style>"
             f".leaflet-container{{background:{SHELL}!important;}}"
-            f".leaflet-tile-pane img,.leaflet-tile-pane canvas{{opacity:0.85!important;}}"
+            f".leaflet-tile-pane img,.leaflet-tile-pane canvas{{opacity:0.97!important;}}"
+            f"/* Crisp Esri imagery + hybrid labels at max zoom (portrait iPhone); Deep Blue shell stays on container */"
             f".leaflet-control-attribution{{background:rgba(0,0,128,0.72)!important;"
             f"color:{GOLD}!important;font-size:10px!important;}}"
             f"{pulse_css}"
@@ -772,6 +1087,174 @@ path.gcslc-atom-node {
             pane="azkSpine",
         ).add_to(fg_azk)
 
+    if show_trade_commerce and trade_nodes:
+        fg_trade = folium.FeatureGroup(
+            name="Trade & Commerce · livestock / exchange anchors",
+            show=True,
+        ).add_to(m)
+        for row in trade_nodes:
+            lbl = str(row.get("label", "Trade node"))[:160]
+            stt = str(row.get("state", ""))[:48]
+            mc = str(row.get("market_class", ""))[:48]
+            tip = f"{lbl}" + (f" · {stt}" if stt else "") + (f" · {mc}" if mc else "")
+            tip = tip[:240]
+            pop_tr = None
+            if show_komi_intel:
+                pop_tr = folium.Popup(
+                    komi_popup_html(
+                        lbl,
+                        row,
+                        lagos_pop_per_pos_ref=LAGOS_MAINLAND_POP_PER_POS_REF,
+                    ),
+                    max_width=300,
+                )
+            mk_tr = dict(
+                location=[float(row["lat"]), float(row["lon"])],
+                radius=9,
+                color=CYAN,
+                weight=2,
+                fill=True,
+                fillColor=GOLD_HEARTBEAT,
+                fillOpacity=0.62,
+                opacity=0.95,
+                pane="tradeCommerce",
+                className="gcslc-friction-node gcslc-trade-livestock",
+                tooltip=folium.Tooltip(tip, sticky=True),
+            )
+            if pop_tr is not None:
+                mk_tr["popup"] = pop_tr
+            folium.CircleMarker(**mk_tr).add_to(fg_trade)
+
+    if show_financial_inclusion_pos and financial_inclusion_points:
+        fg_fin = folium.FeatureGroup(
+            name="Financial inclusion · POS matrix (Binji / Bayelsa)",
+            show=True,
+        ).add_to(m)
+        for row in financial_inclusion_points:
+            col, css_gap = _fin_inclusion_gap_style(row)
+            lbl = str(row.get("name", "POS cluster"))[:140]
+            zon = str(row.get("zone", ""))[:64]
+            stt = str(row.get("state", ""))[:48]
+            gap = str(row.get("inclusion_gap", ""))[:24]
+            ag = row.get("agents")
+            ag_s = f" · agents ~{int(ag)}" if ag is not None else ""
+            tip = f"{lbl} · {zon}, {stt} · gap {gap}{ag_s}"[:260]
+            rad = 6
+            try:
+                if ag is not None:
+                    rad = min(11, 5 + float(ag) / 14.0)
+            except (TypeError, ValueError):
+                rad = 6
+            pop_fin = None
+            if show_komi_intel:
+                pop_fin = folium.Popup(
+                    komi_popup_html(
+                        str(row.get("name", "POS")),
+                        row,
+                        lagos_pop_per_pos_ref=LAGOS_MAINLAND_POP_PER_POS_REF,
+                    ),
+                    max_width=300,
+                )
+            mk_fin = dict(
+                location=[float(row["lat"]), float(row["lon"])],
+                radius=float(rad),
+                color=col,
+                weight=1.45,
+                fill=True,
+                fillColor=col,
+                fillOpacity=0.58,
+                opacity=0.92,
+                pane="frictionFinInclusion",
+                className=f"gcslc-friction-node {css_gap}",
+                tooltip=folium.Tooltip(tip, sticky=True),
+            )
+            if pop_fin is not None:
+                mk_fin["popup"] = pop_fin
+            folium.CircleMarker(**mk_fin).add_to(fg_fin)
+
+    if show_micro_assets and micro_asset_points:
+        fg_micro = folium.FeatureGroup(
+            name="Micro-assets · capillaries",
+            show=True,
+        ).add_to(m)
+        for row in micro_asset_points:
+            lbl = str(row.get("label", "Micro-asset"))[:140]
+            ac = str(row.get("asset_class", ""))[:56]
+            tag = str(row.get("tag", ""))[:48]
+            tip = f"{lbl}" + (f" · {ac}" if ac else "") + (f" · {tag}" if tag else "")
+            tip = tip[:240]
+            _r_micro = (
+                4
+                if str(row.get("asset_class", "")).strip().lower() == "sovereign_anchor"
+                else 3
+            )
+            pop_mi = None
+            if show_komi_intel:
+                pop_mi = folium.Popup(
+                    komi_popup_html(
+                        lbl,
+                        row,
+                        lagos_pop_per_pos_ref=LAGOS_MAINLAND_POP_PER_POS_REF,
+                    ),
+                    max_width=300,
+                )
+            mk_mi = dict(
+                location=[float(row["lat"]), float(row["lon"])],
+                radius=_r_micro,
+                color=CYAN,
+                weight=1,
+                fill=True,
+                fillColor=CYAN,
+                fillOpacity=0.38,
+                opacity=0.72,
+                pane="microCapillary",
+                className="gcslc-friction-node gcslc-micro-capillary",
+                tooltip=folium.Tooltip(tip, sticky=True),
+            )
+            if pop_mi is not None:
+                mk_mi["popup"] = pop_mi
+            folium.CircleMarker(**mk_mi).add_to(fg_micro)
+
+    if show_double_zero and double_zero_triples:
+        fg_dz = folium.FeatureGroup(
+            name="Forensic · Double-Zero disconnected void (grey heat)",
+            show=True,
+        ).add_to(m)
+        HeatMap(
+            data=double_zero_triples,
+            min_opacity=0.42,
+            max_zoom=19,
+            radius=34,
+            blur=28,
+            gradient=DOUBLE_ZERO_GREY_GRADIENT,
+        ).add_to(fg_dz)
+
+    if show_azk_vectors and northern_markets:
+        fg_vec = folium.FeatureGroup(
+            name="Forensic · Northern markets → AZK livestock vectors",
+            show=True,
+        ).add_to(m)
+        for mk in northern_markets:
+            try:
+                lat_m = float(mk["lat"])
+                lon_m = float(mk["lon"])
+            except (KeyError, TypeError, ValueError):
+                continue
+            target, _dist = nearest_azk_node(lat_m, lon_m, AZK_CORRIDOR_NODES)
+            flow = float(mk.get("daily_livestock_units_proxy") or 12.0)
+            wvec = 2.0 + min(flow / 70.0, 5.5)
+            AntPath(
+                locations=[
+                    [lat_m, lon_m],
+                    [float(target["lat"]), float(target["lon"])],
+                ],
+                color=VECTOR_GREEN,
+                weight=wvec,
+                opacity=0.58,
+                delay=280,
+                dash_array=[12, 16],
+            ).add_to(fg_vec)
+
     if show_ncc_vulnerability and ncc_incidents:
         fg_vuln = folium.FeatureGroup(
             name="Friction · NCC infrastructure vulnerability",
@@ -848,7 +1331,7 @@ path.gcslc-atom-node {
         title="Full screen (mobile)",
         title_cancel="Exit full screen",
     ).add_to(m)
-    folium.LayerControl(collapsed=False).add_to(m)
+    folium.LayerControl(collapsed=True).add_to(m)
     _inject_drill_panes_atomic_fps(
         m,
         ZOOM_LGA_EMERGE,
@@ -1164,7 +1647,41 @@ section.main .block-container {{
     unsafe_allow_html=True,
 )
 
+_trade_nodes = _load_trade_commerce_nodes()
+_fin_pos_pts = _load_financial_inclusion_pos()
+_signal_ev = _load_signal_blackout_events()
+_vigil_registry = _load_vigil_registry_events()
+
 with st.sidebar:
+    with st.expander("Sovereign Discovery", expanded=True):
+        st.caption(
+            "Lattice filter + heuristic NL pivot — no cloud LLM (Lux-class latency on mobile)."
+        )
+        st.text_input(
+            "Filter Sovereign Nodes on map",
+            key="village_lattice_search",
+            placeholder="binji · danchadi · jega · zaria passage · village name",
+            help="Matches label, village, id, passage_segment, search_aliases (substring).",
+        )
+        st.text_area(
+            "Natural language query",
+            key="sovereign_nl_query_text",
+            height=72,
+            placeholder="Where is the highest POS density in Binji?",
+        )
+        if st.button("Pivot map", key="sovereign_nl_pivot"):
+            _qn = str(st.session_state.get("sovereign_nl_query_text") or "")
+            _nl = resolve_sovereign_nl_query(_qn, _fin_pos_pts, trade_points=_trade_nodes)
+            if _nl:
+                st.session_state["gv_center"] = (_nl["lat"], _nl["lon"])
+                st.session_state["gv_zoom"] = _nl["zoom"]
+                st.session_state["sovereign_nl_last"] = _nl
+                st.success(f"{_nl['headline']} — {_nl['detail']}")
+            else:
+                st.warning(
+                    "No match — try zone + POS wording, or expand "
+                    "`financial_inclusion_pos.json` / `trade_commerce_nodes.json`."
+                )
     st.markdown("### Sovereign Ingestion Monitor")
     st.caption("Phase 3 · NGECC strategic registry ↔ AZK Million Steel Rods")
     _ngecc_sidebar_reg = _load_ngecc_industrial_registry()
@@ -1203,6 +1720,103 @@ with st.sidebar:
             key="show_social_hubs",
             help="Tier-2 registry: Part_04_Social/data/social_service_hubs.json",
         )
+        st.toggle(
+            "Financial inclusion · POS (Binji / Bayelsa)",
+            value=False,
+            key="show_financial_inclusion_pos",
+            help="Commerce vs formal finance gap — Part_02_Finance/data/financial_inclusion_pos.json",
+        )
+    with st.expander("Trade & Commerce", expanded=False):
+        st.caption(
+            "Livestock / exchange anchors + village lattice — `trade_commerce_nodes.json` "
+            "(each village is a Sovereign Node with search_aliases)."
+        )
+        st.toggle(
+            "Trade & Commerce markets",
+            value=False,
+            key="show_trade_commerce",
+            help="Mubi · Wudil · Mai'Adua livestock markets (high-fidelity markers).",
+        )
+    with st.expander("Territory · capillaries", expanded=False):
+        st.caption(
+            "Human shield · informal trade nodes are national capillaries — "
+            "Zaria GRA streets ↔ Danchadi POS relays ↔ coastal relays."
+        )
+        st.toggle(
+            "Micro-assets (capillaries)",
+            value=False,
+            key="show_micro_assets",
+            help="Part_04_Social/data/micro_assets_capillaries.json",
+        )
+    with st.expander("Forensic Intelligence · Soul", expanded=False):
+        st.caption(
+            "NCC × telecom void × finance friction → Double-Zero synthesis · relational schema in "
+            "`Part_03_Security/data/forensic_relational_schema.json`."
+        )
+        st.toggle(
+            "Double-Zero · disconnected void (grey heat)",
+            value=False,
+            key="show_double_zero_heatmap",
+            help="NCC vandalism + signal blackouts + inclusion friction — Deep Shadow Grey intensities.",
+        )
+        st.toggle(
+            "Northern markets → AZK livestock vectors",
+            value=False,
+            key="show_azk_livestock_vectors",
+            help="42 northern markets · daily flow proxies → AZK spine (`northern_market_azk_vectors.json`).",
+        )
+        st.toggle(
+            "Komi · Total Reality popups (cyan)",
+            value=False,
+            key="show_komi_intel",
+            help="POS · Trade · Micro-assets — sector density, infrastructure health, Wahala Index.",
+        )
+        st.toggle(
+            "Binji–Lagos strike audit (split)",
+            value=False,
+            key="binji_lagos_strike",
+            help="Lagos Mainland (saturated blue) vs Binji/Danchadi void (pulsing gold). Replaces hero map.",
+        )
+    with st.expander("National Vigil · signal pulse", expanded=False):
+        st.caption(
+            "Architecture: append `Part_01_Telecom/data/vigil_feed_events.json` from SOC/NMS webhooks; "
+            "`vigil_feed.py` normalizes rows. Optional fuse with legacy blackout registry."
+        )
+        st.toggle(
+            "Show vigil pulse strip",
+            value=False,
+            key="show_vigil_feed_strip",
+            help="Deep Blue command — newest-first incident lines for ONSA situational awareness.",
+        )
+        st.toggle(
+            "Fuse telecom blackout registry",
+            value=True,
+            key="vigil_fuse_blackouts",
+            help="Merge `signal_blackouts.json` events into the same pulse sort (dedupe not applied).",
+        )
+        if st.session_state.get("show_vigil_feed_strip"):
+            _vf = merge_vigil_sources(
+                _vigil_registry,
+                _signal_ev,
+                fuse_blackouts=bool(st.session_state.get("vigil_fuse_blackouts")),
+                limit=10,
+            )
+            if _vf:
+                for _row in _vf:
+                    _lbl = str(_row.get("label") or "Event")[:72]
+                    _k = str(_row.get("kind") or "")
+                    _ts = str(_row.get("ts_iso") or "")[:19]
+                    _zv = str(_row.get("zone") or "").strip()
+                    _tail = f" · {_zv}" if _zv else ""
+                    st.markdown(
+                        f"<div style='font-size:0.78rem;line-height:1.35;color:rgba(240,244,255,0.92);"
+                        f"border-left:3px solid rgba(212,175,55,0.45);padding-left:8px;margin-bottom:6px;'>"
+                        f"<span style='color:#00E5FF;'>{html.escape(_k)}</span> · {_ts}<br/>"
+                        f"{html.escape(_lbl)}{html.escape(_tail)}</div>",
+                        unsafe_allow_html=True,
+                    )
+            else:
+                st.caption("No vigil rows — populate `vigil_feed_events.json` or enable fuse.")
     st.divider()
     st.caption("AZK spine: Abuja FCT → Keffi → Kaduna → Zaria → Kano · `azk_alignment: true` = peak gold.")
 
@@ -1259,6 +1873,45 @@ _social_pts = _load_social_service_points()
 _show_ncc = bool(st.session_state.get("show_ncc_vulnerability", True))
 _show_cbn = bool(st.session_state.get("show_cbn_access", False))
 _show_soc = bool(st.session_state.get("show_social_hubs", False))
+_show_fin_pos = bool(st.session_state.get("show_financial_inclusion_pos", False))
+_show_trade = bool(st.session_state.get("show_trade_commerce", False))
+_show_micro = bool(st.session_state.get("show_micro_assets", False))
+
+_micro_pts = _load_micro_assets_capillaries()
+
+
+def _match_village_query(query: str, row: dict) -> bool:
+    if not query.strip():
+        return True
+    qv = query.strip().lower()
+    parts = [
+        str(row.get("label", "")),
+        str(row.get("village", "")),
+        str(row.get("id", "")),
+        str(row.get("passage_segment", "")),
+    ]
+    als = row.get("search_aliases")
+    if isinstance(als, list):
+        parts.extend(str(a) for a in als)
+    blob = " ".join(parts).lower()
+    return qv in blob
+
+
+_village_q = str(st.session_state.get("village_lattice_search") or "").strip()
+_trade_disp = [r for r in _trade_nodes if _match_village_query(_village_q, r)]
+_micro_disp = [r for r in _micro_pts if _match_village_query(_village_q, r)]
+_lagos_audit_pts = _load_lagos_strike_points()
+_north_mk = _load_northern_market_vectors()
+_double_zero_triples = build_double_zero_triples(
+    _ncc_incidents,
+    _signal_ev,
+    _fin_pos_pts,
+)
+_binji_audit_pts = _binji_void_points(_fin_pos_pts)
+_show_dz = bool(st.session_state.get("show_double_zero_heatmap", False))
+_show_vec = bool(st.session_state.get("show_azk_livestock_vectors", False))
+_show_komi = bool(st.session_state.get("show_komi_intel", False))
+_strike_mode = bool(st.session_state.get("binji_lagos_strike", False))
 
 _federation_map = _build_federation_map(
     _states_geojson,
@@ -1270,6 +1923,17 @@ _federation_map = _build_federation_map(
     cbn_points=_cbn_pts,
     show_social_hubs=_show_soc,
     social_points=_social_pts,
+    show_trade_commerce=_show_trade,
+    trade_nodes=_trade_disp,
+    show_financial_inclusion_pos=_show_fin_pos,
+    financial_inclusion_points=_fin_pos_pts,
+    show_micro_assets=_show_micro,
+    micro_asset_points=_micro_disp,
+    show_double_zero=_show_dz,
+    double_zero_triples=_double_zero_triples,
+    show_azk_vectors=_show_vec,
+    northern_markets=_north_mk,
+    show_komi_intel=_show_komi,
 )
 _fg_atom = _atomic_viewport_feature_group(
     _viewport_df,
@@ -1285,6 +1949,33 @@ if st_folium is None:
         "`pip install streamlit-folium` — required for viewport atomic lattice."
     )
     st.components.v1.html(_federation_map._repr_html_(), height=520, scrolling=False)
+elif _strike_mode:
+    st.caption(
+        "**Strike audit mode** — split panels replace the national hero map; toggle off for 176k PU viewport."
+    )
+    _lag_map = _build_strike_audit_map(
+        center_lat=6.5244,
+        center_lon=3.3792,
+        zoom_start=12,
+        points=_lagos_audit_pts,
+        circle_class="gcslc-strike-lagos",
+        komi_intel=_show_komi,
+    )
+    _bin_map = _build_strike_audit_map(
+        center_lat=12.238,
+        center_lon=4.897,
+        zoom_start=11,
+        points=_binji_audit_pts,
+        circle_class="gcslc-strike-binji",
+        komi_intel=_show_komi,
+    )
+    _sc1, _sc2 = st.columns(2)
+    with _sc1:
+        st.markdown("**Lagos Mainland** · saturated commercial fabric (cyan / blue)")
+        st_folium(_lag_map, height=520, use_container_width=True, key="strike_lagos")
+    with _sc2:
+        st.markdown("**Binji / Danchadi void** · informal POS velocity (pulsing gold)")
+        st_folium(_bin_map, height=520, use_container_width=True, key="strike_binji")
 else:
     _gv_zoom = st.session_state.get("gv_zoom")
     _gv_center = st.session_state.get("gv_center")
@@ -1344,6 +2035,18 @@ _atomic_meta_lines.append(
     f"Friction audit · NCC {_len_ncc} ({'on' if _show_ncc else 'off'}) · "
     f"CBN {_len_cbn} ({'on' if _show_cbn else 'off'}) · "
     f"Social {_len_soc} ({'on' if _show_soc else 'off'})"
+)
+_atomic_meta_lines.append(
+    f"Territory · Trade & Commerce {len(_trade_disp)}/{len(_trade_nodes)} ({'on' if _show_trade else 'off'}) · "
+    f"Fin inclusion POS {len(_fin_pos_pts)} ({'on' if _show_fin_pos else 'off'}) · "
+    f"Micro-assets {len(_micro_disp)}/{len(_micro_pts)} ({'on' if _show_micro else 'off'}) · "
+    f"basemap max_zoom 22 + Esri imagery"
+)
+_atomic_meta_lines.append(
+    f"Forensic soul · Double-Zero {len(_double_zero_triples)} cells ({'on' if _show_dz else 'off'}) · "
+    f"AZK vectors {len(_north_mk)} markets ({'on' if _show_vec else 'off'}) · "
+    f"Komi popups {'on' if _show_komi else 'off'} · "
+    f"Strike split {'on' if _strike_mode else 'off'}"
 )
 
 _detail_meta = " · ".join(
