@@ -5,18 +5,41 @@ Galadiman Ruwa Center (GCSLC) LTD/GTE — © 2026
 
 from __future__ import annotations
 
+import json
 from datetime import datetime
+from pathlib import Path
 
 import folium
+import pandas as pd
 import requests
 import streamlit as st
 from branca.element import Element
+from folium.map import CustomPane
 from folium.plugins import AntPath, Fullscreen
+
+from gcslc_deep_join import NATIONAL_WARD_TOTAL, build_fused_catalog
+from ng_connectivity import (
+    GEOBOUNDARIES_API_NGA_ADM2,
+    build_spine_table,
+    fetch_geo_boundary_geojson,
+    load_hdx_nga_geojson_zip_layers,
+    prefer_hdx_or_geo_lga_geojson,
+)
 
 SHELL = "#000080"
 GLASS = "rgba(255, 255, 255, 0.08)"
 GOLD = "#D4AF37"
 CYAN = "#00E5FF"
+# Sovereign Heartbeat — LGA pulse (mandate)
+GOLD_HEARTBEAT = "#BF953F"
+
+BASE_DIR = Path(__file__).resolve().parent
+COAL_NODES_JSON = BASE_DIR / "Part_02_Finance" / "data" / "coal_reserve_nodes.json"
+
+# Mobile pinch drill-down: states → LGAs → wards + labels
+ZOOM_LGA_EMERGE = 8
+ZOOM_WARD_EMERGE = 11
+ZOOM_WARD_LABELS = 12
 
 GEOBOUNDARIES_API_NGA_ADM1 = "https://www.geoboundaries.org/api/current/gbOpen/NGA/ADM1/"
 # Abuja–Zaria–Kano pilot spine (“Million Steel Rods” corridor nodes)
@@ -45,6 +68,23 @@ def _tooltip_field(geojson: dict | None) -> str | None:
     return next(iter(props.keys()), None)
 
 
+def _lga_tooltip_fc(lgas_fc: dict | None) -> folium.GeoJsonTooltip | None:
+    if not lgas_fc or not lgas_fc.get("features"):
+        return None
+    p0 = lgas_fc["features"][0].get("properties") or {}
+    if "ADM2_EN" in p0 and "ADM1_EN" in p0:
+        return folium.GeoJsonTooltip(
+            fields=["ADM2_EN", "ADM1_EN"], aliases=["LGA", "State"], sticky=True
+        )
+    if "shapeName" in p0 and "shapeGroup" in p0:
+        return folium.GeoJsonTooltip(
+            fields=["shapeName", "shapeGroup"],
+            aliases=["LGA", "Boundary group"],
+            sticky=True,
+        )
+    return None
+
+
 @st.cache_data(ttl=86400, show_spinner="Mounting federation boundaries…")
 def _load_nigeria_states_geojson() -> dict | None:
     """geoBoundaries gbOpen NGA ADM1 — resolves real GeoJSON (GitHub raw is Git LFS)."""
@@ -60,7 +100,112 @@ def _load_nigeria_states_geojson() -> dict | None:
         return None
 
 
-def _build_federation_map(states_geojson: dict | None) -> folium.Map:
+@st.cache_data(ttl=3600, show_spinner=False)
+def _load_fused_lga_ward_partition() -> pd.DataFrame:
+    return build_fused_catalog()
+
+
+@st.cache_data(ttl=86400, show_spinner=False)
+def _coal_asset_state_names() -> frozenset[str]:
+    if not COAL_NODES_JSON.is_file():
+        return frozenset()
+    data = json.loads(COAL_NODES_JSON.read_text(encoding="utf-8"))
+    return frozenset(str(n.get("state", "")).strip() for n in data.get("nodes", []) if n.get("state"))
+
+
+@st.cache_data(
+    ttl=604800,
+    show_spinner="Loading HDX COD administrative bundle + LGA ADM2…",
+)
+def _load_phase2_spine_bundle() -> dict:
+    gb_lgas = fetch_geo_boundary_geojson(GEOBOUNDARIES_API_NGA_ADM2)
+    hdx = load_hdx_nga_geojson_zip_layers()
+    wards_fc = hdx.get("wards")
+    lgas_fc = prefer_hdx_or_geo_lga_geojson(hdx.get("lgas"), gb_lgas)
+    spine_df, spine_report = build_spine_table(wards_fc)
+    return {
+        "wards_fc": wards_fc,
+        "lgas_fc": lgas_fc,
+        "hdx": hdx,
+        "spine_df": spine_df,
+        "spine_report": spine_report,
+    }
+
+
+def _ward_style_with_asset(
+    feature: dict,
+    asset_states: frozenset[str],
+) -> dict:
+    p = feature.get("properties") or {}
+    stn = (p.get("ADM1_EN") or p.get("adm1_en") or "").strip()
+    is_asset = stn in asset_states
+    if is_asset:
+        return {
+            "color": CYAN,
+            "weight": 1.15,
+            "fillColor": CYAN,
+            "fillOpacity": 0.06,
+            "opacity": 0.75,
+            "className": "gcslc-ward-eightrec-asset leaflet-interactive",
+        }
+    return {
+        "color": CYAN,
+        "weight": 0.9,
+        "fillColor": CYAN,
+        "fillOpacity": 0.02,
+        "opacity": 0.55,
+        "className": "gcslc-ward-base leaflet-interactive",
+    }
+
+
+def _inject_phase2_zoom_and_labels(
+    m: folium.Map,
+    z_lga: int,
+    z_ward: int,
+) -> None:
+    """Pinch tiers: states → LGAs (≥z_lga) → wards (≥z_w). Mobile: pinch-zoom for drill-down."""
+    mn = m.get_name()
+    m.get_root().html.add_child(
+        Element(
+            f"""
+<script>
+(function() {{
+  var zL = {int(z_lga)}, zW = {int(z_ward)};
+  function arm() {{
+    var mp = window["{mn}"];
+    if (!mp || !mp.getPane) {{ requestAnimationFrame(arm); return; }}
+    var ps = mp.getPane("federationStates");
+    var pl = mp.getPane("lgaHeartbeat");
+    var pw = mp.getPane("wardReveal");
+    if (!ps || !pl || !pw) {{ requestAnimationFrame(arm); return; }}
+    [pl, pw].forEach(function(p) {{
+      p.style.transition = "opacity 0.45s cubic-bezier(0.33,1,0.68,1)";
+    }});
+    function sync() {{
+      var z = mp.getZoom();
+      pl.style.opacity = (z >= zL) ? "1" : "0";
+      pl.style.pointerEvents = (z >= zL) ? "auto" : "none";
+      pw.style.opacity = (z >= zW) ? "1" : "0";
+      pw.style.pointerEvents = (z >= zW) ? "auto" : "none";
+      ps.style.opacity = "1";
+    }}
+    mp.on("zoomend", sync);
+    mp.on("zoom", sync);
+    sync();
+  }}
+  arm();
+}})();
+</script>
+"""
+        )
+    )
+
+
+def _build_federation_map(
+    states_geojson: dict | None,
+    phase2: dict | None,
+    asset_states: frozenset[str],
+) -> folium.Map:
     center_lat = sum(n["lat"] for n in AZK_CORRIDOR_NODES) / len(AZK_CORRIDOR_NODES)
     center_lon = sum(n["lon"] for n in AZK_CORRIDOR_NODES) / len(AZK_CORRIDOR_NODES)
 
@@ -73,6 +218,11 @@ def _build_federation_map(states_geojson: dict | None) -> folium.Map:
         prefer_canvas=True,
         zoom_control=True,
     )
+
+    CustomPane("federationStates", z_index=380, pointer_events=True).add_to(m)
+    CustomPane("lgaHeartbeat", z_index=430, pointer_events=True).add_to(m)
+    CustomPane("wardReveal", z_index=468, pointer_events=False).add_to(m)
+
     folium.TileLayer(
         tiles="CartoDB dark_matter",
         attr="© OpenStreetMap © CARTO · Sovereign Navy basemap",
@@ -81,6 +231,53 @@ def _build_federation_map(states_geojson: dict | None) -> folium.Map:
         control=True,
     ).add_to(m)
 
+    pulse_css = """
+@keyframes gcs-sovereign-heartbeat {
+  0%, 100% {
+    stroke: #BF953F;
+    stroke-opacity: 0.42;
+    stroke-width: 1.1px;
+    fill-opacity: 0.03;
+    filter: brightness(1) drop-shadow(0 0 1px rgba(191,149,63,0.35));
+  }
+  50% {
+    stroke: #FFF8DC;
+    stroke-opacity: 0.82;
+    stroke-width: 2.05px;
+    fill-opacity: 0.09;
+    filter: brightness(1.28) drop-shadow(0 0 5px rgba(191,149,63,0.45));
+  }
+}
+path.gcslc-lga-sovereign-heartbeat {
+  animation: gcs-sovereign-heartbeat 10.25s ease-in-out infinite !important;
+  stroke-linejoin: round !important;
+  stroke-linecap: round !important;
+  transform: translateZ(0);
+}
+@keyframes gcs-eightrec-aura {
+  0%, 100% { stroke-opacity: 0.72; filter: drop-shadow(0 0 4px rgba(0,229,255,0.35)); }
+  50% { stroke-opacity: 1; filter: drop-shadow(0 0 14px rgba(0,229,255,0.65)); }
+}
+path.gcslc-ward-eightrec-asset {
+  animation: gcs-eightrec-aura 3.2s ease-in-out infinite !important;
+}
+path.gcslc-ward-base:hover, path.gcslc-ward-eightrec-asset:hover {
+  stroke: #FFFFFF !important;
+  stroke-width: 2px !important;
+}
+.leaflet-tooltip.gcs-ward-lbl {
+  background: rgba(0,0,128,0.94) !important;
+  color: #F8FAFC !important;
+  border: 1px solid #BF953F !important;
+  font-weight: 700 !important;
+  font-size: 10px !important;
+  text-shadow: 0 1px 2px #000;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.55) !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  path.gcslc-lga-sovereign-heartbeat, path.gcslc-ward-eightrec-asset { animation: none !important; }
+}
+"""
     m.get_root().header.add_child(
         Element(
             f"<style>"
@@ -88,11 +285,12 @@ def _build_federation_map(states_geojson: dict | None) -> folium.Map:
             f".leaflet-tile-pane img,.leaflet-tile-pane canvas{{opacity:0.85!important;}}"
             f".leaflet-control-attribution{{background:rgba(0,0,128,0.72)!important;"
             f"color:{GOLD}!important;font-size:10px!important;}}"
+            f"{pulse_css}"
             f"</style>"
         )
     )
 
-    fg_spine = folium.FeatureGroup(name="Federation · 36 + FCT").add_to(m)
+    fg_spine = folium.FeatureGroup(name="37 · States + FCT (country scale)").add_to(m)
     field = _tooltip_field(states_geojson)
     if states_geojson and states_geojson.get("features"):
         tt = (
@@ -106,11 +304,12 @@ def _build_federation_map(states_geojson: dict | None) -> folium.Map:
         )
         folium.GeoJson(
             states_geojson,
+            pane="federationStates",
             style_function=lambda _f: {
                 "fillColor": "transparent",
                 "color": CYAN,
                 "weight": 1,
-                "opacity": 0.45,
+                "opacity": 0.5,
                 "fillOpacity": 0,
             },
             highlight_function=lambda _f: {
@@ -122,6 +321,62 @@ def _build_federation_map(states_geojson: dict | None) -> folium.Map:
             },
             tooltip=tt,
         ).add_to(fg_spine)
+
+    if phase2:
+        lgas_fc = phase2.get("lgas_fc")
+        fg_lga = folium.FeatureGroup(name="774 LGAs · Sovereign Heartbeat").add_to(m)
+        if lgas_fc and lgas_fc.get("features"):
+            folium.GeoJson(
+                lgas_fc,
+                pane="lgaHeartbeat",
+                style_function=lambda _f: {
+                    "color": GOLD_HEARTBEAT,
+                    "weight": 1.15,
+                    "fillColor": GOLD_HEARTBEAT,
+                    "fillOpacity": 0.045,
+                    "opacity": 0.62,
+                    "className": "gcslc-lga-sovereign-heartbeat leaflet-interactive",
+                },
+                highlight_function=lambda _f: {
+                    "weight": 2.4,
+                    "color": "#FFF8DC",
+                    "opacity": 0.98,
+                    "fillOpacity": 0.11,
+                    "fillColor": "#FFF8DC",
+                },
+                tooltip=_lga_tooltip_fc(lgas_fc),
+            ).add_to(fg_lga)
+
+        wards_fc = phase2.get("wards_fc")
+        fg_ward = folium.FeatureGroup(name="8,806 Wards · HDX spine + 8REC asset aura").add_to(
+            m
+        )
+        if wards_fc and wards_fc.get("features"):
+            w0 = wards_fc["features"][0].get("properties") or {}
+            tip_fields = [k for k in ("ADM3_EN", "ADM2_EN", "ADM1_EN") if k in w0]
+            tip = (
+                folium.GeoJsonTooltip(
+                    fields=tip_fields,
+                    aliases=["Ward", "LGA", "State"][: len(tip_fields)],
+                    sticky=True,
+                )
+                if tip_fields
+                else None
+            )
+            folium.GeoJson(
+                wards_fc,
+                pane="wardReveal",
+                style_function=lambda f: _ward_style_with_asset(f, asset_states),
+                highlight_function=lambda _f: {
+                    "weight": 2.2,
+                    "color": "#FFFFFF",
+                    "opacity": 1,
+                    "fillOpacity": 0.12,
+                },
+                tooltip=tip,
+                smooth_factor=0.5,
+            ).add_to(fg_ward)
+            _inject_phase2_zoom_and_labels(m, ZOOM_LGA_EMERGE, ZOOM_WARD_EMERGE)
 
     fg_azk = folium.FeatureGroup(name="AZK · Million Steel Rods").add_to(m)
     azk_ll = [[n["lat"], n["lon"]] for n in AZK_CORRIDOR_NODES]
@@ -401,34 +656,40 @@ st.components.v1.html(_HANDSHAKE_HTML, height=220)
 
 st.markdown("---")
 
-tab_tel, tab_fin, tab_sec, tab_soc = st.tabs(
-    ["① Telecom (NCC)", "② Finance (CBN / Banks)", "③ Security (ONSA)", "④ Social & Logistics"]
+st.markdown(
+    """
+<div class="mirror-phase-panel">
+  <strong>Phase 2 · Industrial spine</strong> — HDX COD Nigeria boundaries join 8,806 wards → 774 LGAs → 37 states + FCT.
+  Programmatic partition cross-check via <code>gcslc_deep_join</code>. NGECC coal / green-gold asset wards: cyan 8REC aura
+  (see <code>Part_02_Finance/data/coal_reserve_nodes.json</code>).
+</div>
+""",
+    unsafe_allow_html=True,
 )
 
-with tab_tel:
-    st.markdown(
-        '<div class="mirror-phase-panel"><strong>Telecom</strong> — NCC overlays · AZK corridor · signal / fiber bind.</div>',
-        unsafe_allow_html=True,
+st.markdown("### National map host — Federation glass · Sovereign Heartbeat")
+_states_geojson = _load_nigeria_states_geojson()
+_phase2 = _load_phase2_spine_bundle()
+_asset_states = _coal_asset_state_names()
+try:
+    _fused = _load_fused_lga_ward_partition()
+    _fuse_ok = len(_fused) == 774 and int(_fused["ward_count"].sum()) == NATIONAL_WARD_TOTAL
+    st.caption(
+        f"gcslc_deep_join · {_fused.shape[0]} LGAs · Σ wards {int(_fused['ward_count'].sum()):,} · "
+        f"{'CHECKSUM LOCKED' if _fuse_ok else 'CHECKSUM REVIEW'}"
     )
-with tab_fin:
-    st.markdown(
-        '<div class="mirror-phase-panel"><strong>Finance</strong> — CBN / inclusion · ward-gated aggregates.</div>',
-        unsafe_allow_html=True,
-    )
-with tab_sec:
-    st.markdown(
-        '<div class="mirror-phase-panel"><strong>Security</strong> — ONSA correlation windows · policy automation.</div>',
-        unsafe_allow_html=True,
-    )
-with tab_soc:
-    st.markdown(
-        '<div class="mirror-phase-panel"><strong>Social & logistics</strong> — Trade pulse · services · fleet contracts.</div>',
-        unsafe_allow_html=True,
+except Exception:
+    st.caption("gcslc_deep_join manifest unreachable — HDX geometry spine still mounts when online.")
+
+_spine = _phase2["spine_report"]
+if _spine.get("ward_rows"):
+    st.caption(
+        f"HDX spine · {_spine['ward_rows']} ward rows · {_spine.get('distinct_lgas')} LGA facets · "
+        f"{_spine.get('distinct_states')} state facets · "
+        f"{'VALID' if _spine.get('valid') else 'REVIEW'}"
     )
 
-st.markdown("### National map host — Federation glass")
-_states_geojson = _load_nigeria_states_geojson()
-_federation_map = _build_federation_map(_states_geojson)
+_federation_map = _build_federation_map(_states_geojson, _phase2, _asset_states)
 _map_embed = _federation_map._repr_html_()
 _MAP_GLASS_HTML = (
     """
@@ -530,8 +791,12 @@ html, body { margin: 0; background: transparent !important; }
 <div class="mirror-map-glass-map-host">
   <div class="mirror-map-glass-frost-map">
     <div class="mirror-map-glass-header">
-      <p class="mgh1">GOOGLE OF NIGERIA — LIVE SOCKET</p>
-      <p class="mgh2">Sovereign Navy basemap (tiles 85% · navy bleed) · Federation spine · AZK Million Steel Rods</p>
+      <p class="mgh1">PHASE 2 · INDUSTRIAL SOVEREIGN MIRROR</p>
+      <p class="mgh2">March 7 Lux · pinch-zoom: LGAs ≥ zoom """
+    + str(ZOOM_LGA_EMERGE)
+    + """, wards ≥ zoom """
+    + str(ZOOM_WARD_EMERGE)
+    + """ · HDX ward labels (sticky tap) · LGA heartbeat #BF953F · deep blue shell #000080 · AZK spine</p>
     </div>
     <div class="mirror-folium-host">"""
     + _map_embed
@@ -540,7 +805,7 @@ html, body { margin: 0; background: transparent !important; }
       <span class="tam-bubble-map" style="top:10%;left:6%;">Tam-Tam · Sovereign</span>
       <span class="tam-bubble-map b2" style="top:62%;right:8%;">Dam-Dam · GCSLC</span>
       <span class="tam-bubble-map b3" style="bottom:14%;left:18%;">Proprietary Methodology</span>
-      <span class="tam-bubble-map b4" style="top:38%;right:22%;">176,846 Units · Vigil</span>
+      <span class="tam-bubble-map b4" style="top:38%;right:22%;">8REC · NGECC asset lattice</span>
     </div>
   </div>
 </div>
@@ -553,11 +818,14 @@ if not _states_geojson:
         "Retry with network access for full state outlines."
     )
 
-c1, c2, c3, c4 = st.columns(4)
-c1.metric("States", "36")
-c2.metric("LGAs", "774")
-c3.metric("Wards", "8,806")
-c4.metric("Polling units", "176,846")
+c1, c2, c3 = st.columns(3)
+c1.metric("States + FCT", "37")
+c2.metric("LGAs (heartbeat)", "774")
+c3.metric("Wards (HDX + join)", "8,806")
+st.caption(
+    f"Pinch drill-down · LGAs emerge zoom ≥ {ZOOM_LGA_EMERGE} · wards emerge zoom ≥ {ZOOM_WARD_EMERGE} · "
+    f"sticky ward/LGA/state tooltips (tap on S24 / iPhone)."
+)
 
 
 @st.fragment(run_every=60)

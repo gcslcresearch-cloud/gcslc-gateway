@@ -1,7 +1,6 @@
 """
-Nigeria federation connectivity spine — State ↔ LGA ↔ Ward join (Phase 2).
-Sources: geoBoundaries (ADM1/ADM2) + HDX UN OCHA COD nga_admin boundaries bundle.
-Validated row counts mirror INEC / operational ward inventory (774 LGAs · 8806 wards · 37 states+FCT).
+Phase 2 forensic spine — HDX COD Nigeria administrative boundaries + geoBoundaries ADM2.
+Validates Ward ↔ LGA ↔ State row lattice against national cardinality targets.
 """
 
 from __future__ import annotations
@@ -13,7 +12,6 @@ from typing import Any
 
 import pandas as pd
 import requests
-
 
 GEOBOUNDARIES_API_NGA_ADM2 = (
     "https://www.geoboundaries.org/api/current/gbOpen/NGA/ADM2/"
@@ -34,7 +32,7 @@ def _http_get_binary(url: str, timeout: int = 240) -> bytes | None:
         r = requests.get(
             url,
             timeout=timeout,
-            headers={"User-Agent": "Mozilla/5.0 GCSLC-Sovereign-Mirror"},
+            headers={"User-Agent": "Mozilla/5.0 GCSLC-Sovereign-Eagle-Mirror"},
         )
         r.raise_for_status()
         return r.content
@@ -56,7 +54,6 @@ def fetch_geo_boundary_geojson(meta_api_url: str) -> dict | None:
 
 
 def _classify_boundary_fc(fc: dict) -> str:
-    """Heuristic COD layer typing by row count (+/- tolerance)."""
     n = len(fc.get("features") or [])
     if abs(n - EXP_WARDS) <= 220:
         return "wards"
@@ -68,11 +65,6 @@ def _classify_boundary_fc(fc: dict) -> str:
 
 
 def load_hdx_nga_geojson_zip_layers() -> dict[str, dict | None]:
-    """
-    Downloads HDX nga_admin_boundaries.geojson.zip and resolves State / LGA / Ward FCs.
-    Some builds ship one GeoJSON per level; others aggregate — we classify by count.
-    Returns keys: states, lgas, wards (values may be None if unavailable).
-    """
     blob = _http_get_binary(HDX_NGA_ADMIN_GEOJSON_ZIP)
     if not blob:
         return {"states": None, "lgas": None, "wards": None}
@@ -93,13 +85,12 @@ def load_hdx_nga_geojson_zip_layers() -> dict[str, dict | None]:
             fc = json.loads(raw)
         except Exception:
             continue
-        if not fc.get("type") == "FeatureCollection":
+        if fc.get("type") != "FeatureCollection":
             continue
         kind = _classify_boundary_fc(fc)
         if kind in out and out[kind] is None:
             out[kind] = fc
             continue
-        # If multiple geojson files match same bucket, prefer closest count delta
         if kind != "unknown" and kind in assigned:
             best = out[kind]
             if best is None:
@@ -109,7 +100,7 @@ def load_hdx_nga_geojson_zip_layers() -> dict[str, dict | None]:
                 new_n = len(fc.get("features") or [])
                 if abs(new_n - assigned[kind]) < abs(cur_best - assigned[kind]):
                     out[kind] = fc
-    # Single consolidated file fallback: classify whole bundle
+
     if not any(out.values()):
         candidates: list[tuple[int, dict]] = []
         for name in zf.namelist():
@@ -154,8 +145,7 @@ def _ward_row_from_properties(p: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def build_forensic_spine_table(wards_fc: dict | None) -> tuple[pd.DataFrame, dict[str, Any]]:
-    """One row per ward; validates duplicate ward codes & LGA cardinality."""
+def build_spine_table(wards_fc: dict | None) -> tuple[pd.DataFrame, dict[str, Any]]:
     report: dict[str, Any] = {
         "ward_rows": 0,
         "expected_wards": EXP_WARDS,
@@ -177,14 +167,13 @@ def build_forensic_spine_table(wards_fc: dict | None) -> tuple[pd.DataFrame, dic
     df = pd.DataFrame(rows)
     report["ward_rows"] = len(df)
     nonempty = df[df["ward_pcode"].str.len() > 0].copy()
-    dup = (
-        int(nonempty["ward_pcode"].duplicated().sum()) if len(nonempty) else 0
-    )
+    dup = int(nonempty["ward_pcode"].duplicated().sum()) if len(nonempty) else 0
     report["ward_pcode_dupes"] = dup
+
     if len(nonempty) == 0:
         report["distinct_lgas"] = 0
         report["distinct_states"] = 0
-        report["notes"].append("No ward pcode fields parsed — check COD attribute names.")
+        report["notes"].append("No ward pcode fields parsed — inspect COD attributes.")
         return df, report
 
     report["distinct_lgas"] = int(nonempty.groupby(["state_pcode", "lga_pcode"]).ngroups)
@@ -194,20 +183,13 @@ def build_forensic_spine_table(wards_fc: dict | None) -> tuple[pd.DataFrame, dic
         report["valid"] = True
     else:
         report["notes"].append(
-            f"Ward cardinality {len(nonempty)} ≠ target {EXP_WARDS} ±240 or pcode dupes detected."
-        )
-    short_pc = nonempty["ward_pcode"].str.len().lt(4)
-    if short_pc.any():
-        report["notes"].append(
-            "Some ward pcode fields look malformed — inspect COD aliases."
+            f"Ward cardinality {len(nonempty)} vs target {EXP_WARDS} ±240 or duplicates."
         )
 
     dl = int(report["distinct_lgas"]) if report["distinct_lgas"] is not None else 0
     if abs(dl - EXP_LGAS) > 35:
         report["notes"].append(f"Distinct LGAs counted {dl}; expected ~{EXP_LGAS}.")
         report["valid"] = False
-    elif report["valid"]:
-        report["valid"] = True
 
     return df, report
 
@@ -215,7 +197,6 @@ def build_forensic_spine_table(wards_fc: dict | None) -> tuple[pd.DataFrame, dic
 def prefer_hdx_or_geo_lga_geojson(
     lgas_hdx: dict | None, lgas_gb: dict | None
 ) -> dict | None:
-    """Prefer HDX (COD) LGA geometries when cardinality matches (~774); else geoBoundaries ADM2."""
     for fc in (lgas_hdx, lgas_gb):
         if fc and fc.get("features"):
             n = len(fc["features"])
