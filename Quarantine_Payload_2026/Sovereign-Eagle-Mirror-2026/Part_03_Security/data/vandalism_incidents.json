@@ -1,13 +1,56 @@
 {
   "meta": {
-    "source": "Part_03 Security incident log",
-    "description": "Sample vandalism reports for blackout correlation."
+    "source": "Part_03 Security · NCC-aligned telecom infrastructure vandalization log",
+    "network_operator": "NCC-regulated ICT infrastructure",
+    "description": "Known vandalization pressure points — correlate with blackout / resilience audits.",
+    "visual_class": "gcslc-friction-node gcslc-friction-ncc-vuln",
+    "stroke_hex": "#DC143C"
   },
   "incidents": [
-    { "id": "VAN-001", "asset": "Tower Fence Breach", "lat": 9.064, "lon": 7.397, "severity": 0.91, "cases_30d": 6 },
-    { "id": "VAN-002", "asset": "Power Unit Theft", "lat": 12.230, "lon": 4.885, "severity": 0.79, "cases_30d": 4 },
-    { "id": "VAN-003", "asset": "Fiber Tampering", "lat": 13.430, "lon": 5.660, "severity": 0.71, "cases_30d": 3 },
-    { "id": "VAN-004", "asset": "Access Panel Damage", "lat": 7.675, "lon": 7.055, "severity": 0.42, "cases_30d": 2 },
-    { "id": "VAN-005", "asset": "Perimeter Intrusion Attempt", "lat": 11.096, "lon": 7.733, "severity": 0.28, "cases_30d": 1 }
+    {
+      "id": "NCC-VAN-001",
+      "asset": "Tower perimeter · fence breach",
+      "network_operator": "NCC ICT backbone",
+      "lat": 9.064,
+      "lon": 7.397,
+      "severity": 0.91,
+      "cases_30d": 6
+    },
+    {
+      "id": "NCC-VAN-002",
+      "asset": "Base station · power unit theft",
+      "network_operator": "NCC ICT backbone",
+      "lat": 12.23,
+      "lon": 4.885,
+      "severity": 0.79,
+      "cases_30d": 4
+    },
+    {
+      "id": "NCC-VAN-003",
+      "asset": "Backhaul · fiber tampering",
+      "network_operator": "NCC ICT backbone",
+      "lat": 13.43,
+      "lon": 5.66,
+      "severity": 0.71,
+      "cases_30d": 3
+    },
+    {
+      "id": "NCC-VAN-004",
+      "asset": "Shelter · access panel damage",
+      "network_operator": "NCC ICT backbone",
+      "lat": 7.675,
+      "lon": 7.055,
+      "severity": 0.42,
+      "cases_30d": 2
+    },
+    {
+      "id": "NCC-VAN-005",
+      "asset": "Site security · intrusion attempt",
+      "network_operator": "NCC ICT backbone",
+      "lat": 11.096,
+      "lon": 7.733,
+      "severity": 0.28,
+      "cases_30d": 1
+    }
   ]
 }

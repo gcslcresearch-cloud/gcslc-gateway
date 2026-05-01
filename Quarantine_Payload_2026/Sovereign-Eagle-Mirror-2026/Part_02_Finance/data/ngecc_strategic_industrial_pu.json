@@ -3,7 +3,18 @@
     "program": "NGECC Strategic Industrial Nodes · Phase 3",
     "style_hex": "#BF953F",
     "canonical_source": "Emeka-Onwuepe/Polling_Units_in_Nigeria · Nigeria_polling_units.csv · field `code`",
-    "notes": "Each `code` must match the canonical CSV exactly (character-for-character). `azk_alignment: true` marks PUs on the Abuja–Zaria–Kano spine for Sovereign Gold peak intensity."
+    "notes": "Each `code` must match the canonical CSV exactly (character-for-character). `azk_alignment: true` marks PUs on the Abuja–Zaria–Kano spine for Sovereign Gold peak intensity.",
+    "bulk_ingestion": {
+      "tier_2_key": "industrial_nodes_bulk",
+      "target_anchor_ceiling": 100,
+      "object_schema": {
+        "code": "string · exact CSV `code`",
+        "label": "string · human-readable anchor label",
+        "azk_alignment": "boolean · true only for Abuja–Zaria–Kano spine PUs"
+      },
+      "merge_rule": "Load order: `industrial_nodes` first, then `industrial_nodes_bulk`. On duplicate `code`, the tier-1 row wins (bulk rows are skipped).",
+      "workflow": "Append validated PU rows to `industrial_nodes_bulk` (batch tooling may emit JSON arrays). Re-run Streamlit or wait for cache TTL so the lattice refreshes."
+    }
   },
   "industrial_nodes": [
     {
@@ -81,5 +92,6 @@
       "label": "Kebbi · river logistics node · north-west registry",
       "azk_alignment": false
     }
-  ]
+  ],
+  "industrial_nodes_bulk": []
 }

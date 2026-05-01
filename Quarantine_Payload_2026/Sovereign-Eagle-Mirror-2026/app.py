@@ -44,12 +44,21 @@ GOLD = "#D4AF37"
 CYAN = "#00E5FF"
 # Sovereign Heartbeat — LGA pulse (mandate)
 GOLD_HEARTBEAT = "#BF953F"
+# Friction audit — NCC vulnerability vs Deep Blue shell
+CRIMSON_VULN = "#DC143C"
+CBN_ACCESS_ACCENT = "#C9A227"
+SOCIAL_HUB_ACCENT = "#7FD4B8"
 
 BASE_DIR = Path(__file__).resolve().parent
 COAL_NODES_JSON = BASE_DIR / "Part_02_Finance" / "data" / "coal_reserve_nodes.json"
 NGECC_INDUSTRIAL_PU_JSON = (
     BASE_DIR / "Part_02_Finance" / "data" / "ngecc_strategic_industrial_pu.json"
 )
+VANDALISM_INCIDENTS_JSON = (
+    BASE_DIR / "Part_03_Security" / "data" / "vandalism_incidents.json"
+)
+CBN_FINANCIAL_JSON = BASE_DIR / "Part_02_Finance" / "data" / "cbn_financial_access_points.json"
+SOCIAL_SERVICE_HUBS_JSON = BASE_DIR / "Part_04_Social" / "data" / "social_service_hubs.json"
 
 
 def _parse_azk_alignment_flag(raw: object) -> bool:
@@ -144,9 +153,22 @@ def _load_ngecc_industrial_registry() -> dict:
             "azk_codes": frozenset(),
             "meta": {},
             "nodes": [],
+            "bulk_entries_count": 0,
         }
     raw = json.loads(NGECC_INDUSTRIAL_PU_JSON.read_text(encoding="utf-8"))
-    nodes = raw.get("industrial_nodes") or []
+    primary = raw.get("industrial_nodes") or []
+    bulk = raw.get("industrial_nodes_bulk") or []
+    seen: set[str] = set()
+    nodes: list[dict] = []
+    for block in (primary, bulk):
+        for n in block:
+            if not isinstance(n, dict):
+                continue
+            c = str(n.get("code", "")).strip()
+            if not c or c in seen:
+                continue
+            seen.add(c)
+            nodes.append(n)
     codes = frozenset(str(n.get("code", "")).strip() for n in nodes if n.get("code"))
     labels = {
         str(n.get("code", "")).strip(): str(n.get("label", "Industrial node")).strip()
@@ -164,7 +186,57 @@ def _load_ngecc_industrial_registry() -> dict:
         "azk_codes": azk_codes,
         "meta": raw.get("meta") or {},
         "nodes": nodes,
+        "bulk_entries_count": len(bulk),
     }
+
+
+@st.cache_data(ttl=86400, show_spinner=False)
+def _load_ncc_vulnerability_incidents() -> list[dict]:
+    """NCC-aligned ICT vandalization nodes → crimson friction layer."""
+    if not VANDALISM_INCIDENTS_JSON.is_file():
+        return []
+    raw = json.loads(VANDALISM_INCIDENTS_JSON.read_text(encoding="utf-8"))
+    out: list[dict] = []
+    for row in raw.get("incidents") or []:
+        if not isinstance(row, dict):
+            continue
+        try:
+            float(row["lat"])
+            float(row["lon"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        out.append(row)
+    return out
+
+
+@st.cache_data(ttl=86400, show_spinner=False)
+def _load_cbn_financial_points() -> list[dict]:
+    if not CBN_FINANCIAL_JSON.is_file():
+        return []
+    raw = json.loads(CBN_FINANCIAL_JSON.read_text(encoding="utf-8"))
+    return _validate_lat_lon_points(raw.get("points") or [])
+
+
+@st.cache_data(ttl=86400, show_spinner=False)
+def _load_social_service_points() -> list[dict]:
+    if not SOCIAL_SERVICE_HUBS_JSON.is_file():
+        return []
+    raw = json.loads(SOCIAL_SERVICE_HUBS_JSON.read_text(encoding="utf-8"))
+    return _validate_lat_lon_points(raw.get("points") or [])
+
+
+def _validate_lat_lon_points(rows: list) -> list[dict]:
+    out: list[dict] = []
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        try:
+            float(row["lat"])
+            float(row["lon"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        out.append(row)
+    return out
 
 
 @st.cache_data(ttl=86400, show_spinner=False)
@@ -402,6 +474,13 @@ def _build_federation_map(
     states_geojson: dict | None,
     phase2: dict | None,
     asset_states: frozenset[str],
+    *,
+    show_ncc_vulnerability: bool = False,
+    ncc_incidents: list[dict] | None = None,
+    show_cbn_access: bool = False,
+    cbn_points: list[dict] | None = None,
+    show_social_hubs: bool = False,
+    social_points: list[dict] | None = None,
 ) -> folium.Map:
     center_lat = sum(n["lat"] for n in AZK_CORRIDOR_NODES) / len(AZK_CORRIDOR_NODES)
     center_lon = sum(n["lon"] for n in AZK_CORRIDOR_NODES) / len(AZK_CORRIDOR_NODES)
@@ -420,6 +499,10 @@ def _build_federation_map(
     CustomPane("lgaHeartbeat", z_index=430, pointer_events=True).add_to(m)
     CustomPane("wardReveal", z_index=468, pointer_events=False).add_to(m)
     CustomPane("atomicLattice", z_index=490, pointer_events=True).add_to(m)
+    # Friction overlays — above lattice mist, below AZK spine (compact markers; sidebar toggles)
+    CustomPane("frictionSocial", z_index=504, pointer_events=False).add_to(m)
+    CustomPane("frictionCBN", z_index=505, pointer_events=False).add_to(m)
+    CustomPane("frictionVulnerability", z_index=508, pointer_events=False).add_to(m)
     # AZK Million Steel Rods — always above atomic cyan mist (national PU viewport layer)
     CustomPane("azkSpine", z_index=620, pointer_events=False).add_to(m)
 
@@ -507,10 +590,36 @@ circle.gcslc-atom-industrial.gcslc-atom-azk-spine,
 path.gcslc-atom-industrial.gcslc-atom-azk-spine {
   animation: gcs-industrial-node-shimmer-azk 2.1s ease-in-out infinite !important;
 }
+@keyframes gcs-friction-crimson-vibrate {
+  0%, 100% {
+    stroke-opacity: 0.78;
+    fill-opacity: 0.42;
+    filter: brightness(1.08) drop-shadow(0 0 6px rgba(220,20,60,0.65));
+  }
+  50% {
+    stroke-opacity: 1;
+    fill-opacity: 0.72;
+    filter: brightness(1.35) drop-shadow(0 0 18px rgba(220,20,60,0.92));
+  }
+}
+circle.gcslc-friction-ncc-vuln, path.gcslc-friction-ncc-vuln {
+  stroke: #DC143C !important;
+  fill: #DC143C !important;
+  animation: gcs-friction-crimson-vibrate 1.65s ease-in-out infinite !important;
+}
+circle.gcslc-friction-cbn, path.gcslc-friction-cbn {
+  stroke: #C9A227 !important;
+  fill: #C9A227 !important;
+}
+circle.gcslc-friction-social, path.gcslc-friction-social {
+  stroke: #7FD4B8 !important;
+  fill: #7FD4B8 !important;
+}
 @media (prefers-reduced-motion: reduce) {
   path.gcslc-lga-sovereign-heartbeat, path.gcslc-ward-eightrec-asset,
   circle.gcslc-atom-industrial, path.gcslc-atom-industrial,
-  circle.gcslc-atom-azk-spine, path.gcslc-atom-azk-spine { animation: none !important; }
+  circle.gcslc-atom-azk-spine, path.gcslc-atom-azk-spine,
+  circle.gcslc-friction-ncc-vuln, path.gcslc-friction-ncc-vuln { animation: none !important; }
 }
 path.gcslc-atom-node {
   transition: fill-opacity 0.35s ease, stroke-opacity 0.35s ease;
@@ -662,6 +771,77 @@ path.gcslc-atom-node {
             popup=folium.Popup(node["name"], max_width=240),
             pane="azkSpine",
         ).add_to(fg_azk)
+
+    if show_ncc_vulnerability and ncc_incidents:
+        fg_vuln = folium.FeatureGroup(
+            name="Friction · NCC infrastructure vulnerability",
+            show=True,
+        ).add_to(m)
+        for row in ncc_incidents:
+            rid = str(row.get("id", ""))[:64]
+            asset = str(row.get("asset", "Infrastructure"))[:120]
+            tip = f"{rid} · {asset}"[:220]
+            folium.CircleMarker(
+                location=[float(row["lat"]), float(row["lon"])],
+                radius=6,
+                color=CRIMSON_VULN,
+                weight=1.35,
+                fill=True,
+                fillColor=CRIMSON_VULN,
+                fillOpacity=0.52,
+                opacity=0.9,
+                pane="frictionVulnerability",
+                className="gcslc-friction-node gcslc-friction-ncc-vuln",
+                tooltip=folium.Tooltip(tip, sticky=True),
+            ).add_to(fg_vuln)
+
+    if show_cbn_access and cbn_points:
+        fg_cbn = folium.FeatureGroup(
+            name="Friction · CBN financial access",
+            show=True,
+        ).add_to(m)
+        for row in cbn_points:
+            lbl = str(row.get("label", "Financial access"))[:140]
+            rid = str(row.get("id", ""))[:48]
+            tip = f"{lbl}" + (f" · {rid}" if rid else "")
+            tip = tip[:220]
+            folium.CircleMarker(
+                location=[float(row["lat"]), float(row["lon"])],
+                radius=4,
+                color=CBN_ACCESS_ACCENT,
+                weight=1,
+                fill=True,
+                fillColor=CBN_ACCESS_ACCENT,
+                fillOpacity=0.45,
+                opacity=0.82,
+                pane="frictionCBN",
+                className="gcslc-friction-node gcslc-friction-cbn",
+                tooltip=folium.Tooltip(tip, sticky=True),
+            ).add_to(fg_cbn)
+
+    if show_social_hubs and social_points:
+        fg_soc = folium.FeatureGroup(
+            name="Friction · Social service hubs",
+            show=True,
+        ).add_to(m)
+        for row in social_points:
+            lbl = str(row.get("label", "Social hub"))[:140]
+            cls = str(row.get("hub_class", ""))[:64]
+            tip = f"{lbl}" + (f" · {cls}" if cls else "")
+            tip = tip[:220]
+            folium.CircleMarker(
+                location=[float(row["lat"]), float(row["lon"])],
+                radius=4,
+                color=SOCIAL_HUB_ACCENT,
+                weight=1,
+                fill=True,
+                fillColor=SOCIAL_HUB_ACCENT,
+                fillOpacity=0.42,
+                opacity=0.8,
+                pane="frictionSocial",
+                className="gcslc-friction-node gcslc-friction-social",
+                tooltip=folium.Tooltip(tip, sticky=True),
+            ).add_to(fg_soc)
 
     Fullscreen(
         position="topright",
@@ -989,9 +1169,11 @@ with st.sidebar:
     st.caption("Phase 3 · NGECC strategic registry ↔ AZK Million Steel Rods")
     _ngecc_sidebar_reg = _load_ngecc_industrial_registry()
     st.metric("Industrial PU registry", len(_ngecc_sidebar_reg["codes"]))
+    _bulk_n = int(_ngecc_sidebar_reg.get("bulk_entries_count") or 0)
+    _bulk_hint = f" · tier-2 bulk rows: {_bulk_n}" if _bulk_n else ""
     st.caption(
         f"AZK spine PUs (peak gold): {len(_ngecc_sidebar_reg['azk_codes'])} · "
-        f"registry path: `Part_02_Finance/data/ngecc_strategic_industrial_pu.json`"
+        f"registry: `Part_02_Finance/data/ngecc_strategic_industrial_pu.json`{_bulk_hint}"
     )
     st.toggle(
         "Industrial Assets (NGECC)",
@@ -999,6 +1181,28 @@ with st.sidebar:
         key="show_industrial_assets",
         help="Sovereign Gold (#BF953F) shimmer on registered PUs; off = cyan-only lattice for fluid compare.",
     )
+    with st.expander("Friction · sovereign audit", expanded=False):
+        st.caption(
+            "Industrial wealth ↔ social delivery · layers stay off the hero canvas until enabled."
+        )
+        st.toggle(
+            "NCC · infrastructure vulnerability",
+            value=True,
+            key="show_ncc_vulnerability",
+            help="Pulsing crimson (#DC143C) — NCC ICT vandalization pressure (security intervention).",
+        )
+        st.toggle(
+            "CBN · financial access points",
+            value=False,
+            key="show_cbn_access",
+            help="Tier-2 registry: Part_02_Finance/data/cbn_financial_access_points.json",
+        )
+        st.toggle(
+            "Social · service hubs",
+            value=False,
+            key="show_social_hubs",
+            help="Tier-2 registry: Part_04_Social/data/social_service_hubs.json",
+        )
     st.divider()
     st.caption("AZK spine: Abuja FCT → Keffi → Kaduna → Zaria → Kano · `azk_alignment: true` = peak gold.")
 
@@ -1049,7 +1253,24 @@ if _national_df is not None:
 _ngecc_reg = _load_ngecc_industrial_registry()
 _show_industrial = bool(st.session_state.get("show_industrial_assets", True))
 
-_federation_map = _build_federation_map(_states_geojson, _phase2, _asset_states)
+_ncc_incidents = _load_ncc_vulnerability_incidents()
+_cbn_pts = _load_cbn_financial_points()
+_social_pts = _load_social_service_points()
+_show_ncc = bool(st.session_state.get("show_ncc_vulnerability", True))
+_show_cbn = bool(st.session_state.get("show_cbn_access", False))
+_show_soc = bool(st.session_state.get("show_social_hubs", False))
+
+_federation_map = _build_federation_map(
+    _states_geojson,
+    _phase2,
+    _asset_states,
+    show_ncc_vulnerability=_show_ncc,
+    ncc_incidents=_ncc_incidents,
+    show_cbn_access=_show_cbn,
+    cbn_points=_cbn_pts,
+    show_social_hubs=_show_soc,
+    social_points=_social_pts,
+)
 _fg_atom = _atomic_viewport_feature_group(
     _viewport_df,
     _ngecc_reg["codes"],
@@ -1115,6 +1336,14 @@ elif _national_df is not None and _nat_rep:
 _atomic_meta_lines.append(
     f"Phase 3 NGECC · {len(_ngecc_reg['codes'])} industrial codes · "
     f"gold overlay {'on' if _show_industrial else 'off (cyan-only)'}"
+)
+_len_ncc = len(_ncc_incidents)
+_len_cbn = len(_cbn_pts)
+_len_soc = len(_social_pts)
+_atomic_meta_lines.append(
+    f"Friction audit · NCC {_len_ncc} ({'on' if _show_ncc else 'off'}) · "
+    f"CBN {_len_cbn} ({'on' if _show_cbn else 'off'}) · "
+    f"Social {_len_soc} ({'on' if _show_soc else 'off'})"
 )
 
 _detail_meta = " · ".join(

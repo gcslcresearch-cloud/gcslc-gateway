@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  macOS LaunchAgent template — 24/7 vigil across logout (survives terminal close).
+  1. Replace __REPO_ROOT__ with absolute path to GCSLC_Sovereign_Gateway (venv parent).
+  2. Replace __MIRROR_ROOT__ with absolute path to Sovereign-Eagle-Mirror-2026.
+  3. Copy to ~/Library/LaunchAgents/com.gcslc.sovereign-eagle-mirror.plist
+  4. launchctl load ~/Library/LaunchAgents/com.gcslc.sovereign-eagle-mirror.plist
+  5. launchctl kickstart -k gui/$(id -u)/com.gcslc.sovereign-eagle-mirror
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.gcslc.sovereign-eagle-mirror</string>
+  <key>WorkingDirectory</key>
+  <string>__MIRROR_ROOT__</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>__REPO_ROOT__/.venv/bin/streamlit</string>
+    <string>run</string>
+    <string>app.py</string>
+    <string>--server.address</string>
+    <string>0.0.0.0</string>
+    <string>--server.port</string>
+    <string>8501</string>
+    <string>--browser.gatherUsageStats</string>
+    <string>false</string>
+  </array>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>__MIRROR_ROOT__/logs/launchd_streamlit.log</string>
+  <key>StandardErrorPath</key>
+  <string>__MIRROR_ROOT__/logs/launchd_streamlit.err.log</string>
+</dict>
+</plist>
