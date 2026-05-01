@@ -12,5 +12,6 @@
     "expected_pu_count": 153
   },
   "hdx_cod_note": "Current HDX nga_admin_boundaries.geojson.zip admin3 list is 714 administrative units, not 1:1 with 8,806 INEC registration areas. Forensic ADM3_PCODE binding to INEC ward_token is a separate crosswalk table for national deployment.",
-  "lattice_placement": "Emeka CSV has no coordinates; Rigasa spike uses a golden-angle disk on the temikeezy ward centroid (wards.json) for spatial stress until INEC or OCDS releases official PU coordinates."
+  "lattice_placement": "Emeka CSV has no coordinates; national rollout places each PU on a golden-angle disk around the resolved ward/LGA/state centroid from temikeezy wards.json (fallback hierarchy). Client renders ≤10k PU markers per viewport via streamlit-folium + GeoJSON-per-ward semantics.",
+  "national_viewport": "Atomic cyan mist only when zoom ≥ ZOOM_ATOM_EMERGE and bounds from streamlit-folium; capped at 10,000 visible markers per frame."
 }

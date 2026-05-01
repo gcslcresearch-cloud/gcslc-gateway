@@ -5,6 +5,7 @@ Galadiman Ruwa Center (GCSLC) LTD/GTE — © 2026
 
 from __future__ import annotations
 
+import html
 import json
 from datetime import datetime
 from pathlib import Path
@@ -13,11 +14,21 @@ import folium
 import pandas as pd
 import requests
 import streamlit as st
+
+try:
+    from streamlit_folium import st_folium
+except ImportError:
+    st_folium = None  # type: ignore[misc, assignment]
 from branca.element import Element
 from folium.map import CustomPane
 from folium.plugins import AntPath, Fullscreen
 
-from atomic_spie import build_rigasa_spike_bundle
+from atomic_spie import (
+    build_national_pu_geodataframe,
+    parse_st_folium_bounds,
+    parse_st_folium_zoom,
+    subset_pus_for_viewport,
+)
 from gcslc_deep_join import NATIONAL_WARD_TOTAL, build_fused_catalog
 from ng_connectivity import (
     GEOBOUNDARIES_API_NGA_ADM2,
@@ -135,9 +146,35 @@ def _load_phase2_spine_bundle() -> dict:
     }
 
 
-@st.cache_data(ttl=86400, show_spinner="Atomic Spie · Rigasa lattice mount…")
-def _rigasa_spike_bundle_cached() -> dict:
-    return build_rigasa_spike_bundle()
+@st.cache_data(ttl=86400, show_spinner="National atomic lattice — 176,846 PU…")
+def _national_pu_frame_cached() -> tuple[pd.DataFrame, dict]:
+    df, rep = build_national_pu_geodataframe()
+    return df, rep
+
+
+def _atomic_viewport_feature_group(viewport_df: pd.DataFrame) -> folium.FeatureGroup:
+    """GeoJSON-per-ward data model; one FeatureGroup = current viewport batch (mobile screen)."""
+    fg = folium.FeatureGroup(
+        name=f"176,846 PU · viewport ({len(viewport_df):,} shown)",
+    )
+    if viewport_df is None or len(viewport_df) == 0:
+        return fg
+    for _, row in viewport_df.iterrows():
+        loc = str(row.get("location", ""))[:180]
+        folium.CircleMarker(
+            location=[float(row["lat"]), float(row["lon"])],
+            radius=3,
+            pane="atomicLattice",
+            color=CYAN,
+            weight=1,
+            fill=True,
+            fillColor=CYAN,
+            fillOpacity=0.28,
+            opacity=0.48,
+            className="gcslc-atom-node",
+            tooltip=folium.Tooltip(f"{row['code']} · {loc}", sticky=True),
+        ).add_to(fg)
+    return fg
 
 
 def _ward_style_with_asset(
@@ -259,7 +296,6 @@ def _build_federation_map(
     states_geojson: dict | None,
     phase2: dict | None,
     asset_states: frozenset[str],
-    atomic_bundle: dict | None,
 ) -> folium.Map:
     center_lat = sum(n["lat"] for n in AZK_CORRIDOR_NODES) / len(AZK_CORRIDOR_NODES)
     center_lon = sum(n["lon"] for n in AZK_CORRIDOR_NODES) / len(AZK_CORRIDOR_NODES)
@@ -269,7 +305,7 @@ def _build_federation_map(
         zoom_start=6,
         tiles=None,
         width="100%",
-        height="460px",
+        height="800px",
         prefer_canvas=False,
         zoom_control=True,
     )
@@ -277,13 +313,9 @@ def _build_federation_map(
     CustomPane("federationStates", z_index=380, pointer_events=True).add_to(m)
     CustomPane("lgaHeartbeat", z_index=430, pointer_events=True).add_to(m)
     CustomPane("wardReveal", z_index=468, pointer_events=False).add_to(m)
-    atom_ok = (
-        atomic_bundle is not None
-        and isinstance(atomic_bundle.get("frame"), pd.DataFrame)
-        and len(atomic_bundle["frame"]) > 0
-    )
-    if atom_ok:
-        CustomPane("atomicLattice", z_index=490, pointer_events=True).add_to(m)
+    CustomPane("atomicLattice", z_index=490, pointer_events=True).add_to(m)
+    # AZK Million Steel Rods — always above atomic cyan mist (national PU viewport layer)
+    CustomPane("azkSpine", z_index=620, pointer_events=False).add_to(m)
 
     folium.TileLayer(
         tiles="CartoDB dark_matter",
@@ -442,29 +474,6 @@ path.gcslc-atom-node {
                 smooth_factor=0.5,
             ).add_to(fg_ward)
 
-    if atom_ok:
-        df_atom = atomic_bundle["frame"]
-        fg_atom = folium.FeatureGroup(
-            name="Atomic Spie · Kaduna Igabi Rigasa (153 PU · AZK corridor)",
-        ).add_to(m)
-        for _, row in df_atom.iterrows():
-            folium.CircleMarker(
-                location=[float(row["lat"]), float(row["lon"])],
-                radius=3,
-                pane="atomicLattice",
-                color=CYAN,
-                weight=1,
-                fill=True,
-                fillColor=CYAN,
-                fillOpacity=0.28,
-                opacity=0.48,
-                className="gcslc-atom-node",
-                tooltip=folium.Tooltip(
-                    f"{row['code']} · {row.get('location', '')}"[:220],
-                    sticky=True,
-                ),
-            ).add_to(fg_atom)
-
     fg_azk = folium.FeatureGroup(name="AZK · Million Steel Rods").add_to(m)
     azk_ll = [[n["lat"], n["lon"]] for n in AZK_CORRIDOR_NODES]
 
@@ -474,6 +483,7 @@ path.gcslc-atom-node {
         weight=14,
         opacity=0.12,
         smooth_factor=1,
+        pane="azkSpine",
     ).add_to(fg_azk)
     for i in range(-4, 5):
         if i == 0:
@@ -486,6 +496,7 @@ path.gcslc-atom-node {
             weight=2,
             opacity=0.2 + abs(i) * 0.025,
             smooth_factor=1,
+            pane="azkSpine",
         ).add_to(fg_azk)
 
     AntPath(
@@ -495,6 +506,7 @@ path.gcslc-atom-node {
         opacity=0.92,
         delay=480,
         dash_array=[16, 22],
+        pane="azkSpine",
     ).add_to(fg_azk)
 
     for node in AZK_CORRIDOR_NODES:
@@ -507,6 +519,7 @@ path.gcslc-atom-node {
             fill_color=GOLD,
             fill_opacity=0.88,
             popup=folium.Popup(node["name"], max_width=240),
+            pane="azkSpine",
         ).add_to(fg_azk)
 
     Fullscreen(
@@ -520,9 +533,8 @@ path.gcslc-atom-node {
         ZOOM_LGA_EMERGE,
         ZOOM_WARD_EMERGE,
         ZOOM_ATOM_EMERGE,
-        atom_ok,
+        True,
     )
-    m.fit_bounds([[4.15, 2.55], [13.95, 14.68]])
     return m
 
 
@@ -541,6 +553,25 @@ st.components.v1.html(
       p.head.appendChild(m);
     }
   } catch (e) {}
+})();
+(function gcslcFullCanvasResize(){
+  var topWin = window;
+  try { if (window.top) topWin = window.top; } catch (e0) {}
+  function pulseResize(){
+    try { topWin.dispatchEvent(new Event('resize')); } catch (e1) {}
+    try {
+      var doc = topWin.document;
+      var ifr = doc.querySelectorAll('iframe');
+      for (var i = 0; i < ifr.length; i++) {
+        try {
+          var w = ifr[i].contentWindow;
+          if (w) w.dispatchEvent(new Event('resize'));
+        } catch (e2) {}
+      }
+    } catch (e3) {}
+  }
+  topWin.addEventListener('orientationchange', function(){ setTimeout(pulseResize, 380); });
+  topWin.addEventListener('resize', function(){ setTimeout(pulseResize, 120); });
 })();
 </script>
 """,
@@ -683,17 +714,88 @@ h1, h2, h3, h4, h5, h6 {{
   letter-spacing: 0.06em;
   color: rgba(212, 175, 55, 0.55) !important;
 }}
-/* Folium / Leaflet inside glass — mobile pinch-zoom; parent Streamlit shell cannot style iframe interior */
-.mirror-folium-host {{
-  position: relative;
-  z-index: 3;
-  touch-action: manipulation !important;
-  border-radius: 12px;
-  overflow: hidden;
-}}
-.mirror-folium-host iframe {{
+/* Full-canvas Folium host — fluid width + viewport height (MacBook / iPhone) */
+.gcslc-map-canvas-host {{
   width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}}
+.gcslc-map-canvas-host iframe,
+iframe[title*="folium"],
+iframe[title*="streamlit_folium"] {{
+  width: 100% !important;
+  min-height: min(800px, 92vh) !important;
+  height: min(800px, 92vh) !important;
+  min-height: min(800px, 92dvh) !important;
+  height: min(800px, 92dvh) !important;
+  max-height: none !important;
   touch-action: manipulation !important;
+  border-radius: 14px !important;
+  border: 2px solid rgba(212, 175, 55, 0.38) !important;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.38) !important;
+  background: {SHELL} !important;
+  display: block !important;
+  vertical-align: top !important;
+}}
+[data-testid="stIFrame"] {{
+  width: 100% !important;
+  min-height: min(800px, 92vh) !important;
+  min-height: min(800px, 92dvh) !important;
+}}
+/* Sovereign Detail Widget — record strip below the vigil */
+.sovereign-detail-widget {{
+  margin-top: 14px;
+  margin-bottom: 8px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(212, 175, 55, 0.42);
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 6px 24px rgba(0, 0, 0, 0.28);
+  touch-action: manipulation;
+}}
+.sovereign-detail-widget .sdw-metrics {{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 12px 16px;
+}}
+.sovereign-detail-widget .sdw-metric {{
+  flex: 1 1 120px;
+  text-align: center;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(0, 0, 128, 0.35);
+  border: 1px solid rgba(212, 175, 55, 0.22);
+}}
+.sovereign-detail-widget .sdw-metric-val {{
+  font-size: clamp(1.1rem, 3.5vw, 1.45rem);
+  font-weight: 700;
+  color: {GOLD} !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.65);
+}}
+.sovereign-detail-widget .sdw-metric-lbl {{
+  font-size: clamp(0.62rem, 1.8vw, 0.72rem);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(240, 244, 255, 0.82) !important;
+  margin-top: 4px;
+}}
+.sovereign-detail-widget .sdw-meta {{
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(212, 175, 55, 0.2);
+  font-size: clamp(0.68rem, 2vw, 0.78rem);
+  line-height: 1.45;
+  color: rgba(240, 244, 255, 0.78) !important;
+}}
+.block-container {{
+  max-width: 100% !important;
+  padding-top: 0.35rem !important;
+  padding-left: 0.35rem !important;
+  padding-right: 0.35rem !important;
 }}
 </style>
 """,
@@ -748,195 +850,138 @@ _HANDSHAKE_HTML = """
 
 st.components.v1.html(_HANDSHAKE_HTML, height=220)
 
-st.markdown("---")
-
-st.markdown(
-    """
-<div class="mirror-phase-panel">
-  <strong>Phase 2 · Industrial spine</strong> — HDX COD Nigeria boundaries join 8,806 wards → 774 LGAs → 37 states + FCT.
-  Programmatic partition cross-check via <code>gcslc_deep_join</code>. NGECC coal / green-gold asset wards: cyan 8REC aura
-  (see <code>Part_02_Finance/data/coal_reserve_nodes.json</code>).
-</div>
-""",
-    unsafe_allow_html=True,
-)
-
-st.markdown("### National map host — Federation glass · Sovereign Heartbeat")
 _states_geojson = _load_nigeria_states_geojson()
 _phase2 = _load_phase2_spine_bundle()
 _asset_states = _coal_asset_state_names()
+
+_fuse_caption = ""
 try:
     _fused = _load_fused_lga_ward_partition()
     _fuse_ok = len(_fused) == 774 and int(_fused["ward_count"].sum()) == NATIONAL_WARD_TOTAL
-    st.caption(
-        f"gcslc_deep_join · {_fused.shape[0]} LGAs · Σ wards {int(_fused['ward_count'].sum()):,} · "
-        f"{'CHECKSUM LOCKED' if _fuse_ok else 'CHECKSUM REVIEW'}"
+    _fuse_caption = (
+        f"gcslc_deep_join · {_fused.shape[0]} LGAs · Σ wards "
+        f"{int(_fused['ward_count'].sum()):,} · {'CHECKSUM LOCKED' if _fuse_ok else 'CHECKSUM REVIEW'}"
     )
 except Exception:
-    st.caption("gcslc_deep_join manifest unreachable — HDX geometry spine still mounts when online.")
+    _fuse_caption = "gcslc_deep_join manifest unreachable — HDX spine still mounts when online."
 
 _spine = _phase2["spine_report"]
+_spine_caption = ""
 if _spine.get("ward_rows"):
-    st.caption(
+    _spine_caption = (
         f"HDX spine · {_spine['ward_rows']} ward rows · {_spine.get('distinct_lgas')} LGA facets · "
-        f"{_spine.get('distinct_states')} state facets · "
-        f"{'VALID' if _spine.get('valid') else 'REVIEW'}"
+        f"{_spine.get('distinct_states')} state facets · {'VALID' if _spine.get('valid') else 'REVIEW'}"
     )
 
+_nat_err = ""
 try:
-    _atomic_bundle = _rigasa_spike_bundle_cached()
-except Exception as _atom_exc:
-    _atomic_bundle = None
-    st.caption(f"Atomic Spie unavailable (CSV / validation): {_atom_exc}")
-else:
-    _ar = _atomic_bundle["report"]
-    st.caption(
-        f"Atomic Spie · Rigasa Igabi · ward_token {_ar['ward_token']} · {_ar['pu_rows']} PU · "
-        f"orphans {_ar['orphan_rows']} · Z_atom={ZOOM_ATOM_EMERGE} · FPS HUD on glass · "
-        "pinch past wards to atomize"
+    _national_df, _nat_rep = _national_pu_frame_cached()
+except Exception as _nat_exc:
+    _national_df = None
+    _nat_rep = {}
+    _nat_err = str(_nat_exc)
+
+_map_prev = st.session_state.get("gv_map_out") or {}
+_bounds = parse_st_folium_bounds(_map_prev.get("bounds"))
+_zoom_ui = parse_st_folium_zoom(_map_prev.get("zoom"))
+
+_viewport_df = pd.DataFrame()
+if _national_df is not None:
+    _viewport_df = subset_pus_for_viewport(
+        _national_df,
+        _bounds,
+        _zoom_ui,
+        ZOOM_ATOM_EMERGE,
     )
 
-_federation_map = _build_federation_map(
-    _states_geojson, _phase2, _asset_states, _atomic_bundle
-)
-_map_embed = _federation_map._repr_html_()
-_MAP_GLASS_HTML = (
-    """
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap');
-html, body { margin: 0; background: transparent !important; }
-/* Lux lives here: st.components iframe does not inherit Streamlit markdown CSS */
-.mirror-map-glass-map-host {
-  border-radius: 18px;
-  padding: 2px;
-  background: linear-gradient(45deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
-  background-size: 240% 240%;
-  animation: gcslc-metal-rim 14s ease-in-out infinite;
-  box-shadow: 0 8px 36px rgba(0, 0, 0, 0.48);
-  position: relative;
-}
-@keyframes gcslc-metal-rim {
-  0%, 100% { background-position: 0% 40%; }
-  50% { background-position: 100% 55%; }
-}
-.mirror-map-glass-frost-map {
-  position: relative;
-  border-radius: 16px;
-  min-height: 440px;
-  padding: 14px;
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  touch-action: manipulation;
-}
-.mirror-map-glass-header {
-  position: relative;
-  z-index: 6;
-  text-align: center;
-  font-family: 'Goldman', sans-serif;
-}
-.mirror-map-glass-header .mgh1 {
-  color: """
-    + f"{GOLD}"
-    + """; font-weight: 700; margin: 0 0 8px 0;
-  font-size: clamp(0.85rem, 2.6vw, 1.05rem);
-  text-shadow: 0 1px 6px rgba(0,0,0,0.75);
-}
-.mirror-map-glass-header .mgh2 {
-  color: """
-    + f"{GOLD}"
-    + """; opacity: 0.92; margin: 0 0 12px 0;
-  font-size: clamp(0.74rem, 2vw, 0.88rem);
-  text-shadow: 0 1px 4px rgba(0,0,0,0.7);
-}
-.mirror-folium-host {
-  position: relative;
-  z-index: 2;
-  touch-action: manipulation;
-  border-radius: 12px;
-  overflow: hidden;
-}
-.mirror-folium-host iframe {
-  width: 100% !important;
-  touch-action: manipulation !important;
-  border: none !important;
-  border-radius: 12px;
-  display: block;
-  background: """
-    + f"{SHELL}"
-    + """ !important;
-}
-.tam-layer-map {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 14;
-  overflow: hidden;
-  border-radius: 14px;
-}
-.tam-bubble-map {
-  position: absolute;
-  font-family: 'Goldman', sans-serif;
-  font-weight: 700;
-  font-size: clamp(0.62rem, 1.8vw, 0.82rem);
-  letter-spacing: 0.14em;
-  color: rgba(212, 175, 55, 0.52);
-  white-space: nowrap;
-  text-transform: uppercase;
-  text-shadow: 0 0 16px rgba(0,0,0,0.88), 0 2px 6px rgba(0,0,0,0.95);
-  animation: tam-drift-map 22s ease-in-out infinite;
-}
-.tam-bubble-map.b2 { animation-duration: 28s; animation-delay: -4s; }
-.tam-bubble-map.b3 { animation-duration: 18s; animation-delay: -9s; }
-.tam-bubble-map.b4 { animation-duration: 26s; animation-delay: -2s; }
-@keyframes tam-drift-map {
-  0%, 100% { transform: translate(0,0) rotate(-6deg); opacity: 0.45; }
-  33% { transform: translate(8px,-6px) rotate(4deg); opacity: 0.62; }
-  66% { transform: translate(-6px,8px) rotate(-3deg); opacity: 0.52; }
-}
-</style>
-<div class="mirror-map-glass-map-host">
-  <div class="mirror-map-glass-frost-map">
-    <div class="mirror-map-glass-header">
-      <p class="mgh1">PHASE 2 · INDUSTRIAL SOVEREIGN MIRROR</p>
-      <p class="mgh2">March 7 Lux · pinch-zoom: LGAs ≥ zoom """
-    + str(ZOOM_LGA_EMERGE)
-    + """, wards ≥ zoom """
-    + str(ZOOM_WARD_EMERGE)
-    + """ · atoms ≥ zoom """
-    + str(ZOOM_ATOM_EMERGE)
-    + """ (mist→solid) · HDX ward labels (sticky tap) · LGA heartbeat #BF953F · deep blue shell #000080 · AZK spine</p>
-    </div>
-    <div class="mirror-folium-host">"""
-    + _map_embed
-    + """</div>
-    <div class="tam-layer-map" aria-hidden="true">
-      <span class="tam-bubble-map" style="top:10%;left:6%;">Tam-Tam · Sovereign</span>
-      <span class="tam-bubble-map b2" style="top:62%;right:8%;">Dam-Dam · GCSLC</span>
-      <span class="tam-bubble-map b3" style="bottom:14%;left:18%;">Proprietary Methodology</span>
-      <span class="tam-bubble-map b4" style="top:38%;right:22%;">8REC · NGECC asset lattice</span>
-    </div>
-  </div>
-</div>
-"""
-)
-st.components.v1.html(_MAP_GLASS_HTML, height=600, scrolling=False)
+_federation_map = _build_federation_map(_states_geojson, _phase2, _asset_states)
+_fg_atom = _atomic_viewport_feature_group(_viewport_df)
+
+if st_folium is None:
+    st.error(
+        "Install streamlit-folium inside the project venv: "
+        "`pip install streamlit-folium` — required for viewport atomic lattice."
+    )
+    st.components.v1.html(_federation_map._repr_html_(), height=520, scrolling=False)
+else:
+    _gv_zoom = st.session_state.get("gv_zoom")
+    _gv_center = st.session_state.get("gv_center")
+    _out = st_folium(
+        _federation_map,
+        key="gv_map",
+        height=800,
+        use_container_width=True,
+        returned_objects=["bounds", "zoom", "center"],
+        zoom=_gv_zoom,
+        center=_gv_center,
+        feature_group_to_add=_fg_atom if len(_viewport_df) > 0 else None,
+    )
+    if isinstance(_out, dict):
+        st.session_state["gv_map_out"] = _out
+        _zz = parse_st_folium_zoom(_out.get("zoom"))
+        if _zz is not None:
+            st.session_state["gv_zoom"] = _zz
+        _ctr = _out.get("center")
+        if isinstance(_ctr, dict) and "lat" in _ctr:
+            _lng = _ctr.get("lng")
+            if _lng is None:
+                _lng = _ctr.get("lon")
+            if _lng is not None:
+                try:
+                    st.session_state["gv_center"] = (
+                        float(_ctr["lat"]),
+                        float(_lng),
+                    )
+                except (TypeError, ValueError):
+                    pass
+_states_warn = ""
 if not _states_geojson:
-    st.caption(
+    _states_warn = (
         "Federation boundary layer could not be fetched — AZK corridor and basemap remain live. "
         "Retry with network access for full state outlines."
     )
 
-c1, c2, c3 = st.columns(3)
-c1.metric("States + FCT", "37")
-c2.metric("LGAs (heartbeat)", "774")
-c3.metric("Wards (HDX + join)", "8,806")
-st.caption(
-    f"Pinch drill-down · LGAs ≥ {ZOOM_LGA_EMERGE} · wards ≥ {ZOOM_WARD_EMERGE} · "
-    f"Atomic Spie (Rigasa) ≥ {ZOOM_ATOM_EMERGE} · FPS HUD bottom-left on map · "
-    "sticky tooltips on mobile glass."
+_atomic_meta_lines: list[str] = []
+if _nat_err:
+    _atomic_meta_lines.append(f"National lattice error: {_nat_err}")
+elif _national_df is not None and _nat_rep:
+    _atomic_meta_lines.append(
+        f"National atomic · {_nat_rep.get('pu_rows', '—'):,} PU · "
+        f"{_nat_rep.get('distinct_ward_tokens', '—')} ward clusters · "
+        f"temikeezy matches {_nat_rep.get('temikeezy_ward_key_matches', '—')} · "
+        f"viewport ≤ {len(_viewport_df):,} (cap 10k) · Z_atom={ZOOM_ATOM_EMERGE}"
+    )
+
+_detail_meta = " · ".join(
+    filter(
+        None,
+        [
+            _fuse_caption,
+            _spine_caption if _spine_caption else None,
+            _states_warn if _states_warn else None,
+            *_atomic_meta_lines,
+        ],
+    )
+)
+_detail_meta_safe = html.escape(_detail_meta) if _detail_meta else ""
+
+st.markdown(
+    f"""
+<div class="sovereign-detail-widget">
+  <div class="sdw-metrics">
+    <div class="sdw-metric"><div class="sdw-metric-val">37</div><div class="sdw-metric-lbl">States + FCT</div></div>
+    <div class="sdw-metric"><div class="sdw-metric-val">774</div><div class="sdw-metric-lbl">LGAs · heartbeat</div></div>
+    <div class="sdw-metric"><div class="sdw-metric-val">8,806</div><div class="sdw-metric-lbl">Wards</div></div>
+    <div class="sdw-metric"><div class="sdw-metric-val">176,846</div><div class="sdw-metric-lbl">Polling units</div></div>
+  </div>
+  <div class="sdw-meta">
+    <strong style="color:{GOLD};">Sovereign record</strong> · Scale 1 country: States + AZK · Scale 2: LGAs ≥ {ZOOM_LGA_EMERGE}, wards ≥ {ZOOM_WARD_EMERGE} ·
+    Scale 3: atomic viewport ≥ {ZOOM_ATOM_EMERGE} · FPS HUD on map · pinch to atomize · orientation resize armed.<br/>
+    {_detail_meta_safe if _detail_meta_safe else "Forensic spine loaded — map is the vigil."}
+  </div>
+</div>
+""",
+    unsafe_allow_html=True,
 )
 
 

@@ -1,0 +1,7 @@
+# Sovereign-Eagle-Mirror-2026 — run from repo venv
+streamlit>=1.28.0
+folium>=0.15.0
+branca
+pandas
+requests
+streamlit-folium>=0.18.0
