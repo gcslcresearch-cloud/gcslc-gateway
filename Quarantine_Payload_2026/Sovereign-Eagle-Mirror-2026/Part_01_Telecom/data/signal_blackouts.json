@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "source": "Part_01 Telecom corridor telemetry",
+    "description": "Sample blackout incidents used for Phase-1 risk correlation."
+  },
+  "events": [
+    { "id": "BLK-001", "site": "Lalata Cluster A", "lat": 9.060, "lon": 7.390, "severity": 0.84, "downtime_minutes": 190 },
+    { "id": "BLK-002", "site": "Binji Corridor Link", "lat": 12.240, "lon": 4.900, "severity": 0.76, "downtime_minutes": 140 },
+    { "id": "BLK-003", "site": "Goronyo North Link", "lat": 13.442, "lon": 5.671, "severity": 0.65, "downtime_minutes": 120 },
+    { "id": "BLK-004", "site": "Dekina Relay", "lat": 7.689, "lon": 7.043, "severity": 0.43, "downtime_minutes": 65 },
+    { "id": "BLK-005", "site": "Zaria Metro Mesh", "lat": 11.0855, "lon": 7.7200, "severity": 0.25, "downtime_minutes": 35 }
+  ]
+}

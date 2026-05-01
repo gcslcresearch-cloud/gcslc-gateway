@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "source": "Part_03 Security incident log",
+    "description": "Sample vandalism reports for blackout correlation."
+  },
+  "incidents": [
+    { "id": "VAN-001", "asset": "Tower Fence Breach", "lat": 9.064, "lon": 7.397, "severity": 0.91, "cases_30d": 6 },
+    { "id": "VAN-002", "asset": "Power Unit Theft", "lat": 12.230, "lon": 4.885, "severity": 0.79, "cases_30d": 4 },
+    { "id": "VAN-003", "asset": "Fiber Tampering", "lat": 13.430, "lon": 5.660, "severity": 0.71, "cases_30d": 3 },
+    { "id": "VAN-004", "asset": "Access Panel Damage", "lat": 7.675, "lon": 7.055, "severity": 0.42, "cases_30d": 2 },
+    { "id": "VAN-005", "asset": "Perimeter Intrusion Attempt", "lat": 11.096, "lon": 7.733, "severity": 0.28, "cases_30d": 1 }
+  ]
+}

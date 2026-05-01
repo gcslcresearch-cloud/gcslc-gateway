@@ -1,0 +1,16 @@
+{
+  "meta": { "role": "nearest bank or tower for Double-Zero distance", "unit": "km" },
+  "facilities": [
+    { "id": "BANK-001", "kind": "bank", "name": "Agent + branch cluster (Kano ring)", "lat": 12.0, "lon": 8.55 },
+    { "id": "BANK-002", "kind": "bank", "name": "Zaria / AZK", "lat": 11.0855, "lon": 7.72 },
+    { "id": "BANK-003", "kind": "bank", "name": "Kaduna", "lat": 10.51, "lon": 7.44 },
+    { "id": "TWR-001", "kind": "tower", "name": "MAC sector (Kano urban)", "lat": 12.0, "lon": 8.5 },
+    { "id": "TWR-002", "kind": "tower", "name": "Katsina spine", "lat": 12.99, "lon": 7.6 },
+    { "id": "TWR-003", "kind": "tower", "name": "Zamfara (Gusau)", "lat": 12.17, "lon": 6.66 },
+    { "id": "TWR-004", "kind": "tower", "name": "Sokoto hub", "lat": 13.0, "lon": 5.25 },
+    { "id": "TWR-005", "kind": "tower", "name": "Yobe (Potiskum axis)", "lat": 11.72, "lon": 11.1 },
+    { "id": "TWR-006", "kind": "tower", "name": "Adamawa (Mubi / Yola)", "lat": 10.3, "lon": 12.0 },
+    { "id": "TWR-007", "kind": "tower", "name": "NC / Abuja mesh (Lalata reference)", "lat": 9.06, "lon": 7.39 },
+    { "id": "BANK-004", "kind": "bank", "name": "Maiduguri correspondents (NE)", "lat": 11.85, "lon": 14.0 }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "source": "Part_02 Finance POS registry",
+    "focus": "Binji/Jega corridor for FIN-SYNC"
+  },
+  "registry": [
+    { "id": "POS-BINJI-01", "zone": "Binji", "name": "Binji Main POS Cluster", "lat": 12.243, "lon": 4.903, "density_tier": "high", "agents": 42 },
+    { "id": "POS-BINJI-02", "zone": "Binji", "name": "Danchadi POS Spine", "lat": 12.236, "lon": 4.896, "density_tier": "medium", "agents": 27 },
+    { "id": "POS-JEGA-01", "zone": "Jega", "name": "Jega Central POS Ring", "lat": 12.223, "lon": 4.379, "density_tier": "high", "agents": 39 },
+    { "id": "POS-JEGA-02", "zone": "Jega", "name": "Jega East Merchant Node", "lat": 12.215, "lon": 4.401, "density_tier": "medium", "agents": 24 }
+  ]
+}

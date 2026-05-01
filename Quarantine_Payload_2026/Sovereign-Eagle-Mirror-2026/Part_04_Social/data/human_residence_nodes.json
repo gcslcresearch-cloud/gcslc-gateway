@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "description": "Human Residence nodes initialized for merged sovereign mirror.",
+    "reference_anchor": "Zaria 11.0855N, 7.7200E"
+  },
+  "villages": [
+    { "id": "HR-BINJI-DANCHADI", "name": "Binji/Danchadi", "lat": 12.2400, "lon": 4.9000 },
+    { "id": "HR-GORONYO", "name": "Goronyo", "lat": 13.4420, "lon": 5.6710 },
+    { "id": "HR-DEKINA", "name": "Dekina", "lat": 7.6890, "lon": 7.0430 }
+  ]
+}
