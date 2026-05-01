@@ -1,0 +1,61 @@
+{
+  "meta": {
+    "program": "Double-Zero forensic relational core",
+    "version": "1.0",
+    "purpose": "Cross-reference NCC ICT vandalism pressure, telecom signal/banking void telemetry, and informal finance friction for national disconnectedness modeling.",
+    "national_void_anchor": "Disconnected population cohort modeled as ~20.7M — weights are RELATIVE intensities for heatmap synthesis, not census counts."
+  },
+  "entities": {
+    "ncc_vandal_incident": {
+      "pk": "id",
+      "fields": ["lat", "lon", "severity", "asset", "network_operator"],
+      "source_file": "Part_03_Security/data/vandalism_incidents.json"
+    },
+    "signal_blackout_event": {
+      "pk": "id",
+      "fields": ["lat", "lon", "severity", "downtime_minutes", "site"],
+      "source_file": "Part_01_Telecom/data/signal_blackouts.json"
+    },
+    "financial_inclusion_point": {
+      "pk": "id",
+      "fields": ["lat", "lon", "inclusion_gap", "agents", "commercial_activity", "zone"],
+      "source_file": "Part_02_Finance/data/financial_inclusion_pos.json"
+    },
+    "void_cluster": {
+      "pk": "cluster_id",
+      "note": "Synthetic merge key — events sharing correlation_cluster_id roll into one grey heat cell."
+    }
+  },
+  "relationships": [
+    {
+      "name": "void_triangulation",
+      "from": "ncc_vandal_incident.id",
+      "to": "signal_blackout_event.id",
+      "via": "correlation_cluster_id",
+      "cardinality": "n:m",
+      "semantics": "Same spatial/temporal void envelope → compounded disconnect weight."
+    },
+    {
+      "name": "banking_void_overlay",
+      "from": "financial_inclusion_point.id",
+      "to": "void_cluster.cluster_id",
+      "via": "nearest_void_cluster",
+      "cardinality": "n:1",
+      "semantics": "High informal POS / severe inclusion_gap amplifies banking void shadow."
+    }
+  ],
+  "correlation_links": [
+    {
+      "correlation_cluster_id": "VOID-BINJI-A",
+      "ncc_incident_id": "NCC-VAN-002",
+      "signal_event_id": "BLK-002",
+      "notes": "Binji corridor — vandalism pressure + backbone blackout."
+    },
+    {
+      "correlation_cluster_id": "VOID-ZAR-A",
+      "ncc_incident_id": "NCC-VAN-005",
+      "signal_event_id": "BLK-005",
+      "notes": "Zaria metro mesh — ICT perimeter + mesh degradation."
+    }
+  ]
+}

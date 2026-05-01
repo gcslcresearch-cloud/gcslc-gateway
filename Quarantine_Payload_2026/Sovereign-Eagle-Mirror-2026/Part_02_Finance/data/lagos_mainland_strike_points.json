@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "program": "Binji–Lagos strike audit · Lagos Mainland saturated fabric",
+    "visual_class": "strike_lagos_blue",
+    "notes": "Representative urban POS/commercial density anchors — saturated formal + informal stack vs Binji void contrast."
+  },
+  "points": [
+    { "id": "LOS-YABA-01", "label": "Yaba · commercial spine", "lat": 6.5097, "lon": 3.3792, "density_tier": "saturated" },
+    { "id": "LOS-SURU-01", "label": "Surulere · retail corridor", "lat": 6.5054, "lon": 3.3589, "density_tier": "saturated" },
+    { "id": "LOS-MUSH-01", "label": "Mushin · micro-commerce lattice", "lat": 6.5241, "lon": 3.3255, "density_tier": "saturated" },
+    { "id": "LOS-IKEJ-01", "label": "Ikeja · formal finance cluster", "lat": 6.6018, "lon": 3.3515, "density_tier": "saturated" },
+    { "id": "LOS-OSHODI-01", "label": "Oshodi · transit commerce", "lat": 6.5556, "lon": 3.3322, "density_tier": "saturated" },
+    { "id": "LOS-MDI-01", "label": "Maryland · services spine", "lat": 6.5767, "lon": 3.3654, "density_tier": "saturated" }
+  ]
+}

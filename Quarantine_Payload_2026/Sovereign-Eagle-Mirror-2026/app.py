@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import html
 import json
-from datetime import datetime, timedelta
+from datetime import timedelta
 from pathlib import Path
 
 import folium
@@ -39,13 +39,14 @@ from atomic_spie import (
 )
 from sovereign_nl_query import resolve_sovereign_nl_query
 from generative_eagle import collect_eagle_shouts, friction_alert_active
+# Load fused catalog before sovereign_active_intel (same gcslc_deep_join dep) — avoids rare Streamlit loader KeyError.
+from gcslc_deep_join import NATIONAL_WARD_TOTAL, build_fused_catalog
 from sovereign_active_intel import (
     build_total_reality_summary,
     load_ntw_operator_proxy,
     resolve_state_from_click,
 )
 from vigil_feed import load_recent_events, merge_vigil_sources
-from gcslc_deep_join import NATIONAL_WARD_TOTAL, build_fused_catalog
 from ng_connectivity import (
     GEOBOUNDARIES_API_NGA_ADM2,
     build_spine_table,
@@ -134,6 +135,17 @@ AZK_CORRIDOR_NODES = [
     {"name": "Zaria · AZK Spine", "lat": 11.0676, "lon": 7.7107},
     {"name": "Kano · Northern Anchor", "lat": 12.0022, "lon": 8.5920},
 ]
+
+
+def _ensure_gv_viewport_defaults() -> None:
+    """Lock national viewport in session so smart-click reruns do not snap to defaults."""
+    if "gv_zoom" not in st.session_state:
+        st.session_state["gv_zoom"] = 6.2
+    if "gv_center" not in st.session_state:
+        clat = sum(n["lat"] for n in AZK_CORRIDOR_NODES) / len(AZK_CORRIDOR_NODES)
+        clon = sum(n["lon"] for n in AZK_CORRIDOR_NODES) / len(AZK_CORRIDOR_NODES)
+        st.session_state["gv_center"] = (clat, clon)
+
 
 st.set_page_config(
     page_title="Sovereign Eagle Mirror 2026",
@@ -681,14 +693,19 @@ def _inject_drill_panes_atomic_fps(
     function sync() {{
       var z = mp.getZoom();
       pl.style.opacity = (z >= zL) ? "1" : "0";
-      pl.style.pointerEvents = (z >= zL) ? "auto" : "none";
+      pl.style.pointerEvents = "none";
       pw.style.opacity = (z >= zW) ? "1" : "0";
-      pw.style.pointerEvents = (z >= zW) ? "auto" : "none";
+      pw.style.pointerEvents = "none";
       ps.style.opacity = "1";
+      ps.style.pointerEvents = "none";
       if (pa) {{
         pa.style.opacity = (z >= zA) ? "1" : "0";
-        pa.style.pointerEvents = (z >= zA) ? "auto" : "none";
+        pa.style.pointerEvents = "none";
       }}
+      var pazk = mp.getPane("azkSpine");
+      if (pazk) pazk.style.pointerEvents = "none";
+      var pkg = mp.getPane("komiTotalReality");
+      if (pkg) pkg.style.pointerEvents = "auto";
       atomMist(z);
       hud.textContent = "FPS · " + fpsVal + " · z " + z.toFixed(1) + " · Atom ≥" + zA;
     }}
@@ -730,7 +747,7 @@ def _html_total_reality_card(summary: dict) -> str:
     dist_html = " · ".join(dist_bits)
     fr_txt = html.escape(str(fr.get("friction_summary", "")))
     return (
-        "<div class='gcslc-total-reality'>"
+        "<div class='gcslc-total-reality gcslc-tr-handshake-front'>"
         f"<div class='gcslc-tr-h'>Total Reality Summary · {st_name}</div>"
         "<div class='gcslc-tr-line'><span class='gcslc-tr-k'>Administrative drill-down</span> "
         f"LGAs {lg} · Wards {wd:,} / {n_wd_nat:,} national · "
@@ -766,11 +783,14 @@ def _html_eagle_ticker(shouts: list[dict], *, alert_pulse: bool) -> str:
         d = html.escape(str(s.get("detail", ""))[:118])
         parts.append(f"<span class='eagle-shout {cls}'><b>{h}</b> — {d}</span>")
     inner = "<span class='eagle-sep'> · </span>".join(parts)
-    shell_cls = "eagle-ticker-shell" + (" eagle-alert-pulse" if alert_pulse else "")
+    shell_cls = (
+        "eagle-ticker-shell eagle-stable-sky"
+        + (" eagle-alert-pulse" if alert_pulse else "")
+    )
     return (
         f"<div class='{shell_cls}'>"
         "<span class='eagle-ticker-label'>Generative Eagle · sniffer</span>"
-        f"<div class='eagle-ticker-scroll'>{inner}</div>"
+        f"<div class='eagle-ticker-scroll eagle-typewriter-cyan'>{inner}</div>"
         "</div>"
     )
 
@@ -821,33 +841,32 @@ else:
 
 
 def _render_ntw_sovereign_control_panel() -> None:
-    """Horizontal Big 4 strip below hero map — constant NTW reference (not sidebar)."""
-    from ntw_regional_audit import build_ntw_single_operator_figure, ntw_single_lettermark_html
+    """Horizontal Resonance Chamber below hero map — Big 4 horizontal meters (not sidebar)."""
+    from ntw_regional_audit import (
+        build_ntw_resonance_chamber_figure,
+        ntw_big4_lettermarks_row_html,
+    )
 
+    st.markdown(ntw_big4_lettermarks_row_html(), unsafe_allow_html=True)
     st.markdown(
-        "<div class='sovereign-ntw-strip'>"
+        "<div class='sovereign-ntw-strip sovereign-ntw-resonance'>"
         "<p class='sovereign-ntw-panel-head'>NTW Regional Corridor Audit · "
-        "<span>Sovereign Control Panel · Big 4</span></p>"
+        "<span>Horizontal Resonance Chamber · Big 4</span></p>"
         "<hr class='sovereign-ntw-hr'/>"
         "</div>",
         unsafe_allow_html=True,
     )
     _blob = _load_ntw_regional_audit_cached()
-    _ops = ["MTN", "Airtel", "Glo", "9mobile"]
-    _cols = st.columns(4)
-    for _i, _op in enumerate(_ops):
-        with _cols[_i]:
-            st.markdown(ntw_single_lettermark_html(_op), unsafe_allow_html=True)
-            _fig_op = build_ntw_single_operator_figure(_blob, _op)
-            if _fig_op is not None:
-                st.plotly_chart(
-                    _fig_op,
-                    use_container_width=True,
-                    key=f"ntw_strip_{_op}",
-                    config={"displayModeBar": False},
-                )
-            else:
-                st.caption("Plotly required for NTW charts (`pip install plotly`).")
+    _fig_rc = build_ntw_resonance_chamber_figure(_blob)
+    if _fig_rc is not None:
+        st.plotly_chart(
+            _fig_rc,
+            use_container_width=True,
+            key="ntw_resonance_chamber",
+            config={"displayModeBar": False},
+        )
+    else:
+        st.caption("Plotly required for NTW resonance chamber (`pip install plotly`).")
 
 
 def _build_federation_map(
@@ -881,16 +900,17 @@ def _build_federation_map(
         zoom_start=6,
         tiles=None,
         width="100%",
-        height="800px",
+        height="560px",
         prefer_canvas=False,
         zoom_control=True,
         max_zoom=22,
     )
 
-    CustomPane("federationStates", z_index=380, pointer_events=True).add_to(m)
-    CustomPane("lgaHeartbeat", z_index=430, pointer_events=True).add_to(m)
+    # Polygon / lattice panes: pointer_events False so map fires last_clicked on touch (smart click).
+    CustomPane("federationStates", z_index=380, pointer_events=False).add_to(m)
+    CustomPane("lgaHeartbeat", z_index=430, pointer_events=False).add_to(m)
     CustomPane("wardReveal", z_index=468, pointer_events=False).add_to(m)
-    CustomPane("atomicLattice", z_index=490, pointer_events=True).add_to(m)
+    CustomPane("atomicLattice", z_index=490, pointer_events=False).add_to(m)
     CustomPane("microCapillary", z_index=501, pointer_events=False).add_to(m)
     CustomPane("tradeCommerce", z_index=502, pointer_events=False).add_to(m)
     CustomPane("frictionFinInclusion", z_index=503, pointer_events=False).add_to(m)
@@ -900,6 +920,8 @@ def _build_federation_map(
     CustomPane("frictionVulnerability", z_index=508, pointer_events=False).add_to(m)
     # AZK Million Steel Rods — always above atomic cyan mist (national PU viewport layer)
     CustomPane("azkSpine", z_index=620, pointer_events=False).add_to(m)
+    # Komi · Total Reality — above spine so cyan popups / village taps win when enabled
+    CustomPane("komiTotalReality", z_index=850, pointer_events=True).add_to(m)
 
     folium.TileLayer(
         tiles=ESRI_WORLD_IMAGERY,
@@ -933,31 +955,31 @@ def _build_federation_map(
 @keyframes gcs-sovereign-heartbeat {
   0%, 100% {
     stroke: #BF953F;
-    stroke-opacity: 0.42;
-    stroke-width: 1.1px;
-    fill-opacity: 0.03;
-    filter: brightness(1) drop-shadow(0 0 1px rgba(191,149,63,0.35));
+    stroke-opacity: 0.48;
+    stroke-width: 1.05px;
+    fill-opacity: 0.035;
+    filter: brightness(1) drop-shadow(0 0 2px rgba(191,149,63,0.22));
   }
   50% {
     stroke: #FFF8DC;
-    stroke-opacity: 0.82;
-    stroke-width: 2.05px;
-    fill-opacity: 0.09;
-    filter: brightness(1.28) drop-shadow(0 0 5px rgba(191,149,63,0.45));
+    stroke-opacity: 0.68;
+    stroke-width: 1.55px;
+    fill-opacity: 0.065;
+    filter: brightness(1.1) drop-shadow(0 0 4px rgba(191,149,63,0.32));
   }
 }
 path.gcslc-lga-sovereign-heartbeat {
-  animation: gcs-sovereign-heartbeat 10.25s ease-in-out infinite !important;
+  animation: gcs-sovereign-heartbeat 18s ease-in-out infinite !important;
   stroke-linejoin: round !important;
   stroke-linecap: round !important;
   transform: translateZ(0);
 }
 @keyframes gcs-eightrec-aura {
-  0%, 100% { stroke-opacity: 0.72; filter: drop-shadow(0 0 4px rgba(0,229,255,0.35)); }
-  50% { stroke-opacity: 1; filter: drop-shadow(0 0 14px rgba(0,229,255,0.65)); }
+  0%, 100% { stroke-opacity: 0.65; filter: drop-shadow(0 0 3px rgba(0,229,255,0.22)); }
+  50% { stroke-opacity: 0.88; filter: drop-shadow(0 0 7px rgba(0,229,255,0.38)); }
 }
 path.gcslc-ward-eightrec-asset {
-  animation: gcs-eightrec-aura 3.2s ease-in-out infinite !important;
+  animation: gcs-eightrec-aura 5.5s ease-in-out infinite !important;
 }
 path.gcslc-ward-base:hover, path.gcslc-ward-eightrec-asset:hover {
   stroke: #FFFFFF !important;
@@ -974,53 +996,53 @@ path.gcslc-ward-base:hover, path.gcslc-ward-eightrec-asset:hover {
 }
 @keyframes gcs-industrial-node-shimmer {
   0%, 100% {
-    stroke-opacity: 0.62;
-    fill-opacity: 0.38;
-    filter: brightness(1.05) drop-shadow(0 0 4px rgba(191,149,63,0.5));
+    stroke-opacity: 0.58;
+    fill-opacity: 0.36;
+    filter: brightness(1.03) drop-shadow(0 0 3px rgba(191,149,63,0.28));
   }
   50% {
-    stroke-opacity: 1;
-    fill-opacity: 0.62;
-    filter: brightness(1.22) drop-shadow(0 0 14px rgba(191,149,63,0.72));
+    stroke-opacity: 0.88;
+    fill-opacity: 0.52;
+    filter: brightness(1.08) drop-shadow(0 0 8px rgba(191,149,63,0.42));
   }
 }
 @keyframes gcs-industrial-node-shimmer-azk {
   0%, 100% {
-    stroke-opacity: 0.78;
-    fill-opacity: 0.48;
-    filter: brightness(1.12) drop-shadow(0 0 8px rgba(191,149,63,0.72));
+    stroke-opacity: 0.68;
+    fill-opacity: 0.44;
+    filter: brightness(1.06) drop-shadow(0 0 5px rgba(191,149,63,0.38));
   }
   50% {
-    stroke-opacity: 1;
-    fill-opacity: 0.78;
-    filter: brightness(1.42) drop-shadow(0 0 22px rgba(191,149,63,0.95));
+    stroke-opacity: 0.92;
+    fill-opacity: 0.62;
+    filter: brightness(1.12) drop-shadow(0 0 12px rgba(191,149,63,0.52));
   }
 }
 circle.gcslc-atom-industrial, path.gcslc-atom-industrial {
   stroke: #BF953F !important;
   fill: #BF953F !important;
-  animation: gcs-industrial-node-shimmer 2.85s ease-in-out infinite !important;
+  animation: gcs-industrial-node-shimmer 5s ease-in-out infinite !important;
 }
 circle.gcslc-atom-industrial.gcslc-atom-azk-spine,
 path.gcslc-atom-industrial.gcslc-atom-azk-spine {
-  animation: gcs-industrial-node-shimmer-azk 2.1s ease-in-out infinite !important;
+  animation: gcs-industrial-node-shimmer-azk 4.2s ease-in-out infinite !important;
 }
 @keyframes gcs-friction-crimson-vibrate {
   0%, 100% {
-    stroke-opacity: 0.78;
-    fill-opacity: 0.42;
-    filter: brightness(1.08) drop-shadow(0 0 6px rgba(220,20,60,0.65));
+    stroke-opacity: 0.72;
+    fill-opacity: 0.4;
+    filter: brightness(1.05) drop-shadow(0 0 4px rgba(220,20,60,0.38));
   }
   50% {
-    stroke-opacity: 1;
-    fill-opacity: 0.72;
-    filter: brightness(1.35) drop-shadow(0 0 18px rgba(220,20,60,0.92));
+    stroke-opacity: 0.92;
+    fill-opacity: 0.58;
+    filter: brightness(1.12) drop-shadow(0 0 10px rgba(220,20,60,0.48));
   }
 }
 circle.gcslc-friction-ncc-vuln, path.gcslc-friction-ncc-vuln {
   stroke: #DC143C !important;
   fill: #DC143C !important;
-  animation: gcs-friction-crimson-vibrate 1.65s ease-in-out infinite !important;
+  animation: gcs-friction-crimson-vibrate 3.2s ease-in-out infinite !important;
 }
 circle.gcslc-friction-cbn, path.gcslc-friction-cbn {
   stroke: #C9A227 !important;
@@ -1286,7 +1308,7 @@ path.gcslc-atom-node {
                 fillColor=GOLD_HEARTBEAT,
                 fillOpacity=0.62,
                 opacity=0.95,
-                pane="tradeCommerce",
+                pane="komiTotalReality" if show_komi_intel else "tradeCommerce",
                 className="gcslc-friction-node gcslc-trade-livestock",
                 tooltip=folium.Tooltip(tip, sticky=True),
             )
@@ -1333,7 +1355,7 @@ path.gcslc-atom-node {
                 fillColor=col,
                 fillOpacity=0.58,
                 opacity=0.92,
-                pane="frictionFinInclusion",
+                pane="komiTotalReality" if show_komi_intel else "frictionFinInclusion",
                 className=f"gcslc-friction-node {css_gap}",
                 tooltip=folium.Tooltip(tip, sticky=True),
             )
@@ -1376,7 +1398,7 @@ path.gcslc-atom-node {
                 fillColor=CYAN,
                 fillOpacity=0.38,
                 opacity=0.72,
-                pane="microCapillary",
+                pane="komiTotalReality" if show_komi_intel else "microCapillary",
                 className="gcslc-friction-node gcslc-micro-capillary",
                 tooltip=folium.Tooltip(tip, sticky=True),
             )
@@ -1622,7 +1644,7 @@ div.main {{
   font-size: clamp(1rem, 3.2vw, 1.35rem);
   color: {GOLD} !important;
   margin-top: 1rem;
-  animation: mirror-pulse-zoom 2.4s ease-in-out infinite;
+  animation: mirror-pulse-zoom 4.5s ease-in-out infinite;
   text-shadow:
     0 0 1px rgba(0, 0, 0, 0.95),
     0 2px 8px rgba(0, 0, 0, 0.88),
@@ -1638,11 +1660,11 @@ div.main {{
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent !important;
-  animation: mirror-manifesto-shimmer 5s linear infinite;
+  animation: mirror-manifesto-shimmer 10s linear infinite;
 }}
 @keyframes mirror-pulse-zoom {{
   0%, 100% {{ transform: scale(1); filter: brightness(1); }}
-  50% {{ transform: scale(1.06); filter: brightness(1.25); }}
+  50% {{ transform: scale(1.025); filter: brightness(1.08); }}
 }}
 @keyframes mirror-manifesto-shimmer {{
   0% {{ background-position: 0% 50%; }}
@@ -1687,6 +1709,35 @@ h1, h2, h3, h4, h5, h6 {{
   letter-spacing: 0.06em;
   color: rgba(212, 175, 55, 0.55) !important;
 }}
+/* Stable Sky — Generative Eagle at top of main; fragment reruns do not rebuild map */
+.eagle-stable-sky {{
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 110 !important;
+  margin: 0 0 12px 0 !important;
+  padding: 8px 10px 10px !important;
+  background: #000000 !important;
+  border-radius: 12px !important;
+  border: 1px solid rgba(212, 175, 55, 0.42) !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55) !important;
+}}
+.eagle-typewriter-cyan .eagle-shout,
+.eagle-typewriter-cyan .eagle-shout b {{
+  color: #00E5FF !important;
+  font-weight: 600 !important;
+}}
+.eagle-typewriter-cyan .eagle-shout.p-friction {{
+  text-shadow: 0 0 12px rgba(255, 80, 80, 0.35) !important;
+}}
+.eagle-typewriter-cyan .eagle-shout.p-opportunity {{
+  text-shadow: 0 0 12px rgba(46, 204, 113, 0.35) !important;
+}}
+.eagle-typewriter-cyan .eagle-shout.p-liquidity {{
+  text-shadow: 0 0 12px rgba(201, 162, 39, 0.35) !important;
+}}
+.eagle-typewriter-cyan .eagle-sep {{
+  color: rgba(0, 229, 255, 0.45) !important;
+}}
 /* Full-canvas Folium host — fluid width + viewport height (MacBook / iPhone) */
 .gcslc-map-canvas-host {{
   width: 100% !important;
@@ -1697,10 +1748,10 @@ h1, h2, h3, h4, h5, h6 {{
 iframe[title*="folium"],
 iframe[title*="streamlit_folium"] {{
   width: 100% !important;
-  min-height: min(800px, 92vh) !important;
-  height: min(800px, 92vh) !important;
-  min-height: min(800px, 92dvh) !important;
-  height: min(800px, 92dvh) !important;
+  min-height: min(560px, 82vh) !important;
+  height: min(560px, 82vh) !important;
+  min-height: min(560px, 82dvh) !important;
+  height: min(560px, 82dvh) !important;
   max-height: none !important;
   touch-action: manipulation !important;
   border-radius: 14px !important;
@@ -1712,8 +1763,22 @@ iframe[title*="streamlit_folium"] {{
 }}
 [data-testid="stIFrame"] {{
   width: 100% !important;
-  min-height: min(800px, 92vh) !important;
-  min-height: min(800px, 92dvh) !important;
+  min-height: min(560px, 82vh) !important;
+  min-height: min(560px, 82dvh) !important;
+}}
+/* iPhone / narrow — cap hero map so NTW Big 4 stays above the fold */
+@media (max-width: 900px) {{
+  .gcslc-map-canvas-host iframe,
+  iframe[title*="folium"],
+  iframe[title*="streamlit_folium"] {{
+    min-height: 70vh !important;
+    height: 70vh !important;
+    max-height: 70vh !important;
+  }}
+  [data-testid="stIFrame"] {{
+    min-height: 70vh !important;
+    max-height: 70vh !important;
+  }}
 }}
 /* Sovereign Detail Widget — record strip below the vigil */
 .sovereign-detail-widget {{
@@ -1804,6 +1869,12 @@ section.main .block-container {{
   line-height: 1.5;
   color: rgba(240, 244, 255, 0.88) !important;
 }}
+/* Total Reality · Smart click — handshake layer above resonance chamber */
+.gcslc-total-reality.gcslc-tr-handshake-front {{
+  position: relative !important;
+  z-index: 95 !important;
+  isolation: isolate !important;
+}}
 /* Total Reality · Smart click (Typewriter Cyan) */
 .gcslc-total-reality {{
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
@@ -1835,17 +1906,17 @@ section.main .block-container {{
   color: rgba(240, 244, 255, 0.65) !important;
   margin-right: 6px;
 }}
-/* Generative Eagle · ticker (iPhone scroll-safe) */
+/* Generative Eagle · ticker (iPhone scroll-safe · black strip inside Stable Sky) */
 .eagle-ticker-shell {{
   display: flex;
   align-items: center;
   gap: 10px;
   flex-wrap: nowrap;
-  margin: 0 0 10px 0;
+  margin: 0 !important;
   padding: 10px 12px;
-  border-radius: 12px;
-  background: rgba(0, 0, 128, 0.55);
-  border: 1px solid rgba(212, 175, 55, 0.28);
+  border-radius: 10px;
+  background: #000000 !important;
+  border: 1px solid rgba(212, 175, 55, 0.35) !important;
   max-width: 100%;
 }}
 .eagle-ticker-shell.eagle-alert-pulse {{
@@ -1877,10 +1948,39 @@ section.main .block-container {{
   line-height: 1.4;
   padding-bottom: 2px;
 }}
-.eagle-shout.p-friction {{ color: #ff6b6b !important; }}
-.eagle-shout.p-opportunity {{ color: #2ECC71 !important; }}
-.eagle-shout.p-liquidity {{ color: #C9A227 !important; }}
-.eagle-sep {{ color: rgba(240,244,255,0.35) !important; }}
+/* NTW — surface above map iframe stacking; never clipped by resize chrome */
+.sovereign-ntw-big4 {{
+  position: relative !important;
+  z-index: 50 !important;
+  isolation: isolate !important;
+  margin: 6px 0 10px !important;
+  padding: 12px 10px 14px !important;
+  border-radius: 14px !important;
+  background: linear-gradient(180deg, rgba(0,0,128,0.95) 0%, rgba(0,10,90,0.88) 100%) !important;
+  border: 2px solid rgba(212,175,55,0.55) !important;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.12) !important;
+  scroll-margin-top: 8px !important;
+}}
+.sovereign-ntw-big4-inner {{
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: stretch !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}}
+@media (max-width: 420px) {{
+  .sovereign-ntw-big4-inner {{
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+  }}
+  .sovereign-ntw-chip {{
+    flex: 1 1 calc(50% - 6px) !important;
+    min-width: calc(50% - 6px) !important;
+  }}
+}}
 /* NTW Sovereign Control Panel — below hero map */
 .sovereign-ntw-panel-head {{
   font-family: inherit !important;
@@ -1902,6 +2002,8 @@ section.main .block-container {{
   margin: 0 0 12px !important;
 }}
 .sovereign-ntw-strip {{
+  position: relative !important;
+  z-index: 40 !important;
   margin: 10px 0 16px;
   padding: 14px 12px 18px;
   border-radius: 14px;
@@ -1918,6 +2020,38 @@ section.main .block-container {{
 }}
 [data-testid="stSidebar"] .stMarkdown, [data-testid="stSidebar"] label {{
   color: #f0f4ff !important;
+}}
+/* Sidebar expanders — touch-safe spacing (chevron vs title overlap on iPhone) */
+[data-testid="stSidebar"] div[data-testid="stExpander"] {{
+  margin-bottom: 0.4rem !important;
+}}
+[data-testid="stSidebar"] details {{
+  border-radius: 10px !important;
+  overflow: visible !important;
+}}
+[data-testid="stSidebar"] summary {{
+  padding: 0.65rem 2.75rem 0.65rem 0.35rem !important;
+  min-height: 2.85rem !important;
+  align-items: center !important;
+  line-height: 1.35 !important;
+}}
+[data-testid="stSidebar"] details summary {{
+  list-style: none !important;
+}}
+[data-testid="stSidebar"] details summary::-webkit-details-marker {{
+  display: none !important;
+}}
+/* Professional sidebar titles — hide Material chevron / arrow glyph noise */
+[data-testid="stSidebar"] [data-testid="stExpander"] svg {{
+  display: none !important;
+}}
+[data-testid="stSidebar"] [data-testid="stExpander"] summary {{
+  font-family: 'Goldman', sans-serif !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.03em !important;
+}}
+[data-testid="stSidebar"] [data-testid="stExpander"] summary span {{
+  font-family: 'Goldman', sans-serif !important;
 }}
 </style>
 """,
@@ -2124,6 +2258,10 @@ with st.sidebar:
     st.divider()
     st.caption("AZK spine: Abuja FCT → Keffi → Kaduna → Zaria → Kano · `azk_alignment: true` = peak gold.")
 
+# Stable Sky — Eagle ticker first in main column (fragment ticks · no map dependency).
+if st.session_state.get("generative_eagle_ticker", True):
+    _eagle_voice_live()
+
 _states_geojson = _load_nigeria_states_geojson()
 _phase2 = _load_phase2_spine_bundle()
 _asset_states = _coal_asset_state_names()
@@ -2283,26 +2421,34 @@ elif _strike_mode:
         st_folium(_bin_map, height=520, use_container_width=True, key="strike_binji")
 else:
     _ntw_blob = _load_ntw_operator_proxy_cached()
-    if st.session_state.get("generative_eagle_ticker", True):
-        _eagle_voice_live()
-        if getattr(st, "fragment", None) is None:
-            st.caption(
-                "Eagle voice refreshes with each interaction — install Streamlit ≥1.33 for automatic LIVE fragment ticks."
-            )
+    if getattr(st, "fragment", None) is None and st.session_state.get(
+        "generative_eagle_ticker", True
+    ):
+        st.caption(
+            "Install Streamlit ≥1.33 for isolated Eagle fragment ticks (Stable Sky)."
+        )
 
+    _ensure_gv_viewport_defaults()
     _gv_zoom = st.session_state.get("gv_zoom")
     _gv_center = st.session_state.get("gv_center")
     _out = st_folium(
         _federation_map,
         key="gv_map",
-        height=800,
+        height=560,
         use_container_width=True,
         returned_objects=["bounds", "zoom", "center", "last_clicked"],
         zoom=_gv_zoom,
         center=_gv_center,
         feature_group_to_add=_fg_atom if len(_viewport_df) > 0 else None,
     )
-    _render_ntw_sovereign_control_panel()
+    _prev_map = st.session_state.get("gv_map_out") or {}
+    if isinstance(_out, dict):
+        _merged = dict(_out)
+        if _merged.get("zoom") is None and _prev_map.get("zoom") is not None:
+            _merged["zoom"] = _prev_map["zoom"]
+        if _merged.get("center") is None and _prev_map.get("center") is not None:
+            _merged["center"] = _prev_map["center"]
+        _out = _merged
     if isinstance(_out, dict):
         st.session_state["gv_map_out"] = _out
         _zz = parse_st_folium_zoom(_out.get("zoom"))
@@ -2332,6 +2478,7 @@ else:
                 if _clat is not None and _clng is not None:
                     _hit = resolve_state_from_click(_clat, _clng, _states_geojson, _fused_df)
                     if _hit:
+                        _st_key = str(_hit[0]).strip()
                         st.session_state["total_reality_last"] = build_total_reality_summary(
                             _hit[0],
                             fused_df=_fused_df,
@@ -2342,8 +2489,15 @@ else:
                             states_geojson=_states_geojson,
                             ntw_proxy=_ntw_blob,
                         )
+                        _toast_sig = (_st_key, round(_clat, 4), round(_clng, 4))
+                        if st.session_state.get("_total_reality_toast_sig") != _toast_sig:
+                            st.session_state["_total_reality_toast_sig"] = _toast_sig
+                            _toast = getattr(st, "toast", None)
+                            if callable(_toast):
+                                _toast(f"Total Reality · {_st_key}", icon="🟦")
                     else:
                         st.session_state.pop("total_reality_last", None)
+                        st.session_state.pop("_total_reality_toast_sig", None)
     if (
         st.session_state.get("smart_click_total_reality", True)
         and st.session_state.get("total_reality_last")
@@ -2352,6 +2506,7 @@ else:
             _html_total_reality_card(st.session_state["total_reality_last"]),
             unsafe_allow_html=True,
         )
+    _render_ntw_sovereign_control_panel()
 _states_warn = ""
 if not _states_geojson:
     _states_warn = (
@@ -2431,17 +2586,6 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-
-@st.fragment(run_every=60)
-def _eagle_vigil_fragment():
-    ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S UTC")
-    st.caption(f"Eagle vigil · 60s autonomous scan · last tick {ts}")
-
-
-if hasattr(st, "fragment"):
-    _eagle_vigil_fragment()
-else:
-    st.caption("Eagle vigil · enable Streamlit ≥1.33 for 60s autonomous scans.")
 
 st.markdown(
     """
