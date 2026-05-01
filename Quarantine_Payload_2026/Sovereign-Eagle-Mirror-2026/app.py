@@ -7,18 +7,175 @@ from __future__ import annotations
 
 from datetime import datetime
 
+import folium
+import requests
 import streamlit as st
+from branca.element import Element
+from folium.plugins import AntPath, Fullscreen
 
 SHELL = "#000080"
 GLASS = "rgba(255, 255, 255, 0.08)"
 GOLD = "#D4AF37"
 CYAN = "#00E5FF"
 
+GEOBOUNDARIES_API_NGA_ADM1 = "https://www.geoboundaries.org/api/current/gbOpen/NGA/ADM1/"
+# Abuja–Zaria–Kano pilot spine (“Million Steel Rods” corridor nodes)
+AZK_CORRIDOR_NODES = [
+    {"name": "Abuja FCT · Eagle Hub", "lat": 9.0765, "lon": 7.3986},
+    {"name": "Keffi · Corridor Gate", "lat": 8.8467, "lon": 7.8736},
+    {"name": "Kaduna · Steel Exchange", "lat": 10.5105, "lon": 7.4165},
+    {"name": "Zaria · AZK Spine", "lat": 11.0676, "lon": 7.7107},
+    {"name": "Kano · Northern Anchor", "lat": 12.0022, "lon": 8.5920},
+]
+
 st.set_page_config(
     page_title="Sovereign Eagle Mirror 2026",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
+
+
+def _tooltip_field(geojson: dict | None) -> str | None:
+    if not geojson or not geojson.get("features"):
+        return None
+    props = geojson["features"][0].get("properties") or {}
+    for key in ("shapeName", "shapeISO", "shapeGroup"):
+        if key in props:
+            return key
+    return next(iter(props.keys()), None)
+
+
+@st.cache_data(ttl=86400, show_spinner="Mounting federation boundaries…")
+def _load_nigeria_states_geojson() -> dict | None:
+    """geoBoundaries gbOpen NGA ADM1 — resolves real GeoJSON (GitHub raw is Git LFS)."""
+    try:
+        meta = requests.get(GEOBOUNDARIES_API_NGA_ADM1, timeout=45).json()
+        url = meta.get("gjDownloadURL")
+        if not url:
+            return None
+        res = requests.get(url, timeout=180, allow_redirects=True)
+        res.raise_for_status()
+        return res.json()
+    except Exception:
+        return None
+
+
+def _build_federation_map(states_geojson: dict | None) -> folium.Map:
+    center_lat = sum(n["lat"] for n in AZK_CORRIDOR_NODES) / len(AZK_CORRIDOR_NODES)
+    center_lon = sum(n["lon"] for n in AZK_CORRIDOR_NODES) / len(AZK_CORRIDOR_NODES)
+
+    m = folium.Map(
+        location=[center_lat, center_lon],
+        zoom_start=6,
+        tiles=None,
+        width="100%",
+        height="460px",
+        prefer_canvas=True,
+        zoom_control=True,
+    )
+    folium.TileLayer(
+        tiles="CartoDB dark_matter",
+        attr="© OpenStreetMap © CARTO · Sovereign Navy basemap",
+        name="Sovereign Navy · Dark Matter",
+        overlay=False,
+        control=True,
+    ).add_to(m)
+
+    m.get_root().header.add_child(
+        Element(
+            f"<style>"
+            f".leaflet-container{{background:{SHELL}!important;}}"
+            f".leaflet-tile-pane img,.leaflet-tile-pane canvas{{opacity:0.85!important;}}"
+            f".leaflet-control-attribution{{background:rgba(0,0,128,0.72)!important;"
+            f"color:{GOLD}!important;font-size:10px!important;}}"
+            f"</style>"
+        )
+    )
+
+    fg_spine = folium.FeatureGroup(name="Federation · 36 + FCT").add_to(m)
+    field = _tooltip_field(states_geojson)
+    if states_geojson and states_geojson.get("features"):
+        tt = (
+            folium.GeoJsonTooltip(
+                fields=[field],
+                aliases=["State / Territory"],
+                sticky=True,
+            )
+            if field
+            else None
+        )
+        folium.GeoJson(
+            states_geojson,
+            style_function=lambda _f: {
+                "fillColor": "transparent",
+                "color": CYAN,
+                "weight": 1,
+                "opacity": 0.45,
+                "fillOpacity": 0,
+            },
+            highlight_function=lambda _f: {
+                "weight": 2,
+                "color": GOLD,
+                "opacity": 0.95,
+                "fillOpacity": 0.1,
+                "fillColor": GOLD,
+            },
+            tooltip=tt,
+        ).add_to(fg_spine)
+
+    fg_azk = folium.FeatureGroup(name="AZK · Million Steel Rods").add_to(m)
+    azk_ll = [[n["lat"], n["lon"]] for n in AZK_CORRIDOR_NODES]
+
+    folium.PolyLine(
+        azk_ll,
+        color=GOLD,
+        weight=14,
+        opacity=0.12,
+        smooth_factor=1,
+    ).add_to(fg_azk)
+    for i in range(-4, 5):
+        if i == 0:
+            continue
+        off = i * 0.018
+        shifted = [[p[0] + off * 0.4, p[1] + off * 0.55] for p in azk_ll]
+        folium.PolyLine(
+            shifted,
+            color=GOLD,
+            weight=2,
+            opacity=0.2 + abs(i) * 0.025,
+            smooth_factor=1,
+        ).add_to(fg_azk)
+
+    AntPath(
+        locations=azk_ll,
+        color=GOLD,
+        weight=5,
+        opacity=0.92,
+        delay=480,
+        dash_array=[16, 22],
+    ).add_to(fg_azk)
+
+    for node in AZK_CORRIDOR_NODES:
+        folium.CircleMarker(
+            location=[node["lat"], node["lon"]],
+            radius=9,
+            color=CYAN,
+            weight=2,
+            fill=True,
+            fill_color=GOLD,
+            fill_opacity=0.88,
+            popup=folium.Popup(node["name"], max_width=240),
+        ).add_to(fg_azk)
+
+    Fullscreen(
+        position="topright",
+        title="Full screen (mobile)",
+        title_cancel="Exit full screen",
+    ).add_to(m)
+    folium.LayerControl(collapsed=False).add_to(m)
+    m.fit_bounds([[4.15, 2.55], [13.95, 14.68]])
+    return m
+
 
 # --- Viewport: 1:1 scaling for mobile (injected into parent document) ---
 st.components.v1.html(
@@ -138,29 +295,7 @@ div.main {{
   0% {{ background-position: 0% 50%; }}
   100% {{ background-position: 200% 50%; }}
 }}
-/* March 7 white eggshell glass — must read crisp on #000080 (no lavender bleed) */
-.mirror-map-glass {{
-  position: relative !important;
-  background-color: rgba(255, 255, 255, 0.08) !important;
-  background-image: linear-gradient(
-    165deg,
-    rgba(255, 255, 255, 0.14) 0%,
-    rgba(255, 255, 255, 0.06) 42%,
-    rgba(255, 255, 255, 0.09) 100%
-  ) !important;
-  backdrop-filter: blur(14px) saturate(1.05) !important;
-  -webkit-backdrop-filter: blur(14px) saturate(1.05) !important;
-  border-radius: 16px !important;
-  border: 1px solid rgba(212, 175, 55, 0.92) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.42),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.12),
-    0 4px 24px rgba(0, 0, 0, 0.35),
-    0 0 0 1px rgba(255, 255, 255, 0.06) !important;
-  touch-action: manipulation !important;
-  -webkit-touch-callout: none;
-  overflow: hidden;
-}}
+/* Map Lux (frost + metallic rim + tam) is inlined in the st.components iframe — see _MAP_GLASS_HTML */
 .mirror-phase-panel {{
   border: 1px solid rgba(212, 175, 55, 0.45);
   border-radius: 12px;
@@ -168,33 +303,6 @@ div.main {{
   background: rgba(255, 255, 255, 0.04);
   margin-bottom: 10px;
   touch-action: manipulation !important;
-}}
-/* Tam-Tam / Dam-Dam anti-screenshot drift bubbles */
-.tam-layer {{
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 4;
-  overflow: hidden;
-}}
-.tam-bubble {{
-  position: absolute;
-  font-family: 'Goldman', sans-serif;
-  font-weight: 700;
-  font-size: clamp(0.65rem, 1.8vw, 0.85rem);
-  letter-spacing: 0.12em;
-  color: rgba(212, 175, 55, 0.22);
-  white-space: nowrap;
-  text-transform: uppercase;
-  animation: tam-drift 22s ease-in-out infinite;
-}}
-.tam-bubble.b2 {{ animation-duration: 28s; animation-delay: -4s; }}
-.tam-bubble.b3 {{ animation-duration: 18s; animation-delay: -9s; }}
-.tam-bubble.b4 {{ animation-duration: 26s; animation-delay: -2s; }}
-@keyframes tam-drift {{
-  0%, 100% {{ transform: translate(0,0) rotate(-6deg); opacity: 0.18; }}
-  33% {{ transform: translate(8px,-6px) rotate(4deg); opacity: 0.28; }}
-  66% {{ transform: translate(-6px,8px) rotate(-3deg); opacity: 0.22; }}
 }}
 h1, h2, h3, h4, h5, h6, p, span, label, .stMarkdown,
 [data-testid="stMetricValue"], [data-testid="stMetricLabel"] {{
@@ -225,6 +333,18 @@ h1, h2, h3, h4, h5, h6 {{
   font-size: 0.72rem;
   letter-spacing: 0.06em;
   color: rgba(212, 175, 55, 0.55) !important;
+}}
+/* Folium / Leaflet inside glass — mobile pinch-zoom; parent Streamlit shell cannot style iframe interior */
+.mirror-folium-host {{
+  position: relative;
+  z-index: 3;
+  touch-action: manipulation !important;
+  border-radius: 12px;
+  overflow: hidden;
+}}
+.mirror-folium-host iframe {{
+  width: 100% !important;
+  touch-action: manipulation !important;
 }}
 </style>
 """,
@@ -307,23 +427,131 @@ with tab_soc:
     )
 
 st.markdown("### National map host — Federation glass")
-st.markdown(
-    f'''
-<div class="mirror-map-glass" style="min-height: 400px; padding: 14px;">
-  <div class="tam-layer" aria-hidden="true">
-    <span class="tam-bubble" style="top:10%;left:6%;">Tam-Tam · Sovereign</span>
-    <span class="tam-bubble b2" style="top:62%;right:8%;">Dam-Dam · GCSLC</span>
-    <span class="tam-bubble b3" style="bottom:14%;left:18%;">Proprietary Methodology</span>
-    <span class="tam-bubble b4" style="top:38%;right:22%;">176,846 Units · Vigil</span>
+_states_geojson = _load_nigeria_states_geojson()
+_federation_map = _build_federation_map(_states_geojson)
+_map_embed = _federation_map._repr_html_()
+_MAP_GLASS_HTML = (
+    """
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap');
+html, body { margin: 0; background: transparent !important; }
+/* Lux lives here: st.components iframe does not inherit Streamlit markdown CSS */
+.mirror-map-glass-map-host {
+  border-radius: 18px;
+  padding: 2px;
+  background: linear-gradient(45deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+  background-size: 240% 240%;
+  animation: gcslc-metal-rim 14s ease-in-out infinite;
+  box-shadow: 0 8px 36px rgba(0, 0, 0, 0.48);
+  position: relative;
+}
+@keyframes gcslc-metal-rim {
+  0%, 100% { background-position: 0% 40%; }
+  50% { background-position: 100% 55%; }
+}
+.mirror-map-glass-frost-map {
+  position: relative;
+  border-radius: 16px;
+  min-height: 440px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  touch-action: manipulation;
+}
+.mirror-map-glass-header {
+  position: relative;
+  z-index: 6;
+  text-align: center;
+  font-family: 'Goldman', sans-serif;
+}
+.mirror-map-glass-header .mgh1 {
+  color: """
+    + f"{GOLD}"
+    + """; font-weight: 700; margin: 0 0 8px 0;
+  font-size: clamp(0.85rem, 2.6vw, 1.05rem);
+  text-shadow: 0 1px 6px rgba(0,0,0,0.75);
+}
+.mirror-map-glass-header .mgh2 {
+  color: """
+    + f"{GOLD}"
+    + """; opacity: 0.92; margin: 0 0 12px 0;
+  font-size: clamp(0.74rem, 2vw, 0.88rem);
+  text-shadow: 0 1px 4px rgba(0,0,0,0.7);
+}
+.mirror-folium-host {
+  position: relative;
+  z-index: 2;
+  touch-action: manipulation;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.mirror-folium-host iframe {
+  width: 100% !important;
+  touch-action: manipulation !important;
+  border: none !important;
+  border-radius: 12px;
+  display: block;
+  background: """
+    + f"{SHELL}"
+    + """ !important;
+}
+.tam-layer-map {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 14;
+  overflow: hidden;
+  border-radius: 14px;
+}
+.tam-bubble-map {
+  position: absolute;
+  font-family: 'Goldman', sans-serif;
+  font-weight: 700;
+  font-size: clamp(0.62rem, 1.8vw, 0.82rem);
+  letter-spacing: 0.14em;
+  color: rgba(212, 175, 55, 0.52);
+  white-space: nowrap;
+  text-transform: uppercase;
+  text-shadow: 0 0 16px rgba(0,0,0,0.88), 0 2px 6px rgba(0,0,0,0.95);
+  animation: tam-drift-map 22s ease-in-out infinite;
+}
+.tam-bubble-map.b2 { animation-duration: 28s; animation-delay: -4s; }
+.tam-bubble-map.b3 { animation-duration: 18s; animation-delay: -9s; }
+.tam-bubble-map.b4 { animation-duration: 26s; animation-delay: -2s; }
+@keyframes tam-drift-map {
+  0%, 100% { transform: translate(0,0) rotate(-6deg); opacity: 0.45; }
+  33% { transform: translate(8px,-6px) rotate(4deg); opacity: 0.62; }
+  66% { transform: translate(-6px,8px) rotate(-3deg); opacity: 0.52; }
+}
+</style>
+<div class="mirror-map-glass-map-host">
+  <div class="mirror-map-glass-frost-map">
+    <div class="mirror-map-glass-header">
+      <p class="mgh1">GOOGLE OF NIGERIA — LIVE SOCKET</p>
+      <p class="mgh2">Sovereign Navy basemap (tiles 85% · navy bleed) · Federation spine · AZK Million Steel Rods</p>
+    </div>
+    <div class="mirror-folium-host">"""
+    + _map_embed
+    + """</div>
+    <div class="tam-layer-map" aria-hidden="true">
+      <span class="tam-bubble-map" style="top:10%;left:6%;">Tam-Tam · Sovereign</span>
+      <span class="tam-bubble-map b2" style="top:62%;right:8%;">Dam-Dam · GCSLC</span>
+      <span class="tam-bubble-map b3" style="bottom:14%;left:18%;">Proprietary Methodology</span>
+      <span class="tam-bubble-map b4" style="top:38%;right:22%;">176,846 Units · Vigil</span>
+    </div>
   </div>
-  <p style="position:relative;z-index:2;text-align:center;color:{GOLD};font-weight:700;margin:0 0 8px 0;font-family:'Goldman',sans-serif;">
-    GOOGLE OF NIGERIA — LIVE SOCKET</p>
-  <p style="position:relative;z-index:2;text-align:center;font-size:0.88rem;opacity:0.92;margin:0;color:{GOLD};font-family:'Goldman',sans-serif;">
-    Vector tiles · PostGIS spine · polling-unit drill-down (Phase bind)</p>
 </div>
-''',
-    unsafe_allow_html=True,
+"""
 )
+st.components.v1.html(_MAP_GLASS_HTML, height=600, scrolling=False)
+if not _states_geojson:
+    st.caption(
+        "Federation boundary layer could not be fetched — AZK corridor and basemap remain live. "
+        "Retry with network access for full state outlines."
+    )
 
 c1, c2, c3, c4 = st.columns(4)
 c1.metric("States", "36")
