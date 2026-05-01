@@ -4848,6 +4848,36 @@ div[data-testid="stPlotlyChart"] ~ div[data-testid="stPlotlyChart"] {
 .gcslc-vault-markdown-link a:hover {
   text-decoration: underline !important;
 }
+
+/* Deep Join federation map — Live Heartbeat gold pulse (S24 / OLED institutional navy depth) */
+.gcslc-live-heartbeat-shell {
+  position: relative;
+  border-radius: 14px;
+  padding: 3px;
+  margin: 0.35rem 0 0.85rem 0;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 0 0 1px rgba(212, 175, 55, 0.38),
+    0 0 22px rgba(255, 215, 0, 0.18);
+  animation: gcslc-live-heartbeat-gold 2.8s ease-in-out infinite;
+}
+.gcslc-live-heartbeat-shell-inner {
+  border-radius: 11px;
+  overflow: hidden;
+  background: rgba(0, 0, 128, 0.22);
+}
+@keyframes gcslc-live-heartbeat-gold {
+  0%, 100% {
+    box-shadow:
+      0 0 0 1px rgba(212, 175, 55, 0.35),
+      0 0 16px rgba(255, 215, 0, 0.12);
+  }
+  50% {
+    box-shadow:
+      0 0 0 2px rgba(255, 215, 0, 0.58),
+      0 0 38px rgba(255, 215, 0, 0.38);
+  }
+}
 """
 
 _CSS = _CSS.replace("__TACTICAL_BOLT_SVG__", _tactical_bolt_svg_data_url())
@@ -6204,6 +6234,117 @@ def _micro_strike_map() -> go.Figure:
     return fig
 
 
+@st.cache_data(ttl=3600, show_spinner=False)
+def _gcslc_deep_join_catalog_cached() -> pd.DataFrame:
+    """774 LGAs from upstream manifest; ward counts sum to the national 8,806 mandate."""
+    from gcslc_deep_join import (
+        NATIONAL_WARD_TOTAL,
+        attach_ward_counts,
+        catalog_to_dataframe,
+        fetch_lga_catalog_raw,
+        verify_ward_total,
+    )
+
+    raw = fetch_lga_catalog_raw()
+    rows = attach_ward_counts(raw)
+    if verify_ward_total(rows) != NATIONAL_WARD_TOTAL:
+        raise RuntimeError("Deep join ward total mismatch — sovereign checksum failed.")
+    return catalog_to_dataframe(rows)
+
+
+@st.fragment(run_every=timedelta(seconds=60))
+def _gcslc_deep_join_heartbeat_caption() -> None:
+    z = ZoneInfo("Africa/Lagos")
+    st.caption(
+        f"Live heartbeat · ward checksum 8,806 / 8,806 · {datetime.now(z).strftime('%H:%M:%S')} WAT · "
+        "pinch-zoom the map on mobile (e.g. Galaxy S24) after selecting a state or LGA."
+    )
+
+
+def _render_deep_join_federation_block() -> None:
+    """8,806 wards ↔ 774 LGAs ↔ 37 states; Mapbox + AZK corridor + selection/pinch ward reveal."""
+    st.markdown(
+        '<div class="section-prism"><h3>DEEP JOIN · FEDERATION SPINE · AZK CORRIDOR</h3></div>',
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        '<p style="color:rgba(0,229,255,0.88);font-size:0.74rem;font-family:Goldman,sans-serif;margin:0 0 0.5rem 0;">'
+        "Programmatic lattice: each ward resolves to exactly one LGA and one state. "
+        "Pick a state to reveal its ward field; pick an LGA to zoom the ward bundle. Scroll / pinch-zoom on the map.</p>",
+        unsafe_allow_html=True,
+    )
+    try:
+        df = _gcslc_deep_join_catalog_cached()
+    except Exception:
+        st.warning(
+            "Deep join catalog could not be loaded (network required once for the 774 LGA manifest). "
+            "Retry when connectivity is available."
+        )
+        return
+
+    from gcslc_deep_join import build_deep_join_figure, lgas_in_state, state_options
+
+    n_lga = len(df)
+    n_ward = int(df["ward_count"].sum())
+    c1, c2, c3, c4 = st.columns(4)
+    with c1:
+        st.metric("States + FCT", "37")
+    with c2:
+        st.metric("LGAs joined", f"{n_lga:,}")
+    with c3:
+        st.metric("Wards linked", f"{n_ward:,}")
+    with c4:
+        ok = n_lga == 774 and n_ward == 8806
+        st.metric("Checksum", "LOCKED" if ok else "DRIFT")
+
+    _gcslc_deep_join_heartbeat_caption()
+
+    states_all = state_options(df)
+    sel_state = st.selectbox(
+        "Federation filter — state",
+        options=["— Federal overview (corridor + anchors) —"] + states_all,
+        index=0,
+        key="cien_dj_state",
+    )
+    state_val = None if sel_state.startswith("—") else sel_state
+
+    lga_pick = "— All wards in selected state —"
+    if state_val:
+        lga_opts = [lga_pick] + lgas_in_state(df, state_val)
+    else:
+        lga_opts = [lga_pick]
+
+    sel_lga = st.selectbox(
+        "Drill-down — LGA (optional)",
+        options=lga_opts,
+        index=0,
+        key=f"cien_dj_lga_{state_val or '__fed__'}",
+    )
+    lga_val = None if (not state_val or sel_lga.startswith("—")) else sel_lga
+
+    dj_fig = build_deep_join_figure(
+        df,
+        selected_state=state_val,
+        selected_lga=lga_val,
+        show_azk=True,
+    )
+    st.markdown(
+        '<div class="gcslc-live-heartbeat-shell"><div class="gcslc-live-heartbeat-shell-inner">',
+        unsafe_allow_html=True,
+    )
+    st.plotly_chart(
+        dj_fig,
+        use_container_width=True,
+        key="cien_deep_join_map",
+        config={
+            "scrollZoom": True,
+            "responsive": True,
+            "displayModeBar": True,
+        },
+    )
+    st.markdown("</div></div>", unsafe_allow_html=True)
+
+
 def _render_zone_detail(zone_key: str) -> None:
     st.markdown('<div class="prism-widget"><div class="prism-widget-inner">', unsafe_allow_html=True)
     if zone_key == "Master Aggregate":
@@ -6823,6 +6964,7 @@ def main() -> None:
     _render_zone_detail(st.session_state["cien_zone"])
 
     _render_razor_thin_swot_shift_block()
+    _render_deep_join_federation_block()
     st.markdown(
         '<div class="swot-main-section" style="margin-top:0.2rem;"><div class="swot-main-inner" style="padding:0.5rem 0.85rem 0.6rem 0.85rem;">'
         "<h3 style=\"margin:0 !important;\">MICRO-STRIKE MAP · 2027 PROJECTIONS</h3>"

@@ -8,27 +8,15 @@ from __future__ import annotations
 from datetime import datetime
 
 import folium
-import pandas as pd
 import requests
 import streamlit as st
 from branca.element import Element
-from folium.map import CustomPane
 from folium.plugins import AntPath, Fullscreen
-
-from ng_connectivity import (
-    GEOBOUNDARIES_API_NGA_ADM2,
-    build_forensic_spine_table,
-    fetch_geo_boundary_geojson,
-    load_hdx_nga_geojson_zip_layers,
-    prefer_hdx_or_geo_lga_geojson,
-)
 
 SHELL = "#000080"
 GLASS = "rgba(255, 255, 255, 0.08)"
 GOLD = "#D4AF37"
 CYAN = "#00E5FF"
-
-WARD_REVEAL_ZOOM = 11  # pinch past this → wards surface (touch-friendly)
 
 GEOBOUNDARIES_API_NGA_ADM1 = "https://www.geoboundaries.org/api/current/gbOpen/NGA/ADM1/"
 # Abuja–Zaria–Kano pilot spine (“Million Steel Rods” corridor nodes)
@@ -72,106 +60,7 @@ def _load_nigeria_states_geojson() -> dict | None:
         return None
 
 
-@st.cache_data(
-    ttl=604800,
-    show_spinner="Hydrating Phase 2 federation spine (HDX + geoBoundaries)…",
-)
-def _load_phase2_connectivity_bundle() -> dict:
-    """HDX COD ward bundle + geoBoundaries LGA fallback; forensic spine validated in-session."""
-    gb_lgas = fetch_geo_boundary_geojson(GEOBOUNDARIES_API_NGA_ADM2)
-    hdx = load_hdx_nga_geojson_zip_layers()
-    wards_fc = hdx.get("wards")
-    lgas_fc = prefer_hdx_or_geo_lga_geojson(hdx.get("lgas"), gb_lgas)
-    spine_df, spine_report = build_forensic_spine_table(wards_fc)
-    return {
-        "wards_fc": wards_fc,
-        "lgas_fc": lgas_fc,
-        "hdx_layers": hdx,
-        "spine_df": spine_df,
-        "spine_report": spine_report,
-    }
-
-
-def _ward_tooltip(fc: dict | None) -> folium.GeoJsonTooltip | None:
-    if not fc or not fc.get("features"):
-        return None
-    keys = set((fc["features"][0].get("properties") or {}).keys())
-    flds = [k for k in ("ADM3_EN", "ADM2_EN", "ADM1_EN", "ADM3_PCODE") if k in keys]
-    if not flds:
-        return None
-    als = []
-    alias_map = {
-        "ADM3_EN": "Ward",
-        "ADM2_EN": "LGA",
-        "ADM1_EN": "State",
-        "ADM3_PCODE": "Ward code",
-        "ADM2_PCODE": "LGA code",
-    }
-    for k in flds:
-        als.append(alias_map.get(k, k))
-    return folium.GeoJsonTooltip(fields=flds, aliases=als, sticky=True)
-
-
-def _lga_tooltip(fc: dict | None) -> folium.GeoJsonTooltip | None:
-    if not fc or not fc.get("features"):
-        return None
-    p0 = fc["features"][0].get("properties") or {}
-    if "ADM2_EN" in p0 and "ADM1_EN" in p0:
-        return folium.GeoJsonTooltip(
-            fields=["ADM2_EN", "ADM1_EN"], aliases=["LGA", "State"], sticky=True
-        )
-    if "shapeName" in p0 and "shapeGroup" in p0:
-        return folium.GeoJsonTooltip(
-            fields=["shapeName", "shapeGroup"],
-            aliases=["LGA", "State / Territory"],
-            sticky=True,
-        )
-    fk = next(iter(p0.keys()), None)
-    return (
-        folium.GeoJsonTooltip(fields=[fk], aliases=["Boundary"], sticky=True) if fk else None
-    )
-
-
-def _inject_ward_zoom_reveal(m: folium.Map, zoom_threshold: int) -> None:
-    mn = m.get_name()
-    m.get_root().html.add_child(
-        Element(
-            f"""
-<script>
-(function() {{
-  var zmin = {int(zoom_threshold)};
-  function arm() {{
-    var mp = window["{mn}"];
-    if (!mp || !mp.getPane) {{
-      requestAnimationFrame(arm);
-      return;
-    }}
-    var p = mp.getPane("wardReveal");
-    if (!p) {{
-      requestAnimationFrame(arm);
-      return;
-    }}
-    function sync() {{
-      var z = mp.getZoom();
-      var on = z >= zmin;
-      p.style.opacity = on ? "1" : "0";
-      p.style.pointerEvents = on ? "auto" : "none";
-    }}
-    mp.on("zoomend", sync);
-    sync();
-  }}
-  arm();
-}})();
-</script>
-"""
-        )
-    )
-
-
-def _build_federation_map(
-    states_geojson: dict | None,
-    phase2: dict | None,
-) -> folium.Map:
+def _build_federation_map(states_geojson: dict | None) -> folium.Map:
     center_lat = sum(n["lat"] for n in AZK_CORRIDOR_NODES) / len(AZK_CORRIDOR_NODES)
     center_lon = sum(n["lon"] for n in AZK_CORRIDOR_NODES) / len(AZK_CORRIDOR_NODES)
 
@@ -181,13 +70,9 @@ def _build_federation_map(
         tiles=None,
         width="100%",
         height="460px",
-        prefer_canvas=False,
+        prefer_canvas=True,
         zoom_control=True,
     )
-
-    CustomPane("federationStates", z_index=380, pointer_events=True).add_to(m)
-    CustomPane("lgaHeartbeat", z_index=430, pointer_events=True).add_to(m)
-
     folium.TileLayer(
         tiles="CartoDB dark_matter",
         attr="© OpenStreetMap © CARTO · Sovereign Navy basemap",
@@ -196,48 +81,6 @@ def _build_federation_map(
         control=True,
     ).add_to(m)
 
-    pulse_css = """
-@keyframes gcs-lga-heartbeat {
-  0%, 100% {
-    stroke: #BF953F;
-    stroke-opacity: 0.32;
-    stroke-width: 1.05px;
-    fill-opacity: 0.02;
-    filter: brightness(1);
-  }
-  48% {
-    stroke: #FCF6BA;
-    stroke-opacity: 0.95;
-    stroke-width: 2.35px;
-    fill-opacity: 0.09;
-    filter: brightness(1.55);
-  }
-  58% {
-    stroke: #D4AF37;
-    stroke-opacity: 0.48;
-    stroke-width: 1.45px;
-    fill-opacity: 0.038;
-    filter: brightness(1.12);
-  }
-}
-path.gcslc-lga-heartbeat {
-  animation: gcs-lga-heartbeat 4.85s ease-in-out infinite !important;
-  stroke-linejoin: round !important;
-  stroke-linecap: round !important;
-}
-path.gcslc-ward-eightrec {
-  stroke: #00E5FF !important;
-  stroke-width: 1.05px !important;
-  fill: rgba(0, 229, 255, 0.04) !important;
-  stroke-opacity: 0.78 !important;
-}
-path.gcslc-ward-eightrec:hover {
-  stroke: #FFFFFF !important;
-  stroke-width: 2.1px !important;
-  fill: rgba(0, 229, 255, 0.12) !important;
-  stroke-opacity: 1 !important;
-}
-"""
     m.get_root().header.add_child(
         Element(
             f"<style>"
@@ -245,12 +88,11 @@ path.gcslc-ward-eightrec:hover {
             f".leaflet-tile-pane img,.leaflet-tile-pane canvas{{opacity:0.85!important;}}"
             f".leaflet-control-attribution{{background:rgba(0,0,128,0.72)!important;"
             f"color:{GOLD}!important;font-size:10px!important;}}"
-            f"{pulse_css}"
             f"</style>"
         )
     )
 
-    fg_states = folium.FeatureGroup(name="Federation · 36 + FCT").add_to(m)
+    fg_spine = folium.FeatureGroup(name="Federation · 36 + FCT").add_to(m)
     field = _tooltip_field(states_geojson)
     if states_geojson and states_geojson.get("features"):
         tt = (
@@ -264,7 +106,6 @@ path.gcslc-ward-eightrec:hover {
         )
         folium.GeoJson(
             states_geojson,
-            pane="federationStates",
             style_function=lambda _f: {
                 "fillColor": "transparent",
                 "color": CYAN,
@@ -280,62 +121,7 @@ path.gcslc-ward-eightrec:hover {
                 "fillColor": GOLD,
             },
             tooltip=tt,
-        ).add_to(fg_states)
-
-    if phase2:
-        lgas_fc = phase2.get("lgas_fc")
-        fg_lga = folium.FeatureGroup(name="774 LGAs · Eagle heartbeat").add_to(m)
-        if lgas_fc and lgas_fc.get("features"):
-            folium.GeoJson(
-                lgas_fc,
-                pane="lgaHeartbeat",
-                style_function=lambda _f: {
-                    "color": "#D4AF37",
-                    "weight": 1.1,
-                    "fillColor": "#D4AF37",
-                    "fillOpacity": 0.035,
-                    "opacity": 0.55,
-                    "className": "gcslc-lga-heartbeat leaflet-interactive",
-                },
-                highlight_function=lambda _f: {
-                    "weight": 2.5,
-                    "color": "#FCF6BA",
-                    "opacity": 0.98,
-                    "fillOpacity": 0.12,
-                    "fillColor": "#FCF6BA",
-                },
-                tooltip=_lga_tooltip(lgas_fc),
-            ).add_to(fg_lga)
-
-        wards_fc = phase2.get("wards_fc")
-        fg_ward = folium.FeatureGroup(name="8,806 Wards · 8REC drill-down").add_to(m)
-        if wards_fc and wards_fc.get("features"):
-            CustomPane(
-                "wardReveal", z_index=468, pointer_events=False
-            ).add_to(m)
-            folium.GeoJson(
-                wards_fc,
-                pane="wardReveal",
-                smooth_factor=0.55,
-                zoom_on_click=True,
-                style_function=lambda _f: {
-                    "color": CYAN,
-                    "weight": 1.05,
-                    "fillColor": CYAN,
-                    "fillOpacity": 0.02,
-                    "opacity": 0.68,
-                    "className": "gcslc-ward-eightrec leaflet-interactive",
-                },
-                highlight_function=lambda _f: {
-                    "weight": 2.3,
-                    "color": "#FFFFFF",
-                    "opacity": 1,
-                    "fillOpacity": 0.11,
-                    "fillColor": CYAN,
-                },
-                tooltip=_ward_tooltip(wards_fc),
-            ).add_to(fg_ward)
-            _inject_ward_zoom_reveal(m, WARD_REVEAL_ZOOM)
+        ).add_to(fg_spine)
 
     fg_azk = folium.FeatureGroup(name="AZK · Million Steel Rods").add_to(m)
     azk_ll = [[n["lat"], n["lon"]] for n in AZK_CORRIDOR_NODES]
@@ -642,8 +428,7 @@ with tab_soc:
 
 st.markdown("### National map host — Federation glass")
 _states_geojson = _load_nigeria_states_geojson()
-_phase2_bundle = _load_phase2_connectivity_bundle()
-_federation_map = _build_federation_map(_states_geojson, _phase2_bundle)
+_federation_map = _build_federation_map(_states_geojson)
 _map_embed = _federation_map._repr_html_()
 _MAP_GLASS_HTML = (
     """
@@ -746,9 +531,7 @@ html, body { margin: 0; background: transparent !important; }
   <div class="mirror-map-glass-frost-map">
     <div class="mirror-map-glass-header">
       <p class="mgh1">GOOGLE OF NIGERIA — LIVE SOCKET</p>
-      <p class="mgh2">Phase 2 · HDX ward spine + geoBoundaries LGA pulse · wards emerge ≥ zoom """
-    + str(WARD_REVEAL_ZOOM)
-    + """ (pinch) · Sovereign Navy basemap · AZK spine</p>
+      <p class="mgh2">Sovereign Navy basemap (tiles 85% · navy bleed) · Federation spine · AZK Million Steel Rods</p>
     </div>
     <div class="mirror-folium-host">"""
     + _map_embed
@@ -768,33 +551,6 @@ if not _states_geojson:
     st.caption(
         "Federation boundary layer could not be fetched — AZK corridor and basemap remain live. "
         "Retry with network access for full state outlines."
-    )
-
-_spine_rep = _phase2_bundle["spine_report"]
-if _spine_rep["ward_rows"] or _spine_rep["notes"]:
-    _caps = (
-        "Forensic spine · "
-        f"{_spine_rep['ward_rows']} ward-linked rows · "
-        f"LGA facets {_spine_rep.get('distinct_lgas')} · "
-        f"state facets {_spine_rep.get('distinct_states')} · "
-        f"bundle_valid={'PASS' if _spine_rep['valid'] else 'REVIEW REQUIRED'}"
-    )
-    if _spine_rep["notes"]:
-        _caps += " — " + " · ".join(_spine_rep["notes"][:2])
-    st.caption(_caps)
-elif not _phase2_bundle.get("wards_fc"):
-    st.caption(
-        "Phase 2 ward geometry pending — HDX nga_admin boundaries GeoJSON zip offline or blocked. "
-        "774 LGA heartbeat still loads from geoBoundaries when reachable."
-    )
-
-_spdf = _phase2_bundle.get("spine_df")
-if isinstance(_spdf, pd.DataFrame) and not _spdf.empty:
-    st.download_button(
-        label="Export forensic Ward↔LGA↔State spine (CSV)",
-        data=_spdf.to_csv(index=False).encode("utf-8"),
-        file_name="gcslc_forensic_spine_phase2.csv",
-        mime="text/csv",
     )
 
 c1, c2, c3, c4 = st.columns(4)
