@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import html
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import folium
@@ -38,6 +38,12 @@ from atomic_spie import (
     subset_pus_for_viewport,
 )
 from sovereign_nl_query import resolve_sovereign_nl_query
+from generative_eagle import collect_eagle_shouts, friction_alert_active
+from sovereign_active_intel import (
+    build_total_reality_summary,
+    load_ntw_operator_proxy,
+    resolve_state_from_click,
+)
 from vigil_feed import load_recent_events, merge_vigil_sources
 from gcslc_deep_join import NATIONAL_WARD_TOTAL, build_fused_catalog
 from ng_connectivity import (
@@ -74,6 +80,12 @@ FIN_INCLUSION_POS_JSON = BASE_DIR / "Part_02_Finance" / "data" / "financial_incl
 MICRO_ASSETS_JSON = BASE_DIR / "Part_04_Social" / "data" / "micro_assets_capillaries.json"
 SIGNAL_BLACKOUTS_JSON = BASE_DIR / "Part_01_Telecom" / "data" / "signal_blackouts.json"
 VIGIL_FEED_JSON = BASE_DIR / "Part_01_Telecom" / "data" / "vigil_feed_events.json"
+NTW_OPERATOR_PROXY_JSON = (
+    BASE_DIR / "Part_01_Telecom" / "data" / "state_ntw_operator_proxy.json"
+)
+NTW_REGIONAL_AUDIT_JSON = (
+    BASE_DIR / "Part_01_Telecom" / "data" / "ntw_regional_corridor_audit.json"
+)
 LAGOS_STRIKE_JSON = BASE_DIR / "Part_02_Finance" / "data" / "lagos_mainland_strike_points.json"
 NORTHERN_MARKET_VECTORS_JSON = (
     BASE_DIR / "Part_02_Finance" / "data" / "northern_market_azk_vectors.json"
@@ -328,6 +340,18 @@ def _load_signal_blackout_events() -> list[dict]:
 @st.cache_data(ttl=45, show_spinner=False)
 def _load_vigil_registry_events() -> list[dict]:
     return load_recent_events(VIGIL_FEED_JSON, limit=120)
+
+
+@st.cache_data(ttl=3600, show_spinner=False)
+def _load_ntw_operator_proxy_cached() -> dict:
+    return load_ntw_operator_proxy(NTW_OPERATOR_PROXY_JSON)
+
+
+@st.cache_data(ttl=3600, show_spinner=False)
+def _load_ntw_regional_audit_cached() -> dict:
+    from ntw_regional_audit import load_ntw_regional_audit
+
+    return load_ntw_regional_audit(NTW_REGIONAL_AUDIT_JSON)
 
 
 @st.cache_data(ttl=86400, show_spinner=False)
@@ -679,6 +703,151 @@ def _inject_drill_panes_atomic_fps(
 """
         )
     )
+
+
+def _html_total_reality_card(summary: dict) -> str:
+    """Typewriter-cyan Total Reality card (escaped)."""
+    st_name = html.escape(str(summary.get("state", "")))
+    lg = int(summary.get("lgas") or 0)
+    wd = int(summary.get("wards_forensic") or summary.get("wards") or 0)
+    n_wd_nat = int(summary.get("national_ward_total") or 8806)
+    pu = int(summary.get("pu_forensic") or 0)
+    n_pu_nat = int(summary.get("national_pu_total") or 176_846)
+    atom_note = html.escape(str(summary.get("atomic_attribution_note", "")))
+    fs = summary.get("financial_inclusion_score")
+    fs_txt = html.escape(str(fs))
+    fv = html.escape(str(summary.get("financial_inclusion_verdict", "")))
+    fr = summary.get("friction") or {}
+    dom = html.escape(str(summary.get("ntw_dominant_operator", "")))
+    dist = summary.get("ntw_distribution") or {}
+    dist_bits: list[str] = []
+    for k, v in sorted(dist.items(), key=lambda x: -x[1]):
+        try:
+            pct = float(v) * 100.0
+        except (TypeError, ValueError):
+            pct = 0.0
+        dist_bits.append(f"{html.escape(str(k))} {pct:.0f}%")
+    dist_html = " · ".join(dist_bits)
+    fr_txt = html.escape(str(fr.get("friction_summary", "")))
+    return (
+        "<div class='gcslc-total-reality'>"
+        f"<div class='gcslc-tr-h'>Total Reality Summary · {st_name}</div>"
+        "<div class='gcslc-tr-line'><span class='gcslc-tr-k'>Administrative drill-down</span> "
+        f"LGAs {lg} · Wards {wd:,} / {n_wd_nat:,} national · "
+        f"Polling units {pu:,} / {n_pu_nat:,} (INEC lattice)</div>"
+        "<div class='gcslc-tr-line' style='font-size:0.78em;opacity:0.9;'><span class='gcslc-tr-k'>"
+        f"Forensic note</span> {atom_note}</div>"
+        "<div class='gcslc-tr-line'><span class='gcslc-tr-k'>Financial inclusion score</span> "
+        f"{fs_txt} / 100 — {fv}</div>"
+        "<div class='gcslc-tr-line'><span class='gcslc-tr-k'>Friction audit</span> "
+        f"NCC nodes in-state {fr.get('ncc_incidents_in_state', 0)} · "
+        f"Telecom voids {fr.get('signal_void_events_in_state', 0)} · "
+        f"severity avg {fr.get('ncc_severity_avg', 0)} — {fr_txt}</div>"
+        "<div class='gcslc-tr-line'><span class='gcslc-tr-k'>NTW coverage (proxy)</span> "
+        f"Strongest modeled subscriber base → <strong>{dom}</strong> · {dist_html}</div>"
+        "</div>"
+    )
+
+
+def _html_eagle_ticker(shouts: list[dict], *, alert_pulse: bool) -> str:
+    if not shouts:
+        return ""
+    parts: list[str] = []
+    for s in shouts[:14]:
+        pulse = str(s.get("pulse") or "")
+        cls = (
+            "p-friction"
+            if pulse == "friction"
+            else "p-opportunity"
+            if pulse == "opportunity"
+            else "p-liquidity"
+        )
+        h = html.escape(str(s.get("headline", ""))[:92])
+        d = html.escape(str(s.get("detail", ""))[:118])
+        parts.append(f"<span class='eagle-shout {cls}'><b>{h}</b> — {d}</span>")
+    inner = "<span class='eagle-sep'> · </span>".join(parts)
+    shell_cls = "eagle-ticker-shell" + (" eagle-alert-pulse" if alert_pulse else "")
+    return (
+        f"<div class='{shell_cls}'>"
+        "<span class='eagle-ticker-label'>Generative Eagle · sniffer</span>"
+        f"<div class='eagle-ticker-scroll'>{inner}</div>"
+        "</div>"
+    )
+
+
+EAGLE_VOICE_INTERVAL = timedelta(seconds=28)
+
+
+def _eagle_voice_fragment_body() -> None:
+    if not st.session_state.get("generative_eagle_ticker", True):
+        return
+    vr = _load_vigil_registry_events()
+    se = _load_signal_blackout_events()
+    ncc = _load_ncc_vulnerability_incidents()
+    cbn = _load_cbn_financial_points()
+    trade = _load_trade_commerce_nodes()
+    fin = _load_financial_inclusion_pos()
+    vf = merge_vigil_sources(vr, se, fuse_blackouts=True, limit=100)
+    shouts = collect_eagle_shouts(
+        vigil_rows=vf,
+        ncc_rows=ncc,
+        cbn_rows=cbn,
+        trade_rows=trade,
+        signal_rows=se,
+        fin_rows=fin,
+        limit=16,
+    )
+    pulse = bool(st.session_state.get("eagle_friction_pulse", True)) and friction_alert_active(shouts)
+    tick_html = _html_eagle_ticker(shouts, alert_pulse=pulse)
+    if tick_html:
+        lbl = (
+            "Generative Eagle · LIVE"
+            if getattr(st, "fragment", None)
+            else "Generative Eagle · sniffer"
+        )
+        tick_html = tick_html.replace(
+            "Generative Eagle · sniffer",
+            lbl,
+            1,
+        )
+        st.markdown(tick_html, unsafe_allow_html=True)
+
+
+_eagle_frag = getattr(st, "fragment", None)
+if _eagle_frag:
+    _eagle_voice_live = _eagle_frag(run_every=EAGLE_VOICE_INTERVAL)(_eagle_voice_fragment_body)
+else:
+    _eagle_voice_live = _eagle_voice_fragment_body
+
+
+def _render_ntw_sovereign_control_panel() -> None:
+    """Horizontal Big 4 strip below hero map — constant NTW reference (not sidebar)."""
+    from ntw_regional_audit import build_ntw_single_operator_figure, ntw_single_lettermark_html
+
+    st.markdown(
+        "<div class='sovereign-ntw-strip'>"
+        "<p class='sovereign-ntw-panel-head'>NTW Regional Corridor Audit · "
+        "<span>Sovereign Control Panel · Big 4</span></p>"
+        "<hr class='sovereign-ntw-hr'/>"
+        "</div>",
+        unsafe_allow_html=True,
+    )
+    _blob = _load_ntw_regional_audit_cached()
+    _ops = ["MTN", "Airtel", "Glo", "9mobile"]
+    _cols = st.columns(4)
+    for _i, _op in enumerate(_ops):
+        with _cols[_i]:
+            st.markdown(ntw_single_lettermark_html(_op), unsafe_allow_html=True)
+            _fig_op = build_ntw_single_operator_figure(_blob, _op)
+            if _fig_op is not None:
+                st.plotly_chart(
+                    _fig_op,
+                    use_container_width=True,
+                    key=f"ntw_strip_{_op}",
+                    config={"displayModeBar": False},
+                )
+            else:
+                st.caption("Plotly required for NTW charts (`pip install plotly`).")
 
 
 def _build_federation_map(
@@ -1635,6 +1804,114 @@ section.main .block-container {{
   line-height: 1.5;
   color: rgba(240, 244, 255, 0.88) !important;
 }}
+/* Total Reality · Smart click (Typewriter Cyan) */
+.gcslc-total-reality {{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  background: rgba(0, 0, 128, 0.92) !important;
+  border: 1px solid rgba(212, 175, 55, 0.48);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin: 10px 0 14px 0;
+  color: #00E5FF !important;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+  touch-action: manipulation;
+}}
+.gcslc-total-reality .gcslc-tr-h {{
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: clamp(0.7rem, 2vw, 0.85rem);
+  margin-bottom: 10px;
+  color: #00E5FF !important;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.85);
+}}
+.gcslc-total-reality .gcslc-tr-line {{
+  font-size: clamp(0.65rem, 1.9vw, 0.8rem);
+  line-height: 1.5;
+  margin-top: 6px;
+  color: rgba(240, 244, 255, 0.9) !important;
+}}
+.gcslc-total-reality .gcslc-tr-k {{
+  color: rgba(240, 244, 255, 0.65) !important;
+  margin-right: 6px;
+}}
+/* Generative Eagle · ticker (iPhone scroll-safe) */
+.eagle-ticker-shell {{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: nowrap;
+  margin: 0 0 10px 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(0, 0, 128, 0.55);
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  max-width: 100%;
+}}
+.eagle-ticker-shell.eagle-alert-pulse {{
+  animation: eagle-friction-warn 1.8s ease-in-out infinite;
+  border-color: rgba(220, 20, 60, 0.55);
+  box-shadow: 0 0 0 1px rgba(220, 20, 60, 0.25);
+}}
+@keyframes eagle-friction-warn {{
+  0%, 100% {{ box-shadow: 0 0 0 0 rgba(220, 20, 60, 0.0); }}
+  50% {{ box-shadow: 0 0 16px 2px rgba(220, 20, 60, 0.45); }}
+}}
+.eagle-ticker-label {{
+  flex: 0 0 auto;
+  font-size: clamp(0.58rem, 1.6vw, 0.7rem);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: {GOLD} !important;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+}}
+.eagle-ticker-scroll {{
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  white-space: nowrap;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: clamp(0.62rem, 1.8vw, 0.76rem);
+  line-height: 1.4;
+  padding-bottom: 2px;
+}}
+.eagle-shout.p-friction {{ color: #ff6b6b !important; }}
+.eagle-shout.p-opportunity {{ color: #2ECC71 !important; }}
+.eagle-shout.p-liquidity {{ color: #C9A227 !important; }}
+.eagle-sep {{ color: rgba(240,244,255,0.35) !important; }}
+/* NTW Sovereign Control Panel — below hero map */
+.sovereign-ntw-panel-head {{
+  font-family: inherit !important;
+  font-size: clamp(0.72rem, 2vw, 0.88rem) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  color: #D4AF37 !important;
+  margin: 8px 0 6px !important;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.75);
+}}
+.sovereign-ntw-panel-head span {{
+  color: rgba(240,244,255,0.88) !important;
+  font-weight: 600 !important;
+}}
+.sovereign-ntw-hr {{
+  border: none !important;
+  border-top: 1px solid rgba(212,175,55,0.38) !important;
+  margin: 0 0 12px !important;
+}}
+.sovereign-ntw-strip {{
+  margin: 10px 0 16px;
+  padding: 14px 12px 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(212,175,55,0.42);
+  background: rgba(0, 0, 128, 0.52);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 6px 20px rgba(0,0,0,0.22);
+}}
+@media (prefers-reduced-motion: reduce) {{
+  .eagle-ticker-shell.eagle-alert-pulse {{ animation: none !important; }}
+}}
 [data-testid="stSidebar"] {{
   background-color: {SHELL} !important;
   border-right: 1px solid rgba(212, 175, 55, 0.28) !important;
@@ -1682,6 +1959,33 @@ with st.sidebar:
                     "No match — try zone + POS wording, or expand "
                     "`financial_inclusion_pos.json` / `trade_commerce_nodes.json`."
                 )
+    with st.expander("Active Intelligence · Generative Eagle", expanded=False):
+        st.caption(
+            "Smart click uses ADM1 boundaries + `gcslc_deep_join` ward mass. The Eagle sniffs the same "
+            "registries the mirror already mounts — co-resident with the 24/7 Streamlit vigil process."
+        )
+        st.toggle(
+            "Smart click · state Total Reality (cyan)",
+            value=True,
+            key="smart_click_total_reality",
+            help="Click **inside** a state polygon on the national map; summary appears under the canvas.",
+        )
+        st.toggle(
+            "Generative Eagle ticker (voice)",
+            value=True,
+            key="generative_eagle_ticker",
+            help="Vigil + NCC + telecom void + trade velocity + POS liquidity — scrollable on iPhone.",
+        )
+        st.toggle(
+            "High-friction pulse (visual alert)",
+            value=True,
+            key="eagle_friction_pulse",
+            help="Crimson rim when the top shout is high-friction. Visual only on iOS (no autoplay audio).",
+        )
+        st.caption(
+            "NTW corridor charts live below the national map (Sovereign Control Panel) — always visible while you "
+            "click states or search the lattice."
+        )
     st.markdown("### Sovereign Ingestion Monitor")
     st.caption("Phase 3 · NGECC strategic registry ↔ AZK Million Steel Rods")
     _ngecc_sidebar_reg = _load_ngecc_industrial_registry()
@@ -1825,12 +2129,13 @@ _phase2 = _load_phase2_spine_bundle()
 _asset_states = _coal_asset_state_names()
 
 _fuse_caption = ""
+_fused_df = None
 try:
-    _fused = _load_fused_lga_ward_partition()
-    _fuse_ok = len(_fused) == 774 and int(_fused["ward_count"].sum()) == NATIONAL_WARD_TOTAL
+    _fused_df = _load_fused_lga_ward_partition()
+    _fuse_ok = len(_fused_df) == 774 and int(_fused_df["ward_count"].sum()) == NATIONAL_WARD_TOTAL
     _fuse_caption = (
-        f"gcslc_deep_join · {_fused.shape[0]} LGAs · Σ wards "
-        f"{int(_fused['ward_count'].sum()):,} · {'CHECKSUM LOCKED' if _fuse_ok else 'CHECKSUM REVIEW'}"
+        f"gcslc_deep_join · {_fused_df.shape[0]} LGAs · Σ wards "
+        f"{int(_fused_df['ward_count'].sum()):,} · {'CHECKSUM LOCKED' if _fuse_ok else 'CHECKSUM REVIEW'}"
     )
 except Exception:
     _fuse_caption = "gcslc_deep_join manifest unreachable — HDX spine still mounts when online."
@@ -1977,6 +2282,14 @@ elif _strike_mode:
         st.markdown("**Binji / Danchadi void** · informal POS velocity (pulsing gold)")
         st_folium(_bin_map, height=520, use_container_width=True, key="strike_binji")
 else:
+    _ntw_blob = _load_ntw_operator_proxy_cached()
+    if st.session_state.get("generative_eagle_ticker", True):
+        _eagle_voice_live()
+        if getattr(st, "fragment", None) is None:
+            st.caption(
+                "Eagle voice refreshes with each interaction — install Streamlit ≥1.33 for automatic LIVE fragment ticks."
+            )
+
     _gv_zoom = st.session_state.get("gv_zoom")
     _gv_center = st.session_state.get("gv_center")
     _out = st_folium(
@@ -1984,11 +2297,12 @@ else:
         key="gv_map",
         height=800,
         use_container_width=True,
-        returned_objects=["bounds", "zoom", "center"],
+        returned_objects=["bounds", "zoom", "center", "last_clicked"],
         zoom=_gv_zoom,
         center=_gv_center,
         feature_group_to_add=_fg_atom if len(_viewport_df) > 0 else None,
     )
+    _render_ntw_sovereign_control_panel()
     if isinstance(_out, dict):
         st.session_state["gv_map_out"] = _out
         _zz = parse_st_folium_zoom(_out.get("zoom"))
@@ -2007,6 +2321,37 @@ else:
                     )
                 except (TypeError, ValueError):
                     pass
+        if st.session_state.get("smart_click_total_reality", True) and _states_geojson:
+            _lc = _out.get("last_clicked")
+            if _lc and isinstance(_lc, dict):
+                try:
+                    _clat = float(_lc["lat"])
+                    _clng = float(_lc["lng"] if _lc.get("lng") is not None else _lc.get("lon"))
+                except (KeyError, TypeError, ValueError):
+                    _clat = _clng = None
+                if _clat is not None and _clng is not None:
+                    _hit = resolve_state_from_click(_clat, _clng, _states_geojson, _fused_df)
+                    if _hit:
+                        st.session_state["total_reality_last"] = build_total_reality_summary(
+                            _hit[0],
+                            fused_df=_fused_df,
+                            national_pu_df=_national_df,
+                            ncc_rows=_ncc_incidents,
+                            signal_rows=_signal_ev,
+                            fin_points=_fin_pos_pts,
+                            states_geojson=_states_geojson,
+                            ntw_proxy=_ntw_blob,
+                        )
+                    else:
+                        st.session_state.pop("total_reality_last", None)
+    if (
+        st.session_state.get("smart_click_total_reality", True)
+        and st.session_state.get("total_reality_last")
+    ):
+        st.markdown(
+            _html_total_reality_card(st.session_state["total_reality_last"]),
+            unsafe_allow_html=True,
+        )
 _states_warn = ""
 if not _states_geojson:
     _states_warn = (

@@ -1,0 +1,184 @@
+{
+  "meta": {
+    "program": "Financial inclusion · POS vs formal finance",
+    "logic": "commercial_activity vs formal_finance_penetration → inclusion_gap (severe | moderate | narrow)",
+    "palette": {
+      "severe": "#E85D04",
+      "moderate": "#F4A261",
+      "narrow": "#2DC6A4"
+    },
+    "zones_documented": [
+      "Binji · Sokoto",
+      "Danchadi · Binji",
+      "Jega · Kebbi",
+      "Bayelsa · Yenagoa corridor",
+      "Bayelsa · coastal relay"
+    ],
+    "merge_note": "Danchadi + coastal relay ingested as granular POS / trade relay nodes alongside corridor clusters.",
+    "notes": "Warm hues = high informal commerce with thin formal coverage; teal = narrower inclusion gap."
+  },
+  "points": [
+    {
+      "id": "FIN-BINJI-01",
+      "zone": "Binji",
+      "state": "Sokoto",
+      "name": "Binji Main POS Cluster",
+      "lat": 12.243,
+      "lon": 4.903,
+      "agents": 42,
+      "commercial_activity": "high",
+      "formal_finance_penetration": "low",
+      "inclusion_gap": "severe"
+    },
+    {
+      "id": "FIN-BINJI-02",
+      "zone": "Binji",
+      "state": "Sokoto",
+      "name": "Danchadi POS Spine",
+      "lat": 12.236,
+      "lon": 4.896,
+      "agents": 27,
+      "commercial_activity": "medium",
+      "formal_finance_penetration": "low",
+      "inclusion_gap": "moderate"
+    },
+    {
+      "id": "FIN-DANCHADI-01",
+      "zone": "Danchadi",
+      "state": "Sokoto",
+      "name": "Danchadi · trade yard · POS / informal commerce",
+      "lat": 12.2386,
+      "lon": 4.8912,
+      "agents": 22,
+      "commercial_activity": "high",
+      "formal_finance_penetration": "low",
+      "inclusion_gap": "severe",
+      "node_kind": "trade_pos"
+    },
+    {
+      "id": "FIN-DANCHADI-02",
+      "zone": "Danchadi",
+      "state": "Sokoto",
+      "name": "Danchadi · livestock exchange flank · POS relay",
+      "lat": 12.2329,
+      "lon": 4.8877,
+      "agents": 16,
+      "commercial_activity": "high",
+      "formal_finance_penetration": "low",
+      "inclusion_gap": "moderate",
+      "node_kind": "trade_pos"
+    },
+    {
+      "id": "FIN-DANCHADI-03",
+      "zone": "Danchadi",
+      "state": "Sokoto",
+      "name": "Danchadi · motor-park micro POS cluster",
+      "lat": 12.2412,
+      "lon": 4.8994,
+      "agents": 14,
+      "commercial_activity": "medium",
+      "formal_finance_penetration": "low",
+      "inclusion_gap": "moderate",
+      "node_kind": "pos_cluster"
+    },
+    {
+      "id": "FIN-JEGA-01",
+      "zone": "Jega",
+      "state": "Kebbi",
+      "name": "Jega Central POS Ring",
+      "lat": 12.223,
+      "lon": 4.379,
+      "agents": 39,
+      "commercial_activity": "high",
+      "formal_finance_penetration": "medium",
+      "inclusion_gap": "moderate"
+    },
+    {
+      "id": "FIN-JEGA-02",
+      "zone": "Jega",
+      "state": "Kebbi",
+      "name": "Jega East Merchant Node",
+      "lat": 12.215,
+      "lon": 4.401,
+      "agents": 24,
+      "commercial_activity": "medium",
+      "formal_finance_penetration": "medium",
+      "inclusion_gap": "narrow"
+    },
+    {
+      "id": "FIN-BAY-01",
+      "zone": "Yenagoa",
+      "state": "Bayelsa",
+      "name": "Yenagoa Central · informal commerce spine",
+      "lat": 4.9267,
+      "lon": 6.2676,
+      "agents": 31,
+      "commercial_activity": "high",
+      "formal_finance_penetration": "low",
+      "inclusion_gap": "severe"
+    },
+    {
+      "id": "FIN-BAY-02",
+      "zone": "Yenagoa",
+      "state": "Bayelsa",
+      "name": "Opolo · POS corridor",
+      "lat": 4.938,
+      "lon": 6.259,
+      "agents": 18,
+      "commercial_activity": "medium",
+      "formal_finance_penetration": "low",
+      "inclusion_gap": "moderate"
+    },
+    {
+      "id": "FIN-BAY-03",
+      "zone": "Southern Ijaw",
+      "state": "Bayelsa",
+      "name": "Coastal trade · POS relay",
+      "lat": 4.815,
+      "lon": 6.069,
+      "agents": 11,
+      "commercial_activity": "medium",
+      "formal_finance_penetration": "medium",
+      "inclusion_gap": "narrow"
+    },
+    {
+      "id": "FIN-BAY-COAST-01",
+      "zone": "Brass",
+      "state": "Bayelsa",
+      "name": "Brass littoral · coastal relay · POS / trade",
+      "lat": 4.3158,
+      "lon": 6.2431,
+      "agents": 9,
+      "commercial_activity": "medium",
+      "formal_finance_penetration": "low",
+      "inclusion_gap": "moderate",
+      "node_kind": "coastal_relay"
+    },
+    {
+      "id": "FIN-BAY-COAST-02",
+      "zone": "Southern Ijaw",
+      "state": "Bayelsa",
+      "name": "Niger delta creek · coastal POS relay",
+      "lat": 4.452,
+      "lon": 6.112,
+      "agents": 7,
+      "commercial_activity": "medium",
+      "formal_finance_penetration": "low",
+      "inclusion_gap": "moderate",
+      "node_kind": "coastal_relay"
+    },
+    {
+      "id": "FIN-BAY-COAST-03",
+      "zone": "Ekeremor",
+      "state": "Bayelsa",
+      "name": "Western marsh route · trade / POS relay",
+      "lat": 5.058,
+      "lon": 5.538,
+      "agents": 6,
+      "commercial_activity": "low",
+      "formal_finance_penetration": "low",
+      "inclusion_gap": "severe",
+      "node_kind": "coastal_relay"
+    }
+  ]
+}

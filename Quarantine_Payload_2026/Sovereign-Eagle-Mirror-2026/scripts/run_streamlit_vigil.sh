@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 # Sovereign Eagle Mirror — persistent vigil launcher.
 # Always runs from the mirror root so local imports (atomic_spie, gcslc_deep_join, …) resolve.
+#
+# Active Intelligence: Generative Eagle + Total Reality Smart Click run in-process with Streamlit.
+# There is no separate sniffer daemon — telemetry is read from the mounted JSON registries each rerun.
+# Keep this script running 24/7 so the Chairman’s device always hits the freshest Eagle ticker + vigil fuse.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
