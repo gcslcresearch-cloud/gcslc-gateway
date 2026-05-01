@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "tier": "social_service_hubs",
+    "program": "Social delivery hubs · health / education / welfare anchors (tier-2 bulk ingestion)",
+    "notes": "Append objects to `points`. Same coordinate contract as CBN tier — wealth ↔ delivery correlation on map.",
+    "schema": {
+      "id": "optional · stable key",
+      "label": "human-readable hub label",
+      "hub_class": "optional · e.g. primary_health, education, welfare",
+      "lat": "decimal degrees",
+      "lon": "decimal degrees"
+    }
+  },
+  "points": []
+}

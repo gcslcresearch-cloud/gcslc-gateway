@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "tier": "cbn_financial_access_points",
+    "program": "Financial access anchors · CBN / banking footprint (tier-2 bulk ingestion)",
+    "notes": "Append objects to `points`. Each requires `lat`, `lon`, `label`; optional `id`, `lga`, `branch_class`.",
+    "schema": {
+      "id": "optional · stable key",
+      "label": "human-readable site label",
+      "lat": "decimal degrees",
+      "lon": "decimal degrees"
+    }
+  },
+  "points": []
+}
