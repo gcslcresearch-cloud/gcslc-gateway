@@ -1,0 +1,22 @@
+# Sovereign Eagle Mirror 2026 — local dev + LAN access
+# Run from this folder: streamlit run app.py
+
+[server]
+port = 8501
+address = "0.0.0.0"
+headless = false
+runOnSave = true
+fileWatcherType = "auto"
+
+[browser]
+gatherUsageStats = false
+serverAddress = "localhost"
+serverPort = 8501
+
+# Institutional navy — prevents default lavender/light purple Streamlit chrome
+[theme]
+base = "dark"
+primaryColor = "#D4AF37"
+backgroundColor = "#000080"
+secondaryBackgroundColor = "#000080"
+textColor = "#F0F4FF"
