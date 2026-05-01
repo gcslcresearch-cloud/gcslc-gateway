@@ -298,14 +298,6 @@ section[data-testid="stSidebar"] h2, section[data-testid="stSidebar"] h3 {
 .stApp, [data-testid="stAppViewContainer"] { background-color: #001a33 !important; min-height: 100vh; }
 .main .block-container { background-color: transparent !important; position: relative; z-index: 1; }
 
-/* Phase 4: Glassmorphism design tokens (4K-friendly) */
-.stApp {
-    --awc-glass-blur: 12px;
-    --awc-glass-radius: 16px;
-    --awc-glass-border: 1px solid rgba(255, 215, 0, 0.25);
-    --awc-glass-bg: rgba(0, 26, 51, 0.15);
-    --awc-glass-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
-}
 /* Gold Shimmer keyframes */
 @keyframes awc-float {
     0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.7; }
@@ -313,15 +305,16 @@ section[data-testid="stSidebar"] h2, section[data-testid="stSidebar"] h3 {
     50% { transform: translate(-5px, -25px) scale(0.9); opacity: 0.9; }
     75% { transform: translate(-15px, -10px) scale(1.1); opacity: 0.85; }
 }
-/* Glassmorphism: Phase 4 fused — design tokens for 4K polish */
+/* Glassmorphism: 85% transparent map container */
+/* Lux: white eggshell glass — !important flushes legacy/cache collisions with March-era navy tokens */
+.stApp .awc-map-glass,
 .awc-map-glass {
-    background: var(--awc-glass-bg, rgba(0, 26, 51, 0.15));
-    backdrop-filter: blur(var(--awc-glass-blur, 12px));
-    -webkit-backdrop-filter: blur(var(--awc-glass-blur, 12px));
-    border-radius: var(--awc-glass-radius, 16px);
-    border: var(--awc-glass-border, 1px solid rgba(255, 215, 0, 0.25));
-    box-shadow: var(--awc-glass-shadow, inset 0 1px 0 rgba(255,255,255,0.08));
-    position: relative;
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border-radius: 16px !important;
+    border: 1px solid rgba(212, 175, 55, 0.75) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.32), 0 0 0 0.5px rgba(0, 26, 51, 0.14) !important;
 }
 /* IP Shield: Proprietary Methodology watermark (8R Stealth Paradigm — screen-grab protection) */
 .gcslc-proprietary-watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%) rotate(-22deg); font-size: 1.4rem; font-weight: 700; color: rgba(212,175,55,0.18); pointer-events: none; white-space: nowrap; letter-spacing: 0.2em; text-transform: uppercase; z-index: 2; }
@@ -428,20 +421,12 @@ body.gcslc-blur-defend .gcslc-sovereign-strip-top, body.gcslc-blur-defend .gcslc
 .gcslc-header-opportunity-pulse { animation: gcslc-gold-pulse 0.6s ease-in-out 4; }
 @keyframes gcslc-gold-pulse { 0%, 100% { filter: brightness(1); box-shadow: 0 0 0 rgba(255,215,0,0); } 50% { filter: brightness(1.4); box-shadow: 0 0 24px rgba(255,215,0,0.8); } }
 
-/* 4K display: Phase 4 Glassmorphism polish — stronger blur, larger radius, scaled typography */
+/* 4K display: scaled typography (map glass unchanged — March 7 parity) */
 @media (min-width: 2560px) {
-    .stApp {
-        --awc-glass-blur: 24px;
-        --awc-glass-radius: 24px;
-        --awc-glass-border: 2px solid rgba(255, 215, 0, 0.28);
-        --awc-glass-bg: rgba(0, 26, 51, 0.12);
-        --awc-glass-shadow: inset 0 2px 0 rgba(255,255,255,0.1), 0 8px 32px rgba(0,0,0,0.2);
-    }
-    .awc-map-glass { min-height: 360px; padding: 1.25rem; }
     .awc-determinant-popup {
         border-radius: 20px;
-        backdrop-filter: blur(var(--awc-glass-blur));
-        -webkit-backdrop-filter: blur(var(--awc-glass-blur));
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
         padding: 1.25rem 1.5rem;
     }
     [data-testid="stExpander"] {

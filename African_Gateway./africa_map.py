@@ -290,13 +290,12 @@ def get_glassmorphism_css() -> str:
     """
     return """
     .awc-map-glass {
-        background: rgba(0, 26, 51, 0.15);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border-radius: 16px;
-        border: 1px solid rgba(255, 215, 0, 0.25);
-        box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
-        opacity: 0.85;
+        background: rgba(255, 255, 255, 0.08) !important;
+        backdrop-filter: blur(12px) !important;
+        -webkit-backdrop-filter: blur(12px) !important;
+        border-radius: 16px !important;
+        border: 1px solid rgba(212, 175, 55, 0.75) !important;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.32), 0 0 0 0.5px rgba(0, 26, 51, 0.14) !important;
     }
     """
 
