@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  LaunchAgent — Sovereign Eagle Mirror vigil after login / reboot.
+  Install: cp this file to ~/Library/LaunchAgents/
+  Load:    launchctl load ~/Library/LaunchAgents/com.gcslc.sovereign-eagle-mirror.plist
+  Kick:    launchctl kickstart -k gui/$(id -u)/com.gcslc.sovereign-eagle-mirror
+  Unload:  launchctl unload ~/Library/LaunchAgents/com.gcslc.sovereign-eagle-mirror.plist
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.gcslc.sovereign-eagle-mirror</string>
+  <key>WorkingDirectory</key>
+  <string>/Users/user/Desktop/GCSLC_Sovereign_Gateway/Quarantine_Payload_2026/Sovereign-Eagle-Mirror-2026</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Users/user/Desktop/GCSLC_Sovereign_Gateway/Quarantine_Payload_2026/Sovereign-Eagle-Mirror-2026/scripts/streamlit_launchd_wrapper.sh</string>
+  </array>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>/Users/user/Desktop/GCSLC_Sovereign_Gateway/Quarantine_Payload_2026/Sovereign-Eagle-Mirror-2026/logs/launchd_streamlit.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/user/Desktop/GCSLC_Sovereign_Gateway/Quarantine_Payload_2026/Sovereign-Eagle-Mirror-2026/logs/launchd_streamlit.err.log</string>
+</dict>
+</plist>
