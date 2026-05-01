@@ -1,0 +1,85 @@
+{
+  "meta": {
+    "program": "NGECC Strategic Industrial Nodes · Phase 3",
+    "style_hex": "#BF953F",
+    "canonical_source": "Emeka-Onwuepe/Polling_Units_in_Nigeria · Nigeria_polling_units.csv · field `code`",
+    "notes": "Each `code` must match the canonical CSV exactly (character-for-character). `azk_alignment: true` marks PUs on the Abuja–Zaria–Kano spine for Sovereign Gold peak intensity."
+  },
+  "industrial_nodes": [
+    {
+      "code": "37/06/09/012",
+      "label": "FCT · municipal · Orozo · NGECC intake",
+      "azk_alignment": true
+    },
+    {
+      "code": "37/06/09/025",
+      "label": "FCT · municipal · Orozo · strategic PU",
+      "azk_alignment": true
+    },
+    {
+      "code": "25/06/01/016",
+      "label": "Nasarawa · Keffi · Angwan Iya I · corridor flank",
+      "azk_alignment": true
+    },
+    {
+      "code": "25/06/01/018",
+      "label": "Nasarawa · Keffi · Angwan Iya I · gateway PU",
+      "azk_alignment": true
+    },
+    {
+      "code": "18/04/12/008",
+      "label": "Kaduna · Igabi · Rigasa · NGECC lattice anchor",
+      "azk_alignment": true
+    },
+    {
+      "code": "18/04/12/032",
+      "label": "Kaduna · Igabi · Rigasa · strategic PU",
+      "azk_alignment": true
+    },
+    {
+      "code": "18/04/12/044",
+      "label": "Kaduna · Igabi · Rigasa · strategic PU",
+      "azk_alignment": true
+    },
+    {
+      "code": "18/04/12/001",
+      "label": "Kaduna · Igabi · Rigasa · strategic PU",
+      "azk_alignment": true
+    },
+    {
+      "code": "18/04/12/015",
+      "label": "Kaduna · Igabi · Rigasa · strategic PU",
+      "azk_alignment": true
+    },
+    {
+      "code": "18/23/01/046",
+      "label": "Kaduna · Zaria · Kwarbai A · AZK spine",
+      "azk_alignment": true
+    },
+    {
+      "code": "18/23/01/022",
+      "label": "Kaduna · Zaria · Kwarbai A · AZK spine",
+      "azk_alignment": true
+    },
+    {
+      "code": "19/21/01/023",
+      "label": "Kano · municipal · Chedi · northern anchor terminus",
+      "azk_alignment": true
+    },
+    {
+      "code": "19/21/01/017",
+      "label": "Kano · municipal · Chedi · metropolitan anchor",
+      "azk_alignment": true
+    },
+    {
+      "code": "31/01/04/009",
+      "label": "Zamfara · mineral logistics node · western flank registry",
+      "azk_alignment": false
+    },
+    {
+      "code": "34/02/11/014",
+      "label": "Kebbi · river logistics node · north-west registry",
+      "azk_alignment": false
+    }
+  ]
+}

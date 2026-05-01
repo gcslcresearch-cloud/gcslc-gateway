@@ -47,6 +47,21 @@ GOLD_HEARTBEAT = "#BF953F"
 
 BASE_DIR = Path(__file__).resolve().parent
 COAL_NODES_JSON = BASE_DIR / "Part_02_Finance" / "data" / "coal_reserve_nodes.json"
+NGECC_INDUSTRIAL_PU_JSON = (
+    BASE_DIR / "Part_02_Finance" / "data" / "ngecc_strategic_industrial_pu.json"
+)
+
+
+def _parse_azk_alignment_flag(raw: object) -> bool:
+    """Registry `azk_alignment`: strict boolean (legacy prose maps to false)."""
+    if raw is True:
+        return True
+    if raw is False or raw is None:
+        return False
+    if isinstance(raw, str):
+        return raw.strip().lower() in {"true", "1", "yes"}
+    return False
+
 
 # Mobile pinch drill-down: states → LGAs → wards + labels
 ZOOM_LGA_EMERGE = 8
@@ -120,6 +135,39 @@ def _load_fused_lga_ward_partition() -> pd.DataFrame:
 
 
 @st.cache_data(ttl=86400, show_spinner=False)
+def _load_ngecc_industrial_registry() -> dict:
+    """Phase 3 NGECC strategic PU codes → Sovereign Gold industrial nodes on the atomic lattice."""
+    if not NGECC_INDUSTRIAL_PU_JSON.is_file():
+        return {
+            "codes": frozenset(),
+            "labels": {},
+            "azk_codes": frozenset(),
+            "meta": {},
+            "nodes": [],
+        }
+    raw = json.loads(NGECC_INDUSTRIAL_PU_JSON.read_text(encoding="utf-8"))
+    nodes = raw.get("industrial_nodes") or []
+    codes = frozenset(str(n.get("code", "")).strip() for n in nodes if n.get("code"))
+    labels = {
+        str(n.get("code", "")).strip(): str(n.get("label", "Industrial node")).strip()
+        for n in nodes
+        if n.get("code")
+    }
+    azk_codes = frozenset(
+        str(n.get("code", "")).strip()
+        for n in nodes
+        if n.get("code") and _parse_azk_alignment_flag(n.get("azk_alignment"))
+    )
+    return {
+        "codes": codes,
+        "labels": labels,
+        "azk_codes": azk_codes,
+        "meta": raw.get("meta") or {},
+        "nodes": nodes,
+    }
+
+
+@st.cache_data(ttl=86400, show_spinner=False)
 def _coal_asset_state_names() -> frozenset[str]:
     if not COAL_NODES_JSON.is_file():
         return frozenset()
@@ -152,8 +200,15 @@ def _national_pu_frame_cached() -> tuple[pd.DataFrame, dict]:
     return df, rep
 
 
-def _atomic_viewport_feature_group(viewport_df: pd.DataFrame) -> folium.FeatureGroup:
-    """GeoJSON-per-ward data model; one FeatureGroup = current viewport batch (mobile screen)."""
+def _atomic_viewport_feature_group(
+    viewport_df: pd.DataFrame,
+    industrial_codes: frozenset[str],
+    industrial_labels: dict[str, str],
+    industrial_azk_codes: frozenset[str],
+    *,
+    show_industrial_overlay: bool,
+) -> folium.FeatureGroup:
+    """Viewport PU batch — cyan lattice; NGECC registry codes as Sovereign Gold (#BF953F) when overlay on."""
     fg = folium.FeatureGroup(
         name=f"176,846 PU · viewport ({len(viewport_df):,} shown)",
     )
@@ -161,19 +216,46 @@ def _atomic_viewport_feature_group(viewport_df: pd.DataFrame) -> folium.FeatureG
         return fg
     for _, row in viewport_df.iterrows():
         loc = str(row.get("location", ""))[:180]
-        folium.CircleMarker(
-            location=[float(row["lat"]), float(row["lon"])],
-            radius=3,
-            pane="atomicLattice",
-            color=CYAN,
-            weight=1,
-            fill=True,
-            fillColor=CYAN,
-            fillOpacity=0.28,
-            opacity=0.48,
-            className="gcslc-atom-node",
-            tooltip=folium.Tooltip(f"{row['code']} · {loc}", sticky=True),
-        ).add_to(fg)
+        code = str(row.get("code", "")).strip()
+        is_industrial = bool(
+            show_industrial_overlay and industrial_codes and code in industrial_codes
+        )
+        if is_industrial:
+            lbl = industrial_labels.get(code, "NGECC industrial node")
+            tip = f"{code} · {lbl} · {loc}"[:240]
+            is_azk = bool(industrial_azk_codes and code in industrial_azk_codes)
+            cls = (
+                "gcslc-atom-node gcslc-atom-industrial gcslc-atom-azk-spine"
+                if is_azk
+                else "gcslc-atom-node gcslc-atom-industrial"
+            )
+            folium.CircleMarker(
+                location=[float(row["lat"]), float(row["lon"])],
+                radius=5 if is_azk else 4,
+                pane="atomicLattice",
+                color=GOLD_HEARTBEAT,
+                weight=1.55 if is_azk else 1.25,
+                fill=True,
+                fillColor=GOLD_HEARTBEAT,
+                fillOpacity=0.52 if is_azk else 0.42,
+                opacity=0.88 if is_azk else 0.72,
+                className=cls,
+                tooltip=folium.Tooltip(tip, sticky=True),
+            ).add_to(fg)
+        else:
+            folium.CircleMarker(
+                location=[float(row["lat"]), float(row["lon"])],
+                radius=3,
+                pane="atomicLattice",
+                color=CYAN,
+                weight=1,
+                fill=True,
+                fillColor=CYAN,
+                fillOpacity=0.28,
+                opacity=0.48,
+                className="gcslc-atom-node",
+                tooltip=folium.Tooltip(f"{code} · {loc}", sticky=True),
+            ).add_to(fg)
     return fg
 
 
@@ -254,14 +336,38 @@ def _inject_drill_panes_atomic_fps(
       var op = 0.18 + t * 0.78;
       var rpx = 2 + t * 7;
       var sw = 0.6 + t * 1.8;
-      var nodes = root.querySelectorAll("circle.gcslc-atom-node, path.gcslc-atom-node");
-      for (var i = 0; i < nodes.length; i++) {{
-        var p = nodes[i];
+      var opG = 0.35 + t * 0.62;
+      var rpxG = 2.5 + t * 8;
+      var swG = 0.75 + t * 2.1;
+      var cyanN = root.querySelectorAll("circle.gcslc-atom-node:not(.gcslc-atom-industrial)");
+      for (var i = 0; i < cyanN.length; i++) {{
+        var p = cyanN[i];
         if (p.tagName.toLowerCase() === "circle") {{
           p.setAttribute("r", rpx);
           p.setAttribute("stroke-width", sw);
           p.setAttribute("stroke-opacity", op);
           p.setAttribute("fill-opacity", op * 0.85);
+        }}
+      }}
+      var azkN = root.querySelectorAll("circle.gcslc-atom-azk-spine");
+      var goldN = root.querySelectorAll("circle.gcslc-atom-industrial:not(.gcslc-atom-azk-spine)");
+      for (var j = 0; j < goldN.length; j++) {{
+        var g = goldN[j];
+        if (g.tagName.toLowerCase() === "circle") {{
+          g.setAttribute("r", rpxG);
+          g.setAttribute("stroke-width", swG);
+          g.setAttribute("stroke-opacity", opG);
+          g.setAttribute("fill-opacity", opG * 0.88);
+        }}
+      }}
+      var rpxA = rpxG * 1.18, swA = swG * 1.12, opA = Math.min(1, opG * 1.08);
+      for (var k = 0; k < azkN.length; k++) {{
+        var a = azkN[k];
+        if (a.tagName.toLowerCase() === "circle") {{
+          a.setAttribute("r", rpxA);
+          a.setAttribute("stroke-width", swA);
+          a.setAttribute("stroke-opacity", opA);
+          a.setAttribute("fill-opacity", opA * 0.9);
         }}
       }}
     }}
@@ -368,8 +474,43 @@ path.gcslc-ward-base:hover, path.gcslc-ward-eightrec-asset:hover {
   text-shadow: 0 1px 2px #000;
   box-shadow: 0 2px 8px rgba(0,0,0,0.55) !important;
 }
+@keyframes gcs-industrial-node-shimmer {
+  0%, 100% {
+    stroke-opacity: 0.62;
+    fill-opacity: 0.38;
+    filter: brightness(1.05) drop-shadow(0 0 4px rgba(191,149,63,0.5));
+  }
+  50% {
+    stroke-opacity: 1;
+    fill-opacity: 0.62;
+    filter: brightness(1.22) drop-shadow(0 0 14px rgba(191,149,63,0.72));
+  }
+}
+@keyframes gcs-industrial-node-shimmer-azk {
+  0%, 100% {
+    stroke-opacity: 0.78;
+    fill-opacity: 0.48;
+    filter: brightness(1.12) drop-shadow(0 0 8px rgba(191,149,63,0.72));
+  }
+  50% {
+    stroke-opacity: 1;
+    fill-opacity: 0.78;
+    filter: brightness(1.42) drop-shadow(0 0 22px rgba(191,149,63,0.95));
+  }
+}
+circle.gcslc-atom-industrial, path.gcslc-atom-industrial {
+  stroke: #BF953F !important;
+  fill: #BF953F !important;
+  animation: gcs-industrial-node-shimmer 2.85s ease-in-out infinite !important;
+}
+circle.gcslc-atom-industrial.gcslc-atom-azk-spine,
+path.gcslc-atom-industrial.gcslc-atom-azk-spine {
+  animation: gcs-industrial-node-shimmer-azk 2.1s ease-in-out infinite !important;
+}
 @media (prefers-reduced-motion: reduce) {
-  path.gcslc-lga-sovereign-heartbeat, path.gcslc-ward-eightrec-asset { animation: none !important; }
+  path.gcslc-lga-sovereign-heartbeat, path.gcslc-ward-eightrec-asset,
+  circle.gcslc-atom-industrial, path.gcslc-atom-industrial,
+  circle.gcslc-atom-azk-spine, path.gcslc-atom-azk-spine { animation: none !important; }
 }
 path.gcslc-atom-node {
   transition: fill-opacity 0.35s ease, stroke-opacity 0.35s ease;
@@ -793,62 +934,73 @@ iframe[title*="streamlit_folium"] {{
 }}
 .block-container {{
   max-width: 100% !important;
-  padding-top: 0.35rem !important;
-  padding-left: 0.35rem !important;
-  padding-right: 0.35rem !important;
+  padding-top: 0.1rem !important;
+  padding-left: 0.25rem !important;
+  padding-right: 0.25rem !important;
+}}
+section.main .block-container {{
+  padding-top: 0.15rem !important;
+}}
+.sdw-handshake {{
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  background: rgba(0, 0, 128, 0.42);
+  text-align: center;
+}}
+.sdw-handshake .sdw-hs-brand {{
+  display: block;
+  color: #00E5FF !important;
+  font-weight: 700;
+  font-size: clamp(0.72rem, 2.2vw, 0.95rem);
+  line-height: 1.45;
+  text-shadow: 0 1px 5px rgba(0,0,0,0.85);
+}}
+.sdw-handshake .sdw-hs-rc {{
+  display: block;
+  margin-top: 10px;
+  color: {GOLD} !important;
+  font-weight: 700;
+  font-size: clamp(0.78rem, 2.4vw, 1rem);
+  text-shadow: 0 1px 6px rgba(0,0,0,0.8);
+}}
+.sdw-handshake .sdw-hs-man {{
+  display: block;
+  margin-top: 10px;
+  font-size: clamp(0.65rem, 2vw, 0.78rem);
+  line-height: 1.5;
+  color: rgba(240, 244, 255, 0.88) !important;
+}}
+[data-testid="stSidebar"] {{
+  background-color: {SHELL} !important;
+  border-right: 1px solid rgba(212, 175, 55, 0.28) !important;
+}}
+[data-testid="stSidebar"] .stMarkdown, [data-testid="stSidebar"] label {{
+  color: #f0f4ff !important;
 }}
 </style>
 """,
     unsafe_allow_html=True,
 )
 
-# --- Layer 1–3: Handshake (typewriter + pulse + manifesto via single animated HTML host) ---
-_HANDSHAKE_HTML = """
-<link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet">
-<style>
-.hroot { font-family: 'Goldman', sans-serif; text-align: center; padding: 8px 6px 16px; color: #D4AF37;
-  background: #000080; }
-.tw-line { color: #00E5FF !important; font-weight: 700; font-size: clamp(11px, 2.8vw, 15px); letter-spacing: 0.03em; min-height: 4.5em; line-height: 1.45;
-  text-shadow: 0 0 1px rgba(0,0,0,0.95), 0 2px 6px rgba(0,0,0,0.9), 0 0 16px rgba(0,0,0,0.45); }
-.rc-line { margin-top: 14px; font-weight: 700; font-size: clamp(13px, 3.2vw, 17px); color: #D4AF37 !important;
-  animation: pz 2.4s ease-in-out infinite;
-  text-shadow: 0 0 1px rgba(0,0,0,0.95), 0 2px 8px rgba(0,0,0,0.88); }
-@keyframes pz { 0%,100%{ transform: scale(1); } 50%{ transform: scale(1.07); } }
-.man-line { margin-top: 16px; font-weight: 700; font-size: clamp(10px, 2.4vw, 13px); line-height: 1.55;
-  background: linear-gradient(90deg,#001a4d,#D4AF37,#FFE566,#D4AF37,#001a4d); background-size: 220% auto;
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-  animation: sh 5s linear infinite; }
-@keyframes sh { 0%{background-position:0% 50%} 100%{background-position:200% 50%} }
-</style>
-<div class="hroot">
-  <div class="tw-line" id="tw-out"></div>
-  <div class="rc-line" id="rc-out" style="opacity:0;">Galadiman Ruwa Nigeria Ltd RC 1871418</div>
-  <div class="man-line" id="man-out" style="opacity:0;">Proponent of 8R Paradigm Convergence and its Determinants—come in for you to decode and understand.</div>
-</div>
-<script>
-(function(){
-  var full = "Goldman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE";
-  var el = document.getElementById("tw-out");
-  var rc = document.getElementById("rc-out");
-  var mn = document.getElementById("man-out");
-  var i = 0;
-  var slow = 95;
-  function tick(){
-    if (i <= full.length) {
-      el.textContent = full.slice(0, i);
-      i++;
-      setTimeout(tick, slow);
-    } else {
-      setTimeout(function(){ rc.style.opacity = "1"; rc.style.transition = "opacity 1.2s ease"; }, 400);
-      setTimeout(function(){ mn.style.opacity = "1"; mn.style.transition = "opacity 1.4s ease"; }, 2200);
-    }
-  }
-  tick();
-})();
-</script>
-"""
-
-st.components.v1.html(_HANDSHAKE_HTML, height=220)
+with st.sidebar:
+    st.markdown("### Sovereign Ingestion Monitor")
+    st.caption("Phase 3 · NGECC strategic registry ↔ AZK Million Steel Rods")
+    _ngecc_sidebar_reg = _load_ngecc_industrial_registry()
+    st.metric("Industrial PU registry", len(_ngecc_sidebar_reg["codes"]))
+    st.caption(
+        f"AZK spine PUs (peak gold): {len(_ngecc_sidebar_reg['azk_codes'])} · "
+        f"registry path: `Part_02_Finance/data/ngecc_strategic_industrial_pu.json`"
+    )
+    st.toggle(
+        "Industrial Assets (NGECC)",
+        value=True,
+        key="show_industrial_assets",
+        help="Sovereign Gold (#BF953F) shimmer on registered PUs; off = cyan-only lattice for fluid compare.",
+    )
+    st.divider()
+    st.caption("AZK spine: Abuja FCT → Keffi → Kaduna → Zaria → Kano · `azk_alignment: true` = peak gold.")
 
 _states_geojson = _load_nigeria_states_geojson()
 _phase2 = _load_phase2_spine_bundle()
@@ -894,8 +1046,17 @@ if _national_df is not None:
         ZOOM_ATOM_EMERGE,
     )
 
+_ngecc_reg = _load_ngecc_industrial_registry()
+_show_industrial = bool(st.session_state.get("show_industrial_assets", True))
+
 _federation_map = _build_federation_map(_states_geojson, _phase2, _asset_states)
-_fg_atom = _atomic_viewport_feature_group(_viewport_df)
+_fg_atom = _atomic_viewport_feature_group(
+    _viewport_df,
+    _ngecc_reg["codes"],
+    _ngecc_reg["labels"],
+    _ngecc_reg["azk_codes"],
+    show_industrial_overlay=_show_industrial,
+)
 
 if st_folium is None:
     st.error(
@@ -951,6 +1112,10 @@ elif _national_df is not None and _nat_rep:
         f"temikeezy matches {_nat_rep.get('temikeezy_ward_key_matches', '—')} · "
         f"viewport ≤ {len(_viewport_df):,} (cap 10k) · Z_atom={ZOOM_ATOM_EMERGE}"
     )
+_atomic_meta_lines.append(
+    f"Phase 3 NGECC · {len(_ngecc_reg['codes'])} industrial codes · "
+    f"gold overlay {'on' if _show_industrial else 'off (cyan-only)'}"
+)
 
 _detail_meta = " · ".join(
     filter(
@@ -968,6 +1133,11 @@ _detail_meta_safe = html.escape(_detail_meta) if _detail_meta else ""
 st.markdown(
     f"""
 <div class="sovereign-detail-widget">
+  <div class="sdw-handshake">
+    <span class="sdw-hs-brand">Goldman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE</span>
+    <span class="sdw-hs-rc">Galadiman Ruwa Nigeria Ltd RC 1871418</span>
+    <span class="sdw-hs-man">Proponent of 8R Paradigm Convergence and its Determinants—come in for you to decode and understand.</span>
+  </div>
   <div class="sdw-metrics">
     <div class="sdw-metric"><div class="sdw-metric-val">37</div><div class="sdw-metric-lbl">States + FCT</div></div>
     <div class="sdw-metric"><div class="sdw-metric-val">774</div><div class="sdw-metric-lbl">LGAs · heartbeat</div></div>
