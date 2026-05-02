@@ -9,6 +9,7 @@ import hashlib
 import html
 import json
 from datetime import timedelta
+from time import time as _wall_time
 from pathlib import Path
 from typing import Any
 
@@ -39,7 +40,8 @@ from atomic_spie import (
     parse_st_folium_zoom,
     subset_pus_for_viewport,
 )
-from sovereign_nl_query import resolve_sovereign_nl_query
+from sovereign_nl_query import ngecc_discovery_hit, resolve_sovereign_nl_query
+from sovereign_strategic_cells import strategic_cells_banner
 from generative_eagle import collect_eagle_shouts, friction_alert_active
 # Load fused catalog before sovereign_active_intel (same gcslc_deep_join dep) — avoids rare Streamlit loader KeyError.
 from gcslc_deep_join import NATIONAL_WARD_TOTAL, build_fused_catalog
@@ -49,6 +51,7 @@ from sovereign_active_intel import (
     resolve_state_from_click,
 )
 from vigil_feed import load_recent_events, merge_vigil_sources
+from ntw_regional_audit import _kgec_marquee_pair
 from ng_connectivity import (
     GEOBOUNDARIES_API_NGA_ADM2,
     build_spine_table,
@@ -63,6 +66,9 @@ GOLD = "#D4AF37"
 CYAN = "#00E5FF"
 # Sovereign Heartbeat — LGA pulse (mandate)
 GOLD_HEARTBEAT = "#BF953F"
+# Lattice FIN pivot — high contrast vs navy basemap / Deep Blue shell
+GOLD_PIVOT_FILL = "#FFDF66"
+GOLD_PIVOT_STROKE = "#FFFEF5"
 # Friction audit — NCC vulnerability vs Deep Blue shell
 CRIMSON_VULN = "#DC143C"
 CBN_ACCESS_ACCENT = "#C9A227"
@@ -212,6 +218,7 @@ def _load_ngecc_industrial_registry() -> dict:
             "labels": {},
             "azk_codes": frozenset(),
             "meta": {},
+            "search_aliases": [],
             "nodes": [],
             "bulk_entries_count": 0,
         }
@@ -240,11 +247,17 @@ def _load_ngecc_industrial_registry() -> dict:
         for n in nodes
         if n.get("code") and _parse_azk_alignment_flag(n.get("azk_alignment"))
     )
+    meta = raw.get("meta") or {}
+    sa_raw = meta.get("search_aliases")
+    search_aliases: list[str] = (
+        [str(x).strip() for x in sa_raw if str(x).strip()] if isinstance(sa_raw, list) else []
+    )
     return {
         "codes": codes,
         "labels": labels,
         "azk_codes": azk_codes,
-        "meta": raw.get("meta") or {},
+        "meta": meta,
+        "search_aliases": search_aliases,
         "nodes": nodes,
         "bulk_entries_count": len(bulk),
     }
@@ -772,16 +785,22 @@ def _ntw_pulse_click(op: str) -> None:
     """Instant Big-4 ignition — session + nonce so forensic rain remounts on every click."""
     st.session_state["ntw_resonance_pick"] = op
     st.session_state["ntw_resonance_nonce"] = int(st.session_state.get("ntw_resonance_nonce", 0)) + 1
+    st.session_state["ntw_push_ts"] = _wall_time()
 
 
-def _render_ntw_sovereign_control_panel(ntw_proxy: dict[str, Any]) -> None:
+def _render_ntw_sovereign_control_panel(ntw_proxy: dict[str, Any] | None = None) -> None:
     """High-pedestal Resonance Chamber — meter bars + pulsing operator keys + typewriter stream (main only)."""
     from ntw_regional_audit import (
         html_ntw_meter_strip_row,
         html_ntw_resonance_typewriter_stream,
     )
 
+    if ntw_proxy is None:
+        ntw_proxy = _load_ntw_operator_proxy_cached()
+
     st.session_state.setdefault("ntw_resonance_pick", "MTN")
+    st.session_state.setdefault("ntw_push_ts", _wall_time())
+    st.session_state.setdefault("ntw_resonance_nonce", 1)
     st.markdown(
         "<div class='national-resonance-chamber-outer sovereign-ntw-strip sovereign-ntw-resonance "
         "sovereign-ntw-pedestal'>"
@@ -824,14 +843,17 @@ def _render_ntw_sovereign_control_panel(ntw_proxy: dict[str, Any]) -> None:
             ntw_proxy,
             audit_path=NTW_REGIONAL_AUDIT_JSON,
         )
+        _push = float(st.session_state.get("ntw_push_ts") or 0)
         st.markdown(
-            f"<div class='kgec-ntw-stream-root' data-kgec-ntw-nonce='{_nonce}'>{_tw}</div>",
+            f"<div class='kgec-ntw-stream-root' data-kgec-ntw-nonce='{_nonce}' "
+            f"data-kgec-ntw-push='{_push:.6f}'>{_tw}</div>",
             unsafe_allow_html=True,
         )
     else:
-        st.caption(
-            "Select a network pulse above — stream unlocks subscriber base, spectrum layer, "
-            "and corridor broadband rows."
+        _kgec_kinetic_note(
+            "Select a Big-4 network pulse above — stream unlocks subscriber base, spectrum layer, "
+            "corridor broadband — sovereign chamber IDLE.",
+            seconds=34.0,
         )
 
 
@@ -857,6 +879,7 @@ def _build_federation_map(
     show_azk_vectors: bool = False,
     northern_markets: list[dict] | None = None,
     show_komi_intel: bool = False,
+    fin_inclusion_gold_highlight: bool = False,
 ) -> folium.Map:
     center_lat = sum(n["lat"] for n in AZK_CORRIDOR_NODES) / len(AZK_CORRIDOR_NODES)
     center_lon = sum(n["lon"] for n in AZK_CORRIDOR_NODES) / len(AZK_CORRIDOR_NODES)
@@ -1036,6 +1059,24 @@ circle.gcslc-fin-gap-narrow, path.gcslc-fin-gap-narrow {
   stroke: #2DC6A4 !important;
   fill: #2DC6A4 !important;
 }
+@keyframes gcs-fin-pivot-handshake {
+  0%, 100% {
+    stroke-opacity: 1;
+    fill-opacity: 0.94;
+    filter: brightness(1.05) drop-shadow(0 0 8px rgba(255, 223, 102, 0.95)) drop-shadow(0 0 3px rgba(255, 255, 255, 0.45));
+  }
+  50% {
+    stroke-opacity: 1;
+    fill-opacity: 1;
+    filter: brightness(1.18) drop-shadow(0 0 16px rgba(255, 223, 102, 1)) drop-shadow(0 0 6px rgba(255, 255, 255, 0.55));
+  }
+}
+circle.gcslc-fin-pivot-sovereign, path.gcslc-fin-pivot-sovereign {
+  stroke: #FFFEF5 !important;
+  fill: #FFDF66 !important;
+  stroke-width: 3.25px !important;
+  animation: gcs-fin-pivot-handshake 2.4s ease-in-out infinite !important;
+}
 circle.gcslc-micro-capillary, path.gcslc-micro-capillary {
   stroke: rgba(240,244,255,0.85) !important;
   fill: rgba(0,229,255,0.35) !important;
@@ -1045,7 +1086,8 @@ circle.gcslc-micro-capillary, path.gcslc-micro-capillary {
   path.gcslc-lga-sovereign-heartbeat, path.gcslc-ward-eightrec-asset,
   circle.gcslc-atom-industrial, path.gcslc-atom-industrial,
   circle.gcslc-atom-azk-spine, path.gcslc-atom-azk-spine,
-  circle.gcslc-friction-ncc-vuln, path.gcslc-friction-ncc-vuln { animation: none !important; }
+  circle.gcslc-friction-ncc-vuln, path.gcslc-friction-ncc-vuln,
+  circle.gcslc-fin-pivot-sovereign, path.gcslc-fin-pivot-sovereign { animation: none !important; }
 }
 path.gcslc-atom-node {
   transition: fill-opacity 0.35s ease, stroke-opacity 0.35s ease;
@@ -1302,6 +1344,15 @@ path.gcslc-atom-node {
                     rad = min(11, 5 + float(ag) / 14.0)
             except (TypeError, ValueError):
                 rad = 6
+            _fin_w = 1.45
+            _fin_fo = 0.58
+            _fin_cls = f"gcslc-friction-node {css_gap}"
+            if fin_inclusion_gold_highlight:
+                col = GOLD_PIVOT_STROKE
+                rad = min(20.0, float(rad) * 1.42)
+                _fin_w = 3.25
+                _fin_fo = 0.94
+                _fin_cls += " gcslc-fin-pivot-sovereign"
             pop_fin = None
             if show_komi_intel:
                 pop_fin = folium.Popup(
@@ -1312,17 +1363,19 @@ path.gcslc-atom-node {
                     ),
                     max_width=300,
                 )
+            _fill_c = GOLD_PIVOT_FILL if fin_inclusion_gold_highlight else col
+            _stroke_c = col
             mk_fin = dict(
                 location=[float(row["lat"]), float(row["lon"])],
                 radius=float(rad),
-                color=col,
-                weight=1.45,
+                color=_stroke_c,
+                weight=_fin_w,
                 fill=True,
-                fillColor=col,
-                fillOpacity=0.58,
-                opacity=0.92,
+                fillColor=_fill_c,
+                fillOpacity=_fin_fo,
+                opacity=1.0,
                 pane="komiTotalReality" if show_komi_intel else "frictionFinInclusion",
-                className=f"gcslc-friction-node {css_gap}",
+                className=_fin_cls,
                 tooltip=folium.Tooltip(tip, sticky=True),
             )
             if pop_fin is not None:
@@ -1499,6 +1552,84 @@ path.gcslc-atom-node {
     return m
 
 
+# Nigeria sovereign viewport lock — fractional overlay on national hero canvas (tighter than Sahel margin).
+_NG_FRAC_X0 = 0.20
+_NG_FRAC_X1 = 0.78
+_NG_FRAC_Y0 = 0.22
+_NG_FRAC_Y1 = 0.74
+
+
+def _kgec_clamp_nigeria_fraction(pt: dict[str, float]) -> dict[str, float]:
+    """Geofence — K-GEC sentinel stays inside sovereign canvas (no Chad/Niger drift)."""
+    x = max(_NG_FRAC_X0, min(_NG_FRAC_X1, float(pt["x"])))
+    y = max(_NG_FRAC_Y0, min(_NG_FRAC_Y1, float(pt["y"])))
+    return {"x": round(x, 4), "y": round(y, 4)}
+
+
+def _kgec_sniff_lines_from_shouts(shouts: list[dict]) -> list[str]:
+    """Cyan typewriter payloads: Trade velocity · infra voids · security friction — ward keyed."""
+    lines: list[str] = []
+    for s in shouts[:22]:
+        pulse = str(s.get("pulse") or "liquidity")
+        if pulse == "friction":
+            cat = "Security / infrastructure friction"
+        elif pulse == "liquidity":
+            cat = "Trade velocity"
+        else:
+            cat = "Opportunity corridor"
+        h = str(s.get("headline", ""))[:82]
+        d = str(s.get("detail", ""))[:102]
+        wid = hashlib.sha256(f"{h}|{d}".encode()).hexdigest()[:6].upper()
+        lines.append(
+            f"K-GEC · Komi-Generative Cloud · sovereign ward W-{wid} · {cat} · {h} — {d}"
+        )
+    if not lines:
+        lines = [
+            "K-GEC · Komi-Generative Cloud · national lattice · Trade velocity standby — mount trade_commerce_nodes.",
+            "K-GEC · Komi-Generative Cloud · infrastructure void sniff — telecom / signal registries idle.",
+            "K-GEC · Komi-Generative Cloud · security friction channel — NCC / vigil rows pending.",
+        ]
+    return lines
+
+
+def _kgec_ntw_resonance_sniffs(operator: str) -> list[str]:
+    """Bind eagle sniff line to National Resonance corridor audit for the active Big-4 operator."""
+    from ntw_regional_audit import _operator_corridor_means
+
+    blob = _load_ntw_regional_audit_live()
+    cov_m, sim_m = _operator_corridor_means(blob, operator)
+    n_corr = len(blob.get("corridors") or [])
+    return [
+        f"K-GEC Sentinel · National Resonance · {operator} · corridor RAN μ {cov_m:.1f}% · "
+        f"SIM μ {sim_m:.1f}% · audit rows {n_corr} — forensic soul LIVE",
+    ]
+
+
+def _kgec_patrol_bundle(
+    shouts: list[dict],
+    *,
+    extra_sniffs: list[str] | None = None,
+) -> dict[str, Any]:
+    """Parent-window patrol: geofenced targets + sniff lines for eagle typewriter."""
+    raw = _kgec_hover_targets(shouts)
+    sniffs = list(extra_sniffs or []) + _kgec_sniff_lines_from_shouts(shouts)
+    return {
+        "targets": [_kgec_clamp_nigeria_fraction(p) for p in raw],
+        "sniffs": sniffs,
+    }
+
+
+def _kgec_ward_patrol_grid(*, cols: int = 9, rows: int = 7) -> list[dict[str, float]]:
+    """Normalized iframe fractions — dense ward-by-ward patrol mesh over the national canvas."""
+    out: list[dict[str, float]] = []
+    for r in range(rows):
+        for c in range(cols):
+            x = 0.05 + (c + 0.5) / cols * 0.90
+            y = 0.07 + (r + 0.5) / rows * 0.86
+            out.append(_kgec_clamp_nigeria_fraction({"x": x, "y": y}))
+    return out
+
+
 def _kgec_nav_targets_from_shouts(shouts: list[dict], *, n: int = 14) -> list[dict[str, float]]:
     """Fractional map positions (0–1) derived from shout text — K-GEC hover sentinel glides ward-to-ward."""
     out: list[dict[str, float]] = []
@@ -1507,9 +1638,9 @@ def _kgec_nav_targets_from_shouts(shouts: list[dict], *, n: int = 14) -> list[di
         h = int(hashlib.sha256(blob.encode()).hexdigest()[:12], 16)
         x = 0.08 + (h % 840) / 1000.0
         y = 0.10 + ((h // 840) % 820) / 1000.0
-        out.append({"x": round(x, 4), "y": round(y, 4)})
+        out.append(_kgec_clamp_nigeria_fraction({"x": x, "y": y}))
     if not out:
-        out = [{"x": 0.52, "y": 0.44}]
+        out = [_kgec_clamp_nigeria_fraction({"x": 0.52, "y": 0.44})]
     return out
 
 
@@ -1517,33 +1648,54 @@ def _kgec_azk_corridor_fractional() -> list[dict[str, float]]:
     """
     Abuja → Kaduna → Zaria → Kano as normalized fractions over the Folium iframe (north-up; y grows downward).
     """
-    return [
+    raw = [
         {"x": 0.38, "y": 0.55},
         {"x": 0.41, "y": 0.48},
         {"x": 0.44, "y": 0.40},
         {"x": 0.47, "y": 0.33},
         {"x": 0.51, "y": 0.24},
     ]
+    return [_kgec_clamp_nigeria_fraction(p) for p in raw]
 
 
 def _kgec_hover_targets(shouts: list[dict]) -> list[dict[str, float]]:
-    """Interleave AZK spine with ward-hash pockets (one pocket per shout index = ward-by-ward patrol)."""
+    """Ward mesh first — AZK + shout pockets interleaved — sentinel banks lattice cell-by-cell."""
     corridor = _kgec_azk_corridor_fractional()
-    pockets = _kgec_nav_targets_from_shouts(shouts, n=16)
+    grid = _kgec_ward_patrol_grid(cols=11, rows=9)
+    pockets = _kgec_nav_targets_from_shouts(shouts, n=max(28, min(len(shouts), 32)))
     out: list[dict[str, float]] = []
-    n = max(len(corridor), len(pockets))
-    for i in range(n):
-        if i < len(corridor):
-            out.append(corridor[i])
-        if i < len(pockets):
-            out.append(pockets[i])
-    return out if out else corridor
+    n_steps = min(220, max(len(grid) * 2, 48))
+    for i in range(n_steps):
+        out.append(grid[i % len(grid)])
+        if i % 2 == 0:
+            out.append(corridor[i % len(corridor)])
+        if pockets and i % 3 == 0:
+            out.append(pockets[(i // 3) % len(pockets)])
+    return [_kgec_clamp_nigeria_fraction(p) for p in (out[:140] if out else grid[:40])]
 
 
 def _kgec_cell_head(title: str) -> None:
-    """Raw HTML section title — spaced words (mono-terminal; no Streamlit expander chrome)."""
+    """Mono-terminal section title — slow kinetic ticker (no static glyphs)."""
+    mq = _kgec_marquee_pair(title, seconds=52.0)
     st.markdown(
-        f'<p class="kgec-mono-head">{html.escape(title)}</p>',
+        f'<p class="kgec-mono-head kgec-rc-ticker-line">{mq}</p>',
+        unsafe_allow_html=True,
+    )
+
+
+def _kgec_sidebar_cap_mq(text: str, *, seconds: float = 42.0) -> None:
+    """Sidebar explanatory line as horizontal slow-motion ticker (replaces static caption)."""
+    inner = _kgec_marquee_pair(text, seconds=seconds)
+    st.markdown(
+        f"<div class='kgec-sidebar-cap-line kgec-rc-ticker-line'>{inner}</div>",
+        unsafe_allow_html=True,
+    )
+
+
+def _kgec_kinetic_note(text: str, *, seconds: float = 38.0) -> None:
+    """Main-column kinetic line (strike banner, Streamlit hints, NTW fallback)."""
+    st.markdown(
+        f"<div class='kgec-kinetic-note kgec-rc-ticker-line'>{_kgec_marquee_pair(text, seconds=seconds)}</div>",
         unsafe_allow_html=True,
     )
 
@@ -1557,10 +1709,8 @@ def _kgec_sidebar_section() -> Any:
 
 
 def _html_eagle_ticker(shouts: list[dict], *, alert_pulse: bool) -> str:
-    if not shouts:
-        return ""
     parts: list[str] = []
-    for s in shouts[:14]:
+    for s in (shouts or [])[:14]:
         pulse = str(s.get("pulse") or "")
         cls = (
             "p-friction"
@@ -1572,21 +1722,48 @@ def _html_eagle_ticker(shouts: list[dict], *, alert_pulse: bool) -> str:
         h = html.escape(str(s.get("headline", ""))[:92])
         d = html.escape(str(s.get("detail", ""))[:118])
         parts.append(f"<span class='eagle-shout {cls}'><b>{h}</b> — {d}</span>")
+    if not parts:
+        parts.append(
+            "<span class='eagle-shout p-opportunity'><b>K-GEC · Komi-Generative Cloud</b> — "
+            "national lattice armed · mount vigil / trade / NCC rows for live shouts</span>"
+        )
     inner = "<span class='eagle-sep'> · </span>".join(parts)
     shell_cls = (
         "eagle-ticker-shell eagle-stable-sky"
         + (" eagle-alert-pulse" if alert_pulse else "")
     )
+    mq_mark = _kgec_marquee_pair(
+        "◆ K-GEC · Komi-Generative Cloud ◆ sovereign sentinel ◆ Nigerian lattice LIVE ◆",
+        seconds=84.0,
+    )
+    mq_title = _kgec_marquee_pair(
+        "K-GEC · Komi-Generative Cloud · intelligence crest · ward-sniff patrol",
+        seconds=92.0,
+    )
+    mq_sub = _kgec_marquee_pair(
+        "K-GEC · Komi-Generative Cloud · trade velocity · infrastructure voids · security friction · kinetic only",
+        seconds=96.0,
+    )
+    mq_live = _kgec_marquee_pair(
+        "K-GEC · Komi-Generative Cloud · HOVER · PATROL · SNIFF · LIVE",
+        seconds=78.0,
+    )
+    mq_lbl = _kgec_marquee_pair(
+        "K-GEC · Komi-Generative Cloud · intelligence stream · cinematic cyan cadence",
+        seconds=88.0,
+    )
     return (
         "<div class='kgec-sentinel-stack'>"
         "<div class='kgec-sentinel-crest' aria-hidden='true'>"
-        "<span class='kgec-crest-mark'>◆</span>"
-        "<span class='kgec-crest-title'>K-GEC</span>"
-        "<span class='kgec-crest-sub'>Komi-Generative Cloud</span>"
-        "<span class='kgec-crest-live'>HOVER</span>"
+        f"<span class='kgec-crest-mark kgec-crest-mq'>{mq_mark}</span>"
+        f"<span class='kgec-crest-title kgec-crest-mq'>{mq_title}</span>"
+        f"<span class='kgec-crest-sub kgec-crest-mq'>{mq_sub}</span>"
+        f"<span class='kgec-crest-live kgec-crest-mq'>{mq_live}</span>"
         "</div>"
         f"<div class='{shell_cls}'>"
-        "<span class='eagle-ticker-label'>K-GEC · Intelligence stream</span>"
+        "<div id='kgec-eagle-sniff-line' class='kgec-eagle-sniff-typewriter' "
+        "aria-live='polite' aria-atomic='true'></div>"
+        f"<span class='eagle-ticker-label'><span class='kgec-eagle-lbl-mq'>{mq_lbl}</span></span>"
         f"<div class='eagle-ticker-scroll eagle-typewriter-cyan'>{inner}</div>"
         "</div></div>"
     )
@@ -1596,9 +1773,14 @@ EAGLE_VOICE_INTERVAL = timedelta(seconds=28)
 
 
 def _eagle_voice_fragment_body() -> None:
+    _ntw_op = str(st.session_state.get("ntw_resonance_pick") or "MTN").strip()
     if not st.session_state.get("generative_eagle_ticker", True):
         st.components.v1.html(
-            f"<script>try{{var p=window.parent;if(p&&p.__kgecSetTargets)p.__kgecSetTargets({json.dumps(_kgec_azk_corridor_fractional())});}}catch(e){{}}</script>",
+            "<script>try{var p=window.parent;var d="
+            + json.dumps(
+                _kgec_patrol_bundle([], extra_sniffs=_kgec_ntw_resonance_sniffs(_ntw_op))
+            )
+            + ";if(p&&p.__kgecSetPatrol)p.__kgecSetPatrol(d);}catch(e){}</script>",
             height=0,
             width=0,
         )
@@ -1621,15 +1803,18 @@ def _eagle_voice_fragment_body() -> None:
     )
     pulse = bool(st.session_state.get("eagle_friction_pulse", True)) and friction_alert_active(shouts)
     tick_html = _html_eagle_ticker(shouts, alert_pulse=pulse)
-    _nav = _kgec_hover_targets(shouts)
+    _patrol = _kgec_patrol_bundle(
+        shouts,
+        extra_sniffs=_kgec_ntw_resonance_sniffs(_ntw_op),
+    )
     st.components.v1.html(
-        f"<script>try{{var p=window.parent;if(p&&p.__kgecSetTargets)p.__kgecSetTargets({json.dumps(_nav)});}}catch(e){{}}</script>",
+        "<script>try{var p=window.parent;var d="
+        + json.dumps(_patrol)
+        + ";if(p&&p.__kgecSetPatrol)p.__kgecSetPatrol(d);}catch(e){}</script>",
         height=0,
         width=0,
     )
     if tick_html:
-        lbl = "K-GEC · Cloud · LIVE" if getattr(st, "fragment", None) else "K-GEC · Cloud link"
-        tick_html = tick_html.replace("K-GEC · Intelligence stream", lbl, 1)
         st.markdown(tick_html, unsafe_allow_html=True)
 
 
@@ -1688,39 +1873,92 @@ st.components.v1.html(
     if (p.__kgecHoverEngine) return;
     p.__kgecHoverEngine = true;
     p.__kgecTargets = [{x:0.5,y:0.45}];
+    p.__kgecSniffs = [];
+    var KGE_NG = { xmin: 0.20, xmax: 0.78, ymin: 0.22, ymax: 0.74 };
+    function kgecClampNG(pt){
+      return {
+        x: Math.min(KGE_NG.xmax, Math.max(KGE_NG.xmin, Number(pt.x))),
+        y: Math.min(KGE_NG.ymax, Math.max(KGE_NG.ymin, Number(pt.y)))
+      };
+    }
+    p.__kgecSetPatrol = function(obj){
+      try {
+        if (!obj || typeof obj !== 'object') return;
+        if (Array.isArray(obj.targets) && obj.targets.length)
+          p.__kgecTargets = obj.targets.map(kgecClampNG);
+        if (Array.isArray(obj.sniffs))
+          p.__kgecSniffs = obj.sniffs.map(function(s){ return String(s); });
+      } catch (ePat) {}
+    };
     p.__kgecSetTargets = function(arr){
-      if (Array.isArray(arr) && arr.length) p.__kgecTargets = arr;
+      try {
+        if (Array.isArray(arr) && arr.length) p.__kgecTargets = arr.map(kgecClampNG);
+      } catch (eTgt) {}
     };
     p.__kgecIdx = 0;
     p.__kgecSvgUid = 0;
+    var sniffTw = null;
     if (!doc.getElementById('kgec-eagle-keyframes')){
       var st = doc.createElement('style');
       st.id = 'kgec-eagle-keyframes';
-      st.textContent = '@keyframes kgecEagleBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}.kgec-eagle-float{animation:kgecEagleBob 4.5s ease-in-out infinite;transform-origin:100px 58px;}';
+      st.textContent = '@keyframes kgecEagleIdle{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-1.2px) scale(1.01)}}'
+        + '@keyframes kgecEagleSniffPulse{0%,100%{filter:drop-shadow(0 0 16px rgba(255,215,80,0.95)) drop-shadow(0 0 8px rgba(0,229,255,0.45));}'
+        + '50%{filter:drop-shadow(0 0 28px rgba(255,236,140,1)) drop-shadow(0 0 14px rgba(0,229,255,0.6)) brightness(1.08);}}'
+        + '.kgec-eagle-float{animation:kgecEagleIdle 5.8s ease-in-out infinite;transform-origin:180px 95px;}'
+        + '.kgec-eagle-svg.kgec-eagle-sniff-pulse{animation:kgecEagleSniffPulse 1.15s ease-in-out 1;}';
       doc.head.appendChild(st);
     }
     function eagleMarkup(uid){
       return '<defs>'
-        + '<linearGradient id="'+uid+'_au" x1="0%" y1="0%" x2="0%" y2="100%">'
-        + '<stop offset="0%" style="stop-color:#F0D060"/><stop offset="55%" style="stop-color:#B8890B"/>'
-        + '<stop offset="100%" style="stop-color:#5C4308"/></linearGradient>'
-        + '<filter id="'+uid+'_halo" x="-50%" y="-50%" width="200%" height="200%">'
-        + '<feGaussianBlur in="SourceGraphic" stdDeviation="2.2" result="b"/>'
-        + '<feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>'
+        + '<linearGradient id="'+uid+'_gld" x1="0%" y1="0%" x2="100%" y2="100%">'
+        + '<stop offset="0%" stop-color="#FFF4BD"/><stop offset="28%" stop-color="#E8C547"/>'
+        + '<stop offset="62%" stop-color="#BF953F"/><stop offset="100%" stop-color="#4a3706"/></linearGradient>'
+        + '<linearGradient id="'+uid+'_wng" x1="0%" y1="50%" x2="100%" y2="50%">'
+        + '<stop offset="0%" stop-color="#8B6914"/><stop offset="50%" stop-color="#D4AF37"/>'
+        + '<stop offset="100%" stop-color="#3d2e08"/></linearGradient>'
+        + '<linearGradient id="'+uid+'_brz" x1="50%" y1="0%" x2="50%" y2="100%">'
+        + '<stop offset="0%" stop-color="#C9A227"/><stop offset="100%" stop-color="#5c4308"/></linearGradient>'
+        + '<filter id="'+uid+'_hl"><feGaussianBlur stdDeviation="1.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'
+        + '<filter id="'+uid+'_sh"><feDropShadow dx="0" dy="3" stdDeviation="2" flood-color="#000" flood-opacity="0.55"/></filter>'
+        + '</defs>'
         + '<g class="kgec-eagle-float">'
-        + '<g class="kgec-eagle-bank">'
-        + '<path fill="url(#'+uid+'_au)" stroke="#2a1f06" stroke-width="2.2" stroke-linejoin="round" filter="url(#'+uid+'_halo)" '
-        + 'd="M10 64 Q26 14 100 20 Q176 12 190 56 Q178 88 132 74 Q100 102 68 76 Q32 92 10 64 Z"/>'
-        + '<path fill="#4a3706" opacity="0.95" d="M100 22 C118 8 158 18 168 40 C150 44 124 36 112 32 Z"/>'
+        + '<g class="kgec-eagle-bank" filter="url(#'+uid+'_sh)">'
+        + '<path fill="url(#'+uid+'_wng)" stroke="#1a1408" stroke-width="1.4" '
+        + 'd="M18 118 Q44 72 72 88 Q52 108 38 124 Q26 122 18 118 Z"/>'
+        + '<path fill="url(#'+uid+'_wng)" stroke="#1a1408" stroke-width="1.4" '
+        + 'd="M282 122 Q248 78 220 90 Q242 110 258 128 Q272 126 282 122 Z"/>'
+        + '<path fill="url(#'+uid+'_gld)" stroke="#1a1408" stroke-width="1.9" filter="url(#'+uid+'_hl)" '
+        + 'd="M48 98 Q58 52 128 44 Q198 38 252 68 Q238 96 188 108 Q128 118 78 110 Q52 104 48 98 Z"/>'
+        + '<path fill="url(#'+uid+'_brz)" stroke="#1a1408" stroke-width="1.5" opacity="0.95" '
+        + 'd="M72 58 Q110 24 188 30 Q232 36 244 64 Q200 52 140 58 Q96 60 72 58 Z"/>'
+        + '<path fill="url(#'+uid+'_wng)" stroke="#1a1408" stroke-width="1.3" opacity="0.92" '
+        + 'd="M84 78 Q128 58 210 66 Q228 78 198 92 Q152 86 100 94 Z"/>'
+        + '<path fill="url(#'+uid+'_gld)" stroke="#1a1408" stroke-width="1.6" '
+        + 'd="M248 70 Q272 58 302 78 Q292 98 264 92 Q252 80 248 70 Z"/>'
+        + '<path fill="#2a1f0a" stroke="#D4AF37" stroke-width="1.2" '
+        + 'd="M285 78 L318 84 L302 98 Q292 90 285 78 Z"/>'
+        + '<circle cx="278" cy="82" r="5" fill="#0a1628" stroke="#FFD966" stroke-width="1.5"/>'
+        + '<circle cx="276" cy="80" r="1.6" fill="#E8F4FF"/>'
+        + '<path fill="none" stroke="#4a3706" stroke-width="2.2" stroke-linecap="round" opacity="0.88" '
+        + 'd="M124 98 Q168 108 208 88"/>'
+        + '<path fill="none" stroke="#D4AF37" stroke-width="1" stroke-linecap="round" opacity="0.45" '
+        + 'd="M56 108 Q96 124 140 118"/>'
         + '</g>'
-        + '<text x="64" y="106" fill="#FFD966" stroke="#1a1404" stroke-width="0.9" font-size="15" font-weight="800" font-family="ui-monospace,monospace">Sam</text>'
-        + '<text x="132" y="106" fill="#FFD966" stroke="#1a1404" stroke-width="0.9" font-size="15" font-weight="800" font-family="ui-monospace,monospace">Sam</text>'
+        + '<text x="6" y="188" fill="#D4AF37" font-size="10" font-weight="800" font-family="ui-monospace,monospace">K-GEC · Sentinel</text>'
+        + '<text x="168" y="188" fill="#00E5FF" font-size="9" font-weight="700" font-family="ui-monospace,monospace">National Resonance · geofenced</text>'
         + '</g>';
     }
     function mapHost(){
-      var host = doc.querySelector('[data-testid="stIFrame"]');
-      if (!host) host = doc.querySelector('iframe[title*="folium"], iframe[title*="streamlit_folium"]');
-      return host;
+      var main = doc.querySelector('section.main') || doc.body;
+      var inner = main.querySelector('iframe[title*="folium"], iframe[title*="streamlit_folium"], iframe[title*="Folium"]');
+      if (inner) return inner;
+      var shell = main.querySelector('[data-testid="stIFrame"]');
+      if (shell) {
+        var nested = shell.querySelector('iframe');
+        if (nested) return nested;
+        return shell;
+      }
+      return doc.querySelector('iframe[title*="folium"], iframe[title*="streamlit_folium"]');
     }
     function ensureLayer(){
       var host = mapHost();
@@ -1739,16 +1977,16 @@ st.components.v1.html(
         layer = doc.createElement('div');
         layer.id = 'kgec-eagle-hover-layer';
         layer.setAttribute('aria-hidden','true');
-        layer.style.cssText = 'position:absolute;left:0;top:0;right:0;bottom:0;pointer-events:none;overflow:visible;z-index:50;border-radius:14px;transform:translateZ(0);backface-visibility:hidden;-webkit-backface-visibility:hidden;';
+        layer.style.cssText = 'position:absolute;left:0;top:0;right:0;bottom:0;pointer-events:none;overflow:visible;z-index:950;border-radius:14px;transform:translateZ(0);backface-visibility:hidden;-webkit-backface-visibility:hidden;';
         par.appendChild(layer);
         var svg = doc.createElementNS('http://www.w3.org/2000/svg','svg');
         svg.setAttribute('class','kgec-eagle-svg');
-        svg.setAttribute('viewBox','0 0 200 112');
+        svg.setAttribute('viewBox','0 0 340 200');
         svg.setAttribute('preserveAspectRatio','xMidYMid meet');
-        svg.style.cssText = 'position:absolute;width:min(88px,19vw);height:min(48px,11vw);min-width:78px;min-height:44px;left:45%;top:40%;'
-          + 'filter:drop-shadow(0 0 18px rgba(255,215,80,0.95)) drop-shadow(0 0 8px rgba(0,0,0,0.9)) drop-shadow(0 5px 16px rgba(0,0,0,0.65));'
-          + 'transition:left 2s cubic-bezier(0.22,0.08,0.18,1),top 2s cubic-bezier(0.22,0.08,0.18,1);will-change:transform,left,top;'
-          + 'transform:translate3d(-50%,-50%,0);';
+        svg.style.cssText = 'position:absolute;width:min(168px,34vw);height:min(102px,21vw);min-width:132px;min-height:80px;left:45%;top:40%;'
+          + 'filter:drop-shadow(0 0 20px rgba(255,215,80,0.98)) drop-shadow(0 0 10px rgba(0,0,0,0.92)) drop-shadow(0 6px 18px rgba(0,0,0,0.68));'
+          + 'transition:left 2.1s cubic-bezier(0.22,0.08,0.18,1),top 2.1s cubic-bezier(0.22,0.08,0.18,1);will-change:transform,left,top;'
+          + 'transform:translate3d(-50%,-50%,0);opacity:1;visibility:visible;';
         p.__kgecSvgUid = (p.__kgecSvgUid || 0) + 1;
         svg.innerHTML = eagleMarkup('kgec'+p.__kgecSvgUid);
         layer.appendChild(svg);
@@ -1757,10 +1995,31 @@ st.components.v1.html(
       }
       return layer;
     }
-    var GLIDE_MS = 2000;
-    var DWELL_MS = 4000;
+    var GLIDE_MS = 2100;
+    var DWELL_MS = 3400;
     var KGE_CYCLE = GLIDE_MS + DWELL_MS;
+    function clearSniffAnim(){
+      var svg0 = p.__kgecEagleEl;
+      if (svg0) svg0.classList.remove('kgec-eagle-sniff-pulse');
+      if (sniffTw) { clearInterval(sniffTw); sniffTw = null; }
+    }
+    function fireSniffLine(stepIdx){
+      var sniffs = p.__kgecSniffs || [];
+      if (!sniffs.length) return;
+      var msg = String(sniffs[Math.max(0, stepIdx) % sniffs.length] || '');
+      var el = doc.getElementById('kgec-eagle-sniff-line');
+      if (!el) return;
+      el.textContent = '';
+      var i = 0;
+      if (sniffTw) clearInterval(sniffTw);
+      sniffTw = setInterval(function(){
+        if (i > msg.length) { clearInterval(sniffTw); sniffTw = null; return; }
+        el.textContent = msg.slice(0, i);
+        i++;
+      }, 26);
+    }
     function majesticStep(){
+      clearSniffAnim();
       var svg = p.__kgecEagleEl;
       if (!svg || !doc.body.contains(svg)) {
         p.__kgecEagleEl = null;
@@ -1773,13 +2032,23 @@ st.components.v1.html(
         return;
       }
       var tg = p.__kgecTargets || [{x:0.5,y:0.45}];
-      var w = tg[p.__kgecIdx % tg.length];
+      var idx = p.__kgecIdx % tg.length;
+      var w = kgecClampNG(tg[idx]);
       p.__kgecIdx++;
       svg.style.transition = 'left '+ (GLIDE_MS/1000) +'s cubic-bezier(0.22,0.06,0.18,1), top '+ (GLIDE_MS/1000) +'s cubic-bezier(0.22,0.06,0.18,1)';
+      svg.style.opacity = '1';
+      svg.style.visibility = 'visible';
       svg.style.left = (w.x * 100) + '%';
       svg.style.top = (w.y * 100) + '%';
       var bank = p.__kgecEagleBank || svg.querySelector('.kgec-eagle-bank');
-      if (bank) bank.setAttribute('transform','rotate('+ (Math.sin(p.__kgecIdx * 0.55) * 5) +' 100 56)');
+      if (bank) bank.setAttribute('transform','rotate('+ (Math.sin(p.__kgecIdx * 0.42) * 14) +' 180 95)');
+      var stepForSniff = p.__kgecIdx - 1;
+      setTimeout(function(){
+        var svg2 = p.__kgecEagleEl;
+        if (!svg2 || !doc.body.contains(svg2)) return;
+        svg2.classList.add('kgec-eagle-sniff-pulse');
+        fireSniffLine(stepForSniff);
+      }, GLIDE_MS);
     }
     function majestyLoop(){
       majesticStep();
@@ -1789,7 +2058,7 @@ st.components.v1.html(
       var n = 0;
       function tick(){
         ensureLayer();
-        if (!p.__kgecEagleEl && n < 6) { n++; setTimeout(tick, 700); }
+        if (!p.__kgecEagleEl && n < 14) { n++; setTimeout(tick, 420); }
       }
       tick();
     }
@@ -1799,7 +2068,7 @@ st.components.v1.html(
       var host = mapHost();
       var layer = doc.getElementById('kgec-eagle-hover-layer');
       if (host && (!layer || !host.parentElement || !host.parentElement.contains(layer))) ensureLayer();
-    }, 5000);
+    }, 1600);
   } catch (e) {}
 })();
 </script>
@@ -1938,20 +2207,36 @@ h1, h2, h3, h4, h5, h6 {{
 .footer-sovereign {{
   text-align: center;
   padding: 1rem 0.5rem 2rem;
-  font-family: 'Goldman', sans-serif !important;
-  font-size: 0.72rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-size: 0.65rem;
   letter-spacing: 0.06em;
-  color: rgba(212, 175, 55, 0.55) !important;
+  word-spacing: 0.35em;
+  color: rgba(212, 175, 55, 0.62) !important;
 }}
 /* K-GEC sentinel stack — first paint on iPhone · stable strip */
 .kgec-sentinel-stack {{
   position: sticky !important;
   top: 0 !important;
-  z-index: 120 !important;
+  z-index: 5200 !important;
   padding-top: max(6px, env(safe-area-inset-top, 0px)) !important;
-  margin: 0 0 10px 0 !important;
+  margin: 0 0 22px 0 !important;
   padding-left: 4px !important;
   padding-right: 4px !important;
+  isolation: isolate !important;
+  overflow: visible !important;
+}}
+.kgec-crest-mq {{
+  flex: 1 1 120px !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+}}
+.kgec-crest-mq .kgec-mq {{
+  max-width: 100% !important;
+}}
+.kgec-eagle-lbl-mq {{
+  display: block !important;
+  overflow: hidden !important;
+  margin-bottom: 6px !important;
 }}
 .kgec-sentinel-crest {{
   display: flex !important;
@@ -1965,22 +2250,22 @@ h1, h2, h3, h4, h5, h6 {{
   border: 1px solid rgba(212, 175, 55, 0.5) !important;
   box-shadow: 0 0 24px rgba(0, 229, 255, 0.12), inset 0 1px 0 rgba(255,255,255,0.08) !important;
 }}
-.kgec-crest-mark {{ color: #D4AF37 !important; font-size: 0.85rem !important; }}
+.kgec-crest-mark {{ color: #D4AF37 !important; font-size: 0.95rem !important; }}
 .kgec-crest-title {{
   font-weight: 800 !important;
-  letter-spacing: 0.14em !important;
-  font-size: clamp(0.58rem, 1.8vw, 0.72rem) !important;
+  letter-spacing: 0.12em !important;
+  font-size: clamp(0.72rem, 2.35vw, 0.92rem) !important;
   color: #D4AF37 !important;
 }}
 .kgec-crest-sub {{
   font-family: ui-monospace, monospace !important;
-  font-size: clamp(0.55rem, 1.6vw, 0.68rem) !important;
+  font-size: clamp(0.68rem, 2.1vw, 0.86rem) !important;
   color: #00E5FF !important;
-  letter-spacing: 0.08em !important;
+  letter-spacing: 0.07em !important;
 }}
 .kgec-crest-live {{
   margin-left: auto !important;
-  font-size: clamp(0.52rem, 1.5vw, 0.62rem) !important;
+  font-size: clamp(0.65rem, 2vw, 0.8rem) !important;
   font-weight: 800 !important;
   color: #2ECC71 !important;
   letter-spacing: 0.2em !important;
@@ -2002,6 +2287,23 @@ h1, h2, h3, h4, h5, h6 {{
   border-radius: 12px !important;
   border: 1px solid rgba(212, 175, 55, 0.42) !important;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55) !important;
+  overflow: visible !important;
+}}
+.kgec-eagle-sniff-typewriter {{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-size: clamp(0.72rem, 2.2vw, 0.9rem) !important;
+  font-weight: 600 !important;
+  color: #00E5FF !important;
+  letter-spacing: 0.06em !important;
+  line-height: 1.45 !important;
+  min-height: 2.35em !important;
+  margin: 0 0 8px 0 !important;
+  padding: 8px 10px !important;
+  border-radius: 8px !important;
+  border-left: 3px solid rgba(0, 229, 255, 0.55) !important;
+  background: rgba(0, 20, 60, 0.55) !important;
+  text-shadow: 0 0 12px rgba(0, 229, 255, 0.25) !important;
+  word-break: break-word !important;
 }}
 .eagle-typewriter-cyan .eagle-shout,
 .eagle-typewriter-cyan .eagle-shout b {{
@@ -2021,6 +2323,11 @@ h1, h2, h3, h4, h5, h6 {{
   color: rgba(0, 229, 255, 0.45) !important;
 }}
 /* Full-canvas Folium host — fluid width + viewport height (MacBook / iPhone) */
+section.main .gcslc-map-canvas-host,
+section.main [data-testid="stIFrame"] {{
+  position: relative !important;
+  z-index: 2 !important;
+}}
 .gcslc-map-canvas-host {{
   width: 100% !important;
   margin: 0 !important;
@@ -2103,6 +2410,11 @@ iframe[title*="streamlit_folium"] {{
   color: rgba(240, 244, 255, 0.82) !important;
   margin-top: 4px;
 }}
+.sovereign-detail-widget .sdw-metric-lbl.kgec-rc-ticker-line {{
+  overflow: hidden !important;
+  max-width: 100% !important;
+  min-height: 2.35em !important;
+}}
 .sovereign-detail-widget .sdw-meta {{
   margin-top: 12px;
   padding-top: 10px;
@@ -2110,6 +2422,27 @@ iframe[title*="streamlit_folium"] {{
   font-size: clamp(0.68rem, 2vw, 0.78rem);
   line-height: 1.45;
   color: rgba(240, 244, 255, 0.78) !important;
+}}
+.kgec-sdw-strong {{
+  margin-bottom: 6px !important;
+}}
+.sdw-meta-line {{
+  margin-top: 8px !important;
+  overflow: hidden !important;
+  width: 100% !important;
+}}
+.kgec-kinetic-note {{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-size: 0.65rem !important;
+  letter-spacing: 0.05em !important;
+  word-spacing: 0.35em !important;
+  margin: 8px 0 12px 0 !important;
+  color: rgba(200, 245, 255, 0.9) !important;
+}}
+.footer-sovereign-row {{
+  margin: 8px 0 !important;
+  overflow: hidden !important;
+  width: 100% !important;
 }}
 .block-container {{
   max-width: 100% !important;
@@ -2227,9 +2560,9 @@ section.main .block-container {{
 }}
 .eagle-ticker-label {{
   flex: 0 0 auto;
-  font-size: clamp(0.58rem, 1.6vw, 0.7rem);
+  font-size: clamp(0.68rem, 2vw, 0.82rem);
   font-weight: 800;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: {GOLD} !important;
   text-shadow: 0 1px 3px rgba(0,0,0,0.8);
@@ -2242,7 +2575,7 @@ section.main .block-container {{
   -webkit-overflow-scrolling: touch;
   white-space: nowrap;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: clamp(0.62rem, 1.8vw, 0.76rem);
+  font-size: clamp(0.72rem, 2.15vw, 0.88rem);
   line-height: 1.4;
   padding-bottom: 2px;
 }}
@@ -2338,6 +2671,12 @@ section.main .block-container {{
   font-weight: 800 !important;
   margin-bottom: 6px !important;
 }}
+.ntw-meter-label-mq {{
+  overflow: hidden !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: 1.35em !important;
+}}
 .ntw-meter-track {{
   height: 12px !important;
   border-radius: 8px !important;
@@ -2376,12 +2715,40 @@ section.main .block-container {{
   display: inline-flex !important;
   gap: clamp(1.75rem, 5vw, 3.5rem) !important;
   white-space: nowrap !important;
-  animation: kgecMqScroll var(--kgec-mq-dur, 24s) linear infinite !important;
+  animation: kgecMqScroll var(--kgec-mq-dur, 52s) linear infinite !important;
   will-change: transform !important;
 }}
 @keyframes kgecMqScroll {{
   0% {{ transform: translate3d(0, 0, 0); }}
   100% {{ transform: translate3d(-50%, 0, 0); }}
+}}
+.ntw-push-inject {{
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: flex-start !important;
+  gap: 10px 14px !important;
+  margin: 0 0 14px 0 !important;
+  padding: 12px 14px !important;
+  border-radius: 10px !important;
+  background: linear-gradient(90deg, rgba(0,42,62,0.96) 0%, rgba(0,18,48,0.94) 100%) !important;
+  border: 1px solid rgba(0, 229, 255, 0.42) !important;
+  box-shadow: 0 0 28px rgba(46, 204, 113, 0.18), inset 0 1px 0 rgba(255,255,255,0.06) !important;
+  min-height: 3.2rem !important;
+}}
+.ntw-push-inject-op {{
+  flex: 0 0 auto !important;
+  font-weight: 900 !important;
+  font-size: clamp(0.68rem, 2vw, 0.82rem) !important;
+  color: var(--ntw-push-accent, #D4AF37) !important;
+  letter-spacing: 0.14em !important;
+  font-family: ui-monospace, monospace !important;
+}}
+.ntw-push-inject-body {{
+  flex: 1 1 220px !important;
+  min-width: 0 !important;
+}}
+.ntw-push-inject-body .kgec-mq-track span {{
+  color: rgba(230, 248, 255, 0.94) !important;
 }}
 .ntw-tw-v .kgec-mq {{
   display: inline-block !important;
@@ -2407,25 +2774,56 @@ section.main button[aria-label="9mobile"] {{
 .sovereign-ntw-big4-inner {{
   contain: layout style !important;
 }}
-/* Cyan–green forensic stream · staggered “ignite” (speed + hook) */
-@keyframes ntw-line-ignite {{
-  from {{ opacity: 0; transform: translate3d(-10px, 0, 0); }}
-  to {{ opacity: 1; transform: translate3d(0, 0, 0); }}
+/* Cyan–green stream — always legible (no opacity blackout); motion = glide only */
+@keyframes ntw-line-glide {{
+  from {{ transform: translate3d(-8px, 0, 0); }}
+  to {{ transform: translate3d(0, 0, 0); }}
+}}
+.ntw-tw-instant {{
+  opacity: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  margin: 0 0 12px 0 !important;
+  padding: 10px 12px !important;
+  border-radius: 8px !important;
+  background: linear-gradient(90deg, rgba(0,50,40,0.9) 0%, rgba(0,25,60,0.88) 100%) !important;
+  border: 1px solid rgba(46, 204, 113, 0.65) !important;
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.2), inset 0 1px 0 rgba(255,255,255,0.08) !important;
+  line-height: 1.5 !important;
+  animation: none !important;
+}}
+.ntw-tw-instant .ntw-tw-k-mq,
+.ntw-tw-instant .ntw-tw-v-mq {{
+  display: block !important;
+  overflow: hidden !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}}
+.ntw-tw-instant .ntw-tw-k-mq .kgec-mq-track span {{
+  color: #2ECC71 !important;
+}}
+.ntw-tw-instant .ntw-tw-v-mq .kgec-mq-track span {{
+  color: #00E5FF !important;
 }}
 .ntw-cyan-green-stream {{
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
-  background: radial-gradient(100% 120% at 0% 0%, rgba(0,60,80,0.35) 0%, rgba(0,0,0,0.92) 45%) !important;
-  border: 1px solid rgba(46, 204, 113, 0.5) !important;
+  background: radial-gradient(100% 120% at 0% 0%, rgba(0,72,88,0.42) 0%, rgba(0,18,42,0.94) 55%) !important;
+  border: 1px solid rgba(46, 204, 113, 0.55) !important;
   border-radius: 10px !important;
   padding: 14px 14px 16px !important;
   margin-top: 12px !important;
-  box-shadow: inset 0 0 48px rgba(0, 229, 255, 0.08), 0 8px 28px rgba(0,0,0,0.45) !important;
+  min-height: 140px !important;
+  box-shadow: inset 0 0 48px rgba(0, 229, 255, 0.1), 0 8px 28px rgba(0,0,0,0.45) !important;
 }}
 .ntw-tw-rain.kgec-forensic-rain .ntw-tw-line,
 .ntw-tw-rain .ntw-tw-line {{
-  opacity: 0 !important;
-  animation: ntw-line-ignite 0.48s cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
-  animation-delay: calc((var(--tw-i, 1) - 1) * 50ms) !important;
+  opacity: 1 !important;
+  animation: ntw-line-glide 2.35s cubic-bezier(0.22, 0.82, 0.22, 1) both !important;
+  animation-delay: calc((var(--tw-i, 1) - 1) * 55ms) !important;
+}}
+.kgec-ntw-stream-root[data-kgec-ntw-push] .ntw-tw-rain .ntw-tw-line {{
+  animation-duration: 2.45s !important;
 }}
 .ntw-tw-line {{
   line-height: 1.55 !important;
@@ -2459,10 +2857,17 @@ section.main button[aria-label="9mobile"] {{
   padding-left: 12px !important;
   margin-bottom: 10px !important;
 }}
+@keyframes kgec-sovereign-ntw-hr-flow {{
+  0%, 100% {{ opacity: 0.72; box-shadow: 0 0 0 rgba(0,229,255,0); }}
+  50% {{ opacity: 1; box-shadow: 0 0 14px rgba(0,229,255,0.28); }}
+}}
 .sovereign-ntw-hr {{
   border: none !important;
   border-top: 1px solid rgba(212,175,55,0.38) !important;
   margin: 0 0 12px !important;
+  height: 1px !important;
+  background: linear-gradient(90deg, transparent, rgba(212,175,55,0.55), transparent) !important;
+  animation: kgec-sovereign-ntw-hr-flow 3.8s ease-in-out infinite !important;
 }}
 .sovereign-ntw-strip {{
   contain: layout style !important;
@@ -2476,7 +2881,18 @@ section.main button[aria-label="9mobile"] {{
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 6px 20px rgba(0,0,0,0.22);
 }}
 .kgec-ntw-stream-root {{
-  contain: layout style !important;
+  position: relative !important;
+  z-index: 48 !important;
+  min-height: min(280px, 52vh) !important;
+  margin-bottom: 16px !important;
+  padding: 12px 10px 14px !important;
+  border-radius: 12px !important;
+  background: radial-gradient(120% 100% at 50% 0%, rgba(0, 90, 70, 0.28) 0%, rgba(0, 0, 0, 0.9) 55%) !important;
+  border: 1px solid rgba(46, 204, 113, 0.38) !important;
+  box-shadow: inset 0 0 36px rgba(0, 229, 255, 0.06), 0 8px 22px rgba(0, 0, 0, 0.42) !important;
+  overflow: visible !important;
+  isolation: isolate !important;
+  contain: style !important;
 }}
 @media (prefers-reduced-motion: reduce) {{
   .eagle-ticker-shell.eagle-alert-pulse {{ animation: none !important; }}
@@ -2486,45 +2902,66 @@ section.main button[aria-label="9mobile"] {{
   section.main button[aria-label="Airtel"],
   section.main button[aria-label="Glo"],
   section.main button[aria-label="9mobile"] {{ animation: none !important; }}
-  .ntw-tw-rain .ntw-tw-line {{ animation: none !important; opacity: 1 !important; animation-delay: 0ms !important; }}
+  .ntw-tw-rain .ntw-tw-line {{ animation: none !important; transform: none !important; }}
   .kgec-mq-track {{ animation: none !important; transform: none !important; }}
+  .sovereign-ntw-hr {{ animation: none !important; }}
 }}
-/* Beautiful Mirror · GCSLC mono-terminal (total sidebar scope — zero overlap, zero arrow noise) */
+/* Beautiful Mirror · GCSLC mono-terminal (stacked cells · zero overlap · 0.65rem cadence) */
 [data-testid="stSidebar"] {{
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
   font-size: 0.65rem !important;
   line-height: 1.55 !important;
   letter-spacing: 0.04em !important;
-  word-spacing: 0.4em !important;
+  word-spacing: 0.35em !important;
   background-color: {SHELL} !important;
   background-image: linear-gradient(180deg, rgba(0,0,128,0.98) 0%, rgba(0,0,64,0.99) 100%) !important;
   border-right: 1px solid rgba(212, 175, 55, 0.38) !important;
   isolation: isolate !important;
-  contain: layout style !important;
+  contain: none !important;
   overflow-x: hidden !important;
   overflow-y: auto !important;
   -webkit-overflow-scrolling: touch !important;
   -webkit-font-smoothing: antialiased !important;
+  box-sizing: border-box !important;
+}}
+[data-testid="stSidebar"] *, [data-testid="stSidebar"] *::before, [data-testid="stSidebar"] *::after {{
+  box-sizing: border-box !important;
 }}
 [data-testid="stSidebar"] [data-testid="stSidebarContent"] {{
-  gap: 0 !important;
-  padding-top: 8px !important;
-  padding-bottom: 16px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  padding-top: 10px !important;
+  padding-bottom: 20px !important;
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+  max-width: 100% !important;
 }}
 [data-testid="stSidebar"] [data-testid="stVerticalBlockBorderWrapper"] {{
   position: relative !important;
   z-index: 1 !important;
+  flex: 0 0 auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
   border: none !important;
   border-radius: 10px !important;
   background: rgba(0, 0, 48, 0.55) !important;
-  padding: 14px 14px 16px !important;
-  margin-bottom: 18px !important;
+  padding: 12px 12px 14px !important;
+  margin: 0 0 0 0 !important;
   box-sizing: border-box !important;
   box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.42) !important;
   overflow: visible !important;
 }}
+[data-testid="stSidebar"] [data-testid="stVerticalBlock"] {{
+  gap: 0.4rem !important;
+}}
 [data-testid="stSidebar"] [data-testid="stVerticalBlock"] > [data-testid="element-container"] {{
-  margin-bottom: 0.35rem !important;
+  margin-bottom: 0.25rem !important;
+  max-width: 100% !important;
+}}
+.kgec-sidebar-cap-line {{
+  margin: 4px 0 10px 0 !important;
+  min-height: 1.4rem !important;
 }}
 [data-testid="stSidebar"] p.kgec-mono-head {{
   font-family: ui-monospace, monospace !important;
@@ -2539,6 +2976,22 @@ section.main button[aria-label="9mobile"] {{
   border-bottom: 1px solid rgba(212, 175, 55, 0.32) !important;
   line-height: 1.65 !important;
 }}
+[data-testid="stSidebar"] .kgec-mono-head .kgec-mq-track span[aria-hidden="true"],
+[data-testid="stSidebar"] .kgec-sidebar-cap-line .kgec-mq-track span[aria-hidden="true"] {{
+  display: none !important;
+}}
+[data-testid="stSidebar"] .kgec-mono-head .kgec-mq-track,
+[data-testid="stSidebar"] .kgec-sidebar-cap-line .kgec-mq-track {{
+  animation: none !important;
+  transform: none !important;
+  white-space: normal !important;
+  display: block !important;
+  gap: 0 !important;
+}}
+[data-testid="stSidebar"] .kgec-sidebar-cap-line {{
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+}}
 [data-testid="stSidebar"] .stMarkdown,
 [data-testid="stSidebar"] label,
 [data-testid="stSidebar"] p,
@@ -2547,13 +3000,22 @@ section.main button[aria-label="9mobile"] {{
   font-size: 0.65rem !important;
   line-height: 1.55 !important;
   letter-spacing: 0.05em !important;
-  word-spacing: 0.42em !important;
+  word-spacing: 0.28em !important;
 }}
 [data-testid="stSidebar"] label {{
-  margin-top: 10px !important;
-  margin-bottom: 4px !important;
+  margin-top: 8px !important;
+  margin-bottom: 2px !important;
   display: block !important;
   clear: both !important;
+  max-width: 100% !important;
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+}}
+[data-testid="stSidebar"] [data-baseweb="checkbox"] {{
+  max-width: 100% !important;
+}}
+[data-testid="stSidebar"] [data-baseweb="checkbox"] label {{
+  white-space: normal !important;
 }}
 [data-testid="stSidebar"] [data-testid="stCaption"] {{
   font-size: 0.62rem !important;
@@ -2574,7 +3036,7 @@ section.main button[aria-label="9mobile"] {{
   box-sizing: border-box !important;
 }}
 [data-testid="stSidebar"] [data-testid="stMetricValue"] {{
-  font-size: 0.9rem !important;
+  font-size: 0.65rem !important;
   letter-spacing: 0.08em !important;
 }}
 [data-testid="stSidebar"] [data-testid="stMetricLabel"] {{
@@ -2606,6 +3068,26 @@ section.main button[aria-label="9mobile"] {{
   overflow: hidden !important;
   pointer-events: none !important;
 }}
+/* iPhone / narrow — sidebar stable while main NTW kinetic reveal runs (scroll anchoring off · own layer) */
+@media (max-width: 900px) {{
+  [data-testid="stSidebar"] {{
+    overflow-anchor: none !important;
+    overscroll-behavior-y: contain !important;
+    transform: translate3d(0, 0, 0) !important;
+    -webkit-transform: translate3d(0, 0, 0) !important;
+    max-height: 100vh !important;
+    max-height: 100dvh !important;
+    padding-bottom: max(14px, env(safe-area-inset-bottom, 0px)) !important;
+    padding-top: max(8px, env(safe-area-inset-top, 0px)) !important;
+  }}
+  [data-testid="stSidebar"] [data-testid="stSidebarContent"] {{
+    overflow-anchor: none !important;
+  }}
+  section.main .kgec-ntw-stream-root {{
+    isolation: isolate !important;
+    contain: style !important;
+  }}
+}}
 </style>
 """,
     unsafe_allow_html=True,
@@ -2619,14 +3101,17 @@ _vigil_registry = _load_vigil_registry_events()
 with st.sidebar:
     with _kgec_sidebar_section():
         _kgec_cell_head("Sovereign discovery")
-        st.caption(
-            "Lattice filter + heuristic NL pivot — no cloud LLM (Lux-class latency on mobile)."
+        _kgec_sidebar_cap_mq(
+            "Lattice filter + heuristic NL pivot — no cloud LLM — Lux-class latency on mobile — sovereign search LIVE."
         )
         st.text_input(
             "Filter Sovereign Nodes on map",
             key="village_lattice_search",
-            placeholder="binji · danchadi · jega · zaria passage · village name",
-            help="Matches label, village, id, passage_segment, search_aliases (substring).",
+            placeholder="binji · NGECC · NGEEC · green energy chemicals · village name",
+            help="Trade/micro: label, village, id, passage_segment, search_aliases. "
+            "Financial inclusion: matches financial_inclusion_pos.json (zone, name, state, id, …). "
+            "NGECC / NGEEC / Nigerian Green Energy & Chemicals: pivots industrial PU cluster + locks viewport. "
+            "Sovereign-gold POS applies when FIN lattice matches even if the FIN toggle is off.",
         )
         st.text_area(
             "Natural language query",
@@ -2636,22 +3121,38 @@ with st.sidebar:
         )
         if st.button("Pivot map", key="sovereign_nl_pivot"):
             _qn = str(st.session_state.get("sovereign_nl_query_text") or "")
-            _nl = resolve_sovereign_nl_query(_qn, _fin_pos_pts, trade_points=_trade_nodes)
+            try:
+                _nat_pivot_df, _ = _national_pu_frame_cached()
+            except Exception:
+                _nat_pivot_df = None
+            _nl = resolve_sovereign_nl_query(
+                _qn,
+                _fin_pos_pts,
+                trade_points=_trade_nodes,
+                ngecc_reg=_load_ngecc_industrial_registry(),
+                national_pu_df=_nat_pivot_df,
+            )
             if _nl:
                 st.session_state["gv_center"] = (_nl["lat"], _nl["lon"])
                 st.session_state["gv_zoom"] = _nl["zoom"]
                 st.session_state["sovereign_nl_last"] = _nl
+                if str(_nl.get("intent") or "") == "top_pos_density":
+                    _zt_nl = str(_nl.get("zone_token") or "").strip().lower()
+                    if _zt_nl:
+                        st.session_state["_nl_fin_zone_token"] = _zt_nl
+                else:
+                    st.session_state.pop("_nl_fin_zone_token", None)
                 st.success(f"{_nl['headline']} — {_nl['detail']}")
             else:
                 st.warning(
-                    "No match — try zone + POS wording, or expand "
-                    "`financial_inclusion_pos.json` / `trade_commerce_nodes.json`."
+                    "No match — try zone + POS wording, NGECC / NGEEC / green energy chemicals, "
+                    "or expand `financial_inclusion_pos.json` / `trade_commerce_nodes.json`."
                 )
     with _kgec_sidebar_section():
         _kgec_cell_head("K-GEC · Komi-Generative Cloud")
-        st.caption(
-            "Smart click uses ADM1 boundaries + `gcslc_deep_join` ward mass. K-GEC sniffs the same "
-            "registries the mirror already mounts — co-resident with the 24/7 Streamlit vigil process."
+        _kgec_sidebar_cap_mq(
+            "Smart click · ADM1 boundaries + gcslc_deep_join ward mass · K-GEC sniffs mounted registries · "
+            "co-resident 24/7 Streamlit vigil — kinetic Total Reality."
         )
         st.toggle(
             "Smart click · state Total Reality (cyan)",
@@ -2671,20 +3172,24 @@ with st.sidebar:
             key="eagle_friction_pulse",
             help="Crimson rim when the top shout is high-friction. Visual only on iOS (no autoplay audio).",
         )
-        st.caption(
-            "NTW corridor charts live below the national map (Sovereign Control Panel) — always visible while you "
-            "click states or search the lattice."
+        _kgec_sidebar_cap_mq(
+            "NTW Resonance Chamber below national map — Sovereign Control Panel — charts visible while "
+            "smart-clicking states or lattice search — ignition armed."
         )
     with _kgec_sidebar_section():
         _kgec_cell_head("Sovereign ingestion monitor")
-        st.caption("Phase 3 · NGECC strategic registry ↔ AZK Million Steel Rods")
+        _kgec_sidebar_cap_mq(
+            "Phase 3 · NGECC strategic registry ↔ AZK Million Steel Rods — industrial lattice ticker LIVE.",
+            seconds=36.0,
+        )
         _ngecc_sidebar_reg = _load_ngecc_industrial_registry()
         st.metric("Industrial PU registry", len(_ngecc_sidebar_reg["codes"]))
         _bulk_n = int(_ngecc_sidebar_reg.get("bulk_entries_count") or 0)
         _bulk_hint = f" · tier-2 bulk rows: {_bulk_n}" if _bulk_n else ""
-        st.caption(
-            f"AZK spine PUs (peak gold): {len(_ngecc_sidebar_reg['azk_codes'])} · "
-            f"registry: `Part_02_Finance/data/ngecc_strategic_industrial_pu.json`{_bulk_hint}"
+        _kgec_sidebar_cap_mq(
+            f"AZK spine PUs peak gold {len(_ngecc_sidebar_reg['azk_codes'])} · "
+            f"registry Part_02_Finance/data/ngecc_strategic_industrial_pu.json{_bulk_hint}",
+            seconds=40.0,
         )
         st.toggle(
             "Industrial Assets (NGECC)",
@@ -2694,8 +3199,8 @@ with st.sidebar:
         )
     with _kgec_sidebar_section():
         _kgec_cell_head("Friction · sovereign audit")
-        st.caption(
-            "Industrial wealth ↔ social delivery · layers stay off the hero canvas until enabled."
+        _kgec_sidebar_cap_mq(
+            "Industrial wealth ↔ social delivery — friction layers off hero canvas until you enable — sovereign discipline.",
         )
         st.toggle(
             "NCC · infrastructure vulnerability",
@@ -2723,9 +3228,9 @@ with st.sidebar:
         )
     with _kgec_sidebar_section():
         _kgec_cell_head("Trade & Commerce")
-        st.caption(
-            "Livestock / exchange anchors + village lattice — `trade_commerce_nodes.json` "
-            "(each village is a Sovereign Node with search_aliases)."
+        _kgec_sidebar_cap_mq(
+            "Livestock exchange anchors + village lattice — trade_commerce_nodes.json — "
+            "each village Sovereign Node + search_aliases — velocity LIVE.",
         )
         st.toggle(
             "Trade & Commerce markets",
@@ -2735,9 +3240,9 @@ with st.sidebar:
         )
     with _kgec_sidebar_section():
         _kgec_cell_head("Territory · capillaries")
-        st.caption(
-            "Human shield · informal trade nodes are national capillaries — "
-            "Zaria GRA streets ↔ Danchadi POS relays ↔ coastal relays."
+        _kgec_sidebar_cap_mq(
+            "Human shield · informal trade nodes national capillaries — "
+            "Zaria GRA ↔ Danchadi POS ↔ coastal relays — ward pulse.",
         )
         st.toggle(
             "Micro-assets (capillaries)",
@@ -2747,9 +3252,9 @@ with st.sidebar:
         )
     with _kgec_sidebar_section():
         _kgec_cell_head("Forensic Intelligence · Soul")
-        st.caption(
-            "NCC × telecom void × finance friction → Double-Zero synthesis · relational schema in "
-            "`Part_03_Security/data/forensic_relational_schema.json`."
+        _kgec_sidebar_cap_mq(
+            "NCC × telecom void × finance friction → Double-Zero synthesis · "
+            "schema Part_03_Security/data/forensic_relational_schema.json — soul stream.",
         )
         st.toggle(
             "Double-Zero · disconnected void (grey heat)",
@@ -2777,9 +3282,9 @@ with st.sidebar:
         )
     with _kgec_sidebar_section():
         _kgec_cell_head("National Vigil · signal pulse")
-        st.caption(
-            "Architecture: append `Part_01_Telecom/data/vigil_feed_events.json` from SOC/NMS webhooks; "
-            "`vigil_feed.py` normalizes rows. Optional fuse with legacy blackout registry."
+        _kgec_sidebar_cap_mq(
+            "Append Part_01_Telecom/data/vigil_feed_events.json from SOC/NMS webhooks — "
+            "vigil_feed.py normalizes — fuse legacy blackout registry optional — ONSA cadence.",
         )
         st.toggle(
             "Show vigil pulse strip",
@@ -2801,26 +3306,29 @@ with st.sidebar:
                 limit=10,
             )
             if _vf:
-                for _row in _vf:
+                for _vi, _row in enumerate(_vf):
                     _lbl = str(_row.get("label") or "Event")[:72]
                     _k = str(_row.get("kind") or "")
                     _ts = str(_row.get("ts_iso") or "")[:19]
                     _zv = str(_row.get("zone") or "").strip()
                     _tail = f" · {_zv}" if _zv else ""
+                    _vline = f"{_k} · {_ts} · {_lbl}{_tail}"
+                    _vmq = _kgec_marquee_pair(_vline, seconds=26.0 + (_vi % 5))
                     st.markdown(
-                        f"<div style='font-size:0.65rem;line-height:1.55;letter-spacing:0.04em;word-spacing:0.35em;"
-                        f"color:rgba(200,245,255,0.92);border-left:3px solid rgba(212,175,55,0.45);"
-                        f"padding-left:10px;margin-bottom:8px;'>"
-                        f"<span style='color:#00E5FF;'>{html.escape(_k)}</span> &nbsp; {_ts}<br/>"
-                        f"{html.escape(_lbl)}{html.escape(_tail)}</div>",
+                        "<div class='kgec-sidebar-cap-line kgec-rc-ticker-line' style='border-left:3px solid rgba(212,175,55,0.45);"
+                        "padding-left:10px;margin-bottom:8px;color:rgba(200,245,255,0.92);'>"
+                        f"<span style='color:#00E5FF;'>{html.escape(_k)}</span> · {_vmq}</div>",
                         unsafe_allow_html=True,
                     )
             else:
-                st.caption("No vigil rows — populate `vigil_feed_events.json` or enable fuse.")
+                _kgec_sidebar_cap_mq(
+                    "No vigil rows — populate vigil_feed_events.json or enable telecom fuse — strip IDLE.",
+                    seconds=28.0,
+                )
     with _kgec_sidebar_section():
         _kgec_cell_head("AZK spine")
-        st.caption(
-            "Abuja FCT → Keffi → Kaduna → Zaria → Kano · `azk_alignment: true` = peak gold."
+        _kgec_sidebar_cap_mq(
+            "Abuja FCT → Keffi → Kaduna → Zaria → Kano — azk_alignment true = peak gold — eagle corridor.",
         )
 
 _states_geojson = _load_nigeria_states_geojson()
@@ -2901,7 +3409,114 @@ def _match_village_query(query: str, row: dict) -> bool:
     return qv in blob
 
 
+def _match_fin_lattice_query(query: str, row: dict) -> bool:
+    """Sovereign discovery substring match across financial_inclusion_pos.json keywords."""
+    if not query.strip():
+        return False
+    qv = query.strip().lower()
+    parts = [
+        str(row.get("name", "")),
+        str(row.get("zone", "")),
+        str(row.get("state", "")),
+        str(row.get("id", "")),
+        str(row.get("commercial_activity", "")),
+        str(row.get("formal_finance_penetration", "")),
+        str(row.get("inclusion_gap", "")),
+        str(row.get("node_kind", "")),
+    ]
+    als = row.get("search_aliases")
+    if isinstance(als, list):
+        parts.extend(str(a) for a in als)
+    blob = " ".join(parts).lower()
+    return qv in blob
+
+
+def _fin_zone_token_match(zone_token: str, row: dict) -> bool:
+    """NL pivot zone_token ⊆ FIN row zone/state/name (strategic cell illumination)."""
+    z = zone_token.strip().lower()
+    if not z:
+        return False
+    blob = (
+        str(row.get("zone", "")) + " " + str(row.get("state", "")) + " " + str(row.get("name", ""))
+    ).lower()
+    return z in blob
+
+
+def _fin_centroid_zoom(rows: list[dict]) -> tuple[tuple[float, float], float]:
+    """Pivot viewport to FIN cluster — zoom scales with geographic spread."""
+    if not rows:
+        clat = sum(n["lat"] for n in AZK_CORRIDOR_NODES) / len(AZK_CORRIDOR_NODES)
+        clon = sum(n["lon"] for n in AZK_CORRIDOR_NODES) / len(AZK_CORRIDOR_NODES)
+        return (clat, clon), 6.2
+    lats = [float(r["lat"]) for r in rows]
+    lons = [float(r["lon"]) for r in rows]
+    clat = sum(lats) / len(lats)
+    clon = sum(lons) / len(lons)
+    span = max(max(lats) - min(lats), max(lons) - min(lons), 0.018)
+    if span < 0.045:
+        zm = 12.0
+    elif span < 0.09:
+        zm = 11.0
+    elif span < 0.18:
+        zm = 10.0
+    elif span < 0.38:
+        zm = 9.0
+    else:
+        zm = 8.2
+    return (clat, clon), zm
+
+
 _village_q = str(st.session_state.get("village_lattice_search") or "").strip()
+_fin_matched = [r for r in _fin_pos_pts if _match_fin_lattice_query(_village_q, r)]
+_ngecc_lattice_active = bool(_village_q and ngecc_discovery_hit(_village_q, _ngecc_reg))
+_fin_lattice_active = bool(_village_q and _fin_matched and not _ngecc_lattice_active)
+_lattice_geo_lock = False
+if _ngecc_lattice_active:
+    _sig_ngecc = _village_q.casefold()
+    if st.session_state.get("_ngecc_lattice_sig") != _sig_ngecc:
+        _nl_lat = resolve_sovereign_nl_query(
+            _village_q,
+            _fin_pos_pts,
+            trade_points=_trade_nodes,
+            ngecc_reg=_ngecc_reg,
+            national_pu_df=_national_df,
+        )
+        if _nl_lat:
+            st.session_state["gv_center"] = (_nl_lat["lat"], _nl_lat["lon"])
+            st.session_state["gv_zoom"] = _nl_lat["zoom"]
+        st.session_state["_ngecc_lattice_sig"] = _sig_ngecc
+    _lattice_geo_lock = True
+elif _fin_lattice_active:
+    _sig_fin = _village_q.casefold()
+    if st.session_state.get("_fin_lattice_sig") != _sig_fin:
+        _fp_ctr, _fp_zm = _fin_centroid_zoom(_fin_matched)
+        st.session_state["gv_center"] = _fp_ctr
+        st.session_state["gv_zoom"] = _fp_zm
+        st.session_state["_fin_lattice_sig"] = _sig_fin
+    _lattice_geo_lock = True
+else:
+    st.session_state.pop("_fin_lattice_sig", None)
+    st.session_state.pop("_ngecc_lattice_sig", None)
+
+_show_industrial_effective = bool(_show_industrial or _ngecc_lattice_active)
+
+_nl_fin_z = str(st.session_state.get("_nl_fin_zone_token") or "").strip().lower()
+_fin_nl_matched = (
+    [r for r in _fin_pos_pts if _fin_zone_token_match(_nl_fin_z, r)] if _nl_fin_z else []
+)
+_fin_nl_active = bool(
+    _fin_nl_matched and not _fin_lattice_active and not _ngecc_lattice_active
+)
+
+_show_fin_pos_effective = bool(_show_fin_pos or _fin_lattice_active or _fin_nl_active)
+if _fin_lattice_active:
+    _fin_points_map = _fin_matched
+elif _fin_nl_active:
+    _fin_points_map = _fin_nl_matched
+else:
+    _fin_points_map = _fin_pos_pts
+_fin_gold_pulse = bool(_fin_lattice_active or _fin_nl_active or _ngecc_lattice_active)
+
 _trade_disp = [r for r in _trade_nodes if _match_village_query(_village_q, r)]
 _micro_disp = [r for r in _micro_pts if _match_village_query(_village_q, r)]
 _lagos_audit_pts = _load_lagos_strike_points()
@@ -2929,8 +3544,9 @@ _federation_map = _build_federation_map(
     social_points=_social_pts,
     show_trade_commerce=_show_trade,
     trade_nodes=_trade_disp,
-    show_financial_inclusion_pos=_show_fin_pos,
-    financial_inclusion_points=_fin_pos_pts,
+    show_financial_inclusion_pos=_show_fin_pos_effective,
+    financial_inclusion_points=_fin_points_map,
+    fin_inclusion_gold_highlight=_fin_gold_pulse,
     show_micro_assets=_show_micro,
     micro_asset_points=_micro_disp,
     show_double_zero=_show_dz,
@@ -2944,7 +3560,7 @@ _fg_atom = _atomic_viewport_feature_group(
     _ngecc_reg["codes"],
     _ngecc_reg["labels"],
     _ngecc_reg["azk_codes"],
-    show_industrial_overlay=_show_industrial,
+    show_industrial_overlay=_show_industrial_effective,
 )
 
 if st_folium is None:
@@ -2954,8 +3570,9 @@ if st_folium is None:
     )
     st.components.v1.html(_federation_map._repr_html_(), height=520, scrolling=False)
 elif _strike_mode:
-    st.caption(
-        "**Strike audit mode** — split panels replace the national hero map; toggle off for 176k PU viewport."
+    _kgec_kinetic_note(
+        "Strike audit mode — split panels replace national hero map — toggle off for 176k PU viewport — Lagos vs Binji LIVE.",
+        seconds=36.0,
     )
     _lag_map = _build_strike_audit_map(
         center_lat=6.5244,
@@ -2975,18 +3592,25 @@ elif _strike_mode:
     )
     _sc1, _sc2 = st.columns(2)
     with _sc1:
-        st.markdown("**Lagos Mainland** · saturated commercial fabric (cyan / blue)")
+        _kgec_kinetic_note(
+            "Lagos Mainland — saturated commercial fabric — cyan blue strike lattice — LIVE panel.",
+            seconds=32.0,
+        )
         st_folium(_lag_map, height=520, use_container_width=True, key="strike_lagos")
     with _sc2:
-        st.markdown("**Binji / Danchadi void** · informal POS velocity (pulsing gold)")
+        _kgec_kinetic_note(
+            "Binji Danchadi void — informal POS velocity — pulsing gold sovereign audit — LIVE panel.",
+            seconds=34.0,
+        )
         st_folium(_bin_map, height=520, use_container_width=True, key="strike_binji")
 else:
     _ntw_blob = _load_ntw_operator_proxy_cached()
     if getattr(st, "fragment", None) is None and st.session_state.get(
         "generative_eagle_ticker", True
     ):
-        st.caption(
-            "Install Streamlit ≥1.33 for isolated Eagle fragment ticks (Stable Sky)."
+        _kgec_kinetic_note(
+            "Install Streamlit ≥1.33 for isolated Eagle fragment ticks — Stable Sky — recommended for majesty loop.",
+            seconds=40.0,
         )
 
     _ensure_gv_viewport_defaults()
@@ -3019,25 +3643,39 @@ else:
             _merged["zoom"] = _prev_map["zoom"]
             if _prev_map.get("center") is not None:
                 _merged["center"] = _prev_map["center"]
+        if _lattice_geo_lock:
+            _gvz_hold = st.session_state.get("gv_zoom")
+            _gvc_hold = st.session_state.get("gv_center")
+            if _gvz_hold is not None:
+                _merged["zoom"] = _gvz_hold
+            if isinstance(_gvc_hold, (list, tuple)) and len(_gvc_hold) >= 2:
+                try:
+                    _merged["center"] = {
+                        "lat": float(_gvc_hold[0]),
+                        "lng": float(_gvc_hold[1]),
+                    }
+                except (TypeError, ValueError):
+                    pass
         _out = _merged
     if isinstance(_out, dict):
         st.session_state["gv_map_out"] = _out
-        _zz = parse_st_folium_zoom(_out.get("zoom"))
-        if _zz is not None:
-            st.session_state["gv_zoom"] = _zz
-        _ctr = _out.get("center")
-        if isinstance(_ctr, dict) and "lat" in _ctr:
-            _lng = _ctr.get("lng")
-            if _lng is None:
-                _lng = _ctr.get("lon")
-            if _lng is not None:
-                try:
-                    st.session_state["gv_center"] = (
-                        float(_ctr["lat"]),
-                        float(_lng),
-                    )
-                except (TypeError, ValueError):
-                    pass
+        if not _lattice_geo_lock:
+            _zz = parse_st_folium_zoom(_out.get("zoom"))
+            if _zz is not None:
+                st.session_state["gv_zoom"] = _zz
+            _ctr = _out.get("center")
+            if isinstance(_ctr, dict) and "lat" in _ctr:
+                _lng = _ctr.get("lng")
+                if _lng is None:
+                    _lng = _ctr.get("lon")
+                if _lng is not None:
+                    try:
+                        st.session_state["gv_center"] = (
+                            float(_ctr["lat"]),
+                            float(_lng),
+                        )
+                    except (TypeError, ValueError):
+                        pass
         if st.session_state.get("smart_click_total_reality", True) and _states_geojson:
             _lc = _out.get("last_clicked")
             if _lc and isinstance(_lc, dict):
@@ -3097,8 +3735,9 @@ elif _national_df is not None and _nat_rep:
     )
 _atomic_meta_lines.append(
     f"Phase 3 NGECC · {len(_ngecc_reg['codes'])} industrial codes · "
-    f"gold overlay {'on' if _show_industrial else 'off (cyan-only)'}"
+    f"gold overlay {'on' if _show_industrial_effective else 'off (cyan-only)'}"
 )
+_atomic_meta_lines.append(strategic_cells_banner(_fused_df))
 _len_ncc = len(_ncc_incidents)
 _len_cbn = len(_cbn_pts)
 _len_soc = len(_social_pts)
@@ -3109,7 +3748,8 @@ _atomic_meta_lines.append(
 )
 _atomic_meta_lines.append(
     f"Territory · Trade & Commerce {len(_trade_disp)}/{len(_trade_nodes)} ({'on' if _show_trade else 'off'}) · "
-    f"Fin inclusion POS {len(_fin_pos_pts)} ({'on' if _show_fin_pos else 'off'}) · "
+    f"Fin inclusion POS {len(_fin_points_map)}/{len(_fin_pos_pts)} "
+    f"({'lattice gold' if _fin_lattice_active else ('on' if _show_fin_pos else 'off')}) · "
     f"Micro-assets {len(_micro_disp)}/{len(_micro_pts)} ({'on' if _show_micro else 'off'}) · "
     f"basemap max_zoom 22 + Esri imagery"
 )
@@ -3131,7 +3771,36 @@ _detail_meta = " · ".join(
         ],
     )
 )
-_detail_meta_safe = html.escape(_detail_meta) if _detail_meta else ""
+_sdw_ml1 = _kgec_marquee_pair(
+    "States + FCT · 37 shells · constitutional administrative lattice LIVE",
+    seconds=36.0,
+)
+_sdw_ml2 = _kgec_marquee_pair(
+    "774 LGAs · national heartbeat · gcslc_deep_join cadence", seconds=34.0
+)
+_sdw_ml3 = _kgec_marquee_pair(
+    "8,806 wards · forensic ward tokens · pinch-to-reveal", seconds=38.0
+)
+_sdw_ml4 = _kgec_marquee_pair(
+    "176,846 polling units · INEC atomic lattice · sovereign scale-3", seconds=40.0
+)
+_sdw_scale_mq = _kgec_marquee_pair(
+    f"Sovereign record · Scale 1 States + AZK · Scale 2 LGAs ≥ {ZOOM_LGA_EMERGE} wards ≥ {ZOOM_WARD_EMERGE} · "
+    f"Scale 3 atomic ≥ {ZOOM_ATOM_EMERGE} · FPS HUD · pinch atomize · orientation resize armed",
+    seconds=58.0,
+)
+_detail_mq = _kgec_marquee_pair(
+    _detail_meta if _detail_meta else "Forensic spine loaded — map is the vigil — ignition stable.",
+    seconds=max(44.0, min(92.0, 14.0 + len(_detail_meta) / 6.5)),
+)
+_foot_mq1 = _kgec_marquee_pair(
+    "SCUML Certificate · SC 151653884 · Copyright Registration LW15954 — compliance ticker",
+    seconds=48.0,
+)
+_foot_mq2 = _kgec_marquee_pair(
+    "© 2026 Galadiman Ruwa Center (GCSLC) LTD/GTE · Sovereign-by-Design · national instrument LIVE",
+    seconds=56.0,
+)
 
 st.markdown(
     f"""
@@ -3142,15 +3811,15 @@ st.markdown(
     <div class="sdw-hs-row kgec-rc-ticker-line"><span class="kgec-mq" style="--kgec-mq-dur:56s"><span class="kgec-mq-track"><span>8R Paradigm Convergence and Determinants — decode · understand · the nation never sleeps</span><span aria-hidden="true">8R Paradigm Convergence and Determinants — decode · understand · the nation never sleeps</span></span></span></div>
   </div>
   <div class="sdw-metrics">
-    <div class="sdw-metric"><div class="sdw-metric-val">37</div><div class="sdw-metric-lbl">States + FCT</div></div>
-    <div class="sdw-metric"><div class="sdw-metric-val">774</div><div class="sdw-metric-lbl">LGAs · heartbeat</div></div>
-    <div class="sdw-metric"><div class="sdw-metric-val">8,806</div><div class="sdw-metric-lbl">Wards</div></div>
-    <div class="sdw-metric"><div class="sdw-metric-val">176,846</div><div class="sdw-metric-lbl">Polling units</div></div>
+    <div class="sdw-metric"><div class="sdw-metric-val">37</div><div class="sdw-metric-lbl kgec-rc-ticker-line">{_sdw_ml1}</div></div>
+    <div class="sdw-metric"><div class="sdw-metric-val">774</div><div class="sdw-metric-lbl kgec-rc-ticker-line">{_sdw_ml2}</div></div>
+    <div class="sdw-metric"><div class="sdw-metric-val">8,806</div><div class="sdw-metric-lbl kgec-rc-ticker-line">{_sdw_ml3}</div></div>
+    <div class="sdw-metric"><div class="sdw-metric-val">176,846</div><div class="sdw-metric-lbl kgec-rc-ticker-line">{_sdw_ml4}</div></div>
   </div>
   <div class="sdw-meta">
-    <strong style="color:{GOLD};">Sovereign record</strong> · Scale 1 country: States + AZK · Scale 2: LGAs ≥ {ZOOM_LGA_EMERGE}, wards ≥ {ZOOM_WARD_EMERGE} ·
-    Scale 3: atomic viewport ≥ {ZOOM_ATOM_EMERGE} · FPS HUD on map · pinch to atomize · orientation resize armed.<br/>
-    {_detail_meta_safe if _detail_meta_safe else "Forensic spine loaded — map is the vigil."}
+    <div class="kgec-sdw-strong"><strong style="color:{GOLD};">Sovereign record</strong></div>
+    <div class="sdw-meta-line kgec-rc-ticker-line">{_sdw_scale_mq}</div>
+    <div class="sdw-meta-line kgec-rc-ticker-line">{_detail_mq}</div>
   </div>
 </div>
 """,
@@ -3159,10 +3828,10 @@ st.markdown(
 
 
 st.markdown(
-    """
-<div class="footer-sovereign">
-  SCUML Certificate · SC 151653884 · Copyright Registration LW15954<br/>
-  © 2026 Galadiman Ruwa Center (GCSLC) LTD/GTE · Sovereign-by-Design
+    f"""
+<div class="footer-sovereign kgec-rc-ticker-line">
+  <div class="footer-sovereign-row">{_foot_mq1}</div>
+  <div class="footer-sovereign-row">{_foot_mq2}</div>
 </div>
 """,
     unsafe_allow_html=True,

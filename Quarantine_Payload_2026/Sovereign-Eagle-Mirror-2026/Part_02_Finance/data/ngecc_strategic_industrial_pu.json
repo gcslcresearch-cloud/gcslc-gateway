@@ -1,6 +1,22 @@
 {
   "meta": {
     "program": "NGECC Strategic Industrial Nodes · Phase 3",
+    "program_extended": "Nigerian Green Energy and Chemicals Corporation — NGECC / NGEEC strategic industrial lattice · Sovereign Gold PU registry",
+    "search_aliases": [
+      "NGECC",
+      "NGEEC",
+      "Nigerian Green Energy and Chemicals Corporation",
+      "Green Energy and Chemicals Corporation",
+      "green energy",
+      "chemicals corporation",
+      "chemical corporation",
+      "strategic industrial",
+      "industrial PU",
+      "million steel rods",
+      "Phase 3 industrial",
+      "NGECC intake",
+      "sovereign gold industrial"
+    ],
     "style_hex": "#BF953F",
     "canonical_source": "Emeka-Onwuepe/Polling_Units_in_Nigeria · Nigeria_polling_units.csv · field `code`",
     "notes": "Each `code` must match the canonical CSV exactly (character-for-character). `azk_alignment: true` marks PUs on the Abuja–Zaria–Kano spine for Sovereign Gold peak intensity.",
