@@ -1,0 +1,27 @@
+{
+  "meta": {
+    "jurisdiction": "NG",
+    "purpose": "fleet_logistics_corridor_monitoring_AZK",
+    "data_classes": ["gantry_timestamp", "fleet_id", "corridor_segment", "aggregate_position"],
+    "msisdn_policy": "Production binds only fleet-owned SIMs under written operator/fleet agreement — full MSISDN never stored in this stub.",
+    "production_msisdn_protocol_path": "Part_02_Finance/data/production_msisdn_protocol.json",
+    "counsel_lock": "production_msisdn_protocol_v1 — chairman approval required before live SMPP/webhook MSISDN touch",
+    "legal_note": "Chairman counsel must approve production DAPI schedules, retention, and NCC-facing disclosures."
+  },
+  "fleets": [
+    {
+      "fleet_id": "FDGN-AZK-01",
+      "operator": "DANGOTE",
+      "consent_version": "2026-05-stub",
+      "status": "stub_active",
+      "sim_ownership": "fleet_owned"
+    },
+    {
+      "fleet_id": "FBUA-AZK-01",
+      "operator": "BUA",
+      "consent_version": "2026-05-stub",
+      "status": "stub_active",
+      "sim_ownership": "fleet_owned"
+    }
+  ]
+}

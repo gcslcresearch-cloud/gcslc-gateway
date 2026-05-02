@@ -42,6 +42,11 @@ from atomic_spie import (
 )
 from sovereign_nl_query import ngecc_discovery_hit, resolve_sovereign_nl_query
 from sovereign_strategic_cells import strategic_cells_banner
+from kysah_sovereign_alert import (
+    build_kysah_sovereign_bundle_for_state,
+    federated_kysah_rollup,
+    load_kysah_stub_records,
+)
 from sovereign_logistics_joint import (
     build_approved_logistics_bundle,
     logistics_joint_cache_buster,
@@ -1719,6 +1724,81 @@ def _render_sovereign_joint_strip() -> None:
     )
 
 
+def _render_kysah_sovereign_ribbon() -> None:
+    """
+    KYSAH Student Safety Grid — Termii-verified pings as Sovereign Alerts correlated with
+    National Resonance + logistics void pressure. Federation rollups keep the ribbon legible at any N.
+    """
+    recs = load_kysah_stub_records()
+    rollup = federated_kysah_rollup(recs)
+    if not recs:
+        st.markdown(
+            "<div class='kysah-sovereign-ribbon kysah-sovereign-ribbon--idle'>"
+            "<div class='kysah-fed-line'>KYSAH · Student Safety Grid · ingest IDLE — "
+            "mount <code>kysah_safety_ingest_stub.json</code> + Termii verification rail.</div>"
+            "<div class='kysah-tier-legend'><span class='kysah-tier kysah-gold'>State Gold</span> · "
+            "<span class='kysah-tier kysah-cyan'>LGA Cyan</span> · "
+            "<span class='kysah-tier kysah-white'>Ward White</span> · "
+            "<span class='kysah-tier kysah-red'>PU Red</span></div></div>",
+            unsafe_allow_html=True,
+        )
+        return
+    hist = rollup.get("state_histogram") or {}
+    top_state = max(hist, key=lambda s: hist.get(s, 0)) if hist else str(recs[0].get("state") or "FCT")
+    st_recs = [r for r in recs if str(r.get("state") or "").strip().lower() == str(top_state).lower()]
+    if not st_recs:
+        st_recs = recs[: max(1, len(recs))]
+    bundle = build_kysah_sovereign_bundle_for_state(
+        str(top_state),
+        records_for_state=st_recs,
+        fused_df=None,
+        national_pu_df=None,
+        ncc_rows=_load_ncc_vulnerability_incidents(),
+        signal_rows=_load_signal_blackout_events(),
+        fin_points=_load_financial_inclusion_pos(),
+        states_geojson=_load_nigeria_states_geojson(),
+        ntw_proxy=_load_ntw_operator_proxy_cached(),
+        ntw_audit_blob=_load_ntw_regional_audit_live(),
+    )
+    env = bundle.get("sample_envelope") or {}
+    nr = env.get("national_resonance") if isinstance(env.get("national_resonance"), dict) else {}
+    lv = env.get("logistics_void_context") if isinstance(env.get("logistics_void_context"), dict) else {}
+    facets = ", ".join(rollup.get("state_facets") or [])[:220]
+    fed_line = (
+        f"Federation · {rollup.get('total_records', 0)} ping(s) · "
+        f"{rollup.get('distress_count', 0)} distress · "
+        f"facets: {facets or '—'}"
+    )
+    res_line = (
+        f"Sovereign Alert · {html.escape(str(env.get('sovereign_alert_id') or '?'))} · "
+        f"{html.escape(str(env.get('kysah_tier') or '?'))} · "
+        f"Resonance {html.escape(str(nr.get('operator') or '?'))} "
+        f"RAN μ {float(nr.get('corridor_ran_mu_pct') or 0):.1f}% · SIM μ {float(nr.get('corridor_sim_mu_pct') or 0):.1f}%"
+    )
+    void_line = (
+        f"Logistics void pressure {float(lv.get('void_pressure_index') or 0):.2f} · "
+        f"FIN score {float(lv.get('financial_inclusion_score') or 0):.1f} · "
+        f"NCC nodes {int(lv.get('ncc_incidents_in_state') or 0)} · "
+        f"signal voids {int(lv.get('signal_void_events_in_state') or 0)}"
+    )
+    esc = "SENTINEL" if env.get("sentinel_escalation") else "MONITOR"
+    st.markdown(
+        "<div class='kysah-sovereign-ribbon'>"
+        "<div class='kysah-fed-line'>" + html.escape(fed_line) + "</div>"
+        "<div class='kysah-alert-line kysah-mode-" + html.escape(esc.lower()) + "'>"
+        "<span class='kysah-mode-pill'>" + html.escape(esc) + "</span> " + res_line + "</div>"
+        "<div class='kysah-void-line'>" + html.escape(void_line) + "</div>"
+        "<div class='kysah-dna-line'>Alphabet DNA · A=Termii anchor · B=Federation bin · "
+        "C=Resonance+void correlate · D=duty-of-care escalation</div>"
+        "<div class='kysah-tier-legend'><span class='kysah-tier kysah-gold'>State Gold</span> · "
+        "<span class='kysah-tier kysah-cyan'>LGA Cyan</span> · "
+        "<span class='kysah-tier kysah-white'>Ward White</span> · "
+        "<span class='kysah-tier kysah-red'>PU Red</span></div>"
+        "</div>",
+        unsafe_allow_html=True,
+    )
+
+
 def _kgec_ward_patrol_grid(*, cols: int = 9, rows: int = 7) -> list[dict[str, float]]:
     """Normalized iframe fractions — dense ward-by-ward patrol mesh over the national canvas."""
     out: list[dict[str, float]] = []
@@ -2214,6 +2294,7 @@ st.components.v1.html(
 # First main paint · Eagle nav targets + ticker (fragment updates AZK hover even when ticker off)
 _eagle_voice_live()
 _render_sovereign_joint_strip()
+_render_kysah_sovereign_ribbon()
 
 st.markdown(
     f"""
@@ -2556,6 +2637,88 @@ section.main [data-testid="block-container"]:has(.kgec-sentinel-stack) {{
     border-left: 3px solid rgba(212, 175, 55, 0.55) !important;
   }}
 }}
+/* KYSAH ribbon — full-width, safe-area, text-first (Chairman iPhone: un-clipped, federation-scale) */
+section.main .kysah-sovereign-ribbon,
+section.main [data-testid="stMarkdown"] .kysah-sovereign-ribbon {{
+  overflow: visible !important;
+  contain: none !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 0 14px 0 !important;
+  padding: 12px 12px max(12px, env(safe-area-inset-bottom)) 12px !important;
+  border-radius: 12px !important;
+  border: 1px solid rgba(191, 149, 63, 0.42) !important;
+  background: linear-gradient(165deg, rgba(20, 40, 72, 0.95) 0%, rgba(0, 18, 48, 0.98) 100%) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 6px 20px rgba(0,0,0,0.4) !important;
+  -webkit-text-size-adjust: 100% !important;
+  text-size-adjust: 100% !important;
+}}
+.kysah-fed-line {{
+  font-family: ui-monospace, monospace !important;
+  font-size: clamp(0.58rem, 2.6vw, 0.68rem) !important;
+  line-height: 1.55 !important;
+  color: rgba(220, 245, 255, 0.92) !important;
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+  margin-bottom: 8px !important;
+}}
+.kysah-alert-line {{
+  font-family: ui-monospace, monospace !important;
+  font-size: clamp(0.58rem, 2.5vw, 0.66rem) !important;
+  line-height: 1.5 !important;
+  color: rgba(0, 229, 255, 0.95) !important;
+  margin-bottom: 6px !important;
+  word-break: break-word !important;
+}}
+.kysah-mode-sentinel {{ color: rgba(255, 120, 100, 0.98) !important; }}
+.kysah-mode-pill {{
+  display: inline-block !important;
+  padding: 2px 8px !important;
+  margin-right: 6px !important;
+  border-radius: 6px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.06em !important;
+  background: rgba(220, 38, 38, 0.35) !important;
+  border: 1px solid rgba(255, 160, 140, 0.45) !important;
+}}
+.kysah-mode-monitor .kysah-mode-pill {{
+  background: rgba(46, 204, 113, 0.22) !important;
+  border-color: rgba(120, 255, 200, 0.35) !important;
+  color: rgba(200, 255, 220, 0.95) !important;
+}}
+.kysah-void-line {{
+  font-family: ui-monospace, monospace !important;
+  font-size: clamp(0.55rem, 2.4vw, 0.64rem) !important;
+  line-height: 1.5 !important;
+  color: rgba(255, 210, 160, 0.88) !important;
+  margin-bottom: 8px !important;
+  word-break: break-word !important;
+}}
+.kysah-dna-line {{
+  font-size: clamp(0.52rem, 2.2vw, 0.6rem) !important;
+  line-height: 1.45 !important;
+  color: rgba(180, 200, 230, 0.72) !important;
+  margin-bottom: 8px !important;
+}}
+.kysah-tier-legend {{
+  font-size: clamp(0.52rem, 2.2vw, 0.6rem) !important;
+  letter-spacing: 0.04em !important;
+}}
+.kysah-tier {{ font-weight: 700 !important; }}
+.kysah-gold {{ color: #D4AF37 !important; }}
+.kysah-cyan {{ color: #00E5FF !important; }}
+.kysah-white {{ color: rgba(248, 252, 255, 0.95) !important; }}
+.kysah-red {{ color: #DC2626 !important; }}
+.kysah-sovereign-ribbon--idle {{
+  border-color: rgba(0, 229, 255, 0.28) !important;
+}}
+@media (max-width: 720px) {{
+  section.main .kysah-sovereign-ribbon {{
+    padding-left: max(12px, env(safe-area-inset-left)) !important;
+    padding-right: max(12px, env(safe-area-inset-right)) !important;
+  }}
+}}
 .kgec-roll {{
   position: absolute !important;
   left: 50% !important;
@@ -2570,14 +2733,14 @@ section.main [data-testid="block-container"]:has(.kgec-sentinel-stack) {{
   height: 100% !important;
   border: 3px solid rgba(212, 175, 55, 0.9) !important;
   box-shadow: 0 0 18px rgba(212, 175, 55, 0.25) !important;
-  animation: kgecLampGold 16s ease-in-out infinite !important;
+  animation: kgecLampGold 22.4s ease-in-out infinite !important;
 }}
 .kgec-roll-cyan {{
   width: 78% !important;
   height: 78% !important;
   border: 2px solid rgba(0, 229, 255, 0.8) !important;
   box-shadow: 0 0 14px rgba(0, 229, 255, 0.2) !important;
-  animation: kgecLampCyan 12.5s ease-in-out infinite !important;
+  animation: kgecLampCyan 17.5s ease-in-out infinite !important;
   animation-delay: 0.22s !important;
 }}
 .kgec-roll-white {{
@@ -2585,7 +2748,7 @@ section.main [data-testid="block-container"]:has(.kgec-sentinel-stack) {{
   height: 56% !important;
   border: 2px solid rgba(248, 252, 255, 0.92) !important;
   box-shadow: 0 0 12px rgba(255, 255, 255, 0.12) !important;
-  animation: kgecLampWhite 9.2s ease-in-out infinite !important;
+  animation: kgecLampWhite 12.88s ease-in-out infinite !important;
   animation-delay: 0.38s !important;
 }}
 .kgec-roll-red {{
@@ -2593,14 +2756,14 @@ section.main [data-testid="block-container"]:has(.kgec-sentinel-stack) {{
   height: 36% !important;
   border: 2px solid rgba(220, 38, 38, 0.92) !important;
   box-shadow: 0 0 14px rgba(220, 38, 38, 0.28) !important;
-  animation: kgecLampRed 6.4s ease-in-out infinite !important;
+  animation: kgecLampRed 8.96s ease-in-out infinite !important;
   animation-delay: 0.52s !important;
 }}
 .kgec-roll-core {{
   width: 14% !important;
   height: 14% !important;
   background: radial-gradient(circle at 35% 35%, #fff 0%, rgba(212,175,55,0.55) 45%, rgba(0,20,60,0.95) 100%) !important;
-  animation: kgecLampCore 5s ease-in-out infinite !important;
+  animation: kgecLampCore 7s ease-in-out infinite !important;
 }}
 @keyframes kgecLampGold {{
   0%, 100% {{ opacity: 0.38; transform: translate(-50%, -50%) scale(0.94); }}
