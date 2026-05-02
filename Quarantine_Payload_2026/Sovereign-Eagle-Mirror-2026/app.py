@@ -361,8 +361,8 @@ def _load_ntw_operator_proxy_cached() -> dict:
     return load_ntw_operator_proxy(NTW_OPERATOR_PROXY_JSON)
 
 
-@st.cache_data(ttl=3600, show_spinner=False)
-def _load_ntw_regional_audit_cached() -> dict:
+def _load_ntw_regional_audit_live() -> dict[str, Any]:
+    """Always read `ntw_regional_corridor_audit.json` from disk (no cache) — Chairman sees live data on click."""
     from ntw_regional_audit import load_ntw_regional_audit
 
     return load_ntw_regional_audit(NTW_REGIONAL_AUDIT_JSON)
@@ -768,6 +768,12 @@ def _html_total_reality_card(summary: dict) -> str:
     )
 
 
+def _ntw_pulse_click(op: str) -> None:
+    """Instant Big-4 ignition — session + nonce so forensic rain remounts on every click."""
+    st.session_state["ntw_resonance_pick"] = op
+    st.session_state["ntw_resonance_nonce"] = int(st.session_state.get("ntw_resonance_nonce", 0)) + 1
+
+
 def _render_ntw_sovereign_control_panel(ntw_proxy: dict[str, Any]) -> None:
     """High-pedestal Resonance Chamber — meter bars + pulsing operator keys + typewriter stream (main only)."""
     from ntw_regional_audit import (
@@ -779,33 +785,45 @@ def _render_ntw_sovereign_control_panel(ntw_proxy: dict[str, Any]) -> None:
     st.markdown(
         "<div class='national-resonance-chamber-outer sovereign-ntw-strip sovereign-ntw-resonance "
         "sovereign-ntw-pedestal'>"
-        "<p class='sovereign-ntw-panel-head national-rc-title'>K-GEC · National Resonance Chamber · "
-        "<span>Big 4 · Secured Anchor</span></p>"
-        "<p class='sovereign-ntw-sub'>Komi-Generative Cloud · meter deck · pulse keys · forensic stream</p>"
+        "<p class='sovereign-ntw-panel-head national-rc-title kgec-rc-ticker-line'>"
+        "<span class='kgec-mq' style='--kgec-mq-dur:32s'><span class='kgec-mq-track'><span>"
+        "K-GEC · National Resonance Chamber · Big 4 · Secured Anchor · GCSLC forensic soul"
+        "</span><span aria-hidden='true'>"
+        "K-GEC · National Resonance Chamber · Big 4 · Secured Anchor · GCSLC forensic soul"
+        "</span></span></span></p>"
+        "<p class='sovereign-ntw-sub kgec-rc-ticker-line'>"
+        "<span class='kgec-mq' style='--kgec-mq-dur:36s'><span class='kgec-mq-track'><span>"
+        "Komi-Generative Cloud · meter deck · pulse keys · Subscriber Base · Spectrum · Broadband"
+        "</span><span aria-hidden='true'>"
+        "Komi-Generative Cloud · meter deck · pulse keys · Subscriber Base · Spectrum · Broadband"
+        "</span></span></span></p>"
         "<hr class='sovereign-ntw-hr'/>"
         "</div>",
         unsafe_allow_html=True,
     )
-    _blob = _load_ntw_regional_audit_cached()
+    _blob = _load_ntw_regional_audit_live()
     st.markdown(html_ntw_meter_strip_row(_blob), unsafe_allow_html=True)
     _ops = ["MTN", "Airtel", "Glo", "9mobile"]
     _pr = st.columns(4)
     for _i, _op in enumerate(_ops):
         with _pr[_i]:
-            if st.button(
+            st.button(
                 f"{_op}",
                 key=f"ntw_pulse_{_op}",
                 use_container_width=True,
-                help="Live pulse · subscriber / spectrum / regional broadband stream",
-            ):
-                st.session_state["ntw_resonance_pick"] = _op
-                st.session_state["ntw_resonance_nonce"] = (
-                    int(st.session_state.get("ntw_resonance_nonce", 0)) + 1
-                )
+                help="Ignite forensic rain — Subscriber Base · Spectrum · Broadband",
+                on_click=_ntw_pulse_click,
+                args=(_op,),
+            )
     _pick = str(st.session_state.get("ntw_resonance_pick") or "").strip()
     if _pick in _ops:
         _nonce = int(st.session_state.get("ntw_resonance_nonce", 0))
-        _tw = html_ntw_resonance_typewriter_stream(_pick, _blob, ntw_proxy)
+        _tw = html_ntw_resonance_typewriter_stream(
+            _pick,
+            _blob,
+            ntw_proxy,
+            audit_path=NTW_REGIONAL_AUDIT_JSON,
+        )
         st.markdown(
             f"<div class='kgec-ntw-stream-root' data-kgec-ntw-nonce='{_nonce}'>{_tw}</div>",
             unsafe_allow_html=True,
@@ -1678,26 +1696,25 @@ st.components.v1.html(
     if (!doc.getElementById('kgec-eagle-keyframes')){
       var st = doc.createElement('style');
       st.id = 'kgec-eagle-keyframes';
-      st.textContent = '@keyframes kgecEagleBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}.kgec-eagle-float{animation:kgecEagleBob 2.6s ease-in-out infinite;transform-origin:100px 52px;}';
+      st.textContent = '@keyframes kgecEagleBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}.kgec-eagle-float{animation:kgecEagleBob 4.5s ease-in-out infinite;transform-origin:100px 58px;}';
       doc.head.appendChild(st);
     }
     function eagleMarkup(uid){
       return '<defs>'
-        + '<linearGradient id="'+uid+'_au" x1="0%" y1="0%" x2="100%" y2="100%">'
-        + '<stop offset="0%" style="stop-color:#FFE8A0"/><stop offset="40%" style="stop-color:#D4AF37"/>'
-        + '<stop offset="100%" style="stop-color:#6B5A1E"/></linearGradient>'
-        + '<filter id="'+uid+'_glow" x="-30%" y="-30%" width="160%" height="160%">'
-        + '<feGaussianBlur in="SourceAlpha" stdDeviation="1.4" result="b"/><feOffset dx="0" dy="1" in="b" result="o"/>'
-        + '<feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>'
-        + '<g class="kgec-eagle-float"><g class="kgec-eagle-bank">'
-        + '<path fill="url(#'+uid+'_au)" filter="url(#'+uid+'_glow)" d="M18 58 C28 22 72 18 100 28 C128 18 172 22 182 58 C168 78 142 72 118 62 C108 88 92 88 82 62 C58 72 32 78 18 58 Z"/>'
-        + '<path fill="#8B6914" d="M100 28 C112 10 138 14 152 32 C138 36 122 34 112 30 Z"/>'
-        + '<path fill="#5C4A12" opacity="0.95" d="M152 32 L168 38 L156 44 Z"/>'
-        + '<path fill="#C9A227" opacity="0.85" d="M38 48 C48 38 62 42 68 52 C58 56 46 54 38 48 Z"/>'
-        + '<path fill="#C9A227" opacity="0.85" d="M132 48 C142 38 156 42 162 52 C152 56 140 54 132 48 Z"/>'
+        + '<linearGradient id="'+uid+'_au" x1="0%" y1="0%" x2="0%" y2="100%">'
+        + '<stop offset="0%" style="stop-color:#F0D060"/><stop offset="55%" style="stop-color:#B8890B"/>'
+        + '<stop offset="100%" style="stop-color:#5C4308"/></linearGradient>'
+        + '<filter id="'+uid+'_halo" x="-50%" y="-50%" width="200%" height="200%">'
+        + '<feGaussianBlur in="SourceGraphic" stdDeviation="2.2" result="b"/>'
+        + '<feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>'
+        + '<g class="kgec-eagle-float">'
+        + '<g class="kgec-eagle-bank">'
+        + '<path fill="url(#'+uid+'_au)" stroke="#2a1f06" stroke-width="2.2" stroke-linejoin="round" filter="url(#'+uid+'_halo)" '
+        + 'd="M10 64 Q26 14 100 20 Q176 12 190 56 Q178 88 132 74 Q100 102 68 76 Q32 92 10 64 Z"/>'
+        + '<path fill="#4a3706" opacity="0.95" d="M100 22 C118 8 158 18 168 40 C150 44 124 36 112 32 Z"/>'
         + '</g>'
-        + '<text x="78" y="98" fill="#D4AF37" font-size="12" font-family="ui-monospace,monospace">Sam</text>'
-        + '<text x="118" y="98" fill="#D4AF37" font-size="12" font-family="ui-monospace,monospace">Sam</text>'
+        + '<text x="64" y="106" fill="#FFD966" stroke="#1a1404" stroke-width="0.9" font-size="15" font-weight="800" font-family="ui-monospace,monospace">Sam</text>'
+        + '<text x="132" y="106" fill="#FFD966" stroke="#1a1404" stroke-width="0.9" font-size="15" font-weight="800" font-family="ui-monospace,monospace">Sam</text>'
         + '</g>';
     }
     function mapHost(){
@@ -1722,15 +1739,16 @@ st.components.v1.html(
         layer = doc.createElement('div');
         layer.id = 'kgec-eagle-hover-layer';
         layer.setAttribute('aria-hidden','true');
-        layer.style.cssText = 'position:absolute;left:0;top:0;right:0;bottom:0;pointer-events:none;overflow:visible;z-index:50;border-radius:14px;';
+        layer.style.cssText = 'position:absolute;left:0;top:0;right:0;bottom:0;pointer-events:none;overflow:visible;z-index:50;border-radius:14px;transform:translateZ(0);backface-visibility:hidden;-webkit-backface-visibility:hidden;';
         par.appendChild(layer);
         var svg = doc.createElementNS('http://www.w3.org/2000/svg','svg');
         svg.setAttribute('class','kgec-eagle-svg');
-        svg.setAttribute('viewBox','0 0 200 104');
+        svg.setAttribute('viewBox','0 0 200 112');
         svg.setAttribute('preserveAspectRatio','xMidYMid meet');
-        svg.style.cssText = 'position:absolute;width:min(72px,16vw);height:min(38px,8.5vw);min-width:56px;min-height:30px;left:45%;top:40%;'
-          + 'filter:drop-shadow(0 0 14px rgba(212,175,55,0.95)) drop-shadow(0 4px 14px rgba(0,0,0,0.75));'
-          + 'transition:left 3.6s cubic-bezier(0.33,1,0.36,1),top 3.6s cubic-bezier(0.33,1,0.36,1);will-change:left,top;';
+        svg.style.cssText = 'position:absolute;width:min(88px,19vw);height:min(48px,11vw);min-width:78px;min-height:44px;left:45%;top:40%;'
+          + 'filter:drop-shadow(0 0 18px rgba(255,215,80,0.95)) drop-shadow(0 0 8px rgba(0,0,0,0.9)) drop-shadow(0 5px 16px rgba(0,0,0,0.65));'
+          + 'transition:left 2s cubic-bezier(0.22,0.08,0.18,1),top 2s cubic-bezier(0.22,0.08,0.18,1);will-change:transform,left,top;'
+          + 'transform:translate3d(-50%,-50%,0);';
         p.__kgecSvgUid = (p.__kgecSvgUid || 0) + 1;
         svg.innerHTML = eagleMarkup('kgec'+p.__kgecSvgUid);
         layer.appendChild(svg);
@@ -1739,7 +1757,10 @@ st.components.v1.html(
       }
       return layer;
     }
-    function glide(){
+    var GLIDE_MS = 2000;
+    var DWELL_MS = 4000;
+    var KGE_CYCLE = GLIDE_MS + DWELL_MS;
+    function majesticStep(){
       var svg = p.__kgecEagleEl;
       if (!svg || !doc.body.contains(svg)) {
         p.__kgecEagleEl = null;
@@ -1747,15 +1768,22 @@ st.components.v1.html(
         ensureLayer();
         svg = p.__kgecEagleEl;
       }
-      if (!svg) return;
+      if (!svg) {
+        p.__kgecMajestyT = setTimeout(majestyLoop, 600);
+        return;
+      }
       var tg = p.__kgecTargets || [{x:0.5,y:0.45}];
       var w = tg[p.__kgecIdx % tg.length];
       p.__kgecIdx++;
+      svg.style.transition = 'left '+ (GLIDE_MS/1000) +'s cubic-bezier(0.22,0.06,0.18,1), top '+ (GLIDE_MS/1000) +'s cubic-bezier(0.22,0.06,0.18,1)';
       svg.style.left = (w.x * 100) + '%';
       svg.style.top = (w.y * 100) + '%';
-      var ang = Math.sin(Date.now() / 1050) * 11;
       var bank = p.__kgecEagleBank || svg.querySelector('.kgec-eagle-bank');
-      if (bank) bank.setAttribute('transform','rotate('+ang+' 100 52)');
+      if (bank) bank.setAttribute('transform','rotate('+ (Math.sin(p.__kgecIdx * 0.55) * 5) +' 100 56)');
+    }
+    function majestyLoop(){
+      majesticStep();
+      p.__kgecMajestyT = setTimeout(majestyLoop, KGE_CYCLE);
     }
     function mountRetries(){
       var n = 0;
@@ -1766,7 +1794,7 @@ st.components.v1.html(
       tick();
     }
     mountRetries();
-    setInterval(glide, 3600);
+    setTimeout(function(){ majestyLoop(); }, 500);
     setInterval(function(){
       var host = mapHost();
       var layer = doc.getElementById('kgec-eagle-hover-layer');
@@ -2098,7 +2126,22 @@ section.main .block-container {{
   border-radius: 12px;
   border: 1px solid rgba(212, 175, 55, 0.35);
   background: rgba(0, 0, 128, 0.42);
-  text-align: center;
+  text-align: left;
+}}
+.sdw-handshake .sdw-hs-row {{
+  display: block !important;
+  overflow: hidden !important;
+  width: 100% !important;
+  margin-top: 12px !important;
+}}
+.sdw-handshake .sdw-hs-row:first-child {{
+  margin-top: 0 !important;
+}}
+.sdw-handshake .kgec-mq-track span {{
+  color: rgba(235, 248, 255, 0.96) !important;
+  font-weight: 600 !important;
+  font-size: clamp(0.64rem, 1.85vw, 0.88rem) !important;
+  letter-spacing: 0.04em !important;
 }}
 .sdw-handshake .sdw-hs-brand {{
   display: block;
@@ -2314,6 +2357,37 @@ section.main .block-container {{
   color: rgba(240,244,255,0.72) !important;
   margin-top: 6px !important;
 }}
+.ntw-meter-mq-shell {{
+  overflow: hidden !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}}
+.kgec-rc-ticker-line {{
+  overflow: hidden !important;
+  width: 100% !important;
+  display: block !important;
+}}
+.kgec-mq {{
+  display: block !important;
+  overflow: hidden !important;
+  max-width: 100% !important;
+}}
+.kgec-mq-track {{
+  display: inline-flex !important;
+  gap: clamp(1.75rem, 5vw, 3.5rem) !important;
+  white-space: nowrap !important;
+  animation: kgecMqScroll var(--kgec-mq-dur, 24s) linear infinite !important;
+  will-change: transform !important;
+}}
+@keyframes kgecMqScroll {{
+  0% {{ transform: translate3d(0, 0, 0); }}
+  100% {{ transform: translate3d(-50%, 0, 0); }}
+}}
+.ntw-tw-v .kgec-mq {{
+  display: inline-block !important;
+  vertical-align: bottom !important;
+  max-width: min(100%, 52rem) !important;
+}}
 /* Pulsing operator keys (Streamlit buttons — match label) */
 @keyframes ntw-op-pulse {{
   0%, 100% {{ box-shadow: 0 0 0 0 rgba(0, 229, 255, 0.0); filter: brightness(1); transform: scale(1); }}
@@ -2335,8 +2409,8 @@ section.main button[aria-label="9mobile"] {{
 }}
 /* Cyan–green forensic stream · staggered “ignite” (speed + hook) */
 @keyframes ntw-line-ignite {{
-  from {{ opacity: 0; transform: translateX(-8px); }}
-  to {{ opacity: 1; transform: translateX(0); }}
+  from {{ opacity: 0; transform: translate3d(-10px, 0, 0); }}
+  to {{ opacity: 1; transform: translate3d(0, 0, 0); }}
 }}
 .ntw-cyan-green-stream {{
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
@@ -2347,30 +2421,12 @@ section.main button[aria-label="9mobile"] {{
   margin-top: 12px !important;
   box-shadow: inset 0 0 48px rgba(0, 229, 255, 0.08), 0 8px 28px rgba(0,0,0,0.45) !important;
 }}
+.ntw-tw-rain.kgec-forensic-rain .ntw-tw-line,
 .ntw-tw-rain .ntw-tw-line {{
   opacity: 0 !important;
-  animation: ntw-line-ignite 0.2s cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
+  animation: ntw-line-ignite 0.48s cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
+  animation-delay: calc((var(--tw-i, 1) - 1) * 50ms) !important;
 }}
-.ntw-tw-rain .ntw-tw-line:nth-child(1) {{ animation-delay: 0.02s !important; }}
-.ntw-tw-rain .ntw-tw-line:nth-child(2) {{ animation-delay: 0.07s !important; }}
-.ntw-tw-rain .ntw-tw-line:nth-child(3) {{ animation-delay: 0.12s !important; }}
-.ntw-tw-rain .ntw-tw-line:nth-child(4) {{ animation-delay: 0.17s !important; }}
-.ntw-tw-rain .ntw-tw-line:nth-child(5) {{ animation-delay: 0.22s !important; }}
-.ntw-tw-rain .ntw-tw-line:nth-child(6) {{ animation-delay: 0.27s !important; }}
-.ntw-tw-rain .ntw-tw-line:nth-child(7) {{ animation-delay: 0.32s !important; }}
-.ntw-tw-rain .ntw-tw-line:nth-child(8) {{ animation-delay: 0.37s !important; }}
-.ntw-tw-rain .ntw-tw-line:nth-child(9) {{ animation-delay: 0.42s !important; }}
-.ntw-tw-rain .ntw-tw-line:nth-child(10) {{ animation-delay: 0.47s !important; }}
-.ntw-tw-rain .ntw-tw-line:nth-child(11) {{ animation-delay: 0.52s !important; }}
-.ntw-tw-rain .ntw-tw-line:nth-child(12) {{ animation-delay: 0.57s !important; }}
-.ntw-tw-rain .ntw-tw-line:nth-child(13) {{ animation-delay: 0.62s !important; }}
-.ntw-tw-rain .ntw-tw-line:nth-child(14) {{ animation-delay: 0.67s !important; }}
-.ntw-tw-rain .ntw-tw-line:nth-child(15) {{ animation-delay: 0.72s !important; }}
-.ntw-tw-rain .ntw-tw-line:nth-child(16) {{ animation-delay: 0.77s !important; }}
-.ntw-tw-rain .ntw-tw-line:nth-child(17) {{ animation-delay: 0.82s !important; }}
-.ntw-tw-rain .ntw-tw-line:nth-child(18) {{ animation-delay: 0.87s !important; }}
-.ntw-tw-rain .ntw-tw-line:nth-child(19) {{ animation-delay: 0.92s !important; }}
-.ntw-tw-rain .ntw-tw-line:nth-child(20) {{ animation-delay: 0.97s !important; }}
 .ntw-tw-line {{
   line-height: 1.55 !important;
   margin-bottom: 8px !important;
@@ -2398,6 +2454,11 @@ section.main button[aria-label="9mobile"] {{
 .ntw-tw-head .ntw-tw-v {{ color: #00ffd9 !important; }}
 .ntw-tw-div {{ border-top: 1px solid rgba(212,175,55,0.25) !important; padding-top: 10px !important; margin-top: 10px !important; }}
 .ntw-tw-region {{ margin-left: 4px !important; border-left: 2px solid rgba(0,229,255,0.35) !important; padding-left: 10px !important; }}
+.ntw-tw-line.ntw-audit-feed {{
+  border-left: 3px solid rgba(212, 175, 55, 0.55) !important;
+  padding-left: 12px !important;
+  margin-bottom: 10px !important;
+}}
 .sovereign-ntw-hr {{
   border: none !important;
   border-top: 1px solid rgba(212,175,55,0.38) !important;
@@ -2425,7 +2486,8 @@ section.main button[aria-label="9mobile"] {{
   section.main button[aria-label="Airtel"],
   section.main button[aria-label="Glo"],
   section.main button[aria-label="9mobile"] {{ animation: none !important; }}
-  .ntw-tw-rain .ntw-tw-line {{ animation: none !important; opacity: 1 !important; }}
+  .ntw-tw-rain .ntw-tw-line {{ animation: none !important; opacity: 1 !important; animation-delay: 0ms !important; }}
+  .kgec-mq-track {{ animation: none !important; transform: none !important; }}
 }}
 /* Beautiful Mirror · GCSLC mono-terminal (total sidebar scope — zero overlap, zero arrow noise) */
 [data-testid="stSidebar"] {{
@@ -2452,13 +2514,13 @@ section.main button[aria-label="9mobile"] {{
 [data-testid="stSidebar"] [data-testid="stVerticalBlockBorderWrapper"] {{
   position: relative !important;
   z-index: 1 !important;
-  border: 1px solid rgba(212, 175, 55, 0.55) !important;
+  border: none !important;
   border-radius: 10px !important;
   background: rgba(0, 0, 48, 0.55) !important;
-  padding: 12px 12px 14px !important;
-  margin-bottom: 14px !important;
+  padding: 14px 14px 16px !important;
+  margin-bottom: 18px !important;
   box-sizing: border-box !important;
-  box-shadow: inset 0 0 0 1px rgba(0, 229, 255, 0.06) !important;
+  box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.42) !important;
   overflow: visible !important;
 }}
 [data-testid="stSidebar"] [data-testid="stVerticalBlock"] > [data-testid="element-container"] {{
@@ -2466,15 +2528,15 @@ section.main button[aria-label="9mobile"] {{
 }}
 [data-testid="stSidebar"] p.kgec-mono-head {{
   font-family: ui-monospace, monospace !important;
-  font-size: 0.68rem !important;
+  font-size: 0.65rem !important;
   font-weight: 700 !important;
   color: #00E5FF !important;
   text-transform: none !important;
   letter-spacing: 0.14em !important;
   word-spacing: 0.55em !important;
-  margin: 0 0 12px 0 !important;
-  padding: 0 2px 8px 2px !important;
-  border-bottom: 1px solid rgba(212, 175, 55, 0.35) !important;
+  margin: 0 0 1.1rem 0 !important;
+  padding: 0 4px 12px 4px !important;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.32) !important;
   line-height: 1.65 !important;
 }}
 [data-testid="stSidebar"] .stMarkdown,
@@ -2498,7 +2560,8 @@ section.main button[aria-label="9mobile"] {{
   opacity: 0.88 !important;
   line-height: 1.6 !important;
   word-spacing: 0.45em !important;
-  margin-bottom: 8px !important;
+  margin-top: 6px !important;
+  margin-bottom: 12px !important;
 }}
 [data-testid="stSidebar"] input,
 [data-testid="stSidebar"] textarea {{
@@ -2532,7 +2595,10 @@ section.main button[aria-label="9mobile"] {{
 [data-testid="stSidebar"] [data-testid="StyledExpanderIcon"],
 [data-testid="stSidebar"] details summary svg,
 [data-testid="stSidebar"] [data-testid="stIconMaterial"],
-[data-testid="stSidebar"] .material-icons {{
+[data-testid="stSidebar"] .material-icons,
+[data-testid="stSidebar"] [class*="keyboard_arrow"],
+[data-testid="stSidebar"] [class*="KeyboardArrow"],
+[data-testid="stSidebar"] [class*="ExpandMore"] {{
   display: none !important;
   width: 0 !important;
   height: 0 !important;
@@ -3071,9 +3137,9 @@ st.markdown(
     f"""
 <div class="sovereign-detail-widget">
   <div class="sdw-handshake">
-    <span class="sdw-hs-brand">Goldman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE</span>
-    <span class="sdw-hs-rc">Galadiman Ruwa Nigeria Ltd RC 1871418</span>
-    <span class="sdw-hs-man">Proponent of 8R Paradigm Convergence and its Determinants—come in for you to decode and understand.</span>
+    <div class="sdw-hs-row kgec-rc-ticker-line"><span class="kgec-mq" style="--kgec-mq-dur:52s"><span class="kgec-mq-track"><span>Goldman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE · Majestic K-GEC · Sovereign mirror</span><span aria-hidden="true">Goldman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE · Majestic K-GEC · Sovereign mirror</span></span></span></div>
+    <div class="sdw-hs-row kgec-rc-ticker-line"><span class="kgec-mq" style="--kgec-mq-dur:44s"><span class="kgec-mq-track"><span>Galadiman Ruwa Nigeria Ltd RC 1871418 · Zaria GRA cadence · national lattice</span><span aria-hidden="true">Galadiman Ruwa Nigeria Ltd RC 1871418 · Zaria GRA cadence · national lattice</span></span></span></div>
+    <div class="sdw-hs-row kgec-rc-ticker-line"><span class="kgec-mq" style="--kgec-mq-dur:56s"><span class="kgec-mq-track"><span>8R Paradigm Convergence and Determinants — decode · understand · the nation never sleeps</span><span aria-hidden="true">8R Paradigm Convergence and Determinants — decode · understand · the nation never sleeps</span></span></span></div>
   </div>
   <div class="sdw-metrics">
     <div class="sdw-metric"><div class="sdw-metric-val">37</div><div class="sdw-metric-lbl">States + FCT</div></div>
