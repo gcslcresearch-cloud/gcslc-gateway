@@ -45,6 +45,9 @@ from sovereign_strategic_cells import strategic_cells_banner
 from kysah_sovereign_alert import (
     build_kysah_sovereign_bundle_for_state,
     federated_kysah_rollup,
+    kysah_distress_records,
+    kysah_escalation_patrol_sniffs,
+    kysah_escalation_shout_rows,
     load_kysah_stub_records,
 )
 from sovereign_logistics_joint import (
@@ -1578,6 +1581,13 @@ _NG_FRAC_Y1 = 0.74
 # Inset patrol centers so the Golden Eagle SVG (translate -50%/-50%) stays visually inside the frame.
 _NG_PAD_X = 0.055
 _NG_PAD_Y = 0.048
+# Federation hero ↔ lat/lon (approx Nigeria bounding box; clamped to sovereign viewport).
+_NG_LAT_MIN = 4.2
+_NG_LAT_MAX = 13.95
+_NG_LON_MIN = 2.65
+_NG_LON_MAX = 14.68
+# Temporal Hierarchy Lamp outer ring + KYSAH ribbon forensic cadence (+40% duration vs 16s baseline).
+_KGEC_FORENSIC_CYCLE_S = 22.4
 
 
 def _kgec_clamp_nigeria_fraction(pt: dict[str, float]) -> dict[str, float]:
@@ -1591,6 +1601,15 @@ def _kgec_clamp_nigeria_fraction(pt: dict[str, float]) -> dict[str, float]:
         min(_NG_FRAC_Y1 - _NG_PAD_Y, float(pt["y"])),
     )
     return {"x": round(x, 4), "y": round(y, 4)}
+
+
+def _kgec_latlon_to_nigeria_fraction(lat: float, lon: float) -> dict[str, float]:
+    """Map WGS84 point to Folium-normalized fractions, then sovereign clamp (KYSAH distress patrol)."""
+    la = float(lat)
+    lo = float(lon)
+    x = (lo - _NG_LON_MIN) / (_NG_LON_MAX - _NG_LON_MIN)
+    y = 1.0 - (la - _NG_LAT_MIN) / (_NG_LAT_MAX - _NG_LAT_MIN)
+    return _kgec_clamp_nigeria_fraction({"x": x, "y": y})
 
 
 def _kgec_sniff_lines_from_shouts(shouts: list[dict]) -> list[str]:
@@ -1637,26 +1656,40 @@ def _kgec_patrol_bundle(
     *,
     extra_sniffs: list[str] | None = None,
 ) -> dict[str, Any]:
-    """Parent-window patrol: logistics joint (confidence-weighted) + lattice mesh + sniffs."""
+    """Parent-window patrol: logistics joint unless KYSAH distress overrides (Crimson Sentinel)."""
     joint = _sovereign_joint_bundle_cached(logistics_joint_cache_buster())
     raw = _kgec_hover_targets(shouts)
     base_w = [0.42] * len(raw)
-    merged_t, merged_w = merge_patrol_with_logistics(
-        raw,
-        base_w,
-        joint.get("logistics_targets") or [],
-        joint.get("logistics_weights") or [],
-    )
+    lt = list(joint.get("logistics_targets") or [])
+    lw = list(joint.get("logistics_weights") or [])
+    joint_sniffs = list(joint.get("sniffs") or [])
+    distress = kysah_distress_records(load_kysah_stub_records())
+    kysah_sentinel = bool(distress)
+    if kysah_sentinel:
+        lt = []
+        lw = []
+        joint_sniffs = []
+        for rec in distress:
+            pt = _kgec_latlon_to_nigeria_fraction(float(rec["lat"]), float(rec["lon"]))
+            for _ in range(14):
+                lt.append(dict(pt))
+                lw.append(0.97)
+    merged_t, merged_w = merge_patrol_with_logistics(raw, base_w, lt, lw)
     clamped = [_kgec_clamp_nigeria_fraction(p) for p in merged_t]
-    sniffs = (
-        list(extra_sniffs or [])
-        + list(joint.get("sniffs") or [])
-        + _kgec_sniff_lines_from_shouts(shouts)
-    )
+    sniffs: list[str] = []
+    if kysah_sentinel:
+        sniffs.append(
+            "KYSAH SENTINEL OVERRIDE · BUA/Dangote logistics patrol suspended · "
+            "Eagle bound to distress Area→Home coordinates · Crimson Sentinel LIVE"
+        )
+    sniffs.extend(list(extra_sniffs or []))
+    sniffs.extend(joint_sniffs)
+    sniffs.extend(_kgec_sniff_lines_from_shouts(shouts))
     return {
         "targets": clamped,
         "targetWeights": merged_w[: len(clamped)],
         "sniffs": sniffs,
+        "kysahSentinelOverride": kysah_sentinel,
     }
 
 
@@ -1711,7 +1744,8 @@ def _render_sovereign_joint_strip() -> None:
         f"<p class='kgec-joint-rej'>Held / rejected: {rej_txt}</p>"
         "</div>"
         "<div class='kgec-joint-lamp-wrap'>"
-        "<div class='kgec-temporal-lamp' aria-hidden='true' title='Gold State · Cyan LGA · White Ward · Red PU'>"
+        "<div class='kgec-temporal-lamp' aria-hidden='true' "
+        "title='State Gold · Area Cyan · Home White · PU Red · forensic cadence'>"
         "<div class='kgec-roll kgec-roll-gold'></div>"
         "<div class='kgec-roll kgec-roll-cyan'></div>"
         "<div class='kgec-roll kgec-roll-white'></div>"
@@ -1726,19 +1760,22 @@ def _render_sovereign_joint_strip() -> None:
 
 def _render_kysah_sovereign_ribbon() -> None:
     """
-    KYSAH Student Safety Grid — Termii-verified pings as Sovereign Alerts correlated with
-    National Resonance + logistics void pressure. Federation rollups keep the ribbon legible at any N.
+    KYSAH (Know Your Student to his Area and Home) — Student Safety Grid.
+    Termii-verified pings as Sovereign Alerts correlated with National Resonance + logistics void pressure.
+    Federation rollups keep the ribbon legible at any N.
     """
     recs = load_kysah_stub_records()
     rollup = federated_kysah_rollup(recs)
     if not recs:
         st.markdown(
             "<div class='kysah-sovereign-ribbon kysah-sovereign-ribbon--idle'>"
+            "<div class='kysah-protocol-line'>Know Your Student to his <b>Area</b> and <b>Home</b></div>"
             "<div class='kysah-fed-line'>KYSAH · Student Safety Grid · ingest IDLE — "
-            "mount <code>kysah_safety_ingest_stub.json</code> + Termii verification rail.</div>"
+            "mount <code>kysah_safety_ingest_stub.json</code> · keys <code>area_token</code> · "
+            "<code>home_token</code> · Termii verification rail.</div>"
             "<div class='kysah-tier-legend'><span class='kysah-tier kysah-gold'>State Gold</span> · "
-            "<span class='kysah-tier kysah-cyan'>LGA Cyan</span> · "
-            "<span class='kysah-tier kysah-white'>Ward White</span> · "
+            "<span class='kysah-tier kysah-cyan'>Area Cyan</span> · "
+            "<span class='kysah-tier kysah-white'>Home White</span> · "
             "<span class='kysah-tier kysah-red'>PU Red</span></div></div>",
             unsafe_allow_html=True,
         )
@@ -1784,15 +1821,17 @@ def _render_kysah_sovereign_ribbon() -> None:
     esc = "SENTINEL" if env.get("sentinel_escalation") else "MONITOR"
     st.markdown(
         "<div class='kysah-sovereign-ribbon'>"
+        "<div class='kysah-protocol-line'>Know Your Student to his <b>Area</b> and <b>Home</b></div>"
         "<div class='kysah-fed-line'>" + html.escape(fed_line) + "</div>"
         "<div class='kysah-alert-line kysah-mode-" + html.escape(esc.lower()) + "'>"
         "<span class='kysah-mode-pill'>" + html.escape(esc) + "</span> " + res_line + "</div>"
         "<div class='kysah-void-line'>" + html.escape(void_line) + "</div>"
         "<div class='kysah-dna-line'>Alphabet DNA · A=Termii anchor · B=Federation bin · "
-        "C=Resonance+void correlate · D=duty-of-care escalation</div>"
+        "C=Resonance+void correlate · D=duty-of-care escalation · "
+        "Sentinel order=<b>Area→Home</b></div>"
         "<div class='kysah-tier-legend'><span class='kysah-tier kysah-gold'>State Gold</span> · "
-        "<span class='kysah-tier kysah-cyan'>LGA Cyan</span> · "
-        "<span class='kysah-tier kysah-white'>Ward White</span> · "
+        "<span class='kysah-tier kysah-cyan'>Area Cyan</span> · "
+        "<span class='kysah-tier kysah-white'>Home White</span> · "
         "<span class='kysah-tier kysah-red'>PU Red</span></div>"
         "</div>",
         unsafe_allow_html=True,
@@ -1960,11 +1999,13 @@ EAGLE_VOICE_INTERVAL = timedelta(seconds=28)
 
 def _eagle_voice_fragment_body() -> None:
     _ntw_op = str(st.session_state.get("ntw_resonance_pick") or "MTN").strip()
+    _kysah_sniffs = kysah_escalation_patrol_sniffs(load_kysah_stub_records())
+    _kysah_ntw_sniffs = _kgec_ntw_resonance_sniffs(_ntw_op) + _kysah_sniffs
     if not st.session_state.get("generative_eagle_ticker", True):
         st.components.v1.html(
             "<script>try{var p=window.parent;var d="
             + json.dumps(
-                _kgec_patrol_bundle([], extra_sniffs=_kgec_ntw_resonance_sniffs(_ntw_op))
+                _kgec_patrol_bundle([], extra_sniffs=_kysah_ntw_sniffs)
             )
             + ";if(p&&p.__kgecSetPatrol)p.__kgecSetPatrol(d);}catch(e){}</script>",
             height=0,
@@ -1987,11 +2028,17 @@ def _eagle_voice_fragment_body() -> None:
         fin_rows=fin,
         limit=16,
     )
-    pulse = bool(st.session_state.get("eagle_friction_pulse", True)) and friction_alert_active(shouts)
+    _kysah_rows = kysah_escalation_shout_rows(load_kysah_stub_records())
+    shouts = _kysah_rows + list(shouts)
+    shouts.sort(key=lambda r: (-float(r.get("weight") or 0), -float(r.get("ts_sort") or 0)))
+    shouts = shouts[:16]
+    pulse = bool(st.session_state.get("eagle_friction_pulse", True)) and (
+        friction_alert_active(shouts) or bool(_kysah_rows)
+    )
     tick_html = _html_eagle_ticker(shouts, alert_pulse=pulse)
     _patrol = _kgec_patrol_bundle(
         shouts,
-        extra_sniffs=_kgec_ntw_resonance_sniffs(_ntw_op),
+        extra_sniffs=_kysah_ntw_sniffs,
     )
     st.components.v1.html(
         "<script>try{var p=window.parent;var d="
@@ -2074,6 +2121,7 @@ st.components.v1.html(
     p.__kgecSetPatrol = function(obj){
       try {
         if (!obj || typeof obj !== 'object') return;
+        p.__kgecKysahSentinel = !!obj.kysahSentinelOverride;
         if (Array.isArray(obj.targets) && obj.targets.length)
           p.__kgecTargets = obj.targets.map(kgecClampNG);
         if (Array.isArray(obj.sniffs))
@@ -2086,6 +2134,11 @@ st.components.v1.html(
           });
         } else {
           p.__kgecTargetWeights = null;
+        }
+        var svgEl = p.__kgecEagleEl;
+        if (svgEl && svgEl.classList){
+          if (p.__kgecKysahSentinel) svgEl.classList.add('kgec-eagle-kysah-sentinel');
+          else svgEl.classList.remove('kgec-eagle-kysah-sentinel');
         }
       } catch (ePat) {}
     };
@@ -2312,6 +2365,7 @@ html, body {{
   color: #f0f4ff !important;
   --background-color: {SHELL} !important;
   --secondary-background-color: {SHELL} !important;
+  --kgec-forensic-cycle: {_KGEC_FORENSIC_CYCLE_S}s !important;
   font-family: 'Goldman', sans-serif !important;
 }}
 [data-testid="stAppViewContainer"],
@@ -2637,7 +2691,26 @@ section.main [data-testid="block-container"]:has(.kgec-sentinel-stack) {{
     border-left: 3px solid rgba(212, 175, 55, 0.55) !important;
   }}
 }}
-/* KYSAH ribbon — full-width, safe-area, text-first (Chairman iPhone: un-clipped, federation-scale) */
+/* KYSAH ribbon — Sam-Sam iPhone: un-clipped parents + forensic kinetic (synced via --kgec-forensic-cycle) */
+section.main div[data-testid="stMarkdownContainer"]:has(.kysah-sovereign-ribbon),
+section.main div[data-testid="stMarkdown"]:has(.kysah-sovereign-ribbon) {{
+  overflow: visible !important;
+  max-height: none !important;
+}}
+section.main .block-container:has(.kysah-sovereign-ribbon) {{
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+}}
+@keyframes kysahRibbonForensic {{
+  0%, 100% {{
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 6px 20px rgba(0,0,0,0.4) !important;
+    border-color: rgba(191, 149, 63, 0.42) !important;
+  }}
+  50% {{
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 8px 26px rgba(0, 229, 255, 0.09) !important;
+    border-color: rgba(191, 149, 63, 0.58) !important;
+  }}
+}}
 section.main .kysah-sovereign-ribbon,
 section.main [data-testid="stMarkdown"] .kysah-sovereign-ribbon {{
   overflow: visible !important;
@@ -2653,6 +2726,20 @@ section.main [data-testid="stMarkdown"] .kysah-sovereign-ribbon {{
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 6px 20px rgba(0,0,0,0.4) !important;
   -webkit-text-size-adjust: 100% !important;
   text-size-adjust: 100% !important;
+  position: relative !important;
+  z-index: 6 !important;
+  animation: kysahRibbonForensic var(--kgec-forensic-cycle, 22.4s) ease-in-out infinite !important;
+}}
+.kysah-protocol-line {{
+  font-family: ui-monospace, monospace !important;
+  font-size: clamp(0.56rem, 2.5vw, 0.66rem) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  color: rgba(212, 175, 55, 0.95) !important;
+  margin-bottom: 8px !important;
+  line-height: 1.45 !important;
+  word-break: break-word !important;
 }}
 .kysah-fed-line {{
   font-family: ui-monospace, monospace !important;
@@ -2733,7 +2820,7 @@ section.main [data-testid="stMarkdown"] .kysah-sovereign-ribbon {{
   height: 100% !important;
   border: 3px solid rgba(212, 175, 55, 0.9) !important;
   box-shadow: 0 0 18px rgba(212, 175, 55, 0.25) !important;
-  animation: kgecLampGold 22.4s ease-in-out infinite !important;
+  animation: kgecLampGold var(--kgec-forensic-cycle, 22.4s) ease-in-out infinite !important;
 }}
 .kgec-roll-cyan {{
   width: 78% !important;
@@ -2788,6 +2875,11 @@ section.main [data-testid="stMarkdown"] .kysah-sovereign-ribbon {{
 @keyframes kgecLampCore {{
   0%, 100% {{ opacity: 0.55; }}
   50% {{ opacity: 1; }}
+}}
+/* KYSAH Crimson Sentinel — Eagle SVG when logistics patrol is overridden */
+.kgec-eagle-svg.kgec-eagle-kysah-sentinel .kgec-eagle-bank {{
+  filter: drop-shadow(0 0 20px rgba(220, 38, 38, 0.88)) drop-shadow(0 0 12px rgba(255, 99, 71, 0.55))
+    drop-shadow(0 3px 2px rgba(0, 0, 0, 0.55)) !important;
 }}
 .kgec-eagle-sniff-typewriter {{
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
@@ -3406,6 +3498,8 @@ section.main button[aria-label="9mobile"] {{
   .kgec-mq-track {{ animation: none !important; transform: none !important; }}
   .sovereign-ntw-hr {{ animation: none !important; }}
   .kgec-roll, .kgec-roll-core {{ animation: none !important; opacity: 0.85 !important; }}
+  section.main .kysah-sovereign-ribbon {{ animation: none !important; }}
+  .kgec-eagle-svg.kgec-eagle-kysah-sentinel .kgec-eagle-bank {{ filter: none !important; }}
 }}
 /* Beautiful Mirror · GCSLC mono-terminal (stacked cells · zero overlap · 0.65rem cadence) */
 [data-testid="stSidebar"] {{

@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "protocol": "sovereign-logistics-ingest-stub-v1",
+    "corridor": "AZK",
+    "note": "Synthetic SMS-bound rows — replace with SMPP/webhook ingress + gantry truth layer."
+  },
+  "records": [
+    {
+      "event_id": "EVT-AZK-DGN-001",
+      "ts_iso": "2026-05-01T06:40:12Z",
+      "source": "sms_stub",
+      "fleet_operator": "DANGOTE",
+      "fleet_id": "FDGN-AZK-01",
+      "msisdn_last4": "8842",
+      "gantry_id": "AZK-KEFFI-N",
+      "azk_segment_index": 1,
+      "raw_text": "CLR GANTRY KEFFI NORTH · CEMENT 32T · NEXT KADUNA",
+      "joint_confidence": 0.86,
+      "admin": {
+        "state_token": "Nasarawa",
+        "lga_token": "Keffi",
+        "ward_token": "WARD-STUB-N",
+        "pu_token": "PU-STUB-N",
+        "state_conf": 0.92,
+        "lga_conf": 0.78,
+        "ward_conf": 0.45,
+        "pu_conf": 0.28
+      },
+      "source_chain": ["sms_stub", "gantry_alias:KEFFI-N", "azk_spine"]
+    },
+    {
+      "event_id": "EVT-AZK-BUA-002",
+      "ts_iso": "2026-05-01T09:12:44Z",
+      "source": "sms_stub",
+      "fleet_operator": "BUA",
+      "fleet_id": "FBUA-AZK-01",
+      "msisdn_last4": "1190",
+      "gantry_id": "AZK-ZARIA-E",
+      "azk_segment_index": 3,
+      "raw_text": "ZARIA EAST · DWT OK · ROLL KANO",
+      "joint_confidence": 0.79,
+      "admin": {
+        "state_token": "Kaduna",
+        "lga_token": "Zaria",
+        "ward_token": "WARD-STUB-E",
+        "pu_token": "PU-STUB-E",
+        "state_conf": 0.88,
+        "lga_conf": 0.72,
+        "ward_conf": 0.5,
+        "pu_conf": 0.3
+      },
+      "source_chain": ["sms_stub", "gantry_alias:ZARIA-E", "azk_spine"]
+    }
+  ]
+}
