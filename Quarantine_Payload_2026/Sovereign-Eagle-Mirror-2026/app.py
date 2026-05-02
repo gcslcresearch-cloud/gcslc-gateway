@@ -42,7 +42,11 @@ from atomic_spie import (
 )
 from sovereign_nl_query import ngecc_discovery_hit, resolve_sovereign_nl_query
 from sovereign_strategic_cells import strategic_cells_banner
-from sovereign_logistics_joint import build_approved_logistics_bundle, merge_patrol_with_logistics
+from sovereign_logistics_joint import (
+    build_approved_logistics_bundle,
+    logistics_joint_cache_buster,
+    merge_patrol_with_logistics,
+)
 from generative_eagle import collect_eagle_shouts, friction_alert_active
 # Load fused catalog before sovereign_active_intel (same gcslc_deep_join dep) — avoids rare Streamlit loader KeyError.
 from gcslc_deep_join import NATIONAL_WARD_TOTAL, build_fused_catalog
@@ -1629,7 +1633,7 @@ def _kgec_patrol_bundle(
     extra_sniffs: list[str] | None = None,
 ) -> dict[str, Any]:
     """Parent-window patrol: logistics joint (confidence-weighted) + lattice mesh + sniffs."""
-    joint = _sovereign_joint_bundle_cached()
+    joint = _sovereign_joint_bundle_cached(logistics_joint_cache_buster())
     raw = _kgec_hover_targets(shouts)
     base_w = [0.42] * len(raw)
     merged_t, merged_w = merge_patrol_with_logistics(
@@ -1653,46 +1657,64 @@ def _kgec_patrol_bundle(
 
 def _render_sovereign_joint_strip() -> None:
     """Honest milestone UI — ingest spine status + Temporal Hierarchy Lamp (demo)."""
-    j = _sovereign_joint_bundle_cached()
+    j = _sovereign_joint_bundle_cached(logistics_joint_cache_buster())
     evs = j.get("approved_events") or []
     rej = j.get("rejected") or []
     meta = j.get("manifest_meta") or {}
     purpose = html.escape(str(meta.get("purpose") or "fleet corridor monitoring"))[:72]
+    mode = html.escape(str(j.get("ingest_mode") or "merge"))[:24]
+    live_n = int(j.get("live_ingest_rows") or 0)
+    proto = j.get("production_msisdn_protocol") or {}
+    proto_meta = proto.get("meta") if isinstance(proto.get("meta"), dict) else {}
+    residency = html.escape(str(proto_meta.get("data_residency") or ""))[:280]
+    counsel = html.escape(str(proto_meta.get("counsel_approval") or meta.get("counsel_lock") or ""))[:220]
     rows_li = ""
     for e in evs[:4]:
         if not isinstance(e, dict):
             continue
+        src = html.escape(str(e.get("source") or "?"))[:32]
         rows_li += (
             "<li>"
             f"{html.escape(str(e.get('fleet_operator') or '?'))} · "
             f"AZK seg {html.escape(str(e.get('azk_segment_index') or '?'))} · "
-            f"jc {float(e.get('joint_confidence') or 0):.2f}"
+            f"jc {float(e.get('joint_confidence') or 0):.2f} · <span class='kgec-joint-src'>{src}</span>"
             "</li>"
         )
     if not rows_li:
-        rows_li = "<li>No approved stub rows — check consent manifest + ingest JSON</li>"
+        rows_li = "<li>No approved rows — check consent manifest + stub JSON + gantry JSONL</li>"
     rej_txt = (
         html.escape(", ".join(f"{a}:{b}" for a, b in rej[:5]))[:220] if rej else "none"
     )
+    legal_body = (
+        "<strong>Legal line</strong> · Fleet-owned SIM registration only — "
+        "<code>fleet_consent_manifest.json</code> · "
+        "<code>production_msisdn_protocol.json</code> locks residency / MSISDN handling."
+    )
+    if residency:
+        legal_body += f"<br/><span class='kgec-joint-residency'>{residency}</span>"
+    if counsel:
+        legal_body += f"<br/><span class='kgec-joint-counsel'>{counsel}</span>"
     st.markdown(
         "<div class='kgec-joint-strip'>"
-        "<div class='kgec-joint-strip-hdr'>Sovereign Joint · DAPI ingest stub · "
+        "<div class='kgec-joint-strip-hdr'>Sovereign Joint · forensic spine · ingest "
+        f"<span class='kgec-joint-ingest'>{mode}</span> · JSONL lines {live_n} · "
         f"<span class='kgec-joint-purpose'>{purpose}</span></div>"
         "<div class='kgec-joint-grid'>"
         "<div class='kgec-joint-status'>"
         f"<p><b>Approved</b> · {len(evs)} event(s) · <b>Gate</b> · {len(rej)} rejected</p>"
         f"<ul class='kgec-joint-ul'>{rows_li}</ul>"
         f"<p class='kgec-joint-rej'>Held / rejected: {rej_txt}</p>"
-        "<p class='kgec-joint-legal'>Consent: fleet-owned SIM registration only — "
-        "see <code>fleet_consent_manifest.json</code> · production MSISDN requires counsel + telco gate.</p>"
         "</div>"
+        "<div class='kgec-joint-lamp-wrap'>"
         "<div class='kgec-temporal-lamp' aria-hidden='true' title='Gold State · Cyan LGA · White Ward · Red PU'>"
         "<div class='kgec-roll kgec-roll-gold'></div>"
         "<div class='kgec-roll kgec-roll-cyan'></div>"
         "<div class='kgec-roll kgec-roll-white'></div>"
         "<div class='kgec-roll kgec-roll-red'></div>"
         "<div class='kgec-roll-core'></div>"
-        "</div></div></div>",
+        "</div></div>"
+        f"<div class='kgec-joint-legal-box'><p class='kgec-joint-legal'>{legal_body}</p></div>"
+        "</div></div>",
         unsafe_allow_html=True,
     )
 
@@ -1736,9 +1758,9 @@ def _kgec_azk_corridor_fractional() -> list[dict[str, float]]:
     return [_kgec_clamp_nigeria_fraction(p) for p in raw]
 
 
-@st.cache_data(ttl=120, show_spinner=False)
-def _sovereign_joint_bundle_cached() -> dict[str, Any]:
-    """SMS → AZK spine stub + fleet consent gate — feeds Sentinel weights + sniffs."""
+@st.cache_data(ttl=15, show_spinner=False)
+def _sovereign_joint_bundle_cached(_cache_key: str) -> dict[str, Any]:
+    """Live JSONL + stub → AZK spine + fleet consent gate — feeds Sentinel weights + sniffs."""
     return build_approved_logistics_bundle(AZK_CORRIDOR_NODES, _kgec_azk_corridor_fractional())
 
 
@@ -2457,11 +2479,13 @@ section.main [data-testid="block-container"]:has(.kgec-sentinel-stack) {{
   margin-bottom: 10px !important;
 }}
 .kgec-joint-purpose {{ color: rgba(0, 229, 255, 0.92) !important; font-weight: 600 !important; }}
+.kgec-joint-ingest {{ color: rgba(180, 255, 200, 0.95) !important; font-weight: 700 !important; }}
+.kgec-joint-src {{ color: rgba(0, 229, 255, 0.55) !important; font-weight: 500 !important; }}
 .kgec-joint-grid {{
   display: flex !important;
   flex-wrap: wrap !important;
   gap: 14px 22px !important;
-  align-items: center !important;
+  align-items: flex-start !important;
   justify-content: space-between !important;
 }}
 .kgec-joint-status {{
@@ -2472,15 +2496,65 @@ section.main [data-testid="block-container"]:has(.kgec-sentinel-stack) {{
   line-height: 1.5 !important;
   color: rgba(230, 245, 255, 0.9) !important;
 }}
+.kgec-joint-lamp-wrap {{
+  flex: 0 0 auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}}
 .kgec-joint-ul {{ margin: 6px 0 0 1rem !important; padding: 0 !important; }}
 .kgec-joint-rej {{ color: rgba(255, 180, 120, 0.85) !important; margin-top: 8px !important; }}
-.kgec-joint-legal {{ color: rgba(200, 220, 255, 0.65) !important; margin-top: 10px !important; font-size: 0.58rem !important; }}
+.kgec-joint-legal-box {{
+  flex: 1 1 100% !important;
+  min-width: 0 !important;
+  margin-top: 12px !important;
+  padding: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}}
+.kgec-joint-legal {{
+  color: rgba(200, 220, 255, 0.78) !important;
+  margin: 0 !important;
+  font-size: clamp(0.58rem, 2.4vw, 0.68rem) !important;
+  line-height: 1.55 !important;
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+}}
+.kgec-joint-residency {{ color: rgba(255, 235, 200, 0.72) !important; }}
+.kgec-joint-counsel {{ color: rgba(255, 200, 120, 0.82) !important; }}
 .kgec-temporal-lamp {{
   position: relative !important;
   flex: 0 0 auto !important;
   width: 118px !important;
   height: 118px !important;
   margin: 4px auto !important;
+}}
+@media (max-width: 720px) {{
+  .kgec-joint-strip {{ padding: 14px 12px !important; }}
+  .kgec-joint-strip-hdr {{
+    line-height: 1.38 !important;
+    letter-spacing: 0.08em !important;
+    margin-bottom: 12px !important;
+  }}
+  .kgec-joint-grid {{
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 14px !important;
+  }}
+  .kgec-joint-status {{ flex: 1 1 auto !important; max-width: 100% !important; order: 1 !important; }}
+  .kgec-joint-legal-box {{ order: 2 !important; margin-top: 4px !important; }}
+  .kgec-joint-lamp-wrap {{ width: 100% !important; order: 3 !important; }}
+  .kgec-temporal-lamp {{
+    width: 104px !important;
+    height: 104px !important;
+    margin: 6px auto 2px auto !important;
+  }}
+  .kgec-joint-legal {{
+    padding: 10px 10px !important;
+    background: rgba(0, 0, 0, 0.35) !important;
+    border-radius: 8px !important;
+    border-left: 3px solid rgba(212, 175, 55, 0.55) !important;
+  }}
 }}
 .kgec-roll {{
   position: absolute !important;
