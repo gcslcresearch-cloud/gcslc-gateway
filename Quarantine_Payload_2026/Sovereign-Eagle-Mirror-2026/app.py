@@ -5,10 +5,12 @@ Galadiman Ruwa Center (GCSLC) LTD/GTE — © 2026
 
 from __future__ import annotations
 
+import hashlib
 import html
 import json
 from datetime import timedelta
 from pathlib import Path
+from typing import Any
 
 import folium
 import pandas as pd
@@ -766,107 +768,53 @@ def _html_total_reality_card(summary: dict) -> str:
     )
 
 
-def _html_eagle_ticker(shouts: list[dict], *, alert_pulse: bool) -> str:
-    if not shouts:
-        return ""
-    parts: list[str] = []
-    for s in shouts[:14]:
-        pulse = str(s.get("pulse") or "")
-        cls = (
-            "p-friction"
-            if pulse == "friction"
-            else "p-opportunity"
-            if pulse == "opportunity"
-            else "p-liquidity"
-        )
-        h = html.escape(str(s.get("headline", ""))[:92])
-        d = html.escape(str(s.get("detail", ""))[:118])
-        parts.append(f"<span class='eagle-shout {cls}'><b>{h}</b> — {d}</span>")
-    inner = "<span class='eagle-sep'> · </span>".join(parts)
-    shell_cls = (
-        "eagle-ticker-shell eagle-stable-sky"
-        + (" eagle-alert-pulse" if alert_pulse else "")
-    )
-    return (
-        f"<div class='{shell_cls}'>"
-        "<span class='eagle-ticker-label'>Generative Eagle · sniffer</span>"
-        f"<div class='eagle-ticker-scroll eagle-typewriter-cyan'>{inner}</div>"
-        "</div>"
-    )
-
-
-EAGLE_VOICE_INTERVAL = timedelta(seconds=28)
-
-
-def _eagle_voice_fragment_body() -> None:
-    if not st.session_state.get("generative_eagle_ticker", True):
-        return
-    vr = _load_vigil_registry_events()
-    se = _load_signal_blackout_events()
-    ncc = _load_ncc_vulnerability_incidents()
-    cbn = _load_cbn_financial_points()
-    trade = _load_trade_commerce_nodes()
-    fin = _load_financial_inclusion_pos()
-    vf = merge_vigil_sources(vr, se, fuse_blackouts=True, limit=100)
-    shouts = collect_eagle_shouts(
-        vigil_rows=vf,
-        ncc_rows=ncc,
-        cbn_rows=cbn,
-        trade_rows=trade,
-        signal_rows=se,
-        fin_rows=fin,
-        limit=16,
-    )
-    pulse = bool(st.session_state.get("eagle_friction_pulse", True)) and friction_alert_active(shouts)
-    tick_html = _html_eagle_ticker(shouts, alert_pulse=pulse)
-    if tick_html:
-        lbl = (
-            "Generative Eagle · LIVE"
-            if getattr(st, "fragment", None)
-            else "Generative Eagle · sniffer"
-        )
-        tick_html = tick_html.replace(
-            "Generative Eagle · sniffer",
-            lbl,
-            1,
-        )
-        st.markdown(tick_html, unsafe_allow_html=True)
-
-
-_eagle_frag = getattr(st, "fragment", None)
-if _eagle_frag:
-    _eagle_voice_live = _eagle_frag(run_every=EAGLE_VOICE_INTERVAL)(_eagle_voice_fragment_body)
-else:
-    _eagle_voice_live = _eagle_voice_fragment_body
-
-
-def _render_ntw_sovereign_control_panel() -> None:
-    """Horizontal Resonance Chamber below hero map — Big 4 horizontal meters (not sidebar)."""
+def _render_ntw_sovereign_control_panel(ntw_proxy: dict[str, Any]) -> None:
+    """High-pedestal Resonance Chamber — meter bars + pulsing operator keys + typewriter stream (main only)."""
     from ntw_regional_audit import (
-        build_ntw_resonance_chamber_figure,
-        ntw_big4_lettermarks_row_html,
+        html_ntw_meter_strip_row,
+        html_ntw_resonance_typewriter_stream,
     )
 
-    st.markdown(ntw_big4_lettermarks_row_html(), unsafe_allow_html=True)
+    st.session_state.setdefault("ntw_resonance_pick", "MTN")
     st.markdown(
-        "<div class='sovereign-ntw-strip sovereign-ntw-resonance'>"
-        "<p class='sovereign-ntw-panel-head'>NTW Regional Corridor Audit · "
-        "<span>Horizontal Resonance Chamber · Big 4</span></p>"
+        "<div class='national-resonance-chamber-outer sovereign-ntw-strip sovereign-ntw-resonance "
+        "sovereign-ntw-pedestal'>"
+        "<p class='sovereign-ntw-panel-head national-rc-title'>K-GEC · National Resonance Chamber · "
+        "<span>Big 4 · Secured Anchor</span></p>"
+        "<p class='sovereign-ntw-sub'>Komi-Generative Cloud · meter deck · pulse keys · forensic stream</p>"
         "<hr class='sovereign-ntw-hr'/>"
         "</div>",
         unsafe_allow_html=True,
     )
     _blob = _load_ntw_regional_audit_cached()
-    _fig_rc = build_ntw_resonance_chamber_figure(_blob)
-    if _fig_rc is not None:
-        st.plotly_chart(
-            _fig_rc,
-            use_container_width=True,
-            key="ntw_resonance_chamber",
-            config={"displayModeBar": False},
+    st.markdown(html_ntw_meter_strip_row(_blob), unsafe_allow_html=True)
+    _ops = ["MTN", "Airtel", "Glo", "9mobile"]
+    _pr = st.columns(4)
+    for _i, _op in enumerate(_ops):
+        with _pr[_i]:
+            if st.button(
+                f"{_op}",
+                key=f"ntw_pulse_{_op}",
+                use_container_width=True,
+                help="Live pulse · subscriber / spectrum / regional broadband stream",
+            ):
+                st.session_state["ntw_resonance_pick"] = _op
+                st.session_state["ntw_resonance_nonce"] = (
+                    int(st.session_state.get("ntw_resonance_nonce", 0)) + 1
+                )
+    _pick = str(st.session_state.get("ntw_resonance_pick") or "").strip()
+    if _pick in _ops:
+        _nonce = int(st.session_state.get("ntw_resonance_nonce", 0))
+        _tw = html_ntw_resonance_typewriter_stream(_pick, _blob, ntw_proxy)
+        st.markdown(
+            f"<div class='kgec-ntw-stream-root' data-kgec-ntw-nonce='{_nonce}'>{_tw}</div>",
+            unsafe_allow_html=True,
         )
     else:
-        st.caption("Plotly required for NTW resonance chamber (`pip install plotly`).")
+        st.caption(
+            "Select a network pulse above — stream unlocks subscriber base, spectrum layer, "
+            "and corridor broadband rows."
+        )
 
 
 def _build_federation_map(
@@ -1533,6 +1481,147 @@ path.gcslc-atom-node {
     return m
 
 
+def _kgec_nav_targets_from_shouts(shouts: list[dict], *, n: int = 14) -> list[dict[str, float]]:
+    """Fractional map positions (0–1) derived from shout text — K-GEC hover sentinel glides ward-to-ward."""
+    out: list[dict[str, float]] = []
+    for i, s in enumerate(shouts[: max(1, n)]):
+        blob = f"{s.get('headline', '')}|{s.get('detail', '')}|{i}"
+        h = int(hashlib.sha256(blob.encode()).hexdigest()[:12], 16)
+        x = 0.08 + (h % 840) / 1000.0
+        y = 0.10 + ((h // 840) % 820) / 1000.0
+        out.append({"x": round(x, 4), "y": round(y, 4)})
+    if not out:
+        out = [{"x": 0.52, "y": 0.44}]
+    return out
+
+
+def _kgec_azk_corridor_fractional() -> list[dict[str, float]]:
+    """
+    Abuja → Kaduna → Zaria → Kano as normalized fractions over the Folium iframe (north-up; y grows downward).
+    """
+    return [
+        {"x": 0.38, "y": 0.55},
+        {"x": 0.41, "y": 0.48},
+        {"x": 0.44, "y": 0.40},
+        {"x": 0.47, "y": 0.33},
+        {"x": 0.51, "y": 0.24},
+    ]
+
+
+def _kgec_hover_targets(shouts: list[dict]) -> list[dict[str, float]]:
+    """Interleave AZK spine with ward-hash pockets (one pocket per shout index = ward-by-ward patrol)."""
+    corridor = _kgec_azk_corridor_fractional()
+    pockets = _kgec_nav_targets_from_shouts(shouts, n=16)
+    out: list[dict[str, float]] = []
+    n = max(len(corridor), len(pockets))
+    for i in range(n):
+        if i < len(corridor):
+            out.append(corridor[i])
+        if i < len(pockets):
+            out.append(pockets[i])
+    return out if out else corridor
+
+
+def _kgec_cell_head(title: str) -> None:
+    """Raw HTML section title — spaced words (mono-terminal; no Streamlit expander chrome)."""
+    st.markdown(
+        f'<p class="kgec-mono-head">{html.escape(title)}</p>',
+        unsafe_allow_html=True,
+    )
+
+
+def _kgec_sidebar_section() -> Any:
+    """Bordered mono-terminal cell (Streamlit ≥1.33); plain container fallback."""
+    try:
+        return st.sidebar.container(border=True)
+    except TypeError:
+        return st.sidebar.container()
+
+
+def _html_eagle_ticker(shouts: list[dict], *, alert_pulse: bool) -> str:
+    if not shouts:
+        return ""
+    parts: list[str] = []
+    for s in shouts[:14]:
+        pulse = str(s.get("pulse") or "")
+        cls = (
+            "p-friction"
+            if pulse == "friction"
+            else "p-opportunity"
+            if pulse == "opportunity"
+            else "p-liquidity"
+        )
+        h = html.escape(str(s.get("headline", ""))[:92])
+        d = html.escape(str(s.get("detail", ""))[:118])
+        parts.append(f"<span class='eagle-shout {cls}'><b>{h}</b> — {d}</span>")
+    inner = "<span class='eagle-sep'> · </span>".join(parts)
+    shell_cls = (
+        "eagle-ticker-shell eagle-stable-sky"
+        + (" eagle-alert-pulse" if alert_pulse else "")
+    )
+    return (
+        "<div class='kgec-sentinel-stack'>"
+        "<div class='kgec-sentinel-crest' aria-hidden='true'>"
+        "<span class='kgec-crest-mark'>◆</span>"
+        "<span class='kgec-crest-title'>K-GEC</span>"
+        "<span class='kgec-crest-sub'>Komi-Generative Cloud</span>"
+        "<span class='kgec-crest-live'>HOVER</span>"
+        "</div>"
+        f"<div class='{shell_cls}'>"
+        "<span class='eagle-ticker-label'>K-GEC · Intelligence stream</span>"
+        f"<div class='eagle-ticker-scroll eagle-typewriter-cyan'>{inner}</div>"
+        "</div></div>"
+    )
+
+
+EAGLE_VOICE_INTERVAL = timedelta(seconds=28)
+
+
+def _eagle_voice_fragment_body() -> None:
+    if not st.session_state.get("generative_eagle_ticker", True):
+        st.components.v1.html(
+            f"<script>try{{var p=window.parent;if(p&&p.__kgecSetTargets)p.__kgecSetTargets({json.dumps(_kgec_azk_corridor_fractional())});}}catch(e){{}}</script>",
+            height=0,
+            width=0,
+        )
+        return
+    vr = _load_vigil_registry_events()
+    se = _load_signal_blackout_events()
+    ncc = _load_ncc_vulnerability_incidents()
+    cbn = _load_cbn_financial_points()
+    trade = _load_trade_commerce_nodes()
+    fin = _load_financial_inclusion_pos()
+    vf = merge_vigil_sources(vr, se, fuse_blackouts=True, limit=100)
+    shouts = collect_eagle_shouts(
+        vigil_rows=vf,
+        ncc_rows=ncc,
+        cbn_rows=cbn,
+        trade_rows=trade,
+        signal_rows=se,
+        fin_rows=fin,
+        limit=16,
+    )
+    pulse = bool(st.session_state.get("eagle_friction_pulse", True)) and friction_alert_active(shouts)
+    tick_html = _html_eagle_ticker(shouts, alert_pulse=pulse)
+    _nav = _kgec_hover_targets(shouts)
+    st.components.v1.html(
+        f"<script>try{{var p=window.parent;if(p&&p.__kgecSetTargets)p.__kgecSetTargets({json.dumps(_nav)});}}catch(e){{}}</script>",
+        height=0,
+        width=0,
+    )
+    if tick_html:
+        lbl = "K-GEC · Cloud · LIVE" if getattr(st, "fragment", None) else "K-GEC · Cloud link"
+        tick_html = tick_html.replace("K-GEC · Intelligence stream", lbl, 1)
+        st.markdown(tick_html, unsafe_allow_html=True)
+
+
+_eagle_frag = getattr(st, "fragment", None)
+if _eagle_frag:
+    _eagle_voice_live = _eagle_frag(run_every=EAGLE_VOICE_INTERVAL)(_eagle_voice_fragment_body)
+else:
+    _eagle_voice_live = _eagle_voice_fragment_body
+
+
 # --- Viewport: 1:1 scaling for mobile (injected into parent document) ---
 st.components.v1.html(
     """
@@ -1552,27 +1641,147 @@ st.components.v1.html(
 (function gcslcFullCanvasResize(){
   var topWin = window;
   try { if (window.top) topWin = window.top; } catch (e0) {}
+  var resizeT = null;
   function pulseResize(){
     try { topWin.dispatchEvent(new Event('resize')); } catch (e1) {}
     try {
       var doc = topWin.document;
-      var ifr = doc.querySelectorAll('iframe');
-      for (var i = 0; i < ifr.length; i++) {
+      var fol = doc.querySelector('[data-testid="stIFrame"]')
+        || doc.querySelector('iframe[title*="folium"], iframe[title*="streamlit_folium"]');
+      if (fol) {
         try {
-          var w = ifr[i].contentWindow;
+          var w = fol.contentWindow;
           if (w) w.dispatchEvent(new Event('resize'));
         } catch (e2) {}
       }
     } catch (e3) {}
   }
-  topWin.addEventListener('orientationchange', function(){ setTimeout(pulseResize, 380); });
-  topWin.addEventListener('resize', function(){ setTimeout(pulseResize, 120); });
+  function debouncedResize(){
+    if (resizeT) clearTimeout(resizeT);
+    resizeT = setTimeout(pulseResize, 420);
+  }
+  topWin.addEventListener('orientationchange', function(){ setTimeout(pulseResize, 420); });
+  topWin.addEventListener('resize', debouncedResize);
+})();
+(function kgecHoverSentinel(){
+  try {
+    var p = window.parent;
+    var doc = p.document;
+    if (p.__kgecHoverEngine) return;
+    p.__kgecHoverEngine = true;
+    p.__kgecTargets = [{x:0.5,y:0.45}];
+    p.__kgecSetTargets = function(arr){
+      if (Array.isArray(arr) && arr.length) p.__kgecTargets = arr;
+    };
+    p.__kgecIdx = 0;
+    p.__kgecSvgUid = 0;
+    if (!doc.getElementById('kgec-eagle-keyframes')){
+      var st = doc.createElement('style');
+      st.id = 'kgec-eagle-keyframes';
+      st.textContent = '@keyframes kgecEagleBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}.kgec-eagle-float{animation:kgecEagleBob 2.6s ease-in-out infinite;transform-origin:100px 52px;}';
+      doc.head.appendChild(st);
+    }
+    function eagleMarkup(uid){
+      return '<defs>'
+        + '<linearGradient id="'+uid+'_au" x1="0%" y1="0%" x2="100%" y2="100%">'
+        + '<stop offset="0%" style="stop-color:#FFE8A0"/><stop offset="40%" style="stop-color:#D4AF37"/>'
+        + '<stop offset="100%" style="stop-color:#6B5A1E"/></linearGradient>'
+        + '<filter id="'+uid+'_glow" x="-30%" y="-30%" width="160%" height="160%">'
+        + '<feGaussianBlur in="SourceAlpha" stdDeviation="1.4" result="b"/><feOffset dx="0" dy="1" in="b" result="o"/>'
+        + '<feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>'
+        + '<g class="kgec-eagle-float"><g class="kgec-eagle-bank">'
+        + '<path fill="url(#'+uid+'_au)" filter="url(#'+uid+'_glow)" d="M18 58 C28 22 72 18 100 28 C128 18 172 22 182 58 C168 78 142 72 118 62 C108 88 92 88 82 62 C58 72 32 78 18 58 Z"/>'
+        + '<path fill="#8B6914" d="M100 28 C112 10 138 14 152 32 C138 36 122 34 112 30 Z"/>'
+        + '<path fill="#5C4A12" opacity="0.95" d="M152 32 L168 38 L156 44 Z"/>'
+        + '<path fill="#C9A227" opacity="0.85" d="M38 48 C48 38 62 42 68 52 C58 56 46 54 38 48 Z"/>'
+        + '<path fill="#C9A227" opacity="0.85" d="M132 48 C142 38 156 42 162 52 C152 56 140 54 132 48 Z"/>'
+        + '</g>'
+        + '<text x="78" y="98" fill="#D4AF37" font-size="12" font-family="ui-monospace,monospace">Sam</text>'
+        + '<text x="118" y="98" fill="#D4AF37" font-size="12" font-family="ui-monospace,monospace">Sam</text>'
+        + '</g>';
+    }
+    function mapHost(){
+      var host = doc.querySelector('[data-testid="stIFrame"]');
+      if (!host) host = doc.querySelector('iframe[title*="folium"], iframe[title*="streamlit_folium"]');
+      return host;
+    }
+    function ensureLayer(){
+      var host = mapHost();
+      if (!host) return null;
+      var par = host.parentElement;
+      if (!par) return null;
+      par.style.position = 'relative';
+      var layer = doc.getElementById('kgec-eagle-hover-layer');
+      if (layer && !par.contains(layer)) {
+        try { layer.remove(); } catch (eR) {}
+        layer = null;
+        p.__kgecEagleEl = null;
+        p.__kgecEagleBank = null;
+      }
+      if (!layer) {
+        layer = doc.createElement('div');
+        layer.id = 'kgec-eagle-hover-layer';
+        layer.setAttribute('aria-hidden','true');
+        layer.style.cssText = 'position:absolute;left:0;top:0;right:0;bottom:0;pointer-events:none;overflow:visible;z-index:50;border-radius:14px;';
+        par.appendChild(layer);
+        var svg = doc.createElementNS('http://www.w3.org/2000/svg','svg');
+        svg.setAttribute('class','kgec-eagle-svg');
+        svg.setAttribute('viewBox','0 0 200 104');
+        svg.setAttribute('preserveAspectRatio','xMidYMid meet');
+        svg.style.cssText = 'position:absolute;width:min(72px,16vw);height:min(38px,8.5vw);min-width:56px;min-height:30px;left:45%;top:40%;'
+          + 'filter:drop-shadow(0 0 14px rgba(212,175,55,0.95)) drop-shadow(0 4px 14px rgba(0,0,0,0.75));'
+          + 'transition:left 3.6s cubic-bezier(0.33,1,0.36,1),top 3.6s cubic-bezier(0.33,1,0.36,1);will-change:left,top;';
+        p.__kgecSvgUid = (p.__kgecSvgUid || 0) + 1;
+        svg.innerHTML = eagleMarkup('kgec'+p.__kgecSvgUid);
+        layer.appendChild(svg);
+        p.__kgecEagleEl = svg;
+        p.__kgecEagleBank = svg.querySelector('.kgec-eagle-bank');
+      }
+      return layer;
+    }
+    function glide(){
+      var svg = p.__kgecEagleEl;
+      if (!svg || !doc.body.contains(svg)) {
+        p.__kgecEagleEl = null;
+        p.__kgecEagleBank = null;
+        ensureLayer();
+        svg = p.__kgecEagleEl;
+      }
+      if (!svg) return;
+      var tg = p.__kgecTargets || [{x:0.5,y:0.45}];
+      var w = tg[p.__kgecIdx % tg.length];
+      p.__kgecIdx++;
+      svg.style.left = (w.x * 100) + '%';
+      svg.style.top = (w.y * 100) + '%';
+      var ang = Math.sin(Date.now() / 1050) * 11;
+      var bank = p.__kgecEagleBank || svg.querySelector('.kgec-eagle-bank');
+      if (bank) bank.setAttribute('transform','rotate('+ang+' 100 52)');
+    }
+    function mountRetries(){
+      var n = 0;
+      function tick(){
+        ensureLayer();
+        if (!p.__kgecEagleEl && n < 6) { n++; setTimeout(tick, 700); }
+      }
+      tick();
+    }
+    mountRetries();
+    setInterval(glide, 3600);
+    setInterval(function(){
+      var host = mapHost();
+      var layer = doc.getElementById('kgec-eagle-hover-layer');
+      if (host && (!layer || !host.parentElement || !host.parentElement.contains(layer))) ensureLayer();
+    }, 5000);
+  } catch (e) {}
 })();
 </script>
 """,
     height=0,
     width=0,
 )
+
+# First main paint · Eagle nav targets + ticker (fragment updates AZK hover even when ticker off)
+_eagle_voice_live()
 
 st.markdown(
     f"""
@@ -1616,9 +1825,6 @@ div.main {{
 [data-testid="stHeader"] {{
   background-color: {SHELL} !important;
   background: {SHELL} !important;
-}}
-[data-testid="stSidebar"] {{
-  background-color: {SHELL} !important;
 }}
 .handshake-wrap {{
   font-family: 'Goldman', sans-serif !important;
@@ -1709,12 +1915,60 @@ h1, h2, h3, h4, h5, h6 {{
   letter-spacing: 0.06em;
   color: rgba(212, 175, 55, 0.55) !important;
 }}
-/* Stable Sky — Generative Eagle at top of main; fragment reruns do not rebuild map */
-.eagle-stable-sky {{
+/* K-GEC sentinel stack — first paint on iPhone · stable strip */
+.kgec-sentinel-stack {{
   position: sticky !important;
   top: 0 !important;
-  z-index: 110 !important;
-  margin: 0 0 12px 0 !important;
+  z-index: 120 !important;
+  padding-top: max(6px, env(safe-area-inset-top, 0px)) !important;
+  margin: 0 0 10px 0 !important;
+  padding-left: 4px !important;
+  padding-right: 4px !important;
+}}
+.kgec-sentinel-crest {{
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 8px 12px !important;
+  margin-bottom: 8px !important;
+  padding: 6px 10px !important;
+  border-radius: 10px !important;
+  background: linear-gradient(90deg, rgba(0,0,0,0.95) 0%, rgba(0,20,80,0.75) 50%, rgba(0,0,0,0.92) 100%) !important;
+  border: 1px solid rgba(212, 175, 55, 0.5) !important;
+  box-shadow: 0 0 24px rgba(0, 229, 255, 0.12), inset 0 1px 0 rgba(255,255,255,0.08) !important;
+}}
+.kgec-crest-mark {{ color: #D4AF37 !important; font-size: 0.85rem !important; }}
+.kgec-crest-title {{
+  font-weight: 800 !important;
+  letter-spacing: 0.14em !important;
+  font-size: clamp(0.58rem, 1.8vw, 0.72rem) !important;
+  color: #D4AF37 !important;
+}}
+.kgec-crest-sub {{
+  font-family: ui-monospace, monospace !important;
+  font-size: clamp(0.55rem, 1.6vw, 0.68rem) !important;
+  color: #00E5FF !important;
+  letter-spacing: 0.08em !important;
+}}
+.kgec-crest-live {{
+  margin-left: auto !important;
+  font-size: clamp(0.52rem, 1.5vw, 0.62rem) !important;
+  font-weight: 800 !important;
+  color: #2ECC71 !important;
+  letter-spacing: 0.2em !important;
+  border: 1px solid rgba(46, 204, 113, 0.45) !important;
+  padding: 3px 8px !important;
+  border-radius: 6px !important;
+  animation: eagle-live-breathe 2.4s ease-in-out infinite !important;
+}}
+@keyframes eagle-live-breathe {{
+  0%, 100% {{ opacity: 0.85; box-shadow: 0 0 0 0 rgba(46,204,113,0); }}
+  50% {{ opacity: 1; box-shadow: 0 0 14px rgba(46,204,113,0.35); }}
+}}
+/* Inner ticker strip (outer .kgec-sentinel-stack is the sticky anchor) */
+.eagle-stable-sky {{
+  position: relative !important;
+  margin: 0 !important;
   padding: 8px 10px 10px !important;
   background: #000000 !important;
   border-radius: 12px !important;
@@ -1872,7 +2126,7 @@ section.main .block-container {{
 /* Total Reality · Smart click — handshake layer above resonance chamber */
 .gcslc-total-reality.gcslc-tr-handshake-front {{
   position: relative !important;
-  z-index: 95 !important;
+  z-index: 100 !important;
   isolation: isolate !important;
 }}
 /* Total Reality · Smart click (Typewriter Cyan) */
@@ -1941,6 +2195,7 @@ section.main .block-container {{
   flex: 1 1 auto;
   min-width: 0;
   overflow-x: auto;
+  scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   white-space: nowrap;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -1996,12 +2251,160 @@ section.main .block-container {{
   color: rgba(240,244,255,0.88) !important;
   font-weight: 600 !important;
 }}
+.sovereign-ntw-sub {{
+  font-size: clamp(0.62rem, 1.6vw, 0.72rem) !important;
+  color: rgba(240,244,255,0.55) !important;
+  margin: 0 0 8px 0 !important;
+  letter-spacing: 0.06em !important;
+}}
+.sovereign-ntw-pedestal {{
+  position: relative !important;
+  z-index: 28 !important;
+}}
+.national-resonance-chamber-outer {{
+  background: radial-gradient(120% 90% at 50% 0%, rgba(0,55,140,0.5) 0%, rgba(0,0,48,0.95) 52%, #000010 100%) !important;
+  border: 1px solid rgba(212, 175, 55, 0.5) !important;
+  box-shadow: 0 0 32px rgba(0, 229, 255, 0.08), inset 0 1px 0 rgba(255,255,255,0.07) !important;
+}}
+.national-rc-title {{
+  letter-spacing: 0.1em !important;
+  text-shadow: 0 0 20px rgba(212, 175, 55, 0.25) !important;
+}}
+.national-resonance-meterdeck {{
+  margin: 0 0 8px 0 !important;
+}}
+/* NTW meter strip — National Resonance · meter deck */
+.ntw-meter-strip {{
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 10px !important;
+  margin: 0 0 14px 0 !important;
+  padding: 14px 12px !important;
+  border-radius: 12px !important;
+  background: linear-gradient(180deg, rgba(0,0,0,0.75) 0%, rgba(0,15,60,0.55) 100%) !important;
+  border: 1px solid rgba(212,175,55,0.4) !important;
+  box-shadow: inset 0 2px 24px rgba(0, 229, 255, 0.06) !important;
+}}
+@media (max-width: 700px) {{
+  .ntw-meter-strip {{ grid-template-columns: repeat(2, 1fr) !important; }}
+}}
+.ntw-meter-cell {{ min-width: 0 !important; }}
+.ntw-meter-label {{
+  font-family: ui-monospace, monospace !important;
+  font-size: clamp(0.65rem, 2.4vw, 0.78rem) !important;
+  font-weight: 800 !important;
+  margin-bottom: 6px !important;
+}}
+.ntw-meter-track {{
+  height: 12px !important;
+  border-radius: 8px !important;
+  background: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(0,0,0,0.5) 100%) !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(212,175,55,0.3) !important;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.65) !important;
+}}
+.ntw-meter-fill {{
+  height: 100% !important;
+  border-radius: 6px !important;
+  transition: width 0.35s ease !important;
+}}
+.ntw-meter-sub {{
+  font-family: ui-monospace, monospace !important;
+  font-size: clamp(0.55rem, 1.5vw, 0.65rem) !important;
+  color: rgba(240,244,255,0.72) !important;
+  margin-top: 6px !important;
+}}
+/* Pulsing operator keys (Streamlit buttons — match label) */
+@keyframes ntw-op-pulse {{
+  0%, 100% {{ box-shadow: 0 0 0 0 rgba(0, 229, 255, 0.0); filter: brightness(1); transform: scale(1); }}
+  50% {{ box-shadow: 0 0 26px 5px rgba(46, 204, 113, 0.42), 0 0 16px rgba(0, 229, 255, 0.5); filter: brightness(1.12); transform: scale(1.03); }}
+}}
+section.main button[aria-label="MTN"],
+section.main button[aria-label="Airtel"],
+section.main button[aria-label="Glo"],
+section.main button[aria-label="9mobile"] {{
+  animation: ntw-op-pulse 2.2s ease-in-out infinite !important;
+  font-family: ui-monospace, monospace !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.12em !important;
+  word-spacing: 0.35em !important;
+  will-change: transform, box-shadow !important;
+}}
+.sovereign-ntw-big4-inner {{
+  contain: layout style !important;
+}}
+/* Cyan–green forensic stream · staggered “ignite” (speed + hook) */
+@keyframes ntw-line-ignite {{
+  from {{ opacity: 0; transform: translateX(-8px); }}
+  to {{ opacity: 1; transform: translateX(0); }}
+}}
+.ntw-cyan-green-stream {{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  background: radial-gradient(100% 120% at 0% 0%, rgba(0,60,80,0.35) 0%, rgba(0,0,0,0.92) 45%) !important;
+  border: 1px solid rgba(46, 204, 113, 0.5) !important;
+  border-radius: 10px !important;
+  padding: 14px 14px 16px !important;
+  margin-top: 12px !important;
+  box-shadow: inset 0 0 48px rgba(0, 229, 255, 0.08), 0 8px 28px rgba(0,0,0,0.45) !important;
+}}
+.ntw-tw-rain .ntw-tw-line {{
+  opacity: 0 !important;
+  animation: ntw-line-ignite 0.2s cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
+}}
+.ntw-tw-rain .ntw-tw-line:nth-child(1) {{ animation-delay: 0.02s !important; }}
+.ntw-tw-rain .ntw-tw-line:nth-child(2) {{ animation-delay: 0.07s !important; }}
+.ntw-tw-rain .ntw-tw-line:nth-child(3) {{ animation-delay: 0.12s !important; }}
+.ntw-tw-rain .ntw-tw-line:nth-child(4) {{ animation-delay: 0.17s !important; }}
+.ntw-tw-rain .ntw-tw-line:nth-child(5) {{ animation-delay: 0.22s !important; }}
+.ntw-tw-rain .ntw-tw-line:nth-child(6) {{ animation-delay: 0.27s !important; }}
+.ntw-tw-rain .ntw-tw-line:nth-child(7) {{ animation-delay: 0.32s !important; }}
+.ntw-tw-rain .ntw-tw-line:nth-child(8) {{ animation-delay: 0.37s !important; }}
+.ntw-tw-rain .ntw-tw-line:nth-child(9) {{ animation-delay: 0.42s !important; }}
+.ntw-tw-rain .ntw-tw-line:nth-child(10) {{ animation-delay: 0.47s !important; }}
+.ntw-tw-rain .ntw-tw-line:nth-child(11) {{ animation-delay: 0.52s !important; }}
+.ntw-tw-rain .ntw-tw-line:nth-child(12) {{ animation-delay: 0.57s !important; }}
+.ntw-tw-rain .ntw-tw-line:nth-child(13) {{ animation-delay: 0.62s !important; }}
+.ntw-tw-rain .ntw-tw-line:nth-child(14) {{ animation-delay: 0.67s !important; }}
+.ntw-tw-rain .ntw-tw-line:nth-child(15) {{ animation-delay: 0.72s !important; }}
+.ntw-tw-rain .ntw-tw-line:nth-child(16) {{ animation-delay: 0.77s !important; }}
+.ntw-tw-rain .ntw-tw-line:nth-child(17) {{ animation-delay: 0.82s !important; }}
+.ntw-tw-rain .ntw-tw-line:nth-child(18) {{ animation-delay: 0.87s !important; }}
+.ntw-tw-rain .ntw-tw-line:nth-child(19) {{ animation-delay: 0.92s !important; }}
+.ntw-tw-rain .ntw-tw-line:nth-child(20) {{ animation-delay: 0.97s !important; }}
+.ntw-tw-line {{
+  line-height: 1.55 !important;
+  margin-bottom: 8px !important;
+  font-size: clamp(0.62rem, 1.8vw, 0.76rem) !important;
+}}
+.ntw-tw-idx {{
+  color: rgba(212, 175, 55, 0.65) !important;
+  font-size: 0.62em !important;
+  margin-right: 6px !important;
+  font-family: inherit !important;
+}}
+.ntw-tw-k {{
+  color: #2ECC71 !important;
+  font-weight: 700 !important;
+  margin-right: 8px !important;
+}}
+.ntw-tw-v {{
+  color: #00E5FF !important;
+}}
+.ntw-tw-r {{
+  color: #D4AF37 !important;
+  font-weight: 700 !important;
+  margin-right: 8px !important;
+}}
+.ntw-tw-head .ntw-tw-v {{ color: #00ffd9 !important; }}
+.ntw-tw-div {{ border-top: 1px solid rgba(212,175,55,0.25) !important; padding-top: 10px !important; margin-top: 10px !important; }}
+.ntw-tw-region {{ margin-left: 4px !important; border-left: 2px solid rgba(0,229,255,0.35) !important; padding-left: 10px !important; }}
 .sovereign-ntw-hr {{
   border: none !important;
   border-top: 1px solid rgba(212,175,55,0.38) !important;
   margin: 0 0 12px !important;
 }}
 .sovereign-ntw-strip {{
+  contain: layout style !important;
   position: relative !important;
   z-index: 40 !important;
   margin: 10px 0 16px;
@@ -2011,47 +2414,131 @@ section.main .block-container {{
   background: rgba(0, 0, 128, 0.52);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 6px 20px rgba(0,0,0,0.22);
 }}
+.kgec-ntw-stream-root {{
+  contain: layout style !important;
+}}
 @media (prefers-reduced-motion: reduce) {{
   .eagle-ticker-shell.eagle-alert-pulse {{ animation: none !important; }}
+  .kgec-crest-live {{ animation: none !important; }}
+  #kgec-eagle-hover-layer {{ display: none !important; }}
+  section.main button[aria-label="MTN"],
+  section.main button[aria-label="Airtel"],
+  section.main button[aria-label="Glo"],
+  section.main button[aria-label="9mobile"] {{ animation: none !important; }}
+  .ntw-tw-rain .ntw-tw-line {{ animation: none !important; opacity: 1 !important; }}
 }}
+/* Beautiful Mirror · GCSLC mono-terminal (total sidebar scope — zero overlap, zero arrow noise) */
 [data-testid="stSidebar"] {{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-size: 0.65rem !important;
+  line-height: 1.55 !important;
+  letter-spacing: 0.04em !important;
+  word-spacing: 0.4em !important;
   background-color: {SHELL} !important;
-  border-right: 1px solid rgba(212, 175, 55, 0.28) !important;
+  background-image: linear-gradient(180deg, rgba(0,0,128,0.98) 0%, rgba(0,0,64,0.99) 100%) !important;
+  border-right: 1px solid rgba(212, 175, 55, 0.38) !important;
+  isolation: isolate !important;
+  contain: layout style !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  -webkit-font-smoothing: antialiased !important;
 }}
-[data-testid="stSidebar"] .stMarkdown, [data-testid="stSidebar"] label {{
-  color: #f0f4ff !important;
+[data-testid="stSidebar"] [data-testid="stSidebarContent"] {{
+  gap: 0 !important;
+  padding-top: 8px !important;
+  padding-bottom: 16px !important;
 }}
-/* Sidebar expanders — touch-safe spacing (chevron vs title overlap on iPhone) */
-[data-testid="stSidebar"] div[data-testid="stExpander"] {{
-  margin-bottom: 0.4rem !important;
-}}
-[data-testid="stSidebar"] details {{
+[data-testid="stSidebar"] [data-testid="stVerticalBlockBorderWrapper"] {{
+  position: relative !important;
+  z-index: 1 !important;
+  border: 1px solid rgba(212, 175, 55, 0.55) !important;
   border-radius: 10px !important;
+  background: rgba(0, 0, 48, 0.55) !important;
+  padding: 12px 12px 14px !important;
+  margin-bottom: 14px !important;
+  box-sizing: border-box !important;
+  box-shadow: inset 0 0 0 1px rgba(0, 229, 255, 0.06) !important;
   overflow: visible !important;
 }}
-[data-testid="stSidebar"] summary {{
-  padding: 0.65rem 2.75rem 0.65rem 0.35rem !important;
-  min-height: 2.85rem !important;
-  align-items: center !important;
-  line-height: 1.35 !important;
+[data-testid="stSidebar"] [data-testid="stVerticalBlock"] > [data-testid="element-container"] {{
+  margin-bottom: 0.35rem !important;
 }}
-[data-testid="stSidebar"] details summary {{
-  list-style: none !important;
+[data-testid="stSidebar"] p.kgec-mono-head {{
+  font-family: ui-monospace, monospace !important;
+  font-size: 0.68rem !important;
+  font-weight: 700 !important;
+  color: #00E5FF !important;
+  text-transform: none !important;
+  letter-spacing: 0.14em !important;
+  word-spacing: 0.55em !important;
+  margin: 0 0 12px 0 !important;
+  padding: 0 2px 8px 2px !important;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.35) !important;
+  line-height: 1.65 !important;
 }}
-[data-testid="stSidebar"] details summary::-webkit-details-marker {{
+[data-testid="stSidebar"] .stMarkdown,
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] p,
+[data-testid="stSidebar"] span {{
+  color: rgba(200, 245, 255, 0.94) !important;
+  font-size: 0.65rem !important;
+  line-height: 1.55 !important;
+  letter-spacing: 0.05em !important;
+  word-spacing: 0.42em !important;
+}}
+[data-testid="stSidebar"] label {{
+  margin-top: 10px !important;
+  margin-bottom: 4px !important;
+  display: block !important;
+  clear: both !important;
+}}
+[data-testid="stSidebar"] [data-testid="stCaption"] {{
+  font-size: 0.62rem !important;
+  opacity: 0.88 !important;
+  line-height: 1.6 !important;
+  word-spacing: 0.45em !important;
+  margin-bottom: 8px !important;
+}}
+[data-testid="stSidebar"] input,
+[data-testid="stSidebar"] textarea {{
+  font-family: inherit !important;
+  font-size: 0.65rem !important;
+  line-height: 1.45 !important;
+  margin-top: 6px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}}
+[data-testid="stSidebar"] [data-testid="stMetricValue"] {{
+  font-size: 0.9rem !important;
+  letter-spacing: 0.08em !important;
+}}
+[data-testid="stSidebar"] [data-testid="stMetricLabel"] {{
+  font-size: 0.65rem !important;
+  word-spacing: 0.4em !important;
+}}
+[data-testid="stSidebar"] [data-baseweb="button"],
+[data-testid="stSidebar"] button {{
+  margin-top: 8px !important;
+  max-width: 100% !important;
+}}
+[data-testid="stSidebar"] hr {{
+  margin: 14px 0 !important;
+  border-color: rgba(212, 175, 55, 0.25) !important;
+}}
+[data-testid="stSidebar"] [data-testid="stExpander"] svg,
+[data-testid="stSidebar"] [data-testid="stExpander"] button svg,
+[data-testid="stSidebar"] [data-testid="StyledExpanderIcon"],
+[data-testid="stSidebar"] details summary svg,
+[data-testid="stSidebar"] [data-testid="stIconMaterial"],
+[data-testid="stSidebar"] .material-icons {{
   display: none !important;
-}}
-/* Professional sidebar titles — hide Material chevron / arrow glyph noise */
-[data-testid="stSidebar"] [data-testid="stExpander"] svg {{
-  display: none !important;
-}}
-[data-testid="stSidebar"] [data-testid="stExpander"] summary {{
-  font-family: 'Goldman', sans-serif !important;
-  font-weight: 600 !important;
-  letter-spacing: 0.03em !important;
-}}
-[data-testid="stSidebar"] [data-testid="stExpander"] summary span {{
-  font-family: 'Goldman', sans-serif !important;
+  width: 0 !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
 }}
 </style>
 """,
@@ -2064,7 +2551,8 @@ _signal_ev = _load_signal_blackout_events()
 _vigil_registry = _load_vigil_registry_events()
 
 with st.sidebar:
-    with st.expander("Sovereign Discovery", expanded=True):
+    with _kgec_sidebar_section():
+        _kgec_cell_head("Sovereign discovery")
         st.caption(
             "Lattice filter + heuristic NL pivot — no cloud LLM (Lux-class latency on mobile)."
         )
@@ -2093,9 +2581,10 @@ with st.sidebar:
                     "No match — try zone + POS wording, or expand "
                     "`financial_inclusion_pos.json` / `trade_commerce_nodes.json`."
                 )
-    with st.expander("Active Intelligence · Generative Eagle", expanded=False):
+    with _kgec_sidebar_section():
+        _kgec_cell_head("K-GEC · Komi-Generative Cloud")
         st.caption(
-            "Smart click uses ADM1 boundaries + `gcslc_deep_join` ward mass. The Eagle sniffs the same "
+            "Smart click uses ADM1 boundaries + `gcslc_deep_join` ward mass. K-GEC sniffs the same "
             "registries the mirror already mounts — co-resident with the 24/7 Streamlit vigil process."
         )
         st.toggle(
@@ -2105,7 +2594,7 @@ with st.sidebar:
             help="Click **inside** a state polygon on the national map; summary appears under the canvas.",
         )
         st.toggle(
-            "Generative Eagle ticker (voice)",
+            "K-GEC intelligence stream (ticker)",
             value=True,
             key="generative_eagle_ticker",
             help="Vigil + NCC + telecom void + trade velocity + POS liquidity — scrollable on iPhone.",
@@ -2120,23 +2609,25 @@ with st.sidebar:
             "NTW corridor charts live below the national map (Sovereign Control Panel) — always visible while you "
             "click states or search the lattice."
         )
-    st.markdown("### Sovereign Ingestion Monitor")
-    st.caption("Phase 3 · NGECC strategic registry ↔ AZK Million Steel Rods")
-    _ngecc_sidebar_reg = _load_ngecc_industrial_registry()
-    st.metric("Industrial PU registry", len(_ngecc_sidebar_reg["codes"]))
-    _bulk_n = int(_ngecc_sidebar_reg.get("bulk_entries_count") or 0)
-    _bulk_hint = f" · tier-2 bulk rows: {_bulk_n}" if _bulk_n else ""
-    st.caption(
-        f"AZK spine PUs (peak gold): {len(_ngecc_sidebar_reg['azk_codes'])} · "
-        f"registry: `Part_02_Finance/data/ngecc_strategic_industrial_pu.json`{_bulk_hint}"
-    )
-    st.toggle(
-        "Industrial Assets (NGECC)",
-        value=True,
-        key="show_industrial_assets",
-        help="Sovereign Gold (#BF953F) shimmer on registered PUs; off = cyan-only lattice for fluid compare.",
-    )
-    with st.expander("Friction · sovereign audit", expanded=False):
+    with _kgec_sidebar_section():
+        _kgec_cell_head("Sovereign ingestion monitor")
+        st.caption("Phase 3 · NGECC strategic registry ↔ AZK Million Steel Rods")
+        _ngecc_sidebar_reg = _load_ngecc_industrial_registry()
+        st.metric("Industrial PU registry", len(_ngecc_sidebar_reg["codes"]))
+        _bulk_n = int(_ngecc_sidebar_reg.get("bulk_entries_count") or 0)
+        _bulk_hint = f" · tier-2 bulk rows: {_bulk_n}" if _bulk_n else ""
+        st.caption(
+            f"AZK spine PUs (peak gold): {len(_ngecc_sidebar_reg['azk_codes'])} · "
+            f"registry: `Part_02_Finance/data/ngecc_strategic_industrial_pu.json`{_bulk_hint}"
+        )
+        st.toggle(
+            "Industrial Assets (NGECC)",
+            value=True,
+            key="show_industrial_assets",
+            help="Sovereign Gold (#BF953F) shimmer on registered PUs; off = cyan-only lattice for fluid compare.",
+        )
+    with _kgec_sidebar_section():
+        _kgec_cell_head("Friction · sovereign audit")
         st.caption(
             "Industrial wealth ↔ social delivery · layers stay off the hero canvas until enabled."
         )
@@ -2164,7 +2655,8 @@ with st.sidebar:
             key="show_financial_inclusion_pos",
             help="Commerce vs formal finance gap — Part_02_Finance/data/financial_inclusion_pos.json",
         )
-    with st.expander("Trade & Commerce", expanded=False):
+    with _kgec_sidebar_section():
+        _kgec_cell_head("Trade & Commerce")
         st.caption(
             "Livestock / exchange anchors + village lattice — `trade_commerce_nodes.json` "
             "(each village is a Sovereign Node with search_aliases)."
@@ -2175,7 +2667,8 @@ with st.sidebar:
             key="show_trade_commerce",
             help="Mubi · Wudil · Mai'Adua livestock markets (high-fidelity markers).",
         )
-    with st.expander("Territory · capillaries", expanded=False):
+    with _kgec_sidebar_section():
+        _kgec_cell_head("Territory · capillaries")
         st.caption(
             "Human shield · informal trade nodes are national capillaries — "
             "Zaria GRA streets ↔ Danchadi POS relays ↔ coastal relays."
@@ -2186,7 +2679,8 @@ with st.sidebar:
             key="show_micro_assets",
             help="Part_04_Social/data/micro_assets_capillaries.json",
         )
-    with st.expander("Forensic Intelligence · Soul", expanded=False):
+    with _kgec_sidebar_section():
+        _kgec_cell_head("Forensic Intelligence · Soul")
         st.caption(
             "NCC × telecom void × finance friction → Double-Zero synthesis · relational schema in "
             "`Part_03_Security/data/forensic_relational_schema.json`."
@@ -2215,7 +2709,8 @@ with st.sidebar:
             key="binji_lagos_strike",
             help="Lagos Mainland (saturated blue) vs Binji/Danchadi void (pulsing gold). Replaces hero map.",
         )
-    with st.expander("National Vigil · signal pulse", expanded=False):
+    with _kgec_sidebar_section():
+        _kgec_cell_head("National Vigil · signal pulse")
         st.caption(
             "Architecture: append `Part_01_Telecom/data/vigil_feed_events.json` from SOC/NMS webhooks; "
             "`vigil_feed.py` normalizes rows. Optional fuse with legacy blackout registry."
@@ -2247,20 +2742,20 @@ with st.sidebar:
                     _zv = str(_row.get("zone") or "").strip()
                     _tail = f" · {_zv}" if _zv else ""
                     st.markdown(
-                        f"<div style='font-size:0.78rem;line-height:1.35;color:rgba(240,244,255,0.92);"
-                        f"border-left:3px solid rgba(212,175,55,0.45);padding-left:8px;margin-bottom:6px;'>"
-                        f"<span style='color:#00E5FF;'>{html.escape(_k)}</span> · {_ts}<br/>"
+                        f"<div style='font-size:0.65rem;line-height:1.55;letter-spacing:0.04em;word-spacing:0.35em;"
+                        f"color:rgba(200,245,255,0.92);border-left:3px solid rgba(212,175,55,0.45);"
+                        f"padding-left:10px;margin-bottom:8px;'>"
+                        f"<span style='color:#00E5FF;'>{html.escape(_k)}</span> &nbsp; {_ts}<br/>"
                         f"{html.escape(_lbl)}{html.escape(_tail)}</div>",
                         unsafe_allow_html=True,
                     )
             else:
                 st.caption("No vigil rows — populate `vigil_feed_events.json` or enable fuse.")
-    st.divider()
-    st.caption("AZK spine: Abuja FCT → Keffi → Kaduna → Zaria → Kano · `azk_alignment: true` = peak gold.")
-
-# Stable Sky — Eagle ticker first in main column (fragment ticks · no map dependency).
-if st.session_state.get("generative_eagle_ticker", True):
-    _eagle_voice_live()
+    with _kgec_sidebar_section():
+        _kgec_cell_head("AZK spine")
+        st.caption(
+            "Abuja FCT → Keffi → Kaduna → Zaria → Kano · `azk_alignment: true` = peak gold."
+        )
 
 _states_geojson = _load_nigeria_states_geojson()
 _phase2 = _load_phase2_spine_bundle()
@@ -2448,6 +2943,16 @@ else:
             _merged["zoom"] = _prev_map["zoom"]
         if _merged.get("center") is None and _prev_map.get("center") is not None:
             _merged["center"] = _prev_map["center"]
+        _lc_handshake = _merged.get("last_clicked")
+        if (
+            _lc_handshake
+            and isinstance(_lc_handshake, dict)
+            and _prev_map.get("zoom") is not None
+        ):
+            # Smart-click return: lock viewport — prevents national zoom-out / iframe flicker
+            _merged["zoom"] = _prev_map["zoom"]
+            if _prev_map.get("center") is not None:
+                _merged["center"] = _prev_map["center"]
         _out = _merged
     if isinstance(_out, dict):
         st.session_state["gv_map_out"] = _out
@@ -2506,7 +3011,7 @@ else:
             _html_total_reality_card(st.session_state["total_reality_last"]),
             unsafe_allow_html=True,
         )
-    _render_ntw_sovereign_control_panel()
+    _render_ntw_sovereign_control_panel(_ntw_blob)
 _states_warn = ""
 if not _states_geojson:
     _states_warn = (
