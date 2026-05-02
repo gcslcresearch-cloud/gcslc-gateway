@@ -1,0 +1,78 @@
+{
+  "meta": {
+    "program": "NTW Regional Corridor Audit · 4 letters × 6 corridors",
+    "note": "Coverage + SIM verification are modeled proxies for Chairman briefings — replace with licensed NIMC/NCC/MNO feeds.",
+    "national_void_reference": "20.7M registration gap narrative — correlate low SIM verification with corridor void staging.",
+    "operators": ["MTN", "Airtel", "Glo", "9mobile"],
+    "corridors": [
+      "North-West",
+      "North-East",
+      "North-Central",
+      "South-West",
+      "South-South",
+      "South-East"
+    ]
+  },
+  "corridors": [
+    {
+      "id": "NW",
+      "label": "North-West",
+      "operators": {
+        "MTN": { "coverage_pct": 84, "sim_verification_pct": 69 },
+        "Airtel": { "coverage_pct": 78, "sim_verification_pct": 61 },
+        "Glo": { "coverage_pct": 71, "sim_verification_pct": 54 },
+        "9mobile": { "coverage_pct": 62, "sim_verification_pct": 48 }
+      }
+    },
+    {
+      "id": "NE",
+      "label": "North-East",
+      "operators": {
+        "MTN": { "coverage_pct": 81, "sim_verification_pct": 66 },
+        "Airtel": { "coverage_pct": 76, "sim_verification_pct": 59 },
+        "Glo": { "coverage_pct": 68, "sim_verification_pct": 51 },
+        "9mobile": { "coverage_pct": 58, "sim_verification_pct": 44 }
+      }
+    },
+    {
+      "id": "NC",
+      "label": "North-Central",
+      "operators": {
+        "MTN": { "coverage_pct": 86, "sim_verification_pct": 72 },
+        "Airtel": { "coverage_pct": 80, "sim_verification_pct": 65 },
+        "Glo": { "coverage_pct": 74, "sim_verification_pct": 58 },
+        "9mobile": { "coverage_pct": 66, "sim_verification_pct": 52 }
+      }
+    },
+    {
+      "id": "SW",
+      "label": "South-West",
+      "operators": {
+        "MTN": { "coverage_pct": 89, "sim_verification_pct": 76 },
+        "Airtel": { "coverage_pct": 85, "sim_verification_pct": 71 },
+        "Glo": { "coverage_pct": 82, "sim_verification_pct": 68 },
+        "9mobile": { "coverage_pct": 74, "sim_verification_pct": 61 }
+      }
+    },
+    {
+      "id": "SS",
+      "label": "South-South",
+      "operators": {
+        "MTN": { "coverage_pct": 87, "sim_verification_pct": 73 },
+        "Airtel": { "coverage_pct": 82, "sim_verification_pct": 67 },
+        "Glo": { "coverage_pct": 79, "sim_verification_pct": 63 },
+        "9mobile": { "coverage_pct": 70, "sim_verification_pct": 56 }
+      }
+    },
+    {
+      "id": "SE",
+      "label": "South-East",
+      "operators": {
+        "MTN": { "coverage_pct": 88, "sim_verification_pct": 75 },
+        "Airtel": { "coverage_pct": 83, "sim_verification_pct": 69 },
+        "Glo": { "coverage_pct": 80, "sim_verification_pct": 65 },
+        "9mobile": { "coverage_pct": 72, "sim_verification_pct": 58 }
+      }
+    }
+  ]
+}

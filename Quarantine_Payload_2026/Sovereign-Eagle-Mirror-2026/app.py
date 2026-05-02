@@ -42,6 +42,7 @@ from atomic_spie import (
 )
 from sovereign_nl_query import ngecc_discovery_hit, resolve_sovereign_nl_query
 from sovereign_strategic_cells import strategic_cells_banner
+from sovereign_logistics_joint import build_approved_logistics_bundle, merge_patrol_with_logistics
 from generative_eagle import collect_eagle_shouts, friction_alert_active
 # Load fused catalog before sovereign_active_intel (same gcslc_deep_join dep) — avoids rare Streamlit loader KeyError.
 from gcslc_deep_join import NATIONAL_WARD_TOTAL, build_fused_catalog
@@ -801,6 +802,13 @@ def _render_ntw_sovereign_control_panel(ntw_proxy: dict[str, Any] | None = None)
     st.session_state.setdefault("ntw_resonance_pick", "MTN")
     st.session_state.setdefault("ntw_push_ts", _wall_time())
     st.session_state.setdefault("ntw_resonance_nonce", 1)
+    # One-shot boot — guarantees high-velocity rain CSS animates on first paint (Streamlit double-run safe).
+    if not st.session_state.get("_ntw_rain_bootstrapped"):
+        st.session_state["_ntw_rain_bootstrapped"] = True
+        st.session_state["ntw_resonance_nonce"] = int(
+            st.session_state.get("ntw_resonance_nonce", 1)
+        ) + 1
+        st.session_state["ntw_push_ts"] = _wall_time()
     st.markdown(
         "<div class='national-resonance-chamber-outer sovereign-ntw-strip sovereign-ntw-resonance "
         "sovereign-ntw-pedestal'>"
@@ -1558,12 +1566,21 @@ _NG_FRAC_X0 = 0.20
 _NG_FRAC_X1 = 0.78
 _NG_FRAC_Y0 = 0.22
 _NG_FRAC_Y1 = 0.74
+# Inset patrol centers so the Golden Eagle SVG (translate -50%/-50%) stays visually inside the frame.
+_NG_PAD_X = 0.055
+_NG_PAD_Y = 0.048
 
 
 def _kgec_clamp_nigeria_fraction(pt: dict[str, float]) -> dict[str, float]:
     """Geofence — K-GEC sentinel stays inside sovereign canvas (no Chad/Niger drift)."""
-    x = max(_NG_FRAC_X0, min(_NG_FRAC_X1, float(pt["x"])))
-    y = max(_NG_FRAC_Y0, min(_NG_FRAC_Y1, float(pt["y"])))
+    x = max(
+        _NG_FRAC_X0 + _NG_PAD_X,
+        min(_NG_FRAC_X1 - _NG_PAD_X, float(pt["x"])),
+    )
+    y = max(
+        _NG_FRAC_Y0 + _NG_PAD_Y,
+        min(_NG_FRAC_Y1 - _NG_PAD_Y, float(pt["y"])),
+    )
     return {"x": round(x, 4), "y": round(y, 4)}
 
 
@@ -1611,13 +1628,73 @@ def _kgec_patrol_bundle(
     *,
     extra_sniffs: list[str] | None = None,
 ) -> dict[str, Any]:
-    """Parent-window patrol: geofenced targets + sniff lines for eagle typewriter."""
+    """Parent-window patrol: logistics joint (confidence-weighted) + lattice mesh + sniffs."""
+    joint = _sovereign_joint_bundle_cached()
     raw = _kgec_hover_targets(shouts)
-    sniffs = list(extra_sniffs or []) + _kgec_sniff_lines_from_shouts(shouts)
+    base_w = [0.42] * len(raw)
+    merged_t, merged_w = merge_patrol_with_logistics(
+        raw,
+        base_w,
+        joint.get("logistics_targets") or [],
+        joint.get("logistics_weights") or [],
+    )
+    clamped = [_kgec_clamp_nigeria_fraction(p) for p in merged_t]
+    sniffs = (
+        list(extra_sniffs or [])
+        + list(joint.get("sniffs") or [])
+        + _kgec_sniff_lines_from_shouts(shouts)
+    )
     return {
-        "targets": [_kgec_clamp_nigeria_fraction(p) for p in raw],
+        "targets": clamped,
+        "targetWeights": merged_w[: len(clamped)],
         "sniffs": sniffs,
     }
+
+
+def _render_sovereign_joint_strip() -> None:
+    """Honest milestone UI — ingest spine status + Temporal Hierarchy Lamp (demo)."""
+    j = _sovereign_joint_bundle_cached()
+    evs = j.get("approved_events") or []
+    rej = j.get("rejected") or []
+    meta = j.get("manifest_meta") or {}
+    purpose = html.escape(str(meta.get("purpose") or "fleet corridor monitoring"))[:72]
+    rows_li = ""
+    for e in evs[:4]:
+        if not isinstance(e, dict):
+            continue
+        rows_li += (
+            "<li>"
+            f"{html.escape(str(e.get('fleet_operator') or '?'))} · "
+            f"AZK seg {html.escape(str(e.get('azk_segment_index') or '?'))} · "
+            f"jc {float(e.get('joint_confidence') or 0):.2f}"
+            "</li>"
+        )
+    if not rows_li:
+        rows_li = "<li>No approved stub rows — check consent manifest + ingest JSON</li>"
+    rej_txt = (
+        html.escape(", ".join(f"{a}:{b}" for a, b in rej[:5]))[:220] if rej else "none"
+    )
+    st.markdown(
+        "<div class='kgec-joint-strip'>"
+        "<div class='kgec-joint-strip-hdr'>Sovereign Joint · DAPI ingest stub · "
+        f"<span class='kgec-joint-purpose'>{purpose}</span></div>"
+        "<div class='kgec-joint-grid'>"
+        "<div class='kgec-joint-status'>"
+        f"<p><b>Approved</b> · {len(evs)} event(s) · <b>Gate</b> · {len(rej)} rejected</p>"
+        f"<ul class='kgec-joint-ul'>{rows_li}</ul>"
+        f"<p class='kgec-joint-rej'>Held / rejected: {rej_txt}</p>"
+        "<p class='kgec-joint-legal'>Consent: fleet-owned SIM registration only — "
+        "see <code>fleet_consent_manifest.json</code> · production MSISDN requires counsel + telco gate.</p>"
+        "</div>"
+        "<div class='kgec-temporal-lamp' aria-hidden='true' title='Gold State · Cyan LGA · White Ward · Red PU'>"
+        "<div class='kgec-roll kgec-roll-gold'></div>"
+        "<div class='kgec-roll kgec-roll-cyan'></div>"
+        "<div class='kgec-roll kgec-roll-white'></div>"
+        "<div class='kgec-roll kgec-roll-red'></div>"
+        "<div class='kgec-roll-core'></div>"
+        "</div></div></div>",
+        unsafe_allow_html=True,
+    )
 
 
 def _kgec_ward_patrol_grid(*, cols: int = 9, rows: int = 7) -> list[dict[str, float]]:
@@ -1657,6 +1734,12 @@ def _kgec_azk_corridor_fractional() -> list[dict[str, float]]:
         {"x": 0.51, "y": 0.24},
     ]
     return [_kgec_clamp_nigeria_fraction(p) for p in raw]
+
+
+@st.cache_data(ttl=120, show_spinner=False)
+def _sovereign_joint_bundle_cached() -> dict[str, Any]:
+    """SMS → AZK spine stub + fleet consent gate — feeds Sentinel weights + sniffs."""
+    return build_approved_logistics_bundle(AZK_CORRIDOR_NODES, _kgec_azk_corridor_fractional())
 
 
 def _kgec_hover_targets(shouts: list[dict]) -> list[dict[str, float]]:
@@ -1875,12 +1958,15 @@ st.components.v1.html(
     p.__kgecHoverEngine = true;
     p.__kgecTargets = [{x:0.5,y:0.45}];
     p.__kgecSniffs = [];
-    /* National canvas residency — mirrors app.py _NG_FRAC_* (federation / 774 LGA mirror, not neighbor drift). */
+    p.__kgecTargetWeights = null;
+    /* National canvas — mirrors app.py _NG_FRAC_* + footprint inset (_NG_PAD_*) so SVG stays inside during 2.1s glide. */
     var KGE_NG = { xmin: 0.20, xmax: 0.78, ymin: 0.22, ymax: 0.74 };
+    var KGE_PAD = { x: 0.055, y: 0.048 };
     function kgecClampNG(pt){
+      var x = Number(pt.x), y = Number(pt.y);
       return {
-        x: Math.min(KGE_NG.xmax, Math.max(KGE_NG.xmin, Number(pt.x))),
-        y: Math.min(KGE_NG.ymax, Math.max(KGE_NG.ymin, Number(pt.y)))
+        x: Math.min(KGE_NG.xmax - KGE_PAD.x, Math.max(KGE_NG.xmin + KGE_PAD.x, x)),
+        y: Math.min(KGE_NG.ymax - KGE_PAD.y, Math.max(KGE_NG.ymin + KGE_PAD.y, y))
       };
     }
     p.__kgecSetPatrol = function(obj){
@@ -1890,6 +1976,15 @@ st.components.v1.html(
           p.__kgecTargets = obj.targets.map(kgecClampNG);
         if (Array.isArray(obj.sniffs))
           p.__kgecSniffs = obj.sniffs.map(function(s){ return String(s); });
+        if (Array.isArray(obj.targetWeights) && obj.targetWeights.length === p.__kgecTargets.length){
+          p.__kgecTargetWeights = obj.targetWeights.map(function(v){
+            var n = Number(v);
+            if (!isFinite(n)) n = 0.42;
+            return Math.max(0.18, Math.min(1, n));
+          });
+        } else {
+          p.__kgecTargetWeights = null;
+        }
       } catch (ePat) {}
     };
     p.__kgecSetTargets = function(arr){
@@ -1998,8 +2093,19 @@ st.components.v1.html(
       return layer;
     }
     var GLIDE_MS = 2100;
-    var DWELL_MS = 3400;
-    var KGE_CYCLE = GLIDE_MS + DWELL_MS;
+    var DWELL_BASE = 3000;
+    function dwellForIndex(idx){
+      var tg = p.__kgecTargets || [{x:0.5,y:0.45}];
+      var L = tg.length || 1;
+      var i = ((idx % L) + L) % L;
+      var wt = 0.52;
+      if (p.__kgecTargetWeights && p.__kgecTargetWeights.length === L){
+        var rv = Number(p.__kgecTargetWeights[i]);
+        wt = isFinite(rv) ? rv : 0.52;
+      }
+      wt = Math.max(0.22, Math.min(1, wt));
+      return Math.round(DWELL_BASE * (0.52 + 0.92 * wt));
+    }
     function clearSniffAnim(){
       var svg0 = p.__kgecEagleEl;
       if (svg0) svg0.classList.remove('kgec-eagle-sniff-pulse');
@@ -2054,7 +2160,11 @@ st.components.v1.html(
     }
     function majestyLoop(){
       majesticStep();
-      p.__kgecMajestyT = setTimeout(majestyLoop, KGE_CYCLE);
+      var tg = p.__kgecTargets || [{x:0.5,y:0.45}];
+      var L = tg.length || 1;
+      var destIdx = ((p.__kgecIdx - 1) % L + L) % L;
+      var nextDelay = GLIDE_MS + dwellForIndex(destIdx);
+      p.__kgecMajestyT = setTimeout(majestyLoop, nextDelay);
     }
     function mountRetries(){
       var n = 0;
@@ -2081,6 +2191,7 @@ st.components.v1.html(
 
 # First main paint · Eagle nav targets + ticker (fragment updates AZK hover even when ticker off)
 _eagle_voice_live()
+_render_sovereign_joint_strip()
 
 st.markdown(
     f"""
@@ -2226,6 +2337,21 @@ h1, h2, h3, h4, h5, h6 {{
   padding-right: 4px !important;
   isolation: isolate !important;
   overflow: visible !important;
+  transform: translateZ(0) !important;
+  -webkit-transform: translateZ(0) !important;
+}}
+/* Smoke protocol — sticky crest: no clipping ancestors on resize (mobile ↔ desktop) */
+section.main [data-testid="element-container"]:has(.kgec-sentinel-stack),
+section.main [data-testid="element-container"]:has(.kgec-sentinel-stack) > div {{
+  overflow: visible !important;
+}}
+section.main [data-testid="stVerticalBlock"]:has(.kgec-sentinel-stack),
+section.main [data-testid="column"]:has(.kgec-sentinel-stack) {{
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+}}
+section.main [data-testid="block-container"]:has(.kgec-sentinel-stack) {{
+  overflow-x: visible !important;
 }}
 .kgec-crest-mq {{
   flex: 1 1 120px !important;
@@ -2312,6 +2438,119 @@ h1, h2, h3, h4, h5, h6 {{
   border: 1px solid rgba(212, 175, 55, 0.42) !important;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55) !important;
   overflow: visible !important;
+}}
+/* Sovereign Joint — ingest spine + Determinants-4 Temporal Hierarchy Lamp */
+.kgec-joint-strip {{
+  margin: 0 0 16px 0 !important;
+  padding: 12px 14px !important;
+  border-radius: 12px !important;
+  border: 1px solid rgba(0, 229, 255, 0.28) !important;
+  background: linear-gradient(135deg, rgba(0, 28, 72, 0.88) 0%, rgba(0, 12, 40, 0.92) 100%) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 6px 22px rgba(0,0,0,0.35) !important;
+}}
+.kgec-joint-strip-hdr {{
+  font-family: ui-monospace, monospace !important;
+  font-size: clamp(0.62rem, 1.8vw, 0.74rem) !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.12em !important;
+  color: #D4AF37 !important;
+  margin-bottom: 10px !important;
+}}
+.kgec-joint-purpose {{ color: rgba(0, 229, 255, 0.92) !important; font-weight: 600 !important; }}
+.kgec-joint-grid {{
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 14px 22px !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}}
+.kgec-joint-status {{
+  flex: 2 1 240px !important;
+  min-width: 0 !important;
+  font-family: ui-monospace, monospace !important;
+  font-size: 0.62rem !important;
+  line-height: 1.5 !important;
+  color: rgba(230, 245, 255, 0.9) !important;
+}}
+.kgec-joint-ul {{ margin: 6px 0 0 1rem !important; padding: 0 !important; }}
+.kgec-joint-rej {{ color: rgba(255, 180, 120, 0.85) !important; margin-top: 8px !important; }}
+.kgec-joint-legal {{ color: rgba(200, 220, 255, 0.65) !important; margin-top: 10px !important; font-size: 0.58rem !important; }}
+.kgec-temporal-lamp {{
+  position: relative !important;
+  flex: 0 0 auto !important;
+  width: 118px !important;
+  height: 118px !important;
+  margin: 4px auto !important;
+}}
+.kgec-roll {{
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  border-radius: 50% !important;
+  box-sizing: border-box !important;
+  pointer-events: none !important;
+}}
+.kgec-roll-gold {{
+  width: 100% !important;
+  height: 100% !important;
+  border: 3px solid rgba(212, 175, 55, 0.9) !important;
+  box-shadow: 0 0 18px rgba(212, 175, 55, 0.25) !important;
+  animation: kgecLampGold 16s ease-in-out infinite !important;
+}}
+.kgec-roll-cyan {{
+  width: 78% !important;
+  height: 78% !important;
+  border: 2px solid rgba(0, 229, 255, 0.8) !important;
+  box-shadow: 0 0 14px rgba(0, 229, 255, 0.2) !important;
+  animation: kgecLampCyan 12.5s ease-in-out infinite !important;
+  animation-delay: 0.22s !important;
+}}
+.kgec-roll-white {{
+  width: 56% !important;
+  height: 56% !important;
+  border: 2px solid rgba(248, 252, 255, 0.92) !important;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.12) !important;
+  animation: kgecLampWhite 9.2s ease-in-out infinite !important;
+  animation-delay: 0.38s !important;
+}}
+.kgec-roll-red {{
+  width: 36% !important;
+  height: 36% !important;
+  border: 2px solid rgba(220, 38, 38, 0.92) !important;
+  box-shadow: 0 0 14px rgba(220, 38, 38, 0.28) !important;
+  animation: kgecLampRed 6.4s ease-in-out infinite !important;
+  animation-delay: 0.52s !important;
+}}
+.kgec-roll-core {{
+  width: 14% !important;
+  height: 14% !important;
+  background: radial-gradient(circle at 35% 35%, #fff 0%, rgba(212,175,55,0.55) 45%, rgba(0,20,60,0.95) 100%) !important;
+  animation: kgecLampCore 5s ease-in-out infinite !important;
+}}
+@keyframes kgecLampGold {{
+  0%, 100% {{ opacity: 0.38; transform: translate(-50%, -50%) scale(0.94); }}
+  28% {{ opacity: 1; transform: translate(-50%, -50%) scale(1); }}
+  62% {{ opacity: 0.48; transform: translate(-50%, -50%) scale(1.03); }}
+}}
+@keyframes kgecLampCyan {{
+  0%, 100% {{ opacity: 0.35; transform: translate(-50%, -50%) scale(0.93); }}
+  32% {{ opacity: 0.95; transform: translate(-50%, -50%) scale(1); }}
+  68% {{ opacity: 0.42; transform: translate(-50%, -50%) scale(1.04); }}
+}}
+@keyframes kgecLampWhite {{
+  0%, 100% {{ opacity: 0.32; transform: translate(-50%, -50%) scale(0.92); }}
+  36% {{ opacity: 0.92; transform: translate(-50%, -50%) scale(1); }}
+  72% {{ opacity: 0.38; transform: translate(-50%, -50%) scale(1.05); }}
+}}
+@keyframes kgecLampRed {{
+  0%, 100% {{ opacity: 0.28; transform: translate(-50%, -50%) scale(0.9); }}
+  40% {{ opacity: 1; transform: translate(-50%, -50%) scale(1); }}
+  78% {{ opacity: 0.35; transform: translate(-50%, -50%) scale(1.06); }}
+}}
+@keyframes kgecLampCore {{
+  0%, 100% {{ opacity: 0.55; }}
+  50% {{ opacity: 1; }}
 }}
 .kgec-eagle-sniff-typewriter {{
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
@@ -2929,6 +3168,7 @@ section.main button[aria-label="9mobile"] {{
   .ntw-tw-rain .ntw-tw-line {{ animation: none !important; transform: none !important; }}
   .kgec-mq-track {{ animation: none !important; transform: none !important; }}
   .sovereign-ntw-hr {{ animation: none !important; }}
+  .kgec-roll, .kgec-roll-core {{ animation: none !important; opacity: 0.85 !important; }}
 }}
 /* Beautiful Mirror · GCSLC mono-terminal (stacked cells · zero overlap · 0.65rem cadence) */
 [data-testid="stSidebar"] {{

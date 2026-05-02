@@ -1,0 +1,51 @@
+{
+  "meta": {
+    "note": "Subscriber-weight proxy by state — replace with licensed NCC/MNO analytics when available.",
+    "units": "fraction of modeled subscriber mass (sums ≈ 1.0 per row)"
+  },
+  "default": {
+    "MTN": 0.36,
+    "Airtel": 0.28,
+    "Glo": 0.24,
+    "9mobile": 0.12
+  },
+  "by_state": {
+    "Abia": { "MTN": 0.33, "Airtel": 0.29, "Glo": 0.26, "9mobile": 0.12 },
+    "Adamawa": { "MTN": 0.38, "Airtel": 0.27, "Glo": 0.23, "9mobile": 0.12 },
+    "Akwa Ibom": { "MTN": 0.32, "Airtel": 0.28, "Glo": 0.28, "9mobile": 0.12 },
+    "Anambra": { "MTN": 0.31, "Airtel": 0.3, "Glo": 0.27, "9mobile": 0.12 },
+    "Bauchi": { "MTN": 0.39, "Airtel": 0.26, "Glo": 0.23, "9mobile": 0.12 },
+    "Bayelsa": { "MTN": 0.35, "Airtel": 0.27, "Glo": 0.26, "9mobile": 0.12 },
+    "Benue": { "MTN": 0.37, "Airtel": 0.27, "Glo": 0.24, "9mobile": 0.12 },
+    "Borno": { "MTN": 0.4, "Airtel": 0.26, "Glo": 0.22, "9mobile": 0.12 },
+    "Cross River": { "MTN": 0.34, "Airtel": 0.28, "Glo": 0.26, "9mobile": 0.12 },
+    "Delta": { "MTN": 0.33, "Airtel": 0.29, "Glo": 0.26, "9mobile": 0.12 },
+    "Ebonyi": { "MTN": 0.36, "Airtel": 0.28, "Glo": 0.24, "9mobile": 0.12 },
+    "Edo": { "MTN": 0.34, "Airtel": 0.28, "Glo": 0.26, "9mobile": 0.12 },
+    "Ekiti": { "MTN": 0.35, "Airtel": 0.28, "Glo": 0.25, "9mobile": 0.12 },
+    "Enugu": { "MTN": 0.34, "Airtel": 0.29, "Glo": 0.25, "9mobile": 0.12 },
+    "FCT": { "MTN": 0.33, "Airtel": 0.28, "Glo": 0.27, "9mobile": 0.12 },
+    "Gombe": { "MTN": 0.39, "Airtel": 0.26, "Glo": 0.23, "9mobile": 0.12 },
+    "Imo": { "MTN": 0.32, "Airtel": 0.29, "Glo": 0.27, "9mobile": 0.12 },
+    "Jigawa": { "MTN": 0.41, "Airtel": 0.26, "Glo": 0.21, "9mobile": 0.12 },
+    "Kaduna": { "MTN": 0.38, "Airtel": 0.27, "Glo": 0.23, "9mobile": 0.12 },
+    "Kano": { "MTN": 0.4, "Airtel": 0.27, "Glo": 0.21, "9mobile": 0.12 },
+    "Katsina": { "MTN": 0.41, "Airtel": 0.26, "Glo": 0.21, "9mobile": 0.12 },
+    "Kebbi": { "MTN": 0.4, "Airtel": 0.26, "Glo": 0.22, "9mobile": 0.12 },
+    "Kogi": { "MTN": 0.36, "Airtel": 0.28, "Glo": 0.24, "9mobile": 0.12 },
+    "Kwara": { "MTN": 0.37, "Airtel": 0.28, "Glo": 0.23, "9mobile": 0.12 },
+    "Lagos": { "MTN": 0.34, "Airtel": 0.26, "Glo": 0.28, "9mobile": 0.12 },
+    "Nasarawa": { "MTN": 0.37, "Airtel": 0.27, "Glo": 0.24, "9mobile": 0.12 },
+    "Niger": { "MTN": 0.38, "Airtel": 0.27, "Glo": 0.23, "9mobile": 0.12 },
+    "Ogun": { "MTN": 0.35, "Airtel": 0.27, "Glo": 0.26, "9mobile": 0.12 },
+    "Ondo": { "MTN": 0.35, "Airtel": 0.28, "Glo": 0.25, "9mobile": 0.12 },
+    "Osun": { "MTN": 0.34, "Airtel": 0.28, "Glo": 0.26, "9mobile": 0.12 },
+    "Oyo": { "MTN": 0.35, "Airtel": 0.28, "Glo": 0.25, "9mobile": 0.12 },
+    "Plateau": { "MTN": 0.37, "Airtel": 0.27, "Glo": 0.24, "9mobile": 0.12 },
+    "Rivers": { "MTN": 0.33, "Airtel": 0.28, "Glo": 0.27, "9mobile": 0.12 },
+    "Sokoto": { "MTN": 0.41, "Airtel": 0.26, "Glo": 0.21, "9mobile": 0.12 },
+    "Taraba": { "MTN": 0.38, "Airtel": 0.27, "Glo": 0.23, "9mobile": 0.12 },
+    "Yobe": { "MTN": 0.4, "Airtel": 0.26, "Glo": 0.22, "9mobile": 0.12 },
+    "Zamfara": { "MTN": 0.41, "Airtel": 0.25, "Glo": 0.22, "9mobile": 0.12 }
+  }
+}
