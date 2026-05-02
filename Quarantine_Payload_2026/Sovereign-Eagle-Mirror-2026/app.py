@@ -1552,7 +1552,8 @@ path.gcslc-atom-node {
     return m
 
 
-# Nigeria sovereign viewport lock — fractional overlay on national hero canvas (tighter than Sahel margin).
+# Nigeria sovereign viewport lock — fractional overlay on the federation hero canvas (774 LGA lattice lives here).
+# Sentinel XY fractions are clamped to this rectangle (Python patrol + parent-window KGE_NG must stay identical).
 _NG_FRAC_X0 = 0.20
 _NG_FRAC_X1 = 0.78
 _NG_FRAC_Y0 = 0.22
@@ -1736,9 +1737,9 @@ def _html_eagle_ticker(shouts: list[dict], *, alert_pulse: bool) -> str:
         "◆ K-GEC · Komi-Generative Cloud ◆ sovereign sentinel ◆ Nigerian lattice LIVE ◆",
         seconds=84.0,
     )
-    mq_title = _kgec_marquee_pair(
-        "K-GEC · Komi-Generative Cloud · intelligence crest · ward-sniff patrol",
-        seconds=92.0,
+    _crest_anchor = (
+        "<span class='kgec-crest-anchor'>K-GEC · Komi-Generative Cloud</span>"
+        "<span class='kgec-crest-anchor-sub'> intelligence crest · ward-sniff patrol</span>"
     )
     mq_sub = _kgec_marquee_pair(
         "K-GEC · Komi-Generative Cloud · trade velocity · infrastructure voids · security friction · kinetic only",
@@ -1756,7 +1757,7 @@ def _html_eagle_ticker(shouts: list[dict], *, alert_pulse: bool) -> str:
         "<div class='kgec-sentinel-stack'>"
         "<div class='kgec-sentinel-crest' aria-hidden='true'>"
         f"<span class='kgec-crest-mark kgec-crest-mq'>{mq_mark}</span>"
-        f"<span class='kgec-crest-title kgec-crest-mq'>{mq_title}</span>"
+        f"<span class='kgec-crest-title kgec-crest-anchor-wrap'>{_crest_anchor}</span>"
         f"<span class='kgec-crest-sub kgec-crest-mq'>{mq_sub}</span>"
         f"<span class='kgec-crest-live kgec-crest-mq'>{mq_live}</span>"
         "</div>"
@@ -1874,6 +1875,7 @@ st.components.v1.html(
     p.__kgecHoverEngine = true;
     p.__kgecTargets = [{x:0.5,y:0.45}];
     p.__kgecSniffs = [];
+    /* National canvas residency — mirrors app.py _NG_FRAC_* (federation / 774 LGA mirror, not neighbor drift). */
     var KGE_NG = { xmin: 0.20, xmax: 0.78, ymin: 0.22, ymax: 0.74 };
     function kgecClampNG(pt){
       return {
@@ -2016,7 +2018,7 @@ st.components.v1.html(
         if (i > msg.length) { clearInterval(sniffTw); sniffTw = null; return; }
         el.textContent = msg.slice(0, i);
         i++;
-      }, 26);
+      }, 17);
     }
     function majesticStep(){
       clearSniffAnim();
@@ -2251,6 +2253,26 @@ h1, h2, h3, h4, h5, h6 {{
   box-shadow: 0 0 24px rgba(0, 229, 255, 0.12), inset 0 1px 0 rgba(255,255,255,0.08) !important;
 }}
 .kgec-crest-mark {{ color: #D4AF37 !important; font-size: 0.95rem !important; }}
+.kgec-crest-anchor-wrap {{
+  flex: 2 1 200px !important;
+  min-width: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+}}
+.kgec-crest-anchor {{
+  font-weight: 800 !important;
+  letter-spacing: 0.1em !important;
+  font-size: clamp(0.74rem, 2.4vw, 0.95rem) !important;
+  color: #D4AF37 !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.85) !important;
+}}
+.kgec-crest-anchor-sub {{
+  font-weight: 600 !important;
+  letter-spacing: 0.06em !important;
+  font-size: clamp(0.62rem, 1.85vw, 0.78rem) !important;
+  color: rgba(212, 175, 55, 0.78) !important;
+}}
 .kgec-crest-title {{
   font-weight: 800 !important;
   letter-spacing: 0.12em !important;
@@ -2272,7 +2294,9 @@ h1, h2, h3, h4, h5, h6 {{
   border: 1px solid rgba(46, 204, 113, 0.45) !important;
   padding: 3px 8px !important;
   border-radius: 6px !important;
-  animation: eagle-live-breathe 2.4s ease-in-out infinite !important;
+  opacity: 0.96 !important;
+  box-shadow: 0 0 10px rgba(46,204,113,0.22) !important;
+  animation: none !important;
 }}
 @keyframes eagle-live-breathe {{
   0%, 100% {{ opacity: 0.85; box-shadow: 0 0 0 0 rgba(46,204,113,0); }}
@@ -2776,8 +2800,8 @@ section.main button[aria-label="9mobile"] {{
 }}
 /* Cyan–green stream — always legible (no opacity blackout); motion = glide only */
 @keyframes ntw-line-glide {{
-  from {{ transform: translate3d(-8px, 0, 0); }}
-  to {{ transform: translate3d(0, 0, 0); }}
+  from {{ transform: translate3d(-14px, 0, 0); opacity: 0.82; }}
+  to {{ transform: translate3d(0, 0, 0); opacity: 1; }}
 }}
 .ntw-tw-instant {{
   opacity: 1 !important;
@@ -2819,11 +2843,11 @@ section.main button[aria-label="9mobile"] {{
 .ntw-tw-rain.kgec-forensic-rain .ntw-tw-line,
 .ntw-tw-rain .ntw-tw-line {{
   opacity: 1 !important;
-  animation: ntw-line-glide 2.35s cubic-bezier(0.22, 0.82, 0.22, 1) both !important;
-  animation-delay: calc((var(--tw-i, 1) - 1) * 55ms) !important;
+  animation: ntw-line-glide 0.72s cubic-bezier(0.22, 1, 0.36, 1) both !important;
+  animation-delay: calc((var(--tw-i, 1) - 1) * 28ms) !important;
 }}
 .kgec-ntw-stream-root[data-kgec-ntw-push] .ntw-tw-rain .ntw-tw-line {{
-  animation-duration: 2.45s !important;
+  animation-duration: 0.68s !important;
 }}
 .ntw-tw-line {{
   line-height: 1.55 !important;
