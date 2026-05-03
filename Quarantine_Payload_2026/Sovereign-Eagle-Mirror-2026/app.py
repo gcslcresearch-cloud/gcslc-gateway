@@ -751,16 +751,15 @@ def _inject_drill_panes_atomic_fps(
 
 
 def _html_total_reality_card(summary: dict) -> str:
-    """Typewriter-cyan Total Reality card (escaped)."""
+    """Gold Man Monument — prism shell, metallic state inscription, LGA→Ward→PU tier cascade."""
     st_name = html.escape(str(summary.get("state", "")))
     lg = int(summary.get("lgas") or 0)
     wd = int(summary.get("wards_forensic") or summary.get("wards") or 0)
     n_wd_nat = int(summary.get("national_ward_total") or 8806)
     pu = int(summary.get("pu_forensic") or 0)
     n_pu_nat = int(summary.get("national_pu_total") or 176_846)
-    atom_note = html.escape(str(summary.get("atomic_attribution_note", "")))
     fs = summary.get("financial_inclusion_score")
-    fs_txt = html.escape(str(fs))
+    fs_txt = html.escape(str(fs) if fs is not None else "—")
     fv = html.escape(str(summary.get("financial_inclusion_verdict", "")))
     fr = summary.get("friction") or {}
     dom = html.escape(str(summary.get("ntw_dominant_operator", "")))
@@ -774,24 +773,58 @@ def _html_total_reality_card(summary: dict) -> str:
         dist_bits.append(f"{html.escape(str(k))} {pct:.0f}%")
     dist_html = " · ".join(dist_bits)
     fr_txt = html.escape(str(fr.get("friction_summary", "")))
-    return (
-        "<div class='gcslc-total-reality gcslc-tr-handshake-front'>"
-        f"<div class='gcslc-tr-h'>Total Reality Summary · {st_name}</div>"
-        "<div class='gcslc-tr-line'><span class='gcslc-tr-k'>Administrative drill-down</span> "
-        f"LGAs {lg} · Wards {wd:,} / {n_wd_nat:,} national · "
-        f"Polling units {pu:,} / {n_pu_nat:,} (INEC lattice)</div>"
-        "<div class='gcslc-tr-line' style='font-size:0.78em;opacity:0.9;'><span class='gcslc-tr-k'>"
-        f"Forensic note</span> {atom_note}</div>"
-        "<div class='gcslc-tr-line'><span class='gcslc-tr-k'>Financial inclusion score</span> "
-        f"{fs_txt} / 100 — {fv}</div>"
-        "<div class='gcslc-tr-line'><span class='gcslc-tr-k'>Friction audit</span> "
-        f"NCC nodes in-state {fr.get('ncc_incidents_in_state', 0)} · "
-        f"Telecom voids {fr.get('signal_void_events_in_state', 0)} · "
-        f"severity avg {fr.get('ncc_severity_avg', 0)} — {fr_txt}</div>"
-        "<div class='gcslc-tr-line'><span class='gcslc-tr-k'>NTW coverage (proxy)</span> "
-        f"Strongest modeled subscriber base → <strong>{dom}</strong> · {dist_html}</div>"
-        "</div>"
+    _raw_atom = str(summary.get("atomic_attribution_note") or "").strip()
+    _pct_ward_nat = (
+        (100.0 * float(wd) / float(max(n_wd_nat, 1))) if n_wd_nat else 0.0
     )
+    _pct_ward_s = f"{_pct_ward_nat:.2f}%"
+    _forensic_lines: list[str] = []
+    if _raw_atom:
+        _forensic_lines.append(f"Atomic attribution · {html.escape(_raw_atom)}")
+    _forensic_lines.extend(
+        [
+            f"Financial inclusion · {fs_txt} / 100 — {fv}",
+            (
+                f"Friction audit · NCC in-state {fr.get('ncc_incidents_in_state', 0)} · "
+                f"Telecom voids {fr.get('signal_void_events_in_state', 0)} · "
+                f"severity avg {fr.get('ncc_severity_avg', 0)} — {fr_txt}"
+            ),
+            (
+                f"NTW coverage (proxy) · Strongest modeled base → {dom}"
+                + (f" · {dist_html}" if dist_html else "")
+            ),
+        ]
+    )
+    _forensic_pre = "\n".join(_forensic_lines)
+    return f"""<div class="kgec-prism-terminal kgec-gold-man-monument gcslc-total-reality gcslc-tr-handshake-front" role="region" aria-label="Gold Man monument · state telemetry">
+  <div class="kgec-gmm-cap">Total Reality · Gold Man monument</div>
+  <header class="kgec-gold-man-header">
+    <span class="kgec-gold-man-state">{st_name}</span>
+    <p class="kgec-gold-man-sub kgec-prism-mono">Sovereign ADM1 · vertical cascade · forensic clarity</p>
+  </header>
+  <div class="kgec-prism-stack kgec-gmm-stack">
+    <div class="kgec-prism-tier kgec-prism-tier-gold">
+      <span class="kgec-prism-tier-val">{lg:,}</span>
+      <span class="kgec-prism-tier-lbl">Local Governments · administrative shell · state lattice</span>
+    </div>
+    <div class="kgec-prism-tier kgec-prism-tier-cyan">
+      <span class="kgec-prism-tier-val">{wd:,}</span>
+      <span class="kgec-prism-tier-lbl">Wards · forensic mass · {n_wd_nat:,} national comparator</span>
+    </div>
+    <div class="kgec-prism-tier kgec-prism-tier-white">
+      <span class="kgec-prism-tier-val">{_pct_ward_s}</span>
+      <span class="kgec-prism-tier-lbl">National ward lattice share · {wd:,} of {n_wd_nat:,} wards · White tier clarity</span>
+    </div>
+    <div class="kgec-prism-tier kgec-prism-tier-red">
+      <span class="kgec-prism-tier-val">{pu:,}</span>
+      <span class="kgec-prism-tier-lbl">Polling units · INEC atomic tier · {n_pu_nat:,} national lattice</span>
+    </div>
+  </div>
+  <div class="kgec-gmm-forensic">
+    <div class="kgec-gmm-forensic-h">Forensic observation</div>
+    <pre class="kgec-prism-pre kgec-gmm-pre">{_forensic_pre}</pre>
+  </div>
+</div>"""
 
 
 def _ntw_pulse_click(op: str) -> None:
@@ -1574,13 +1607,14 @@ path.gcslc-atom-node {
 
 # Nigeria sovereign viewport lock — fractional overlay on the federation hero canvas (774 LGA lattice lives here).
 # Sentinel XY fractions are clamped to this rectangle (Python patrol + parent-window KGE_NG must stay identical).
-_NG_FRAC_X0 = 0.20
-_NG_FRAC_X1 = 0.78
-_NG_FRAC_Y0 = 0.22
-_NG_FRAC_Y1 = 0.74
+# Stricter federation inset — 774 LGA hero canvas (Alphabet / Prism terminal geofence).
+_NG_FRAC_X0 = 0.22
+_NG_FRAC_X1 = 0.76
+_NG_FRAC_Y0 = 0.24
+_NG_FRAC_Y1 = 0.72
 # Inset patrol centers so the Golden Eagle SVG (translate -50%/-50%) stays visually inside the frame.
-_NG_PAD_X = 0.055
-_NG_PAD_Y = 0.048
+_NG_PAD_X = 0.068
+_NG_PAD_Y = 0.058
 # Federation hero ↔ lat/lon (approx Nigeria bounding box; clamped to sovereign viewport).
 _NG_LAT_MIN = 4.2
 _NG_LAT_MAX = 13.95
@@ -1959,7 +1993,7 @@ def _html_eagle_ticker(shouts: list[dict], *, alert_pulse: bool) -> str:
     )
     mq_mark = _kgec_marquee_pair(
         "◆ K-GEC · Komi-Generative Cloud ◆ sovereign sentinel ◆ Nigerian lattice LIVE ◆",
-        seconds=84.0,
+        seconds=158.0,
     )
     _crest_anchor = (
         "<span class='kgec-crest-anchor'>K-GEC · Komi-Generative Cloud</span>"
@@ -1967,15 +2001,15 @@ def _html_eagle_ticker(shouts: list[dict], *, alert_pulse: bool) -> str:
     )
     mq_sub = _kgec_marquee_pair(
         "K-GEC · Komi-Generative Cloud · trade velocity · infrastructure voids · security friction · kinetic only",
-        seconds=96.0,
+        seconds=182.0,
     )
     mq_live = _kgec_marquee_pair(
         "K-GEC · Komi-Generative Cloud · HOVER · PATROL · SNIFF · LIVE",
-        seconds=78.0,
+        seconds=152.0,
     )
     mq_lbl = _kgec_marquee_pair(
         "K-GEC · Komi-Generative Cloud · intelligence stream · cinematic cyan cadence",
-        seconds=88.0,
+        seconds=168.0,
     )
     return (
         "<div class='kgec-sentinel-stack'>"
@@ -2108,9 +2142,9 @@ st.components.v1.html(
     p.__kgecTargets = [{x:0.5,y:0.45}];
     p.__kgecSniffs = [];
     p.__kgecTargetWeights = null;
-    /* National canvas — mirrors app.py _NG_FRAC_* + footprint inset (_NG_PAD_*) so SVG stays inside during 2.1s glide. */
-    var KGE_NG = { xmin: 0.20, xmax: 0.78, ymin: 0.22, ymax: 0.74 };
-    var KGE_PAD = { x: 0.055, y: 0.048 };
+    /* National canvas — mirrors app.py _NG_FRAC_* + footprint inset (_NG_PAD_*); glide ~3.25s cinematic ease. */
+    var KGE_NG = { xmin: 0.22, xmax: 0.76, ymin: 0.24, ymax: 0.72 };
+    var KGE_PAD = { x: 0.068, y: 0.058 };
     function kgecClampNG(pt){
       var x = Number(pt.x), y = Number(pt.y);
       return {
@@ -2196,8 +2230,8 @@ st.components.v1.html(
         + '<path fill="none" stroke="#D4AF37" stroke-width="1" stroke-linecap="round" opacity="0.45" '
         + 'd="M56 108 Q96 124 140 118"/>'
         + '</g>'
-        + '<text x="6" y="188" fill="#D4AF37" font-size="10" font-weight="800" font-family="ui-monospace,monospace">K-GEC · Sentinel</text>'
-        + '<text x="168" y="188" fill="#00E5FF" font-size="9" font-weight="700" font-family="ui-monospace,monospace">National Resonance · geofenced</text>'
+        + '<text x="6" y="188" fill="#D4AF37" font-size="8" font-weight="800" font-family="ui-monospace,monospace">K-GEC · Sentinel</text>'
+        + '<text x="168" y="188" fill="#00E5FF" font-size="7.5" font-weight="700" font-family="ui-monospace,monospace">774 LGA · geofenced</text>'
         + '</g>';
     }
     function mapHost(){
@@ -2235,9 +2269,9 @@ st.components.v1.html(
         svg.setAttribute('class','kgec-eagle-svg');
         svg.setAttribute('viewBox','0 0 340 200');
         svg.setAttribute('preserveAspectRatio','xMidYMid meet');
-        svg.style.cssText = 'position:absolute;width:min(168px,34vw);height:min(102px,21vw);min-width:132px;min-height:80px;left:45%;top:40%;'
-          + 'filter:drop-shadow(0 0 20px rgba(255,215,80,0.98)) drop-shadow(0 0 10px rgba(0,0,0,0.92)) drop-shadow(0 6px 18px rgba(0,0,0,0.68));'
-          + 'transition:left 2.1s cubic-bezier(0.22,0.08,0.18,1),top 2.1s cubic-bezier(0.22,0.08,0.18,1);will-change:transform,left,top;'
+        svg.style.cssText = 'position:absolute;width:min(104px,23vw);height:min(62px,13.5vw);min-width:88px;min-height:52px;left:45%;top:40%;'
+          + 'filter:drop-shadow(0 0 12px rgba(255,215,80,0.92)) drop-shadow(0 0 6px rgba(0,229,255,0.28)) drop-shadow(0 4px 12px rgba(0,0,0,0.72));'
+          + 'transition:left 3.25s cubic-bezier(0.18,0.82,0.22,1),top 3.25s cubic-bezier(0.18,0.82,0.22,1);will-change:transform,left,top;'
           + 'transform:translate3d(-50%,-50%,0);opacity:1;visibility:visible;';
         p.__kgecSvgUid = (p.__kgecSvgUid || 0) + 1;
         svg.innerHTML = eagleMarkup('kgec'+p.__kgecSvgUid);
@@ -2247,8 +2281,8 @@ st.components.v1.html(
       }
       return layer;
     }
-    var GLIDE_MS = 2100;
-    var DWELL_BASE = 3000;
+    var GLIDE_MS = 3250;
+    var DWELL_BASE = 3600;
     function dwellForIndex(idx){
       var tg = p.__kgecTargets || [{x:0.5,y:0.45}];
       var L = tg.length || 1;
@@ -2298,7 +2332,7 @@ st.components.v1.html(
       var idx = p.__kgecIdx % tg.length;
       var w = kgecClampNG(tg[idx]);
       p.__kgecIdx++;
-      svg.style.transition = 'left '+ (GLIDE_MS/1000) +'s cubic-bezier(0.22,0.06,0.18,1), top '+ (GLIDE_MS/1000) +'s cubic-bezier(0.22,0.06,0.18,1)';
+      svg.style.transition = 'left '+ (GLIDE_MS/1000) +'s cubic-bezier(0.18,0.82,0.22,1), top '+ (GLIDE_MS/1000) +'s cubic-bezier(0.18,0.82,0.22,1)';
       svg.style.opacity = '1';
       svg.style.visibility = 'visible';
       svg.style.left = (w.x * 100) + '%';
@@ -2489,13 +2523,24 @@ h1, h2, h3, h4, h5, h6 {{
   top: 0 !important;
   z-index: 5200 !important;
   padding-top: max(6px, env(safe-area-inset-top, 0px)) !important;
-  margin: 0 0 22px 0 !important;
+  margin: 0 0 32px 0 !important;
   padding-left: 4px !important;
   padding-right: 4px !important;
   isolation: isolate !important;
   overflow: visible !important;
   transform: translateZ(0) !important;
   -webkit-transform: translateZ(0) !important;
+}}
+@media (orientation: portrait), (max-width: 960px) {{
+  .kgec-sentinel-crest {{
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+  }}
+  .kgec-crest-live {{ margin-left: 0 !important; align-self: flex-start !important; }}
+  .kgec-crest-mq .kgec-mq-track {{
+    animation-timing-function: cubic-bezier(0.35, 0.02, 0.2, 1) !important;
+  }}
 }}
 /* Smoke protocol — sticky crest: no clipping ancestors on resize (mobile ↔ desktop) */
 section.main [data-testid="element-container"]:has(.kgec-sentinel-stack),
@@ -2922,8 +2967,9 @@ section.main [data-testid="stIFrame"] {{
 }}
 .gcslc-map-canvas-host {{
   width: 100% !important;
-  margin: 0 !important;
+  margin: 12px 0 0 0 !important;
   padding: 0 !important;
+  scroll-margin-top: 14px !important;
 }}
 .gcslc-map-canvas-host iframe,
 iframe[title*="folium"],
@@ -2961,67 +3007,252 @@ iframe[title*="streamlit_folium"] {{
     max-height: 70vh !important;
   }}
 }}
-/* Sovereign Detail Widget — record strip below the vigil */
-.sovereign-detail-widget {{
-  margin-top: 14px;
-  margin-bottom: 8px;
-  padding: 14px 18px;
-  border-radius: 14px;
-  border: 1px solid rgba(212, 175, 55, 0.42);
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 6px 24px rgba(0, 0, 0, 0.28);
-  touch-action: manipulation;
-}}
-.sovereign-detail-widget .sdw-metrics {{
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: stretch;
-  gap: 12px 16px;
-}}
-.sovereign-detail-widget .sdw-metric {{
-  flex: 1 1 120px;
-  text-align: center;
-  padding: 8px 10px;
-  border-radius: 10px;
-  background: rgba(0, 0, 128, 0.35);
-  border: 1px solid rgba(212, 175, 55, 0.22);
-}}
-.sovereign-detail-widget .sdw-metric-val {{
-  font-size: clamp(1.1rem, 3.5vw, 1.45rem);
-  font-weight: 700;
-  color: {GOLD} !important;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.65);
-}}
-.sovereign-detail-widget .sdw-metric-lbl {{
-  font-size: clamp(0.62rem, 1.8vw, 0.72rem);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(240, 244, 255, 0.82) !important;
-  margin-top: 4px;
-}}
-.sovereign-detail-widget .sdw-metric-lbl.kgec-rc-ticker-line {{
+/* Prism Terminal — vertical roll-up Gold→Cyan→White→Red · clamped monospace · shimmer prism shell */
+.kgec-prism-terminal.sovereign-detail-widget {{
+  position: relative !important;
+  margin-top: 18px !important;
+  margin-bottom: 12px !important;
+  padding: 16px 14px 18px !important;
+  border-radius: 16px !important;
+  border: 2px solid rgba(212, 175, 55, 0.55) !important;
+  background: linear-gradient(165deg, rgba(0, 12, 56, 0.97) 0%, rgba(0, 0, 128, 0.94) 42%, rgba(0, 22, 72, 0.98) 100%) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 248, 220, 0.12),
+    inset 0 -1px 0 rgba(0, 229, 255, 0.06),
+    0 10px 36px rgba(0, 0, 0, 0.45),
+    0 0 42px rgba(212, 175, 55, 0.07) !important;
   overflow: hidden !important;
-  max-width: 100% !important;
-  min-height: 2.35em !important;
+  isolation: isolate !important;
+  touch-action: manipulation !important;
 }}
-.sovereign-detail-widget .sdw-meta {{
-  margin-top: 12px;
-  padding-top: 10px;
-  border-top: 1px solid rgba(212, 175, 55, 0.2);
-  font-size: clamp(0.68rem, 2vw, 0.78rem);
-  line-height: 1.45;
-  color: rgba(240, 244, 255, 0.78) !important;
+.kgec-prism-terminal::before {{
+  content: "" !important;
+  position: absolute !important;
+  inset: -3px !important;
+  background: linear-gradient(
+    118deg,
+    transparent 0%,
+    rgba(212, 175, 55, 0.24) 38%,
+    rgba(0, 229, 255, 0.14) 50%,
+    rgba(212, 175, 55, 0.2) 62%,
+    transparent 100%
+  ) !important;
+  background-size: 240% 240% !important;
+  animation: kgecPrismShimmer 14s ease-in-out infinite !important;
+  opacity: 0.5 !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
 }}
-.kgec-sdw-strong {{
-  margin-bottom: 6px !important;
+@keyframes kgecPrismShimmer {{
+  0%, 100% {{ background-position: 0% 40%; }}
+  50% {{ background-position: 100% 60%; }}
 }}
-.sdw-meta-line {{
-  margin-top: 8px !important;
-  overflow: hidden !important;
-  width: 100% !important;
+.kgec-prism-terminal > * {{
+  position: relative !important;
+  z-index: 1 !important;
+}}
+.kgec-prism-cap {{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-size: clamp(0.64rem, 2.6vw, 0.76rem) !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+  color: #D4AF37 !important;
+  margin-bottom: 12px !important;
+  padding-bottom: 8px !important;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.38) !important;
+}}
+.kgec-prism-mono {{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-variant-numeric: tabular-nums !important;
+  -webkit-text-size-adjust: 100% !important;
+  text-size-adjust: 100% !important;
+}}
+.kgec-prism-handshake {{
+  margin-bottom: 14px !important;
+  padding: 12px !important;
+  border-radius: 12px !important;
+  background: rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid rgba(0, 229, 255, 0.24) !important;
+}}
+.kgec-prism-handshake p {{
+  margin: 0 0 10px 0 !important;
+  line-height: 1.55 !important;
+  font-size: clamp(0.68rem, 3.1vw, 0.84rem) !important;
+  color: rgba(235, 248, 255, 0.94) !important;
+}}
+.kgec-prism-handshake p:last-child {{
+  margin-bottom: 0 !important;
+}}
+.kgec-prism-stack {{
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  margin-bottom: 14px !important;
+}}
+.kgec-prism-tier {{
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  padding: 12px 12px 12px 14px !important;
+  border-radius: 10px !important;
+  background: rgba(0, 18, 48, 0.75) !important;
+  border: 1px solid rgba(255, 255, 255, 0.07) !important;
+  animation: kgecPrismTierRise 0.88s ease-out both !important;
+}}
+.kgec-prism-tier:nth-child(1) {{ animation-delay: 0.05s !important; }}
+.kgec-prism-tier:nth-child(2) {{ animation-delay: 0.14s !important; }}
+.kgec-prism-tier:nth-child(3) {{ animation-delay: 0.23s !important; }}
+.kgec-prism-tier:nth-child(4) {{ animation-delay: 0.32s !important; }}
+@keyframes kgecPrismTierRise {{
+  from {{ opacity: 0; transform: translateY(14px); }}
+  to {{ opacity: 1; transform: translateY(0); }}
+}}
+.kgec-prism-tier-gold {{ border-left: 5px solid #D4AF37 !important; }}
+.kgec-prism-tier-cyan {{ border-left: 5px solid #00E5FF !important; }}
+.kgec-prism-tier-white {{ border-left: 5px solid rgba(248, 252, 255, 0.95) !important; }}
+.kgec-prism-tier-red {{ border-left: 5px solid #DC2626 !important; }}
+.kgec-prism-tier-val {{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-size: clamp(1.32rem, 5.2vw, 1.82rem) !important;
+  font-weight: 800 !important;
+  color: #D4AF37 !important;
+  letter-spacing: 0.03em !important;
+}}
+.kgec-prism-tier-cyan .kgec-prism-tier-val {{ color: #00E5FF !important; }}
+.kgec-prism-tier-white .kgec-prism-tier-val {{ color: rgba(248, 252, 255, 0.98) !important; }}
+.kgec-prism-tier-red .kgec-prism-tier-val {{ color: #FCA5A5 !important; }}
+.kgec-prism-tier-lbl {{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-size: clamp(0.66rem, 2.9vw, 0.8rem) !important;
+  line-height: 1.52 !important;
+  color: rgba(220, 235, 255, 0.9) !important;
+}}
+.kgec-prism-record {{
+  padding-top: 12px !important;
+  border-top: 1px solid rgba(212, 175, 55, 0.3) !important;
+}}
+.kgec-prism-record-h {{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-weight: 800 !important;
+  font-size: clamp(0.68rem, 2.7vw, 0.8rem) !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  color: #D4AF37 !important;
+  margin-bottom: 8px !important;
+}}
+.kgec-prism-record-lead {{
+  margin: 0 0 10px 0 !important;
+  font-size: clamp(0.66rem, 2.85vw, 0.78rem) !important;
+  line-height: 1.55 !important;
+  color: rgba(0, 229, 255, 0.92) !important;
+}}
+.kgec-prism-pre {{
+  margin: 0 !important;
+  padding: 12px !important;
+  max-height: min(280px, 42vh) !important;
+  overflow: auto !important;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-size: clamp(0.64rem, 2.75vw, 0.76rem) !important;
+  line-height: 1.55 !important;
+  color: rgba(230, 242, 255, 0.92) !important;
+  background: rgba(0, 0, 0, 0.38) !important;
+  border-radius: 10px !important;
+  border: 1px solid rgba(212, 175, 55, 0.22) !important;
+}}
+@media (orientation: landscape) and (min-width: 720px) {{
+  .kgec-prism-terminal.sovereign-detail-widget {{
+    max-width: 460px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }}
+  .kgec-prism-terminal.kgec-gold-man-monument {{
+    max-width: 420px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }}
+}}
+/* Gold Man Monument · smart-click · metallic inscription + prism cascade */
+.kgec-prism-terminal.kgec-gold-man-monument.gcslc-total-reality {{
+  margin-top: 12px !important;
+  margin-bottom: 18px !important;
+}}
+.kgec-gmm-cap {{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-size: clamp(0.62rem, 2.55vw, 0.74rem) !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase !important;
+  color: #D4AF37 !important;
+  margin-bottom: 10px !important;
+  padding-bottom: 8px !important;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.42) !important;
+}}
+.kgec-gold-man-header {{
+  text-align: center !important;
+  padding: 4px 6px 14px !important;
+  margin-bottom: 10px !important;
+  border-bottom: 1px solid rgba(0, 229, 255, 0.18) !important;
+}}
+.kgec-gold-man-state {{
+  display: block !important;
+  font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif !important;
+  font-weight: 800 !important;
+  font-size: clamp(1.28rem, 5.8vw, 1.95rem) !important;
+  line-height: 1.18 !important;
+  letter-spacing: 0.035em !important;
+  margin: 0 0 8px 0 !important;
+  padding: 0 2px !important;
+  background: linear-gradient(
+    105deg,
+    #5c4a12 0%,
+    #b8860b 14%,
+    #d4af37 28%,
+    #fffef0 40%,
+    #f0e68c 48%,
+    #d4af37 56%,
+    #8a7220 72%,
+    #ffe9a8 86%,
+    #5c4a12 100%
+  ) !important;
+  background-size: 300% 100% !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  animation: kgecGoldManMetallic 11s ease-in-out infinite !important;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.58)) drop-shadow(0 0 28px rgba(212, 175, 55, 0.18)) !important;
+}}
+@keyframes kgecGoldManMetallic {{
+  0%, 100% {{ background-position: 5% 50%; }}
+  50% {{ background-position: 95% 50%; }}
+}}
+.kgec-gold-man-sub {{
+  margin: 0 !important;
+  font-weight: 700 !important;
+  color: rgba(0, 229, 255, 0.88) !important;
+  opacity: 0.95 !important;
+}}
+.kgec-gmm-stack {{
+  margin-bottom: 12px !important;
+}}
+.kgec-gmm-forensic {{
+  padding-top: 12px !important;
+  border-top: 1px solid rgba(212, 175, 55, 0.32) !important;
+}}
+.kgec-gmm-forensic-h {{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-weight: 800 !important;
+  font-size: clamp(0.65rem, 2.6vw, 0.76rem) !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+  color: #D4AF37 !important;
+  margin-bottom: 8px !important;
+}}
+.kgec-gmm-pre {{
+  max-height: min(320px, 48vh) !important;
 }}
 .kgec-kinetic-note {{
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
@@ -3045,94 +3276,18 @@ iframe[title*="streamlit_folium"] {{
 section.main .block-container {{
   padding-top: 0.15rem !important;
 }}
-.sdw-handshake {{
-  margin-bottom: 14px;
-  padding: 12px 14px;
-  border-radius: 12px;
-  border: 1px solid rgba(212, 175, 55, 0.35);
-  background: rgba(0, 0, 128, 0.42);
-  text-align: left;
-}}
-.sdw-handshake .sdw-hs-row {{
-  display: block !important;
-  overflow: hidden !important;
-  width: 100% !important;
-  margin-top: 12px !important;
-}}
-.sdw-handshake .sdw-hs-row:first-child {{
-  margin-top: 0 !important;
-}}
-.sdw-handshake .kgec-mq-track span {{
-  color: rgba(235, 248, 255, 0.96) !important;
-  font-weight: 600 !important;
-  font-size: clamp(0.64rem, 1.85vw, 0.88rem) !important;
-  letter-spacing: 0.04em !important;
-}}
-.sdw-handshake .sdw-hs-brand {{
-  display: block;
-  color: #00E5FF !important;
-  font-weight: 700;
-  font-size: clamp(0.72rem, 2.2vw, 0.95rem);
-  line-height: 1.45;
-  text-shadow: 0 1px 5px rgba(0,0,0,0.85);
-}}
-.sdw-handshake .sdw-hs-rc {{
-  display: block;
-  margin-top: 10px;
-  color: {GOLD} !important;
-  font-weight: 700;
-  font-size: clamp(0.78rem, 2.4vw, 1rem);
-  text-shadow: 0 1px 6px rgba(0,0,0,0.8);
-}}
-.sdw-handshake .sdw-hs-man {{
-  display: block;
-  margin-top: 10px;
-  font-size: clamp(0.65rem, 2vw, 0.78rem);
-  line-height: 1.5;
-  color: rgba(240, 244, 255, 0.88) !important;
-}}
 /* Total Reality · Smart click — handshake layer above resonance chamber */
 .gcslc-total-reality.gcslc-tr-handshake-front {{
   position: relative !important;
   z-index: 100 !important;
   isolation: isolate !important;
 }}
-/* Total Reality · Smart click (Typewriter Cyan) */
-.gcslc-total-reality {{
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
-  background: rgba(0, 0, 128, 0.92) !important;
-  border: 1px solid rgba(212, 175, 55, 0.48);
-  border-radius: 12px;
-  padding: 14px 16px;
-  margin: 10px 0 14px 0;
-  color: #00E5FF !important;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.35);
-  touch-action: manipulation;
-}}
-.gcslc-total-reality .gcslc-tr-h {{
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-size: clamp(0.7rem, 2vw, 0.85rem);
-  margin-bottom: 10px;
-  color: #00E5FF !important;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.85);
-}}
-.gcslc-total-reality .gcslc-tr-line {{
-  font-size: clamp(0.65rem, 1.9vw, 0.8rem);
-  line-height: 1.5;
-  margin-top: 6px;
-  color: rgba(240, 244, 255, 0.9) !important;
-}}
-.gcslc-total-reality .gcslc-tr-k {{
-  color: rgba(240, 244, 255, 0.65) !important;
-  margin-right: 6px;
-}}
 /* Generative Eagle · ticker (iPhone scroll-safe · black strip inside Stable Sky) */
 .eagle-ticker-shell {{
   display: flex;
-  align-items: center;
-  gap: 10px;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 10px !important;
   flex-wrap: nowrap;
   margin: 0 !important;
   padding: 10px 12px;
@@ -3151,25 +3306,29 @@ section.main .block-container {{
   50% {{ box-shadow: 0 0 16px 2px rgba(220, 20, 60, 0.45); }}
 }}
 .eagle-ticker-label {{
-  flex: 0 0 auto;
-  font-size: clamp(0.68rem, 2vw, 0.82rem);
+  flex: 0 0 auto !important;
+  width: 100% !important;
+  font-size: clamp(0.7rem, 2.6vw, 0.84rem);
   font-weight: 800;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: {GOLD} !important;
   text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
 }}
 .eagle-ticker-scroll {{
-  flex: 1 1 auto;
-  min-width: 0;
-  overflow-x: auto;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  overflow-x: hidden !important;
+  overflow-y: visible !important;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
-  white-space: nowrap;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: clamp(0.72rem, 2.15vw, 0.88rem);
-  line-height: 1.4;
+  white-space: normal !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-size: clamp(0.72rem, 2.8vw, 0.86rem);
+  line-height: 1.55 !important;
   padding-bottom: 2px;
+  word-break: break-word !important;
 }}
 /* NTW — surface above map iframe stacking; never clipped by resize chrome */
 .sovereign-ntw-big4 {{
@@ -3500,6 +3659,15 @@ section.main button[aria-label="9mobile"] {{
   .kgec-roll, .kgec-roll-core {{ animation: none !important; opacity: 0.85 !important; }}
   section.main .kysah-sovereign-ribbon {{ animation: none !important; }}
   .kgec-eagle-svg.kgec-eagle-kysah-sentinel .kgec-eagle-bank {{ filter: none !important; }}
+  .kgec-prism-terminal::before {{ animation: none !important; opacity: 0.28 !important; }}
+  .kgec-prism-tier {{ animation: none !important; }}
+  .kgec-gold-man-state {{
+    animation: none !important;
+    background: none !important;
+    color: #E8D589 !important;
+    -webkit-text-fill-color: #E8D589 !important;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5)) !important;
+  }}
 }}
 /* Beautiful Mirror · GCSLC mono-terminal (stacked cells · zero overlap · 0.65rem cadence) */
 [data-testid="stSidebar"] {{
@@ -4366,55 +4534,54 @@ _detail_meta = " · ".join(
         ],
     )
 )
-_sdw_ml1 = _kgec_marquee_pair(
-    "States + FCT · 37 shells · constitutional administrative lattice LIVE",
-    seconds=36.0,
-)
-_sdw_ml2 = _kgec_marquee_pair(
-    "774 LGAs · national heartbeat · gcslc_deep_join cadence", seconds=34.0
-)
-_sdw_ml3 = _kgec_marquee_pair(
-    "8,806 wards · forensic ward tokens · pinch-to-reveal", seconds=38.0
-)
-_sdw_ml4 = _kgec_marquee_pair(
-    "176,846 polling units · INEC atomic lattice · sovereign scale-3", seconds=40.0
-)
-_sdw_scale_mq = _kgec_marquee_pair(
+_prism_scale_line = (
     f"Sovereign record · Scale 1 States + AZK · Scale 2 LGAs ≥ {ZOOM_LGA_EMERGE} wards ≥ {ZOOM_WARD_EMERGE} · "
-    f"Scale 3 atomic ≥ {ZOOM_ATOM_EMERGE} · FPS HUD · pinch atomize · orientation resize armed",
-    seconds=58.0,
+    f"Scale 3 atomic ≥ {ZOOM_ATOM_EMERGE} · FPS HUD · pinch atomize · orientation resize armed"
 )
-_detail_mq = _kgec_marquee_pair(
-    _detail_meta if _detail_meta else "Forensic spine loaded — map is the vigil — ignition stable.",
-    seconds=max(44.0, min(92.0, 14.0 + len(_detail_meta) / 6.5)),
+_prism_scale_esc = html.escape(_prism_scale_line)
+_detail_pre = html.escape(
+    _detail_meta if _detail_meta else "Forensic spine loaded — map is the vigil — ignition stable."
 )
 _foot_mq1 = _kgec_marquee_pair(
     "SCUML Certificate · SC 151653884 · Copyright Registration LW15954 — compliance ticker",
-    seconds=48.0,
+    seconds=96.0,
 )
 _foot_mq2 = _kgec_marquee_pair(
     "© 2026 Galadiman Ruwa Center (GCSLC) LTD/GTE · Sovereign-by-Design · national instrument LIVE",
-    seconds=56.0,
+    seconds=112.0,
 )
 
 st.markdown(
     f"""
-<div class="sovereign-detail-widget">
-  <div class="sdw-handshake">
-    <div class="sdw-hs-row kgec-rc-ticker-line"><span class="kgec-mq" style="--kgec-mq-dur:52s"><span class="kgec-mq-track"><span>Goldman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE · Majestic K-GEC · Sovereign mirror</span><span aria-hidden="true">Goldman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE · Majestic K-GEC · Sovereign mirror</span></span></span></div>
-    <div class="sdw-hs-row kgec-rc-ticker-line"><span class="kgec-mq" style="--kgec-mq-dur:44s"><span class="kgec-mq-track"><span>Galadiman Ruwa Nigeria Ltd RC 1871418 · Zaria GRA cadence · national lattice</span><span aria-hidden="true">Galadiman Ruwa Nigeria Ltd RC 1871418 · Zaria GRA cadence · national lattice</span></span></span></div>
-    <div class="sdw-hs-row kgec-rc-ticker-line"><span class="kgec-mq" style="--kgec-mq-dur:56s"><span class="kgec-mq-track"><span>8R Paradigm Convergence and Determinants — decode · understand · the nation never sleeps</span><span aria-hidden="true">8R Paradigm Convergence and Determinants — decode · understand · the nation never sleeps</span></span></span></div>
+<div class="kgec-prism-terminal sovereign-detail-widget" role="region" aria-label="Prism terminal telemetry">
+  <div class="kgec-prism-cap">Prism Terminal · 774 LGA geometry · portrait roll-up</div>
+  <div class="kgec-prism-handshake">
+    <p class="kgec-prism-mono">Goldman Ruwa Center for Strategic Leadership and Communication GCSLC LTD/GTE · Majestic K-GEC · Sovereign mirror</p>
+    <p class="kgec-prism-mono">Galadiman Ruwa Nigeria Ltd RC 1871418 · Zaria GRA cadence · national lattice</p>
+    <p class="kgec-prism-mono">8R Paradigm Convergence and Determinants — decode · understand · the nation never sleeps</p>
   </div>
-  <div class="sdw-metrics">
-    <div class="sdw-metric"><div class="sdw-metric-val">37</div><div class="sdw-metric-lbl kgec-rc-ticker-line">{_sdw_ml1}</div></div>
-    <div class="sdw-metric"><div class="sdw-metric-val">774</div><div class="sdw-metric-lbl kgec-rc-ticker-line">{_sdw_ml2}</div></div>
-    <div class="sdw-metric"><div class="sdw-metric-val">8,806</div><div class="sdw-metric-lbl kgec-rc-ticker-line">{_sdw_ml3}</div></div>
-    <div class="sdw-metric"><div class="sdw-metric-val">176,846</div><div class="sdw-metric-lbl kgec-rc-ticker-line">{_sdw_ml4}</div></div>
+  <div class="kgec-prism-stack">
+    <div class="kgec-prism-tier kgec-prism-tier-gold">
+      <span class="kgec-prism-tier-val">37</span>
+      <span class="kgec-prism-tier-lbl">States + FCT · constitutional administrative lattice</span>
+    </div>
+    <div class="kgec-prism-tier kgec-prism-tier-cyan">
+      <span class="kgec-prism-tier-val">774</span>
+      <span class="kgec-prism-tier-lbl">LGAs · gcslc_deep_join national heartbeat</span>
+    </div>
+    <div class="kgec-prism-tier kgec-prism-tier-white">
+      <span class="kgec-prism-tier-val">8,806</span>
+      <span class="kgec-prism-tier-lbl">Wards · forensic ward tokens · pinch-to-reveal</span>
+    </div>
+    <div class="kgec-prism-tier kgec-prism-tier-red">
+      <span class="kgec-prism-tier-val">176,846</span>
+      <span class="kgec-prism-tier-lbl">Polling units · INEC atomic lattice · scale-3 sovereign</span>
+    </div>
   </div>
-  <div class="sdw-meta">
-    <div class="kgec-sdw-strong"><strong style="color:{GOLD};">Sovereign record</strong></div>
-    <div class="sdw-meta-line kgec-rc-ticker-line">{_sdw_scale_mq}</div>
-    <div class="sdw-meta-line kgec-rc-ticker-line">{_detail_mq}</div>
+  <div class="kgec-prism-record">
+    <div class="kgec-prism-record-h">Sovereign record</div>
+    <p class="kgec-prism-mono kgec-prism-record-lead">{_prism_scale_esc}</p>
+    <pre class="kgec-prism-pre">{_detail_pre}</pre>
   </div>
 </div>
 """,

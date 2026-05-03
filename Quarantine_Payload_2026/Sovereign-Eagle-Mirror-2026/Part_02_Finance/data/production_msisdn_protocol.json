@@ -1,0 +1,30 @@
+{
+  "meta": {
+    "protocol_id": "gcslc-production-msisdn-v1",
+    "jurisdiction": "NG",
+    "data_residency": "Process and persist subscriber-derived signals only in counsel-approved regions and infrastructure; cross-border replication forbidden unless contractually explicit.",
+    "counsel_approval": "Chairman counsel sign-off required before any production DAPI, SMPP bind, or webhook exposes subscriber-linked traffic to this mirror.",
+    "storage_rules": {
+      "full_msisdn_at_rest": "forbidden",
+      "allowed_identifiers": ["msisdn_fp_hmac_sha256_trunc32", "msisdn_last4_when_contract_permits"],
+      "salt": "GCSLC_MSISDN_SALT must be set in production; rotate per counsel policy; never commit to VCS."
+    },
+    "logging_rules": {
+      "structured_logs": "Must not contain full MSISDN, SMS body beyond hashed/truncated counsel limits, or unrelated PII.",
+      "audit_retention_days_default": 90,
+      "note": "Tune retention with operator agreements and NCC-facing schedules."
+    },
+    "ingress": {
+      "primary_http": "POST /v1/gantry/event with header X-GCSLC-Ingress-Secret matching GCSLC_INGRESS_SECRET",
+      "smpp": "SMPP terminates at licensed aggregator; aggregator normalizes to HTTPS webhook — no MSISDN in mirror-accessible plain logs."
+    },
+    "compliance_refs": [
+      "fleet_consent_manifest.json",
+      "NCC approvals as applicable to fleet telemetry programs"
+    ]
+  },
+  "rules": [
+    "Reject or hash MSISDN at the edge; mirror sees only consent-gated fleet facts + corridor geometry.",
+    "Webhook JSONL is append-only counsel evidence — tamper response per incident playbook."
+  ]
+}

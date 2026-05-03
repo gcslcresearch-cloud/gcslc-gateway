@@ -1,0 +1,38 @@
+{
+  "meta": {
+    "protocol": "kysah-safety-ingest-stub-v1",
+    "kysah_expansion": "Know Your Student to his Area and Home",
+    "note": "Synthetic tertiary pings — production binds Termii OTP + institution registry + optional live JSONL ingress.",
+    "tier_legend": "state_gold · area_cyan · home_white · pu_red (Determinants-4 · Chairman protocol)"
+  },
+  "records": [
+    {
+      "event_id": "KYSAH-ZAR-001",
+      "ts_iso": "2026-05-01T19:40:12Z",
+      "institution_id": "ABU-ZARIA-CAMPUS",
+      "state": "Kaduna",
+      "area_token": "Zaria",
+      "home_token": "W-SAM-SAM",
+      "lat": 11.1114,
+      "lon": 7.7227,
+      "ping_type": "check_in",
+      "admin_tier_resolution": "home_white",
+      "termii_channel": "sms_otp_verified",
+      "source_chain": ["termii_otp", "kysah_registry_stub"]
+    },
+    {
+      "event_id": "KYSAH-KEF-002",
+      "ts_iso": "2026-05-01T20:05:00Z",
+      "institution_id": "NSUK-KEFFI",
+      "state": "Nasarawa",
+      "area_token": "Keffi",
+      "home_token": "W-NIGHT-CORRIDOR",
+      "lat": 8.8476,
+      "lon": 7.8736,
+      "ping_type": "distress",
+      "admin_tier_resolution": "pu_red",
+      "termii_channel": "sms_otp_verified",
+      "source_chain": ["termii_otp", "kysah_distress_stub"]
+    }
+  ]
+}
