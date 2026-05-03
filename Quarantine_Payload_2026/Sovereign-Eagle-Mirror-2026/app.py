@@ -8,6 +8,7 @@ from __future__ import annotations
 import hashlib
 import html
 import json
+import os
 from datetime import timedelta
 from time import time as _wall_time
 from pathlib import Path
@@ -17,6 +18,10 @@ import folium
 import pandas as pd
 import requests
 import streamlit as st
+
+from sovereign_bridge.env_socket import load_gateway_ingress_env
+
+load_gateway_ingress_env()
 
 try:
     from streamlit_folium import st_folium
@@ -45,9 +50,11 @@ from sovereign_strategic_cells import strategic_cells_banner
 from kysah_sovereign_alert import (
     build_kysah_sovereign_bundle_for_state,
     federated_kysah_rollup,
+    kysah_area_token,
     kysah_distress_records,
     kysah_escalation_patrol_sniffs,
     kysah_escalation_shout_rows,
+    kysah_home_token,
     load_kysah_stub_records,
 )
 from sovereign_logistics_joint import (
@@ -173,6 +180,42 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed",
 )
+
+
+@st.fragment(run_every=timedelta(seconds=2.1))
+def _sovereign_telegram_bridge_tick() -> None:
+    """Telegram → SQLite queue → session_state (map + Gold Man); Sam-Sam replies via Bot API."""
+    if not st.session_state.get("_sovereign_bridge_armed"):
+        return
+    ctx = st.session_state.get("_sovereign_bridge_ctx")
+    if not isinstance(ctx, dict):
+        return
+    try:
+        from sovereign_bridge.telegram_apply import apply_pending_bridge_commands
+
+        n = apply_pending_bridge_commands(
+            fused_df=ctx.get("fused_df"),
+            national_pu_df=ctx.get("national_df"),
+            fin_points=ctx.get("fin_points") or [],
+            trade_nodes=ctx.get("trade_nodes") or [],
+            ngecc_reg=ctx.get("ngecc_reg") or {},
+            states_geojson=ctx.get("states_geojson"),
+            ncc_rows=ctx.get("ncc_rows") or [],
+            signal_rows=ctx.get("signal_rows") or [],
+            ntw_proxy=ctx.get("ntw_proxy") or {},
+        )
+    except Exception:
+        return
+    if n:
+        if not st.session_state.get("_sovereign_first_telegram_echo"):
+            st.session_state["_sovereign_first_telegram_echo"] = True
+            st.success(
+                "Telegram Sovereign Bridge ignited · first remote order echoed on K-GEC "
+                "(map + Gold Man + Sentinel)."
+            )
+        _toast = getattr(st, "toast", None)
+        if callable(_toast):
+            _toast("Sovereign Bridge · Telegram order applied", icon="📡")
 
 
 def _tooltip_field(geojson: dict | None) -> str | None:
@@ -750,6 +793,21 @@ def _inject_drill_panes_atomic_fps(
     )
 
 
+def _kysah_distress_focus_for_state(state: str) -> dict[str, str] | None:
+    """KYSAH distress row for this ADM1 — Area (LGA token) + Home (PU mesh) for monument synergy."""
+    key = str(state or "").strip().lower()
+    if not key:
+        return None
+    for rec in kysah_distress_records(load_kysah_stub_records()):
+        if str(rec.get("state") or "").strip().lower() == key:
+            return {
+                "area_token": str(kysah_area_token(rec) or "").strip(),
+                "home_token": str(kysah_home_token(rec) or "").strip(),
+                "event_id": str(rec.get("event_id") or "").strip(),
+            }
+    return None
+
+
 def _html_total_reality_card(summary: dict) -> str:
     """Gold Man Monument — prism shell, metallic state inscription, LGA→Ward→PU tier cascade."""
     st_name = html.escape(str(summary.get("state", "")))
@@ -774,13 +832,33 @@ def _html_total_reality_card(summary: dict) -> str:
     dist_html = " · ".join(dist_bits)
     fr_txt = html.escape(str(fr.get("friction_summary", "")))
     _raw_atom = str(summary.get("atomic_attribution_note") or "").strip()
-    _pct_ward_nat = (
-        (100.0 * float(wd) / float(max(n_wd_nat, 1))) if n_wd_nat else 0.0
+    _pct_pu_nat = (100.0 * float(pu) / float(max(n_pu_nat, 1))) if n_pu_nat else 0.0
+    _pct_pu_s = f"{_pct_pu_nat:.2f}%"
+    _kys = _kysah_distress_focus_for_state(str(summary.get("state") or ""))
+    _kys_mod = " kgec-gmm--kysah-focus" if _kys else ""
+    _gold_tier_cls = "kgec-prism-tier kgec-prism-tier-gold" + (
+        " kgec-gmm-tier--kysah-pulse" if _kys else ""
     )
-    _pct_ward_s = f"{_pct_ward_nat:.2f}%"
+    _red_tier_cls = "kgec-prism-tier kgec-prism-tier-red" + (
+        " kgec-gmm-tier--kysah-pulse-intense" if _kys else ""
+    )
+    _lbl_lga = "Local Governments · administrative shell · state lattice"
+    _lbl_pu = "Polling units · INEC atomic · Chairman forensic heart"
+    if _kys:
+        _at = html.escape(_kys["area_token"] or "?")
+        _hm = html.escape(_kys["home_token"] or "?")
+        _lbl_lga += f" · KYSAH Area (LGA) bind · {_at}"
+        _lbl_pu += f" · KYSAH Home (PU) bind · {_hm}"
+        if _kys.get("event_id"):
+            _eid = html.escape(_kys["event_id"])
+            _lbl_pu += f" · {_eid}"
     _forensic_lines: list[str] = []
     if _raw_atom:
         _forensic_lines.append(f"Atomic attribution · {html.escape(_raw_atom)}")
+    if _kys:
+        _forensic_lines.append(
+            "KYSAH Sentinel · distress Area→Home escalation — duty-of-care pulse on gold + red tiers"
+        )
     _forensic_lines.extend(
         [
             f"Financial inclusion · {fs_txt} / 100 — {fv}",
@@ -796,28 +874,28 @@ def _html_total_reality_card(summary: dict) -> str:
         ]
     )
     _forensic_pre = "\n".join(_forensic_lines)
-    return f"""<div class="kgec-prism-terminal kgec-gold-man-monument gcslc-total-reality gcslc-tr-handshake-front" role="region" aria-label="Gold Man monument · state telemetry">
+    return f"""<div class="kgec-prism-terminal kgec-gold-man-monument gcslc-total-reality gcslc-tr-handshake-front{_kys_mod}" role="region" aria-label="Gold Man monument · state telemetry">
   <div class="kgec-gmm-cap">Total Reality · Gold Man monument</div>
   <header class="kgec-gold-man-header">
     <span class="kgec-gold-man-state">{st_name}</span>
     <p class="kgec-gold-man-sub kgec-prism-mono">Sovereign ADM1 · vertical cascade · forensic clarity</p>
   </header>
   <div class="kgec-prism-stack kgec-gmm-stack">
-    <div class="kgec-prism-tier kgec-prism-tier-gold">
+    <div class="{_gold_tier_cls}">
       <span class="kgec-prism-tier-val">{lg:,}</span>
-      <span class="kgec-prism-tier-lbl">Local Governments · administrative shell · state lattice</span>
+      <span class="kgec-prism-tier-lbl">{_lbl_lga}</span>
     </div>
     <div class="kgec-prism-tier kgec-prism-tier-cyan">
       <span class="kgec-prism-tier-val">{wd:,}</span>
       <span class="kgec-prism-tier-lbl">Wards · forensic mass · {n_wd_nat:,} national comparator</span>
     </div>
     <div class="kgec-prism-tier kgec-prism-tier-white">
-      <span class="kgec-prism-tier-val">{_pct_ward_s}</span>
-      <span class="kgec-prism-tier-lbl">National ward lattice share · {wd:,} of {n_wd_nat:,} wards · White tier clarity</span>
+      <span class="kgec-prism-tier-val">{_pct_pu_s}</span>
+      <span class="kgec-prism-tier-lbl">National PU lattice share · {pu:,} of {n_pu_nat:,} polling units · Chairman forensic heart</span>
     </div>
-    <div class="kgec-prism-tier kgec-prism-tier-red">
+    <div class="{_red_tier_cls}">
       <span class="kgec-prism-tier-val">{pu:,}</span>
-      <span class="kgec-prism-tier-lbl">Polling units · INEC atomic tier · {n_pu_nat:,} national lattice</span>
+      <span class="kgec-prism-tier-lbl">{_lbl_pu} · {n_pu_nat:,} national lattice</span>
     </div>
   </div>
   <div class="kgec-gmm-forensic">
@@ -1611,7 +1689,7 @@ path.gcslc-atom-node {
 _NG_FRAC_X0 = 0.22
 _NG_FRAC_X1 = 0.76
 _NG_FRAC_Y0 = 0.24
-_NG_FRAC_Y1 = 0.72
+_NG_FRAC_Y1 = 0.685
 # Inset patrol centers so the Golden Eagle SVG (translate -50%/-50%) stays visually inside the frame.
 _NG_PAD_X = 0.068
 _NG_PAD_Y = 0.058
@@ -2139,11 +2217,12 @@ st.components.v1.html(
     var doc = p.document;
     if (p.__kgecHoverEngine) return;
     p.__kgecHoverEngine = true;
+    p.__kgecGlideMs = null;
     p.__kgecTargets = [{x:0.5,y:0.45}];
     p.__kgecSniffs = [];
     p.__kgecTargetWeights = null;
     /* National canvas — mirrors app.py _NG_FRAC_* + footprint inset (_NG_PAD_*); glide ~3.25s cinematic ease. */
-    var KGE_NG = { xmin: 0.22, xmax: 0.76, ymin: 0.24, ymax: 0.72 };
+    var KGE_NG = { xmin: 0.22, xmax: 0.76, ymin: 0.24, ymax: 0.685 };
     var KGE_PAD = { x: 0.068, y: 0.058 };
     function kgecClampNG(pt){
       var x = Number(pt.x), y = Number(pt.y);
@@ -2173,6 +2252,16 @@ st.components.v1.html(
         if (svgEl && svgEl.classList){
           if (p.__kgecKysahSentinel) svgEl.classList.add('kgec-eagle-kysah-sentinel');
           else svgEl.classList.remove('kgec-eagle-kysah-sentinel');
+        }
+        if ('glideMs' in obj) {
+          if (obj.glideMs === null || obj.glideMs === undefined) {
+            p.__kgecGlideMs = null;
+          } else {
+            var gv = Number(obj.glideMs);
+            p.__kgecGlideMs = (isFinite(gv) && gv >= 800 && gv <= 8000) ? gv : null;
+          }
+        } else {
+          p.__kgecGlideMs = null;
         }
       } catch (ePat) {}
     };
@@ -2263,7 +2352,7 @@ st.components.v1.html(
         layer = doc.createElement('div');
         layer.id = 'kgec-eagle-hover-layer';
         layer.setAttribute('aria-hidden','true');
-        layer.style.cssText = 'position:absolute;left:0;top:0;right:0;bottom:0;pointer-events:none;overflow:visible;z-index:950;border-radius:14px;transform:translateZ(0);backface-visibility:hidden;-webkit-backface-visibility:hidden;';
+        layer.style.cssText = 'position:absolute;left:0;top:0;right:0;bottom:0;pointer-events:none;overflow:visible;z-index:6;border-radius:14px;transform:translateZ(0);backface-visibility:hidden;-webkit-backface-visibility:hidden;';
         par.appendChild(layer);
         var svg = doc.createElementNS('http://www.w3.org/2000/svg','svg');
         svg.setAttribute('class','kgec-eagle-svg');
@@ -2281,7 +2370,10 @@ st.components.v1.html(
       }
       return layer;
     }
-    var GLIDE_MS = 3250;
+    function currentGlideMs(){
+      var g = Number(p.__kgecGlideMs);
+      return (isFinite(g) && g >= 800 && g <= 8000) ? Math.round(g) : 3250;
+    }
     var DWELL_BASE = 3600;
     function dwellForIndex(idx){
       var tg = p.__kgecTargets || [{x:0.5,y:0.45}];
@@ -2332,7 +2424,8 @@ st.components.v1.html(
       var idx = p.__kgecIdx % tg.length;
       var w = kgecClampNG(tg[idx]);
       p.__kgecIdx++;
-      svg.style.transition = 'left '+ (GLIDE_MS/1000) +'s cubic-bezier(0.18,0.82,0.22,1), top '+ (GLIDE_MS/1000) +'s cubic-bezier(0.18,0.82,0.22,1)';
+      var glide = currentGlideMs();
+      svg.style.transition = 'left '+ (glide/1000) +'s cubic-bezier(0.18,0.82,0.22,1), top '+ (glide/1000) +'s cubic-bezier(0.18,0.82,0.22,1)';
       svg.style.opacity = '1';
       svg.style.visibility = 'visible';
       svg.style.left = (w.x * 100) + '%';
@@ -2345,14 +2438,15 @@ st.components.v1.html(
         if (!svg2 || !doc.body.contains(svg2)) return;
         svg2.classList.add('kgec-eagle-sniff-pulse');
         fireSniffLine(stepForSniff);
-      }, GLIDE_MS);
+      }, glide);
     }
     function majestyLoop(){
       majesticStep();
       var tg = p.__kgecTargets || [{x:0.5,y:0.45}];
       var L = tg.length || 1;
       var destIdx = ((p.__kgecIdx - 1) % L + L) % L;
-      var nextDelay = GLIDE_MS + dwellForIndex(destIdx);
+      var glide = currentGlideMs();
+      var nextDelay = glide + dwellForIndex(destIdx);
       p.__kgecMajestyT = setTimeout(majestyLoop, nextDelay);
     }
     function mountRetries(){
@@ -2963,7 +3057,7 @@ section.main [data-testid="stMarkdown"] .kysah-sovereign-ribbon {{
 section.main .gcslc-map-canvas-host,
 section.main [data-testid="stIFrame"] {{
   position: relative !important;
-  z-index: 2 !important;
+  z-index: 0 !important;
 }}
 .gcslc-map-canvas-host {{
   width: 100% !important;
@@ -3254,6 +3348,37 @@ iframe[title*="streamlit_folium"] {{
 .kgec-gmm-pre {{
   max-height: min(320px, 48vh) !important;
 }}
+/* KYSAH synergy — distress bind: LGA (gold) + PU (red) tier pulse intensity */
+.kgec-gmm--kysah-focus .kgec-gmm-tier--kysah-pulse {{
+  animation: kgecGmmKysahLgaPulse 1.55s ease-in-out infinite !important;
+}}
+.kgec-gmm--kysah-focus .kgec-gmm-tier--kysah-pulse-intense {{
+  animation: kgecGmmKysahPuPulse 1.08s ease-in-out infinite !important;
+}}
+@keyframes kgecGmmKysahLgaPulse {{
+  0%, 100% {{
+    box-shadow:
+      inset 0 0 0 1px rgba(212, 175, 55, 0.2),
+      0 0 10px rgba(212, 175, 55, 0.12) !important;
+  }}
+  50% {{
+    box-shadow:
+      inset 0 0 0 2px rgba(212, 175, 55, 0.65),
+      0 0 26px rgba(212, 175, 55, 0.42) !important;
+  }}
+}}
+@keyframes kgecGmmKysahPuPulse {{
+  0%, 100% {{
+    box-shadow:
+      inset 0 0 0 1px rgba(220, 38, 38, 0.25),
+      0 0 12px rgba(220, 38, 38, 0.18) !important;
+  }}
+  50% {{
+    box-shadow:
+      inset 0 0 0 2px rgba(252, 165, 165, 0.85),
+      0 0 32px rgba(220, 38, 38, 0.55) !important;
+  }}
+}}
 .kgec-kinetic-note {{
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
   font-size: 0.65rem !important;
@@ -3276,10 +3401,10 @@ iframe[title*="streamlit_folium"] {{
 section.main .block-container {{
   padding-top: 0.15rem !important;
 }}
-/* Total Reality · Smart click — handshake layer above resonance chamber */
+/* Total Reality · Smart click — Gold Man above map sentinel overlay (eagle stays inside iframe host only) */
 .gcslc-total-reality.gcslc-tr-handshake-front {{
   position: relative !important;
-  z-index: 100 !important;
+  z-index: 2200 !important;
   isolation: isolate !important;
 }}
 /* Generative Eagle · ticker (iPhone scroll-safe · black strip inside Stable Sky) */
@@ -3667,6 +3792,11 @@ section.main button[aria-label="9mobile"] {{
     color: #E8D589 !important;
     -webkit-text-fill-color: #E8D589 !important;
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5)) !important;
+  }}
+  .kgec-gmm--kysah-focus .kgec-gmm-tier--kysah-pulse,
+  .kgec-gmm--kysah-focus .kgec-gmm-tier--kysah-pulse-intense {{
+    animation: none !important;
+    box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.45) !important;
   }}
 }}
 /* Beautiful Mirror · GCSLC mono-terminal (stacked cells · zero overlap · 0.65rem cadence) */
@@ -4327,12 +4457,14 @@ _fg_atom = _atomic_viewport_feature_group(
 )
 
 if st_folium is None:
+    st.session_state["_sovereign_bridge_armed"] = False
     st.error(
         "Install streamlit-folium inside the project venv: "
         "`pip install streamlit-folium` — required for viewport atomic lattice."
     )
     st.components.v1.html(_federation_map._repr_html_(), height=520, scrolling=False)
 elif _strike_mode:
+    st.session_state["_sovereign_bridge_armed"] = False
     _kgec_kinetic_note(
         "Strike audit mode — split panels replace national hero map — toggle off for 176k PU viewport — Lagos vs Binji LIVE.",
         seconds=36.0,
@@ -4368,6 +4500,40 @@ elif _strike_mode:
         st_folium(_bin_map, height=520, use_container_width=True, key="strike_binji")
 else:
     _ntw_blob = _load_ntw_operator_proxy_cached()
+    st.session_state["_sovereign_bridge_armed"] = True
+    st.session_state["_sovereign_bridge_ctx"] = {
+        "fused_df": _fused_df,
+        "national_df": _national_df,
+        "fin_points": _fin_pos_pts,
+        "trade_nodes": _trade_nodes,
+        "ngecc_reg": _ngecc_reg,
+        "states_geojson": _states_geojson,
+        "ncc_rows": _ncc_incidents,
+        "signal_rows": _signal_ev,
+        "ntw_proxy": _ntw_blob,
+    }
+    if getattr(st, "fragment", None):
+        _sovereign_telegram_bridge_tick()
+    elif (os.environ.get("TELEGRAM_BOT_TOKEN") or "").strip():
+        try:
+            from sovereign_bridge.telegram_apply import apply_pending_bridge_commands
+
+            if apply_pending_bridge_commands(
+                fused_df=_fused_df,
+                national_pu_df=_national_df,
+                fin_points=_fin_pos_pts,
+                trade_nodes=_trade_nodes,
+                ngecc_reg=_ngecc_reg,
+                states_geojson=_states_geojson,
+                ncc_rows=_ncc_incidents,
+                signal_rows=_signal_ev,
+                ntw_proxy=_ntw_blob,
+            ):
+                _tb = getattr(st, "toast", None)
+                if callable(_tb):
+                    _tb("Sovereign Bridge · Telegram order applied", icon="📡")
+        except Exception:
+            pass
     if getattr(st, "fragment", None) is None and st.session_state.get(
         "generative_eagle_ticker", True
     ):
