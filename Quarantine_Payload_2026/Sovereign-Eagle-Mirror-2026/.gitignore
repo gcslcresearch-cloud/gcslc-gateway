@@ -1,5 +1,6 @@
 logs/*.log
 logs/*.pid
 !logs/.gitkeep
+.env
 gateway_ingress.env
 .sovereign_bridge/

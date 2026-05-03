@@ -21,6 +21,13 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
+try:
+    from sovereign_gateway_env import ensure_sovereign_gateway_env_loaded
+
+    ensure_sovereign_gateway_env_loaded()
+except ImportError:
+    pass
+
 from sovereign_active_intel import build_total_reality_summary, dominant_ntw_operator
 
 BASE_DIR = Path(__file__).resolve().parent

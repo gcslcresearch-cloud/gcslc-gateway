@@ -21,6 +21,13 @@ from typing import Any
 
 import requests
 
+try:
+    from sovereign_gateway_env import ensure_sovereign_gateway_env_loaded
+
+    ensure_sovereign_gateway_env_loaded()
+except ImportError:
+    pass
+
 TERMII_API_BASE = os.environ.get("TERMII_API_BASE", "https://api.ng.termii.com/api").rstrip("/")
 
 

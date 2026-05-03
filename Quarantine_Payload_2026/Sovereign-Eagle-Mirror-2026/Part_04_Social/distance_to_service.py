@@ -6,7 +6,19 @@ Computes nearest bank/network service gap per village.
 from __future__ import annotations
 
 import math
+import sys
+from pathlib import Path
 from typing import Iterable
+
+_root = Path(__file__).resolve().parent.parent
+if str(_root) not in sys.path:
+    sys.path.insert(0, str(_root))
+try:
+    from sovereign_gateway_env import ensure_sovereign_gateway_env_loaded
+
+    ensure_sovereign_gateway_env_loaded()
+except ImportError:
+    pass
 
 EARTH_RADIUS_KM = 6371.0
 

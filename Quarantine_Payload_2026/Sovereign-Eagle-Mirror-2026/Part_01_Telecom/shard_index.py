@@ -7,9 +7,21 @@ index stats and bounded previews, not full-record rendering.
 from __future__ import annotations
 
 import hashlib
+import sys
 from collections import defaultdict
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
+
+_root = Path(__file__).resolve().parent.parent
+if str(_root) not in sys.path:
+    sys.path.insert(0, str(_root))
+try:
+    from sovereign_gateway_env import ensure_sovereign_gateway_env_loaded
+
+    ensure_sovereign_gateway_env_loaded()
+except ImportError:
+    pass
 
 
 def _stable_hash(value: str) -> int:
