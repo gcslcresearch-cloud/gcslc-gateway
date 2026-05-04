@@ -1,0 +1,17 @@
+---
+description: Sovereign Eagle / K-GEC Mirror — Desktop only; no Quarantine ghost builds
+alwaysApply: true
+---
+
+# Sovereign-Eagle-Mirror-2026 — single source of truth
+
+- **Canonical tree (edit here only):** `/Users/user/Desktop/Sovereign-Eagle-Mirror-2026/`
+  - Gold Man UI, KYSAH grid, Sovereign Joint, `app.py`, `sovereign_bridge/`, `Part_*`, `.env` next to `app.py`.
+
+- **Ghost path (do not use as a build target):** `Quarantine_Payload_2026/Sovereign-Eagle-Mirror-2026/` inside this repo.
+  - Do not implement features, fix bugs, or refactor there as the primary workspace.
+  - If that path still exists for packaging or legacy layout, treat it as stale unless the user explicitly asks to sync **from** Desktop **into** it.
+
+- **Workflow:** Prefer opening the **Desktop** folder (or its `.code-workspace`) in Cursor. Run Streamlit and tests from the Desktop tree.
+
+- **Standard:** No “gama gari” shortcuts—meticulous execution against the Desktop source of truth only.

@@ -1,0 +1,347 @@
+{
+  "meta": {
+    "program": "Northern markets \u00b7 AZK livestock vectors",
+    "total_daily_livestock_units_narrative": 2500,
+    "market_rows": 42,
+    "notes": "Green velocity vectors toward AZK corridor \u2014 proxy weights for staging.",
+    "scaling_applied": "normalized from raw sum 3156 \u2192 2500"
+  },
+  "markets": [
+    {
+      "id": "LM-KAN-01",
+      "label": "Kano \u00b7 Singa livestock exchange",
+      "lat": 12.0002,
+      "lon": 8.5167,
+      "daily_livestock_units_proxy": 142.59,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-KAN-02",
+      "label": "Kano \u00b7 Wambai cattle yard",
+      "lat": 12.015,
+      "lon": 8.495,
+      "daily_livestock_units_proxy": 95.06,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-WUD-01",
+      "label": "Wudil \u00b7 \u20a650B/week hub anchor",
+      "lat": 11.8093,
+      "lon": 8.8437,
+      "daily_livestock_units_proxy": 332.7,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-MUB-01",
+      "label": "Mubi \u00b7 Adamawa livestock pole",
+      "lat": 10.2695,
+      "lon": 13.2685,
+      "daily_livestock_units_proxy": 245.56,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-MAI-01",
+      "label": "Mai'Adua \u00b7 Katsina corridor",
+      "lat": 13.1892,
+      "lon": 8.2287,
+      "daily_livestock_units_proxy": 154.47,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-POT-01",
+      "label": "Potiskum \u00b7 Yobe aggregation",
+      "lat": 11.7156,
+      "lon": 11.0791,
+      "daily_livestock_units_proxy": 67.33,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-AZA-01",
+      "label": "Azare \u00b7 Bauchi ring",
+      "lat": 11.6758,
+      "lon": 10.1908,
+      "daily_livestock_units_proxy": 43.57,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-GUS-01",
+      "label": "Gusau \u00b7 Zamfara exchange",
+      "lat": 12.1704,
+      "lon": 6.6641,
+      "daily_livestock_units_proxy": 55.45,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-SKT-01",
+      "label": "Sokoto central yards",
+      "lat": 13.0059,
+      "lon": 5.2476,
+      "daily_livestock_units_proxy": 71.29,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-TAM-01",
+      "label": "Tambuwal \u00b7 Sokoto flank",
+      "lat": 12.4069,
+      "lon": 4.6466,
+      "daily_livestock_units_proxy": 35.65,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-BKK-01",
+      "label": "Birnin Kebbi bridge markets",
+      "lat": 12.4539,
+      "lon": 4.1975,
+      "daily_livestock_units_proxy": 47.53,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-KAT-01",
+      "label": "Katsina GRA exchange",
+      "lat": 12.9908,
+      "lon": 7.6018,
+      "daily_livestock_units_proxy": 59.41,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-DAU-01",
+      "label": "Daura \u00b7 historic yards",
+      "lat": 13.0339,
+      "lon": 8.3235,
+      "daily_livestock_units_proxy": 31.69,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-FUN-01",
+      "label": "Funtua \u00b7 Katsina south",
+      "lat": 11.5239,
+      "lon": 7.3118,
+      "daily_livestock_units_proxy": 51.49,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-ZAR-01",
+      "label": "Zaria \u00b7 weekly cattle fair",
+      "lat": 11.1115,
+      "lon": 7.7097,
+      "daily_livestock_units_proxy": 110.9,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-KAD-01",
+      "label": "Kaduna \u00b7 Rigasa corridor",
+      "lat": 10.5105,
+      "lon": 7.4165,
+      "daily_livestock_units_proxy": 87.14,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-KEF-01",
+      "label": "Keffi \u00b7 Nasarawa gate",
+      "lat": 8.8467,
+      "lon": 7.8736,
+      "daily_livestock_units_proxy": 43.57,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-LAF-01",
+      "label": "Lafia \u00b7 Plateau approach",
+      "lat": 8.4939,
+      "lon": 8.5153,
+      "daily_livestock_units_proxy": 38.02,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-JOS-01",
+      "label": "Jos \u00b7 highland relay",
+      "lat": 9.8965,
+      "lon": 8.8583,
+      "daily_livestock_units_proxy": 27.72,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-BAU-01",
+      "label": "Bauchi central yards",
+      "lat": 10.3158,
+      "lon": 9.8442,
+      "daily_livestock_units_proxy": 33.27,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-GOM-01",
+      "label": "Gombe aggregation",
+      "lat": 10.2897,
+      "lon": 11.1714,
+      "daily_livestock_units_proxy": 30.1,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-MAI-02",
+      "label": "Maiduguri \u00b7 Borno ring",
+      "lat": 11.8311,
+      "lon": 13.151,
+      "daily_livestock_units_proxy": 57.03,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-BIU-01",
+      "label": "Biu yards",
+      "lat": 10.6129,
+      "lon": 12.195,
+      "daily_livestock_units_proxy": 22.18,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-YOL-01",
+      "label": "Yola \u00b7 riverine relay",
+      "lat": 9.2035,
+      "lon": 12.4944,
+      "daily_livestock_units_proxy": 26.14,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-JAL-01",
+      "label": "Jalingo",
+      "lat": 8.8937,
+      "lon": 11.3665,
+      "daily_livestock_units_proxy": 19.8,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-MKD-01",
+      "label": "Makurdi \u00b7 Benue bridge",
+      "lat": 7.7325,
+      "lon": 8.5211,
+      "daily_livestock_units_proxy": 49.11,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-MIN-01",
+      "label": "Minna \u00b7 Niger belt",
+      "lat": 9.6152,
+      "lon": 6.5478,
+      "daily_livestock_units_proxy": 43.57,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-BNC-01",
+      "label": "Birnin Gwari \u00b7 Kaduna north",
+      "lat": 10.6637,
+      "lon": 6.54,
+      "daily_livestock_units_proxy": 38.02,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-ZNF-01",
+      "label": "Zamfara north relay",
+      "lat": 12.5778,
+      "lon": 6.2442,
+      "daily_livestock_units_proxy": 27.72,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-HAD-01",
+      "label": "Hadejia \u00b7 Jigawa",
+      "lat": 12.4535,
+      "lon": 10.0437,
+      "daily_livestock_units_proxy": 45.94,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-DUT-01",
+      "label": "Dutse capital yards",
+      "lat": 11.7564,
+      "lon": 9.339,
+      "daily_livestock_units_proxy": 34.85,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-KNK-01",
+      "label": "Kankara \u00b7 Katsina south",
+      "lat": 11.9311,
+      "lon": 7.4198,
+      "daily_livestock_units_proxy": 23.76,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-MAL-01",
+      "label": "Malumfashi ring",
+      "lat": 11.7897,
+      "lon": 7.6188,
+      "daily_livestock_units_proxy": 41.19,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-GWI-01",
+      "label": "Gwio north relay",
+      "lat": 12.2198,
+      "lon": 9.8612,
+      "daily_livestock_units_proxy": 17.43,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-NGU-01",
+      "label": "Nguru \u00b7 Yobe",
+      "lat": 12.8767,
+      "lon": 11.0677,
+      "daily_livestock_units_proxy": 30.1,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-GMO-01",
+      "label": "Gombe livestock flank",
+      "lat": 10.3344,
+      "lon": 11.1728,
+      "daily_livestock_units_proxy": 28.52,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-JIM-01",
+      "label": "Jimeta yards",
+      "lat": 9.2557,
+      "lon": 12.4486,
+      "daily_livestock_units_proxy": 32.48,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-NAS-01",
+      "label": "Nasarawa Eggon relay",
+      "lat": 8.7127,
+      "lon": 8.4216,
+      "daily_livestock_units_proxy": 22.97,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-KWO-01",
+      "label": "Kwoya bridge",
+      "lat": 10.7822,
+      "lon": 7.5621,
+      "daily_livestock_units_proxy": 26.93,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-SAB-01",
+      "label": "Sabon Birni Sokoto",
+      "lat": 13.0645,
+      "lon": 5.4167,
+      "daily_livestock_units_proxy": 36.44,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-ILE-01",
+      "label": "Ilela border yards",
+      "lat": 13.0304,
+      "lon": 5.4217,
+      "daily_livestock_units_proxy": 40.4,
+      "flow_note": "AZK spine convergence"
+    },
+    {
+      "id": "LM-KAU-01",
+      "label": "Kaura Namoda ring",
+      "lat": 12.5889,
+      "lon": 6.5869,
+      "daily_livestock_units_proxy": 30.89,
+      "flow_note": "AZK spine convergence"
+    }
+  ]
+}
