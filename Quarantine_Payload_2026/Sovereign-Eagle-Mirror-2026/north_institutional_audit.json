@@ -1,0 +1,490 @@
+{
+  "audit_version": "1.0.0",
+  "lattice_source": "gcslc_deep_join.fetch_lga_catalog_raw",
+  "north_state_codes": [
+    "SO",
+    "KE",
+    "ZA",
+    "KT",
+    "KN",
+    "JI",
+    "KD",
+    "BA",
+    "GO",
+    "YO",
+    "BO",
+    "AD",
+    "TA",
+    "PL",
+    "NI",
+    "KW",
+    "KO",
+    "BE",
+    "NA"
+  ],
+  "completeness_note": "Phase-1 seed: representative NUC/NBTE/NCCE institutions across all 19 north states; every row is machine-checked against exact LGA orthography. Full national enumeration requires regulator bulk ingest (XLS/API) — append rows, re-run this compiler to verify LGA keys before merge.",
+  "seed_count": 46,
+  "rows": [
+    {
+      "abbreviation": "FPT Bauchi",
+      "institution": "Federal Polytechnic Bauchi",
+      "regulator": "NBTE",
+      "state_code": "BA",
+      "state_en": "Bauchi",
+      "primary_campus_lga_lattice": "Bauchi",
+      "lga_774_verified": true,
+      "lattice_key": "BA:Bauchi"
+    },
+    {
+      "abbreviation": "KADPOLY",
+      "institution": "Kaduna Polytechnic",
+      "regulator": "NBTE",
+      "state_code": "KD",
+      "state_en": "Kaduna",
+      "primary_campus_lga_lattice": "Kaduna South",
+      "lga_774_verified": true,
+      "lattice_key": "KD:Kaduna South"
+    },
+    {
+      "abbreviation": "NCAT",
+      "institution": "Nigerian College of Aviation Technology",
+      "regulator": "NBTE",
+      "state_code": "KD",
+      "state_en": "Kaduna",
+      "primary_campus_lga_lattice": "Zaria",
+      "lga_774_verified": true,
+      "lattice_key": "KD:Zaria"
+    },
+    {
+      "abbreviation": "NUBA-Kafanchan",
+      "institution": "Nuhu Bamalli Polytechnic · Kafanchan Campus",
+      "regulator": "NBTE",
+      "state_code": "KD",
+      "state_en": "Kaduna",
+      "primary_campus_lga_lattice": "Jema'a",
+      "lga_774_verified": true,
+      "lattice_key": "KD:Jema'a"
+    },
+    {
+      "abbreviation": "NUBA-Zaria",
+      "institution": "Nuhu Bamalli Polytechnic · Main Campus · Zaria",
+      "regulator": "NBTE",
+      "state_code": "KD",
+      "state_en": "Kaduna",
+      "primary_campus_lga_lattice": "Zaria",
+      "lga_774_verified": true,
+      "lattice_key": "KD:Zaria"
+    },
+    {
+      "abbreviation": "KSP",
+      "institution": "Kano State Polytechnic",
+      "regulator": "NBTE",
+      "state_code": "KN",
+      "state_en": "Kano",
+      "primary_campus_lga_lattice": "Kano Municipal",
+      "lga_774_verified": true,
+      "lattice_key": "KN:Kano Municipal"
+    },
+    {
+      "abbreviation": "FP Idah",
+      "institution": "Federal Polytechnic Idah",
+      "regulator": "NBTE",
+      "state_code": "KO",
+      "state_en": "Kogi",
+      "primary_campus_lga_lattice": "Idah",
+      "lga_774_verified": true,
+      "lattice_key": "KO:Idah"
+    },
+    {
+      "abbreviation": "HUK Poly",
+      "institution": "Hassan Usman Katsina Polytechnic",
+      "regulator": "NBTE",
+      "state_code": "KT",
+      "state_en": "Katsina",
+      "primary_campus_lga_lattice": "Katsina",
+      "lga_774_verified": true,
+      "lattice_key": "KT:Katsina"
+    },
+    {
+      "abbreviation": "FP Offa",
+      "institution": "Federal Polytechnic Offa",
+      "regulator": "NBTE",
+      "state_code": "KW",
+      "state_en": "Kwara",
+      "primary_campus_lga_lattice": "Offa",
+      "lga_774_verified": true,
+      "lattice_key": "KW:Offa"
+    },
+    {
+      "abbreviation": "KWARA POLY",
+      "institution": "Kwara State Polytechnic",
+      "regulator": "NBTE",
+      "state_code": "KW",
+      "state_en": "Kwara",
+      "primary_campus_lga_lattice": "Ilorin West",
+      "lga_774_verified": true,
+      "lattice_key": "KW:Ilorin West"
+    },
+    {
+      "abbreviation": "FP Nasarawa",
+      "institution": "Federal Polytechnic Nasarawa",
+      "regulator": "NBTE",
+      "state_code": "NA",
+      "state_en": "Nasarawa",
+      "primary_campus_lga_lattice": "Nasarawa",
+      "lga_774_verified": true,
+      "lattice_key": "NA:Nasarawa"
+    },
+    {
+      "abbreviation": "NSP",
+      "institution": "Niger State Polytechnic",
+      "regulator": "NBTE",
+      "state_code": "NI",
+      "state_en": "Niger",
+      "primary_campus_lga_lattice": "Bida",
+      "lga_774_verified": true,
+      "lattice_key": "NI:Bida"
+    },
+    {
+      "abbreviation": "UAS Poly",
+      "institution": "Umaru Ali Shinkafi Polytechnic Sokoto",
+      "regulator": "NBTE",
+      "state_code": "SO",
+      "state_en": "Sokoto",
+      "primary_campus_lga_lattice": "Sokoto South",
+      "lga_774_verified": true,
+      "lattice_key": "SO:Sokoto South"
+    },
+    {
+      "abbreviation": "FCET Kano",
+      "institution": "Federal College of Education Kano",
+      "regulator": "NCCE",
+      "state_code": "KN",
+      "state_en": "Kano",
+      "primary_campus_lga_lattice": "Kumbotso",
+      "lga_774_verified": true,
+      "lattice_key": "KN:Kumbotso"
+    },
+    {
+      "abbreviation": "FCET Langtang",
+      "institution": "Federal College of Education Langtang",
+      "regulator": "NCCE",
+      "state_code": "PL",
+      "state_en": "Plateau",
+      "primary_campus_lga_lattice": "Langtang North",
+      "lga_774_verified": true,
+      "lattice_key": "PL:Langtang North"
+    },
+    {
+      "abbreviation": "ADSU",
+      "institution": "Adamawa State University Mubi",
+      "regulator": "NUC",
+      "state_code": "AD",
+      "state_en": "Adamawa",
+      "primary_campus_lga_lattice": "Mubi North",
+      "lga_774_verified": true,
+      "lattice_key": "AD:Mubi North"
+    },
+    {
+      "abbreviation": "MAUTECH",
+      "institution": "Modibbo Adama University of Technology",
+      "regulator": "NUC",
+      "state_code": "AD",
+      "state_en": "Adamawa",
+      "primary_campus_lga_lattice": "Yola North",
+      "lga_774_verified": true,
+      "lattice_key": "AD:Yola North"
+    },
+    {
+      "abbreviation": "ATBU",
+      "institution": "Abubakar Tafawa Balewa University",
+      "regulator": "NUC",
+      "state_code": "BA",
+      "state_en": "Bauchi",
+      "primary_campus_lga_lattice": "Bauchi",
+      "lga_774_verified": true,
+      "lattice_key": "BA:Bauchi"
+    },
+    {
+      "abbreviation": "BSU",
+      "institution": "Benue State University",
+      "regulator": "NUC",
+      "state_code": "BE",
+      "state_en": "Benue",
+      "primary_campus_lga_lattice": "Markudi",
+      "lga_774_verified": true,
+      "lattice_key": "BE:Markudi"
+    },
+    {
+      "abbreviation": "JOSTUM",
+      "institution": "Joseph Sarwuan Tarka University Makurdi",
+      "regulator": "NUC",
+      "state_code": "BE",
+      "state_en": "Benue",
+      "primary_campus_lga_lattice": "Markudi",
+      "lga_774_verified": true,
+      "lattice_key": "BE:Markudi"
+    },
+    {
+      "abbreviation": "UNIMAID",
+      "institution": "University of Maiduguri",
+      "regulator": "NUC",
+      "state_code": "BO",
+      "state_en": "Borno",
+      "primary_campus_lga_lattice": "Maiduguri",
+      "lga_774_verified": true,
+      "lattice_key": "BO:Maiduguri"
+    },
+    {
+      "abbreviation": "FUKashere",
+      "institution": "Federal University Kashere",
+      "regulator": "NUC",
+      "state_code": "GO",
+      "state_en": "Gombe",
+      "primary_campus_lga_lattice": "Akko",
+      "lga_774_verified": true,
+      "lattice_key": "GO:Akko"
+    },
+    {
+      "abbreviation": "GSU",
+      "institution": "Gombe State University",
+      "regulator": "NUC",
+      "state_code": "GO",
+      "state_en": "Gombe",
+      "primary_campus_lga_lattice": "Gombe",
+      "lga_774_verified": true,
+      "lattice_key": "GO:Gombe"
+    },
+    {
+      "abbreviation": "FUD",
+      "institution": "Federal University Dutse",
+      "regulator": "NUC",
+      "state_code": "JI",
+      "state_en": "Jigawa",
+      "primary_campus_lga_lattice": "Dutse",
+      "lga_774_verified": true,
+      "lattice_key": "JI:Dutse"
+    },
+    {
+      "abbreviation": "ABU",
+      "institution": "Ahmadu Bello University",
+      "regulator": "NUC",
+      "state_code": "KD",
+      "state_en": "Kaduna",
+      "primary_campus_lga_lattice": "Sabon Gari",
+      "lga_774_verified": true,
+      "lattice_key": "KD:Sabon Gari"
+    },
+    {
+      "abbreviation": "FUE Zaria",
+      "institution": "Federal University of Education Zaria",
+      "regulator": "NUC",
+      "state_code": "KD",
+      "state_en": "Kaduna",
+      "primary_campus_lga_lattice": "Zaria",
+      "lga_774_verified": true,
+      "lattice_key": "KD:Zaria"
+    },
+    {
+      "abbreviation": "KASU",
+      "institution": "Kaduna State University",
+      "regulator": "NUC",
+      "state_code": "KD",
+      "state_en": "Kaduna",
+      "primary_campus_lga_lattice": "Kaduna North",
+      "lga_774_verified": true,
+      "lattice_key": "KD:Kaduna North"
+    },
+    {
+      "abbreviation": "NDA",
+      "institution": "Nigerian Defence Academy",
+      "regulator": "NUC",
+      "state_code": "KD",
+      "state_en": "Kaduna",
+      "primary_campus_lga_lattice": "Chikun",
+      "lga_774_verified": true,
+      "lattice_key": "KD:Chikun"
+    },
+    {
+      "abbreviation": "KSUSTA",
+      "institution": "Kebbi State University of Science and Technology",
+      "regulator": "NUC",
+      "state_code": "KE",
+      "state_en": "Kebbi",
+      "primary_campus_lga_lattice": "Aleiro",
+      "lga_774_verified": true,
+      "lattice_key": "KE:Aleiro"
+    },
+    {
+      "abbreviation": "BUK",
+      "institution": "Bayero University Kano",
+      "regulator": "NUC",
+      "state_code": "KN",
+      "state_en": "Kano",
+      "primary_campus_lga_lattice": "Gwale",
+      "lga_774_verified": true,
+      "lattice_key": "KN:Gwale"
+    },
+    {
+      "abbreviation": "KUST",
+      "institution": "Kano University of Science and Technology",
+      "regulator": "NUC",
+      "state_code": "KN",
+      "state_en": "Kano",
+      "primary_campus_lga_lattice": "Wudil",
+      "lga_774_verified": true,
+      "lattice_key": "KN:Wudil"
+    },
+    {
+      "abbreviation": "FUL",
+      "institution": "Federal University Lokoja",
+      "regulator": "NUC",
+      "state_code": "KO",
+      "state_en": "Kogi",
+      "primary_campus_lga_lattice": "Lokoja",
+      "lga_774_verified": true,
+      "lattice_key": "KO:Lokoja"
+    },
+    {
+      "abbreviation": "KSU",
+      "institution": "Kogi State University",
+      "regulator": "NUC",
+      "state_code": "KO",
+      "state_en": "Kogi",
+      "primary_campus_lga_lattice": "Dekina",
+      "lga_774_verified": true,
+      "lattice_key": "KO:Dekina"
+    },
+    {
+      "abbreviation": "FUDMA",
+      "institution": "Federal University Dutsin-Ma",
+      "regulator": "NUC",
+      "state_code": "KT",
+      "state_en": "Katsina",
+      "primary_campus_lga_lattice": "Dutsin Ma",
+      "lga_774_verified": true,
+      "lattice_key": "KT:Dutsin Ma"
+    },
+    {
+      "abbreviation": "UMYU",
+      "institution": "Umaru Musa Yar'adua University",
+      "regulator": "NUC",
+      "state_code": "KT",
+      "state_en": "Katsina",
+      "primary_campus_lga_lattice": "Katsina",
+      "lga_774_verified": true,
+      "lattice_key": "KT:Katsina"
+    },
+    {
+      "abbreviation": "UNILORIN",
+      "institution": "University of Ilorin",
+      "regulator": "NUC",
+      "state_code": "KW",
+      "state_en": "Kwara",
+      "primary_campus_lga_lattice": "Ilorin South",
+      "lga_774_verified": true,
+      "lattice_key": "KW:Ilorin South"
+    },
+    {
+      "abbreviation": "FULafia",
+      "institution": "Federal University Lafia",
+      "regulator": "NUC",
+      "state_code": "NA",
+      "state_en": "Nasarawa",
+      "primary_campus_lga_lattice": "Lafia",
+      "lga_774_verified": true,
+      "lattice_key": "NA:Lafia"
+    },
+    {
+      "abbreviation": "NSUK",
+      "institution": "Nasarawa State University Keffi",
+      "regulator": "NUC",
+      "state_code": "NA",
+      "state_en": "Nasarawa",
+      "primary_campus_lga_lattice": "Keffi",
+      "lga_774_verified": true,
+      "lattice_key": "NA:Keffi"
+    },
+    {
+      "abbreviation": "FUTMINNA",
+      "institution": "Federal University of Technology Minna",
+      "regulator": "NUC",
+      "state_code": "NI",
+      "state_en": "Niger",
+      "primary_campus_lga_lattice": "Chanchaga",
+      "lga_774_verified": true,
+      "lattice_key": "NI:Chanchaga"
+    },
+    {
+      "abbreviation": "PLASU",
+      "institution": "Plateau State University Bokkos",
+      "regulator": "NUC",
+      "state_code": "PL",
+      "state_en": "Plateau",
+      "primary_campus_lga_lattice": "Bokkos",
+      "lga_774_verified": true,
+      "lattice_key": "PL:Bokkos"
+    },
+    {
+      "abbreviation": "UNIJOS",
+      "institution": "University of Jos",
+      "regulator": "NUC",
+      "state_code": "PL",
+      "state_en": "Plateau",
+      "primary_campus_lga_lattice": "Jos North",
+      "lga_774_verified": true,
+      "lattice_key": "PL:Jos North"
+    },
+    {
+      "abbreviation": "SSU",
+      "institution": "Sokoto State University",
+      "regulator": "NUC",
+      "state_code": "SO",
+      "state_en": "Sokoto",
+      "primary_campus_lga_lattice": "Sokoto North",
+      "lga_774_verified": true,
+      "lattice_key": "SO:Sokoto North"
+    },
+    {
+      "abbreviation": "FUWukari",
+      "institution": "Federal University Wukari",
+      "regulator": "NUC",
+      "state_code": "TA",
+      "state_en": "Taraba",
+      "primary_campus_lga_lattice": "Wukari",
+      "lga_774_verified": true,
+      "lattice_key": "TA:Wukari"
+    },
+    {
+      "abbreviation": "TSU",
+      "institution": "Taraba State University",
+      "regulator": "NUC",
+      "state_code": "TA",
+      "state_en": "Taraba",
+      "primary_campus_lga_lattice": "Jalingo",
+      "lga_774_verified": true,
+      "lattice_key": "TA:Jalingo"
+    },
+    {
+      "abbreviation": "YSU",
+      "institution": "Yobe State University",
+      "regulator": "NUC",
+      "state_code": "YO",
+      "state_en": "Yobe",
+      "primary_campus_lga_lattice": "Damaturu",
+      "lga_774_verified": true,
+      "lattice_key": "YO:Damaturu"
+    },
+    {
+      "abbreviation": "FUGUS",
+      "institution": "Federal University Gusau",
+      "regulator": "NUC",
+      "state_code": "ZA",
+      "state_en": "Zamfara",
+      "primary_campus_lga_lattice": "Gusau",
+      "lga_774_verified": true,
+      "lattice_key": "ZA:Gusau"
+    }
+  ],
+  "compile_errors": []
+}

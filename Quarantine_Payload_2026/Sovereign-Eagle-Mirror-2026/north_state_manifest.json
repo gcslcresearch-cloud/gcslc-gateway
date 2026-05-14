@@ -1,0 +1,1993 @@
+{
+  "manifest_version": "1.0.0",
+  "lattice_source": "gcslc_deep_join.fetch_lga_catalog_raw — hard-wired to 774 national cardinality",
+  "north_state_count": 19,
+  "north_lga_row_count": 413,
+  "schema_notes": {
+    "apex_traditional": "Sovereign narrative row — does not replace statutory government.",
+    "lga_domains": "Every name matches catalogue exactly; spine weld uses ADM2_EN alignment + pcode from HDX/geoBoundaries.",
+    "friction": "Emirate splits / five-seat Kano overlays live in parallel JSON (northern_tier_research_audit), never in LGA renames.",
+    "forensic_injunction_overlay": "KT/KN only — chancellery-first traditional chains; Kano 8 + rotational council metadata; no proximity geometry for emirate assignment."
+  },
+  "states": [
+    {
+      "state_code": "SO",
+      "state_en": "Sokoto",
+      "apex_traditional": {
+        "title": "Sultan of Sokoto",
+        "traditional_order": "Sokoto Caliphate seat",
+        "notes": "Spiritual & historical primacy — LGA domains are statutory 774, not caliphal boundary."
+      },
+      "lga_domains": [
+        {
+          "lga_lattice_name": "Binji",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Bodinga",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Dange Shuni",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Gada",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Goronyo",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Gudu",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Gwadabawa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Illela",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Isa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kebbe",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kware",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Rabah",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Sabon Birni",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Shagari",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Silame",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Sokoto North",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Sokoto South",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Tambuwal",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Tangaza",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Tureta",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Wamako",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Wurno",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Yabo",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        }
+      ],
+      "lga_count": 23
+    },
+    {
+      "state_code": "KE",
+      "state_en": "Kebbi",
+      "apex_traditional": {
+        "title": "Emir of Argungu",
+        "traditional_order": "Kebbi traditional constellation",
+        "notes": "Multiple emirate seats in-state; apex row is schema primary — sub-emirates via future child rows."
+      },
+      "lga_domains": [
+        {
+          "lga_lattice_name": "Aleiro",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Arewa Dandi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Argungu",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Augie",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Bagudo",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Birnin Kebbi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Bunza",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Dandi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Fakai",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Gwandu",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Jega",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kalgo",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Koko/Besse",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Maiyama",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Ngaski",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Sakaba",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Shanga",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Suru",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Wasagu/Danko",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Yauri",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Zuru",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        }
+      ],
+      "lga_count": 21
+    },
+    {
+      "state_code": "ZA",
+      "state_en": "Zamfara",
+      "apex_traditional": {
+        "title": "Emir of Anka",
+        "traditional_order": "Zamfara emirate council",
+        "notes": "Verify palace roster against statute — LGA list remains 774."
+      },
+      "lga_domains": [
+        {
+          "lga_lattice_name": "Anka",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Bakura",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Birnin Magaji/Kiyaw",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Bukkuyum",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Bungudu",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Chafe",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Gummi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Gusau",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kaura Namoda",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Maradun",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Maru",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Shinkafi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Talata Mafara",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Zurmi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        }
+      ],
+      "lga_count": 14
+    },
+    {
+      "state_code": "KT",
+      "state_en": "Katsina",
+      "apex_traditional": {
+        "title": "Emir of Katsina",
+        "traditional_order": "Katsina emirate",
+        "notes": "Katsina vs Daura dual history — statutory LGAs 34 on 774 lattice."
+      },
+      "lga_domains": [
+        {
+          "lga_lattice_name": "Bakori",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "KATSINA_EMIRATE"
+        },
+        {
+          "lga_lattice_name": "Batagarawa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "KATSINA_EMIRATE"
+        },
+        {
+          "lga_lattice_name": "Batsari",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "KATSINA_EMIRATE"
+        },
+        {
+          "lga_lattice_name": "Baure",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "DAURA_EMIRATE_CLUSTER"
+        },
+        {
+          "lga_lattice_name": "Bindawa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "KATSINA_EMIRATE"
+        },
+        {
+          "lga_lattice_name": "Charanchi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "KATSINA_EMIRATE"
+        },
+        {
+          "lga_lattice_name": "Dan Musa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "KATSINA_EMIRATE"
+        },
+        {
+          "lga_lattice_name": "Dandume",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "KATSINA_EMIRATE"
+        },
+        {
+          "lga_lattice_name": "Danja",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "KATSINA_EMIRATE"
+        },
+        {
+          "lga_lattice_name": "Daura",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "DAURA_EMIRATE_CLUSTER"
+        },
+        {
+          "lga_lattice_name": "Dutsi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "KATSINA_EMIRATE"
+        },
+        {
+          "lga_lattice_name": "Dutsin Ma",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "KATSINA_EMIRATE"
+        },
+        {
+          "lga_lattice_name": "Faskari",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "KATSINA_EMIRATE"
+        },
+        {
+          "lga_lattice_name": "Funtua",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "KATSINA_EMIRATE"
+        },
+        {
+          "lga_lattice_name": "Ingawa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "KATSINA_EMIRATE"
+        },
+        {
+          "lga_lattice_name": "Jibia",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "KATSINA_EMIRATE"
+        },
+        {
+          "lga_lattice_name": "Kafur",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "KATSINA_EMIRATE"
+        },
+        {
+          "lga_lattice_name": "Kaita",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "KATSINA_EMIRATE"
+        },
+        {
+          "lga_lattice_name": "Kankara",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "KATSINA_EMIRATE"
+        },
+        {
+          "lga_lattice_name": "Kankia",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "KATSINA_EMIRATE"
+        },
+        {
+          "lga_lattice_name": "Katsina",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "KATSINA_EMIRATE"
+        },
+        {
+          "lga_lattice_name": "Kurfi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "KATSINA_EMIRATE"
+        },
+        {
+          "lga_lattice_name": "Kusada",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "KATSINA_EMIRATE"
+        },
+        {
+          "lga_lattice_name": "Mai'Adua",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "DAURA_EMIRATE_CLUSTER"
+        },
+        {
+          "lga_lattice_name": "Malumfashi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "KATSINA_EMIRATE"
+        },
+        {
+          "lga_lattice_name": "Mani",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "KATSINA_EMIRATE"
+        },
+        {
+          "lga_lattice_name": "Mashi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "KATSINA_EMIRATE"
+        },
+        {
+          "lga_lattice_name": "Matazu",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "KATSINA_EMIRATE"
+        },
+        {
+          "lga_lattice_name": "Musawa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "KATSINA_EMIRATE"
+        },
+        {
+          "lga_lattice_name": "Rimi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "KATSINA_EMIRATE"
+        },
+        {
+          "lga_lattice_name": "Sabuwa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "KATSINA_EMIRATE"
+        },
+        {
+          "lga_lattice_name": "Safana",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "KATSINA_EMIRATE"
+        },
+        {
+          "lga_lattice_name": "Sandamu",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "DAURA_EMIRATE_CLUSTER"
+        },
+        {
+          "lga_lattice_name": "Zango",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)",
+          "statutory_emirate_chain": "DAURA_EMIRATE_CLUSTER"
+        }
+      ],
+      "lga_count": 34,
+      "forensic_injunction_overlay": {
+        "guardrail": "FORBIDDEN: proximity_geometry_for_traditional_domain",
+        "allowed": "traditional_statutory_chain_plus_chancellery_sealed_lists",
+        "daura_cluster": {
+          "statutory_core_five_lga": [
+            "Baure",
+            "Daura",
+            "Mai'Adua",
+            "Sandamu",
+            "Zango"
+          ],
+          "sixth_lga": {
+            "status": "PENDING_CHANCELLERY_SEAL",
+            "resolved_lga_lattice_name": null,
+            "instruction": "Identify the 6th Daura-cluster LGA from Emirate Chancellery minutes / gazette — forbidden to infer from map proximity."
+          }
+        },
+        "katsina_emirate_hard_weld": {
+          "mandatory_katsina_pulse_lgas": [
+            "Ingawa",
+            "Mani"
+          ],
+          "note": "Ingawa & Mani — ancestral pulse with Katsina Emirate regardless of distance to Daura."
+        },
+        "district_head_priority_nodes": [
+          {
+            "node_id": "DH-MANI-01",
+            "title": "District Head · Mani LGA",
+            "lga_lattice": "Mani",
+            "emirate_chain": "KATSINA_EMIRATE",
+            "audit_benchmark_official_name": "Dr. Tukur Bello Ingawa",
+            "audit_rule": "If incumbent display name ≠ benchmark, treat row as corrupt until reconciled."
+          },
+          {
+            "node_id": "MRK-KATSINA-01",
+            "title": "Magajin Rafin Katsina",
+            "lga_lattice": "Katsina",
+            "emirate_chain": "KATSINA_EMIRATE",
+            "audit_benchmark_official_name": "Magajin Rafin Katsina (title as sealed by chancellery)",
+            "audit_rule": "Bind to Katsina LGA lattice + palace roster — not proximity."
+          }
+        ]
+      }
+    },
+    {
+      "state_code": "KN",
+      "state_en": "Kano",
+      "apex_traditional": {
+        "title": "Emir of Kano",
+        "traditional_order": "Kano Emirate",
+        "notes": "Five-emirate statute vs single-emirate memory — overlay only (see northern_tier_research_audit)."
+      },
+      "lga_domains": [
+        {
+          "lga_lattice_name": "Ajingi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Albasu",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Bagwai",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Bebeji",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Bichi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Bunkure",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Dala",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Dambatta",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Dawakin Kudu",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Dawakin Tofa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Doguwa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Fagge",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Gabasawa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Garko",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Garun Mallam",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Gaya",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Gezawa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Gwale",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Gwarzo",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kabo",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kano Municipal",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Karaye",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kibiya",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kiru",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kumbotso",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kunchi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kura",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Madobi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Makoda",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Minjibir",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Nasarawa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Rano",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Rimin Gado",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Rogo",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Shanono",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Sumaila",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Takai",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Tarauni",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Tofa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Tsanyawa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Tudun Wada",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Ungogo",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Warawa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Wudil",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        }
+      ],
+      "lga_count": 44,
+      "forensic_injunction_overlay": {
+        "lga_count_statutory": 44,
+        "emir_metropolitan_core_eight": {
+          "emir": "His Royal Highness · Alhaji Aminu Ado Bayero · Emir of Kano",
+          "lga_lattice_names": [
+            "Kano Municipal",
+            "Fagge",
+            "Gwale",
+            "Nasarawa",
+            "Tarauni",
+            "Dala",
+            "Kumbotso",
+            "Ungogo"
+          ],
+          "verification": "All eight names verified against gcslc_deep_join KN catalogue."
+        },
+        "state_council_of_chiefs_chairman": {
+          "office": "Chairman · Kano State Council of Chiefs",
+          "rotation_model": "Rotational",
+          "notes": "Chairmanship rotates among emirate council heads under current administrative practice — metadata must never be conflated with the metropolitan Emir core (8 LGAs) or the 44-LGA lattice."
+        }
+      }
+    },
+    {
+      "state_code": "JI",
+      "state_en": "Jigawa",
+      "apex_traditional": {
+        "title": "Emir of Dutse",
+        "traditional_order": "Jigawa emirate council",
+        "notes": ""
+      },
+      "lga_domains": [
+        {
+          "lga_lattice_name": "Auyo",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Babura",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Biriniwa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Birnin Kudu",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Buji",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Dutse",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Gagarawa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Garki",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Gumel",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Guri",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Gwaram",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Gwiwa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Hadejia",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Jahun",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kafin Hausa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kaugama",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kazaure",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kiri Kasama",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kiyawa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Maigatari",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Malam Madori",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Miga",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Ringim",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Roni",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Sule Tankarkar",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Taura",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Yankwashi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        }
+      ],
+      "lga_count": 27
+    },
+    {
+      "state_code": "KD",
+      "state_en": "Kaduna",
+      "apex_traditional": {
+        "title": "Emir of Zazzau",
+        "traditional_order": "Zazzau Emirate",
+        "notes": "Pilot sovereign bundle in repo — sub-district ledger separate from ADM2."
+      },
+      "lga_domains": [
+        {
+          "lga_lattice_name": "Birnin Gwari",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Chikun",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Giwa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Igabi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Ikara",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Jaba",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Jema'a",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kachia",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kaduna North",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kaduna South",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kagarko",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kajuru",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kaura",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kauru",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kubau",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kudan",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Lere",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Makarfi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Sabon Gari",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Sanga",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Soba",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Zangon Kataf",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Zaria",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        }
+      ],
+      "lga_count": 23
+    },
+    {
+      "state_code": "BA",
+      "state_en": "Bauchi",
+      "apex_traditional": {
+        "title": "Emir of Bauchi",
+        "traditional_order": "Bauchi emirate",
+        "notes": ""
+      },
+      "lga_domains": [
+        {
+          "lga_lattice_name": "Alkaleri",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Bauchi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Bogoro",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Damban",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Darazo",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Dass",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Gamawa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Ganjuwa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Giade",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Itas/Gadau",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Jama'are",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Katagum",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kirfi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Misau",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Ningi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Shira",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Tafawa Balewa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Toro",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Warji",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Zaki",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        }
+      ],
+      "lga_count": 20
+    },
+    {
+      "state_code": "GO",
+      "state_en": "Gombe",
+      "apex_traditional": {
+        "title": "Emir of Gombe",
+        "traditional_order": "Gombe emirate",
+        "notes": ""
+      },
+      "lga_domains": [
+        {
+          "lga_lattice_name": "Akko",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Balanga",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Billiri",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Dukku",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Funakaye",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Gombe",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kaltungo",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kwami",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Nafada",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Shongom",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Yamaltu/Deba",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        }
+      ],
+      "lga_count": 11
+    },
+    {
+      "state_code": "YO",
+      "state_en": "Yobe",
+      "apex_traditional": {
+        "title": "Emir of Damaturu",
+        "traditional_order": "Yobe traditional council",
+        "notes": "Titular apex may be Pataskum el-Kanemi seat — confirm chancellery."
+      },
+      "lga_domains": [
+        {
+          "lga_lattice_name": "Bade",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Bursari",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Damaturu",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Fika",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Fune",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Geidam",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Gujba",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Gulani",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Jakusko",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Karasuwa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Machina",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Nangere",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Nguru",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Potiskum",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Tarmuwa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Yunusari",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Yusufari",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        }
+      ],
+      "lga_count": 17
+    },
+    {
+      "state_code": "BO",
+      "state_en": "Borno",
+      "apex_traditional": {
+        "title": "Shehu of Borno",
+        "traditional_order": "Borno Emirate",
+        "notes": ""
+      },
+      "lga_domains": [
+        {
+          "lga_lattice_name": "Abadam",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Askira/Uba",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Bama",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Bayo",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Biu",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Chibok",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Damboa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Dikwa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Gubio",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Guzamala",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Gwoza",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Hawul",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Jere",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kaga",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kala/Balge",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Konduga",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kukawa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kwaya Kusar",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Mafa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Magumeri",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Maiduguri",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Marte",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Mobbar",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Monguno",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Ngala",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Nganzai",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Shani",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        }
+      ],
+      "lga_count": 27
+    },
+    {
+      "state_code": "AD",
+      "state_en": "Adamawa",
+      "apex_traditional": {
+        "title": "Lamido Adamawa",
+        "traditional_order": "Adamawa Emirate",
+        "notes": "Fombina historical lattice."
+      },
+      "lga_domains": [
+        {
+          "lga_lattice_name": "Demsa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Fufure",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Ganye",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Gayuk",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Gombi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Grie",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Hong",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Jada",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Lamurde",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Madagali",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Maiha",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Mayo Belwa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Michika",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Mubi North",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Mubi South",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Numan",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Shelleng",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Song",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Toungo",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Yola North",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Yola South",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        }
+      ],
+      "lga_count": 21
+    },
+    {
+      "state_code": "TA",
+      "state_en": "Taraba",
+      "apex_traditional": {
+        "title": "Emir of Muri / Taraba mosaic",
+        "traditional_order": "Taraba traditional tapestry",
+        "notes": "Multiple chiefdoms — apex field is schema placeholder; split in v2."
+      },
+      "lga_domains": [
+        {
+          "lga_lattice_name": "Ardo Kola",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Bali",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Donga",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Gashaka",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Gassol",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Ibi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Jalingo",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Karim Lamido",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kumi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Lau",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Sardauna",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Takum",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Ussa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Wukari",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Yorro",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Zing",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        }
+      ],
+      "lga_count": 16
+    },
+    {
+      "state_code": "PL",
+      "state_en": "Plateau",
+      "apex_traditional": {
+        "title": "Gbong Gwom Jos",
+        "traditional_order": "Plateau traditional council",
+        "notes": "Multi-ethnic apex — LGA domains statutory."
+      },
+      "lga_domains": [
+        {
+          "lga_lattice_name": "Barkin Ladi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Bassa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Bokkos",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Jos East",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Jos North",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Jos South",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kanam",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kanke",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Langtang North",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Langtang South",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Mangu",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Mikang",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Pankshin",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Qua'an Pan",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Riyom",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Shedam",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Wase",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        }
+      ],
+      "lga_count": 17
+    },
+    {
+      "state_code": "NI",
+      "state_en": "Niger",
+      "apex_traditional": {
+        "title": "Emir of Minna",
+        "traditional_order": "Niger traditional council",
+        "notes": ""
+      },
+      "lga_domains": [
+        {
+          "lga_lattice_name": "Agaie",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Agwara",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Bida",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Borgu",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Bosso",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Chanchaga",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Edati",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Gbako",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Gurara",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Katcha",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kontagora",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Lapai",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Lavun",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Magama",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Mariga",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Mashegu",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Mokwa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Moya",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Paikoro",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Rafi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Rijau",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Shiroro",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Suleja",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Tafa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Wushishi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        }
+      ],
+      "lga_count": 25
+    },
+    {
+      "state_code": "KW",
+      "state_en": "Kwara",
+      "apex_traditional": {
+        "title": "Emir of Ilorin",
+        "traditional_order": "Ilorin Emirate",
+        "notes": ""
+      },
+      "lga_domains": [
+        {
+          "lga_lattice_name": "Asa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Baruten",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Edu",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Ekiti",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Ifelodun",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Ilorin East",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Ilorin South",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Ilorin West",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Irepodun",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Isin",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kaiama",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Moro",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Offa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Oke Ero",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Oyun",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Pategi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        }
+      ],
+      "lga_count": 16
+    },
+    {
+      "state_code": "KO",
+      "state_en": "Kogi",
+      "apex_traditional": {
+        "title": "Attah Igala / Ohinoyi",
+        "traditional_order": "Kogi traditional tapestry",
+        "notes": "Multiple historic seats — schema primary is composite label."
+      },
+      "lga_domains": [
+        {
+          "lga_lattice_name": "Adavi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Ajaokuta",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Ankpa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Bassa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Dekina",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Ibaji",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Idah",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Igalamela Odolu",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Ijumu",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kabba/Bunu",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kogi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Lokoja",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Mopa Muro",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Ofu",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Ogori/Magongo",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Okehi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Okene",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Olamaboro",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Omala",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Yagba East",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Yagba West",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        }
+      ],
+      "lga_count": 21
+    },
+    {
+      "state_code": "BE",
+      "state_en": "Benue",
+      "apex_traditional": {
+        "title": "Tor Tiv",
+        "traditional_order": "Tiv traditional authority",
+        "notes": ""
+      },
+      "lga_domains": [
+        {
+          "lga_lattice_name": "Ado",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Agatu",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Apa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Buruku",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Gboko",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Guma",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Gwer East",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Gwer West",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Katsina-Ala",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Konshisha",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kwande",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Logo",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Markudi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Obi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Ogbadibo",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Ohimini",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Oju",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Okpokwu",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Oturkpo",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Tarka",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Ukum",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Ushongo",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Vandeikya",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        }
+      ],
+      "lga_count": 23
+    },
+    {
+      "state_code": "NA",
+      "state_en": "Nasarawa",
+      "apex_traditional": {
+        "title": "Emir of Lafia",
+        "traditional_order": "Nasarawa emirate",
+        "notes": ""
+      },
+      "lga_domains": [
+        {
+          "lga_lattice_name": "Akwanga",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Awe",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Doma",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Karu",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Keana",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Keffi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Kokona",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Lafia",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Nasarawa",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Nasarawa Egon",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Obi",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Toto",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        },
+        {
+          "lga_lattice_name": "Wamba",
+          "lga_id_note": "Resolved at runtime via ADM2 + 774 fused row key = (state_code, name)"
+        }
+      ],
+      "lga_count": 13
+    }
+  ]
+}

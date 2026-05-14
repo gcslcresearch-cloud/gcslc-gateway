@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gcslc.local/schema/north_state_manifest.schema.json",
+  "title": "North-State Manifest — apex traditional ↔ 774 LGA domains",
+  "type": "object",
+  "required": [
+    "manifest_version",
+    "lattice_source",
+    "north_state_count",
+    "north_lga_row_count",
+    "states"
+  ],
+  "properties": {
+    "manifest_version": { "type": "string" },
+    "lattice_source": { "type": "string" },
+    "north_state_count": { "type": "integer", "const": 19 },
+    "north_lga_row_count": { "type": "integer", "minimum": 1 },
+    "schema_notes": { "type": "object" },
+    "states": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["state_code", "state_en", "apex_traditional", "lga_domains", "lga_count"],
+        "properties": {
+          "state_code": { "type": "string", "pattern": "^[A-Z]{2}$" },
+          "state_en": { "type": "string" },
+          "apex_traditional": {
+            "type": "object",
+            "properties": {
+              "title": { "type": "string" },
+              "traditional_order": { "type": "string" },
+              "notes": { "type": "string" }
+            }
+          },
+          "lga_domains": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["lga_lattice_name", "lga_id_note"],
+              "properties": {
+                "lga_lattice_name": { "type": "string" },
+                "lga_id_note": { "type": "string" }
+              }
+            }
+          },
+          "lga_count": { "type": "integer", "minimum": 0 }
+        }
+      }
+    }
+  }
+}

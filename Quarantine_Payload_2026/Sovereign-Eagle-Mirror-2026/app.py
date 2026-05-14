@@ -65,6 +65,62 @@ from sovereign_logistics_joint import (
 from generative_eagle import collect_eagle_shouts, friction_alert_active
 # Load fused catalog before sovereign_active_intel (same gcslc_deep_join dep) — avoids rare Streamlit loader KeyError.
 from gcslc_deep_join import NATIONAL_WARD_TOTAL, build_fused_catalog
+from dapi_traditional_weld import (
+    TRADITIONAL_PRINCIPAL_ROLES,
+    ensure_browser_session_id,
+    fetch_oauth_token,
+    haraji_cdc_recent_rows,
+    init_verification_store,
+    leaderboard_for_state_wards,
+    principal_jurisdiction_stats,
+    record_haraji_cdc_line,
+    record_verification,
+    verification_ledger_recent,
+    ward_verification_counts,
+)
+from katsina_kano_forensic import (
+    is_kano_state,
+    is_katsina_state,
+    kano_forensic_mophi_glass_html,
+    katsina_forensic_mophi_glass_html,
+)
+from kaduna_sovereign_pilot import (
+    ZAZZAU_APEX,
+    ZAZZAU_ELEVEN_SOURCE_NOTE,
+    ZAZZAU_THIRTY_ONE_DISTRICTS,
+    DISTRICT_LEDGER_NOTE,
+    KADUNA_CHIEFS_COUNCIL_PRECEDENCE,
+    KADUNA_INSTITUTIONS,
+    KADUNA_MODERN_STATUTORY_LATTICE,
+    KADUNA_SPT_FRONTIER_LGA_EN,
+    RIGASA_DISTRICT_ID,
+    STRANGER_VETTING_DISTANCE_KM,
+    DAPI_PARENT_FACING_PRIVACY,
+    build_zazzau_eleven_lga_weld_rows,
+    find_ward_pcode_rigasa_igabi,
+    is_kaduna_state,
+    kaduna_state_ward_total,
+    lga_pcode_lookup,
+    ward_count_for_lga,
+)
+from kaduna_student_deep_weld import (
+    compute_ward_overload_wpcodes,
+    kaduna_me_anguwa_pressure_summary,
+    nuba_campus_inference_text,
+)
+from kaduna_map_twin_portrait import render_kaduna_map_twin_portrait
+from nafc_student_load_pipeline import fallback_live_student_pulse_snapshot, live_student_pulse_snapshot
+from sovereign_enrollment_ledger import (
+    NATIONAL_NOTIONAL_TOTAL_STUDENTS,
+    SOVEREIGN_ALBASA_SPEC,
+    albasa_commander_benchmark_rows,
+    bind_albasa_monthly_pool_to_ledger_rows,
+    bind_albasa_pool_to_kaduna_institution_rows,
+    build_sovereign_enrollment_ledger_rows,
+    html_albasa_commander_benchmark_table,
+    kaduna_headline_enrollment_counts,
+    national_ledger_population_sum,
+)
 from sovereign_active_intel import (
     build_total_reality_summary,
     load_ntw_operator_proxy,
@@ -649,6 +705,56 @@ circle.gcslc-strike-lagos {
     return m
 
 
+def _ward_pcode_from_feature(feature: dict) -> str:
+    p = feature.get("properties") or {}
+    for k in ("ADM3_PCODE", "adm3_pcode", "WARD PCODE", "WARD_PCODE"):
+        v = p.get(k)
+        if v not in (None, ""):
+            return str(v).strip()
+    return ""
+
+
+def _verification_heatmap_color(t: float) -> str:
+    """Deep matter (#030818) → institutional cyan (#00E5FF)."""
+    t = max(0.0, min(1.0, float(t)))
+    r1, g1, b1 = 3, 8, 24
+    r2, g2, b2 = 0, 229, 255
+    r = int(r1 + (r2 - r1) * t)
+    g = int(g1 + (g2 - g1) * t)
+    b = int(b1 + (b2 - b1) * t)
+    return f"#{r:02x}{g:02x}{b:02x}"
+
+
+def _ward_style_verification_heatmap(
+    feature: dict,
+    counts: dict[str, int],
+    vmax: int,
+    *,
+    overload_wpcodes: frozenset[str] | None = None,
+) -> dict:
+    wp = _ward_pcode_from_feature(feature)
+    c = int(counts.get(wp, 0))
+    if vmax <= 0:
+        t = 0.0
+    else:
+        t = min(1.0, c / float(max(vmax, 1)))
+    fill = _verification_heatmap_color(t)
+    fill_op = 0.05 + 0.55 * t
+    style: dict[str, Any] = {
+        "color": CYAN if t > 0.12 else "#141428",
+        "weight": 0.85 + 1.55 * t,
+        "fillColor": fill,
+        "fillOpacity": fill_op,
+        "opacity": 0.45 + 0.48 * t,
+        "className": "gcslc-ward-verify-heat leaflet-interactive",
+    }
+    if overload_wpcodes and wp in overload_wpcodes:
+        style["color"] = CRIMSON_VULN
+        style["weight"] = max(float(style["weight"]), 2.35)
+        style["className"] = str(style.get("className") or "") + " gcslc-ward-overloaded"
+    return style
+
+
 def _ward_style_with_asset(
     feature: dict,
     asset_states: frozenset[str],
@@ -993,6 +1099,9 @@ def _build_federation_map(
     phase2: dict | None,
     asset_states: frozenset[str],
     *,
+    ward_verify_counts: dict[str, int] | None = None,
+    verification_heatmap: bool = False,
+    ward_overload_wpcodes: frozenset[str] | None = None,
     show_ncc_vulnerability: bool = False,
     ncc_incidents: list[dict] | None = None,
     show_cbn_access: bool = False,
@@ -1213,6 +1322,11 @@ circle.gcslc-micro-capillary, path.gcslc-micro-capillary {
   fill: rgba(0,229,255,0.35) !important;
   stroke-width: 1px !important;
 }
+path.gcslc-ward-verify-heat.gcslc-ward-overloaded {
+  stroke: #DC143C !important;
+  stroke-width: 2.45px !important;
+  filter: drop-shadow(0 0 7px rgba(220,20,60,0.42)) !important;
+}
 @media (prefers-reduced-motion: reduce) {
   path.gcslc-lga-sovereign-heartbeat, path.gcslc-ward-eightrec-asset,
   circle.gcslc-atom-industrial, path.gcslc-atom-industrial,
@@ -1340,9 +1454,23 @@ path.gcslc-atom-node {
             ).add_to(fg_lga)
 
         wards_fc = phase2.get("wards_fc")
-        fg_ward = folium.FeatureGroup(name="8,806 Wards · HDX spine + 8REC asset aura").add_to(
-            m
+        _wv = ward_verify_counts or {}
+        _vmax = max(_wv.values()) if _wv else 0
+        _overload_fc = ward_overload_wpcodes or frozenset()
+        _ol_note = (
+            f" — {len(_overload_fc)} ward(s) · Me Anguwa overload (crimson ring · tooltip detail on ward)"
+            if verification_heatmap and _overload_fc
+            else ""
         )
+        _ward_layer_name = (
+            (
+                "8,806 Wards · DAPI verification heatmap (cyan = verified mass)"
+                if verification_heatmap
+                else "8,806 Wards · HDX spine + 8REC asset aura"
+            )
+            + _ol_note
+        )
+        fg_ward = folium.FeatureGroup(name=_ward_layer_name).add_to(m)
         if wards_fc and wards_fc.get("features"):
             w0 = wards_fc["features"][0].get("properties") or {}
             tip_fields = [k for k in ("ADM3_EN", "ADM2_EN", "ADM1_EN") if k in w0]
@@ -1355,10 +1483,18 @@ path.gcslc-atom-node {
                 if tip_fields
                 else None
             )
+
+            def _style_ward(feat: dict) -> dict:
+                if verification_heatmap:
+                    return _ward_style_verification_heatmap(
+                        feat, _wv, _vmax, overload_wpcodes=_overload_fc
+                    )
+                return _ward_style_with_asset(feat, asset_states)
+
             folium.GeoJson(
                 wards_fc,
                 pane="wardReveal",
-                style_function=lambda f: _ward_style_with_asset(f, asset_states),
+                style_function=_style_ward,
                 highlight_function=lambda _f: {
                     "weight": 2.2,
                     "color": "#FFFFFF",
@@ -2045,17 +2181,81 @@ def _kgec_sidebar_section() -> Any:
         return st.sidebar.container()
 
 
+def _html_sovereign_enrollment_forensic_strip(
+    *,
+    headline: dict[str, int],
+    meta_ledger: dict[str, Any],
+    national_sum: int,
+    state_row_count: int,
+) -> str:
+    """Always-on forensic strip — ABU / KASU / NUBA + national Σ (36 states + FCT)."""
+    abu = int(headline.get("ABU") or 0)
+    kasu = int(headline.get("KASU") or 0)
+    nuba = int(headline.get("NUBA") or 0)
+    kd_tot = int(meta_ledger.get("kaduna_total") or 0)
+    cy = html.escape(str(meta_ledger.get("academic_cycle") or ""))
+    return (
+        '<div class="kgec-sovereign-enrollment-forensic" role="region" '
+        'aria-label="Sovereign enrollment forensic headline">'
+        '<p class="kgec-sovereign-enrollment-cap">Sovereign Enrollment Ledger · forensic headline</p>'
+        f'<p class="kgec-sovereign-enrollment-cycle">Academic cycle <strong>{cy}</strong> · '
+        f'<span class="kgec-sovereign-enrollment-sum">National Σ (36 states + FCT): {national_sum:,}</span></p>'
+        '<div class="kgec-sovereign-enrollment-grid">'
+        f'<span class="kgec-sov-cell"><abbr title="Ahmadu Bello University">ABU</abbr> Zaria · <strong>{abu:,}</strong></span>'
+        f'<span class="kgec-sov-cell"><abbr title="Kaduna State University">KASU</abbr> · <strong>{kasu:,}</strong></span>'
+        f'<span class="kgec-sov-cell"><abbr title="Nuhu Bamalli Polytechnic">NUBA</abbr> total · <strong>{nuba:,}</strong></span>'
+        f'<span class="kgec-sov-cell kgec-sov-cell--kaduna">Kaduna pilot Σ · <strong>{kd_tot:,}</strong></span>'
+        f'<span class="kgec-sov-cell kgec-sov-cell--meta">{state_row_count} jurisdiction rows · expander below</span>'
+        "</div></div>"
+    )
+
+
+def _html_live_student_pulse_strip(snap: dict[str, Any]) -> str:
+    """NAFC header meter — Mophi Glass: dense numbers + long copy only in native title tooltips."""
+    th = html.escape(str(snap.get("tooltip_historical") or ""))
+    tp = html.escape(str(snap.get("tooltip_predictive") or ""))
+    tl = html.escape(str(snap.get("tooltip_live") or ""))
+    tn = html.escape(str(snap.get("tooltip_nuba") or "").strip())
+    cy = html.escape(str(snap.get("academic_cycle_label") or ""))
+    seed = int(snap.get("kaduna_seed_enrolment_notional") or 0)
+    wn = int(snap.get("dapi_wards_indexed") or 0)
+    vt = int(snap.get("dapi_verification_events_total") or 0)
+    _nuba_chip = ""
+    if tn:
+        _nuba_chip = (
+            '<span class="kgec-mophi-glass-tip kgec-live-pulse-metric kgec-live-pulse-nuba" '
+            f'title="{tn}">NUBA · Zaria / Kafanchan</span>'
+        )
+    _degraded = ""
+    if snap.get("pulse_degraded"):
+        _degraded = (
+            '<span class="kgec-live-pulse-degraded" title="Pulse snapshot degraded — see tooltips / logs">'
+            "· degraded</span>"
+        )
+    return (
+        '<div class="kgec-live-student-pulse-strip" role="region" aria-label="Live student pulse NAFC">'
+        '<span class="kgec-live-pulse-label">Live Student Pulse</span>'
+        f'<span class="kgec-live-pulse-cycle">{cy}</span>'
+        f'{_degraded}'
+        f'<span class="kgec-mophi-glass-tip kgec-live-pulse-metric" title="{th}">Kaduna seed · {seed:,}</span>'
+        f'<span class="kgec-mophi-glass-tip kgec-live-pulse-metric" title="{tp}">Nowcast lane</span>'
+        f'<span class="kgec-mophi-glass-tip kgec-live-pulse-metric" title="{tl}">'
+        f"DAPI · {wn:,} wards · {vt:,} events</span>"
+        f"{_nuba_chip}"
+        "</div>"
+    )
+
+
 def _html_eagle_ticker(shouts: list[dict], *, alert_pulse: bool) -> str:
     parts: list[str] = []
     for s in (shouts or [])[:14]:
         pulse = str(s.get("pulse") or "")
-        cls = (
-            "p-friction"
-            if pulse == "friction"
-            else "p-opportunity"
-            if pulse == "opportunity"
-            else "p-liquidity"
-        )
+        if pulse == "friction":
+            cls = "p-friction"
+        elif pulse == "opportunity":
+            cls = "p-opportunity"
+        else:
+            cls = "p-liquidity"
         h = html.escape(str(s.get("headline", ""))[:92])
         d = html.escape(str(s.get("detail", ""))[:118])
         parts.append(f"<span class='eagle-shout {cls}'><b>{h}</b> — {d}</span>")
@@ -2161,6 +2361,29 @@ def _eagle_voice_fragment_body() -> None:
     )
     if tick_html:
         st.markdown(tick_html, unsafe_allow_html=True)
+    try:
+        init_verification_store()
+        _ev_pulse = ward_verification_counts()
+        _vk_p = len(_ev_pulse)
+        _vt_p = sum(int(v) for v in _ev_pulse.values())
+        _student_pulse_snap = live_student_pulse_snapshot(
+            verification_ward_keys=_vk_p,
+            verification_event_total=_vt_p,
+        )
+    except Exception:
+        _student_pulse_snap = fallback_live_student_pulse_snapshot()
+    try:
+        st.markdown(
+            '<div class="kgec-eagle-voice-pulse-rail">'
+            + _html_live_student_pulse_strip(_student_pulse_snap)
+            + "</div>",
+            unsafe_allow_html=True,
+        )
+    except Exception:
+        st.caption(
+            "Live Student Pulse strip degraded — NAFC snapshot or HTML render failed; "
+            "verify nafc_student_load_pipeline and kaduna pilot JSON."
+        )
 
 
 _eagle_frag = getattr(st, "fragment", None)
@@ -2472,15 +2695,127 @@ st.components.v1.html(
     width=0,
 )
 
-# First main paint · Eagle nav targets + ticker (fragment updates AZK hover even when ticker off)
+# First main paint · Eagle Voice + ticker (fragment updates AZK hover even when ticker off)
 _eagle_voice_live()
 _render_sovereign_joint_strip()
 _render_kysah_sovereign_ribbon()
+
+_sov_lr, _sov_m = build_sovereign_enrollment_ledger_rows()
+_nat_sum = national_ledger_population_sum(_sov_lr)
+_headline_counts = kaduna_headline_enrollment_counts()
+st.markdown(
+    _html_sovereign_enrollment_forensic_strip(
+        headline=_headline_counts,
+        meta_ledger=_sov_m,
+        national_sum=_nat_sum,
+        state_row_count=len(_sov_lr),
+    ),
+    unsafe_allow_html=True,
+)
+
+_fee_bind = float(st.session_state.get("sov_rev_ngn_per_v", 1000))
+_vpm_bind = float(st.session_state.get("sov_rev_vpm", 1.0))
+_sov_lr_albasa = bind_albasa_monthly_pool_to_ledger_rows(
+    _sov_lr,
+    ngn_per_verification=_fee_bind,
+    verifications_per_student_per_month=_vpm_bind,
+)
+_kd_rows_albasa = bind_albasa_pool_to_kaduna_institution_rows(
+    list(_sov_m.get("kaduna_institution_rows") or []),
+    ngn_per_verification=_fee_bind,
+    verifications_per_student_per_month=_vpm_bind,
+)
+
+with st.expander(
+    "Sovereign Audit · National Ledger & Albasa (₦1k economics fused)",
+    expanded=True,
+):
+    st.caption(
+        "Enrollment ledger and Albasa ₦1k pool stay on this Intelligent Map Page — comma-separated display rows."
+    )
+    _tab_led, _tab_spec = st.tabs(
+        ("Enrollment · 36+1 + Albasa pool", "Albasa specification (reference JSON)"),
+    )
+    with _tab_led:
+        st.markdown('<div class="kgec-sovereign-audit-led">', unsafe_allow_html=True)
+        st.caption(
+            f"Cycle {_sov_m['academic_cycle']} · national envelope **{NATIONAL_NOTIONAL_TOTAL_STUDENTS:,}** · "
+            "fee × intensity follow **`sov_rev_ngn_per_v`** / **`sov_rev_vpm`** (session defaults below)."
+        )
+        _led_display = [
+            {
+                "State": r["state_en"],
+                "Code": r["state_code"],
+                "Students": f'{int(r.get("notional_students") or 0):,}',
+                "Albasa pool (₦/mo)": f'₦{int(r.get("albasa_monthly_pool_ngn") or 0):,}',
+                "Pilot highlight": r.get("pilot_highlight") or "",
+                "Source": r.get("source_note") or "",
+            }
+            for r in _sov_lr_albasa
+        ]
+        st.dataframe(
+            _led_display,
+            column_config={
+                "State": st.column_config.TextColumn("State", width=130),
+                "Code": st.column_config.TextColumn("Code", width=70),
+                "Students": st.column_config.TextColumn("Students", width=110),
+                "Albasa pool (₦/mo)": st.column_config.TextColumn("Albasa ₦/mo", width=145),
+                "Pilot highlight": st.column_config.TextColumn("Pilot highlight", width=300),
+                "Source": st.column_config.TextColumn("Source", width=340),
+            },
+            hide_index=True,
+            use_container_width=True,
+            height=440,
+        )
+        st.markdown("**Kaduna pilot · institutions + Albasa pool per row**")
+        _kd_disp = [
+            {
+                "abbr": str(x.get("abbr") or ""),
+                "institution": str(x.get("institution") or ""),
+                "students": f'{int(x.get("students") or 0):,}',
+                "Albasa (₦/mo)": f'₦{int(x.get("albasa_monthly_pool_ngn") or 0):,}',
+                "note": str(x.get("note") or ""),
+            }
+            for x in _kd_rows_albasa
+        ]
+        st.dataframe(
+            _kd_disp,
+            column_config={
+                "abbr": st.column_config.TextColumn("abbr", width=72),
+                "institution": st.column_config.TextColumn("Institution", width=260),
+                "students": st.column_config.TextColumn("Students", width=100),
+                "Albasa (₦/mo)": st.column_config.TextColumn("Albasa ₦/mo", width=130),
+                "note": st.column_config.TextColumn("note / LGA", width=380),
+            },
+            hide_index=True,
+            use_container_width=True,
+            height=280,
+        )
+        st.markdown("</div>", unsafe_allow_html=True)
+        with st.expander("Albasa ₦1k · commander benchmarks (reference)", expanded=False):
+            _fee_b = float(st.session_state.get("sov_rev_ngn_per_v", 1000))
+            _vpm_b = float(st.session_state.get("sov_rev_vpm", 1.0))
+            st.markdown(
+                html_albasa_commander_benchmark_table(
+                    albasa_commander_benchmark_rows(fee_ngn=_fee_b, verifications_per_student_per_month=_vpm_b)
+                ),
+                unsafe_allow_html=True,
+            )
+        st.info(
+            "**Albasa revenue MOU** (60 / 25 / 15) — Kaduna **Zazzau 31** & institutional lattice render "
+            "on-map below when Total Reality selects Kaduna."
+        )
+    with _tab_spec:
+        st.markdown(
+            "**Embedded Commander's specification** — JSON contract for auditors."
+        )
+        st.json(SOVEREIGN_ALBASA_SPEC)
 
 st.markdown(
     f"""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&display=swap');
 /* Kill default Streamlit lavender / theme tint — anchor Eagle Cloud navy everywhere */
 html, body {{
   background-color: {SHELL} !important;
@@ -2727,7 +3062,7 @@ section.main [data-testid="block-container"]:has(.kgec-sentinel-stack) {{
 /* Inner ticker strip (outer .kgec-sentinel-stack is the sticky anchor) */
 .eagle-stable-sky {{
   position: relative !important;
-  margin: 0 !important;
+  margin: 14px 0 0 0 !important;
   padding: 8px 10px 10px !important;
   background: #000000 !important;
   border-radius: 12px !important;
@@ -3347,6 +3682,144 @@ iframe[title*="streamlit_folium"] {{
 }}
 .kgec-gmm-pre {{
   max-height: min(320px, 48vh) !important;
+}}
+/* Mophi Glass — Goldman tooltips: long rivalry / chancellery notes in native title, not inline clutter */
+.kgec-katsina-forensic-mophi,
+.kgec-kano-forensic-mophi {{
+  margin: 10px 0 14px 0 !important;
+  padding: 10px 12px !important;
+  border-radius: 10px !important;
+  border: 1px solid rgba(212, 175, 55, 0.35) !important;
+  background: linear-gradient(135deg, rgba(8, 12, 22, 0.92), rgba(18, 28, 44, 0.88)) !important;
+  max-width: min(720px, 100%) !important;
+  position: relative !important;
+  z-index: 2198 !important;
+}}
+.kgec-katsina-forensic-cap {{
+  margin: 0 0 8px 0 !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-size: clamp(0.62rem, 2.4vw, 0.72rem) !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  color: rgba(212, 175, 55, 0.95) !important;
+}}
+.kgec-katsina-forensic-ul {{
+  margin: 0 !important;
+  padding-left: 1.1rem !important;
+  color: rgba(200, 245, 255, 0.88) !important;
+  font-size: clamp(0.72rem, 2.8vw, 0.82rem) !important;
+  line-height: 1.45 !important;
+}}
+.kgec-mophi-glass-tip {{
+  cursor: help !important;
+  text-decoration: underline dotted rgba(212, 175, 55, 0.75) !important;
+  text-underline-offset: 3px !important;
+}}
+.kgec-mophi-revenue-wrap {{
+  margin: 8px 0 4px 0 !important;
+  padding: 10px 12px !important;
+  border-radius: 12px !important;
+  border: 1px solid rgba(212, 175, 55, 0.38) !important;
+  background: linear-gradient(145deg, rgba(6, 14, 32, 0.94) 0%, rgba(12, 28, 48, 0.9) 100%) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 6px 20px rgba(0, 0, 0, 0.42) !important;
+  max-width: 100% !important;
+  overflow-x: auto !important;
+}}
+.kgec-mophi-revenue-table {{
+  width: 100% !important;
+  border-collapse: collapse !important;
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-size: clamp(12px, 2.8vw, 15px) !important;
+  color: rgba(236, 248, 255, 0.94) !important;
+}}
+.kgec-mophi-revenue-table th,
+.kgec-mophi-revenue-table td {{
+  border-bottom: 1px solid rgba(0, 229, 255, 0.18) !important;
+  padding: 8px 10px !important;
+  text-align: right !important;
+}}
+.kgec-mophi-revenue-table th:first-child,
+.kgec-mophi-revenue-table td:first-child {{
+  text-align: left !important;
+}}
+.kgec-mophi-revenue-table th {{
+  font-family: 'Goldman', sans-serif !important;
+  font-size: clamp(10px, 2.2vw, 11px) !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: #ffdf66 !important;
+}}
+.kgec-mophi-revenue-table .kgec-mophi-num {{
+  font-variant-numeric: tabular-nums !important;
+  white-space: nowrap !important;
+}}
+.kgec-sovereign-enrollment-forensic {{
+  margin: 10px 0 14px 0 !important;
+  padding: 12px 14px !important;
+  border-radius: 12px !important;
+  border: 1px solid rgba(0, 229, 255, 0.35) !important;
+  background: linear-gradient(168deg, rgba(8, 18, 42, 0.95) 0%, rgba(4, 22, 38, 0.9) 100%) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 248, 220, 0.08), 0 8px 24px rgba(0, 0, 0, 0.38) !important;
+}}
+.kgec-sovereign-enrollment-cap {{
+  font-family: 'Goldman', sans-serif !important;
+  font-size: clamp(11px, 2.5vw, 12px) !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+  color: #ffdf66 !important;
+  margin: 0 0 6px 0 !important;
+}}
+.kgec-sovereign-enrollment-cycle {{
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-size: clamp(13px, 3vw, 16px) !important;
+  color: rgba(236, 248, 255, 0.94) !important;
+  margin: 0 0 10px 0 !important;
+}}
+.kgec-sovereign-enrollment-sum {{
+  color: #7fe8ff !important;
+  font-weight: 700 !important;
+}}
+.kgec-sovereign-enrollment-grid {{
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px 14px !important;
+  align-items: center !important;
+}}
+.kgec-sov-cell {{
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-size: clamp(12px, 2.85vw, 15px) !important;
+  color: rgba(240, 248, 255, 0.92) !important;
+  padding: 6px 10px !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(212, 175, 55, 0.28) !important;
+  background: rgba(0, 16, 40, 0.45) !important;
+}}
+.kgec-sov-cell--kaduna {{
+  border-color: rgba(0, 229, 255, 0.42) !important;
+}}
+.kgec-sov-cell--meta {{
+  font-size: clamp(11px, 2.5vw, 13px) !important;
+  opacity: 0.88 !important;
+  border-style: dashed !important;
+}}
+.kgec-live-pulse-degraded {{
+  font-family: ui-monospace, monospace !important;
+  font-size: clamp(10px, 2.2vw, 11px) !important;
+  color: #ffb4b4 !important;
+  letter-spacing: 0.06em !important;
+}}
+section.main .kgec-sovereign-audit-led {{
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  box-sizing: border-box !important;
+}}
+section.main .kgec-albasa-commander-benchmark .kgec-albasa-fee-foot {{
+  margin: 10px 0 0 0 !important;
+  font-size: clamp(11px, 2.5vw, 13px) !important;
+  line-height: 1.45 !important;
+  color: rgba(200, 245, 255, 0.9) !important;
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
 }}
 /* KYSAH synergy — distress bind: LGA (gold) + PU (red) tier pulse intensity */
 .kgec-gmm--kysah-focus .kgec-gmm-tier--kysah-pulse {{
@@ -4226,7 +4699,25 @@ with st.sidebar:
 
 _states_geojson = _load_nigeria_states_geojson()
 _phase2 = _load_phase2_spine_bundle()
+_dapi_wards_fc_gate = _phase2.get("wards_fc") if _phase2 else None
 _asset_states = _coal_asset_state_names()
+
+init_verification_store()
+_dapi_browser_session = ensure_browser_session_id(st.session_state)
+_dapi_verify_counts = ward_verification_counts()
+_rigasa_wp_pulse = find_ward_pcode_rigasa_igabi(_dapi_wards_fc_gate)
+_dapi_overload_wpcodes = compute_ward_overload_wpcodes(
+    _dapi_verify_counts, rigasa_ward_pcode=_rigasa_wp_pulse
+)
+try:
+    _student_pulse_snap = live_student_pulse_snapshot(
+        verification_ward_keys=len(_dapi_verify_counts),
+        verification_event_total=sum(int(v) for v in _dapi_verify_counts.values()),
+    )
+except Exception:
+    _student_pulse_snap = fallback_live_student_pulse_snapshot()
+st.session_state.setdefault("dapi_verification_heatmap", True)
+st.session_state.setdefault("dapi_traditional_role", "observer")
 
 _fuse_caption = ""
 _fused_df = None
@@ -4425,10 +4916,1073 @@ _show_vec = bool(st.session_state.get("show_azk_livestock_vectors", False))
 _show_komi = bool(st.session_state.get("show_komi_intel", False))
 _strike_mode = bool(st.session_state.get("binji_lagos_strike", False))
 
+_oauth_hdr_pre = st.session_state.get("_dapi_oauth_blob")
+_auth_html_pre = "Idle · handshake not run"
+if isinstance(_oauth_hdr_pre, dict):
+    if str(_oauth_hdr_pre.get("access_token") or "").strip():
+        _auth_html_pre = (
+            f"Authenticated · {html.escape(str(_oauth_hdr_pre.get('token_type') or 'Bearer'))} · armed"
+        )
+    elif str(_oauth_hdr_pre.get("error") or "").strip():
+        _auth_html_pre = html.escape(str(_oauth_hdr_pre.get("error")))
+
+st.markdown(
+    """
+<style>
+/* KYSAH ribbon runway — never overlap the DAPI weld block below (forensic vertical separation) */
+section.main .kysah-sovereign-ribbon {
+  margin-bottom: 2rem !important;
+}
+/* DAPI column — isolated stack (1004337372: no summary/telemetry collision bleeding) */
+section.main div[data-testid="stVerticalBlock"]:has(.kgec-dapi-ledger-stack-root) {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2.5rem !important;
+  padding-top: 2rem !important;
+  position: relative !important;
+  isolation: isolate !important;
+  contain: layout style !important;
+  z-index: 3 !important;
+  overflow: visible !important;
+}
+section.main .kgec-dapi-ledger-stack-root {
+  display: block !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+}
+/* Expander summary — DAPI-only scope (no global expander collision / GWALO bleed) */
+section.main div[data-testid="stVerticalBlock"]:has(.kgec-dapi-ledger-stack-root) section[data-testid="stExpander"] {
+  margin-bottom: 2rem !important;
+  position: relative !important;
+  z-index: 4 !important;
+}
+section.main div[data-testid="stVerticalBlock"]:has(.kgec-dapi-ledger-stack-root) [data-testid="stExpander"] details > summary,
+section.main div[data-testid="stVerticalBlock"]:has(.kgec-dapi-ledger-stack-root) [data-testid="stExpander"] summary,
+section.main div[data-testid="stVerticalBlock"]:has(.kgec-dapi-ledger-stack-root) [data-testid="stExpander"] button[data-testid="baseButton-header"],
+section.main div[data-testid="stVerticalBlock"]:has(.kgec-dapi-ledger-stack-root) [data-testid="stExpander"] div[data-testid="stExpanderDetails"] summary {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  gap: 1rem !important;
+  padding-top: 1.35rem !important;
+  padding-bottom: 1.1rem !important;
+  padding-left: 0.35rem !important;
+  padding-right: 0.35rem !important;
+  margin-bottom: 1rem !important;
+  min-height: unset !important;
+  line-height: 1.5 !important;
+  white-space: normal !important;
+  font-family: 'Goldman', 'Georgia', serif !important;
+  letter-spacing: 0.03em !important;
+  text-rendering: geometricPrecision !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+section.main div[data-testid="stVerticalBlock"]:has(.kgec-dapi-ledger-stack-root) [data-testid="stExpander"] summary *,
+section.main div[data-testid="stVerticalBlock"]:has(.kgec-dapi-ledger-stack-root) [data-testid="stExpander"] button[data-testid="baseButton-header"] * {
+  position: relative !important;
+}
+/* Inner ledger — sovereign air below Goldman summary chevron row */
+section.main div[data-testid="stVerticalBlock"]:has(.kgec-dapi-ledger-stack-root) [data-testid="stExpander"] [data-testid="stExpanderDetails"] {
+  padding-top: 1.55rem !important;
+  padding-bottom: 0.65rem !important;
+  margin-top: 0.35rem !important;
+}
+section.main div[data-testid="stVerticalBlock"]:has(.kgec-dapi-ledger-stack-root) .kgec-dapi-form-decreed-title {
+  margin-top: 1.15rem !important;
+  margin-bottom: 0.9rem !important;
+  font-family: 'Goldman', Georgia, serif !important;
+  font-weight: 700 !important;
+  font-size: clamp(12px, 2.65vw, 14px) !important;
+  letter-spacing: 0.06em !important;
+  color: rgba(240, 244, 255, 0.96) !important;
+  line-height: 1.45 !important;
+  text-rendering: geometricPrecision !important;
+  -webkit-font-smoothing: antialiased !important;
+}
+section.main .kgec-traditional-human-api-cap {
+  font-family: 'Goldman', Georgia, serif !important;
+  font-weight: 700 !important;
+  font-size: clamp(11px, 2.5vw, 13px) !important;
+  letter-spacing: 0.08em !important;
+  color: #ffdf66 !important;
+  margin: 0 0 8px 0 !important;
+}
+/* Digital palace — Traditional Portrait warmth (D6 · not a cold database row) */
+section.main div[data-testid="stVerticalBlock"]:has(.kgec-traditional-portrait-soul) {
+  background: linear-gradient(
+    168deg,
+    rgba(52, 22, 18, 0.42) 0%,
+    rgba(8, 14, 36, 0.78) 48%,
+    rgba(6, 28, 42, 0.72) 100%
+  ) !important;
+  border: 1px solid rgba(212, 175, 55, 0.48) !important;
+  border-radius: 14px !important;
+  padding: 14px 14px 10px 14px !important;
+  margin-bottom: 12px !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 236, 210, 0.14),
+    0 6px 22px rgba(0, 0, 0, 0.35) !important;
+}
+section.main .kgec-traditional-portrait-soul {
+  display: none !important;
+}
+section.main .kgec-digital-palace-subline {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-weight: 500 !important;
+  font-style: italic !important;
+  font-size: clamp(13px, 3.1vw, 17px) !important;
+  line-height: 1.45 !important;
+  color: rgba(255, 248, 238, 0.9) !important;
+  margin: 0 0 14px 0 !important;
+  letter-spacing: 0.02em !important;
+}
+section.main .kgec-kaduna-palace-chamber {
+  padding: 12px 14px 10px 14px !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(212, 175, 55, 0.42) !important;
+  background: linear-gradient(
+    152deg,
+    rgba(38, 20, 14, 0.5) 0%,
+    rgba(0, 16, 48, 0.75) 55%,
+    rgba(4, 32, 40, 0.68) 100%
+  ) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 230, 190, 0.1),
+    0 8px 26px rgba(0, 0, 0, 0.38) !important;
+  margin-bottom: 14px !important;
+}
+section.main .kgec-kaduna-palace-chamber .kgec-kaduna-pilot-cap {
+  margin-bottom: 6px !important;
+}
+section.main .kgec-parent-trust-strip {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-size: clamp(12px, 2.85vw, 15px) !important;
+  color: rgba(230, 248, 255, 0.92) !important;
+  margin: 0 0 12px 0 !important;
+  line-height: 1.5 !important;
+}
+section.main .kgec-cert-digest-steel {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-size: clamp(12px, 2.75vw, 15px) !important;
+  color: rgba(220, 245, 255, 0.9) !important;
+  margin: 8px 0 0 0 !important;
+}
+section.main .kgec-cert-digest-steel code {
+  color: #7fe8ff !important;
+  font-size: 0.95em !important;
+}
+section.main .kgec-locked-steel-pill {
+  display: inline-block !important;
+  padding: 1px 8px 2px 8px !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(212, 175, 55, 0.45) !important;
+  background: rgba(0, 24, 48, 0.55) !important;
+  font-family: 'Goldman', Georgia, serif !important;
+  font-size: 0.82em !important;
+  letter-spacing: 0.06em !important;
+}
+/* ZD01 success simulation — contained prose (1004337372 · no collision with Zazzau-31 scroll) */
+section.main .kgec-zd01-success-demo {
+  padding: 4px 2px 2px 2px !important;
+  max-width: 100% !important;
+}
+section.main .kgec-zd01-success-kicker {
+  font-family: 'Goldman', sans-serif !important;
+  font-size: clamp(10px, 2.2vw, 11px) !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+  color: #ffdf66 !important;
+  margin: 0 0 6px 0 !important;
+}
+section.main .kgec-zd01-success-lede {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-size: clamp(14px, 3.2vw, 18px) !important;
+  font-style: italic !important;
+  color: rgba(255, 245, 230, 0.92) !important;
+  margin: 0 0 12px 0 !important;
+  line-height: 1.4 !important;
+}
+section.main .kgec-zd01-success-demo ol {
+  margin: 0 !important;
+  padding-left: 1.2rem !important;
+  color: rgba(230, 244, 255, 0.9) !important;
+}
+section.main .kgec-zd01-success-step-title {
+  font-family: 'Goldman', Georgia, serif !important;
+  font-weight: 700 !important;
+  font-size: clamp(11px, 2.4vw, 13px) !important;
+  letter-spacing: 0.05em !important;
+  color: #d4af37 !important;
+  margin: 10px 0 4px 0 !important;
+}
+section.main .kgec-zd01-success-step-body {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-size: clamp(13px, 2.9vw, 16px) !important;
+  line-height: 1.48 !important;
+  margin: 0 0 6px 0 !important;
+  color: rgba(235, 248, 255, 0.88) !important;
+}
+section.main .kgec-zd01-success-foot {
+  font-family: 'Goldman', Georgia, serif !important;
+  font-size: clamp(9px, 2vw, 10px) !important;
+  letter-spacing: 0.06em !important;
+  color: rgba(0, 229, 255, 0.75) !important;
+  margin: 14px 0 0 0 !important;
+  line-height: 1.4 !important;
+}
+section.main .kgec-sovereign-clearance-banner {
+  font-family: 'Goldman', Georgia, serif !important;
+  font-weight: 700 !important;
+  font-size: clamp(11px, 2.45vw, 13px) !important;
+  letter-spacing: 0.05em !important;
+  color: #0a1432 !important;
+  background: linear-gradient(90deg, #bf953f 0%, #ffdf66 48%, #bf953f 100%) !important;
+  border: 1px solid rgba(212, 175, 55, 0.85) !important;
+  border-radius: 10px !important;
+  padding: 12px 14px !important;
+  margin: 10px 0 14px 0 !important;
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.35) !important;
+}
+section.main .kgec-sovereign-clearance-banner--compact {
+  padding: 9px 12px !important;
+  margin: 6px 0 12px 0 !important;
+  font-size: clamp(10px, 2.2vw, 12px) !important;
+}
+section.main .kgec-stranger-vetting-alert {
+  font-family: 'Goldman', Georgia, serif !important;
+  font-weight: 700 !important;
+  font-size: clamp(11px, 2.35vw, 13px) !important;
+  letter-spacing: 0.04em !important;
+  color: #fffef8 !important;
+  background: rgba(180, 60, 30, 0.92) !important;
+  border: 1px solid rgba(255, 223, 102, 0.65) !important;
+  border-radius: 10px !important;
+  padding: 11px 13px !important;
+  margin: 10px 0 12px 0 !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.38) !important;
+}
+section.main .kgec-eagle-voice-pulse-rail {
+  display: block !important;
+  margin-top: 18px !important;
+  padding-top: 6px !important;
+  box-sizing: border-box !important;
+  border-top: 1px solid rgba(212, 175, 55, 0.22) !important;
+}
+section.main .kgec-live-student-pulse-strip {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 8px 14px !important;
+  margin: 22px 0 22px 0 !important;
+  padding: 8px 12px !important;
+  border-radius: 10px !important;
+  border: 1px solid rgba(212, 175, 55, 0.38) !important;
+  background: rgba(0, 8, 32, 0.62) !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+section.main .kgec-live-pulse-label {
+  font-family: 'Goldman', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: clamp(10px, 2.2vw, 11px) !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  color: #ffdf66 !important;
+}
+section.main .kgec-live-pulse-cycle {
+  font-family: 'Goldman', Georgia, serif !important;
+  font-size: clamp(10px, 2.1vw, 11px) !important;
+  color: rgba(0, 229, 255, 0.9) !important;
+  letter-spacing: 0.06em !important;
+}
+section.main .kgec-live-pulse-metric {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-size: clamp(12px, 2.75vw, 15px) !important;
+  color: rgba(240, 248, 255, 0.92) !important;
+}
+section.main .kgec-sovereign-air-96 {
+  display: block !important;
+  width: 100% !important;
+  min-height: 96px !important;
+  height: 96px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  pointer-events: none !important;
+}
+section.main .kgec-inst-ownership-fed {
+  font-family: 'Goldman', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: clamp(10px, 2.2vw, 11px) !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  color: #7fd4b8 !important;
+  margin: 0 0 8px 0 !important;
+}
+section.main .kgec-inst-ownership-sta {
+  font-family: 'Goldman', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: clamp(10px, 2.2vw, 11px) !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  color: #ffdf66 !important;
+  margin: 0 0 8px 0 !important;
+}
+section.main .kgec-nuba-heritage-head {
+  font-family: 'Goldman', Georgia, serif !important;
+  font-weight: 700 !important;
+  font-size: clamp(13px, 3vw, 16px) !important;
+  letter-spacing: 0.04em !important;
+  color: #ffdf66 !important;
+  margin: 6px 0 4px 0 !important;
+}
+section.main .kgec-nuba-abbr {
+  color: rgba(0, 229, 255, 0.92) !important;
+  font-weight: 700 !important;
+}
+section.main .kgec-nuba-sub {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-size: clamp(12px, 2.7vw, 14px) !important;
+  color: rgba(235, 245, 255, 0.88) !important;
+  margin: 0 0 10px 0 !important;
+}
+section.main .kgec-nuba-campus-card {
+  border: 1px solid rgba(212, 175, 55, 0.35) !important;
+  border-radius: 10px !important;
+  padding: 10px 12px !important;
+  margin: 0 0 12px 0 !important;
+  background: rgba(0, 12, 40, 0.45) !important;
+}
+section.main .kgec-nuba-campus-title {
+  font-family: 'Goldman', Georgia, serif !important;
+  font-weight: 700 !important;
+  font-size: clamp(11px, 2.5vw, 13px) !important;
+  color: #d4af37 !important;
+  margin: 0 0 6px 0 !important;
+}
+section.main .kgec-nuba-pulse-note {
+  font-size: clamp(11px, 2.45vw, 13px) !important;
+  color: rgba(220, 245, 255, 0.9) !important;
+  margin: 8px 0 0 0 !important;
+  line-height: 1.45 !important;
+}
+section.main .kgec-ancestral-command-row {
+  border-left: 3px solid #bf953f !important;
+  padding: 8px 10px 8px 12px !important;
+  margin: 0 0 10px 0 !important;
+  background: rgba(191, 149, 63, 0.07) !important;
+  border-radius: 0 8px 8px 0 !important;
+}
+section.main .kgec-modern-statutory-card {
+  border-left: 3px solid #00e5ff !important;
+  padding: 8px 10px 8px 12px !important;
+  margin: 0 0 10px 0 !important;
+  background: rgba(0, 229, 255, 0.06) !important;
+  border-radius: 0 8px 8px 0 !important;
+  font-family: system-ui, 'Segoe UI', sans-serif !important;
+}
+section.main .kgec-modern-statutory-cap {
+  font-size: clamp(9px, 2vw, 10px) !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+  color: #7fd4b8 !important;
+  margin-bottom: 6px !important;
+}
+/* Session telemetry isolated from ledger form — outer stack (no overlap with expander summary) */
+section.main .kgec-dapi-session-stack {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+  margin-top: 3rem !important;
+  margin-bottom: 0 !important;
+  padding-top: 0 !important;
+  scroll-margin-top: 1.25rem !important;
+  position: relative !important;
+  z-index: 5 !important;
+  isolation: isolate !important;
+}
+section.main .kgec-dapi-pre-session-airgap {
+  display: block !important;
+  height: 2rem !important;
+  min-height: 2rem !important;
+  width: 100% !important;
+  clear: both !important;
+  pointer-events: none !important;
+  flex-shrink: 0 !important;
+}
+section.main .kgec-dapi-map-strip {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 10px !important;
+  align-items: center !important;
+  position: relative !important;
+  z-index: 2 !important;
+  isolation: isolate !important;
+  contain: layout style paint !important;
+  margin-top: 0 !important;
+  margin-bottom: 12px !important;
+  padding: 15px 14px !important;
+  box-sizing: border-box !important;
+  font-family: 'Goldman', sans-serif !important;
+  font-size: clamp(10px, 2.4vw, 12px) !important;
+  font-weight: 700 !important;
+  color: #00e5ff !important;
+  background: rgba(0, 0, 128, 0.94) !important;
+  background-clip: padding-box !important;
+  border: 1px solid rgba(212, 175, 55, 0.55) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.42) !important;
+}
+section.main .kgec-dapi-map-strip .kgec-dapi-pill {
+  position: relative !important;
+  z-index: 3 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  line-height: 1.35 !important;
+  max-width: 100% !important;
+}
+section.main .kgec-dapi-map-strip code {
+  color: #f0f4ff !important;
+  font-size: 0.95em !important;
+  background: rgba(0, 0, 40, 0.62) !important;
+  padding: 3px 7px !important;
+  border-radius: 5px !important;
+  border: 1px solid rgba(0, 229, 255, 0.28) !important;
+}
+section.main .kgec-dapi-auth {
+  color: #f0f4ff !important;
+}
+/* 1004337372.jpg — crystalline Goldman + final sovereign airway (ledger ↔ session strip) */
+section.main .kgec-dapi-ledger-air-50 {
+  display: block !important;
+  height: 0 !important;
+  margin-bottom: 96px !important;
+  margin-top: 0 !important;
+  padding: 0 !important;
+  clear: both !important;
+  pointer-events: none !important;
+}
+section.main .kgec-dapi-sovereign-air-crystal {
+  display: block !important;
+  width: 100% !important;
+  min-height: 72px !important;
+  height: 72px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  clear: both !important;
+  pointer-events: none !important;
+  flex-shrink: 0 !important;
+}
+section.main .kgec-dapi-pilot-column {
+  width: 100% !important;
+}
+/* Rigasa + NUBA pressure copy — single stack (1004337372 · no caption overlap vs sovereign air) */
+section.main div[data-testid="stVerticalBlock"]:has(.kgec-dapi-ledger-stack-root) .kgec-dapi-kaduna-caption-stack {
+  display: block !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  margin-top: 4px !important;
+  margin-bottom: 14px !important;
+  padding-right: 2px !important;
+}
+section.main div[data-testid="stVerticalBlock"]:has(.kgec-dapi-ledger-stack-root) .kgec-dapi-kaduna-caption-stack .kgec-dapi-cap-line {
+  margin: 0 0 10px 0 !important;
+  line-height: 1.5 !important;
+  font-size: 0.82rem !important;
+  color: rgba(240, 244, 255, 0.86) !important;
+  word-wrap: break-word !important;
+  overflow-wrap: anywhere !important;
+}
+section.main div[data-testid="stVerticalBlock"]:has(.kgec-dapi-ledger-stack-root) .kgec-dapi-kaduna-caption-stack .kgec-dapi-cap-nuba {
+  margin-bottom: 0 !important;
+  color: rgba(224, 242, 254, 0.92) !important;
+}
+section.main .kgec-kaduna-pilot-cap {
+  font-family: 'Goldman', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: clamp(12px, 2.8vw, 14px) !important;
+  color: #00e5ff !important;
+  margin: 0 0 12px 0 !important;
+  letter-spacing: 0.05em !important;
+}
+section.main .kgec-kaduna-twin-portrait {
+  margin-top: 14px !important;
+  margin-bottom: 8px !important;
+  isolation: isolate !important;
+  contain: layout style !important;
+}
+/* NCAT / sovereign aviation node — Hanwa ZD02 lattice lock */
+section.main .kgec-sovereign-inst-node {
+  border-left: 3px solid #bf953f !important;
+  padding: 10px 12px 10px 14px !important;
+  margin: 0 0 14px 0 !important;
+  background: rgba(191, 149, 63, 0.12) !important;
+  border-radius: 0 10px 10px 0 !important;
+  box-sizing: border-box !important;
+}
+section.main .kgec-sovereign-inst-node .kgec-sovereign-asset-cap {
+  font-family: 'Goldman', sans-serif !important;
+  font-size: clamp(10px, 2.2vw, 11px) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  color: #ffdf66 !important;
+  margin: 0 0 6px 0 !important;
+}
+/* Zazzau 31 — vertical scroll cascade (red-circle protocol · no collision with ledger) */
+section.main .kgec-zazzau-31-scroll {
+  max-height: min(42vh, 480px) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+  padding: 12px 14px !important;
+  margin-top: 18px !important;
+  margin-bottom: 16px !important;
+  border: 1px solid rgba(212, 175, 55, 0.42) !important;
+  border-radius: 10px !important;
+  background: rgba(0, 6, 40, 0.55) !important;
+  box-sizing: border-box !important;
+}
+section.main .kgec-zazzau-31-scroll ol.kgec-zazzau-31-ol {
+  margin: 0 !important;
+  padding-left: 1.35rem !important;
+  font-family: 'Goldman', Georgia, serif !important;
+  font-size: clamp(10px, 2.15vw, 12px) !important;
+  font-weight: 600 !important;
+  line-height: 1.55 !important;
+  color: rgba(240, 244, 255, 0.94) !important;
+}
+section.main .kgec-zazzau-31-scroll li {
+  margin-bottom: 0.35rem !important;
+}
+section.main .kgec-zazzau-31-scroll code {
+  color: #00e5ff !important;
+  font-size: 0.92em !important;
+}
+</style>
+""",
+    unsafe_allow_html=True,
+)
+
+_pc_dapi = st.columns((1,))
+with _pc_dapi[0]:
+    with st.container():
+        st.markdown(
+            '<div class="kgec-dapi-ledger-stack-root" aria-hidden="true"></div>',
+            unsafe_allow_html=True,
+        )
+        with st.expander("DAPI weld · verification ledger", expanded=False):
+            st.toggle(
+                "Ward verification heatmap (cyan = verified · deep matter = cold)",
+                key="dapi_verification_heatmap",
+                help="Choropleth on 8,806 ward polygons — density from local SQLite event store.",
+            )
+            _c1, _c2 = st.columns(2)
+            with _c1:
+                st.selectbox(
+                    "Traditional principal role",
+                    options=["observer", "me_anguwa", "village_head", "district_head"],
+                    key="dapi_traditional_role",
+                    help="When Me Anguwa or Village Head is active, jurisdiction counts use the DAPI event store.",
+                )
+                st.text_input(
+                    "Principal ID (DAPI subject / node id)",
+                    key="dapi_principal_id",
+                    placeholder="e.g. MEANGUWA-KD-RIGASA-01",
+                )
+            with _c2:
+                if st.button(
+                    "DAPI OAuth2 handshake",
+                    key="dapi_oauth_handshake",
+                    help="client_credentials via DAPI_TOKEN_URL",
+                ):
+                    _blob = fetch_oauth_token()
+                    st.session_state["_dapi_oauth_blob"] = _blob
+                    _err = str(_blob.get("error") or "").strip()
+                    _tok = str(_blob.get("access_token") or "").strip()
+                    if _tok:
+                        st.success("Access token acquired — DAPI session armed.")
+                    elif _err:
+                        st.warning(_err)
+                    else:
+                        st.info("No token returned — check environment variables.")
+            _oauth = st.session_state.get("_dapi_oauth_blob")
+            if isinstance(_oauth, dict) and str(_oauth.get("access_token") or "").strip():
+                st.caption(
+                    f"Token · {str(_oauth.get('token_type') or 'Bearer')} · "
+                    f"expires epoch {_oauth.get('expires_at', 0):.0f}"
+                )
+            _tr_dapi_kd = ""
+            if st.session_state.get("total_reality_last"):
+                _tr_dapi_kd = str(st.session_state["total_reality_last"].get("state") or "").strip()
+            if _tr_dapi_kd and is_kaduna_state(_tr_dapi_kd):
+                _fz_list = ", ".join(sorted(KADUNA_SPT_FRONTIER_LGA_EN))
+                st.caption(
+                    f"Security Proximity Tag (SPT) — frontier belt: {_fz_list}. "
+                    "Verification on those LGAs with a ward/ZD weld breach alerts the District Head "
+                    "node under the 24-hour criminal-trace protocol."
+                )
+                if not _dapi_wards_fc_gate:
+                    st.caption(
+                        "HDX spine not mounted — lattice gate offline; reconnect for production "
+                        "Sovereign Clearance + SPT steel."
+                    )
+                _kd_press = kaduna_me_anguwa_pressure_summary(
+                    _dapi_verify_counts, rigasa_ward_pcode=_rigasa_wp_pulse
+                )
+                _nuba_line = nuba_campus_inference_text()
+                _kd_copy = html.escape(str(_kd_press.get("copy_line") or ""))
+                _nuba_esc = html.escape(_nuba_line) if _nuba_line else ""
+                _cap_parts = [f'<p class="kgec-dapi-cap-line">{_kd_copy}</p>']
+                if _nuba_esc:
+                    _cap_parts.append(f'<p class="kgec-dapi-cap-line kgec-dapi-cap-nuba">{_nuba_esc}</p>')
+                st.markdown(
+                    '<div class="kgec-dapi-kaduna-caption-stack">'
+                    + "".join(_cap_parts)
+                    + "</div>",
+                    unsafe_allow_html=True,
+                )
+            _registry_inst_opt = (
+                "— Select institution —",
+                "Ahmadu Bello University (ABU · Samaru)",
+                "Kaduna State University (KASU · Kaduna North)",
+                "Kaduna Polytechnic [FED] · Kaduna South",
+                "Nuhu Bamalli Polytechnic (NUBA [STA] · Main · Zaria)",
+                "Nuhu Bamalli Polytechnic (NUBA [STA] · Kafanchan · Jema'a)",
+                "Other lattice enrollee",
+            )
+            _registry_res_opt = (
+                "— Residence district node —",
+                "Rigasa · ZD22 · Igabi",
+                "Doka · ZD26 · Kaduna North",
+                "Samaru belt · ZD09 · Sabon Gari",
+                "Shika · ZD07 · Sabon Gari",
+                "Hanwa · ZD02 · Zaria",
+            )
+            st.markdown(
+                '<p class="kgec-traditional-human-api-cap">Registry of Strangers · digital vetting line</p>',
+                unsafe_allow_html=True,
+            )
+            st.caption(
+                "Every stranger once reported their mission at the ward gate; DAPI OAuth + this ledger "
+                "bind ABU, KASU, Kaduna Polytechnic [FED], and Nuhu Bamalli Polytechnic (NUBA) [STA] "
+                "to residential district nodes (Rigasa, Doka, Samaru belt)."
+            )
+            st.selectbox(
+                "Student intake institution (pilot)",
+                options=list(_registry_inst_opt),
+                key="dapi_registry_institution",
+                help=(
+                    "Lattice enrollee — binds sovereign clearance to ABU, KASU, Kaduna Polytechnic [FED], "
+                    "or Nuhu Bamalli Polytechnic (NUBA) [STA] campus choice."
+                ),
+            )
+            st.selectbox(
+                "Residential district node (Me Anguwa jurisdiction anchor)",
+                options=list(_registry_res_opt),
+                key="dapi_registry_residence",
+                help="Must reconcile with Zazzau district + ward_pcode on submit.",
+            )
+            st.markdown(
+                '<p class="kgec-traditional-human-api-cap">Haraji ledger simulation · Community Development Contribution</p>',
+                unsafe_allow_html=True,
+            )
+            st.caption(
+                "Indirect Rule steel — historical haraji sat at the ward gate with vetting efficiency; "
+                "this CDC tracker binds DAPI principals to the same accountability rhythm "
+                "(₦ lines are audit artefacts, not legal tax assessment)."
+            )
+            with st.form("dapi_haraji_cdc"):
+                _hz_labels = ["— Zazzau district —"] + [
+                    f"{d['district_id']} · {d['district_en']}" for d in ZAZZAU_THIRTY_ONE_DISTRICTS
+                ]
+                st.selectbox("ZD anchor (optional)", options=_hz_labels, key="dapi_haraji_zd")
+                st.text_input(
+                    "ward_pcode (ADM3 spine)",
+                    key="dapi_haraji_ward",
+                    placeholder="same lattice as verification",
+                )
+                st.number_input(
+                    "Amount (₦)",
+                    min_value=0.0,
+                    step=500.0,
+                    key="dapi_haraji_amount",
+                )
+                st.selectbox(
+                    "Levy class",
+                    options=(
+                        "Haraji-class levy (pilot)",
+                        "Community Development Contribution",
+                        "Special ward assessment",
+                    ),
+                    key="dapi_haraji_class",
+                )
+                st.text_input("Narrative (optional)", key="dapi_haraji_note")
+                if st.form_submit_button("Post CDC line to Haraji ledger"):
+                    _hpid = str(st.session_state.get("dapi_principal_id") or "").strip()
+                    _hz = str(st.session_state.get("dapi_haraji_zd") or "").strip()
+                    _hz_id = ""
+                    if _hz and not _hz.startswith("—"):
+                        _hz_id = _hz.split(" · ")[0].strip()
+                    _hw = str(st.session_state.get("dapi_haraji_ward") or "").strip()
+                    _ha = float(st.session_state.get("dapi_haraji_amount") or 0.0)
+                    _hc = str(st.session_state.get("dapi_haraji_class") or "").strip()
+                    _hn = str(st.session_state.get("dapi_haraji_note") or "").strip()
+                    if not _hpid:
+                        st.warning("Set Principal ID above — CDC lines bind to the Human API node.")
+                    elif not _hw:
+                        st.warning("ward_pcode required — lattice weld.")
+                    else:
+                        _hok, _hmsg = record_haraji_cdc_line(
+                            principal_id=_hpid,
+                            ward_pcode=_hw,
+                            zazzau_district_id=_hz_id or None,
+                            naira_amount=_ha,
+                            levy_class=_hc,
+                            narrative=_hn,
+                        )
+                        if _hok:
+                            st.success(_hmsg)
+                        else:
+                            st.error(_hmsg)
+            with st.form("dapi_record_verification", clear_on_submit=True):
+                st.markdown(
+                    '<p class="kgec-dapi-form-decreed-title">'
+                    "<strong>Record verification (ghost-proof <code>UNIQUE(student_uid)</code>)</strong>"
+                    "</p>",
+                    unsafe_allow_html=True,
+                )
+                _priv_sha = html.escape(DAPI_PARENT_FACING_PRIVACY["sha256_digest"])
+                _priv_enc = html.escape(DAPI_PARENT_FACING_PRIVACY["encryption_steel"])
+                st.markdown(
+                    '<p class="kgec-parent-trust-strip">For parents and palace stewards · hover each cue: '
+                    f'<span class="kgec-mophi-glass-tip" title="{_priv_sha}">What is the SHA-256 seal?</span>'
+                    " · "
+                    f'<span class="kgec-mophi-glass-tip kgec-locked-steel-pill" title="{_priv_enc}">'
+                    "Locked in Steel</span></p>",
+                    unsafe_allow_html=True,
+                )
+                _zd_labels = ["— Select Zazzau district (ZD) —"] + [
+                    f"{d['district_id']} · {d['district_en']} · {d['parent_lga_en']}"
+                    for d in ZAZZAU_THIRTY_ONE_DISTRICTS
+                ]
+                st.selectbox(
+                    "Zazzau district node (required for Me Anguwa / Village Head / District Head)",
+                    options=_zd_labels,
+                    key="dapi_form_zazzau_district",
+                    help="Kaduna pilot — every traditional verification binds ward spine + ZD** ancestral ledger.",
+                )
+                _rsu = st.text_input(
+                    "student_uid",
+                    key="dapi_form_student",
+                    help=(
+                        "Unique child / enrollee key on this pilot ledger. "
+                        "Parents: your child’s row is sealed with cryptography—see SHA-256 + Locked in Steel cues above."
+                    ),
+                )
+                _rwp = st.text_input("ward_pcode (ADM3_PCODE from spine)", key="dapi_form_ward")
+                _rpu = st.text_input("pu_code (optional)", key="dapi_form_pu")
+                st.text_input(
+                    "NIN (optional — stranger registry)",
+                    key="dapi_form_nin",
+                    placeholder="11-digit reference",
+                )
+                st.caption(
+                    f"Stranger vetting — compare NIN / claimed address (WGS84) to Zazzau district anchor; "
+                    f"threshold {STRANGER_VETTING_DISTANCE_KM:.0f} km."
+                )
+                _cla, _clb = st.columns(2)
+                with _cla:
+                    st.text_input(
+                        "Claim latitude (optional)",
+                        key="dapi_form_claim_lat",
+                        placeholder="e.g. 11.095",
+                    )
+                with _clb:
+                    st.text_input(
+                        "Claim longitude (optional)",
+                        key="dapi_form_claim_lon",
+                        placeholder="e.g. 7.710",
+                    )
+                _sub = st.form_submit_button("Commit sovereign certificate")
+                if _sub:
+                    _pid = str(st.session_state.get("dapi_principal_id") or "").strip()
+                    _role = str(st.session_state.get("dapi_traditional_role") or "observer").strip()
+                    _zd_pick = str(st.session_state.get("dapi_form_zazzau_district") or "").strip()
+                    _zd_id = ""
+                    if _zd_pick and not _zd_pick.startswith("—"):
+                        _zd_id = _zd_pick.split(" · ")[0].strip()
+                    if _role in TRADITIONAL_PRINCIPAL_ROLES and not _zd_id:
+                        st.error(
+                            "Traditional principal weld blocked — select a Zazzau district node (ZD01–ZD31)."
+                        )
+                    else:
+                        _clat = None
+                        _clon = None
+                        _lt = str(st.session_state.get("dapi_form_claim_lat") or "").strip()
+                        _ln = str(st.session_state.get("dapi_form_claim_lon") or "").strip()
+                        if _lt:
+                            try:
+                                _clat = float(_lt)
+                            except ValueError:
+                                _clat = None
+                        if _ln:
+                            try:
+                                _clon = float(_ln)
+                            except ValueError:
+                                _clon = None
+                        _nin_f = str(st.session_state.get("dapi_form_nin") or "").strip()
+                        _ok, _msg, _meta = record_verification(
+                            student_uid=_rsu,
+                            ward_pcode=_rwp,
+                            principal_id=_pid or "UNASSIGNED",
+                            traditional_role=_role,
+                            pu_code=_rpu or None,
+                            zazzau_district_id=_zd_id or None,
+                            wards_fc=_dapi_wards_fc_gate,
+                            nin=_nin_f or None,
+                            claimant_lat=_clat,
+                            claimant_lon=_clon,
+                        )
+                        if _ok:
+                            st.success(_msg)
+                            if _meta.get("vetting_required_alert"):
+                                _vn = str(_meta.get("vetting_note") or "").strip()
+                                if _vn:
+                                    st.markdown(
+                                        '<div class="kgec-stranger-vetting-alert" role="alert">'
+                                        f"{html.escape(_vn)}"
+                                        "</div>",
+                                        unsafe_allow_html=True,
+                                    )
+                            if _meta.get("sovereign_clearance"):
+                                _cm = str(_meta.get("clearance_message") or "").strip()
+                                if _cm:
+                                    st.markdown(
+                                        '<div class="kgec-sovereign-clearance-banner" role="status">'
+                                        f"{html.escape(_cm)}"
+                                        "</div>",
+                                        unsafe_allow_html=True,
+                                    )
+                            _ri = str(
+                                st.session_state.get("dapi_registry_institution") or ""
+                            ).strip()
+                            _rr = str(
+                                st.session_state.get("dapi_registry_residence") or ""
+                            ).strip()
+                            if _ri and not _ri.startswith("—"):
+                                st.caption(
+                                    f"Registry of Strangers line · `{html.escape(_ri)}` · "
+                                    f"`{html.escape(_rr)}` — bound to this sovereign certificate."
+                                )
+                        else:
+                            st.error(_msg)
+            _pid_show = str(st.session_state.get("dapi_principal_id") or "").strip()
+            _role_show = str(st.session_state.get("dapi_traditional_role") or "").strip()
+            if _pid_show and _role_show in TRADITIONAL_PRINCIPAL_ROLES:
+                _pj = principal_jurisdiction_stats(_pid_show)
+                st.markdown(
+                    '<div class="kgec-traditional-portrait-soul" aria-hidden="true"></div>'
+                    '<p class="kgec-traditional-human-api-cap">Traditional Portrait · Human API</p>'
+                    '<p class="kgec-digital-palace-subline">A chamber for trust and ancestral care—'
+                    "titles and seals first; the database whispers behind the curtain.</p>",
+                    unsafe_allow_html=True,
+                )
+                if _role_show == "me_anguwa":
+                    _scs = str(_pj.get("sovereign_clearance_status") or "").strip()
+                    if _scs:
+                        st.markdown(
+                            '<div class="kgec-sovereign-clearance-banner '
+                            'kgec-sovereign-clearance-banner--compact" role="status">'
+                            f"{html.escape(_scs)}"
+                            "</div>",
+                            unsafe_allow_html=True,
+                        )
+                _mx_a, _mx_b = st.columns(2)
+                with _mx_a:
+                    st.metric(
+                        "Jurisdiction verifications (this principal)",
+                        f"{int(_pj['verified_total']):,}",
+                    )
+                with _mx_b:
+                    _har = float(_pj.get("haraji_cdc_total_naira") or 0.0)
+                    st.metric(
+                        "Haraji / CDC total (₦)",
+                        f"₦{_har:,.2f}",
+                        help="Community Development Contribution lines for this principal_id.",
+                    )
+                _br = _pj.get("by_role") or {}
+                if _br:
+                    st.caption(
+                        "Attestations by role · "
+                        + " · ".join(
+                            f"{html.escape(str(k))}: {int(v):,}" for k, v in _br.items()
+                        )
+                    )
+                if _pj.get("by_ward"):
+                    st.dataframe(
+                        [
+                            {
+                                "ward_pcode": k,
+                                "verified": f"{int(v):,}",
+                            }
+                            for k, v in _pj["by_ward"].items()
+                        ],
+                        hide_index=True,
+                        use_container_width=True,
+                        column_config={
+                            "ward_pcode": st.column_config.TextColumn("ward_pcode", width=140),
+                            "verified": st.column_config.TextColumn("verified", width=100),
+                        },
+                    )
+                if _pj.get("recent_digest"):
+                    _rd = html.escape(str(_pj["recent_digest"]))
+                    _tip_sha = html.escape(DAPI_PARENT_FACING_PRIVACY["sha256_digest"])
+                    _tip_enc = html.escape(DAPI_PARENT_FACING_PRIVACY["encryption_steel"])
+                    st.markdown(
+                        '<p class="kgec-cert-digest-steel">Latest certificate fingerprint · '
+                        f'<code class="kgec-mophi-glass-tip" title="{_tip_sha}">{_rd[:16]}…</code>'
+                        ' · <span class="kgec-mophi-glass-tip kgec-locked-steel-pill" '
+                        f'title="{_tip_enc}">Locked in Steel</span></p>',
+                        unsafe_allow_html=True,
+                    )
+            if _tr_dapi_kd and is_kaduna_state(_tr_dapi_kd):
+                with st.expander("Student ledger · Stranger Vetting Status (recent)", expanded=False):
+                    _vrows = verification_ledger_recent(45)
+                    if _vrows:
+                        st.dataframe(_vrows, hide_index=True, use_container_width=True)
+                    else:
+                        st.caption("No verification rows yet.")
+                with st.expander("Haraji / CDC ledger (recent lines)", expanded=False):
+                    _hrows = haraji_cdc_recent_rows(35)
+                    if _hrows:
+                        st.dataframe(_hrows, hide_index=True, use_container_width=True)
+                    else:
+                        st.caption("No CDC lines posted.")
+
+        _tr_state_name = ""
+        if st.session_state.get("total_reality_last"):
+            _tr_state_name = str(st.session_state["total_reality_last"].get("state") or "").strip()
+        if _tr_state_name and is_kaduna_state(_tr_state_name):
+            _board_rows = leaderboard_for_state_wards(
+                _tr_state_name,
+                wards_fc=_phase2.get("wards_fc") if _phase2 else None,
+            )
+            if _board_rows:
+                with st.expander(f"Verification leaderboard · Kaduna (pilot)", expanded=False):
+                    st.dataframe(
+                        [
+                            {
+                                "ward_pcode": a,
+                                "ward": b,
+                                "lga": c,
+                                "verified": f"{int(d):,}",
+                            }
+                            for a, b, c, d in _board_rows[:40]
+                        ],
+                        hide_index=True,
+                        use_container_width=True,
+                        column_config={
+                            "ward_pcode": st.column_config.TextColumn("ward_pcode", width=130),
+                            "ward": st.column_config.TextColumn("ward", width=160),
+                            "lga": st.column_config.TextColumn("lga", width=120),
+                            "verified": st.column_config.TextColumn("verified", width=100),
+                        },
+                    )
+
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    st.markdown(
+        '<div class="kgec-dapi-sovereign-air-crystal" aria-hidden="true"></div>',
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        '<div class="kgec-dapi-ledger-air-50" aria-hidden="true"></div>',
+        unsafe_allow_html=True,
+    )
+
+    with st.container():
+        st.markdown(
+            f"""
+<div class="kgec-dapi-session-stack">
+  <div class="kgec-dapi-map-strip" role="region" aria-label="DAPI session telemetry">
+    <span class="kgec-dapi-pill">Session <code>{html.escape(_dapi_browser_session)}</code></span>
+    <span class="kgec-dapi-pill kgec-dapi-auth">{_auth_html_pre}</span>
+    <span class="kgec-dapi-pill">Ward events indexed · {len(_dapi_verify_counts):,} wards · max {max(_dapi_verify_counts.values()) if _dapi_verify_counts else 0}</span>
+  </div>
+</div>
+""",
+            unsafe_allow_html=True,
+        )
+
+    _wards_fc_kd = _phase2.get("wards_fc") if _phase2 else None
+    _kd_sel = ""
+    if st.session_state.get("total_reality_last"):
+        _kd_sel = str(st.session_state["total_reality_last"].get("state") or "").strip()
+    if _kd_sel and is_kaduna_state(_kd_sel):
+        st.markdown(
+            '<div class="kgec-kaduna-twin-portrait kgec-kaduna-palace-chamber" role="region" '
+            'aria-label="Kaduna digital palace twin portrait">'
+            '<p class="kgec-kaduna-pilot-cap">Kaduna sovereign pilot · Twin Portrait</p>'
+            '<p class="kgec-digital-palace-subline">Institutional steel meets ancestral command in one chamber—'
+            "not a remote server farm.</p>"
+            "</div>",
+            unsafe_allow_html=True,
+        )
+        render_kaduna_map_twin_portrait()
+        _rig_wp = find_ward_pcode_rigasa_igabi(_wards_fc_kd)
+        if st.button(
+            "Simulate DAPI · Me Anguwa Rigasa (Igabi) handshake",
+            key="kaduna_rigasa_sim",
+            help=(
+                "Writes one verification on Rigasa-class ward · cyan pulse on heatmap · "
+                "SHA-256 palace seal on the ledger row. Parents: treat this as a street-level rehearsal of Locked in Steel."
+            ),
+        ):
+            if not _rig_wp:
+                st.error("HDX ward spine missing — cannot resolve Rigasa ADM3_PCODE.")
+            else:
+                _su = f"SIM-KD-RIGASA-{int(_wall_time() * 1e9)}"
+                _ok_sim, _msg_sim, _meta_sim = record_verification(
+                    student_uid=_su,
+                    ward_pcode=_rig_wp,
+                    principal_id="MEANGUWA-KD-RIGASA-01",
+                    traditional_role="me_anguwa",
+                    pu_code=None,
+                    zazzau_district_id=RIGASA_DISTRICT_ID,
+                    wards_fc=_dapi_wards_fc_gate,
+                )
+                if _ok_sim:
+                    st.success(f"{_msg_sim} · ward `{_rig_wp}` — heatmap updates on rerun.")
+                    if _meta_sim.get("sovereign_clearance"):
+                        _cms = str(_meta_sim.get("clearance_message") or "").strip()
+                        if _cms:
+                            st.markdown(
+                                '<div class="kgec-sovereign-clearance-banner" role="status">'
+                                f"{html.escape(_cms)}"
+                                "</div>",
+                                unsafe_allow_html=True,
+                            )
+                else:
+                    st.warning(_msg_sim)
+        if _rig_wp:
+            st.caption(f"Rigasa spine target · ADM3_PCODE `{_rig_wp}` (Igabi) · ledger `{RIGASA_DISTRICT_ID}`")
+        else:
+            st.caption("Rigasa ward pcode unresolved — load HDX wards online.")
+
+_dapi_heatmap = bool(st.session_state.get("dapi_verification_heatmap", True))
+
 _federation_map = _build_federation_map(
     _states_geojson,
     _phase2,
     _asset_states,
+    ward_verify_counts=_dapi_verify_counts,
+    verification_heatmap=_dapi_heatmap,
+    ward_overload_wpcodes=_dapi_overload_wpcodes,
     show_ncc_vulnerability=_show_ncc,
     ncc_incidents=_ncc_incidents,
     show_cbn_access=_show_cbn,
@@ -4644,6 +6198,12 @@ else:
             _html_total_reality_card(st.session_state["total_reality_last"]),
             unsafe_allow_html=True,
         )
+        _tr_last = st.session_state.get("total_reality_last") or {}
+        _tr_state = str(_tr_last.get("state") or "")
+        if is_katsina_state(_tr_state):
+            st.markdown(katsina_forensic_mophi_glass_html(), unsafe_allow_html=True)
+        elif is_kano_state(_tr_state):
+            st.markdown(kano_forensic_mophi_glass_html(), unsafe_allow_html=True)
     _render_ntw_sovereign_control_panel(_ntw_blob)
 _states_warn = ""
 if not _states_geojson:

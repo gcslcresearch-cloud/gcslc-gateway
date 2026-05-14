@@ -1,0 +1,82 @@
+{
+  "academic_cycle": "2025-2026",
+  "schema": "kaduna_pilot_student_deep_weld.v2",
+  "notes": "Notional 2025–26 headcounts — licensed regulator + SIS feeds replace these seeds. NUBA is Nuhu Bamalli Polytechnic (state); never conflate with federal Kaduna Polytechnic.",
+  "default_verification_overload_threshold": 650,
+  "rigasa_verification_overload_threshold": 2200,
+  "kafanchan_district_anchor_en": "Kafanchan town · Jema'a LGA · Jema'a Emirate (Southern Kaduna corridor)",
+  "nuba_me_anguwa_inference": "2025–26 notional split: Zaria HQ (Hanwa + Birni da kewaye) concentrates Me Anguwa verification on the Zazzau-31 spine; Kafanchan shifts load to Jema'a Emirate wards — different ancestral command, different ward-head cadence. Compare DAPI verification counts per ADM3 on each LGA slice; do not merge Kafanchan pressure into Zaria ZD keys.",
+  "institutions": [
+    {
+      "abbr": "ABU",
+      "name": "Ahmadu Bello University",
+      "regulator": "NUC",
+      "notional_students_2025_26": 52000,
+      "primary_campus_lga_lattice": "Zaria",
+      "primary_anchor_zd": "ZD09",
+      "narrative": "Samaru / Sabon Gari student mass — district anchors are ledger keys for Me Anguwa weld."
+    },
+    {
+      "abbr": "KASU",
+      "name": "Kaduna State University",
+      "regulator": "NUC",
+      "notional_students_2025_26": 11500,
+      "primary_campus_lga_lattice": "Kaduna North",
+      "primary_anchor_zd": "ZD26",
+      "narrative": "Kawo / Doka corridor — bind to Kaduna North ward spine."
+    },
+    {
+      "abbr": "KADPOLY",
+      "name": "Kaduna Polytechnic",
+      "regulator": "NBTE",
+      "ownership_tier": "FED",
+      "notional_students_2025_26": 7800,
+      "primary_campus_lga_lattice": "Kaduna South",
+      "primary_anchor_zd": null,
+      "narrative": "Federal main campus · Kaduna South — Barnawa / Makera / Kakuri ZD weld; dual-poly separation from state Nuhu Bamalli Polytechnic (NUBA)."
+    },
+    {
+      "abbr": "NCAT",
+      "name": "Nigerian College of Aviation Technology",
+      "regulator": "NBTE",
+      "notional_students_2025_26": 3200,
+      "primary_campus_lga_lattice": "Zaria",
+      "primary_anchor_zd": "ZD02",
+      "narrative": "Hanwa aviation node — sovereign asset row in mirror."
+    },
+    {
+      "abbr": "NUBA",
+      "name": "Nuhu Bamalli Polytechnic",
+      "regulator": "NBTE",
+      "ownership_tier": "STA",
+      "notional_students_2025_26": 0,
+      "campus_enrolments": [
+        {
+          "campus_label": "Main Campus · Zaria (HQ)",
+          "notional_students_2025_26": 5800,
+          "primary_campus_lga_lattice": "Zaria",
+          "zazzau_district_anchors": ["ZD01 · Birni da kewaye", "ZD02 · Hanwa"],
+          "traditional_domain": "Zazzau Emirate"
+        },
+        {
+          "campus_label": "Kafanchan Campus",
+          "notional_students_2025_26": 4200,
+          "primary_campus_lga_lattice": "Jema'a",
+          "zazzau_district_anchors": [],
+          "traditional_domain": "Jema'a Emirate"
+        }
+      ],
+      "narrative": "Kaduna State [STA] — full ancestral name Nuhu Bamalli Polytechnic. Regional pulse split across Zaria HQ and Jema'a-domain southern node."
+    }
+  ],
+  "district_student_proxy": [
+    {
+      "zazzau_district_id": "ZD22",
+      "district_en": "Rigasa",
+      "parent_lga_en": "Igabi",
+      "notional_students_proxy": 12000,
+      "me_anguwa_heads_assumed": 4,
+      "narrative": "Igabi Rigasa corridor — high off-campus rent; student density proxy pending HMO / institution bed-count."
+    }
+  ]
+}
