@@ -1,0 +1,11 @@
+{
+  "extraPaths": ["/Users/user/Desktop/Sovereign-Eagle-Mirror-2026"],
+  "executionEnvironments": [
+    {
+      "root": "/Users/user/Desktop/Sovereign-Eagle-Mirror-2026",
+      "extraPaths": ["/Users/user/Desktop/Sovereign-Eagle-Mirror-2026"]
+    }
+  ],
+  "typeCheckingMode": "off",
+  "reportMissingImports": "none"
+}

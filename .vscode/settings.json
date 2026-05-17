@@ -1,9 +1,20 @@
 {
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
   "python.analysis.extraPaths": [
     "/Users/user/Desktop/Sovereign-Eagle-Mirror-2026"
   ],
   "python.autoComplete.extraPaths": [
     "/Users/user/Desktop/Sovereign-Eagle-Mirror-2026"
   ],
-  "python.analysis.diagnosticMode": "workspace"
+  "python.analysis.exclude": [
+    "**/Quarantine_Payload_2026/**",
+    "**/14314/**"
+  ],
+  "python.analysis.typeCheckingMode": "off",
+  "python.analysis.diagnosticSeverityOverrides": {
+    "reportMissingImports": "none",
+    "reportMissingModuleSource": "none"
+  },
+  "python.analysis.autoSearchPaths": true,
+  "python.analysis.useLibraryCodeForTypes": true
 }

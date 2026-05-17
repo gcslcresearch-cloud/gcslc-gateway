@@ -1,0 +1,30 @@
+{
+  "folders": [
+    {
+      "path": ".",
+      "name": "GCSLC-Gateway"
+    },
+    {
+      "path": "../Sovereign-Eagle-Mirror-2026",
+      "name": "Sovereign-Eagle-Canonical"
+    }
+  ],
+  "settings": {
+    "python.defaultInterpreterPath": "${workspaceFolder:GCSLC-Gateway}/.venv/bin/python",
+    "python.analysis.extraPaths": [
+      "${workspaceFolder:Sovereign-Eagle-Canonical}"
+    ],
+    "python.autoComplete.extraPaths": [
+      "${workspaceFolder:Sovereign-Eagle-Canonical}"
+    ],
+    "python.analysis.exclude": [
+      "**/Quarantine_Payload_2026/**",
+      "**/14314/**"
+    ],
+    "python.analysis.typeCheckingMode": "off",
+    "python.analysis.diagnosticSeverityOverrides": {
+      "reportMissingImports": "none",
+      "reportMissingModuleSource": "none"
+    }
+  }
+}
