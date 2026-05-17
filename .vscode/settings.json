@@ -1,0 +1,9 @@
+{
+  "python.analysis.extraPaths": [
+    "/Users/user/Desktop/Sovereign-Eagle-Mirror-2026"
+  ],
+  "python.autoComplete.extraPaths": [
+    "/Users/user/Desktop/Sovereign-Eagle-Mirror-2026"
+  ],
+  "python.analysis.diagnosticMode": "workspace"
+}
