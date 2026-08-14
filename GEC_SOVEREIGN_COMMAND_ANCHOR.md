@@ -33,5 +33,5 @@ All twins enforce **Abuja IP-whitelisting** (`GCSLC_ABUJA_IPS`), **14px blur-def
 
 ---
 
-**Entity:** Galadiman Ruwa Center (GCSLC) LTD/GTE  
+**Entity:** Galadiman Ruwa Center (GCSLC/IT)  
 © GCSLC. Proprietary.

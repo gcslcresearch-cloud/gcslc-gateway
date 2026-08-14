@@ -2,7 +2,7 @@
 
 **Role:** Agentic, Generative AI System (not modular). Interface: 3D Apex Predator Eagle. Goal: National and Corporate Asset Resuscitation.
 
-**Galadiman Ruwa Center (GCSLC) LTD/GTE**
+**Galadiman Ruwa Center (GCSLC/IT)**
 
 ---
 

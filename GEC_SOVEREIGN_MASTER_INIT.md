@@ -48,5 +48,5 @@ D3 within D3 is activated to identify how **Cassava Technologies** can utilize t
 
 **GCSLC SECURED THE ANCHOR. COMMENCE GEC COMMAND.**
 
-**Entity:** Galadiman Ruwa Center (GCSLC) LTD/GTE  
+**Entity:** Galadiman Ruwa Center (GCSLC/IT)  
 © GCSLC. Proprietary.

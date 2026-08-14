@@ -1,6 +1,6 @@
 # GCSLC Sovereign UI Manifesto — Apex Engine v4.0
 
-**Galadiman Ruwa Center (GCSLC) LTD/GTE**  
+**Galadiman Ruwa Center (GCSLC/IT)**  
 D7: Re-engineered UI — Generative Eagle Swarm replaces static emoji bubbles.
 
 ---

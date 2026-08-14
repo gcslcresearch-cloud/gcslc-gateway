@@ -19,6 +19,6 @@
 
 ---
 
-**Entity:** Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC) LTD/GTE  
+**Entity:** Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC/IT)  
 **Non-transferable anchor:** CAC: 176917792057 | Chairman & Founder: Dr. Sa'ad Jaafaru  
 (c) GCSLC. Proprietary.
