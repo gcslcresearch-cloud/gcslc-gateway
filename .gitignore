@@ -6,3 +6,5 @@ __pycache__/
 
 # Node (SMTP / SendGrid tooling)
 node_modules/
+.vercel
+logs/aidri_vault_pin.local
