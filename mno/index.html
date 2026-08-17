@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+  <title>GCSLC · MNO Verification Sandbox · SNI-VAI</title>
+  <meta name="description" content="Unlisted staging airlock. Access requires OTP via GaladimaR / GCSLCINTEL Sender IDs." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Libre+Franklin:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #071018;
+      --panel: #0c1824;
+      --gold: #d4af37;
+      --cyan: #66fcf1;
+      --text: #e8eef4;
+      --muted: #8fa3bf;
+      --line: rgba(212, 175, 55, 0.35);
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(ellipse at 20% 0%, rgba(102, 252, 241, 0.08), transparent 50%),
+        radial-gradient(ellipse at 80% 100%, rgba(212, 175, 55, 0.07), transparent 45%),
+        var(--bg);
+      color: var(--text);
+      font-family: "Libre Franklin", system-ui, sans-serif;
+    }
+    .wrap {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 1.5rem;
+    }
+    .card {
+      width: min(440px, 100%);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 1.75rem 1.5rem 1.5rem;
+    }
+    .eyebrow {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin: 0 0 0.65rem;
+    }
+    h1 {
+      margin: 0;
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      line-height: 1.35;
+    }
+    .sub {
+      margin: 0.65rem 0 1.25rem;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+    .ids {
+      display: flex;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.15rem;
+    }
+    .chip {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.72rem;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 0.28rem 0.55rem;
+    }
+    label {
+      display: block;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 0.35rem;
+    }
+    input, select, button {
+      width: 100%;
+      font: inherit;
+      margin-bottom: 0.85rem;
+    }
+    input, select {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      color: var(--text);
+      padding: 0.7rem 0.75rem;
+    }
+    button {
+      background: transparent;
+      border: 2px solid var(--gold);
+      color: var(--gold);
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      padding: 0.8rem;
+      cursor: pointer;
+    }
+    button:disabled { opacity: 0.45; cursor: not-allowed; }
+    button.secondary { border-color: var(--cyan); color: var(--cyan); }
+    .msg {
+      min-height: 1.25rem;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.72rem;
+      color: var(--cyan);
+      margin: 0 0 0.5rem;
+      white-space: pre-wrap;
+    }
+    .err { color: #e07a7a; }
+    .legal {
+      margin-top: 1rem;
+      padding-top: 0.85rem;
+      border-top: 1px solid var(--line);
+      font-size: 0.7rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .vault { display: none; width: min(720px, 100%); }
+    body.is-open .gate { display: none; }
+    body.is-open .vault { display: block; }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 1.25rem 1.35rem;
+      margin-bottom: 0.85rem;
+    }
+    .panel h2 {
+      margin: 0 0 0.5rem;
+      font-size: 0.95rem;
+      color: var(--gold);
+    }
+    .panel p { margin: 0; color: var(--muted); font-size: 0.86rem; line-height: 1.5; }
+    .mono { font-family: "IBM Plex Mono", monospace; color: var(--cyan); font-size: 0.8rem; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card gate" id="gate">
+      <p class="eyebrow">Unlisted · MNO Verification Sandbox · SNI-VAI</p>
+      <h1>Airlock clearance requires OTP via licensed Sender ID</h1>
+      <p class="sub">
+        This staging surface is for Africa&rsquo;s Talking / MNO auditor review only.
+        Only GCSLC operator emails on the filing may request OTP. Delivery path is
+        transactional Sender ID (GaladimaR / GCSLCINTEL) — not a marketing blast.
+      </p>
+      <div class="ids">
+        <span class="chip">GaladimaR</span>
+        <span class="chip">GCSLCINTEL</span>
+      </div>
+
+      <label for="lane">Sender lane</label>
+      <select id="lane">
+        <option value="domestic">Domestic inclusion · GaladimaR</option>
+        <option value="intl">Industrial / intl label · GCSLCINTEL</option>
+      </select>
+
+      <label for="email">Authorized operator email</label>
+      <input id="email" type="email" placeholder="gcslc.research@gmail.com" autocomplete="email" />
+
+      <p class="msg" id="msg"></p>
+      <button type="button" id="btnRequest">Request OTP</button>
+
+      <label for="otp">OTP</label>
+      <input id="otp" type="text" inputmode="numeric" maxlength="6" placeholder="6-digit code" autocomplete="one-time-code" />
+      <button type="button" class="secondary" id="btnVerify" disabled>Verify &amp; enter</button>
+
+      <div class="legal">
+        Galadiman Ruwa Center for Strategic Leadership and Communication (GCSLC)<br />
+        Strategic National Inclusion, Verification and Attestation Initiative (SNI-VAI)<br />
+        Operated by Galadimanruwa Nigeria Ltd — RC 1871418<br />
+        In conjunction with Galadimanruwa Care Foundation — CAC/IT/NO 102532<br />
+        Authorized emails: gcslc.research@gmail.com · info@galadimanruwacenter.org<br />
+        Staging only · noindex · not galadimanruwacenter.org · not a live payments switch
+      </div>
+    </div>
+
+    <div class="vault" id="vault">
+      <div class="panel">
+        <p class="eyebrow">CLEARANCE GRANTED</p>
+        <h2>Why this sandbox exists</h2>
+        <p>
+          GCSLC / SNI-VAI needs transactional Sender IDs so operators and institutional seats
+          can receive OTP and inclusion notices on 2G/3G rails. This airlock is the product
+          proof: <strong style="color:var(--text)">no Sender ID ⇒ no entry</strong>.
+        </p>
+      </div>
+      <div class="panel">
+        <h2>Sender ID use (filed)</h2>
+        <p class="mono">GaladimaR — domestic NODE_0 / inclusion OTP &amp; transactional notify</p>
+        <p class="mono">GCSLCINTEL — industrial / institutional lane label</p>
+        <p style="margin-top:0.65rem">Not for marketing blasts. DND transactional path only.</p>
+      </div>
+      <div class="panel">
+        <h2>Protocol posture</h2>
+        <p>
+          Hot path is attestation with transient session memory — not a citizen data warehouse.
+          This Vercel surface is an unlisted MNO verification sandbox. Corporate research glass
+          (NRRFC) remains on the public WordPress domain and is out of scope for this audit.
+        </p>
+      </div>
+      <div class="panel">
+        <h2>Legal</h2>
+        <p class="mono">RC 1871418 · CAC/IT/NO 102532 · SNI-VAI · staging</p>
+      </div>
+    </div>
+  </div>
+  <script>
+    let sessionId = "";
+    const msg = document.getElementById("msg");
+    const btnV = document.getElementById("btnVerify");
+
+    function setMsg(t, isErr) {
+      msg.textContent = t || "";
+      msg.className = "msg" + (isErr ? " err" : "");
+    }
+
+    document.getElementById("btnRequest").onclick = async () => {
+      setMsg("");
+      btnV.disabled = true;
+      sessionId = "";
+      const email = document.getElementById("email").value.trim();
+      const lane = document.getElementById("lane").value;
+      try {
+        const r = await fetch("/api/mno-otp-request", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, lane }),
+        });
+        const j = await r.json();
+        if (!r.ok) {
+          setMsg(j.error || "request_failed", true);
+          return;
+        }
+        sessionId = j.session_id;
+        btnV.disabled = false;
+        let line = "OTP requested via Sender ID " + j.sender_id + " · TTL " + j.ttl_sec + "s";
+        if (j.sandbox_otp) line += "\nSANDBOX ECHO (staging): " + j.sandbox_otp;
+        setMsg(line, false);
+      } catch (e) {
+        setMsg("network_error", true);
+      }
+    };
+
+    document.getElementById("btnVerify").onclick = async () => {
+      setMsg("");
+      try {
+        const r = await fetch("/api/mno-otp-verify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            session_id: sessionId,
+            otp: document.getElementById("otp").value.trim(),
+          }),
+        });
+        const j = await r.json();
+        if (!r.ok) {
+          setMsg(j.error || "verify_failed", true);
+          return;
+        }
+        document.body.classList.add("is-open");
+      } catch (e) {
+        setMsg("network_error", true);
+      }
+    };
+  </script>
+</body>
+</html>
